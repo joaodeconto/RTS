@@ -5,6 +5,10 @@ using System.Collections;
 
 public class NetworkGUI : Photon.MonoBehaviour {
 	
+	public string playerName = "";
+	
+	protected bool checkingStatus = false;
+	
 #if GUI
 	protected delegate void GUIMethod ();
 	
@@ -17,26 +21,63 @@ public class NetworkGUI : Photon.MonoBehaviour {
 			PhotonNetwork.ConnectUsingSettings(ConfigurationData.VERSION);
 		}
 		
-		CurrentGUI = VerifyStatusGUI;
+		CurrentGUI = MainMenu;
 	}
 	
 	void OnGUI ()
 	{
+		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
+        {
+			PhotonNetwork.Connect ( PhotonNetwork.PhotonServerSettings.ServerAddress,
+									PhotonNetwork.PhotonServerSettings.ServerPort,
+									PhotonNetwork.PhotonServerSettings.AppID,
+									ConfigurationData.VERSION);
+		}
+		
+		if (PhotonNetwork.room == null &&
+			!checkingStatus)
+		{
+			bool error = false;
+			
+			GUILayout.Label ("Player name:");
+			playerName = GUILayout.TextField (playerName, 12, GUILayout.Width(200f));
+			if (string.IsNullOrEmpty(playerName))
+			{
+				ErrorMessage ("Name is empty");
+				
+				error = true;
+			}
+			
+			if (error) return;
+			
+		}
+		
 		CurrentGUI ();
 	}
 	
 	// Métodos de interface para GUI
 	void MainMenu ()
 	{
+		BeginCenter ();
+		
+		GUI.enabled = PhotonNetwork.connected;
 		if (GUILayout.Button ("Play Quick Game"))
 		{
 			PlayQuickGame ();
-			CurrentGUI = VerifyStatusGUI;
+			Invoke ("NoRoom", 10f);
+			CurrentGUI = CheckingRoom;
 		}
+		
+		GUILayout.Space (10f);
+		
 		if (GUILayout.Button ("Join a game"))
 		{
 			CurrentGUI = JoinGame;
 		}
+		
+		if (!PhotonNetwork.connected) ErrorMessage ("Not have a conection!");
+		
+		EndCenter ();
 		
 	}
 	
@@ -44,6 +85,8 @@ public class NetworkGUI : Photon.MonoBehaviour {
 	
 	void JoinGame ()
 	{
+		BeginCenter ();
+		
 		position = GUILayout.BeginScrollView (position, "box");
 		
 		if (PhotonNetwork.GetRoomList().Length == 0)
@@ -54,10 +97,10 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		{
 			foreach (RoomInfo room in PhotonNetwork.GetRoomList ())
 			{
-				if (GUILayout.Button (room.customProperties + " - Players: " + room.playerCount + "/" + room.maxPlayers))
+				if (GUILayout.Button (room.name + " - Players: " + room.playerCount + "/" + room.maxPlayers))
 				{
 					JoinRoom (room.name);
-					CurrentGUI = VerifyStatusGUI;
+					CurrentGUI = CheckingStatusGUI;
 				}
 			}
 		}
@@ -72,60 +115,155 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		}
 		
 		if (GUILayout.Button ("Back")) CurrentGUI = MainMenu;
+		
+		EndCenter ();
 	}
 	
 	protected string nameRoom = "";
+	protected int numberOfPlayers = 4;
 	
 	void CreateLobby ()
 	{
+		BeginCenter ();
+		
 		bool error = false;
 		
-		GUILayout.Label ("Name:");
-		nameRoom = GUILayout.TextField (nameRoom, 12);
+		GUILayout.Label ("Name of room:");
+		nameRoom = GUILayout.TextField (nameRoom, 12, GUILayout.Width(200f));
 		if (string.IsNullOrEmpty(nameRoom))
 		{
 			ErrorMessage ("Name is empty");
 			error = true;
 		}
 		
+		GUILayout.Label ("Number of Players:");
+		GUILayout.BeginHorizontal ();
+		numberOfPlayers = Mathf.FloorToInt(GUILayout.HorizontalSlider ((float)numberOfPlayers, 2f, 4f));
+		GUILayout.Label (numberOfPlayers+"", GUILayout.Width(25f));
+		GUILayout.EndHorizontal ();
+		
 		GUILayout.Space (10f);
 		
 		GUI.enabled = !error;
 		if (GUILayout.Button ("Create"))
 		{
-			CreateRoom (nameRoom, true, true, 4);
-			CurrentGUI = VerifyStatusGUI;
+			CreateRoom (nameRoom, true, true, numberOfPlayers);
+			CurrentGUI = CheckingStatusGUI;
 		}
 		
 		GUI.enabled = true;
 		if (GUILayout.Button ("Back")) CurrentGUI = JoinGame;
+		
+		EndCenter ();
 	}
+	
+	string masterRoom = "";
 	
 	void ShowRoom ()
 	{
-		PhotonPlayer[] players = PhotonNetwork.playerList;
+		GUILayout.BeginHorizontal ();
+		GUILayout.Label ("Master Room:", GUILayout.Width(150f));
+		GUILayout.Label (masterRoom);
+		GUILayout.EndHorizontal ();
 		
-		foreach (PhotonPlayer p in players)
+		GUILayout.BeginHorizontal ();
+		GUILayout.Label ("Nº:", GUILayout.Width(50f));
+		GUILayout.Label ("Name:", GUILayout.Width(150f));
+		GUILayout.Label ("Team:", GUILayout.Width(100f));
+		GUILayout.EndHorizontal ();
+		
+		int numberOfReady = 0;
+		
+		int i = 0;
+		foreach (PhotonPlayer p in PhotonNetwork.playerList)
 		{
-			GUILayout.Label (p.name);
+			GUI.color = i == 0 ? Color.green : Color.white;
+			
+			GUILayout.BeginHorizontal ();
+			
+			GUILayout.Label ((i+1)+"", GUILayout.Width(50f));
+			
+			GUILayout.Label (p.name, GUILayout.Width(150f));
+			
+			if (p.customProperties["team"] != null)
+			{
+				GUILayout.Label((int)p.customProperties["team"]+"", GUILayout.Width(100f));
+			}
+			
+			if((bool)p.customProperties["ready"] == true)
+			{
+				GUILayout.Label("Yeah, I'm Ready!");
+				numberOfReady++;
+			}
+			else if((bool)p.customProperties["ready"] == false)
+			{
+				GUILayout.Label("No, I'm not Ready!");
+			}
+			GUILayout.EndHorizontal ();
+			
+			if (p.isMasterClient) masterRoom = p.name;
+			
+			i++;
 		}
+		
+		GUI.color = Color.white;
+		
+		if ((PhotonNetwork.room.maxPlayers - PhotonNetwork.playerList.Length) != 0)
+		{
+			for (int k = 0; k != PhotonNetwork.room.maxPlayers - PhotonNetwork.playerList.Length; k++)
+			{
+				GUILayout.Label ((k+PhotonNetwork.playerList.Length+1)+"", GUILayout.Width(50f));
+			}
+		}
+		
+		GUILayout.Space (10f);
+		
+		PhotonPlayer player = PhotonNetwork.player;
+		
+		if (player.customProperties["team"] == null)
+		{
+			Hashtable teamProperty = new Hashtable();
+			teamProperty.Add ("team", PhotonNetwork.playerList.Length-1);
+			player.SetCustomProperties(teamProperty);
+		}
+		
+		bool ready = GUILayout.Toggle ((bool)player.customProperties["ready"], " Ready?");
+		Hashtable readyPropety = new Hashtable() {{"ready", ready}};
+		player.SetCustomProperties (readyPropety);
+		
+		if (GUILayout.Button ("Back to Main Menu")) PhotonNetwork.LeaveRoom ();
+		
+		if (numberOfReady == PhotonNetwork.room.maxPlayers) StartCoroutine (StartGame ());
 	}
 	
 	PeerState ps;
 	
-	void VerifyStatusGUI ()
+	void CheckingStatusGUI ()
 	{
-		GUILayout.Label(VerifyStatus ());
+		BeginCenter ();
 		
-		if (ps != PhotonNetwork.connectionStateDetailed)
-		{
-			ps = PhotonNetwork.connectionStateDetailed;
-			
-			if (ps == PeerState.JoinedLobby)
-			{
-				CurrentGUI = MainMenu;
-			}
-		}
+		GUILayout.Label(CheckingStatus ());
+		
+		EndCenter ();
+		
+		checkingStatus = true;
+	}
+	
+	void CheckingRoom ()
+	{
+		BeginCenter ();
+		
+		GUILayout.Label("Searching a room...");
+		
+		EndCenter ();
+		
+		checkingStatus = true;
+	}
+	
+	void NoRoom ()
+	{
+		checkingStatus = false;
+		CurrentGUI = MainMenu;
 	}
 	
 	public void ErrorMessage (string message)
@@ -138,9 +276,33 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		GUI.color = tempColor;
 	}
 	
-	void SetNamePlayer ()
+	void SetPlayer ()
 	{
-		PhotonNetwork.playerName = "Player " + PhotonNetwork.playerList.Length;
+		PhotonNetwork.playerName = playerName;
+		PhotonPlayer player = PhotonNetwork.player;
+		Hashtable someCustomPropertiesToSet = new Hashtable();
+		someCustomPropertiesToSet.Add ("ready", false);
+		player.SetCustomProperties (someCustomPropertiesToSet);
+	}
+	
+	void BeginCenter ()
+	{
+		GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
+	    GUILayout.FlexibleSpace();
+	    GUILayout.BeginHorizontal();
+	    GUILayout.FlexibleSpace();
+		
+		GUILayout.BeginVertical ();
+	}
+	
+	void EndCenter ()
+	{
+		GUILayout.EndVertical ();
+ 
+	    GUILayout.FlexibleSpace();
+	    GUILayout.EndHorizontal();
+	    GUILayout.FlexibleSpace();
+	    GUILayout.EndArea();
 	}
 	
 #else
@@ -175,7 +337,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
 	}
 	
-	public string VerifyStatus ()
+	public string CheckingStatus ()
 	{
 		PeerState peerState = PhotonNetwork.connectionStateDetailed;
 		
@@ -202,36 +364,80 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		{
 			return "Joined Game Network";
 		}
+		else if (peerState == PeerState.DisconnectingFromMasterserver)
+		{
+			return "Checking Server";
+		}
+		else if(peerState == PeerState.ConnectingToGameserver)
+		{
+			return "Connecting to Game Server";
+		}
+		else if(peerState == PeerState.ConnectedToGameserver)
+		{
+			return "Connected to Game Server";
+		}
 		// Conexão criada
 		else if (peerState == PeerState.PeerCreated)
 		{
-			return "Connection created";
+			return "Connection Created";
 		}
 		
 		return peerState.ToString ();
 	}
 	
 	// Photon Methods
-	
 	private void OnJoinedRoom()
     {
+		
+		checkingStatus = false;
+		
+		SetPlayer ();
+#if GUI
+		// Caso for em Play Quick Game
+		CancelInvoke ("NoRoom");
+		
 		CurrentGUI = ShowRoom;
-		SetNamePlayer ();
+#endif
     }
 
     private void OnCreatedRoom()
     {
-        CurrentGUI = ShowRoom;
-		SetNamePlayer ();
+		checkingStatus = false;
+		
+		SetPlayer ();
+#if GUI
+		CurrentGUI = ShowRoom;
+#endif
+    }
+	
+	public void OnLeftRoom()
+    {
+#if GUI
+		CurrentGUI = MainMenu;
+#endif
     }
 
     private void OnDisconnectedFromPhoton()
     {
-        Debug.Log("Disconnected from Photon.");
+#if GUI
+		CurrentGUI = MainMenu;
+#endif
     }
 
     private void OnFailedToConnectToPhoton(object parameters)
     {
         Debug.Log("OnFailedToConnectToPhoton. StatusCode: " + parameters);
+    }
+	
+	private IEnumerator StartGame ()
+    {
+        while (PhotonNetwork.room == null)
+        {
+            yield return 0;
+        }
+
+        // Temporary disable processing of futher network messages
+        PhotonNetwork.isMessageQueueRunning = false;
+        Application.LoadLevel(1);
     }
 }
