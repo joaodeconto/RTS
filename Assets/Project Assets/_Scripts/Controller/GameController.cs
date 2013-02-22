@@ -3,11 +3,13 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
 	
+	protected GameplayManager gameplayManager;
 	protected TouchController touchController;
 	protected SelectionController selectionController;
 	protected TroopController troopController;
-	protected BuildingController buildingController;
+	protected FactoryController factoryController;
 	protected InteractionController interactionController;
+	protected HUDController hudController;
 	protected NetworkManager networkManager;
 	
 	void Awake ()
@@ -15,11 +17,30 @@ public class GameController : MonoBehaviour {
 		PhotonNetwork.offlineMode = true;
 		
 		GetNetworkManager ().Init ();
+		GetGameplayManager ().Init ();
 		GetTouchController ().Init ();
 		GetSelectionController ().Init ();
 		GetTroopController ().Init ();
-		GetBuildingController ().Init ();
+		GetFactoryController ().Init ();
 		GetInteractionController ().Init ();
+	}
+	
+	public GameplayManager GetGameplayManager ()
+	{
+		if(this.gameplayManager == null)
+		{
+			GameObject gm = GetInstance ().transform.FindChild ("GameplayManager").gameObject;
+			if (gm == null)
+			{
+				gm = new GameObject ("GameplayManager");
+				gm.AddComponent <GameplayManager> ();
+			}
+
+			GameController.AppendController (gm);
+
+			this.gameplayManager = gm.GetComponent <GameplayManager> ();
+		}
+		return this.gameplayManager;
 	}
 	
 	public TouchController GetTouchController ()
@@ -76,22 +97,22 @@ public class GameController : MonoBehaviour {
 		return this.troopController;
 	}
 	
-	public BuildingController GetBuildingController ()
+	public FactoryController GetFactoryController ()
 	{
-		if(this.buildingController == null)
+		if(this.factoryController == null)
 		{
-			GameObject bc = GetInstance ().transform.FindChild ("BuildingController").gameObject;
-			if (bc == null)
+			GameObject fc = GetInstance ().transform.FindChild ("FactoryController").gameObject;
+			if (fc == null)
 			{
-				bc = new GameObject ("BuildingController");
-				bc.AddComponent <BuildingController> ();
+				fc = new GameObject ("FactoryController");
+				fc.AddComponent <FactoryController> ();
 			}
 
-			GameController.AppendController (bc);
+			GameController.AppendController (fc);
 
-			this.buildingController = bc.GetComponent <BuildingController> ();
+			this.factoryController = fc.GetComponent <FactoryController> ();
 		}
-		return this.buildingController;
+		return this.factoryController;
 	}
 	
 	public InteractionController GetInteractionController ()
@@ -112,6 +133,24 @@ public class GameController : MonoBehaviour {
 		return this.interactionController;
 	}
 	
+	public HUDController GetHUDController ()
+	{
+		if(this.hudController == null)
+		{
+			GameObject hc = GetInstance ().transform.FindChild ("HUDController").gameObject;
+			if (hc == null)
+			{
+				hc = new GameObject ("HUDController");
+				hc.AddComponent <HUDController> ();
+			}
+
+			GameController.AppendController (hc);
+
+			this.hudController = hc.GetComponent <HUDController> ();
+		}
+		return this.hudController;
+	}
+	
 	public NetworkManager GetNetworkManager ()
 	{
 		if(this.networkManager == null)
@@ -130,7 +169,7 @@ public class GameController : MonoBehaviour {
 		return this.networkManager;
 	}
 	
-	/* Estático */
+	// Estático
 	private static GameController instance;
 	public static GameController GetInstance ()
 	{
@@ -146,7 +185,8 @@ public class GameController : MonoBehaviour {
 		}
 		return instance;
 	}
-
+	
+	// Adicionar Controle
 	private static void AppendController (GameObject controller)
 	{
 		controller.transform.parent = GetInstance ().transform;

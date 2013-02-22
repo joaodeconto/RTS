@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class TroopController : MonoBehaviour
 {
-	public GameObject healthBar;
-	
 	public bool keepFormation {get; set;}
 	
 	internal List<Unit> soldiers = new List<Unit> ();
@@ -13,9 +11,13 @@ public class TroopController : MonoBehaviour
 	
 	protected bool enemySelected = false;
 	protected Vector3 centerOfTroop;
-		
+	
+	protected GameplayManager gameplayManager;
+	
 	public void Init ()
 	{
+		gameplayManager = GameController.GetInstance ().GetGameplayManager ();
+		
 		selectedSoldiers = new List<Unit> ();
 		//InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
@@ -46,7 +48,6 @@ public class TroopController : MonoBehaviour
 				{
 					soldier.TargetingEnemy (null);
 					
-//					Vector3 t = destination - soldier.transform.position;
 					Vector3 newDestination = destination + (Random.insideUnitSphere * soldier.pathfind.radius * selectedSoldiers.Count);
 					
 					soldier.Move (newDestination);
@@ -83,23 +84,9 @@ public class TroopController : MonoBehaviour
 	{
 		if (select)
 		{
-			if (soldier.CompareTag ("Enemy")) enemySelected = true;
-			else enemySelected = false;
+			enemySelected = !gameplayManager.IsSameTeam (soldier);
 			
 			selectedSoldiers.Add (soldier);
-			
-			if (HUDRoot.go == null || healthBar == null)
-			{
-				return;
-			}
-	
-			GameObject child = NGUITools.AddChild(HUDRoot.go, healthBar);
-			
-			AdjustSlider (child.GetComponent<UISlider> (), new Vector2(soldier.MaxHealth, 
-				child.GetComponent<UISlider> ().fullSize.y));
-			
-			child.AddComponent<UIFollowTarget>().target = soldier.transform.FindChild ("Health Reference").transform;
-			child.GetComponent<HealthBar> ().soldier = soldier;
 			
 			soldier.Active ();
 		}
@@ -173,18 +160,5 @@ public class TroopController : MonoBehaviour
 		}
 		
 		return position /= total;
-	}
-	
-	void AdjustSlider (UISlider slider, Vector2 newSize)
-	{
-		slider.fullSize = newSize;
-		
-		Transform background = slider.transform.Find("Background");
-		background.localScale = new Vector3(newSize.x, newSize.y, 1f);
-		
-		Vector3 newPosition = new Vector3(-newSize.x/2, background.localPosition.y, background.localPosition.z);
-		
-		background.localPosition = newPosition;
-		slider.foreground.localPosition = newPosition;
 	}
 }

@@ -42,6 +42,8 @@ public class Unit : Photon.MonoBehaviour
 	public int TypeSoundId { get; protected set; }
 	public CharacterSound CharSound { get; protected set; }
 	
+	public int Team {get; protected set;}
+		
 	private bool canHit;
 	public bool CanHit { 
 		get {
@@ -52,8 +54,6 @@ public class Unit : Photon.MonoBehaviour
 			return canHit;
 		}
 	}
-	
-	public int team = 0;
 	
 	protected GameObject targetAttack;
 	protected float attackBuff;
@@ -66,6 +66,57 @@ public class Unit : Photon.MonoBehaviour
 	public NavMeshAgent pathfind;
 	[System.NonSerializedAttribute]
 	public Vector3 pathfindTarget;
+	
+	protected HUDController hudController;
+	protected HealthBar healthBar;
+	
+	void Init ()
+	{
+		Health = MaxHealth;
+		
+		CharSound = GetComponent<CharacterSound> ();
+		
+		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
+		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
+		
+//		if (ControllerAnimation != null)
+//		{
+//			ControllerAnimation.SetLayer (animation.Idle, 0);
+//			ControllerAnimation.SetLayer (animation.Walk, 0);
+//			ControllerAnimation.SetLayer (animation.Attack, 0);
+//		}
+		
+		hudController = GameController.GetInstance ().GetHUDController ();
+		
+		GameController.GetInstance ().GetTroopController ().AddSoldier (this);
+		
+		pathfind = GetComponent<NavMeshAgent>();
+		
+		pathfindTarget = transform.position;
+		
+		if (!PhotonNetwork.offlineMode) playerUnit = photonView.isMine;
+		
+		if (!PhotonNetwork.offlineMode)
+		{
+			Team = (int)PhotonNetwork.player.customProperties["team"];
+		}
+		else
+		{
+			if (playerUnit)
+			{
+				Team = 0;
+			}
+			else
+			{
+				Team = 1;
+			}
+		}
+		
+		this.gameObject.tag = "Unit";
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
+		
+		if (!enabled) enabled = true;
+	}
 	
 	void Awake ()
 	{
@@ -115,10 +166,10 @@ public class Unit : Photon.MonoBehaviour
 					{
 						Move (targetAttack.transform.position);
 					}
-					else
-					{
-						unitState = UnitState.Idle;
-					}
+//					else
+//					{
+//						unitState = UnitState.Idle;
+//					}
 				}
 				else if (MoveComplete(pathfindTarget))
 				{
@@ -153,60 +204,6 @@ public class Unit : Photon.MonoBehaviour
 				break;
 			}
 		}
-	}
-	
-	void Init ()
-	{
-		Health = MaxHealth;
-		
-		CharSound = GetComponent<CharacterSound> ();
-		
-		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
-		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
-		
-//		if (ControllerAnimation != null)
-//		{
-//			ControllerAnimation.SetLayer (animation.Idle, 0);
-//			ControllerAnimation.SetLayer (animation.Walk, 0);
-//			ControllerAnimation.SetLayer (animation.Attack, 0);
-//		}
-		
-		GameController.GetInstance ().GetTroopController ().AddSoldier (this);
-		
-		pathfind = GetComponent<NavMeshAgent>();
-		
-		pathfindTarget = transform.position;
-		
-		if (!PhotonNetwork.offlineMode) playerUnit = photonView.isMine;
-		
-		if (playerUnit)
-		{
-			this.gameObject.tag = "Player";
-		}
-		else
-		{
-			this.gameObject.tag = "Enemy";
-		}
-		
-		if (!PhotonNetwork.offlineMode)
-		{
-			team = (int)PhotonNetwork.player.customProperties["team"];
-		}
-		else
-		{
-			if (playerUnit)
-			{
-				team = 0;
-			}
-			else
-			{
-				team = 1;
-			}
-		}
-		
-		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
-		
-		if (!enabled) enabled = true;
 	}
 	
 	public void SyncAnimation ()
@@ -250,18 +247,18 @@ public class Unit : Photon.MonoBehaviour
 		Quaternion rotation = Quaternion.LookRotation(targetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * pathfind.angularSpeed);
 		
-		if (PhotonNetwork.offlineMode)
-		{
-			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
-		}
-		else
-		{
-			if (targetAttack.GetComponent<Unit>())
-				photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
-		}
-		
 		if (animation.Attack)
 		{
+			if (PhotonNetwork.offlineMode)
+			{
+				if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
+			}
+			else
+			{
+				if (targetAttack.GetComponent<Unit>())
+					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
+			}
+			
 			ControllerAnimation.PlayCrossFade (animation.Attack, WrapMode.Once);
 			
 			IsAttacking = true;
@@ -270,12 +267,29 @@ public class Unit : Photon.MonoBehaviour
 		}
 		else
 		{
-			GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			attackObj.transform.position = transform.position + transform.forward;
-			Destroy (attackObj, 0.5f);
+			if(attackBuff < attackDuration)
+			{
+                attackBuff += Time.deltaTime;
+	        }
+			else
+			{
+				if (PhotonNetwork.offlineMode)
+				{
+					if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
+				}
+				else
+				{
+					if (targetAttack.GetComponent<Unit>())
+						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
+				}
+				
+				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				attackObj.transform.position = transform.position + transform.forward;
+				Destroy (attackObj, 0.5f);
+			
+                attackBuff = 0;
+            }
 		}
-		
-		attackBuff = 0;
 	}
 	
 	[RPC]
@@ -286,17 +300,13 @@ public class Unit : Photon.MonoBehaviour
 	
 	public void Active ()
 	{
-//		ChangeLayersRecursively (transform, "Selected");
-//		GetComponentInChildren<Projector> ().enabled = true;
-//		
-//		if (playerUnit) GetComponentInChildren<Projector> ().material.color = new Color(0, 0, 1, 1);	
-//		else GetComponentInChildren<Projector> ().material.color = new Color(1, 0, 0, 1);
+		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
+		healthBar.SetTarget (this);
 	}
 	
 	public void Deactive ()
 	{
-//		ChangeLayersRecursively (transform, "Default");
-//		GetComponentInChildren<Projector> ().enabled = false;
+		healthBar.Close ();
 	}
 	
 	public void ReceiveAttack (int Damage)
@@ -355,7 +365,7 @@ public class Unit : Photon.MonoBehaviour
 		Unit testedUnit = units[mid];
 		
 		//verificar se é do mesmo time
-		if (testedUnit.team == unit.team)
+		if (testedUnit.Team == unit.Team)
 		{
 			if(Random.value % 2 == 0)
 				return BinarySearch(units, unit, first, mid - 1);
@@ -363,7 +373,7 @@ public class Unit : Photon.MonoBehaviour
 				return BinarySearch(units, unit, mid + 1, last);
 		}
 		
-		Debug.Log (testedUnit.team + " == " + unit.team);
+		Debug.Log (testedUnit.Team + " == " + unit.Team);
 		
 		//obtendo posição x
 		float testedUnitX = testedUnit.transform.position.x;
@@ -434,9 +444,9 @@ public class Unit : Photon.MonoBehaviour
 		Unit unitSelected = null;
         for (int i = 0; i != nearbyUnits.Length; i++)
 		{
-			if (nearbyUnits[i].GetComponent<Unit> ().team != team)
+			if (nearbyUnits[i].GetComponent<Unit> ().Team != Team)
 			{
-				Debug.Log (nearbyUnits[i].GetComponent<Unit> ().team);
+				Debug.Log (nearbyUnits[i].GetComponent<Unit> ().Team);
 				if (unitSelected == null) unitSelected = nearbyUnits[i].GetComponent<Unit> ();
 				else
 				{
