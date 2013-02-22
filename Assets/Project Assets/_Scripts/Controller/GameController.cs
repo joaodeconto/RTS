@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour {
 	
 	void Awake ()
 	{
+		PhotonNetwork.isMessageQueueRunning = true;
+		
 		GetTouchController ().Init ();
 		GetSelectionController ().Init ();
 		GetTroopController ().Init ();
