@@ -1,40 +1,41 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
-public class GameManager : Photon.MonoBehaviour
-{
-    public Transform playerPrefab;
-
-    public void Awake()
-    {
-        // PhotonNetwork.logLevel = NetworkLogLevel.Full;
-        if (!PhotonNetwork.connected)
-        {
-            // We must be connected to a photon server! Back to main menu
-            Application.LoadLevel(Application.loadedLevel - 1);
-            return;
-        }
-
-        PhotonNetwork.isMessageQueueRunning = true;
-
-        // Spawn our local player
-        PhotonNetwork.Instantiate(this.playerPrefab.name, transform.position, Quaternion.identity, 0);
-    }
-
-    public void OnGUI ()
-    {
-        if (GUILayout.Button("Return to Lobby"))
-        {
-            PhotonNetwork.LeaveRoom();
-        }
-    }
+public class NetworkManager : Photon.MonoBehaviour {
+	
+	public Transform rexPrefab;
+	
+	public void Init ()
+	{
+		PhotonNetwork.isMessageQueueRunning = true;
+	}
+	
+//	public void OnGUI ()
+//	{
+//	    if (GUILayout.Button("Return to Lobby"))
+//	    {
+//	        PhotonNetwork.LeaveRoom();
+//	    }
+//	}
+	
+	public void OnGUI ()
+	{
+		GUILayout.Space (50f);
+		
+	    if (GUILayout.Button("Instantiate Rex"))
+	    {
+			Vector3 pos = Random.insideUnitSphere * 15f;
+			pos.y = transform.position.y;
+	        PhotonNetwork.Instantiate(rexPrefab.name, pos, Quaternion.identity, 0);
+	    }
+	}
 
     public void OnLeftRoom()
     {
         Debug.Log("OnLeftRoom (local)");
         
         // back to main menu        
-        Application.LoadLevel(Application.loadedLevelName);
+        Application.LoadLevel(0);
     }
 
     public void OnMasterClientSwitched(PhotonPlayer player)
@@ -52,8 +53,8 @@ public class GameManager : Photon.MonoBehaviour
     {
         Debug.Log("OnDisconnectedFromPhoton");
 
-        // Back to main menu        
-        Application.LoadLevel(Application.loadedLevelName);
+        // Back to main menu
+        Application.LoadLevel(0);
     }
 
     public void OnPhotonPlayerConnected(PhotonPlayer player)
