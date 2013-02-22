@@ -77,7 +77,8 @@ public class Unit : Photon.MonoBehaviour
 	
 	void Update ()
 	{
-		if (playerUnit)
+//		if (playerUnit)
+		if (true)
 		{
 			switch (unitState)
 			{
@@ -119,7 +120,11 @@ public class Unit : Photon.MonoBehaviour
 						unitState = UnitState.Idle;
 					}
 				}
-				else if (MoveComplete()) unitState = UnitState.Idle;
+				else if (MoveComplete(pathfindTarget))
+				{
+					Stop ();
+					unitState = UnitState.Idle;
+				}
 				break;
 				
 			case UnitState.Attack:
@@ -135,7 +140,6 @@ public class Unit : Photon.MonoBehaviour
 					if (IsRangeAttack (targetAttack))
 					{
 						StartCoroutine(Attack ());
-						pathfindTarget = transform.position;
 					}
 					else
 					{
@@ -202,7 +206,7 @@ public class Unit : Photon.MonoBehaviour
 		
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 		
-		if (!enabled) enabled = true; 
+		if (!enabled) enabled = true;
 	}
 	
 	public void SyncAnimation ()
