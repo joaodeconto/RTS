@@ -58,9 +58,12 @@ public class FactoryBase : MonoBehaviour {
 	{
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
+		
+		hudController.CreateSelected (transform, GetComponent<NavMeshObstacle>().radius);
 	}
 	
 	public void Deactive ()
 	{
+		hudController.DestroySelected (transform);
 	}
 }

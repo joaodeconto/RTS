@@ -448,7 +448,6 @@ public class Unit : Photon.MonoBehaviour
 		{
 			if (nearbyUnits[i].GetComponent<Unit> ().Team != Team)
 			{
-				Debug.Log (nearbyUnits[i].GetComponent<Unit> ().Team);
 				if (unitSelected == null) unitSelected = nearbyUnits[i].GetComponent<Unit> ();
 				else
 				{

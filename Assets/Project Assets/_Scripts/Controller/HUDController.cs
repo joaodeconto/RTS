@@ -38,6 +38,7 @@ public class HUDController : MonoBehaviour {
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
 		refTransform.destroyObjectWhenLoseReference = true;
+		refTransform.offsetPosition += Vector3.up * 0.2f;
 		
 		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
