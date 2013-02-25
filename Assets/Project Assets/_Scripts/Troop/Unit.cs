@@ -306,7 +306,7 @@ public class Unit : Photon.MonoBehaviour
 	
 	public void Deactive ()
 	{
-		healthBar.Close ();
+//		healthBar.Close ();
 	}
 	
 	public void ReceiveAttack (int Damage)

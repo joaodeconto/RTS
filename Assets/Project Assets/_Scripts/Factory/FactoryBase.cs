@@ -62,6 +62,5 @@ public class FactoryBase : MonoBehaviour {
 	
 	public void Deactive ()
 	{
-		healthBar.Close ();
 	}
 }
