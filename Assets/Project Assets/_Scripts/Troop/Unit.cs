@@ -67,6 +67,8 @@ public class Unit : Photon.MonoBehaviour
 	[System.NonSerializedAttribute]
 	public Vector3 pathfindTarget;
 	
+	protected GameplayManager gameplayManager;
+	
 	protected HUDController hudController;
 	protected HealthBar healthBar;
 	
@@ -85,6 +87,8 @@ public class Unit : Photon.MonoBehaviour
 //			ControllerAnimation.SetLayer (animation.Walk, 0);
 //			ControllerAnimation.SetLayer (animation.Attack, 0);
 //		}
+		
+		gameplayManager = GameController.GetInstance ().GetGameplayManager ();
 		
 		hudController = GameController.GetInstance ().GetHUDController ();
 		
@@ -303,7 +307,7 @@ public class Unit : Photon.MonoBehaviour
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 		
-		hudController.CreateSelected (transform, pathfind.radius);
+		hudController.CreateSelected (transform, pathfind.radius, gameplayManager.GetColorTeam (Team));
 	}
 	
 	public void Deactive ()
@@ -443,18 +447,36 @@ public class Unit : Photon.MonoBehaviour
 //		if (nearbyUnits.Length == 0) return false;
 		if (nearbyUnits.Length == 0) return;
 		
-		Unit unitSelected = null;
+		GameObject unitSelected = null;
         for (int i = 0; i != nearbyUnits.Length; i++)
 		{
-			if (nearbyUnits[i].GetComponent<Unit> ().Team != Team)
+			if (nearbyUnits[i].GetComponent<Unit> ())
 			{
-				if (unitSelected == null) unitSelected = nearbyUnits[i].GetComponent<Unit> ();
-				else
+				if (nearbyUnits[i].GetComponent<Unit> ().Team != Team)
 				{
-					if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
-						Vector3.Distance (transform.position, unitSelected.transform.position))
+					if (unitSelected == null) unitSelected = nearbyUnits[i].gameObject;
+					else
 					{
-						unitSelected = nearbyUnits[i].GetComponent<Unit> ();
+						if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
+							Vector3.Distance (transform.position, unitSelected.transform.position))
+						{
+							unitSelected = nearbyUnits[i].gameObject;
+						}
+					}
+				}
+			}
+			else
+			{
+				if (nearbyUnits[i].GetComponent<FactoryBase> ().Team != Team)
+				{
+					if (unitSelected == null) unitSelected = nearbyUnits[i].gameObject;
+					else
+					{
+						if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
+							Vector3.Distance (transform.position, unitSelected.transform.position))
+						{
+							unitSelected = nearbyUnits[i].gameObject;
+						}
 					}
 				}
 			}
@@ -464,7 +486,7 @@ public class Unit : Photon.MonoBehaviour
 		if (unitSelected == null) return;
 		else
 		{
-			TargetingEnemy (unitSelected.gameObject);
+			TargetingEnemy (unitSelected);
 //			return true;
 		}
 	}

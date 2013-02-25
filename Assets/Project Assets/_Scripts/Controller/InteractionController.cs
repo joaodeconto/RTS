@@ -48,12 +48,15 @@ public class InteractionController : MonoBehaviour
 		{
 			if (hit.transform.CompareTag ("Factory"))
 			{
+				if (!gameplayManager.IsSameTeam (hit.transform.GetComponent<FactoryBase> ()))
+				{
+					troopController.AttackTroop (hit.transform.gameObject);
+				}
 				return;
 			}
 			if (hit.transform.CompareTag ("Unit"))
 			{
-				if (hit.transform.GetComponent<Unit> ().Team !=
-					gameplayManager.MyTeam)
+				if (!gameplayManager.IsSameTeam (hit.transform.GetComponent<Unit> ()))
 				{
 					troopController.AttackTroop (hit.transform.gameObject);
 				}

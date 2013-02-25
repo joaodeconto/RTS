@@ -12,12 +12,16 @@ public class FactoryBase : MonoBehaviour {
 	
 	public int Team {get; protected set;}
 	
+	protected GameplayManager gameplayManager;
+	
 	protected HUDController hudController;
 	protected HealthBar healthBar;
 	
 	void Init ()
 	{
 		Health = MaxHealth;
+		
+		gameplayManager = GameController.GetInstance ().GetGameplayManager ();
 		
 		hudController = GameController.GetInstance ().GetHUDController ();
 		
@@ -36,7 +40,7 @@ public class FactoryBase : MonoBehaviour {
 		}
 		
 		this.gameObject.tag = "Factory";
-//		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 		
 		if (!enabled) enabled = true;
 	}
@@ -59,7 +63,7 @@ public class FactoryBase : MonoBehaviour {
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 		
-		hudController.CreateSelected (transform, GetComponent<NavMeshObstacle>().radius);
+		hudController.CreateSelected (transform, GetComponent<NavMeshObstacle>().radius, gameplayManager.GetColorTeam (Team));
 	}
 	
 	public void Deactive ()

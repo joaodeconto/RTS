@@ -27,10 +27,10 @@ public class HUDController : MonoBehaviour {
 		return child.GetComponent<HealthBar> ();
 	}
 	
-	public void CreateSelected (Transform target, float size)
+	public void CreateSelected (Transform target, float size, Color color)
 	{
 		GameObject selectObj = Instantiate (selectedObject, target.position, Quaternion.identity) as GameObject;
-		selectObj.transform.localScale = new Vector3(size * 0.4f, 0.1f, size * 0.4f);
+		selectObj.transform.localScale = new Vector3(size * 0.3f, 0.1f, size * 0.3f);
 		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target;
@@ -38,7 +38,9 @@ public class HUDController : MonoBehaviour {
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
 		refTransform.destroyObjectWhenLoseReference = true;
-		refTransform.offsetPosition += Vector3.up * 0.2f;
+		refTransform.offsetPosition += Vector3.up * 0.4f;
+		
+		selectObj.renderer.sharedMaterial.color = color;
 		
 		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
