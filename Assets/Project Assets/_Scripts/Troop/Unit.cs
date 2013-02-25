@@ -302,11 +302,13 @@ public class Unit : Photon.MonoBehaviour
 	{
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
+		
+		hudController.CreateSelected (transform, pathfind.radius);
 	}
 	
 	public void Deactive ()
 	{
-//		healthBar.Close ();
+		hudController.DestroySelected (transform);
 	}
 	
 	public void ReceiveAttack (int Damage)
