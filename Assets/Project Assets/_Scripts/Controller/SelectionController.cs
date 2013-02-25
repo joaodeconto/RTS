@@ -117,33 +117,33 @@ public class SelectionController : MonoBehaviour
 				else if (enemySoldier != null) troopController.SelectSoldier (enemySoldier, true);
 #endif
 				
-				foreach (GameObject building in buildingController.buildings)
-				{
-					if (building.collider != null)
-					{
-						if (b.Intersects (building.collider.bounds))
-						{
-							buildingController.selectedBuilding = building;
-							building.GetComponentInChildren<Projector> ().enabled = true;
-						}
-						else
-						{
-							building.GetComponentInChildren<Projector> ().enabled = false;
-						}
-					}
-					else
-					{
-						if (AABBContains (building.transform.localPosition, b, IgnoreVector.Y))
-						{
-							buildingController.selectedBuilding = building;
-							building.GetComponentInChildren<Projector> ().enabled = true;
-						}
-						else
-						{
-							building.GetComponentInChildren<Projector> ().enabled = false;
-						}
-					}
-				}
+//				foreach (GameObject building in buildingController.buildings)
+//				{
+//					if (building.collider != null)
+//					{
+//						if (b.Intersects (building.collider.bounds))
+//						{
+//							buildingController.selectedBuilding = building;
+//							building.GetComponentInChildren<Projector> ().enabled = true;
+//						}
+//						else
+//						{
+//							building.GetComponentInChildren<Projector> ().enabled = false;
+//						}
+//					}
+//					else
+//					{
+//						if (AABBContains (building.transform.localPosition, b, IgnoreVector.Y))
+//						{
+//							buildingController.selectedBuilding = building;
+//							building.GetComponentInChildren<Projector> ().enabled = true;
+//						}
+//						else
+//						{
+//							building.GetComponentInChildren<Projector> ().enabled = false;
+//						}
+//					}
+//				}
 			}
 			else
 			{

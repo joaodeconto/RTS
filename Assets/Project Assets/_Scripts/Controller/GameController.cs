@@ -8,11 +8,13 @@ public class GameController : MonoBehaviour {
 	protected TroopController troopController;
 	protected BuildingController buildingController;
 	protected InteractionController interactionController;
+	protected NetworkManager networkManager;
 	
 	void Awake ()
 	{
-		PhotonNetwork.isMessageQueueRunning = true;
+		PhotonNetwork.offlineMode = true;
 		
+		GetNetworkManager ().Init ();
 		GetTouchController ().Init ();
 		GetSelectionController ().Init ();
 		GetTroopController ().Init ();
@@ -108,6 +110,24 @@ public class GameController : MonoBehaviour {
 			this.interactionController = ic.GetComponent <InteractionController> ();
 		}
 		return this.interactionController;
+	}
+	
+	public NetworkManager GetNetworkManager ()
+	{
+		if(this.networkManager == null)
+		{
+			GameObject nm = GetInstance ().transform.FindChild ("NetworkManager").gameObject;
+			if (nm == null)
+			{
+				nm = new GameObject ("NetworkManager");
+				nm.AddComponent <NetworkManager> ();
+			}
+
+			GameController.AppendController (nm);
+
+			this.networkManager = nm.GetComponent <NetworkManager> ();
+		}
+		return this.networkManager;
 	}
 	
 	/* Estático */

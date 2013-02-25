@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 
 public class CameraMovement : MonoBehaviour {
-	
 	public float speedMobile = 0.25f;
 	public float speed = 0.5f;
 	public Vector2 minimum = Vector2.one * 0.01f;
@@ -13,6 +12,7 @@ public class CameraMovement : MonoBehaviour {
 	void Start ()
 	{
 		touchController = GameController.GetInstance ().GetTouchController ();
+//		enabled = false;
 	}
 	
 	void Update ()
