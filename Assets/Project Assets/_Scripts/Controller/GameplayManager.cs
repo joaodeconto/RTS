@@ -3,16 +3,27 @@ using System.Collections;
 
 public class GameplayManager : MonoBehaviour {
 	
-	//public Team[] teams;
+	public int MyTeam {get; protected set;}
 	
-	// Use this for initialization
-	void Awake ()
+	public void Init ()
 	{
-	
+		if (!PhotonNetwork.offlineMode)
+		{
+			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
+		}
+		else
+		{
+			MyTeam = 0;
+		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	public bool IsSameTeam (Unit soldier)
+	{
+		return soldier.Team == MyTeam;
+	}
 	
+	public bool IsSameTeam (FactoryBase factory)
+	{
+		return factory.Team == MyTeam;
 	}
 }

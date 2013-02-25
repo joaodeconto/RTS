@@ -20,14 +20,14 @@ public class NetworkManager : Photon.MonoBehaviour {
 	
 	public void OnGUI ()
 	{
-		GUILayout.Space (50f);
+		/*GUILayout.Space (50f);
 		
 	    if (GUILayout.Button("Instantiate Rex"))
 	    {
 			Vector3 pos = Random.insideUnitSphere * 15f;
 			pos.y = transform.position.y;
 	        PhotonNetwork.Instantiate(rexPrefab.name, pos, Quaternion.identity, 0);
-	    }
+	    }*/
 	}
 
     public void OnLeftRoom()

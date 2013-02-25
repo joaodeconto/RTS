@@ -36,6 +36,8 @@ public class CameraMovement : MonoBehaviour {
 #endif
 	}
 	
+	// Add Códigos na Framework
+	
 	public void PanCamera (float dForward, float dRight)
     {
       Transform transform = Camera.main.transform;
