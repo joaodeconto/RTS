@@ -3,9 +3,10 @@ using System.Collections;
 
 public class SelectionController : MonoBehaviour
 {
-	private TouchController touchController;
-	private TroopController troopController;
-	private BuildingController buildingController;
+	protected TouchController touchController;
+	protected TroopController troopController;
+	protected FactoryController factoryController;
+	protected GameplayManager gameplayManager;
 	
 	protected Vector3 windowSize = Vector3.zero; 
 	
@@ -13,18 +14,15 @@ public class SelectionController : MonoBehaviour
 	{
 		touchController = GameController.GetInstance().GetTouchController();
 		troopController = GameController.GetInstance().GetTroopController();
-		buildingController = GameController.GetInstance().GetBuildingController();
+		factoryController = GameController.GetInstance().GetFactoryController();
+		gameplayManager = GameController.GetInstance().GetGameplayManager();
 	}
 	
 	void Update ()
 	{
 		if (touchController.touchType == TouchController.TouchType.Ended)
 		{
-			if (buildingController.selectedBuilding != null)
-			{
-				buildingController.selectedBuilding.GetComponentInChildren<Projector> ().enabled = false;
-				buildingController.selectedBuilding = null;
-			}
+			factoryController.DeselectFactory ();
 			
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 			if (!touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id1)
@@ -54,7 +52,7 @@ public class SelectionController : MonoBehaviour
 #endif
 				foreach (Unit soldier in troopController.soldiers)
 				{
-					if (soldier.CompareTag("Enemy"))
+					if (!gameplayManager.IsSameTeam (soldier))
 					{
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 						continue;
@@ -71,7 +69,7 @@ public class SelectionController : MonoBehaviour
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 							troopController.SelectSoldier (soldier, true);
 #else
-							if (soldier.CompareTag ("Enemy"))
+							if (!gameplayManager.IsSameTeam (soldier))
 							{
 								enemySoldier = soldier;
 								continue;
@@ -94,7 +92,7 @@ public class SelectionController : MonoBehaviour
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 							troopController.SelectSoldier (soldier, true);
 #else
-							if (soldier.CompareTag ("Enemy"))
+							if (!gameplayManager.IsSameTeam (soldier))
 							{
 								enemySoldier = soldier;
 								continue;
@@ -117,33 +115,23 @@ public class SelectionController : MonoBehaviour
 				else if (enemySoldier != null) troopController.SelectSoldier (enemySoldier, true);
 #endif
 				
-//				foreach (GameObject building in buildingController.buildings)
-//				{
-//					if (building.collider != null)
-//					{
-//						if (b.Intersects (building.collider.bounds))
-//						{
-//							buildingController.selectedBuilding = building;
-//							building.GetComponentInChildren<Projector> ().enabled = true;
-//						}
-//						else
-//						{
-//							building.GetComponentInChildren<Projector> ().enabled = false;
-//						}
-//					}
-//					else
-//					{
-//						if (AABBContains (building.transform.localPosition, b, IgnoreVector.Y))
-//						{
-//							buildingController.selectedBuilding = building;
-//							building.GetComponentInChildren<Projector> ().enabled = true;
-//						}
-//						else
-//						{
-//							building.GetComponentInChildren<Projector> ().enabled = false;
-//						}
-//					}
-//				}
+				foreach (FactoryBase factory in factoryController.factorys)
+				{
+					if (factory.collider != null)
+					{
+						if (b.Intersects (factory.collider.bounds))
+						{
+							factoryController.SelectFactory (factory);
+						}
+					}
+					else
+					{
+						if (AABBContains (factory.transform.localPosition, b, IgnoreVector.Y))
+						{
+							factoryController.SelectFactory (factory);
+						}
+					}
+				}
 			}
 			else
 			{
@@ -153,51 +141,56 @@ public class SelectionController : MonoBehaviour
 					
 					if (Physics.Raycast (touchController.GetFinalRaycast, out hit))
 					{
-						if (hit.transform.CompareTag ("Player"))
+						if (hit.transform.CompareTag ("Unit"))
 						{
+							if (gameplayManager.IsSameTeam (hit.transform.GetComponent <Unit>()))
+							{
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR							
-							troopController.DeselectAllSoldiers ();
-#else
-							if (! Input.GetKey (KeyCode.LeftShift))
-							{
 								troopController.DeselectAllSoldiers ();
-							}
+#else
+								if (! Input.GetKey (KeyCode.LeftShift))
+								{
+									troopController.DeselectAllSoldiers ();
+								}
 #endif							
-							if (!troopController.selectedSoldiers.Contains (hit.transform.GetComponent<Unit> ()))
-							{
-								troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), true);
+								if (!troopController.selectedSoldiers.Contains (hit.transform.GetComponent<Unit> ()))
+								{
+									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), true);
+								}
+								else
+								{
+									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), false);
+								}
+								return;
 							}
 							else
 							{
-								troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), false);
+								if (!troopController.selectedSoldiers.Contains (hit.transform.GetComponent<Unit> ()))
+								{
+									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), true);
+								}
+								else
+								{
+									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), false);
+								}
+								return;
+
 							}
-							return;
 						}
 						
-						if (hit.transform.CompareTag ("Building"))
+						if (hit.transform.CompareTag ("Factory"))
 						{
-							buildingController.selectedBuilding = hit.transform.gameObject;
-							hit.transform.GetComponentInChildren<Projector> ().enabled = true;
-							
-							troopController.DeselectAllSoldiers ();
+							if (gameplayManager.IsSameTeam (hit.transform.GetComponent<FactoryBase> ()))
+							{
+								troopController.DeselectAllSoldiers ();
+								
+								factoryController.SelectFactory (hit.transform.GetComponent<FactoryBase>());
+							}
 							return;
 						}
 						
 #if !UNITY_IPHONE && !UNITY_ANDROID || UNITY_EDITOR						
 						troopController.DeselectAllSoldiers ();
-						
-						if (hit.transform.CompareTag ("Enemy"))
-						{
-							if (!troopController.selectedSoldiers.Contains (hit.transform.GetComponent<Unit> ()))
-							{
-								troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), true);
-							}
-							else
-							{
-								troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), false);
-							}
-							return;
-						}
 #endif
 					}
 					else

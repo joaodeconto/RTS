@@ -6,13 +6,13 @@ public class InteractionController : MonoBehaviour
 	
 	protected TouchController touchController;
 	protected TroopController troopController;
-	protected BuildingController buildingController;
+	protected GameplayManager gameplayManager;
 	
 	public void Init ()
 	{
 		touchController = GameController.GetInstance().GetTouchController();
 		troopController = GameController.GetInstance().GetTroopController();
-		buildingController = GameController.GetInstance().GetBuildingController();
+		gameplayManager = GameController.GetInstance().GetGameplayManager();
 	}
 	
 	// Update is called once per frame
@@ -46,17 +46,17 @@ public class InteractionController : MonoBehaviour
 				
 		if (Physics.Raycast (raycast, out hit))
 		{
-			if (hit.transform.CompareTag ("Player"))
+			if (hit.transform.CompareTag ("Factory"))
 			{
 				return;
 			}
-			if (hit.transform.CompareTag ("Building"))
+			if (hit.transform.CompareTag ("Unit"))
 			{
-				return;
-			}
-			if (hit.transform.CompareTag ("Enemy"))
-			{
-				troopController.AttackTroop (hit.transform.gameObject);
+				if (hit.transform.GetComponent<Unit> ().Team !=
+					gameplayManager.MyTeam)
+				{
+					troopController.AttackTroop (hit.transform.gameObject);
+				}
 				return;
 			}
 		}
