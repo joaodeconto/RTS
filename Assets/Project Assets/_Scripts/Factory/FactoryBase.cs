@@ -5,18 +5,23 @@ using System.Collections.Generic;
 using Visiorama;
 
 public class FactoryBase : MonoBehaviour {
-
+	
+	public const int MAX_NUMBER_OF_LISTED = 5;
+	
 	[System.Serializable]
 	public class UnitFactory
 	{
 		public Unit unit;
 		public float timeToCreate = 3f;
-		public GameObject button;
+		public string buttonName;
 		public Vector3 positionButton;
 	}
-
+	
 	public UnitFactory[] unitsToCreate;
-	protected Dictionary<float, Unit> listedToCreate = new Dictionary<float, Unit>(5);
+	protected List<Unit> listedToCreate = new List<Unit>();
+	protected Unit unitToCreate;
+	protected float timeToCreate;
+	private float timer;
 
 	public int MaxHealth = 200;
 
@@ -27,12 +32,18 @@ public class FactoryBase : MonoBehaviour {
 
 	public bool Actived {get; protected set;}
 
-	private float timer;
-
 	protected GameplayManager gameplayManager;
 
 	protected HUDController hudController;
 	protected HealthBar healthBar;
+	
+	public bool OverLimitCreateUnit
+	{
+		get
+		{
+			return listedToCreate.Count > MAX_NUMBER_OF_LISTED;
+		}
+	}
 
 	void Init ()
 	{
@@ -74,31 +85,48 @@ public class FactoryBase : MonoBehaviour {
 	void Update ()
 	{
 		if (listedToCreate.Count == 0) return;
-
-		int i = 0;
-		foreach (KeyValuePair<float, Unit> listed in listedToCreate)
+		
+		if (unitToCreate == null)
 		{
-			if (i == 0)
+			unitToCreate = listedToCreate[0];
+			foreach (UnitFactory uf in unitsToCreate)
 			{
-				if (timer > listed.Key)
+				if (uf.unit == unitToCreate)
 				{
-					InvokeUnit (listed.Value);
-					timer = 0;
-					listedToCreate.Remove (listed.Key);
-					break;
+					timeToCreate = uf.timeToCreate;
 				}
-				else
-				{
-					timer += Time.deltaTime;
-				}
-				i++;
+			}
+		}
+		else
+		{
+			if (timer > timeToCreate)
+			{
+				InvokeUnit (unitToCreate);
+				timer = 0;
+				listedToCreate.Remove (unitToCreate);
+			}
+			else
+			{
+				timer += Time.deltaTime;
 			}
 		}
 	}
 
 	void InvokeUnit (Unit unit)
 	{
-		Instantiate (unit, transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity);
+		if (PhotonNetwork.offlineMode)
+		{
+			Unit newUnit = 
+				Instantiate (unit, transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity) as Unit;
+//			newUnit.Move (Vector3.zero);
+		}
+		else
+		{
+	        GameObject newUnit = 
+				PhotonNetwork.Instantiate(unit.gameObject.name, 
+					transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity, 0);
+//			newUnit.GetComponent<Unit> ().Move (Vector3.zero);
+		}
 	}
 
 	public void Active ()
@@ -112,7 +140,7 @@ public class FactoryBase : MonoBehaviour {
 
 		foreach (UnitFactory uf in unitsToCreate)
 		{
-			hudController.CreateButtonInInspector (uf.button, uf.positionButton, uf.unit, uf.timeToCreate, this);
+			hudController.CreateButtonInInspector (uf.buttonName, uf.positionButton, uf.unit, this);
 		}
 	}
 
@@ -125,13 +153,9 @@ public class FactoryBase : MonoBehaviour {
 		hudController.DestroyInspector ();
 	}
 
-	public void CallUnit (Unit unit, float timeToCreate)
+	public void CallUnit (Unit unit)
 	{
-		listedToCreate.Add (timeToCreate, unit);
+		listedToCreate.Add (unit);
 	}
 
-	public bool OverLimitCreateUnit ()
-	{
-		return listedToCreate.Count > 5;
-	}
 }

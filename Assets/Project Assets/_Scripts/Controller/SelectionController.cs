@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Visiorama;
+using Visiorama.Utils;
 
 public class SelectionController : MonoBehaviour
 {
@@ -46,7 +47,7 @@ public class SelectionController : MonoBehaviour
 
 					Bounds b = new Bounds((touchController.GetFirstPoint+touchController.GetFinalPoint)/2, windowSize + (Vector3.up * 100f) );
 
-					DebugDrawCube (b, Color.green);
+					VDebug.DrawCube (b, Color.green);
 
 					troopController.DeselectAllSoldiers ();
 
@@ -90,7 +91,7 @@ public class SelectionController : MonoBehaviour
 						}
 						else
 						{
-							if (AABBContains (soldier.transform.localPosition, b, IgnoreVector.Y))
+							if (Math.AABBContains (soldier.transform.localPosition, b, Math.IgnoreVector.Y))
 							{
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 								troopController.SelectSoldier (soldier, true);
@@ -129,7 +130,7 @@ public class SelectionController : MonoBehaviour
 						}
 						else
 						{
-							if (AABBContains (factory.transform.localPosition, b, IgnoreVector.Y))
+							if (Math.AABBContains (factory.transform.localPosition, b, Math.IgnoreVector.Y))
 							{
 								factoryController.SelectFactory (factory);
 							}
@@ -215,80 +216,4 @@ public class SelectionController : MonoBehaviour
 				touchController.CurrentPosition.x - touchController.FirstPosition.x, touchController.CurrentPosition.y - touchController.FirstPosition.y), "");
 		}
 	}
-
-	// Códigos a adicionar no Framework
-
-	void DebugDrawCube (Bounds bound, Color color)
-	{
-		Debug.DrawLine((Vector3.right * bound.min.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.min.z), (Vector3.right * bound.max.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.min.z), color);
-		Debug.DrawLine((Vector3.right * bound.min.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.max.z), (Vector3.right * bound.max.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.max.z), color);
-		Debug.DrawLine((Vector3.right * bound.min.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.min.z), (Vector3.right * bound.min.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.max.z), color);
-		Debug.DrawLine((Vector3.right * bound.max.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.min.z), (Vector3.right * bound.max.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.max.z), color);
-		Debug.DrawLine((Vector3.right * bound.min.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.min.z), (Vector3.right * bound.max.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.min.z), color);
-		Debug.DrawLine((Vector3.right * bound.min.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.max.z), (Vector3.right * bound.max.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.max.z), color);
-		Debug.DrawLine((Vector3.right * bound.min.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.min.z), (Vector3.right * bound.min.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.max.z), color);
-		Debug.DrawLine((Vector3.right * bound.max.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.min.z), (Vector3.right * bound.max.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.max.z), color);
-		Debug.DrawLine((Vector3.right * bound.min.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.max.z), (Vector3.right * bound.min.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.max.z), color);
-		Debug.DrawLine((Vector3.right * bound.min.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.min.z), (Vector3.right * bound.min.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.min.z), color);
-		Debug.DrawLine((Vector3.right * bound.max.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.max.z), (Vector3.right * bound.max.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.max.z), color);
-		Debug.DrawLine((Vector3.right * bound.max.x) + (Vector3.up * bound.min.y) + (Vector3.forward * bound.min.z), (Vector3.right * bound.max.x) + (Vector3.up * bound.max.y) + (Vector3.forward * bound.min.z), color);
 	}
-
-	public enum IgnoreVector
-	{
-		X, Y, Z, None
-	}
-
-	bool AABBContains (Vector3 position, Bounds bounds, IgnoreVector ignoreVector)
-	{
-		Vector3 _tempVec;
-
-		_tempVec = bounds.min;
-
-		if (ignoreVector == IgnoreVector.X)
-		{
-			if (position.y < _tempVec.y || position.z < _tempVec.z)
-				return false;
-		}
-		else if (ignoreVector == IgnoreVector.Y)
-		{
-			if (position.x < _tempVec.x || position.z < _tempVec.z)
-				return false;
-		}
-		else if (ignoreVector == IgnoreVector.Z)
-		{
-			if (position.x < _tempVec.x || position.y < _tempVec.y)
-				return false;
-		}
-		else
-		{
-			if (position.x < _tempVec.x || position.y < _tempVec.y || position.z < _tempVec.z)
-				return false;
-		}
-
-		_tempVec = bounds.max;
-
-		if (ignoreVector == IgnoreVector.X)
-		{
-			if (position.y > _tempVec.y || position.z > _tempVec.z)
-				return false;
-		}
-		else if (ignoreVector == IgnoreVector.Y)
-		{
-			if (position.x > _tempVec.x || position.z > _tempVec.z)
-				return false;
-		}
-		else if (ignoreVector == IgnoreVector.Z)
-		{
-			if (position.x > _tempVec.x || position.y > _tempVec.y)
-				return false;
-		}
-		else
-		{
-			if (position.x > _tempVec.x || position.y > _tempVec.y || position.z > _tempVec.z)
-				return false;
-		}
-
-		return true;
-	}
-}

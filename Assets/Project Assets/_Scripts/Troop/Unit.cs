@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama.Extension;
 using Visiorama;
 
 public class Unit : Photon.MonoBehaviour
@@ -446,7 +447,6 @@ public class Unit : Photon.MonoBehaviour
 
 		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1<<LayerMask.NameToLayer ("Unit"));
 
-//		if (nearbyUnits.Length == 0) return false;
 		if (nearbyUnits.Length == 0) return;
 
 		GameObject unitSelected = null;
@@ -484,12 +484,10 @@ public class Unit : Photon.MonoBehaviour
 			}
         }
 
-//		if (unitSelected == null) return false;
 		if (unitSelected == null) return;
 		else
 		{
 			TargetingEnemy (unitSelected);
-//			return true;
 		}
 	}
 
@@ -524,17 +522,6 @@ public class Unit : Photon.MonoBehaviour
 		}
 
 		Destroy (gameObject);
-	}
-
-	// Add nos códigos
-
-	void ChangeLayersRecursively (Transform transform, string name)
-	{
-	    foreach (Transform child in transform)
-	    {
-	        child.gameObject.layer = LayerMask.NameToLayer(name);
-	        ChangeLayersRecursively(child, name);
-	    }
 	}
 
 	// GIZMOS

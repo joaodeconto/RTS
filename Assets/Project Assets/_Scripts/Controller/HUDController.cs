@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama;
 
 public class HUDController : MonoBehaviour {
 	
@@ -7,6 +8,7 @@ public class HUDController : MonoBehaviour {
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
 	public Transform transformMenu;
+	public GameObject button;
 	
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
 	{
@@ -20,8 +22,8 @@ public class HUDController : MonoBehaviour {
 		if (child.GetComponent<HealthBar> () == null) child.AddComponent <HealthBar> ();
 		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
 		
-		AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth, 
-			child.GetComponent<UISlider> ().fullSize.y));
+		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth, 
+			child.GetComponent<UISlider> ().fullSize.y), "Background");
 		
 		child.AddComponent<UIFollowTarget>().target = target.FindChild (referenceChild).transform;
 		
@@ -57,13 +59,14 @@ public class HUDController : MonoBehaviour {
 		}
 	}
 	
-	public void CreateButtonInInspector (GameObject button, Vector3 position, Unit unit, float timeToCreate, FactoryBase factory)
+	public void CreateButtonInInspector (string buttonName, Vector3 position, Unit unit, FactoryBase factory)
 	{
 		GameObject newButton = NGUITools.AddChild (transformMenu.gameObject, button);
+//		newButton.
 		newButton.transform.localPosition = position;
 		
 		UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
-		ucb.Init (unit, timeToCreate, factory);
+		ucb.Init (unit, factory);
 	}
 	
 	public void DestroyInspector ()
@@ -72,19 +75,5 @@ public class HUDController : MonoBehaviour {
 		{
 			DestroyObject (child.gameObject);
 		}
-	}
-	
-	// Add Códigos na Framework
-	void AdjustSlider (UISlider slider, Vector2 newSize)
-	{
-		slider.fullSize = newSize;
-		
-		Transform background = slider.transform.Find("Background");
-		background.localScale = new Vector3(newSize.x, newSize.y, 1f);
-		
-		Vector3 newPosition = new Vector3(-newSize.x/2, background.localPosition.y, background.localPosition.z);
-		
-		background.localPosition = newPosition;
-		slider.foreground.localPosition = newPosition;
 	}
 }

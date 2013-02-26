@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama.Utils;
 
 public class CameraBounds : MonoBehaviour {
 	
