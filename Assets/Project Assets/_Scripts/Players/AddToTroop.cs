@@ -1,15 +1,16 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama;
 
 public class AddToTroop : MonoBehaviour
 {
 	void Awake ()
 	{
-		GameController.GetInstance ().GetTroopController ().AddSoldier (this.GetComponent<Unit> ());
+		ComponentGetter.Get<TroopController> ().AddSoldier (this.GetComponent<Unit> ());
 	}
-	
+
 	void OnDead ()
 	{
-		GameController.GetInstance ().GetTroopController ().RemoveSoldier (this.GetComponent<Unit> ());
+		ComponentGetter.Get<TroopController> ().RemoveSoldier (this.GetComponent<Unit> ());
 	}
 }

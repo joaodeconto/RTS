@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Visiorama.Extension;
+using Visiorama;
 
 public class Unit : Photon.MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class Unit : Photon.MonoBehaviour
 		public AnimationClip DieAnimation;
 		public AnimationClip[] SpecialAttack;
 	}
-	
+
 	public enum UnitState
 	{
 		Idle = 0,
@@ -21,32 +22,32 @@ public class Unit : Photon.MonoBehaviour
 		Attack = 2,
 		Die = 3
 	}
-	
+
 	public int MaxHealth = 20;
 	public int Force;
 	public int Defense;
 	public float distanceView = 15f;
 	public float rangeAttack = 5f;
 	public float attackDuration = 1f;
-	
+
 	public bool playerUnit;
-	
+
 	public UnitAnimation unitAnimation;
-	
+
 	public int Health { get; set; }
 	public int AdditionalForce { get; set; }
-	
+
 	public bool IsAttacking { get; protected set; }
 	public bool IsDead { get; protected set; }
 
 	public Animation ControllerAnimation;
 	public int TypeSoundId { get; protected set; }
 	public CharacterSound CharSound { get; protected set; }
-	
+
 	public int Team {get; protected set;}
-		
+
 	private bool canHit;
-	public bool CanHit { 
+	public bool CanHit {
 		get {
 			if (!canHit)
 			{
@@ -55,52 +56,52 @@ public class Unit : Photon.MonoBehaviour
 			return canHit;
 		}
 	}
-	
+
 	protected GameObject targetAttack;
 	protected float attackBuff;
-	
+
 	public UnitState unitState { get; set; }
-	
+
 	protected bool invokeCheckEnemy;
-	
+
 	[System.NonSerializedAttribute]
 	public NavMeshAgent pathfind;
 	[System.NonSerializedAttribute]
 	public Vector3 pathfindTarget;
-	
+
 	protected GameplayManager gameplayManager;
-	
+
 	protected HUDController hudController;
 	protected HealthBar healthBar;
-	
+
 	void Init ()
 	{
 		Health = MaxHealth;
-		
+
 		CharSound = GetComponent<CharacterSound> ();
-		
+
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
-		
+
 //		if (ControllerAnimation != null)
 //		{
 //			ControllerAnimation.SetLayer (animation.Idle, 0);
 //			ControllerAnimation.SetLayer (animation.Walk, 0);
 //			ControllerAnimation.SetLayer (animation.Attack, 0);
 //		}
-		
-		gameplayManager = GameController.GetInstance ().GetGameplayManager ();
-		
-		hudController = GameController.GetInstance ().GetHUDController ();
-		
-		GameController.GetInstance ().GetTroopController ().AddSoldier (this);
-		
+
+		gameplayManager = ComponentGetter.Get<GameplayManager> ();
+
+		hudController = ComponentGetter.Get<HUDController> ();
+
+		ComponentGetter.Get<TroopController> ().AddSoldier (this);
+
 		pathfind = GetComponent<NavMeshAgent>();
-		
+
 		pathfindTarget = transform.position;
-		
+
 		if (!PhotonNetwork.offlineMode) playerUnit = photonView.isMine;
-		
+
 		if (!PhotonNetwork.offlineMode)
 		{
 			Team = (int)PhotonNetwork.player.customProperties["team"];
@@ -116,21 +117,21 @@ public class Unit : Photon.MonoBehaviour
 				Team = 1;
 			}
 		}
-		
+
 		this.gameObject.tag = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
-		
+
 		if (!enabled) enabled = true;
 	}
-	
+
 	void Awake ()
 	{
 //		Init ();
-		
+
 		enabled = false;
 		Invoke ("Init", 0.1f);
 	}
-	
+
 	void Update ()
 	{
 //		if (playerUnit)
@@ -138,31 +139,31 @@ public class Unit : Photon.MonoBehaviour
 		{
 			switch (unitState)
 			{
-			
+
 			case UnitState.Idle:
 				if (unitAnimation.Idle)
 					ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
-				
+
 				StartCheckEnemy ();
 				if (targetAttack != null)
 				{
 					unitState = UnitState.Walk;
 				}
 				break;
-				
+
 			case UnitState.Walk:
 				if (unitAnimation.Walk)
 				{
 					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
-				
+
 				CancelCheckEnemy ();
-				
+
 				if (targetAttack != null)
 				{
 					pathfindTarget = transform.position;
-					
+
 					if (IsRangeAttack(targetAttack))
 					{
 						unitState = UnitState.Attack;
@@ -182,15 +183,15 @@ public class Unit : Photon.MonoBehaviour
 					unitState = UnitState.Idle;
 				}
 				break;
-				
+
 			case UnitState.Attack:
-				
+
 				if (IsAttacking) return;
-				
+
 				Stop ();
-				
+
 				pathfindTarget = transform.position;
-				
+
 				if (targetAttack != null)
 				{
 					if (IsRangeAttack (targetAttack))
@@ -210,7 +211,7 @@ public class Unit : Photon.MonoBehaviour
 			}
 		}
 	}
-	
+
 	public void SyncAnimation ()
 	{
 		switch (unitState)
@@ -218,40 +219,40 @@ public class Unit : Photon.MonoBehaviour
 		case UnitState.Idle:
 			if (unitAnimation.Idle)
 				ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
-			
+
 			break;
 		case UnitState.Walk:
 			if (unitAnimation.Walk)
 				ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
-			
+
 			break;
 		case UnitState.Attack:
 			if (unitAnimation.Attack)
 				ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-			
+
 			break;
 		}
 	}
-	
+
 	public void Move (Vector3 destination)
 	{
 		if (!pathfind.updatePosition) pathfind.updatePosition = true;
 		pathfindTarget = destination;
 		pathfind.SetDestination (destination);
-		
+
 		unitState = UnitState.Walk;
 	}
-	
+
 	private void Stop ()
 	{
 		pathfind.Stop ();
 	}
-	
+
 	private IEnumerator Attack ()
 	{
 		Quaternion rotation = Quaternion.LookRotation(targetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * pathfind.angularSpeed);
-		
+
 		if (unitAnimation.Attack)
 		{
 			if (PhotonNetwork.offlineMode)
@@ -263,9 +264,9 @@ public class Unit : Photon.MonoBehaviour
 				if (targetAttack.GetComponent<Unit>())
 					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
 			}
-			
+
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-			
+
 			IsAttacking = true;
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
 			IsAttacking = false;
@@ -287,35 +288,35 @@ public class Unit : Photon.MonoBehaviour
 					if (targetAttack.GetComponent<Unit>())
 						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
 				}
-				
+
 				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 				attackObj.transform.position = transform.position + transform.forward;
 				Destroy (attackObj, 0.5f);
-			
+
                 attackBuff = 0;
             }
 		}
 	}
-	
+
 	[RPC]
 	void AttackUnit (string nameUnit, int force)
 	{
 		GameObject.Find(nameUnit).GetComponent<Unit> ().ReceiveAttack(force);
 	}
-	
+
 	public void Active ()
 	{
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
-		
+
 		hudController.CreateSelected (transform, pathfind.radius, gameplayManager.GetColorTeam (Team));
 	}
-	
+
 	public void Deactive ()
 	{
 		hudController.DestroySelected (transform);
 	}
-	
+
 	public void ReceiveAttack (int Damage)
 	{
 		if (IsDead) return;
@@ -331,22 +332,22 @@ public class Unit : Photon.MonoBehaviour
 			StartCoroutine (DieAnimation ());
 		}
 	}
-	
+
 	public bool IsRangeAttack (GameObject soldier)
 	{
 		return Vector3.Distance(transform.position, soldier.transform.position) <= rangeAttack;
 	}
-	
+
 	public bool InDistanceView (Vector3 position)
 	{
 		return Vector3.Distance(transform.position, position) <= distanceView;
 	}
-	
+
 	public bool MoveComplete (Vector3 destination)
 	{
 		return Vector3.Distance(transform.position, destination) <= 2;
 	}
-	
+
 //	bool start = false;
 	public bool MoveComplete ()
 	{
@@ -356,22 +357,22 @@ public class Unit : Photon.MonoBehaviour
 //				pathfind.velocity.sqrMagnitude < 0.1f;
 		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
 	}
-	
+
 	public void TargetingEnemy (GameObject enemy)
 	{
 		targetAttack = enemy;
 	}
-	
+
 	private Unit BinarySearch(Unit[] units, Unit unit, int first, int last)
 	{
 		if (first > last)
 			return null;
-		
+
 		int mid = (first + last) / 2;  // compute mid point.
-		
+
 		//selecionar unidade
 		Unit testedUnit = units[mid];
-		
+
 		//verificar se é do mesmo time
 		if (testedUnit.Team == unit.Team)
 		{
@@ -380,18 +381,18 @@ public class Unit : Photon.MonoBehaviour
 			else
 				return BinarySearch(units, unit, mid + 1, last);
 		}
-		
+
 		Debug.Log (testedUnit.Team + " == " + unit.Team);
-		
+
 		//obtendo posição x
 		float testedUnitX = testedUnit.transform.position.x;
 		float unitX 	  = unit.transform.position.x;
-		
+
 		if(unit.distanceView > Mathf.Abs(testedUnitX - unitX))
 		{
 			float testedUnitZ = testedUnit.transform.position.z;
 			float unitZ 	  = unit.transform.position.z;
-			
+
 			if(unit.distanceView > Mathf.Abs(testedUnitZ - unitZ))
 			{
 				//unidade verificada está dentro da visão da unidade atual
@@ -399,7 +400,7 @@ public class Unit : Photon.MonoBehaviour
 			}
 			//não está dentro da visão, continua verificando
 		}
-		
+
 		if(testedUnitX > unitX + unit.distanceView)
 		{
 			// Call ourself for the lower part of the array
@@ -411,7 +412,7 @@ public class Unit : Photon.MonoBehaviour
 			return BinarySearch(units, unit, mid + 1, last);
 		}
 	}
-	
+
 	private void StartCheckEnemy ()
 	{
 		if (!invokeCheckEnemy)
@@ -420,7 +421,7 @@ public class Unit : Photon.MonoBehaviour
 			invokeCheckEnemy = true;
 		}
 	}
-	
+
 	private void CancelCheckEnemy ()
 	{
 		if (invokeCheckEnemy)
@@ -429,26 +430,26 @@ public class Unit : Photon.MonoBehaviour
 			invokeCheckEnemy = false;
 		}
 	}
-	
+
 	private void CheckEnemyToClose ()
 	{
 		/*
-		Unit[] soldiers = GameController.GetInstance().GetTroopController().soldiers.ToArray();
-		
+		Unit[] soldiers = ComponentGetter.Get<TroopController>().soldiers.ToArray();
+
 		Unit nearestUnit = BinarySearch (soldiers, this, 0, soldiers.Length - 1);
-		
+
 		if(nearestUnit != null)
 		{
 			TargetingEnemy (nearestUnit.gameObject);
 			unitState = UnitState.Walk;
 		}
 		*/
-		
+
 		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1<<LayerMask.NameToLayer ("Unit"));
-		
+
 //		if (nearbyUnits.Length == 0) return false;
 		if (nearbyUnits.Length == 0) return;
-		
+
 		GameObject unitSelected = null;
         for (int i = 0; i != nearbyUnits.Length; i++)
 		{
@@ -483,7 +484,7 @@ public class Unit : Photon.MonoBehaviour
 				}
 			}
         }
-		
+
 //		if (unitSelected == null) return false;
 		if (unitSelected == null) return;
 		else
@@ -514,25 +515,25 @@ public class Unit : Photon.MonoBehaviour
 				CharSound.DeathAudioSource.Play ();
 			}
 		}
-		
-		GameController.GetInstance ().GetTroopController ().RemoveSoldier (this);
-		
+
+		ComponentGetter.Get<TroopController> ().RemoveSoldier (this);
+
 		if (unitAnimation.DieAnimation)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
-		
+
 		Destroy (gameObject);
 	}
-	
+
 	// GIZMOS
-	
+
 	void OnDrawGizmosSelected ()
 	{
 		Gizmos.color = Color.cyan;
 		Gizmos.DrawWireSphere (this.transform.position, distanceView);
-		
+
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere (this.transform.position, rangeAttack);
 	}
