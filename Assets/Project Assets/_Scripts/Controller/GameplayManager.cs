@@ -37,7 +37,7 @@ public class GameplayManager : MonoBehaviour {
 			}
 		}
 		
-		Debug.LogError ("Don't have Configuration Team for this Team ID.");
+		Debug.LogError ("Don't have Color Team for this Team ID.");
 		return Color.black;
 	}
 	
