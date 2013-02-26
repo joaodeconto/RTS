@@ -21,7 +21,7 @@ public class GameManager : Photon.MonoBehaviour
         PhotonNetwork.Instantiate(this.playerPrefab.name, transform.position, Quaternion.identity, 0);
     }
 
-    public void OnGUI ()
+    public void OnGUI()
     {
         if (GUILayout.Button("Return to Lobby"))
         {

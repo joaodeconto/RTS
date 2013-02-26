@@ -6,6 +6,7 @@ public class HUDController : MonoBehaviour {
 	public GameObject healthBar;
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
+	public Transform transformMenu;
 	
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
 	{
@@ -16,8 +17,8 @@ public class HUDController : MonoBehaviour {
 
 		GameObject child = NGUITools.AddChild(HUDRoot.go, healthBar);
 		
-		if (child.GetComponent<HealthBar> ()) child.AddComponent <HealthBar> ();
-		if (child.GetComponent<UISlider> ()) child.AddComponent <UISlider> ();
+		if (child.GetComponent<HealthBar> () == null) child.AddComponent <HealthBar> ();
+		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
 		
 		AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth, 
 			child.GetComponent<UISlider> ().fullSize.y));
@@ -27,10 +28,10 @@ public class HUDController : MonoBehaviour {
 		return child.GetComponent<HealthBar> ();
 	}
 	
-	public void CreateSelected (Transform target, float size)
+	public void CreateSelected (Transform target, float size, Color color)
 	{
 		GameObject selectObj = Instantiate (selectedObject, target.position, Quaternion.identity) as GameObject;
-		selectObj.transform.localScale = new Vector3(size * 0.4f, 0.1f, size * 0.4f);
+		selectObj.transform.localScale = new Vector3(size * 0.3f, 0.1f, size * 0.3f);
 		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target;
@@ -38,7 +39,9 @@ public class HUDController : MonoBehaviour {
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
 		refTransform.destroyObjectWhenLoseReference = true;
-		refTransform.offsetPosition += Vector3.up * 0.2f;
+		refTransform.offsetPosition += Vector3.up * 0.4f;
+		
+		selectObj.renderer.sharedMaterial.color = color;
 		
 		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
@@ -54,8 +57,24 @@ public class HUDController : MonoBehaviour {
 		}
 	}
 	
-	// Add Códigos na Framework
+	public void CreateButtonInInspector (GameObject button, Vector3 position, Unit unit, float timeToCreate, FactoryBase factory)
+	{
+		GameObject newButton = NGUITools.AddChild (transformMenu.gameObject, button);
+		newButton.transform.localPosition = position;
+		
+		UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
+		ucb.Init (unit, timeToCreate, factory);
+	}
 	
+	public void DestroyInspector ()
+	{
+		foreach (Transform child in transformMenu)
+		{
+			DestroyObject (child.gameObject);
+		}
+	}
+	
+	// Add Códigos na Framework
 	void AdjustSlider (UISlider slider, Vector2 newSize)
 	{
 		slider.fullSize = newSize;

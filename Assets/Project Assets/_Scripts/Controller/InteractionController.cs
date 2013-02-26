@@ -1,20 +1,22 @@
 using UnityEngine;
 using System.Collections;
 
+using Visiorama;
+
 public class InteractionController : MonoBehaviour
 {
-	
+
 	protected TouchController touchController;
 	protected TroopController troopController;
 	protected GameplayManager gameplayManager;
-	
+
 	public void Init ()
 	{
-		touchController = GameController.GetInstance().GetTouchController();
-		troopController = GameController.GetInstance().GetTroopController();
-		gameplayManager = GameController.GetInstance().GetGameplayManager();
+		touchController = ComponentGetter.Get<TouchController>();
+		troopController = ComponentGetter.Get<TroopController>();
+		gameplayManager = ComponentGetter.Get<GameplayManager>();
 	}
-	
+
 	// Update is called once per frame
 	void Update ()
 	{
@@ -37,30 +39,33 @@ public class InteractionController : MonoBehaviour
 		}
 #endif
 	}
-	
+
 	void Interaction (Ray raycast)
 	{
 		if (troopController.selectedSoldiers.Count == 0) return;
-		
+
 		RaycastHit hit;
-				
+
 		if (Physics.Raycast (raycast, out hit))
 		{
 			if (hit.transform.CompareTag ("Factory"))
 			{
+				if (!gameplayManager.IsSameTeam (hit.transform.GetComponent<FactoryBase> ()))
+				{
+					troopController.AttackTroop (hit.transform.gameObject);
+				}
 				return;
 			}
 			if (hit.transform.CompareTag ("Unit"))
 			{
-				if (hit.transform.GetComponent<Unit> ().Team !=
-					gameplayManager.MyTeam)
+				if (!gameplayManager.IsSameTeam (hit.transform.GetComponent<Unit> ()))
 				{
 					troopController.AttackTroop (hit.transform.gameObject);
 				}
 				return;
 			}
 		}
-		
+
 		troopController.MoveTroop (touchController.GetFinalPoint);
 	}
 }

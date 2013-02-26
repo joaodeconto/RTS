@@ -5,13 +5,13 @@ using System.Collections;
 public class Team
 {
 	public string name;
-	public Color color;
+	public Color color = Color.white;
 	public Texture2D colorTexture;
 }
 
 public class GameplayManager : MonoBehaviour {
 	
-	public Team[] team;
+	public Team[] teams;
 	
 	public int MyTeam {get; protected set;}
 	
@@ -25,6 +25,20 @@ public class GameplayManager : MonoBehaviour {
 		{
 			MyTeam = 0;
 		}
+	}
+	
+	public Color GetColorTeam (int teamID)
+	{
+		for (int i = 0; i != teams.Length; i++)
+		{
+			if (i == teamID)
+			{
+				return teams[i].color;
+			}
+		}
+		
+		Debug.LogError ("Don't have Color Team for this Team ID.");
+		return Color.black;
 	}
 	
 	public bool IsSameTeam (Unit soldier)
