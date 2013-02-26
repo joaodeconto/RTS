@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama.Extension;
 
 public class Unit : Photon.MonoBehaviour
 {
@@ -523,17 +524,6 @@ public class Unit : Photon.MonoBehaviour
 		}
 		
 		Destroy (gameObject);
-	}
-	
-	// Add nos códigos
-	
-	void ChangeLayersRecursively (Transform transform, string name)
-	{
-	    foreach (Transform child in transform)
-	    {
-	        child.gameObject.layer = LayerMask.NameToLayer(name);
-	        ChangeLayersRecursively(child, name);
-	    }
 	}
 	
 	// GIZMOS

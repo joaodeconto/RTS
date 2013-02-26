@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Visiorama.Utils;
 
 public class TroopController : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class TroopController : MonoBehaviour
 		
 		if (keepFormation)
 		{
-			centerOfTroop = CenterOfObjects (selectedSoldiers.ToArray ());
+			centerOfTroop = Math.CenterOfObjects (selectedSoldiers.ToArray ());
 			foreach (Unit soldier in selectedSoldiers)
 			{
 				if (soldier != null)
@@ -133,32 +134,4 @@ public class TroopController : MonoBehaviour
 		});
 	}
 	
-	// Códigos a adicionar no Framework
-	
-	Vector3 CenterOfObjects (GameObject[] objects)
-	{
-		int total = objects.Length;
-		
-		Vector3 position = Vector3.zero;
-		foreach (GameObject obj in objects)
-		{
-			position += obj.transform.localPosition;
-		}
-		
-		return position /= total;
-	}
-	
-	Vector3 CenterOfObjects (MonoBehaviour[] objects)
-	{
-		int total = objects.Length;
-		
-		Vector3 position = Vector3.zero;
-		foreach (MonoBehaviour obj in objects)
-		{
-			GameObject go = obj.gameObject;
-			position += go.transform.localPosition;
-		}
-		
-		return position /= total;
-	}
 }
