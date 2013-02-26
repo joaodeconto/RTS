@@ -447,7 +447,6 @@ public class Unit : Photon.MonoBehaviour
 
 		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1<<LayerMask.NameToLayer ("Unit"));
 
-//		if (nearbyUnits.Length == 0) return false;
 		if (nearbyUnits.Length == 0) return;
 
 		GameObject unitSelected = null;
@@ -485,12 +484,10 @@ public class Unit : Photon.MonoBehaviour
 			}
         }
 
-//		if (unitSelected == null) return false;
 		if (unitSelected == null) return;
 		else
 		{
 			TargetingEnemy (unitSelected);
-//			return true;
 		}
 	}
 

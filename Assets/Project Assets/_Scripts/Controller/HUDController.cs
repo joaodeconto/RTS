@@ -8,6 +8,7 @@ public class HUDController : MonoBehaviour {
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
 	public Transform transformMenu;
+	public GameObject button;
 	
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
 	{
@@ -58,13 +59,14 @@ public class HUDController : MonoBehaviour {
 		}
 	}
 	
-	public void CreateButtonInInspector (GameObject button, Vector3 position, Unit unit, float timeToCreate, FactoryBase factory)
+	public void CreateButtonInInspector (string buttonName, Vector3 position, Unit unit, FactoryBase factory)
 	{
 		GameObject newButton = NGUITools.AddChild (transformMenu.gameObject, button);
+//		newButton.
 		newButton.transform.localPosition = position;
 		
 		UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
-		ucb.Init (unit, timeToCreate, factory);
+		ucb.Init (unit, factory);
 	}
 	
 	public void DestroyInspector ()
