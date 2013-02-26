@@ -256,14 +256,17 @@ public class Unit : Photon.MonoBehaviour
 		if (unitAnimation.Attack)
 		{
 			if (PhotonNetwork.offlineMode)
-			{
-				if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
-			}
-			else
-			{
-				if (targetAttack.GetComponent<Unit>())
-					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
-			}
+				{
+					if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
+					else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(Force + AdditionalForce);
+				}
+				else
+				{
+					if (targetAttack.GetComponent<Unit>())
+						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
+					else if (targetAttack.GetComponent<FactoryBase>()) 
+						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
+				}
 
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 
@@ -282,11 +285,14 @@ public class Unit : Photon.MonoBehaviour
 				if (PhotonNetwork.offlineMode)
 				{
 					if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
+					else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(Force + AdditionalForce);
 				}
 				else
 				{
 					if (targetAttack.GetComponent<Unit>())
 						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
+					else if (targetAttack.GetComponent<FactoryBase>()) 
+						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
 				}
 
 				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -302,6 +308,12 @@ public class Unit : Photon.MonoBehaviour
 	void AttackUnit (string nameUnit, int force)
 	{
 		GameObject.Find(nameUnit).GetComponent<Unit> ().ReceiveAttack(force);
+	}
+	
+	[RPC]
+	void AttackFactory (string nameFactory, int force)
+	{
+		GameObject.Find(nameFactory).GetComponent<FactoryBase> ().ReceiveAttack(force);
 	}
 
 	public void Active ()
@@ -335,7 +347,7 @@ public class Unit : Photon.MonoBehaviour
 
 	public bool IsRangeAttack (GameObject soldier)
 	{
-		return Vector3.Distance(transform.position, soldier.transform.position) <= rangeAttack;
+		return Vector3.Distance(transform.position, soldier.transform.position) <= (rangeAttack + soldier.GetComponent<CapsuleCollider>().radius);
 	}
 
 	public bool InDistanceView (Vector3 position)

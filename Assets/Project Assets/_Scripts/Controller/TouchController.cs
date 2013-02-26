@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama;
 
 public class TouchController : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class TouchController : MonoBehaviour
 	
 	public Camera mainCamera;
 	public string[] layersToIgnore;
+	
+	protected Camera[] camerasUI;
 	
 	public bool DragOn {get; private set;}
 	
@@ -51,6 +54,11 @@ public class TouchController : MonoBehaviour
 		if (mainCamera == null) mainCamera = Camera.mainCamera;
 		touchType = TouchType.None;
 		DragOn = false;
+		camerasUI = new Camera[layersToIgnore.Length];
+		for (int i = 0; i != layersToIgnore.Length; i++)
+		{
+			camerasUI[i] = NGUITools.FindCameraForLayer(LayerMask.NameToLayer (layersToIgnore[i]));
+		}
 	}
 	
 	void Update ()
@@ -61,6 +69,12 @@ public class TouchController : MonoBehaviour
 		if (Input.GetMouseButtonDown(0) || 
 			Input.GetMouseButtonDown(1))
 		{
+			if (NGUIUtils.ClickedInGUI (camerasUI, "GUI"))
+			{
+				ignoreTouch = true;
+				return;
+			}
+			
 			FirstPosition = new Vector3(Input.mousePosition.x,
 										Screen.height - Input.mousePosition.y,
 										Input.mousePosition.z);
@@ -71,14 +85,6 @@ public class TouchController : MonoBehaviour
 			if (Physics.Raycast (GetFirstRaycast, out hit))
 			{
 				GetFirstPoint = hit.point;
-				foreach (string layer in layersToIgnore)
-				{
-					if (layer.Equals(LayerMask.LayerToName(hit.transform.gameObject.layer)))
-					{
-						ignoreTouch = true; 
-						return;
-					}
-				}
 			}
 			
 			touchType = TouchType.First;
@@ -89,6 +95,8 @@ public class TouchController : MonoBehaviour
 		if (Input.GetMouseButton(0) || 
 			Input.GetMouseButton(1))
 		{
+			if (ignoreTouch) return;
+			
 			CurrentPosition = new Vector2(Input.mousePosition.x,
 										Screen.height - Input.mousePosition.y);
 			
@@ -110,6 +118,8 @@ public class TouchController : MonoBehaviour
 				ignoreTouch = false;
 				return;
 			}
+			else
+			if (NGUIUtils.ClickedInGUI (camerasUI, "GUI")) return;
 			
 			FinalPosition = new Vector3(Input.mousePosition.x,
 										Screen.height - Input.mousePosition.y,
@@ -121,13 +131,6 @@ public class TouchController : MonoBehaviour
 			if (Physics.Raycast (GetFinalRaycast, out hit))
 			{
 				GetFinalPoint = hit.point;
-				foreach (string layer in layersToIgnore)
-				{
-					if (layer.Equals(LayerMask.LayerToName(hit.transform.gameObject.layer)))
-					{
-						return;
-					}
-				}
 			}
 			
 			touchType = TouchType.Ended;
