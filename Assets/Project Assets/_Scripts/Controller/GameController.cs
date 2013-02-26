@@ -6,8 +6,6 @@ public class GameController : MonoBehaviour
 {
 	void Awake ()
 	{
-		PhotonNetwork.offlineMode = true;
-
 		ComponentGetter.Get<NetworkManager> ().Init ();
 		ComponentGetter.Get<GameplayManager> ().Init ();
 		ComponentGetter.Get<TouchController> ().Init ();

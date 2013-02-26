@@ -7,32 +7,13 @@ public class NetworkManager : Photon.MonoBehaviour {
 	
 	public void Init ()
 	{
+		PhotonNetwork.offlineMode = true;
 		PhotonNetwork.isMessageQueueRunning = true;
-	}
-	
-//	public void OnGUI ()
-//	{
-//	    if (GUILayout.Button("Return to Lobby"))
-//	    {
-//	        PhotonNetwork.LeaveRoom();
-//	    }
-//	}
-	
-	public void OnGUI ()
-	{
-		/*GUILayout.Space (50f);
-		
-	    if (GUILayout.Button("Instantiate Rex"))
-	    {
-			Vector3 pos = Random.insideUnitSphere * 15f;
-			pos.y = transform.position.y;
-	        PhotonNetwork.Instantiate(rexPrefab.name, pos, Quaternion.identity, 0);
-	    }*/
 	}
 
     public void OnLeftRoom()
     {
-        Debug.Log("OnLeftRoom (local)");
+		Debug.Log("OnLeftRoom (local)");
         
         // back to main menu        
         Application.LoadLevel(0);

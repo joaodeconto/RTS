@@ -129,6 +129,21 @@ public class FactoryBase : MonoBehaviour {
 		}
 	}
 
+	public void ReceiveAttack (int Damage)
+	{
+		int newDamage = Mathf.Max (0, Damage);
+
+		Health -= newDamage;
+		Health = Mathf.Clamp (Health, 0, MaxHealth);
+
+		if (Health == 0)
+		{
+			SendMessage ("OnDestruction", SendMessageOptions.DontRequireReceiver);
+//			StartCoroutine (DestructionAnimation ());
+			Destroy (gameObject);
+		}
+	}
+
 	public void Active ()
 	{
 		if (!Actived) Actived = true;
@@ -136,7 +151,7 @@ public class FactoryBase : MonoBehaviour {
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 
-		hudController.CreateSelected (transform, GetComponent<NavMeshObstacle>().radius, gameplayManager.GetColorTeam (Team));
+		hudController.CreateSelected (transform, GetComponent<CapsuleCollider>().radius, gameplayManager.GetColorTeam (Team));
 
 		foreach (UnitFactory uf in unitsToCreate)
 		{
