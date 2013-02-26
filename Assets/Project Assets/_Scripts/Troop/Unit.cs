@@ -30,7 +30,7 @@ public class Unit : Photon.MonoBehaviour
 	
 	public bool playerUnit;
 	
-	public UnitAnimation animation;
+	public UnitAnimation unitAnimation;
 	
 	public int Health { get; set; }
 	public int AdditionalForce { get; set; }
@@ -139,8 +139,8 @@ public class Unit : Photon.MonoBehaviour
 			{
 			
 			case UnitState.Idle:
-				if (animation.Idle)
-					ControllerAnimation.PlayCrossFade (animation.Idle, WrapMode.Loop);
+				if (unitAnimation.Idle)
+					ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
 				
 				StartCheckEnemy ();
 				if (targetAttack != null)
@@ -150,10 +150,10 @@ public class Unit : Photon.MonoBehaviour
 				break;
 				
 			case UnitState.Walk:
-				if (animation.Walk)
+				if (unitAnimation.Walk)
 				{
-					ControllerAnimation[animation.Walk.name].normalizedSpeed = Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
-					ControllerAnimation.PlayCrossFade (animation.Walk, WrapMode.Loop);
+					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
+					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
 				
 				CancelCheckEnemy ();
@@ -215,18 +215,18 @@ public class Unit : Photon.MonoBehaviour
 		switch (unitState)
 		{
 		case UnitState.Idle:
-			if (animation.Idle)
-				ControllerAnimation.PlayCrossFade (animation.Idle, WrapMode.Loop);
+			if (unitAnimation.Idle)
+				ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
 			
 			break;
 		case UnitState.Walk:
-			if (animation.Walk)
-				ControllerAnimation.PlayCrossFade (animation.Walk, WrapMode.Loop);
+			if (unitAnimation.Walk)
+				ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 			
 			break;
 		case UnitState.Attack:
-			if (animation.Attack)
-				ControllerAnimation.PlayCrossFade (animation.Attack, WrapMode.Once);
+			if (unitAnimation.Attack)
+				ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 			
 			break;
 		}
@@ -251,7 +251,7 @@ public class Unit : Photon.MonoBehaviour
 		Quaternion rotation = Quaternion.LookRotation(targetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * pathfind.angularSpeed);
 		
-		if (animation.Attack)
+		if (unitAnimation.Attack)
 		{
 			if (PhotonNetwork.offlineMode)
 			{
@@ -263,10 +263,10 @@ public class Unit : Photon.MonoBehaviour
 					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
 			}
 			
-			ControllerAnimation.PlayCrossFade (animation.Attack, WrapMode.Once);
+			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 			
 			IsAttacking = true;
-			yield return StartCoroutine (ControllerAnimation.WhilePlaying (animation.Attack));
+			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
 			IsAttacking = false;
 		}
 		else
@@ -346,13 +346,14 @@ public class Unit : Photon.MonoBehaviour
 		return Vector3.Distance(transform.position, destination) <= 2;
 	}
 	
-	bool start = false;
+//	bool start = false;
 	public bool MoveComplete ()
 	{
 //		if (pathfind.desiredVelocity.sqrMagnitude < 0.001f) start = !start;
 //		return pathfind.desiredVelocity.sqrMagnitude < 0.001f || !start;
-		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
-				pathfind.velocity.sqrMagnitude < 0.1f;
+//		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
+//				pathfind.velocity.sqrMagnitude < 0.1f;
+		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
 	}
 	
 	public void TargetingEnemy (GameObject enemy)
@@ -515,10 +516,10 @@ public class Unit : Photon.MonoBehaviour
 		
 		GameController.GetInstance ().GetTroopController ().RemoveSoldier (this);
 		
-		if (animation.DieAnimation)
+		if (unitAnimation.DieAnimation)
 		{
-			ControllerAnimation.PlayCrossFade (animation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
-			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (animation.DieAnimation, 2f));
+			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
+			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
 		
 		Destroy (gameObject);

@@ -165,6 +165,8 @@ public class SelectionController : MonoBehaviour
 							}
 							else
 							{
+								troopController.DeselectAllSoldiers ();
+								
 								if (!troopController.selectedSoldiers.Contains (hit.transform.GetComponent<Unit> ()))
 								{
 									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), true);
@@ -174,7 +176,6 @@ public class SelectionController : MonoBehaviour
 									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), false);
 								}
 								return;
-
 							}
 						}
 						

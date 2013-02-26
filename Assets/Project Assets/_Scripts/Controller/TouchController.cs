@@ -21,6 +21,7 @@ public class TouchController : MonoBehaviour
 	}
 	
 	public Camera mainCamera;
+	public string[] layersToIgnore;
 	
 	public bool DragOn {get; private set;}
 	
@@ -38,6 +39,8 @@ public class TouchController : MonoBehaviour
 	
 	public TouchType touchType {get; private set;}
 	public IdTouch idTouch {get; private set;}
+	
+	protected bool ignoreTouch = false;
 	
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 	protected bool multitouch = false;
@@ -68,6 +71,14 @@ public class TouchController : MonoBehaviour
 			if (Physics.Raycast (GetFirstRaycast, out hit))
 			{
 				GetFirstPoint = hit.point;
+				foreach (string layer in layersToIgnore)
+				{
+					if (layer.Equals(LayerMask.LayerToName(hit.transform.gameObject.layer)))
+					{
+						ignoreTouch = true; 
+						return;
+					}
+				}
 			}
 			
 			touchType = TouchType.First;
@@ -94,6 +105,12 @@ public class TouchController : MonoBehaviour
 		if (Input.GetMouseButtonUp(0) || 
 			Input.GetMouseButtonUp(1))
 		{
+			if (ignoreTouch)
+			{
+				ignoreTouch = false;
+				return;
+			}
+			
 			FinalPosition = new Vector3(Input.mousePosition.x,
 										Screen.height - Input.mousePosition.y,
 										Input.mousePosition.z);
@@ -104,6 +121,13 @@ public class TouchController : MonoBehaviour
 			if (Physics.Raycast (GetFinalRaycast, out hit))
 			{
 				GetFinalPoint = hit.point;
+				foreach (string layer in layersToIgnore)
+				{
+					if (layer.Equals(LayerMask.LayerToName(hit.transform.gameObject.layer)))
+					{
+						return;
+					}
+				}
 			}
 			
 			touchType = TouchType.Ended;
