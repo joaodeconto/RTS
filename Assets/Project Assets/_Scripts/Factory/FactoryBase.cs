@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using Visiorama;
 
 public class FactoryBase : MonoBehaviour {
-	
+
 	public const int MAX_NUMBER_OF_LISTED = 5;
-	
+
 	[System.Serializable]
 	public class UnitFactory
 	{
@@ -16,7 +16,7 @@ public class FactoryBase : MonoBehaviour {
 		public string buttonName;
 		public Vector3 positionButton;
 	}
-	
+
 	public UnitFactory[] unitsToCreate;
 	protected List<Unit> listedToCreate = new List<Unit>();
 	protected Unit unitToCreate;
@@ -36,7 +36,7 @@ public class FactoryBase : MonoBehaviour {
 
 	protected HUDController hudController;
 	protected HealthBar healthBar;
-	
+
 	public bool OverLimitCreateUnit
 	{
 		get
@@ -55,7 +55,6 @@ public class FactoryBase : MonoBehaviour {
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 
-		ComponentGetter.Get<FactoryController> ().AddFactory (this);
 
 		if (!PhotonNetwork.offlineMode)
 		{
@@ -65,6 +64,9 @@ public class FactoryBase : MonoBehaviour {
 		{
 			Team = 0;
 		}
+
+		ComponentGetter.Get<FactoryController> ().AddFactory (this);
+		ComponentGetter.Get<MiniMapController> ().AddStructure (this.transform, Team);
 
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
@@ -76,8 +78,6 @@ public class FactoryBase : MonoBehaviour {
 
 	void Awake ()
 	{
-//		Init ();
-
 		enabled = false;
 		Invoke ("Init", 0.1f);
 	}
@@ -85,7 +85,7 @@ public class FactoryBase : MonoBehaviour {
 	void Update ()
 	{
 		if (listedToCreate.Count == 0) return;
-		
+
 		if (unitToCreate == null)
 		{
 			unitToCreate = listedToCreate[0];
@@ -116,14 +116,14 @@ public class FactoryBase : MonoBehaviour {
 	{
 		if (PhotonNetwork.offlineMode)
 		{
-			Unit newUnit = 
+			Unit newUnit =
 				Instantiate (unit, transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity) as Unit;
 //			newUnit.Move (Vector3.zero);
 		}
 		else
 		{
-	        GameObject newUnit = 
-				PhotonNetwork.Instantiate(unit.gameObject.name, 
+	        GameObject newUnit =
+				PhotonNetwork.Instantiate(unit.gameObject.name,
 					transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity, 0);
 //			newUnit.GetComponent<Unit> ().Move (Vector3.zero);
 		}
