@@ -114,17 +114,15 @@ public class FactoryBase : MonoBehaviour {
 
 	void InvokeUnit (Unit unit)
 	{
+		Vector3 unitSpawnPosition = transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius);
 		if (PhotonNetwork.offlineMode)
 		{
-			Unit newUnit =
-				Instantiate (unit, transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity) as Unit;
+			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
 //			newUnit.Move (Vector3.zero);
 		}
 		else
 		{
-	        GameObject newUnit =
-				PhotonNetwork.Instantiate(unit.gameObject.name,
-					transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity, 0);
+	        GameObject newUnit = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
 //			newUnit.GetComponent<Unit> ().Move (Vector3.zero);
 		}
 	}
@@ -140,6 +138,9 @@ public class FactoryBase : MonoBehaviour {
 		{
 			SendMessage ("OnDestruction", SendMessageOptions.DontRequireReceiver);
 //			StartCoroutine (DestructionAnimation ());
+
+			ComponentGetter.Get<MiniMapController> ().RemoveStructure (this.transform, Team);
+
 			Destroy (gameObject);
 		}
 	}
@@ -172,5 +173,4 @@ public class FactoryBase : MonoBehaviour {
 	{
 		listedToCreate.Add (unit);
 	}
-
 }
