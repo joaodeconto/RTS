@@ -33,6 +33,10 @@ public class Unit : Photon.MonoBehaviour
 	public bool playerUnit;
 
 	public UnitAnimation unitAnimation;
+	
+	public int Category;
+	
+	internal int Group = -1;
 
 	public int Health { get; set; }
 	public int AdditionalForce { get; set; }
@@ -97,8 +101,6 @@ public class Unit : Photon.MonoBehaviour
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController = ComponentGetter.Get<HUDController> ();
 
-		troopController.AddSoldier (this);
-
 		pathfind = GetComponent<NavMeshAgent>();
 
 		pathfindTarget = transform.position;
@@ -136,6 +138,8 @@ public class Unit : Photon.MonoBehaviour
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
 		if (!enabled) enabled = playerUnit;
+
+		troopController.AddSoldier (this);
 	}
 	
 	[RPC]

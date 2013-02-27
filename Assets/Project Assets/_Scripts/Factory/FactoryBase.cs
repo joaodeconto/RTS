@@ -51,6 +51,8 @@ public class FactoryBase : MonoBehaviour {
 	{
 		Health = MaxHealth;
 
+		timer = 0;
+		
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 
@@ -69,14 +71,12 @@ public class FactoryBase : MonoBehaviour {
 
 		playerUnit = gameplayManager.IsSameTeam (this);
 
-		ComponentGetter.Get<FactoryController> ().AddFactory (this);
-
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
 		if (!enabled) enabled = playerUnit;
 
-		timer = 0;
+		ComponentGetter.Get<FactoryController> ().AddFactory (this);
 	}
 
 	void Awake ()

@@ -7,10 +7,14 @@ using Visiorama;
 
 public class TroopController : MonoBehaviour
 {
+	public const int MAX_NUMBER_OF_GROUPS = 9;
+	
 	public bool keepFormation {get; set;}
 
 	internal List<Unit> soldiers = new List<Unit> ();
 	internal List<Unit> selectedSoldiers;
+	
+	internal Dictionary<int, List<Unit>> troopGroups = new Dictionary<int, List<Unit>>();
 
 	protected bool enemySelected = false;
 	protected Vector3 centerOfTroop;
@@ -120,6 +124,31 @@ public class TroopController : MonoBehaviour
 		foreach (Transform child in HUDRoot.go.transform)
 		{
 			Destroy (child.gameObject);
+		}
+	}
+	
+	public void AddGroup (int numberGroup)
+	{
+		if (selectedSoldiers.Count != 0) troopGroups.Add (numberGroup, selectedSoldiers);
+		else VDebug.LogError ("Hasn't unit selected.");
+	}
+	
+	public void SelectGroup (int numberGroup)
+	{
+		if (troopGroups.Keys.Count == 0) return;
+		
+		foreach (KeyValuePair<int, List<Unit>> group in troopGroups)
+		{
+			if (group.Key == numberGroup)
+			{
+				DeselectAllSoldiers ();
+				
+				foreach (Unit soldier in group.Value)
+				{
+					SelectSoldier (soldier, true);
+				}
+				break;
+			}
 		}
 	}
 	

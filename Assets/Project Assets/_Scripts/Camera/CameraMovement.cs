@@ -15,7 +15,6 @@ public class CameraMovement : MonoBehaviour {
 	void Start ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
-//		enabled = false;
 		
 		foreach (FactoryBase fb in factorys)
 		{
@@ -34,6 +33,8 @@ public class CameraMovement : MonoBehaviour {
 			transform.position -= (touchController.RelativeTwoFingersPosition * speedMobile);
 		}
 #else
+		PanCamera (Input.GetAxis ("Vertical") * speed, Input.GetAxis ("Horizontal") * speed);
+		
 		if (touchController.touchType == TouchController.TouchType.Press) return;
 
 		if (touchController.RelativePosition.x <= minimum.x && touchController.RelativePosition.x >= 0f)

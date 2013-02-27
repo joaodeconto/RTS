@@ -150,6 +150,23 @@ public class SelectionController : MonoBehaviour
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 								troopController.DeselectAllSoldiers ();
 #else
+								if (Input.GetKey (KeyCode.LeftControl))
+								{
+									int category = hit.transform.GetComponent<Unit> ().Category;
+									foreach (Unit soldier in troopController.soldiers)
+									{
+										if (soldier.Category == category)
+										{
+											troopController.SelectSoldier (soldier, true);
+										}
+										else
+										{
+											troopController.SelectSoldier (soldier, false);
+										}
+									}
+									return;
+								}
+								else
 								if (! Input.GetKey (KeyCode.LeftShift))
 								{
 									troopController.DeselectAllSoldiers ();
@@ -203,6 +220,92 @@ public class SelectionController : MonoBehaviour
 				}
 			}
 		}
+#if !UNITY_IPHONE && !UNITY_ANDROID || UNITY_EDITOR
+		else if (Input.GetKey(KeyCode.LeftControl))
+		{
+			if (Input.GetKeyDown (KeyCode.Alpha0))
+			{
+				troopController.AddGroup (0);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha1))
+			{
+				troopController.AddGroup (1);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha2))
+			{
+				troopController.AddGroup (2);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha3))
+			{
+				troopController.AddGroup (3);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha4))
+			{
+				troopController.AddGroup (4);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha5))
+			{
+				troopController.AddGroup (5);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha6))
+			{
+				troopController.AddGroup (6);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha7))
+			{
+				troopController.AddGroup (7);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha8))
+			{
+				troopController.AddGroup (8);
+			}
+			else if (Input.GetKeyDown (KeyCode.Alpha9))
+			{
+				troopController.AddGroup (9);
+			}
+		}
+		
+		if (Input.GetKeyDown (KeyCode.Alpha0))
+		{
+			troopController.SelectGroup (0);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha1))
+		{
+			troopController.SelectGroup (1);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha2))
+		{
+			troopController.SelectGroup (2);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha3))
+		{
+			troopController.SelectGroup (3);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha4))
+		{
+			troopController.SelectGroup (4);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha5))
+		{
+			troopController.SelectGroup (5);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha6))
+		{
+			troopController.SelectGroup (6);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha7))
+		{
+			troopController.SelectGroup (7);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha8))
+		{
+			troopController.SelectGroup (8);
+		}
+		else if (Input.GetKeyDown (KeyCode.Alpha9))
+		{
+			troopController.SelectGroup (9);
+		}
+#endif
 	}
 
 	void OnGUI ()
