@@ -40,16 +40,6 @@ public class CameraBounds : MonoBehaviour {
 	
 	void OnDrawGizmosSelected ()
 	{
-		Vector3 centerPosition;
-		if (!wasInitialized)
-		{
-			centerPosition = transform.position;
-		}
-		else
-		{
-			centerPosition = positionInitial;
-		}
-		
 		// Colocando cor "cyan" em gizmo
 		Gizmos.color = Color.cyan;
 		

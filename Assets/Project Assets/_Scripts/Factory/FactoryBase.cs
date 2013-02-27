@@ -122,14 +122,14 @@ public class FactoryBase : MonoBehaviour {
 		{
 			Unit newUnit = 
 				Instantiate (unit, transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius), Quaternion.identity) as Unit;
-//			newUnit.Move (Vector3.zero);
+			newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 		}
 		else
 		{
 	        GameObject newUnit = 
 				PhotonNetwork.Instantiate(unit.gameObject.name, 
 					transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius), Quaternion.identity, 0);
-//			newUnit.GetComponent<Unit> ().Move (Vector3.zero);
+			newUnit.GetComponent<Unit> ().Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 		}
 	}
 
