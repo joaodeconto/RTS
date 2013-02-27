@@ -66,7 +66,6 @@ public class FactoryBase : MonoBehaviour {
 		}
 
 		ComponentGetter.Get<FactoryController> ().AddFactory (this);
-		ComponentGetter.Get<MiniMapController> ().AddStructure (this.transform, Team);
 
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
@@ -115,6 +114,7 @@ public class FactoryBase : MonoBehaviour {
 	void InvokeUnit (Unit unit)
 	{
 		Vector3 unitSpawnPosition = transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius);
+
 		if (PhotonNetwork.offlineMode)
 		{
 			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;

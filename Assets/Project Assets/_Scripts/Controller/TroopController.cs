@@ -72,6 +72,7 @@ public class TroopController : MonoBehaviour
 	public void AddSoldier (Unit soldier)
 	{
 		soldiers.Add (soldier);
+		ComponentGetter.Get<MiniMapController> ().AddUnit (soldier.transform, soldier.Team);
 	}
 
 	public void RemoveSoldier (Unit soldier)
@@ -80,6 +81,8 @@ public class TroopController : MonoBehaviour
 		{
 			selectedSoldiers.Remove (soldier);
 		}
+
+		ComponentGetter.Get<MiniMapController> ().RemoveUnit (soldier.transform, soldier.Team);
 		soldiers.Remove (soldier);
 	}
 
