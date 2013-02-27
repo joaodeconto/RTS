@@ -7,10 +7,14 @@ using Visiorama;
 
 public class TroopController : MonoBehaviour
 {
+	public const int MAX_NUMBER_OF_GROUPS = 9;
+	
 	public bool keepFormation {get; set;}
 
 	internal List<Unit> soldiers = new List<Unit> ();
 	internal List<Unit> selectedSoldiers;
+	
+	internal Dictionary<int, List<Unit>> troopGroups = new Dictionary<int, List<Unit>>();
 
 	protected bool enemySelected = false;
 	protected Vector3 centerOfTroop;
@@ -121,6 +125,86 @@ public class TroopController : MonoBehaviour
 		{
 			Destroy (child.gameObject);
 		}
+	}
+	
+	public void CreateGroup (int numberGroup)
+	{
+		if (selectedSoldiers.Count != 0)
+		{
+			if (troopGroups.Count != 0)
+			{
+				foreach (KeyValuePair<int, List<Unit>> group in troopGroups)
+				{
+					if (group.Key == numberGroup)
+					{
+						foreach (Unit soldier in group.Value)
+						{
+							soldier.Group = -1;
+						}
+						group.Value.Clear ();
+						break;
+					}
+				}
+			}
+			
+			if (!troopGroups.ContainsKey (numberGroup))
+			{
+				troopGroups.Add (numberGroup, new List<Unit>());
+			}
+			
+			foreach (Unit soldier in selectedSoldiers)
+			{
+				if (soldier.Group != numberGroup)
+				{
+					if (soldier.Group != -1)
+					{
+						foreach (KeyValuePair<int, List<Unit>> group in troopGroups)
+						{
+							if (group.Key == soldier.Group)
+							{
+								group.Value.Remove (soldier);
+							}
+							break;
+						}
+					}
+					soldier.Group = numberGroup;
+					troopGroups[numberGroup].Add (soldier);
+				}
+			}
+		}
+		else VDebug.LogError ("Hasn't unit selected.");
+	}
+	
+	public void SelectGroup (int numberGroup)
+	{
+		if (troopGroups.Count == 0) return;
+		
+		foreach (KeyValuePair<int, List<Unit>> group in troopGroups)
+		{
+			if (group.Key == numberGroup)
+			{
+				DeselectAllSoldiers ();
+				
+				Debug.Log ("selectedSoldiers.Count: " + group.Value.Count);
+				foreach (Unit soldier in group.Value)
+				{
+					SelectSoldier (soldier, true);
+				}
+				break;
+			}
+		}
+//		DeselectAllSoldiers ();
+//		
+//		foreach (Unit soldier in soldiers)
+//		{
+//			if (gameplayManager.IsSameTeam (soldier))
+//			{
+//				if (soldier.Group == numberGroup)
+//				{
+//					SelectSoldier (soldier, true);
+//				}
+//			}
+//		}
 	}
 	
 	public Unit FindUnit (string name)
