@@ -36,4 +36,17 @@ public class FactoryController : MonoBehaviour
 			selectedFactory = null;
 		}
 	}
+	
+	public FactoryBase FindFactory (string name)
+	{
+		foreach (FactoryBase factory in factorys)
+		{
+			if (factory.name.Equals(name))
+			{
+				return factory;
+			}
+		}
+		
+		return null;
+	}
 }

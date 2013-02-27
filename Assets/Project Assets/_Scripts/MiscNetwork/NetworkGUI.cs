@@ -138,7 +138,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		
 		GUILayout.Label ("Number of Players:");
 		GUILayout.BeginHorizontal ();
-		numberOfPlayers = Mathf.FloorToInt(GUILayout.HorizontalSlider ((float)numberOfPlayers, 2f, 4f));
+		numberOfPlayers = Mathf.FloorToInt(GUILayout.HorizontalSlider ((float)numberOfPlayers, 1f, 4f));
 		GUILayout.Label (numberOfPlayers+"", GUILayout.Width(25f));
 		GUILayout.EndHorizontal ();
 		
@@ -167,7 +167,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		GUILayout.EndHorizontal ();
 		
 		GUILayout.BeginHorizontal ();
-		GUILayout.Label ("Nº:", GUILayout.Width(50f));
+		GUILayout.Label ("N:", GUILayout.Width(50f));
 		GUILayout.Label ("Name:", GUILayout.Width(150f));
 		GUILayout.Label ("Team:", GUILayout.Width(100f));
 		GUILayout.EndHorizontal ();
