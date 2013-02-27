@@ -26,12 +26,12 @@ public class FactoryBase : MonoBehaviour {
 	public int MaxHealth = 200;
 
 	public int Team;
-	
+
 	public bool playerUnit;
-	
+
 	public int Health {get; private set;}
 	public Animation ControllerAnimation {get; private set;}
-	
+
 	public bool Actived {get; protected set;}
 
 	protected GameplayManager gameplayManager;
@@ -66,11 +66,10 @@ public class FactoryBase : MonoBehaviour {
 //		{
 //			Team = 0;
 //		}
-		
+
 		playerUnit = gameplayManager.IsSameTeam (this);
 
 		ComponentGetter.Get<FactoryController> ().AddFactory (this);
-		ComponentGetter.Get<MiniMapController> ().AddStructure (this.transform, Team);
 
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
@@ -118,17 +117,16 @@ public class FactoryBase : MonoBehaviour {
 
 	void InvokeUnit (Unit unit)
 	{
+		Vector3 unitSpawnPosition = transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius);
+
 		if (PhotonNetwork.offlineMode)
 		{
-			Unit newUnit = 
-				Instantiate (unit, transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius), Quaternion.identity) as Unit;
+			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
 			newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 		}
 		else
 		{
-	        GameObject newUnit = 
-				PhotonNetwork.Instantiate(unit.gameObject.name, 
-					transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius), Quaternion.identity, 0);
+	        GameObject newUnit = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
 			newUnit.GetComponent<Unit> ().Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 		}
 	}
@@ -143,10 +141,10 @@ public class FactoryBase : MonoBehaviour {
 		if (Health == 0)
 		{
 			SendMessage ("OnDestruction", SendMessageOptions.DontRequireReceiver);
-			Destruction ();
 		}
+			Destruction ();
 	}
-	
+
 	void Destruction ()
 	{
 		ComponentGetter.Get<FactoryController> ().RemoveFactory (this);
@@ -163,7 +161,7 @@ public class FactoryBase : MonoBehaviour {
 		healthBar.SetTarget (this);
 
 		hudController.CreateSelected (transform, GetComponent<CapsuleCollider>().radius, gameplayManager.GetColorTeam (Team));
-		
+
 		if (playerUnit)
 		{
 			foreach (UnitFactory uf in unitsToCreate)

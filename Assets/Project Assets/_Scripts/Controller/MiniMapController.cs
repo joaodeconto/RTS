@@ -8,8 +8,16 @@ public class MiniMapController : MonoBehaviour
 {
 	public GameObject pref_UnitMiniMap;
 	public GameObject pref_StructureMiniMap;
+	public GameObject panel;
 
-	public const float MiniMapRefreshInterval = 1.0f;
+	public Vector3 miniMapMaxPoint;
+	public Vector3 miniMapMinPoint;
+
+	private Vector3 miniMapSize;
+
+	public float MiniMapRefreshInterval = 1.0f;
+
+	public Vector3 mapSize { get; private set; }
 
 	private List<Transform>[] structureList;
 	private List<Transform>[] unitList;
@@ -21,7 +29,7 @@ public class MiniMapController : MonoBehaviour
 
 	public MiniMapController Init()
 	{
-		if(WasInitialized)
+		if (WasInitialized)
 		{
 			Debug.LogError("Classe ja inicializada!");
 			return this;
@@ -33,15 +41,30 @@ public class MiniMapController : MonoBehaviour
 
 		int nTeams = gm.teams.Length;
 
-		structureList = new List<Transform>[nTeams];
 		unitList      = new List<Transform>[nTeams];
+		structureList = new List<Transform>[nTeams];
 
 		UnitMiniMapList      = new List<GameObject>[nTeams];
 		StructureMiniMapList = new List<GameObject>[nTeams];
 
+		for(int i = structureList.Length - 1; i != -1; --i)
+		{
+				 unitList[i] = new List<Transform>();
+			structureList[i] = new List<Transform>();
+
+				 UnitMiniMapList[i] = new List<GameObject>();
+			StructureMiniMapList[i] = new List<GameObject>();
+		}
+
 		InvokeRepeating("UpdateMiniMap",
 						MiniMapRefreshInterval,
 						MiniMapRefreshInterval);
+
+		TerrainData td = ComponentGetter.Get<Terrain>("Terrain").terrainData;
+
+		mapSize = td.size;
+
+		RefreshMiniMapSize();
 
 		return this;
 	}
@@ -52,18 +75,55 @@ public class MiniMapController : MonoBehaviour
 			Init();
 	}
 
+	void RefreshMiniMapSize()
+	{
+		miniMapSize = (miniMapMaxPoint - miniMapMinPoint);
+	}
+
 	void UpdateMiniMap()
 	{
+#if UNITY_EDITOR
+		RefreshMiniMapSize();
+#endif
+		//iterate by teams
+		for(int i = structureList.Length - 1; i != -1; --i)
+		{
+			//iterate by structures
+			for(int j = structureList[i].Count - 1; j != -1; --j)
+			{
+				UpdatePosition(StructureMiniMapList[i][j], structureList[i][j]);
+			}
 
+			//iterate by unit
+			for(int j = unitList[i].Count - 1; j != -1; --j)
+			{
+				UpdatePosition(UnitMiniMapList[i][j], unitList[i][j]);
+			}
+		}
+	}
+
+	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns)
+	{
+		Vector3 percentPos = new Vector3 ( referenceTrns.position.x / mapSize.x,
+										   referenceTrns.position.z / mapSize.z,
+										   -5);
+
+		Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
+
+		miniMapObject.transform.localPosition = new Vector3(miniMapSize.x * percentPos.x,
+															miniMapSize.y * percentPos.y,
+															miniMapSize.z * percentPos.z);
 	}
 
 #region Add and Remove Structures/Units
-
-	GameObject InstantiateMiniMapObject(GameObject go, Transform trns)
+	GameObject InstantiateMiniMapObject(GameObject pref_go, Transform trns)
 	{
-		GameObject _go = Instantiate(go, Vector3.zero, Quaternion.identity) as GameObject;
+		GameObject _go = Instantiate(pref_go, Vector3.zero, Quaternion.identity) as GameObject;
 
+		_go.transform.parent = panel.transform;
+		_go.transform.localScale    = pref_go.transform.localScale;
 
+		UpdatePosition(_go, trns);
 
 		return _go;
 	}
@@ -108,5 +168,4 @@ public class MiniMapController : MonoBehaviour
 		UnitMiniMapList[teamId].RemoveAt(index);
 	}
 #endregion
-
 }
