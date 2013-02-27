@@ -77,7 +77,7 @@ public class Unit : Photon.MonoBehaviour
 	protected TroopController troopController;
 	protected GameplayManager gameplayManager;
 	protected HUDController hudController;
-	
+
 	protected HealthBar healthBar;
 
 	void Init ()
@@ -95,7 +95,7 @@ public class Unit : Photon.MonoBehaviour
 //			ControllerAnimation.SetLayer (animation.Walk, 0);
 //			ControllerAnimation.SetLayer (animation.Attack, 0);
 //		}
-		
+
 		factoryController = ComponentGetter.Get<FactoryController> ();
 		troopController = ComponentGetter.Get<TroopController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
@@ -141,7 +141,7 @@ public class Unit : Photon.MonoBehaviour
 
 		troopController.AddSoldier (this);
 	}
-	
+
 	[RPC]
 	void TeamID (int teamID)
 	{
@@ -150,8 +150,9 @@ public class Unit : Photon.MonoBehaviour
 
 	void Awake ()
 	{
-		enabled = false;
-		Invoke ("Init", 0.1f);
+		Init();
+		//enabled = false;
+		//Invoke ("Init", 0.1f);
 	}
 
 	void Update ()
@@ -232,7 +233,7 @@ public class Unit : Photon.MonoBehaviour
 			}
 		}
 	}
-	
+
 	void OnDestroy ()
 	{
 		troopController.RemoveSoldier(this);
@@ -290,7 +291,7 @@ public class Unit : Photon.MonoBehaviour
 				{
 					if (targetAttack.GetComponent<Unit>())
 						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
-					else if (targetAttack.GetComponent<FactoryBase>()) 
+					else if (targetAttack.GetComponent<FactoryBase>())
 						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
 				}
 
@@ -317,7 +318,7 @@ public class Unit : Photon.MonoBehaviour
 				{
 					if (targetAttack.GetComponent<Unit>())
 						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
-					else if (targetAttack.GetComponent<FactoryBase>()) 
+					else if (targetAttack.GetComponent<FactoryBase>())
 						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
 				}
 
@@ -336,7 +337,7 @@ public class Unit : Photon.MonoBehaviour
 		Unit unit = troopController.FindUnit (nameUnit);
 		if (unit != null) unit.ReceiveAttack (force);
 	}
-	
+
 	[RPC]
 	void AttackFactory (string nameFactory, int force)
 	{
@@ -560,7 +561,7 @@ public class Unit : Photon.MonoBehaviour
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
-		
+
 		if (PhotonNetwork.offlineMode) Destroy (gameObject);
 		else PhotonNetwork.Destroy(gameObject);
 	}

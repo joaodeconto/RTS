@@ -110,9 +110,9 @@ public class MiniMapController : MonoBehaviour
 
 		Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
 
-		miniMapObject.transform.localPosition = new Vector3(miniMapSize.x * percentPos.x,
-															miniMapSize.y * percentPos.y,
-															miniMapSize.z * percentPos.z);
+		miniMapObject.transform.localPosition = new Vector3((int)(miniMapSize.x * percentPos.x),
+															(int)(miniMapSize.y * percentPos.y),
+															(int)(miniMapSize.z * percentPos.z));
 	}
 
 #region Add and Remove Structures/Units
@@ -120,8 +120,8 @@ public class MiniMapController : MonoBehaviour
 	{
 		GameObject _go = Instantiate(pref_go, Vector3.zero, Quaternion.identity) as GameObject;
 
-		_go.transform.parent = panel.transform;
-		_go.transform.localScale    = pref_go.transform.localScale;
+		_go.transform.parent     = panel.transform;
+		_go.transform.localScale = pref_go.transform.localScale;
 
 		UpdatePosition(_go, trns);
 
@@ -131,6 +131,8 @@ public class MiniMapController : MonoBehaviour
 	public void AddStructure (Transform trns, int teamId)
 	{
 		GameObject miniMapObject = InstantiateMiniMapObject(pref_StructureMiniMap, trns);
+
+		Debug.Log("teamId: " + teamId);
 
 			   structureList[teamId].Add(trns);
 		StructureMiniMapList[teamId].Add(miniMapObject);
