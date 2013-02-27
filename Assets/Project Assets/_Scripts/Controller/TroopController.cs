@@ -22,6 +22,8 @@ public class TroopController : MonoBehaviour
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 
 		selectedSoldiers = new List<Unit> ();
+		
+		keepFormation = true;
 		//InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
 
@@ -120,16 +122,29 @@ public class TroopController : MonoBehaviour
 			Destroy (child.gameObject);
 		}
 	}
+	
+	public Unit FindUnit (string name)
+	{
+		foreach (Unit unit in soldiers)
+		{
+			if (unit.name.Equals(name))
+			{
+				return unit;
+			}
+		}
+		
+		return null;
+	}
 
 	//TODO Só para testes
-	void OnGUI ()
-	{
-		GUILayout.BeginHorizontal ();
-		GUILayout.Space (10f);
-		GUI.color = Color.red;
-		keepFormation = GUILayout.Toggle (keepFormation, "Keep Formation");
-		GUILayout.EndHorizontal ();
-	}
+//	void OnGUI ()
+//	{
+//		GUILayout.BeginHorizontal ();
+//		GUILayout.Space (10f);
+//		GUI.color = Color.red;
+//		keepFormation = GUILayout.Toggle (keepFormation, "Keep Formation");
+//		GUILayout.EndHorizontal ();
+//	}
 
 	void OrganizeUnits()
 	{

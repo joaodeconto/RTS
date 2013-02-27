@@ -3,11 +3,11 @@ using System.Collections;
 
 public class NetworkManager : Photon.MonoBehaviour {
 	
-	public Transform rexPrefab;
+	public bool offlineMode;
 	
 	public void Init ()
 	{
-		PhotonNetwork.offlineMode = true;
+		PhotonNetwork.offlineMode = offlineMode;
 		PhotonNetwork.isMessageQueueRunning = true;
 	}
 

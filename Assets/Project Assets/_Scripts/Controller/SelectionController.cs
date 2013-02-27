@@ -183,12 +183,9 @@ public class SelectionController : MonoBehaviour
 
 						if (hit.transform.CompareTag ("Factory"))
 						{
-							if (gameplayManager.IsSameTeam (hit.transform.GetComponent<FactoryBase> ()))
-							{
-								troopController.DeselectAllSoldiers ();
+							troopController.DeselectAllSoldiers ();
 
-								factoryController.SelectFactory (hit.transform.GetComponent<FactoryBase>());
-							}
+							factoryController.SelectFactory (hit.transform.GetComponent<FactoryBase>());
 							return;
 						}
 

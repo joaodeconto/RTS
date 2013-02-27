@@ -8,12 +8,22 @@ public class CameraMovement : MonoBehaviour {
 	public Vector2 minimum = Vector2.one * 0.01f;
 	public Vector2 maximum = Vector2.one * 0.99f;
 
+	public FactoryBase[] factorys;
+	
 	protected TouchController touchController;
 
 	void Start ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
 //		enabled = false;
+		
+		foreach (FactoryBase fb in factorys)
+		{
+			if (ComponentGetter.Get<GameplayManager>().IsSameTeam(fb))
+			{
+				transform.position = fb.transform.position;
+			}
+		}
 	}
 
 	void Update ()
