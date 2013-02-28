@@ -108,8 +108,6 @@ public class MiniMapController : MonoBehaviour
 										   referenceTrns.position.z / mapSize.z,
 										   -5);
 
-		Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
-
 		miniMapObject.transform.localPosition = new Vector3((int)(miniMapSize.x * percentPos.x),
 															(int)(miniMapSize.y * percentPos.y),
 															(int)(miniMapSize.z * percentPos.z));

@@ -10,6 +10,7 @@ public class Unit : Photon.MonoBehaviour
 	{
 		public AnimationClip Idle;
 		public AnimationClip Walk;
+		public float walkSpeed = 1f;
 		public AnimationClip Attack;
 		public AnimationClip DieAnimation;
 		public AnimationClip[] SpecialAttack;
@@ -176,7 +177,7 @@ public class Unit : Photon.MonoBehaviour
 			case UnitState.Walk:
 				if (unitAnimation.Walk)
 				{
-					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
+					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
 
@@ -232,11 +233,6 @@ public class Unit : Photon.MonoBehaviour
 				break;
 			}
 		}
-	}
-
-	void OnDestroy ()
-	{
-		troopController.RemoveSoldier(this);
 	}
 
 	public void SyncAnimation ()
@@ -554,14 +550,14 @@ public class Unit : Photon.MonoBehaviour
 			}
 		}
 
-		ComponentGetter.Get<TroopController> ().RemoveSoldier (this);
-
 		if (unitAnimation.DieAnimation)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
-
+		
+		troopController.RemoveSoldier(this);
+		
 		if (PhotonNetwork.offlineMode) Destroy (gameObject);
 		else PhotonNetwork.Destroy(gameObject);
 	}
