@@ -25,10 +25,12 @@ public class FactoryBase : MonoBehaviour {
 
 	public int MaxHealth = 200;
 
+	public int Team;
+
+	public bool playerUnit;
+
 	public int Health {get; private set;}
 	public Animation ControllerAnimation {get; private set;}
-
-	public int Team {get; protected set;}
 
 	public bool Actived {get; protected set;}
 
@@ -49,6 +51,8 @@ public class FactoryBase : MonoBehaviour {
 	{
 		Health = MaxHealth;
 
+		timer = 0;
+		
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 
@@ -56,24 +60,23 @@ public class FactoryBase : MonoBehaviour {
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 
 
-		if (!PhotonNetwork.offlineMode)
-		{
-			Team = (int)PhotonNetwork.player.customProperties["team"];
-		}
-		else
-		{
-			Team = 0;
-		}
+//		if (!PhotonNetwork.offlineMode)
+//		{
+//			Team = (int)PhotonNetwork.player.customProperties["team"];
+//		}
+//		else
+//		{
+//			Team = 0;
+//		}
 
-		ComponentGetter.Get<FactoryController> ().AddFactory (this);
-		ComponentGetter.Get<MiniMapController> ().AddStructure (this.transform, Team);
+		playerUnit = gameplayManager.IsSameTeam (this);
 
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
-		if (!enabled) enabled = true;
+		if (!enabled) enabled = playerUnit;
 
-		timer = 0;
+		ComponentGetter.Get<FactoryController> ().AddFactory (this);
 	}
 
 	void Awake ()
@@ -114,18 +117,17 @@ public class FactoryBase : MonoBehaviour {
 
 	void InvokeUnit (Unit unit)
 	{
+		Vector3 unitSpawnPosition = transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius);
+
 		if (PhotonNetwork.offlineMode)
 		{
-			Unit newUnit =
-				Instantiate (unit, transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity) as Unit;
-//			newUnit.Move (Vector3.zero);
+			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
+			newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 		}
 		else
 		{
-	        GameObject newUnit =
-				PhotonNetwork.Instantiate(unit.gameObject.name,
-					transform.position + (Vector3.forward * GetComponent<NavMeshObstacle>().radius), Quaternion.identity, 0);
-//			newUnit.GetComponent<Unit> ().Move (Vector3.zero);
+	        GameObject newUnit = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
+			newUnit.GetComponent<Unit> ().Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 		}
 	}
 
@@ -139,9 +141,16 @@ public class FactoryBase : MonoBehaviour {
 		if (Health == 0)
 		{
 			SendMessage ("OnDestruction", SendMessageOptions.DontRequireReceiver);
-//			StartCoroutine (DestructionAnimation ());
-			Destroy (gameObject);
 		}
+			Destruction ();
+	}
+
+	void Destruction ()
+	{
+		ComponentGetter.Get<FactoryController> ().RemoveFactory (this);
+//		if (PhotonNetwork.offlineMode) Destroy (gameObject);
+//		else PhotonNetwork.Destroy(gameObject);
+		Destroy (gameObject);
 	}
 
 	public void Active ()
@@ -153,9 +162,12 @@ public class FactoryBase : MonoBehaviour {
 
 		hudController.CreateSelected (transform, GetComponent<CapsuleCollider>().radius, gameplayManager.GetColorTeam (Team));
 
-		foreach (UnitFactory uf in unitsToCreate)
+		if (playerUnit)
 		{
-			hudController.CreateButtonInInspector (uf.buttonName, uf.positionButton, uf.unit, this);
+			foreach (UnitFactory uf in unitsToCreate)
+			{
+				hudController.CreateButtonInInspector (uf.buttonName, uf.positionButton, uf.unit, this);
+			}
 		}
 	}
 
@@ -165,12 +177,14 @@ public class FactoryBase : MonoBehaviour {
 
 		hudController.DestroySelected (transform);
 
-		hudController.DestroyInspector ();
+		if (playerUnit)
+		{
+			hudController.DestroyInspector ();
+		}
 	}
 
 	public void CallUnit (Unit unit)
 	{
 		listedToCreate.Add (unit);
 	}
-
 }

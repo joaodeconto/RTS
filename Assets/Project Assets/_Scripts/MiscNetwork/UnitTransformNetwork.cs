@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(PhotonView))]
 public class UnitTransformNetwork : Photon.MonoBehaviour
 {
     Unit unitScript;
@@ -11,8 +12,7 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 		
         gameObject.name = gameObject.name + photonView.viewID;
 		
-        enabled = !photonView.isMine;
-		unitScript.pathfind.enabled = photonView.isMine;
+		enabled = !photonView.isMine;
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

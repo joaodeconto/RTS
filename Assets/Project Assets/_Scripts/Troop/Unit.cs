@@ -10,6 +10,7 @@ public class Unit : Photon.MonoBehaviour
 	{
 		public AnimationClip Idle;
 		public AnimationClip Walk;
+		public float walkSpeed = 1f;
 		public AnimationClip Attack;
 		public AnimationClip DieAnimation;
 		public AnimationClip[] SpecialAttack;
@@ -33,6 +34,10 @@ public class Unit : Photon.MonoBehaviour
 	public bool playerUnit;
 
 	public UnitAnimation unitAnimation;
+	
+	public int Category;
+	
+	internal int Group = -1;
 
 	public int Health { get; set; }
 	public int AdditionalForce { get; set; }
@@ -69,9 +74,11 @@ public class Unit : Photon.MonoBehaviour
 	[System.NonSerializedAttribute]
 	public Vector3 pathfindTarget;
 
+	protected FactoryController factoryController;
+	protected TroopController troopController;
 	protected GameplayManager gameplayManager;
-
 	protected HUDController hudController;
+
 	protected HealthBar healthBar;
 
 	void Init ()
@@ -90,21 +97,31 @@ public class Unit : Photon.MonoBehaviour
 //			ControllerAnimation.SetLayer (animation.Attack, 0);
 //		}
 
+		factoryController = ComponentGetter.Get<FactoryController> ();
+		troopController = ComponentGetter.Get<TroopController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-
 		hudController = ComponentGetter.Get<HUDController> ();
-
-		ComponentGetter.Get<TroopController> ().AddSoldier (this);
 
 		pathfind = GetComponent<NavMeshAgent>();
 
 		pathfindTarget = transform.position;
 
-		if (!PhotonNetwork.offlineMode) playerUnit = photonView.isMine;
-
 		if (!PhotonNetwork.offlineMode)
 		{
-			Team = (int)PhotonNetwork.player.customProperties["team"];
+			if (photonView.isMine)
+			{
+				Team = (int)PhotonNetwork.player.customProperties["team"];
+				foreach (SkinnedMeshRenderer smr in transform.GetComponentsInChildren<SkinnedMeshRenderer>())
+				{
+					if (smr.name.Equals("Mesh_002")) smr.material.color = gameplayManager.GetColorTeam (Team);
+				}
+				photonView.RPC ("TeamID", PhotonTargets.OthersBuffered, Team);
+				playerUnit = true;
+			}
+			else
+			{
+				playerUnit = false;
+			}
 		}
 		else
 		{
@@ -121,21 +138,27 @@ public class Unit : Photon.MonoBehaviour
 		this.gameObject.tag = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
-		if (!enabled) enabled = true;
+		if (!enabled) enabled = playerUnit;
+
+		troopController.AddSoldier (this);
+	}
+
+	[RPC]
+	void TeamID (int teamID)
+	{
+		Team = teamID;
 	}
 
 	void Awake ()
 	{
-//		Init ();
-
-		enabled = false;
-		Invoke ("Init", 0.1f);
+		Init();
+		//enabled = false;
+		//Invoke ("Init", 0.1f);
 	}
 
 	void Update ()
 	{
-//		if (playerUnit)
-		if (true)
+		if (playerUnit)
 		{
 			switch (unitState)
 			{
@@ -154,7 +177,7 @@ public class Unit : Photon.MonoBehaviour
 			case UnitState.Walk:
 				if (unitAnimation.Walk)
 				{
-					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
+					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
 
@@ -264,7 +287,7 @@ public class Unit : Photon.MonoBehaviour
 				{
 					if (targetAttack.GetComponent<Unit>())
 						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
-					else if (targetAttack.GetComponent<FactoryBase>()) 
+					else if (targetAttack.GetComponent<FactoryBase>())
 						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
 				}
 
@@ -291,7 +314,7 @@ public class Unit : Photon.MonoBehaviour
 				{
 					if (targetAttack.GetComponent<Unit>())
 						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
-					else if (targetAttack.GetComponent<FactoryBase>()) 
+					else if (targetAttack.GetComponent<FactoryBase>())
 						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
 				}
 
@@ -307,13 +330,15 @@ public class Unit : Photon.MonoBehaviour
 	[RPC]
 	void AttackUnit (string nameUnit, int force)
 	{
-		GameObject.Find(nameUnit).GetComponent<Unit> ().ReceiveAttack(force);
+		Unit unit = troopController.FindUnit (nameUnit);
+		if (unit != null) unit.ReceiveAttack (force);
 	}
-	
+
 	[RPC]
 	void AttackFactory (string nameFactory, int force)
 	{
-		GameObject.Find(nameFactory).GetComponent<FactoryBase> ().ReceiveAttack(force);
+		FactoryBase factory = factoryController.FindFactory (nameFactory);
+		if (factory != null) factory.ReceiveAttack (force);
 	}
 
 	public void Active ()
@@ -525,15 +550,16 @@ public class Unit : Photon.MonoBehaviour
 			}
 		}
 
-		ComponentGetter.Get<TroopController> ().RemoveSoldier (this);
-
 		if (unitAnimation.DieAnimation)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
-
-		Destroy (gameObject);
+		
+		troopController.RemoveSoldier(this);
+		
+		if (PhotonNetwork.offlineMode) Destroy (gameObject);
+		else PhotonNetwork.Destroy(gameObject);
 	}
 
 	// GIZMOS
