@@ -278,18 +278,16 @@ public class Unit : Photon.MonoBehaviour
 
 		if (unitAnimation.Attack)
 		{
-			if (PhotonNetwork.offlineMode)
-				{
-					if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
-					else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(Force + AdditionalForce);
-				}
-				else
-				{
-					if (targetAttack.GetComponent<Unit>())
-						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
-					else if (targetAttack.GetComponent<FactoryBase>())
-						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
-				}
+			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
+			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(Force + AdditionalForce);
+				
+			if (!PhotonNetwork.offlineMode)
+			{
+				if (targetAttack.GetComponent<Unit>())
+					photonView.RPC ("AttackUnit", PhotonTargets.OthersBuffered, targetAttack.name, Force + AdditionalForce);
+				else if (targetAttack.GetComponent<FactoryBase>())
+					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, Force + AdditionalForce);
+			}
 
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 
@@ -366,7 +364,7 @@ public class Unit : Photon.MonoBehaviour
 		if (Health == 0)
 		{
 			SendMessage ("OnDead", SendMessageOptions.DontRequireReceiver);
-			StartCoroutine (DieAnimation ());
+			StartCoroutine (Die ());
 		}
 	}
 
@@ -528,7 +526,7 @@ public class Unit : Photon.MonoBehaviour
 		}
 	}
 
-	private IEnumerator DieAnimation ()
+	private IEnumerator Die ()
 	{
 		IsDead = true;
 
@@ -550,13 +548,13 @@ public class Unit : Photon.MonoBehaviour
 			}
 		}
 
+		troopController.RemoveSoldier(this);
+		
 		if (unitAnimation.DieAnimation)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
-		
-		troopController.RemoveSoldier(this);
 		
 		if (PhotonNetwork.offlineMode) Destroy (gameObject);
 		else PhotonNetwork.Destroy(gameObject);

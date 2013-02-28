@@ -7,22 +7,12 @@ public class CameraMovement : MonoBehaviour {
 	public float speed = 0.5f;
 	public Vector2 minimum = Vector2.one * 0.01f;
 	public Vector2 maximum = Vector2.one * 0.99f;
-
-	public FactoryBase[] factorys;
 	
 	protected TouchController touchController;
 
 	void Start ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
-		
-		foreach (FactoryBase fb in factorys)
-		{
-			if (ComponentGetter.Get<GameplayManager>().IsSameTeam(fb))
-			{
-				transform.position = fb.transform.position;
-			}
-		}
 	}
 
 	void Update ()
@@ -33,9 +23,12 @@ public class CameraMovement : MonoBehaviour {
 			transform.position -= (touchController.RelativeTwoFingersPosition * speedMobile);
 		}
 #else
-		PanCamera (Input.GetAxis ("Vertical") * speed, Input.GetAxis ("Horizontal") * speed);
+		float v = Input.GetAxis ("Vertical");
+		float h = Input.GetAxis ("Horizontal");
+		PanCamera (v * speed, h * speed);
 		
-		if (touchController.touchType == TouchController.TouchType.Press) return;
+		if (touchController.touchType == TouchController.TouchType.Press ||
+			h != 0 || v != 0) return;
 
 		if (touchController.RelativePosition.x <= minimum.x && touchController.RelativePosition.x >= 0f)
 			PanCamera (0f, -speed * (1f - touchController.RelativePosition.x));
