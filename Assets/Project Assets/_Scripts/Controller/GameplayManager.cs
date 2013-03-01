@@ -7,9 +7,11 @@ public class Team
 	public string name;
 	public Color color = Color.white;
 	public Texture2D colorTexture;
+	public Transform initialPosition;
 }
 
-public class GameplayManager : MonoBehaviour {
+public class GameplayManager : MonoBehaviour
+{
 	
 	public Team[] teams;
 	
@@ -25,6 +27,14 @@ public class GameplayManager : MonoBehaviour {
 		{
 			MyTeam = 0;
 		}
+		
+		for (int i = 0; i != teams.Length; i++)
+		{
+			if (MyTeam == i)
+			{
+				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
+			}
+		}
 	}
 	
 	public Color GetColorTeam (int teamID)
@@ -39,6 +49,11 @@ public class GameplayManager : MonoBehaviour {
 		
 		Debug.LogError ("Don't have Color Team for this Team ID.");
 		return Color.black;
+	}
+	
+	public bool IsSameTeam (int team)
+	{
+		return team == MyTeam;
 	}
 	
 	public bool IsSameTeam (Unit soldier)

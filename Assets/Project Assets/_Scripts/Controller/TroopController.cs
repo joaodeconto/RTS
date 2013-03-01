@@ -85,6 +85,7 @@ public class TroopController : MonoBehaviour
 	{
 		if (selectedSoldiers.Contains (soldier))
 		{
+			soldier.Deactive ();
 			selectedSoldiers.Remove (soldier);
 		}
 
@@ -158,11 +159,11 @@ public class TroopController : MonoBehaviour
 				{
 					if (soldier.Group != -1)
 					{
-						foreach (KeyValuePair<int, List<Unit>> group in troopGroups)
+						foreach (int key in troopGroups.Keys)
 						{
-							if (group.Key == soldier.Group)
+							if (key == soldier.Group)
 							{
-								group.Value.Remove (soldier);
+								troopGroups[key].Remove (soldier);
 							}
 							break;
 						}
@@ -209,12 +210,17 @@ public class TroopController : MonoBehaviour
 	
 	public Unit FindUnit (string name)
 	{
+		int i = 0;
 		foreach (Unit unit in soldiers)
 		{
+			if (unit == null)
+				soldiers.RemoveAt (i);
+				
 			if (unit.name.Equals(name))
 			{
 				return unit;
 			}
+			i++;
 		}
 		
 		return null;
