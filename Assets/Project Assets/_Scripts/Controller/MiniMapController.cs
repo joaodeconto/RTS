@@ -12,7 +12,7 @@ public class MiniMapController : MonoBehaviour
 	public GameObject miniMapPanel;
 	public UIRoot MiniMapRoot;
 
-	public Transform CamPositionMiniMap;
+	public GameObject CamPositionMiniMap;
 
 	public Vector3 miniMapMaxPoint;
 	public Vector3 miniMapMinPoint;
@@ -31,7 +31,7 @@ public class MiniMapController : MonoBehaviour
 	private List<GameObject>[] UnitMiniMapList;
 	private List<GameObject>[] StructureMiniMapList;
 
-	private GameObject camPositionMiniMap;
+	private GameObject mainCameraGO;
 
 	private bool WasInitialized;
 
@@ -72,6 +72,8 @@ public class MiniMapController : MonoBehaviour
 
 		mapSize = td.size;
 
+		mainCameraGO = GameObject.Find("Main Camera");
+
 		RefreshMiniMapSize();
 
 		return this;
@@ -94,7 +96,7 @@ public class MiniMapController : MonoBehaviour
 		RefreshMiniMapSize();
 #endif
 		//Update camera mini map position
-
+		UpdatePosition(CamPositionMiniMap, mainCameraGO.transform);
 
 		//iterate by teams
 		for(int i = structureList.Length - 1; i != -1; --i)
@@ -128,9 +130,7 @@ public class MiniMapController : MonoBehaviour
 
 	public void UpdateCameraPosition()
 	{
-		GameObject cameraGO = GameObject.Find("Main Camera");
-
-		CameraBounds camBounds = cameraGO.GetComponent<CameraBounds>();
+		CameraBounds camBounds = mainCameraGO.GetComponent<CameraBounds>();
 
 		Vector3 camBoundsSize = new Vector3((camBounds.scenario.x.max),
 											(camBounds.scenario.y.max),
@@ -141,9 +141,9 @@ public class MiniMapController : MonoBehaviour
 		Vector2 percentPos = new Vector2 ( (miniMapMinPoint.x + (MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x)) / mapSize.x,
 										   (miniMapMinPoint.y + (MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y)) / mapSize.z);
 
-		cameraGO.transform.localPosition = new Vector3 (offsetCamPos.x + (camBoundsSize.x * percentPos.x),
-														offsetCamPos.y + (cameraGO.transform.localPosition.y),
-														offsetCamPos.z + (camBoundsSize.z * percentPos.y));
+		mainCameraGO.transform.localPosition = new Vector3 (offsetCamPos.x + (camBoundsSize.x * percentPos.x),
+															offsetCamPos.y + (mainCameraGO.transform.localPosition.y),
+															offsetCamPos.z + (camBoundsSize.z * percentPos.y));
 	}
 
 #region Add and Remove Structures/Units
