@@ -26,6 +26,8 @@ public class FactoryBase : MonoBehaviour {
 	public int MaxHealth = 200;
 
 	public int Team;
+	
+	public Transform waypoint;
 
 	public bool playerUnit;
 
@@ -59,15 +61,19 @@ public class FactoryBase : MonoBehaviour {
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 
-
-//		if (!PhotonNetwork.offlineMode)
-//		{
-//			Team = (int)PhotonNetwork.player.customProperties["team"];
-//		}
-//		else
-//		{
-//			Team = 0;
-//		}
+		if (Team == -1)
+		{
+			if (!PhotonNetwork.offlineMode)
+			{
+				Team = (int)PhotonNetwork.player.customProperties["team"];
+			}
+			else
+			{
+				Team = 0;
+			}
+		}
+		
+		if (waypoint == null) waypoint = transform.FindChild("Waypoint");
 
 		playerUnit = gameplayManager.IsSameTeam (this);
 
@@ -119,6 +125,7 @@ public class FactoryBase : MonoBehaviour {
 	void InvokeUnit (Unit unit)
 	{
 		Vector3 unitSpawnPosition = transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius);
+//		Vector3 unitSpawnPosition = transform.position + (transform.TransformPoint(waypoint.position) * GetComponent<CapsuleCollider>().radius);
 
 		if (PhotonNetwork.offlineMode)
 		{

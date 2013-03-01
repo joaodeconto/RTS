@@ -34,8 +34,11 @@ public class TouchController : MonoBehaviour
 	public Vector3 CurrentPosition {get; private set;} // toque atual
 	public Vector3 FinalPosition {get; private set;} // ultimo toque
 	
-	public Ray GetFirstRaycast {get; private set;}
-	public Ray GetFinalRaycast {get; private set;}
+	public Ray GetFirstRay {get; private set;}
+	public Ray GetFinalRay {get; private set;}
+	
+	public RaycastHit GetFirstRaycastHit {get; private set;}
+	public RaycastHit GetFinalRaycastHit {get; private set;}
 	
 	public Vector3 GetFirstPoint {get; private set;}
 	public Vector3 GetFinalPoint {get; private set;}
@@ -79,11 +82,12 @@ public class TouchController : MonoBehaviour
 										Screen.height - Input.mousePosition.y,
 										Input.mousePosition.z);
 			
-			GetFirstRaycast = mainCamera.ScreenPointToRay (Input.mousePosition);
+			GetFirstRay = mainCamera.ScreenPointToRay (Input.mousePosition);
 			
 			RaycastHit hit;
-			if (Physics.Raycast (GetFirstRaycast, out hit))
+			if (Physics.Raycast (GetFirstRay, out hit))
 			{
+				GetFirstRaycastHit = hit;
 				GetFirstPoint = hit.point;
 			}
 			
@@ -125,11 +129,12 @@ public class TouchController : MonoBehaviour
 										Screen.height - Input.mousePosition.y,
 										Input.mousePosition.z);
 			
-			GetFinalRaycast = mainCamera.ScreenPointToRay (Input.mousePosition);
+			GetFinalRay = mainCamera.ScreenPointToRay (Input.mousePosition);
 			
 			RaycastHit hit;
-			if (Physics.Raycast (GetFinalRaycast, out hit))
+			if (Physics.Raycast (GetFinalRay, out hit))
 			{
+				GetFinalRaycastHit = hit;
 				GetFinalPoint = hit.point;
 			}
 			
