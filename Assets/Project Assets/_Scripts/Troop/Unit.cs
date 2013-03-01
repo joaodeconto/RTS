@@ -132,6 +132,7 @@ public class Unit : Photon.MonoBehaviour
 			{
 				Team = 1;
 			}
+			if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
 		}
 
 		this.gameObject.tag = "Unit";
