@@ -43,7 +43,7 @@ public class FactoryBase : MonoBehaviour {
 	{
 		get
 		{
-			return listedToCreate.Count > MAX_NUMBER_OF_LISTED;
+			return listedToCreate.Count >= MAX_NUMBER_OF_LISTED;
 		}
 	}
 
@@ -107,6 +107,7 @@ public class FactoryBase : MonoBehaviour {
 				InvokeUnit (unitToCreate);
 				timer = 0;
 				listedToCreate.Remove (unitToCreate);
+				unitToCreate = null;
 			}
 			else
 			{
@@ -141,8 +142,8 @@ public class FactoryBase : MonoBehaviour {
 		if (Health == 0)
 		{
 			SendMessage ("OnDestruction", SendMessageOptions.DontRequireReceiver);
-		}
 			Destruction ();
+		}
 	}
 
 	void Destruction ()

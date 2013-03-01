@@ -36,6 +36,7 @@ public class Unit : Photon.MonoBehaviour
 	public UnitAnimation unitAnimation;
 	
 	public int Category;
+	public SkinnedMeshRenderer applyColor;
 	
 	internal int Group = -1;
 
@@ -63,6 +64,7 @@ public class Unit : Photon.MonoBehaviour
 	}
 
 	protected GameObject targetAttack;
+	protected bool followingTarget;
 	protected float attackBuff;
 
 	public UnitState unitState { get; set; }
@@ -111,10 +113,7 @@ public class Unit : Photon.MonoBehaviour
 			if (photonView.isMine)
 			{
 				Team = (int)PhotonNetwork.player.customProperties["team"];
-				foreach (SkinnedMeshRenderer smr in transform.GetComponentsInChildren<SkinnedMeshRenderer>())
-				{
-					if (smr.name.Equals("Mesh_002")) smr.material.color = gameplayManager.GetColorTeam (Team);
-				}
+				if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
 				photonView.RPC ("TeamID", PhotonTargets.OthersBuffered, Team);
 				playerUnit = true;
 			}
@@ -147,6 +146,7 @@ public class Unit : Photon.MonoBehaviour
 	void TeamID (int teamID)
 	{
 		Team = teamID;
+		if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
 	}
 
 	void Awake ()
@@ -195,10 +195,21 @@ public class Unit : Photon.MonoBehaviour
 					{
 						Move (targetAttack.transform.position);
 					}
-//					else
-//					{
-//						unitState = UnitState.Idle;
-//					}
+					else
+					{
+						if (followingTarget)
+						{
+							targetAttack = null;
+							unitState = UnitState.Idle;
+							followingTarget = false;
+						}
+						else
+						{
+							pathfindTarget = targetAttack.transform.position + (targetAttack.transform.forward * targetAttack.GetComponent<CapsuleCollider>().radius);
+							targetAttack = null;
+							Move (pathfindTarget);
+						}
+					}
 				}
 				else if (MoveComplete(pathfindTarget))
 				{
@@ -208,7 +219,9 @@ public class Unit : Photon.MonoBehaviour
 				break;
 
 			case UnitState.Attack:
-
+				
+				followingTarget = true;
+				
 				if (IsAttacking) return;
 
 				Stop ();
@@ -246,7 +259,10 @@ public class Unit : Photon.MonoBehaviour
 			break;
 		case UnitState.Walk:
 			if (unitAnimation.Walk)
+			{
+				ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
 				ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
+			}
 
 			break;
 		case UnitState.Attack:
@@ -523,6 +539,7 @@ public class Unit : Photon.MonoBehaviour
 		else
 		{
 			TargetingEnemy (unitSelected);
+			followingTarget = true;
 		}
 	}
 

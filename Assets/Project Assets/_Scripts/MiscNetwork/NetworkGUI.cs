@@ -218,6 +218,16 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		
 		GUILayout.Space (10f);
 		
+		if (PhotonNetwork.isMasterClient)
+		{
+			if (PhotonNetwork.room.customProperties["closed"] == null)
+			{
+				Hashtable closedProperty = new Hashtable();
+				closedProperty.Add ("closed", false);
+				PhotonNetwork.room.SetCustomProperties(closedProperty);
+			}
+		}
+		
 		PhotonPlayer player = PhotonNetwork.player;
 		
 		if (player.customProperties["team"] == null)
@@ -233,7 +243,15 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		
 		if (GUILayout.Button ("Back to Main Menu")) PhotonNetwork.LeaveRoom ();
 		
-		if (numberOfReady == PhotonNetwork.room.maxPlayers) StartCoroutine (StartGame ());
+		if (numberOfReady == PhotonNetwork.room.maxPlayers)
+		{
+			if (PhotonNetwork.isMasterClient)
+			{
+				Hashtable closedProperty = new Hashtable() {{"closed", true}};
+				PhotonNetwork.room.SetCustomProperties(closedProperty);
+			}
+			StartCoroutine (StartGame ());
+		}
 	}
 	
 	PeerState ps;
