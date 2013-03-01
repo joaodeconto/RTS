@@ -9,13 +9,18 @@ public class MiniMapController : MonoBehaviour
 	public GameObject pref_UnitMiniMap;
 	public GameObject pref_StructureMiniMap;
 	public GameObject miniMapPanel;
+	public UIRoot MiniMapRoot;
 
 	public Vector3 miniMapMaxPoint;
 	public Vector3 miniMapMinPoint;
 
-	private Vector3 miniMapSize;
+	public Vector3 offsetCamPos;
 
 	public float MiniMapRefreshInterval = 0.4f;
+
+	public GameObject pref_CamPositionMiniMap;
+
+	private Vector3 miniMapSize;
 
 	public Vector3 mapSize { get; private set; }
 
@@ -108,11 +113,11 @@ public class MiniMapController : MonoBehaviour
 										   referenceTrns.position.z / mapSize.z,
 										   -5);
 
-		Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
+		//Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
 
-		miniMapObject.transform.localPosition = new Vector3((int)(miniMapSize.x * percentPos.x),
-															(int)(miniMapSize.y * percentPos.y),
-															(int)(miniMapSize.z * percentPos.z));
+		miniMapObject.transform.localPosition = new Vector3((miniMapMinPoint.x + (miniMapSize.x * percentPos.x)),
+															(miniMapMinPoint.y + (miniMapSize.y * percentPos.y)),
+															(-5));
 	}
 
 	public void UpdateCameraPosition()
@@ -121,20 +126,20 @@ public class MiniMapController : MonoBehaviour
 
 		CameraBounds camBounds = cameraGO.GetComponent<CameraBounds>();
 
-		Vector3 camBoundsSize = new Vector3((camBounds.scenario.x.max - camBounds.scenario.x.min),
-											(camBounds.scenario.y.max - camBounds.scenario.y.min),
-											(camBounds.scenario.z.max - camBounds.scenario.z.min));
+		Vector3 camBoundsSize = new Vector3((camBounds.scenario.x.max),
+											(camBounds.scenario.y.max),
+											(camBounds.scenario.z.max));
 
-		Vector2 percentPos = new Vector2 ( Input.mousePosition.x / mapSize.x,
-										   Input.mousePosition.y / mapSize.z);
+		Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
 
-		//Vector3 percentPos = new Vector3 ( cameraGO.transform.position.x / camBoundsSize.x,
-										   //cameraGO.transform.position.y / camBoundsSize.y,
-										   //cameraGO.transform.position.z / camBoundsSize.z);
+		Vector2 percentPos = new Vector2 ( (miniMapMinPoint.x + (MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x)) / mapSize.x,
+										   (miniMapMinPoint.y + (MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y)) / mapSize.z);
 
-		cameraGO.transform.localPosition = new Vector3 (camBoundsSize.x * percentPos.x,
-														cameraGO.transform.localPosition.y,
-														camBoundsSize.z * percentPos.y);
+		//percentPos *= ;
+
+		cameraGO.transform.localPosition = new Vector3 (offsetCamPos.x + (camBoundsSize.x * percentPos.x),
+														offsetCamPos.y + (cameraGO.transform.localPosition.y),
+														offsetCamPos.z + (camBoundsSize.z * percentPos.y));
 	}
 
 #region Add and Remove Structures/Units
