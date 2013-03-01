@@ -8,8 +8,11 @@ public class MiniMapController : MonoBehaviour
 {
 	public GameObject pref_UnitMiniMap;
 	public GameObject pref_StructureMiniMap;
+
 	public GameObject miniMapPanel;
 	public UIRoot MiniMapRoot;
+
+	public Transform CamPositionMiniMap;
 
 	public Vector3 miniMapMaxPoint;
 	public Vector3 miniMapMinPoint;
@@ -17,8 +20,6 @@ public class MiniMapController : MonoBehaviour
 	public Vector3 offsetCamPos;
 
 	public float MiniMapRefreshInterval = 0.4f;
-
-	public GameObject pref_CamPositionMiniMap;
 
 	private Vector3 miniMapSize;
 
@@ -29,6 +30,8 @@ public class MiniMapController : MonoBehaviour
 
 	private List<GameObject>[] UnitMiniMapList;
 	private List<GameObject>[] StructureMiniMapList;
+
+	private GameObject camPositionMiniMap;
 
 	private bool WasInitialized;
 
@@ -90,6 +93,9 @@ public class MiniMapController : MonoBehaviour
 #if UNITY_EDITOR
 		RefreshMiniMapSize();
 #endif
+		//Update camera mini map position
+
+
 		//iterate by teams
 		for(int i = structureList.Length - 1; i != -1; --i)
 		{
@@ -130,12 +136,10 @@ public class MiniMapController : MonoBehaviour
 											(camBounds.scenario.y.max),
 											(camBounds.scenario.z.max));
 
-		Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
+		//Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
 
 		Vector2 percentPos = new Vector2 ( (miniMapMinPoint.x + (MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x)) / mapSize.x,
 										   (miniMapMinPoint.y + (MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y)) / mapSize.z);
-
-		//percentPos *= ;
 
 		cameraGO.transform.localPosition = new Vector3 (offsetCamPos.x + (camBoundsSize.x * percentPos.x),
 														offsetCamPos.y + (cameraGO.transform.localPosition.y),
