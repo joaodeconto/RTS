@@ -132,6 +132,7 @@ public class Unit : Photon.MonoBehaviour
 			{
 				Team = 1;
 			}
+			if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
 		}
 
 		this.gameObject.tag = "Unit";
@@ -260,7 +261,7 @@ public class Unit : Photon.MonoBehaviour
 		case UnitState.Walk:
 			if (unitAnimation.Walk)
 			{
-				ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
+				ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed;
 				ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 			}
 

@@ -162,6 +162,11 @@ public class NetworkGUI : Photon.MonoBehaviour {
 	void ShowRoom ()
 	{
 		GUILayout.BeginHorizontal ();
+		GUILayout.Label ("Room name:", GUILayout.Width(150f));
+		GUILayout.Label (PhotonNetwork.room.name);
+		GUILayout.EndHorizontal ();
+		
+		GUILayout.BeginHorizontal ();
 		GUILayout.Label ("Master Room:", GUILayout.Width(150f));
 		GUILayout.Label (masterRoom);
 		GUILayout.EndHorizontal ();
@@ -190,14 +195,17 @@ public class NetworkGUI : Photon.MonoBehaviour {
 				GUILayout.Label((int)p.customProperties["team"]+"", GUILayout.Width(100f));
 			}
 			
-			if((bool)p.customProperties["ready"] == true)
+			if (p.customProperties["ready"] != null)
 			{
-				GUILayout.Label("Yeah, I'm Ready!");
-				numberOfReady++;
-			}
-			else if((bool)p.customProperties["ready"] == false)
-			{
-				GUILayout.Label("No, I'm not Ready!");
+				if((bool)p.customProperties["ready"] == true)
+				{
+					GUILayout.Label("Yeah, I'm Ready!");
+					numberOfReady++;
+				}
+				else if((bool)p.customProperties["ready"] == false)
+				{
+					GUILayout.Label("No, I'm not Ready!");
+				}
 			}
 			GUILayout.EndHorizontal ();
 			
@@ -218,16 +226,6 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		
 		GUILayout.Space (10f);
 		
-		if (PhotonNetwork.isMasterClient)
-		{
-			if (PhotonNetwork.room.customProperties["closed"] == null)
-			{
-				Hashtable closedProperty = new Hashtable();
-				closedProperty.Add ("closed", false);
-				PhotonNetwork.room.SetCustomProperties(closedProperty);
-			}
-		}
-		
 		PhotonPlayer player = PhotonNetwork.player;
 		
 		if (player.customProperties["team"] == null)
@@ -243,15 +241,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		
 		if (GUILayout.Button ("Back to Main Menu")) PhotonNetwork.LeaveRoom ();
 		
-		if (numberOfReady == PhotonNetwork.room.maxPlayers)
-		{
-			if (PhotonNetwork.isMasterClient)
-			{
-				Hashtable closedProperty = new Hashtable() {{"closed", true}};
-				PhotonNetwork.room.SetCustomProperties(closedProperty);
-			}
-			StartCoroutine (StartGame ());
-		}
+		if (numberOfReady == PhotonNetwork.room.maxPlayers) StartCoroutine (StartGame ());
 	}
 	
 	PeerState ps;
