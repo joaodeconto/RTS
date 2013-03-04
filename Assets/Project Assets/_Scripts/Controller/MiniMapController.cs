@@ -181,9 +181,11 @@ public class MiniMapController : MonoBehaviour
 		Debug.Log("mapSize: " + mapSize);
 		Debug.Log("mainCameraGO.transform.position: " + mainCameraGO.transform.position);
 
-		mainCameraGO.transform.position = new Vector3 ((camBoundsSize.x * percentPos.x)			- (offsetCamPos.x ),
-													   (mainCameraGO.transform.localPosition.y) - (offsetCamPos.y),
-													   (camBoundsSize.z * percentPos.y)			- (offsetCamPos.z * 1.5f)  );
+		Vector3 newCameraPosition = new Vector3((camBoundsSize.x * percentPos.x)         - (offsetCamPos.x ),
+											    (mainCameraGO.transform.localPosition.y) - (offsetCamPos.y),
+											    (camBoundsSize.z * percentPos.y)         - (offsetCamPos.z * 1.5f)  );
+
+		mainCameraGO.transform.position = mainCameraGO.GetComponent<CameraBounds>().ClampScenario(newCameraPosition);
 	}
 
 #region Add and Remove Structures/Units

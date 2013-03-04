@@ -4,10 +4,9 @@ using Visiorama;
 
 public class MiniMapButtonHandler : MonoBehaviour
 {
-	void OnPress(bool isPressed)
+	void OnDrag (Vector2 position)
 	{
-		if(isPressed)
-			UpdateCameraPosition();
+		UpdateCameraPosition();
 	}
 
 	void OnClick()
