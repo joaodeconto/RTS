@@ -27,6 +27,7 @@ public class TouchController : MonoBehaviour
 	protected Camera[] camerasUI;
 	
 	public bool DragOn {get; private set;}
+	public bool DisableDragOn {get; set;}
 	
 	public Vector2 RelativePosition {get; private set;}
 	
@@ -104,9 +105,12 @@ public class TouchController : MonoBehaviour
 			CurrentPosition = new Vector2(Input.mousePosition.x,
 										Screen.height - Input.mousePosition.y);
 			
-			if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 1f)
+			if (!DisableDragOn)
 			{
-				DragOn = true;
+				if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 1f)
+				{
+					DragOn = true;
+				}
 			}
 			
 			touchType = TouchType.Press;
@@ -117,6 +121,8 @@ public class TouchController : MonoBehaviour
 		if (Input.GetMouseButtonUp(0) || 
 			Input.GetMouseButtonUp(1))
 		{
+			DisableDragOn = false;
+			
 			if (ignoreTouch)
 			{
 				ignoreTouch = false;
