@@ -575,7 +575,7 @@ public class Unit : Photon.MonoBehaviour
 		}
 		
 		if (PhotonNetwork.offlineMode) Destroy (gameObject);
-		else PhotonNetwork.Destroy(gameObject);
+		else if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
 	}
 
 	// GIZMOS
