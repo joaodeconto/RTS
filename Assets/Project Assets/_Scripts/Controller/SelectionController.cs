@@ -45,7 +45,7 @@ public class SelectionController : MonoBehaviour
 					windowSize.z = touchController.GetFirstPoint.z-touchController.GetFinalPoint.z > 0f ?
 						touchController.GetFirstPoint.z-touchController.GetFinalPoint.z : touchController.GetFinalPoint.z-touchController.GetFirstPoint.z;
 
-					Bounds b = new Bounds((touchController.GetFirstPoint+touchController.GetFinalPoint)/2, windowSize + (Vector3.up * 100f) );
+					Bounds b = new Bounds((touchController.GetFirstPoint+touchController.GetFinalPoint)/2, windowSize + (Vector3.up * 999999f) );
 
 					VDebug.DrawCube (b, Color.green);
 
