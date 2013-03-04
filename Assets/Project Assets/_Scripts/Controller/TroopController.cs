@@ -176,9 +176,9 @@ public class TroopController : MonoBehaviour
 		else VDebug.LogError ("Hasn't unit selected.");
 	}
 	
-	public void SelectGroup (int numberGroup)
+	public bool SelectGroup (int numberGroup)
 	{
-		if (troopGroups.Count == 0) return;
+		if (troopGroups.Count == 0) return false;
 		
 		foreach (KeyValuePair<int, List<Unit>> group in troopGroups)
 		{
@@ -191,21 +191,12 @@ public class TroopController : MonoBehaviour
 				{
 					SelectSoldier (soldier, true);
 				}
+				return true;
 				break;
 			}
 		}
-//		DeselectAllSoldiers ();
-//		
-//		foreach (Unit soldier in soldiers)
-//		{
-//			if (gameplayManager.IsSameTeam (soldier))
-//			{
-//				if (soldier.Group == numberGroup)
-//				{
-//					SelectSoldier (soldier, true);
-//				}
-//			}
-//		}
+		
+		return false;
 	}
 	
 	public Unit FindUnit (string name)

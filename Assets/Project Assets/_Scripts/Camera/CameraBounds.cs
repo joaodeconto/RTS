@@ -33,9 +33,15 @@ public class CameraBounds : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		// Cálculo em torno da área que está no cubo ciano
-		transform.position = new Vector3(Mathf.Clamp(transform.position.x, scenario.x.min, scenario.x.max), 
-		                                 height, 
-		                                 Mathf.Clamp(transform.position.z, scenario.z.min, scenario.z.max));
+		transform.position = ClampScenario (transform.position);
+	}
+	
+	public Vector3 ClampScenario (Vector3 position)
+	{
+		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min, scenario.x.max), 
+		                    height, 
+		                    Mathf.Clamp (position.z, scenario.z.min, scenario.z.max));
+		
 	}
 	
 	void OnDrawGizmosSelected ()

@@ -26,7 +26,7 @@ public class InteractionController : MonoBehaviour
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id0)
 			{
-				Interaction (touchController.GetFinalRaycast);
+				Interaction (touchController.GetFinalRay);
 			}
 		}
 #else
@@ -34,7 +34,7 @@ public class InteractionController : MonoBehaviour
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id1)
 			{
-				Interaction (touchController.GetFinalRaycast);
+				Interaction (touchController.GetFinalRay);
 			}
 		}
 #endif

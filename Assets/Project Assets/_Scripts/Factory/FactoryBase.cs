@@ -26,6 +26,8 @@ public class FactoryBase : MonoBehaviour {
 	public int MaxHealth = 200;
 
 	public int Team;
+	
+	public Transform waypoint;
 
 	public bool playerUnit;
 
@@ -59,15 +61,21 @@ public class FactoryBase : MonoBehaviour {
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 
-
-//		if (!PhotonNetwork.offlineMode)
-//		{
-//			Team = (int)PhotonNetwork.player.customProperties["team"];
-//		}
-//		else
-//		{
-//			Team = 0;
-//		}
+		if (Team == -1)
+		{
+			if (!PhotonNetwork.offlineMode)
+			{
+				Team = (int)PhotonNetwork.player.customProperties["team"];
+			}
+			else
+			{
+				Team = 0;
+			}
+		}
+		
+		if (waypoint == null) waypoint = transform.FindChild("Waypoint");
+		
+		waypoint.gameObject.SetActive (false);
 
 		playerUnit = gameplayManager.IsSameTeam (this);
 
@@ -118,17 +126,26 @@ public class FactoryBase : MonoBehaviour {
 
 	void InvokeUnit (Unit unit)
 	{
-		Vector3 unitSpawnPosition = transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius);
-
+//		Vector3 unitSpawnPosition = transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius);
+		
+		// Look At
+		Vector3 difference = waypoint.position - transform.position;
+		Quaternion rotation = Quaternion.LookRotation (difference);
+		Vector3 forward = rotation * Vector3.forward;
+		
+		Vector3 unitSpawnPosition = transform.position + (forward * GetComponent<CapsuleCollider>().radius);
+		
 		if (PhotonNetwork.offlineMode)
 		{
 			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
-			newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
+//			newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
+			newUnit.Move (waypoint.position);
 		}
 		else
 		{
 	        GameObject newUnit = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
-			newUnit.GetComponent<Unit> ().Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
+//			newUnit.GetComponent<Unit> ().Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
+			newUnit.GetComponent<Unit> ().Move (waypoint.position);
 		}
 	}
 
@@ -157,6 +174,7 @@ public class FactoryBase : MonoBehaviour {
 	public void Active ()
 	{
 		if (!Actived) Actived = true;
+		else return;
 
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
@@ -165,6 +183,8 @@ public class FactoryBase : MonoBehaviour {
 
 		if (playerUnit)
 		{
+			waypoint.gameObject.SetActive (true);
+			
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				hudController.CreateButtonInInspector (uf.buttonName, uf.positionButton, uf.unit, this);
@@ -172,16 +192,23 @@ public class FactoryBase : MonoBehaviour {
 		}
 	}
 
-	public void Deactive ()
+	public bool Deactive ()
 	{
+		if (waypoint.GetComponent<CreationPoint> ().active) return false;
+		
 		if (Actived) Actived = false;
-
+		else return false;
+		
 		hudController.DestroySelected (transform);
 
 		if (playerUnit)
 		{
+			waypoint.gameObject.SetActive (false);
+			
 			hudController.DestroyInspector ();
 		}
+		
+		return true;
 	}
 
 	public void CallUnit (Unit unit)

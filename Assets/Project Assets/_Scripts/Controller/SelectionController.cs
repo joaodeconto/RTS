@@ -141,7 +141,7 @@ public class SelectionController : MonoBehaviour
 				{
 					RaycastHit hit;
 
-					if (Physics.Raycast (touchController.GetFinalRaycast, out hit))
+					if (Physics.Raycast (touchController.GetFinalRay, out hit))
 					{
 						if (hit.transform.CompareTag ("Unit"))
 						{
@@ -357,7 +357,15 @@ public class SelectionController : MonoBehaviour
 	void SelectGroup (int numberOfGroup)
 	{
 		factoryController.DeselectFactory ();
-		troopController.SelectGroup (numberOfGroup);
+		bool hasGroup = troopController.SelectGroup (numberOfGroup);
+		
+		if (!hasGroup) return;
+		
+		Vector3 getPosition = troopController.selectedSoldiers[0].transform.position - Vector3.forward * touchController.mainCamera.orthographicSize;
+		getPosition = touchController.mainCamera.GetComponent<CameraBounds> ().ClampScenario (getPosition);
+		
+		touchController.mainCamera.transform.position = getPosition;
+		
 	}
 
 	void OnGUI ()
@@ -368,4 +376,4 @@ public class SelectionController : MonoBehaviour
 				touchController.CurrentPosition.x - touchController.FirstPosition.x, touchController.CurrentPosition.y - touchController.FirstPosition.y), "");
 		}
 	}
-	}
+}
