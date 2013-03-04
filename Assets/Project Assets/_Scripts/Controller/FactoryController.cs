@@ -36,8 +36,7 @@ public class FactoryController : MonoBehaviour
 	{
 		if (selectedFactory != null)
 		{
-			selectedFactory.Deactive ();
-			selectedFactory = null;
+			if (selectedFactory.Deactive ()) selectedFactory = null;
 		}
 	}
 	

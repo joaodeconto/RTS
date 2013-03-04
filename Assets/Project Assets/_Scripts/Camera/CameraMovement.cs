@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Visiorama;
+using Visiorama.Utils;
 
 public class CameraMovement : MonoBehaviour {
 	public float speedMobile = 0.25f;
@@ -8,11 +9,17 @@ public class CameraMovement : MonoBehaviour {
 	public Vector2 minimum = Vector2.one * 0.01f;
 	public Vector2 maximum = Vector2.one * 0.99f;
 	
+	public float zoomSpeed;
+	public MinMaxFloat zoom;
+	
+	protected Camera[] cameras;
+	
 	protected TouchController touchController;
 
 	void Start ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
+		cameras = GetComponentsInChildren<Camera> (true);
 	}
 
 	void Update ()
@@ -29,6 +36,16 @@ public class CameraMovement : MonoBehaviour {
 		
 		if (touchController.touchType == TouchController.TouchType.Press ||
 			h != 0 || v != 0) return;
+		
+		if (Input.GetAxis ("Mouse ScrollWheel") != 0)
+		{
+			foreach (Camera camera in cameras)
+			{
+				float size = camera.orthographicSize;
+				size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
+				camera.orthographicSize = Mathf.Clamp (size, zoom.min, zoom.max);
+			}
+		}
 
 		if (touchController.RelativePosition.x <= minimum.x && touchController.RelativePosition.x >= 0f)
 			PanCamera (0f, -speed * (1f - touchController.RelativePosition.x));
