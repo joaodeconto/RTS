@@ -14,10 +14,12 @@ public class MiniMapController : MonoBehaviour
 
 	public GameObject CamPositionMiniMap;
 
-	public Vector3 miniMapMaxPoint;
-	public Vector3 miniMapMinPoint;
+	public Transform mapTransform;
 
-	public Vector3 offsetCamPos;
+	public Vector3 visualizationSize;
+	public Vector3 visualizationPosition;
+
+	private Vector3 offsetCamPos = new Vector3(20,0,30);
 
 	public float MiniMapRefreshInterval = 0.4f;
 
@@ -57,10 +59,10 @@ public class MiniMapController : MonoBehaviour
 
 		for(int i = structureList.Length - 1; i != -1; --i)
 		{
-				 unitList[i] = new List<Transform>();
+			unitList[i] = new List<Transform>();
 			structureList[i] = new List<Transform>();
 
-				 UnitMiniMapList[i] = new List<GameObject>();
+			UnitMiniMapList[i] = new List<GameObject>();
 			StructureMiniMapList[i] = new List<GameObject>();
 		}
 
@@ -69,8 +71,13 @@ public class MiniMapController : MonoBehaviour
 						MiniMapRefreshInterval);
 
 		TerrainData td = ComponentGetter.Get<Terrain>("Terrain").terrainData;
-
 		mapSize = td.size;
+
+		//CameraBounds cb = ComponentGetter.Get<CameraBounds>("Main Camera");
+
+		//mapSize = new Vector3 ( cb.scenario.x.max - cb.scenario.x.min,
+								//0,
+								//cb.scenario.z.max - cb.scenario.z.min);
 
 		mainCameraGO = GameObject.Find("Main Camera");
 
@@ -87,7 +94,16 @@ public class MiniMapController : MonoBehaviour
 
 	void RefreshMiniMapSize()
 	{
-		miniMapSize = (miniMapMaxPoint - miniMapMinPoint);
+		miniMapSize = mapTransform.localScale;//miniMapCollider.bounds.max - miniMapCollider.bounds.min;//.size;//(miniMapMaxPoint - miniMapMinPoint);
+		Vector3 newScale = new Vector3( visualizationSize.x / mapSize.x,
+										visualizationSize.y / mapSize.z,
+										1f);
+
+		newScale.x *= mapTransform.localScale.x;
+		newScale.y *= mapTransform.localScale.y;
+		newScale.z *= mapTransform.localScale.z;
+
+		CamPositionMiniMap.transform.localScale = newScale;
 	}
 
 	void UpdateMiniMap()
@@ -96,7 +112,7 @@ public class MiniMapController : MonoBehaviour
 		RefreshMiniMapSize();
 #endif
 		//Update camera mini map position
-		UpdatePosition(CamPositionMiniMap, mainCameraGO.transform);
+		UpdateMiniMapCameraPosition();
 
 		//iterate by teams
 		for(int i = structureList.Length - 1; i != -1; --i)
@@ -115,16 +131,32 @@ public class MiniMapController : MonoBehaviour
 		}
 	}
 
-	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns)
+	void UpdateMiniMapCameraPosition()
 	{
-		Vector3 percentPos = new Vector3 ( referenceTrns.position.x / mapSize.x,
-										   referenceTrns.position.z / mapSize.z,
-										   -5);
+		//CamPositionMiniMap, mainCameraGO.transform
+
+		Vector3 percentPos = new Vector3 (  (mainCameraGO.transform.position.x) / mapSize.x,
+											(offsetCamPos.z + mainCameraGO.transform.position.z) / mapSize.z,
+											-5);
 
 		//Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
 
-		miniMapObject.transform.localPosition = new Vector3((miniMapMinPoint.x + (miniMapSize.x * percentPos.x)),
-															(miniMapMinPoint.y + (miniMapSize.y * percentPos.y)),
+		CamPositionMiniMap.transform.localPosition = new Vector3((mapTransform.localPosition.x + (miniMapSize.x * percentPos.x)),
+																 (mapTransform.localPosition.y + (miniMapSize.y * percentPos.y)),
+																 (-5));
+	}
+
+	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns)
+	{
+		Vector3 percentPos = new Vector3(referenceTrns.position.x / mapSize.x,
+										 referenceTrns.position.z / mapSize.z,
+										 -5);
+
+		//Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
+		//Debug.Log("miniMapSize: " + miniMapSize);
+
+		miniMapObject.transform.localPosition = new Vector3((mapTransform.localPosition.x + (miniMapSize.x * percentPos.x)),
+															(mapTransform.localPosition.y + (miniMapSize.y * percentPos.y)),
 															(-5));
 	}
 
@@ -132,18 +164,26 @@ public class MiniMapController : MonoBehaviour
 	{
 		CameraBounds camBounds = mainCameraGO.GetComponent<CameraBounds>();
 
-		Vector3 camBoundsSize = new Vector3((camBounds.scenario.x.max),
-											(camBounds.scenario.y.max),
-											(camBounds.scenario.z.max));
+		Vector3 camBoundsSize = mapSize;
+								//new Vector3((camBounds.scenario.x.max - camBounds.scenario.x.min),
+											//(camBounds.scenario.y.max - camBounds.scenario.y.min),
+											//(camBounds.scenario.z.max - camBounds.scenario.z.min));
 
+		Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
 		//Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
 
-		Vector2 percentPos = new Vector2 ( (miniMapMinPoint.x + (MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x)) / mapSize.x,
-										   (miniMapMinPoint.y + (MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y)) / mapSize.z);
+		Vector2 percentPos = new Vector2 (  (mapTransform.localPosition.x +
+												(MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x)) / miniMapSize.x,
+											(mapTransform.localPosition.y +
+												(MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y)) / miniMapSize.y);
 
-		mainCameraGO.transform.localPosition = new Vector3 (offsetCamPos.x + (camBoundsSize.x * percentPos.x),
-															offsetCamPos.y + (mainCameraGO.transform.localPosition.y),
-															offsetCamPos.z + (camBoundsSize.z * percentPos.y));
+		Debug.Log("percentPos: " + percentPos);
+		Debug.Log("mapSize: " + mapSize);
+		Debug.Log("mainCameraGO.transform.position: " + mainCameraGO.transform.position);
+
+		mainCameraGO.transform.position = new Vector3 ((camBoundsSize.x * percentPos.x)			- (offsetCamPos.x ),
+													   (mainCameraGO.transform.localPosition.y) - (offsetCamPos.y),
+													   (camBoundsSize.z * percentPos.y)			- (offsetCamPos.z * 1.5f)  );
 	}
 
 #region Add and Remove Structures/Units
@@ -166,33 +206,33 @@ public class MiniMapController : MonoBehaviour
 	public void AddStructure (Transform trns, int teamId)
 	{
 #if UNITY_EDITOR
-	   if(structureList.Length <= teamId)
-	   {
+		if(structureList.Length <= teamId)
+		{
 			Debug.Log("O numero de times eh menor do que o id enviado");
 			Debug.Log("teamId: " + teamId);
 			Debug.Break();
-	   }
+		}
 #endif
 
 		GameObject miniMapObject = InstantiateMiniMapObject(pref_StructureMiniMap, trns, teamId);
 
-			   structureList[teamId].Add(trns);
+		structureList[teamId].Add(trns);
 		StructureMiniMapList[teamId].Add(miniMapObject);
 	}
 
 	public void AddUnit (Transform trns, int teamId)
 	{
 #if UNITY_EDITOR
-	   if(unitList.Length <= teamId)
-	   {
+		if(unitList.Length <= teamId)
+		{
 			Debug.Log("O numero de times eh menor do que o id enviado");
 			Debug.Log("teamId: " + teamId);
 			Debug.Break();
-	   }
+		}
 #endif
 		GameObject miniMapObject = InstantiateMiniMapObject(pref_UnitMiniMap, trns, teamId);
 
-			   unitList[teamId].Add(trns);
+		unitList[teamId].Add(trns);
 		UnitMiniMapList[teamId].Add(miniMapObject);
 	}
 
@@ -204,7 +244,7 @@ public class MiniMapController : MonoBehaviour
 
 		Destroy(obj);
 
-			   structureList[teamId].RemoveAt(index);
+		structureList[teamId].RemoveAt(index);
 		StructureMiniMapList[teamId].RemoveAt(index);
 	}
 
@@ -216,7 +256,7 @@ public class MiniMapController : MonoBehaviour
 
 		Destroy(obj);
 
-			   unitList[teamId].RemoveAt(index);
+		unitList[teamId].RemoveAt(index);
 		UnitMiniMapList[teamId].RemoveAt(index);
 	}
 #endregion
