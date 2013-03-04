@@ -39,16 +39,12 @@ public class GameplayManager : MonoBehaviour
 	
 	public Color GetColorTeam (int teamID)
 	{
-		for (int i = 0; i != teams.Length; i++)
+		if (teamID < teams.Length) return teams[teamID].color;
+		else
 		{
-			if (i == teamID)
-			{
-				return teams[i].color;
-			}
+			Debug.LogError ("Team ID not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
+			return Color.black;
 		}
-		
-		Debug.LogError ("Don't have Color Team for this Team ID.");
-		return Color.black;
 	}
 	
 	public bool IsSameTeam (int team)

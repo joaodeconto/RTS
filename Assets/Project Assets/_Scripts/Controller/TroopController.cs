@@ -27,7 +27,7 @@ public class TroopController : MonoBehaviour
 
 		selectedSoldiers = new List<Unit> ();
 		
-		keepFormation = true;
+		keepFormation = false;
 		//InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
 
@@ -51,15 +51,36 @@ public class TroopController : MonoBehaviour
 		}
 		else
 		{
+			int i = 0;
+			int k = 1;
 			foreach (Unit soldier in selectedSoldiers)
 			{
 				if (soldier != null)
 				{
 					soldier.TargetingEnemy (null);
 
-					Vector3 newDestination = destination + (Random.insideUnitSphere * soldier.pathfind.radius * selectedSoldiers.Count);
-
+					//Vector3 newDestination = destination + (Random.insideUnitSphere * soldier.pathfind.radius * selectedSoldiers.Count);
+					Vector3 newDestination = destination;
+					if (i != 0)
+					{
+						if (i-1 % 3 == 0)
+						{
+							newDestination += Vector3.left * soldier.pathfind.radius * k;
+						}
+						if (i-1 % 3 == 1)
+						{
+							newDestination += Vector3.right * soldier.pathfind.radius * k;
+						}
+						if (i-1 % 3 == 2)
+						{
+							newDestination += Vector3.back * soldier.pathfind.radius * k;
+							k++;
+						}
+					}
+					
 					soldier.Move (newDestination);
+					
+					i++;
 				}
 			}
 		}
