@@ -13,5 +13,6 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<TroopController> ().Init ();
 		ComponentGetter.Get<FactoryController> ().Init ();
 		ComponentGetter.Get<InteractionController> ().Init ();
+		ComponentGetter.Get<MiniMapController> ().Init ();
 	}
 }

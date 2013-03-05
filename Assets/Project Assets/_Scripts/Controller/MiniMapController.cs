@@ -86,12 +86,6 @@ public class MiniMapController : MonoBehaviour
 		return this;
 	}
 
-	void Awake()
-	{
-		if(!WasInitialized)
-			Init();
-	}
-
 	void RefreshMiniMapSize()
 	{
 		miniMapSize = mapTransform.localScale;//miniMapCollider.bounds.max - miniMapCollider.bounds.min;//.size;//(miniMapMaxPoint - miniMapMinPoint);

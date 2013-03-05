@@ -83,7 +83,7 @@ public class Unit : Photon.MonoBehaviour
 
 	protected HealthBar healthBar;
 
-	void Init ()
+	public virtual void Init ()
 	{
 		Health = MaxHealth;
 
@@ -158,6 +158,11 @@ public class Unit : Photon.MonoBehaviour
 	}
 
 	void Update ()
+	{
+		UnitStatus ();
+	}
+	
+	public virtual void UnitStatus ()
 	{
 		if (playerUnit)
 		{
@@ -581,6 +586,11 @@ public class Unit : Photon.MonoBehaviour
 	// GIZMOS
 
 	void OnDrawGizmosSelected ()
+	{
+		DrawGizmosSelected ();
+	}
+	
+	public virtual void DrawGizmosSelected ()
 	{
 		Gizmos.color = Color.cyan;
 		Gizmos.DrawWireSphere (this.transform.position, distanceView);
