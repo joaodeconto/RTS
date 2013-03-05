@@ -19,7 +19,7 @@ public class CameraMovement : MonoBehaviour {
 	void Start ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
-		cameras = GetComponentsInChildren<Camera> (true);
+		cameras = GetComponentsInChildren<Camera> ();
 	}
 
 	void Update ()

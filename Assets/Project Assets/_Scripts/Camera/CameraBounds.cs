@@ -22,11 +22,6 @@ public class CameraBounds : MonoBehaviour {
 		// Pegando posição inicial
 		positionInitial = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		
-		// Calcular posicao da camera inicial
-		transform.position = new Vector3(Mathf.Clamp(transform.position.x, scenario.x.min, scenario.x.max), 
-		                                 height, 
-		                                 Mathf.Clamp(transform.position.z, scenario.z.min, scenario.z.max));
-		
 		wasInitialized = true;
 	}
 	
