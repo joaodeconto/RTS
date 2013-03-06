@@ -17,6 +17,7 @@ public class FactoryController : MonoBehaviour
 	{
 		factorys.Add (factory);
 		ComponentGetter.Get<MiniMapController> ().AddStructure (factory.transform, factory.Team);
+		//ComponentGetter.Get<FogOfWar> ().AddStructure (factory.transform, factory.Team);
 	}
 
 	public void RemoveFactory (FactoryBase factory)
@@ -39,7 +40,7 @@ public class FactoryController : MonoBehaviour
 			if (selectedFactory.Deactive ()) selectedFactory = null;
 		}
 	}
-	
+
 	public FactoryBase FindFactory (string name)
 	{
 		foreach (FactoryBase factory in factorys)
@@ -49,7 +50,7 @@ public class FactoryController : MonoBehaviour
 				return factory;
 			}
 		}
-		
+
 		return null;
 	}
 }

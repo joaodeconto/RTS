@@ -3,7 +3,7 @@ using System.Collections;
 using Visiorama.Extension;
 using Visiorama;
 
-public class Unit : Photon.MonoBehaviour
+public class Unit : IStats
 {
 	[System.Serializable]
 	public class UnitAnimation
@@ -24,9 +24,7 @@ public class Unit : Photon.MonoBehaviour
 		Die = 3
 	}
 
-	public int MaxHealth = 20;
 	public int Force;
-	public int Defense;
 	public float distanceView = 15f;
 	public float rangeAttack = 5f;
 	public float attackDuration = 1f;
@@ -34,13 +32,10 @@ public class Unit : Photon.MonoBehaviour
 	public bool playerUnit;
 
 	public UnitAnimation unitAnimation;
-	
+
 	public int Category;
 	public SkinnedMeshRenderer applyColor;
-	
-	internal int Group = -1;
 
-	public int Health { get; set; }
 	public int AdditionalForce { get; set; }
 
 	public bool IsAttacking { get; protected set; }
@@ -49,8 +44,6 @@ public class Unit : Photon.MonoBehaviour
 	public Animation ControllerAnimation;
 	public int TypeSoundId { get; protected set; }
 	public CharacterSound CharSound { get; protected set; }
-
-	public int Team {get; protected set;}
 
 	private bool canHit;
 	public bool CanHit {
@@ -83,9 +76,9 @@ public class Unit : Photon.MonoBehaviour
 
 	protected HealthBar healthBar;
 
-	void Init ()
+	public override void Init ()
 	{
-		Health = MaxHealth;
+		base.Init();
 
 		CharSound = GetComponent<CharacterSound> ();
 
@@ -159,6 +152,11 @@ public class Unit : Photon.MonoBehaviour
 
 	void Update ()
 	{
+		UnitStatus ();
+	}
+	
+	public virtual void UnitStatus ()
+	{
 		if (playerUnit)
 		{
 			switch (unitState)
@@ -220,9 +218,9 @@ public class Unit : Photon.MonoBehaviour
 				break;
 
 			case UnitState.Attack:
-				
+
 				followingTarget = true;
-				
+
 				if (IsAttacking) return;
 
 				Stop ();
@@ -297,7 +295,7 @@ public class Unit : Photon.MonoBehaviour
 		{
 			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
 			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(Force + AdditionalForce);
-				
+
 			if (!PhotonNetwork.offlineMode)
 			{
 				if (targetAttack.GetComponent<Unit>())
@@ -367,22 +365,6 @@ public class Unit : Photon.MonoBehaviour
 	public void Deactive ()
 	{
 		hudController.DestroySelected (transform);
-	}
-
-	public void ReceiveAttack (int Damage)
-	{
-		if (IsDead) return;
-
-		int newDamage = Mathf.Max (0, Damage - Defense);
-
-		Health -= newDamage;
-		Health = Mathf.Clamp (Health, 0, MaxHealth);
-
-		if (Health == 0)
-		{
-			SendMessage ("OnDead", SendMessageOptions.DontRequireReceiver);
-			StartCoroutine (Die ());
-		}
 	}
 
 	public bool IsRangeAttack (GameObject soldier)
@@ -567,13 +549,13 @@ public class Unit : Photon.MonoBehaviour
 		}
 
 		troopController.RemoveSoldier(this);
-		
+
 		if (unitAnimation.DieAnimation)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
-		
+
 		if (PhotonNetwork.offlineMode) Destroy (gameObject);
 		else if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
 	}
@@ -581,6 +563,11 @@ public class Unit : Photon.MonoBehaviour
 	// GIZMOS
 
 	void OnDrawGizmosSelected ()
+	{
+		DrawGizmosSelected ();
+	}
+	
+	public virtual void DrawGizmosSelected ()
 	{
 		Gizmos.color = Color.cyan;
 		Gizmos.DrawWireSphere (this.transform.position, distanceView);

@@ -10,12 +10,35 @@ public class Team
 	public Transform initialPosition;
 }
 
+[System.Serializable]
+public class ResourcesManager
+{
+	public int NumberOfRocks {get; protected set;}
+	
+	public ResourcesManager ()
+	{
+		NumberOfRocks = 50;
+	}
+	
+	public void Set (Resource.Type resourceType, int numberOfResources)
+	{
+		if (resourceType == Resource.Type.Rock)
+		{
+			NumberOfRocks += numberOfResources;
+			Debug.Log ("NumberOfRocks: " + NumberOfRocks);
+		}
+	}
+}
+
 public class GameplayManager : MonoBehaviour
 {
 	
 	public Team[] teams;
 	
 	public int MyTeam {get; protected set;}
+	
+	// Resources
+	public ResourcesManager resources;
 	
 	public void Init ()
 	{
@@ -35,6 +58,8 @@ public class GameplayManager : MonoBehaviour
 				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
 			}
 		}
+		
+		resources = new ResourcesManager ();
 	}
 	
 	public Color GetColorTeam (int teamID)
@@ -61,4 +86,5 @@ public class GameplayManager : MonoBehaviour
 	{
 		return factory.Team == MyTeam;
 	}
+	
 }

@@ -20,7 +20,7 @@ public class CreationPoint : MonoBehaviour {
 	{
 		if (active)
 		{
-			if (touchController.touchType == TouchController.TouchType.Press)
+			if (touchController.touchType != TouchController.TouchType.First)
 			{
 				Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
 				RaycastHit hit;
@@ -37,29 +37,37 @@ public class CreationPoint : MonoBehaviour {
 			}
 			else
 			{
-				Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
-				RaycastHit hit;
-				
-				int layerMask = 1 << LayerMask.NameToLayer("Terrain");
-				
-				// Patch transform com hit.point
-				transform.position = Vector3.zero;
-				
-				if (Physics.Raycast (ray, out hit, layerMask))
+				if (touchController.idTouch == TouchController.IdTouch.Id1)
 				{
-					transform.position = hit.point;
+					Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
+					RaycastHit hit;
+					
+					int layerMask = 1 << LayerMask.NameToLayer("Terrain");
+					
+					// Patch transform com hit.point
+					transform.position = Vector3.zero;
+					
+					if (Physics.Raycast (ray, out hit, layerMask))
+					{
+						transform.position = hit.point;
+					}
+					
+					active = false;
 				}
-				
-				active = false;
 			}
 		}
-		
-		if (touchController.touchType == TouchController.TouchType.First)
+		else
 		{
-			if (touchController.GetFirstRaycastHit.transform == transform)
+			if (touchController.touchType == TouchController.TouchType.First)
 			{
-				touchController.DisableDragOn = true;
-				active = true;
+				if (touchController.idTouch == TouchController.IdTouch.Id1)
+				{
+					if (touchController.GetFirstRaycastHit.transform == transform)
+					{
+						touchController.DisableDragOn = true;
+						active = true;
+					}
+				}
 			}
 		}
 	}

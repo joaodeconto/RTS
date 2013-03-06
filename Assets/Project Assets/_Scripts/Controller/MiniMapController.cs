@@ -86,12 +86,6 @@ public class MiniMapController : MonoBehaviour
 		return this;
 	}
 
-	void Awake()
-	{
-		if(!WasInitialized)
-			Init();
-	}
-
 	void RefreshMiniMapSize()
 	{
 		miniMapSize = mapTransform.localScale;//miniMapCollider.bounds.max - miniMapCollider.bounds.min;//.size;//(miniMapMaxPoint - miniMapMinPoint);
@@ -169,7 +163,7 @@ public class MiniMapController : MonoBehaviour
 											//(camBounds.scenario.y.max - camBounds.scenario.y.min),
 											//(camBounds.scenario.z.max - camBounds.scenario.z.min));
 
-		Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
+		//Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
 		//Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
 
 		Vector2 percentPos = new Vector2 (  (mapTransform.localPosition.x +
@@ -177,9 +171,9 @@ public class MiniMapController : MonoBehaviour
 											(mapTransform.localPosition.y +
 												(MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y)) / miniMapSize.y);
 
-		Debug.Log("percentPos: " + percentPos);
-		Debug.Log("mapSize: " + mapSize);
-		Debug.Log("mainCameraGO.transform.position: " + mainCameraGO.transform.position);
+		//Debug.Log("percentPos: " + percentPos);
+		//Debug.Log("mapSize: " + mapSize);
+		//Debug.Log("mainCameraGO.transform.position: " + mainCameraGO.transform.position);
 
 		Vector3 newCameraPosition = new Vector3((camBoundsSize.x * percentPos.x)         - (offsetCamPos.x ),
 											    (mainCameraGO.transform.localPosition.y) - (offsetCamPos.y),

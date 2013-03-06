@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 using Visiorama;
 
-public class FactoryBase : MonoBehaviour {
-
+public class FactoryBase : IStats
+{
 	public const int MAX_NUMBER_OF_LISTED = 5;
 
 	[System.Serializable]
@@ -23,18 +23,11 @@ public class FactoryBase : MonoBehaviour {
 	protected float timeToCreate;
 	private float timer;
 
-	public int MaxHealth = 200;
-
-	public int Team;
-	
 	public Transform waypoint;
 
 	public bool playerUnit;
 
-	public int Health {get; private set;}
 	public Animation ControllerAnimation {get; private set;}
-
-	public bool Actived {get; protected set;}
 
 	protected GameplayManager gameplayManager;
 
@@ -49,12 +42,12 @@ public class FactoryBase : MonoBehaviour {
 		}
 	}
 
-	void Init ()
+	public override void Init ()
 	{
-		Health = MaxHealth;
+		base.Init();
 
 		timer = 0;
-		
+
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 
@@ -72,9 +65,9 @@ public class FactoryBase : MonoBehaviour {
 				Team = 0;
 			}
 		}
-		
+
 		if (waypoint == null) waypoint = transform.FindChild("Waypoint");
-		
+
 		waypoint.gameObject.SetActive (false);
 
 		playerUnit = gameplayManager.IsSameTeam (this);
@@ -127,14 +120,14 @@ public class FactoryBase : MonoBehaviour {
 	void InvokeUnit (Unit unit)
 	{
 //		Vector3 unitSpawnPosition = transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius);
-		
+
 		// Look At
 		Vector3 difference = waypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);
 		Vector3 forward = rotation * Vector3.forward;
-		
+
 		Vector3 unitSpawnPosition = transform.position + (forward * GetComponent<CapsuleCollider>().radius);
-		
+
 		if (PhotonNetwork.offlineMode)
 		{
 			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
@@ -149,21 +142,7 @@ public class FactoryBase : MonoBehaviour {
 		}
 	}
 
-	public void ReceiveAttack (int Damage)
-	{
-		int newDamage = Mathf.Max (0, Damage);
-
-		Health -= newDamage;
-		Health = Mathf.Clamp (Health, 0, MaxHealth);
-
-		if (Health == 0)
-		{
-			SendMessage ("OnDestruction", SendMessageOptions.DontRequireReceiver);
-			Destruction ();
-		}
-	}
-
-	void Destruction ()
+	void OnDie ()
 	{
 		ComponentGetter.Get<FactoryController> ().RemoveFactory (this);
 //		if (PhotonNetwork.offlineMode) Destroy (gameObject);
@@ -184,7 +163,7 @@ public class FactoryBase : MonoBehaviour {
 		if (playerUnit)
 		{
 			waypoint.gameObject.SetActive (true);
-			
+
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				hudController.CreateButtonInInspector (uf.buttonName, uf.positionButton, uf.unit, this);
@@ -195,19 +174,19 @@ public class FactoryBase : MonoBehaviour {
 	public bool Deactive ()
 	{
 		if (waypoint.GetComponent<CreationPoint> ().active) return false;
-		
+
 		if (Actived) Actived = false;
 		else return false;
-		
+
 		hudController.DestroySelected (transform);
 
 		if (playerUnit)
 		{
 			waypoint.gameObject.SetActive (false);
-			
+
 			hudController.DestroyInspector ();
 		}
-		
+
 		return true;
 	}
 
