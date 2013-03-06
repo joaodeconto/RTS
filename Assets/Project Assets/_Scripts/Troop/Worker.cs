@@ -5,9 +5,10 @@ using Visiorama.Extension;
 public class Worker : Unit
 {
 	[System.Serializable]
-	public class ConstructorAnimation
+	public class WorkerAnimation
 	{
 		public AnimationClip Extracting;
+		public AnimationClip CarryingIdle;
 		public AnimationClip Carrying;
 	}
 
@@ -15,14 +16,15 @@ public class Worker : Unit
 	public class ResourceWorker 
 	{
 		public Resource.Type type;
-		public GameObject extractingPrefab;
-		public GameObject carryingPrefab;
-		public float carryingAcceleration;
+		public GameObject extractingObject;
+		public GameObject carryingObject;
 		public float carryingSpeed;
+		public float carryingAcceleration;
 		public float carryingAngularSpeed;
+		public WorkerAnimation workerAnimation;
 	}
 	
-	public enum ConstructorState
+	public enum WorkerState
 	{
 		Extracting = 0,
 		Carrying = 1,
@@ -32,18 +34,17 @@ public class Worker : Unit
 	public int forceToExtract;
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
-	public ConstructorAnimation constructorAnimation;
 	public ResourceWorker[] resourceWorker;
 	
-	public ConstructorState constructorState {get; protected set;}
-	
-	public Resource resource {get; protected set;}
+	public WorkerState workerState {get; protected set;}
 	
 	public bool IsExtracting {get; protected set;}
 	
-	public Resource.Type resourceType {get; protected set;}
+	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
 	public bool hasResource {get; protected set;}
+	protected int resourceId;
+	protected bool settingWorkerNull;
 	
 	protected TouchController touchController;
 	
@@ -54,7 +55,17 @@ public class Worker : Unit
 	{
 		base.Init ();
 		
-		constructorState = ConstructorState.None;
+		resourceId = -1;
+		
+		foreach (ResourceWorker rw in resourceWorker)
+		{
+			rw.carryingObject.SetActive (false);
+			rw.extractingObject.SetActive (false);
+		}
+		
+		hasResource = settingWorkerNull = false;
+		
+		workerState = WorkerState.None;
 		
 		touchController = Visiorama.ComponentGetter.Get<TouchController>();
 	}
@@ -63,43 +74,63 @@ public class Worker : Unit
 	{
 		if (playerUnit)
 		{
-			switch (constructorState)
+			switch (workerState)
 			{
-			case ConstructorState.Extracting:
+			case WorkerState.Extracting:
+				if (resource == null)
+				{
+					resourceWorker[resourceId].extractingObject.SetActive (false);
+					resourceId = -1;
+					return;
+				}
+				
 				if (!IsExtracting) StartCoroutine (Extract ());
 				break;
 				
-			case ConstructorState.Carrying:
-				if (resource != null) resource.SetBuilder (null);
+			case WorkerState.Carrying:
+				if (resource != null &&
+					!settingWorkerNull)
+				{
+					settingWorkerNull = true;
+					resource.SetWorker (null);
+				}
 				
 				if (!MovingToMainFactory)
 				{
 					SetResourceInMainBuilding ();
 				}
 				
-				if (constructorAnimation.Carrying)
+				if (!MoveComplete())
 				{
-					ControllerAnimation[constructorAnimation.Carrying.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
-					ControllerAnimation.PlayCrossFade (constructorAnimation.Carrying, WrapMode.Loop);
+					if (resourceWorker[resourceId].workerAnimation.Carrying)
+					{
+						ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
+						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying, WrapMode.Loop);
+					}
+				}
+				else
+				{
+					if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
+						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 				}
 				
 				if (Vector3.Distance (transform.position, mainFactory.transform.position) < transform.GetComponent<CapsuleCollider>().radius + mainFactory.GetComponent<CapsuleCollider>().radius)
 				{
-//					Debug.DrawRay (resource.transform.position, Vector3.up * 5f, Color.red);
-//					Debug.Break ();
-					
 					if (resource != null) Move (resource.transform.position);
 					gameplayManager.resources.Set (resource.type, currentNumberOfResources);
 					currentNumberOfResources = 0;
-					hasResource = false;
-					constructorState = ConstructorState.None;
-					MovingToMainFactory = false;
+					workerState = WorkerState.None;
+					MovingToMainFactory = hasResource = settingWorkerNull = false;
+					
+					resourceWorker[resourceId].carryingObject.SetActive (false);
+					
+					resourceId = -1;
 					
 					ResetPathfindValue ();
 				}
 				break;
 				
-			case ConstructorState.None:
+			case WorkerState.None:
 				base.UnitStatus ();
 				
 				if (resource != null)
@@ -107,30 +138,74 @@ public class Worker : Unit
 					if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.collider.radius)
 					{
 						pathfind.Stop ();
-						resource.SetBuilder (this);
-						constructorState = ConstructorState.Extracting;
+						
+						if (resource.SetWorker (this))
+						{
+							int i = 0;
+							foreach (ResourceWorker rw in resourceWorker)
+							{
+								if (rw.type == resource.type)
+								{
+									resourceId = i;
+									rw.extractingObject.SetActive (true);
+								}
+							}
+							
+							workerState = WorkerState.Extracting;
+						}
+						else
+						{
+							if (unitState != Unit.UnitState.Idle) unitState = Unit.UnitState.Idle;
+						}
 					}
 				}
 				break;
 			}
 			
-			if (touchController.touchType == TouchController.TouchType.Ended)
+//			if (touchController.touchType == TouchController.TouchType.Ended)
+//			{
+//				if (touchController.idTouch == TouchController.IdTouch.Id1)
+//				{
+//					if (touchController.GetFinalRaycastHit.transform.GetComponent<Resource>() != null)
+//					{
+//						if (resource == null)
+//						{
+//							resource = touchController.GetFinalRaycastHit.transform.GetComponent<Resource>();
+//						}
+//					}
+//					else
+//					{
+//						if (!hasResource)
+//						{
+//							resource.SetWorker (null);
+//							resource = null;
+//							if (workerState != WorkerState.None) workerState = WorkerState.None;
+//						}
+//						else
+//						{
+//							if (touchController.GetFinalRaycastHit.transform.GetComponent<MainFactory>() != null)
+//							{
+//								if (gameplayManager.IsSameTeam (touchController.GetFinalRaycastHit.transform.GetComponent<MainFactory>()))
+//								{
+//									MovingToMainFactory = false;
+//									mainFactory = touchController.GetFinalRaycastHit.transform.GetComponent<FactoryBase>();
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+		}
+	}
+	
+	public void SetResource (Resource newResource)
+	{
+		if (resource == null)
+		{
+			resource = newResource;
+			if (newResource == null)
 			{
-				if (touchController.idTouch == TouchController.IdTouch.Id1)
-				{
-					if (touchController.GetFinalRaycastHit.transform.GetComponent<Resource>() != null)
-					{
-						if (resource == null)
-						{
-							resource = touchController.GetFinalRaycastHit.transform.GetComponent<Resource>();
-						}
-					}
-					else
-					{
-						resource = null;
-						if (constructorState != ConstructorState.None) constructorState = ConstructorState.None; 
-					}
-				}
+				if (workerState != WorkerState.None) workerState = WorkerState.None;
 			}
 		}
 	}
@@ -139,11 +214,11 @@ public class Worker : Unit
 	{
 		IsExtracting = true;
 		
-		ControllerAnimation.PlayCrossFade (constructorAnimation.Extracting, WrapMode.Once);
-		yield return StartCoroutine (ControllerAnimation.WhilePlaying (constructorAnimation.Extracting));
+		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
+		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 		
 		if (resource != null) resource.ExtractResource (forceToExtract);
-		else constructorState = ConstructorState.None;
+		else workerState = WorkerState.None;
 		
 		IsExtracting = false;
 	}
@@ -158,23 +233,25 @@ public class Worker : Unit
 		currentNumberOfResources = gotNumberResources;
 		hasResource = true;
 		
-		foreach (ResourceWorker rw in resourceWorker)
-		{
-			if (rw.type == resource.type)
-			{
-				pathfind.acceleration = rw.carryingAcceleration;
-				pathfind.speed = rw.carryingSpeed;
-				pathfind.angularSpeed = rw.carryingAngularSpeed;
-				break;
-			}
-		}
+		pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
+		pathfind.speed = resourceWorker[resourceId].carryingSpeed;
+		pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
+		resourceWorker[resourceId].extractingObject.SetActive (false);
+		resourceWorker[resourceId].carryingObject.SetActive (true);
 		
-		constructorState = ConstructorState.Carrying;
+		workerState = WorkerState.Carrying;
+	}
+	
+	public void SetResourceInMainBuilding (FactoryBase factory)
+	{
+		mainFactory = factory;
+		Move (mainFactory.transform.position);
+		MovingToMainFactory = true;
 	}
 	
 	void SetResourceInMainBuilding ()
 	{
-		if (mainFactory == null) SetFactory ();
+		if (mainFactory == null) SearchFactory ();
 		
 		if (mainFactory != null)
 		{
@@ -183,13 +260,13 @@ public class Worker : Unit
 		}
 	}
 	
-	void SetFactory ()
+	void SearchFactory ()
 	{
 		foreach (FactoryBase fb in factoryController.factorys)
 		{
-			if (fb.GetType ().ToString ().Equals ("MainFactory"))
+			if (gameplayManager.IsSameTeam (fb))
 			{
-				if (gameplayManager.IsSameTeam (fb))
+				if (fb.GetType () == typeof(MainFactory))
 				{
 					if (mainFactory == null)
 					{

@@ -25,7 +25,6 @@ public class ResourcesManager
 		if (resourceType == Resource.Type.Rock)
 		{
 			NumberOfRocks += numberOfResources;
-			Debug.Log ("NumberOfRocks: " + NumberOfRocks);
 		}
 	}
 }
@@ -87,4 +86,11 @@ public class GameplayManager : MonoBehaviour
 		return factory.Team == MyTeam;
 	}
 	
+	// TODO: Mostrando só os valores na tela
+	
+	void OnGUI ()
+	{
+		GUI.Label (new Rect(10, 10, 110, 50), "Pedra foderosa:");
+		GUI.Label (new Rect(110, 10, 150, 50), resources.NumberOfRocks.ToString ());
+	}
 }

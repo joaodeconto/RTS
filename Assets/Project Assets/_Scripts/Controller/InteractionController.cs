@@ -34,35 +34,77 @@ public class InteractionController : MonoBehaviour
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id1)
 			{
-				Interaction (touchController.GetFinalRay);
+				Interaction (touchController.GetFinalRaycastHit.transform);
 			}
 		}
 #endif
 	}
 
-	void Interaction (Ray raycast)
+	void Interaction (Transform hit)
 	{
 		if (troopController.selectedSoldiers.Count == 0) return;
-
-		RaycastHit hit;
-
-		if (Physics.Raycast (raycast, out hit))
+		
+		if (hit.CompareTag ("Factory"))
 		{
-			if (hit.transform.CompareTag ("Factory"))
+			if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
 			{
-				if (!gameplayManager.IsSameTeam (hit.transform.GetComponent<FactoryBase> ()))
-				{
-					troopController.AttackTroop (hit.transform.gameObject);
-				}
-				return;
+				troopController.AttackTroop (hit.transform.gameObject);
 			}
-			if (hit.transform.CompareTag ("Unit"))
+			else
 			{
-				if (!gameplayManager.IsSameTeam (hit.transform.GetComponent<Unit> ()))
+				if (hit.GetComponent<MainFactory>() != null)
 				{
-					troopController.AttackTroop (hit.transform.gameObject);
+					foreach (Unit unit in troopController.selectedSoldiers)
+					{
+						if (unit.GetType() == typeof(Worker))
+						{
+							Worker worker = unit as Worker;
+							if (!worker.hasResource)
+							{
+								worker.SetResourceInMainBuilding(hit.GetComponent<FactoryBase>());
+							}
+						}
+					}
 				}
-				return;
+			}
+			return;
+		}
+		if (hit.CompareTag ("Unit"))
+		{
+			if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
+			{
+				troopController.AttackTroop (hit.gameObject);
+			}
+			return;
+		}
+		
+		if (hit.GetComponent<Resource> () != null)
+		{
+			foreach (Unit unit in troopController.selectedSoldiers)
+			{
+				if (unit.GetType() == typeof(Worker))
+				{
+					Worker worker = unit as Worker;
+					worker.SetResource(hit.GetComponent<Resource> ());
+				}
+			}
+		}
+		else
+		{
+			foreach (Unit unit in troopController.selectedSoldiers)
+			{
+				if (unit.GetType() == typeof(Worker))
+				{
+					Worker worker = unit as Worker;
+					if (!worker.hasResource)
+					{
+						if (worker.resource != null)
+						{
+							worker.resource.SetWorker (null);
+							worker.SetResource (null);
+						}
+					}
+				}
 			}
 		}
 

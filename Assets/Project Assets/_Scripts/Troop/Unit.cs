@@ -16,6 +16,13 @@ public class Unit : IStats
 		public AnimationClip[] SpecialAttack;
 	}
 
+	[System.Serializable]
+	public class RendererTeamColor
+	{
+		public SkinnedMeshRenderer skinnedMeshRenderer;
+		public Material materialToApplyColor;
+	}
+	
 	public enum UnitState
 	{
 		Idle = 0,
@@ -32,9 +39,9 @@ public class Unit : IStats
 	public bool playerUnit;
 
 	public UnitAnimation unitAnimation;
-
+	
 	public int Category;
-	public SkinnedMeshRenderer applyColor;
+	public RendererTeamColor[] rendererTeamColor;
 
 	public int AdditionalForce { get; set; }
 
@@ -95,7 +102,7 @@ public class Unit : IStats
 //			ControllerAnimation.SetLayer (animation.Walk, 0);
 //			ControllerAnimation.SetLayer (animation.Attack, 0);
 //		}
-
+		
 		factoryController = ComponentGetter.Get<FactoryController> ();
 		troopController = ComponentGetter.Get<TroopController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
@@ -114,8 +121,8 @@ public class Unit : IStats
 			if (photonView.isMine)
 			{
 				Team = (int)PhotonNetwork.player.customProperties["team"];
-				if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
-				photonView.RPC ("TeamID", PhotonTargets.OthersBuffered, Team);
+				SetColorTeam (Team);
+				photonView.RPC ("SetColorTeam", PhotonTargets.OthersBuffered, Team);
 				playerUnit = true;
 			}
 			else
@@ -133,7 +140,8 @@ public class Unit : IStats
 			{
 				Team = 1;
 			}
-			if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
+			
+			SetColorTeam (Team);
 		}
 
 		this.gameObject.tag = "Unit";
@@ -145,17 +153,25 @@ public class Unit : IStats
 	}
 
 	[RPC]
-	void TeamID (int teamID)
+	void SetColorTeam (int teamID)
 	{
 		Team = teamID;
-		if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
+		
+		foreach (RendererTeamColor rtc in rendererTeamColor)
+		{
+			for (int i = 0; i != rtc.skinnedMeshRenderer.materials.Length; i++)
+			{
+				if (rtc.skinnedMeshRenderer.materials[i].name.Equals (rtc.materialToApplyColor.name + " (Instance)"))
+				{
+					rtc.skinnedMeshRenderer.materials[i].color = gameplayManager.GetColorTeam (Team);
+				}
+			}
+		}
 	}
 
 	void Awake ()
 	{
 		Init();
-		//enabled = false;
-		//Invoke ("Init", 0.1f);
 	}
 
 	void Update ()
@@ -387,7 +403,9 @@ public class Unit : IStats
 
 	public bool MoveComplete (Vector3 destination)
 	{
-		return Vector3.Distance(transform.position, destination) <= 2;
+		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
+				pathfind.velocity.sqrMagnitude < 0.1f;
+//		return Vector3.Distance(transform.position, destination) <= 2;
 	}
 
 //	bool start = false;
@@ -395,9 +413,9 @@ public class Unit : IStats
 	{
 //		if (pathfind.desiredVelocity.sqrMagnitude < 0.001f) start = !start;
 //		return pathfind.desiredVelocity.sqrMagnitude < 0.001f || !start;
-//		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
-//				pathfind.velocity.sqrMagnitude < 0.1f;
-		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
+		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
+				pathfind.velocity.sqrMagnitude < 0.1f;
+//		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
 	}
 
 	public void TargetingEnemy (GameObject enemy)
