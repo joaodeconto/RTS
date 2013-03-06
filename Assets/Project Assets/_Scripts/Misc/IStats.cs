@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class IStats : Photon.MonoBehaviour
+public abstract class IStats : Photon.MonoBehaviour
 {
 	public int Health { get; protected set; }
 	public int MaxHealth = 200;
@@ -35,4 +35,7 @@ public class IStats : Photon.MonoBehaviour
 		}
 	}
 
+	public GameObject model;
+	public abstract void SetVisible(bool visible);
+	public abstract bool IsVisible { get; }
 }

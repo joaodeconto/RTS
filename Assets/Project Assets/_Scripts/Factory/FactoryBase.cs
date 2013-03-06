@@ -18,6 +18,7 @@ public class FactoryBase : IStats
 	}
 
 	public UnitFactory[] unitsToCreate;
+
 	protected List<Unit> listedToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected float timeToCreate;
@@ -193,5 +194,18 @@ public class FactoryBase : IStats
 	public void CallUnit (Unit unit)
 	{
 		listedToCreate.Add (unit);
+	}
+
+	public override void SetVisible(bool visible)
+	{
+		model.SetActive(visible);
+	}
+
+	public override bool IsVisible
+	{
+		get
+		{
+			return model.activeSelf;
+		}
 	}
 }
