@@ -29,6 +29,9 @@ public class FactoryController : MonoBehaviour
 
 	public void SelectFactory (FactoryBase factory)
 	{
+		if(!factory.IsVisible)
+			return;
+
 		selectedFactory = factory;
 
 		factory.Active ();

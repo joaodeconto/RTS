@@ -118,10 +118,12 @@ public class TroopController : MonoBehaviour
 
 	public void SelectSoldier (Unit soldier, bool select)
 	{
+		if(!soldier.IsVisible)
+			return;
+
 		if (select)
 		{
 			enemySelected = !gameplayManager.IsSameTeam (soldier);
-
 			selectedSoldiers.Add (soldier);
 
 			soldier.Active ();

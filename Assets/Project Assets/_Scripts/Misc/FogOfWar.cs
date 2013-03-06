@@ -6,11 +6,11 @@ using Visiorama;
 
 public class FogOfWar : MonoBehaviour
 {
-	public bool UseFog;
+	public bool UseFog  = true;
+	public bool DarkFog = true;
 
 	public GameObject pref_plane;
 
-	public bool DarkFog = true;
 	public Color visibleAreaColor = new Color(1.0f,1.0f,1.0f,0.0f);
 	public Color knownAreaColor   = new Color(0.5f,0.5f,0.5f,0.5f);
 
@@ -18,7 +18,8 @@ public class FogOfWar : MonoBehaviour
 
 	public List<Transform> allies;
 	public List<IStats> entityAllies;
-	public List<GameObject> enemies;
+	public List<Transform> enemies;
+	public List<IStats> entityEnemies;
 
 	public Vector3 mapSize;
 
@@ -26,12 +27,22 @@ public class FogOfWar : MonoBehaviour
 
 	private const int SIZE_TEXTURE = 128;
 
+	private enum FogFlag
+	{
+		VISITED,
+		NOT_VISIBLE,
+		VISIBLE,
+	}
+
+	bool[,] fogNodeVisited;
+
 	public FogOfWar Init()
 	{
 		if(!UseFog)
 			return this;
 
-		texture = new Texture2D(SIZE_TEXTURE,SIZE_TEXTURE, TextureFormat.ARGB32, false);
+		texture        = new Texture2D(SIZE_TEXTURE, SIZE_TEXTURE, TextureFormat.ARGB32, false);
+		fogNodeVisited = new bool[SIZE_TEXTURE,SIZE_TEXTURE];
 
 		for(int i = 0; i != SIZE_TEXTURE; ++i)
 			for(int j = 0; j != SIZE_TEXTURE; ++j)
@@ -63,7 +74,8 @@ public class FogOfWar : MonoBehaviour
 
 		allies       = new List<Transform>();
 		entityAllies = new List<IStats>();
-		enemies      = new List<GameObject>();
+		enemies      = new List<Transform>();
+		entityEnemies= new List<IStats>();
 
 		return this;
 	}
@@ -76,23 +88,31 @@ public class FogOfWar : MonoBehaviour
 		//if(Time.time % 200)
 			//return;
 
+		for(int i = 0; i != SIZE_TEXTURE; ++i)
+			for(int j = 0; j != SIZE_TEXTURE; ++j)
+				if(fogNodeVisited[i,j])
+				{
+					texture.SetPixel(i, j, knownAreaColor);
+				}
+
 		Transform trns = null;
-		int maxX, maxY, minX, minY, range, xRange = 0;
-		Vector2 pos;
+		int maxX, maxY, minX, minY,
+			range, xRange = 0,
+			posX, posY;
 
 		for(int i = allies.Count - 1; i != -1; --i)
 		{
 			trns = allies[i];
 
-			pos = new Vector2(SIZE_TEXTURE * (trns.position.x / mapSize.x),
-							  SIZE_TEXTURE * (trns.position.z / mapSize.z));
+			posX = (int)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = (int)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
 			range = (int)(SIZE_TEXTURE * (entityAllies[i].RangeView / mapSize.x));
 
-			//maxX = Mathf.CeilToInt (pos.x + range);
-			//maxY = Mathf.CeilToInt (pos.y + range);
-			//minX = Mathf.FloorToInt(pos.x - range);
-			//minY = Mathf.FloorToInt(pos.y - range);
+			//maxX = Mathf.CeilToInt (posX + range);
+			//maxY = Mathf.CeilToInt (posY + range);
+			//minX = Mathf.FloorToInt(posX - range);
+			//minY = Mathf.FloorToInt(posY - range);
 
 			//for(int j = minX; j != maxX; ++j)
 			//{
@@ -102,8 +122,8 @@ public class FogOfWar : MonoBehaviour
 				//}
 			//}
 
-			maxY = (int)Mathf.Clamp(pos.y + range, 0, SIZE_TEXTURE);
-			minY = (int)Mathf.Clamp(pos.y - range, 0, SIZE_TEXTURE);
+			maxY = (int)Mathf.Clamp(posY + range, 0, SIZE_TEXTURE);
+			minY = (int)Mathf.Clamp(posY - range, 0, SIZE_TEXTURE);
 
 			//float changeAngleRate = 180.0f / (2.0f * range);
 			//float angle = 0.0f;
@@ -112,7 +132,7 @@ public class FogOfWar : MonoBehaviour
 			{
 				//xRange = (int)(Mathf.Sin(Mathf.Deg2Rad * angle) * (float)range);
 
-				xRange = (int)Mathf.Sqrt((range * range) - ((k - minY - range) * (k - minY - range)) );
+				xRange = (int)Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) );
 					 //_________
 				//x = V r² + y² `
 
@@ -121,17 +141,12 @@ public class FogOfWar : MonoBehaviour
 				//Debug.Log("changeAngleRate: " + changeAngleRate);
 				//Debug.Log("Mathf.Deg2Rad * angle: " + (Mathf.Deg2Rad * angle));
 
-				maxX = (int)Mathf.Clamp(pos.x + xRange, 0, SIZE_TEXTURE);
-				minX = (int)Mathf.Clamp(pos.x - xRange, 0, SIZE_TEXTURE);
-
-				//Debug.LogError("hmm");
-
-				//Debug.Log("(k - pos.y): " + (k - pos.y));
-				//Debug.Log("minX: " + minX);
-				//Debug.Log("maxX: " + maxX);
+				maxX = (int)Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE);
+				minX = (int)Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE);
 
 				for(int j = minX; j != maxX; ++j)
 				{
+					fogNodeVisited[j,k] = true;
 					texture.SetPixel(j, k, visibleAreaColor);
 				}
 			}
@@ -148,6 +163,16 @@ public class FogOfWar : MonoBehaviour
 
 		texture.Apply();
 		r.material.mainTexture = texture;
+
+		for(int i = enemies.Count - 1; i != -1; --i)
+		{
+			trns = enemies[i];
+
+			posX = (int)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = (int)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+
+			entityEnemies[i].SetVisible(fogNodeVisited[posX,posY]);
+		}
 	}
 
 	public FogOfWar AddEntity(Transform trnsEntity, IStats entity)
@@ -159,8 +184,10 @@ public class FogOfWar : MonoBehaviour
 		}
 		else
 		{
-			enemies.Add(trnsEntity.gameObject);
+			enemies.Add(trnsEntity);
+			entityEnemies.Add(entity);
 		}
+
 		return this;
 	}
 
@@ -175,7 +202,10 @@ public class FogOfWar : MonoBehaviour
 		}
 		else
 		{
-			allies.Remove(trnsEntity);
+			int index = enemies.IndexOf(trnsEntity);
+
+				  enemies.RemoveAt(index);
+			entityEnemies.RemoveAt(index);
 		}
 
 		return this;

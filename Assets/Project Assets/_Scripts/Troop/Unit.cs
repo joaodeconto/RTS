@@ -154,7 +154,7 @@ public class Unit : IStats
 	{
 		UnitStatus ();
 	}
-	
+
 	public virtual void UnitStatus ()
 	{
 		if (playerUnit)
@@ -566,7 +566,7 @@ public class Unit : IStats
 	{
 		DrawGizmosSelected ();
 	}
-	
+
 	public virtual void DrawGizmosSelected ()
 	{
 		Gizmos.color = Color.cyan;
@@ -574,5 +574,18 @@ public class Unit : IStats
 
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere (this.transform.position, rangeAttack);
+	}
+
+	public override void SetVisible(bool visible)
+	{
+
+	}
+
+	public override bool IsVisible
+	{
+		get
+		{
+			return true;
+		}
 	}
 }
