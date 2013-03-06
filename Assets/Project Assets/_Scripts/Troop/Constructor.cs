@@ -77,13 +77,12 @@ public class Constructor : Unit
 //					Debug.Break ();
 //					
 					if (resource != null) Move (resource.transform.position);
-//					gameplayManager.resources.Set (resource.type, currentNumberOfResources);
-//					currentNumberOfResources = 0;
+					gameplayManager.resources.Set (resource.type, currentNumberOfResources);
+					currentNumberOfResources = 0;
 					hasResource = false;
 					constructorState = ConstructorState.None;
 					MovingToMainFactory = false;
 				}
-				Debug.Log ("currentNumberOfResources: " + currentNumberOfResources);
 				break;
 				
 			case ConstructorState.None:
@@ -91,6 +90,8 @@ public class Constructor : Unit
 				
 				if (resource != null)
 				{
+					Debug.Log (Vector3.Distance (transform.position, resource.transform.position) + " < " + (distanceToExtract + (resource.collider.radius - resource.collider.center.sqrMagnitude)));
+					Debug.Log ("center: " + resource.collider.center);
 					if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.collider.radius)
 					{
 						pathfind.Stop ();
@@ -166,7 +167,17 @@ public class Constructor : Unit
 			{
 				if (gameplayManager.IsSameTeam (fb))
 				{
-					mainFactory = fb;
+					if (mainFactory == null)
+					{
+						mainFactory = fb;
+					}
+					else
+					{
+						if (Vector3.Distance (transform.position, fb.transform.position) < Vector3.Distance (transform.position, mainFactory.transform.position))
+						{
+							mainFactory = fb;
+						}
+					}
 				}
 			}
 		}
