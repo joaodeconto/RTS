@@ -76,6 +76,10 @@ public class Unit : IStats
 
 	protected HealthBar healthBar;
 
+	protected float normalAcceleration;
+	protected float normalSpeed;
+	protected float normalAngularSpeed;
+	
 	public override void Init ()
 	{
 		base.Init();
@@ -99,6 +103,10 @@ public class Unit : IStats
 
 		pathfind = GetComponent<NavMeshAgent>();
 
+		normalAcceleration = pathfind.acceleration;
+		normalSpeed = pathfind.speed;
+		normalAngularSpeed = pathfind.angularSpeed;
+		
 		pathfindTarget = transform.position;
 
 		if (!PhotonNetwork.offlineMode)
@@ -559,7 +567,14 @@ public class Unit : IStats
 		if (PhotonNetwork.offlineMode) Destroy (gameObject);
 		else if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
 	}
-
+	
+	internal void ResetPathfindValue ()
+	{
+		pathfind.acceleration = normalAcceleration;
+		pathfind.speed = normalSpeed;
+		pathfind.angularSpeed = normalAngularSpeed;
+	}
+	
 	// GIZMOS
 
 	void OnDrawGizmosSelected ()

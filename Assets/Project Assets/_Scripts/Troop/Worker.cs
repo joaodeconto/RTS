@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Visiorama.Extension;
 
-public class Constructor : Unit
+public class Worker : Unit
 {
 	[System.Serializable]
 	public class ConstructorAnimation
@@ -11,6 +11,17 @@ public class Constructor : Unit
 		public AnimationClip Carrying;
 	}
 
+	[System.Serializable]
+	public class ResourceWorker 
+	{
+		public Resource.Type type;
+		public GameObject extractingPrefab;
+		public GameObject carryingPrefab;
+		public float carryingAcceleration;
+		public float carryingSpeed;
+		public float carryingAngularSpeed;
+	}
+	
 	public enum ConstructorState
 	{
 		Extracting = 0,
@@ -22,6 +33,7 @@ public class Constructor : Unit
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
 	public ConstructorAnimation constructorAnimation;
+	public ResourceWorker[] resourceWorker;
 	
 	public ConstructorState constructorState {get; protected set;}
 	
@@ -40,11 +52,11 @@ public class Constructor : Unit
 	
 	public override void Init ()
 	{
+		base.Init ();
+		
 		constructorState = ConstructorState.None;
 		
 		touchController = Visiorama.ComponentGetter.Get<TouchController>();
-		
-		base.Init ();
 	}
 	
 	public override void UnitStatus ()
@@ -75,13 +87,15 @@ public class Constructor : Unit
 				{
 //					Debug.DrawRay (resource.transform.position, Vector3.up * 5f, Color.red);
 //					Debug.Break ();
-//					
+					
 					if (resource != null) Move (resource.transform.position);
 					gameplayManager.resources.Set (resource.type, currentNumberOfResources);
 					currentNumberOfResources = 0;
 					hasResource = false;
 					constructorState = ConstructorState.None;
 					MovingToMainFactory = false;
+					
+					ResetPathfindValue ();
 				}
 				break;
 				
@@ -90,8 +104,6 @@ public class Constructor : Unit
 				
 				if (resource != null)
 				{
-					Debug.Log (Vector3.Distance (transform.position, resource.transform.position) + " < " + (distanceToExtract + (resource.collider.radius - resource.collider.center.sqrMagnitude)));
-					Debug.Log ("center: " + resource.collider.center);
 					if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.collider.radius)
 					{
 						pathfind.Stop ();
@@ -145,12 +157,24 @@ public class Constructor : Unit
 	{
 		currentNumberOfResources = gotNumberResources;
 		hasResource = true;
+		
+		foreach (ResourceWorker rw in resourceWorker)
+		{
+			if (rw.type == resource.type)
+			{
+				pathfind.acceleration = rw.carryingAcceleration;
+				pathfind.speed = rw.carryingSpeed;
+				pathfind.angularSpeed = rw.carryingAngularSpeed;
+				break;
+			}
+		}
+		
 		constructorState = ConstructorState.Carrying;
 	}
 	
 	void SetResourceInMainBuilding ()
 	{
-		if (mainFactory == null)SetFactory ();
+		if (mainFactory == null) SetFactory ();
 		
 		if (mainFactory != null)
 		{

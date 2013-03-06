@@ -11,7 +11,7 @@ public class Resource : MonoBehaviour {
 	public Type type;
 	public int numberOfResources = 200;
 	public int resistance = 5;
-	public Constructor constructor {get; protected set;}
+	public Worker constructor {get; protected set;}
 	
 	public CapsuleCollider collider {get; protected set;}
 	
@@ -41,7 +41,7 @@ public class Resource : MonoBehaviour {
 		}
 	}
 	
-	public void SetBuilder (Constructor constructor)
+	public void SetBuilder (Worker constructor)
 	{
 		if (constructor == null)
 		{
