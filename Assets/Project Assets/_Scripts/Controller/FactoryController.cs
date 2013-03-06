@@ -17,13 +17,14 @@ public class FactoryController : MonoBehaviour
 	{
 		factorys.Add (factory);
 		ComponentGetter.Get<MiniMapController> ().AddStructure (factory.transform, factory.Team);
-		//ComponentGetter.Get<FogOfWar> ().AddStructure (factory.transform, factory.Team);
+		ComponentGetter.Get<FogOfWar> ().AddEntity (factory.transform, factory);
 	}
 
 	public void RemoveFactory (FactoryBase factory)
 	{
 		factorys.Remove (factory);
 		ComponentGetter.Get<MiniMapController> ().RemoveStructure (factory.transform, factory.Team);
+		ComponentGetter.Get<FogOfWar> ().RemoveEntity (factory.transform, factory);
 	}
 
 	public void SelectFactory (FactoryBase factory)

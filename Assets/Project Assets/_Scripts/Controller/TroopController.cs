@@ -8,12 +8,12 @@ using Visiorama;
 public class TroopController : MonoBehaviour
 {
 	public const int MAX_NUMBER_OF_GROUPS = 9;
-	
+
 	public bool keepFormation {get; set;}
 
 	internal List<Unit> soldiers = new List<Unit> ();
 	internal List<Unit> selectedSoldiers;
-	
+
 	internal Dictionary<int, List<Unit>> troopGroups = new Dictionary<int, List<Unit>>();
 
 	protected bool enemySelected = false;
@@ -26,7 +26,7 @@ public class TroopController : MonoBehaviour
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 
 		selectedSoldiers = new List<Unit> ();
-		
+
 		keepFormation = false;
 		//InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
@@ -77,9 +77,9 @@ public class TroopController : MonoBehaviour
 							k++;
 						}
 					}
-					
+
 					soldier.Move (newDestination);
-					
+
 					i++;
 				}
 			}
@@ -100,6 +100,7 @@ public class TroopController : MonoBehaviour
 	{
 		soldiers.Add (soldier);
 		ComponentGetter.Get<MiniMapController> ().AddUnit (soldier.transform, soldier.Team);
+		ComponentGetter.Get<FogOfWar> ().AddEntity (soldier.transform, soldier);
 	}
 
 	public void RemoveSoldier (Unit soldier)
@@ -111,6 +112,7 @@ public class TroopController : MonoBehaviour
 		}
 
 		ComponentGetter.Get<MiniMapController> ().RemoveUnit (soldier.transform, soldier.Team);
+		ComponentGetter.Get<FogOfWar> ().RemoveEntity (soldier.transform, soldier);
 		soldiers.Remove (soldier);
 	}
 
@@ -148,7 +150,7 @@ public class TroopController : MonoBehaviour
 			Destroy (child.gameObject);
 		}
 	}
-	
+
 	public void CreateGroup (int numberGroup)
 	{
 		if (selectedSoldiers.Count != 0)
@@ -168,12 +170,12 @@ public class TroopController : MonoBehaviour
 					}
 				}
 			}
-			
+
 			if (!troopGroups.ContainsKey (numberGroup))
 			{
 				troopGroups.Add (numberGroup, new List<Unit>());
 			}
-			
+
 			foreach (Unit soldier in selectedSoldiers)
 			{
 				if (soldier.Group != numberGroup)
@@ -196,17 +198,17 @@ public class TroopController : MonoBehaviour
 		}
 		else VDebug.LogError ("Hasn't unit selected.");
 	}
-	
+
 	public bool SelectGroup (int numberGroup)
 	{
 		if (troopGroups.Count == 0) return false;
-		
+
 		foreach (KeyValuePair<int, List<Unit>> group in troopGroups)
 		{
 			if (group.Key == numberGroup)
 			{
 				DeselectAllSoldiers ();
-				
+
 				Debug.Log ("selectedSoldiers.Count: " + group.Value.Count);
 				foreach (Unit soldier in group.Value)
 				{
@@ -216,10 +218,10 @@ public class TroopController : MonoBehaviour
 				break;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public Unit FindUnit (string name)
 	{
 		int i = 0;
@@ -227,14 +229,14 @@ public class TroopController : MonoBehaviour
 		{
 			if (unit == null)
 				soldiers.RemoveAt (i);
-				
+
 			if (unit.name.Equals(name))
 			{
 				return unit;
 			}
 			i++;
 		}
-		
+
 		return null;
 	}
 
