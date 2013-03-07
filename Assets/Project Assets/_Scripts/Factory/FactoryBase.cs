@@ -12,20 +12,25 @@ public class FactoryBase : IStats
 	public class UnitFactory
 	{
 		public Unit unit;
+		public ResourcesManager costOfResources;
 		public float timeToCreate = 3f;
 		public string buttonName;
 		public Vector3 positionButton;
 	}
 
 	public UnitFactory[] unitsToCreate;
+
 	protected List<Unit> listedToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected float timeToCreate;
-	private float timer;
+	protected float timer;
+	protected bool inUpgrade;
 
 	public Transform waypoint;
 
 	public bool playerUnit;
+	
+	public RendererTeamColor[] rendererTeamColor;
 
 	public Animation ControllerAnimation {get; private set;}
 
@@ -54,7 +59,7 @@ public class FactoryBase : IStats
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 
-		if (Team == -1)
+		if (Team < 0)
 		{
 			if (!PhotonNetwork.offlineMode)
 			{
@@ -64,6 +69,12 @@ public class FactoryBase : IStats
 			{
 				Team = 0;
 			}
+		}
+		
+		SetColorTeam (Team);
+		if (!PhotonNetwork.offlineMode)
+		{
+			photonView.RPC ("SetColorTeam", PhotonTargets.OthersBuffered, Team);
 		}
 
 		if (waypoint == null) waypoint = transform.FindChild("Waypoint");
@@ -78,12 +89,24 @@ public class FactoryBase : IStats
 		if (!enabled) enabled = playerUnit;
 
 		ComponentGetter.Get<FactoryController> ().AddFactory (this);
+		
+		inUpgrade = false;
+	}
+	
+	[RPC]
+	void SetColorTeam (int teamID)
+	{
+		Team = teamID;
+		
+		foreach (RendererTeamColor rtc in rendererTeamColor)
+		{
+			rtc.SetColorInMaterial (transform, Team);
+		}
 	}
 
 	void Awake ()
 	{
-		enabled = false;
-		Invoke ("Init", 0.1f);
+		Init ();
 	}
 
 	void Update ()
@@ -100,6 +123,7 @@ public class FactoryBase : IStats
 					timeToCreate = uf.timeToCreate;
 				}
 			}
+			inUpgrade = true;
 		}
 		else
 		{
@@ -109,10 +133,23 @@ public class FactoryBase : IStats
 				timer = 0;
 				listedToCreate.Remove (unitToCreate);
 				unitToCreate = null;
+				inUpgrade = false;
 			}
 			else
 			{
 				timer += Time.deltaTime;
+			}
+		}
+	}
+	
+	void OnGUI ()
+	{
+		if (Actived)
+		{
+			if (inUpgrade)
+			{
+				GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100, 25), "");
+				GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100 * (timer / timeToCreate), 25), "");
 			}
 		}
 	}
@@ -192,6 +229,29 @@ public class FactoryBase : IStats
 
 	public void CallUnit (Unit unit)
 	{
-		listedToCreate.Add (unit);
+		bool canBuy = true;
+		foreach (UnitFactory uf in unitsToCreate)
+		{
+			if (unit == uf.unit)
+			{
+				canBuy = gameplayManager.resources.CanBuy (uf.costOfResources);
+				break;
+			}
+		}
+		
+		if (canBuy)	listedToCreate.Add (unit);
+	}
+
+	public override void SetVisible(bool visible)
+	{
+		model.SetActive(visible);
+	}
+
+	public override bool IsVisible
+	{
+		get
+		{
+			return model.activeSelf;
+		}
 	}
 }

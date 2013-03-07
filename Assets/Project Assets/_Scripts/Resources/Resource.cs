@@ -1,7 +1,38 @@
 using UnityEngine;
 using System.Collections;
 
-public class Resource : MonoBehaviour {
+[System.Serializable]
+public class ResourcesManager
+{
+	public int NumberOfRocks;
+	
+	public ResourcesManager ()
+	{
+		NumberOfRocks = 50;
+	}
+	
+	public void Set (Resource.Type resourceType, int numberOfResources)
+	{
+		if (resourceType == Resource.Type.Rock)
+		{
+			NumberOfRocks += numberOfResources;
+		}
+	}
+	
+	public bool CanBuy (ResourcesManager resourceCost)
+	{
+		if (NumberOfRocks - resourceCost.NumberOfRocks < 0)
+		{
+			return false;
+		}
+		
+		NumberOfRocks -= resourceCost.NumberOfRocks;
+		return true;
+	}
+}
+
+public class Resource : IStats
+{
 
 	public enum Type
 	{
@@ -11,7 +42,7 @@ public class Resource : MonoBehaviour {
 	public Type type;
 	public int numberOfResources = 200;
 	public int resistance = 5;
-	public Constructor constructor {get; protected set;}
+	public Worker worker {get; protected set;}
 	
 	public CapsuleCollider collider {get; protected set;}
 	
@@ -26,32 +57,48 @@ public class Resource : MonoBehaviour {
 	public void ExtractResource (int forceToExtract)
 	{
 		currentResistance = Mathf.Max (0, currentResistance - forceToExtract);
-		Debug.Log ("currentResistance: " + currentResistance);
 		if (currentResistance == 0f)
 		{
-			if (numberOfResources - constructor.numberMaxGetResources < 0)
+			if (numberOfResources - worker.numberMaxGetResources < 0)
 			{
-				constructor.GetResource (numberOfResources);
+				numberOfResources = Mathf.Max (0, numberOfResources - worker.numberMaxGetResources);
+				
+				worker.GetResource (numberOfResources);
+				Destroy (gameObject);
 			}
 			else
 			{
-				constructor.GetResource ();
+				numberOfResources = Mathf.Max (0, numberOfResources - worker.numberMaxGetResources);
+				
+				worker.GetResource ();
 			}
 			currentResistance = resistance;
 		}
 	}
 	
-	public void SetBuilder (Constructor constructor)
+	public bool SetWorker (Worker worker)
 	{
-		if (constructor == null)
+		if (worker == null)
 		{
-			if (this.constructor == null) return;
+			if (this.worker == null) return false;
 		}
 		else
 		{
-			if (this.constructor != null) return;
+			if (this.worker != null) return false;
 		}
 		
-		this.constructor = constructor;
+		this.worker = worker;
+		return true;
+	}
+	
+	public override void SetVisible (bool visible)
+	{
+		throw new System.NotImplementedException ();
+	}
+	
+	public override bool IsVisible {
+		get {
+			throw new System.NotImplementedException ();
+		}
 	}
 }

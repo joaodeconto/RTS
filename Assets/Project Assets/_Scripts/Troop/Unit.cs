@@ -32,9 +32,9 @@ public class Unit : IStats
 	public bool playerUnit;
 
 	public UnitAnimation unitAnimation;
-
+	
 	public int Category;
-	public SkinnedMeshRenderer applyColor;
+	public RendererTeamColor[] rendererTeamColor;
 
 	public int AdditionalForce { get; set; }
 
@@ -76,6 +76,10 @@ public class Unit : IStats
 
 	protected HealthBar healthBar;
 
+	protected float normalAcceleration;
+	protected float normalSpeed;
+	protected float normalAngularSpeed;
+	
 	public override void Init ()
 	{
 		base.Init();
@@ -91,7 +95,7 @@ public class Unit : IStats
 //			ControllerAnimation.SetLayer (animation.Walk, 0);
 //			ControllerAnimation.SetLayer (animation.Attack, 0);
 //		}
-
+		
 		factoryController = ComponentGetter.Get<FactoryController> ();
 		troopController = ComponentGetter.Get<TroopController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
@@ -99,35 +103,45 @@ public class Unit : IStats
 
 		pathfind = GetComponent<NavMeshAgent>();
 
+		normalAcceleration = pathfind.acceleration;
+		normalSpeed = pathfind.speed;
+		normalAngularSpeed = pathfind.angularSpeed;
+		
 		pathfindTarget = transform.position;
+		
+		if (Team < 0)
+		{
+			if (!PhotonNetwork.offlineMode)
+			{
+				if (photonView.isMine)
+				{
+					Team = (int)PhotonNetwork.player.customProperties["team"];
+					playerUnit = true;
+				}
+				else
+				{
+					playerUnit = false;
+				}
+			}
+			else
+			{
+				if (playerUnit)
+				{
+					Team = 0;
+				}
+				else
+				{
+					Team = 1;
+				}
+			}
+		}
 
+		SetColorTeam (Team);
 		if (!PhotonNetwork.offlineMode)
 		{
-			if (photonView.isMine)
-			{
-				Team = (int)PhotonNetwork.player.customProperties["team"];
-				if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
-				photonView.RPC ("TeamID", PhotonTargets.OthersBuffered, Team);
-				playerUnit = true;
-			}
-			else
-			{
-				playerUnit = false;
-			}
+			photonView.RPC ("SetColorTeam", PhotonTargets.OthersBuffered, Team);
 		}
-		else
-		{
-			if (playerUnit)
-			{
-				Team = 0;
-			}
-			else
-			{
-				Team = 1;
-			}
-			if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
-		}
-
+		
 		this.gameObject.tag = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
@@ -137,24 +151,26 @@ public class Unit : IStats
 	}
 
 	[RPC]
-	void TeamID (int teamID)
+	void SetColorTeam (int teamID)
 	{
 		Team = teamID;
-		if (applyColor != null) applyColor.material.color = gameplayManager.GetColorTeam (Team);
+		
+		foreach (RendererTeamColor rtc in rendererTeamColor)
+		{
+			rtc.SetColorInMaterial (transform, Team);
+		}
 	}
 
 	void Awake ()
 	{
 		Init();
-		//enabled = false;
-		//Invoke ("Init", 0.1f);
 	}
 
 	void Update ()
 	{
 		UnitStatus ();
 	}
-	
+
 	public virtual void UnitStatus ()
 	{
 		if (playerUnit)
@@ -379,7 +395,9 @@ public class Unit : IStats
 
 	public bool MoveComplete (Vector3 destination)
 	{
-		return Vector3.Distance(transform.position, destination) <= 2;
+		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
+				pathfind.velocity.sqrMagnitude < 0.1f;
+//		return Vector3.Distance(transform.position, destination) <= 2;
 	}
 
 //	bool start = false;
@@ -387,9 +405,9 @@ public class Unit : IStats
 	{
 //		if (pathfind.desiredVelocity.sqrMagnitude < 0.001f) start = !start;
 //		return pathfind.desiredVelocity.sqrMagnitude < 0.001f || !start;
-//		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
-//				pathfind.velocity.sqrMagnitude < 0.1f;
-		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
+		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
+				pathfind.velocity.sqrMagnitude < 0.1f;
+//		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
 	}
 
 	public void TargetingEnemy (GameObject enemy)
@@ -559,14 +577,21 @@ public class Unit : IStats
 		if (PhotonNetwork.offlineMode) Destroy (gameObject);
 		else if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
 	}
-
+	
+	internal void ResetPathfindValue ()
+	{
+		pathfind.acceleration = normalAcceleration;
+		pathfind.speed = normalSpeed;
+		pathfind.angularSpeed = normalAngularSpeed;
+	}
+	
 	// GIZMOS
 
 	void OnDrawGizmosSelected ()
 	{
 		DrawGizmosSelected ();
 	}
-	
+
 	public virtual void DrawGizmosSelected ()
 	{
 		Gizmos.color = Color.cyan;
@@ -574,5 +599,18 @@ public class Unit : IStats
 
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere (this.transform.position, rangeAttack);
+	}
+
+	public override void SetVisible(bool visible)
+	{
+
+	}
+
+	public override bool IsVisible
+	{
+		get
+		{
+			return true;
+		}
 	}
 }
