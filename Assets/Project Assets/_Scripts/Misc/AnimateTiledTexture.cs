@@ -99,7 +99,7 @@ class AnimateTiledTexture : MonoBehaviour
 		{
 			while (true)
 	        {
-				if (!playing) continue;
+				if (!playing) break;
 				
 	            //move to the next index
 	            index++;
@@ -123,11 +123,11 @@ class AnimateTiledTexture : MonoBehaviour
 				}
 	        }
 		}
-		else if (wrapMode == WrapMode.Once)
+		else
 		{
 			while (true)
 	        {
-				if (!playing) continue;
+				if (!playing) break;
 				
 	            //move to the next index
 	            index++;
@@ -145,7 +145,7 @@ class AnimateTiledTexture : MonoBehaviour
 	 
 	            yield return new WaitForSeconds(1f / framesPerSecond);
 				
-				if (wrapMode != WrapMode.Once)
+				if (wrapMode != WrapMode.Once && wrapMode != WrapMode.Default)
 				{
 					StartCoroutine (UpdateTiling ());
 					break;
