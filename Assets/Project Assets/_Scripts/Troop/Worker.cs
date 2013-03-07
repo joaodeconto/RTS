@@ -26,9 +26,10 @@ public class Worker : Unit
 	
 	public enum WorkerState
 	{
-		Extracting = 0,
-		Carrying = 1,
-		None = 2
+		None = 0,
+		Extracting = 1,
+		Carrying = 2,
+		CarryingIdle = 3
 	}
 	
 	public int forceToExtract;
@@ -36,14 +37,14 @@ public class Worker : Unit
 	public float distanceToExtract = 5f;
 	public ResourceWorker[] resourceWorker;
 	
-	public WorkerState workerState {get; protected set;}
+	public WorkerState workerState {get; set;}
 	
 	public bool IsExtracting {get; protected set;}
 	
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
 	public bool hasResource {get; protected set;}
-	protected int resourceId;
+	public int resourceId {get; set;}
 	protected bool settingWorkerNull;
 	
 	protected TouchController touchController;
@@ -88,6 +89,7 @@ public class Worker : Unit
 				break;
 				
 			case WorkerState.Carrying:
+			case WorkerState.CarryingIdle:
 				if (resource != null &&
 					!settingWorkerNull)
 				{
@@ -107,11 +109,15 @@ public class Worker : Unit
 						ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying, WrapMode.Loop);
 					}
+					
+					workerState = WorkerState.Carrying;
 				}
 				else
 				{
 					if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
+					
+					workerState = WorkerState.CarryingIdle;
 				}
 				
 				if (Vector3.Distance (transform.position, mainFactory.transform.position) < transform.GetComponent<CapsuleCollider>().radius + mainFactory.GetComponent<CapsuleCollider>().radius)
@@ -155,46 +161,85 @@ public class Worker : Unit
 						}
 						else
 						{
-							if (unitState != Unit.UnitState.Idle) unitState = Unit.UnitState.Idle;
+							if (unitState != Unit.UnitState.Idle)
+							{
+								unitState = Unit.UnitState.Idle;
+								
+								Collider[] nearbyResources = Physics.OverlapSphere (transform.position, distanceView);
+
+								if (nearbyResources.Length == 0) return;
+								
+								Resource.Type typeResource = resource.type;
+								
+								Resource resourceSelected = null;
+						        for (int i = 0; i != nearbyResources.Length; i++)
+								{
+									if (nearbyResources[i].GetComponent<Resource> ())
+									{
+										if (nearbyResources[i].GetComponent<Resource> ().type == typeResource)
+										{
+											if (nearbyResources[i].GetComponent<Resource> ().HasWorker)
+												continue;
+											
+											if (resourceSelected == null) resourceSelected = nearbyResources[i].GetComponent<Resource> ();
+											else
+											{
+												if (Vector3.Distance (transform.position, nearbyResources[i].transform.position) <
+													Vector3.Distance (transform.position, resourceSelected.transform.position))
+												{
+													resourceSelected = nearbyResources[i].GetComponent<Resource> ();
+												}
+											}
+										}
+									}
+						        }
+						
+								if (resourceSelected == null) return;
+								else
+								{
+									resource = resourceSelected;
+									Move (resource.transform.position);
+								}
+							}
 						}
 					}
 				}
 				break;
 			}
+		}
+	}
+	
+	public override void SyncAnimation ()
+	{
+		switch (workerState)
+		{
+		case WorkerState.Carrying:
+			if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
+			{
+				ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
+				if (IsVisible) resourceWorker[resourceId].carryingObject.SetActive (true);
+			}
+			break;
 			
-//			if (touchController.touchType == TouchController.TouchType.Ended)
-//			{
-//				if (touchController.idTouch == TouchController.IdTouch.Id1)
-//				{
-//					if (touchController.GetFinalRaycastHit.transform.GetComponent<Resource>() != null)
-//					{
-//						if (resource == null)
-//						{
-//							resource = touchController.GetFinalRaycastHit.transform.GetComponent<Resource>();
-//						}
-//					}
-//					else
-//					{
-//						if (!hasResource)
-//						{
-//							resource.SetWorker (null);
-//							resource = null;
-//							if (workerState != WorkerState.None) workerState = WorkerState.None;
-//						}
-//						else
-//						{
-//							if (touchController.GetFinalRaycastHit.transform.GetComponent<MainFactory>() != null)
-//							{
-//								if (gameplayManager.IsSameTeam (touchController.GetFinalRaycastHit.transform.GetComponent<MainFactory>()))
-//								{
-//									MovingToMainFactory = false;
-//									mainFactory = touchController.GetFinalRaycastHit.transform.GetComponent<FactoryBase>();
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
+		case WorkerState.CarryingIdle:
+			if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
+			{
+				ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
+				if (IsVisible) resourceWorker[resourceId].carryingObject.SetActive (true);
+			}
+			break;
+			
+		case WorkerState.Extracting:
+			if (resourceWorker[resourceId].workerAnimation.Extracting)
+			{
+				ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting);
+				if (IsVisible) resourceWorker[resourceId].extractingObject.SetActive (true);
+			}
+			break;
+			
+		case WorkerState.None:
+			base.SyncAnimation ();
+			break;
 		}
 	}
 	

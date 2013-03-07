@@ -44,6 +44,13 @@ public class Resource : IStats
 	public int resistance = 5;
 	public Worker worker {get; protected set;}
 	
+	public bool HasWorker {
+		get
+		{
+			return worker != null;
+		}
+	}
+	
 	public CapsuleCollider collider {get; protected set;}
 	
 	private float currentResistance;
@@ -59,21 +66,29 @@ public class Resource : IStats
 		currentResistance = Mathf.Max (0, currentResistance - forceToExtract);
 		if (currentResistance == 0f)
 		{
-			if (numberOfResources - worker.numberMaxGetResources < 0)
+			if (numberOfResources - worker.numberMaxGetResources <= 0)
 			{
-				numberOfResources = Mathf.Max (0, numberOfResources - worker.numberMaxGetResources);
+				DiscountResources (worker.numberMaxGetResources);
+				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
 				
 				worker.GetResource (numberOfResources);
-				Destroy (gameObject);
 			}
 			else
 			{
-				numberOfResources = Mathf.Max (0, numberOfResources - worker.numberMaxGetResources);
+				DiscountResources (worker.numberMaxGetResources);
+				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
 				
 				worker.GetResource ();
 			}
 			currentResistance = resistance;
 		}
+	}
+	
+	[RPC]
+	public void DiscountResources (int numberMaxGetResources)
+	{
+		numberOfResources = Mathf.Max (0, numberOfResources - numberMaxGetResources);
+		if (numberOfResources == 0) Destroy (gameObject);
 	}
 	
 	public bool SetWorker (Worker worker)
