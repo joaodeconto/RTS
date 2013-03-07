@@ -1,6 +1,36 @@
 using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
+public class ResourcesManager
+{
+	public int NumberOfRocks;
+	
+	public ResourcesManager ()
+	{
+		NumberOfRocks = 50;
+	}
+	
+	public void Set (Resource.Type resourceType, int numberOfResources)
+	{
+		if (resourceType == Resource.Type.Rock)
+		{
+			NumberOfRocks += numberOfResources;
+		}
+	}
+	
+	public bool CanBuy (ResourcesManager resourceCost)
+	{
+		if (NumberOfRocks - resourceCost.NumberOfRocks < 0)
+		{
+			return false;
+		}
+		
+		NumberOfRocks -= resourceCost.NumberOfRocks;
+		return true;
+	}
+}
+
 public class Resource : IStats
 {
 
@@ -57,9 +87,18 @@ public class Resource : IStats
 			if (this.worker != null) return false;
 		}
 		
-		Debug.Log (worker);
-		
 		this.worker = worker;
 		return true;
+	}
+	
+	public override void SetVisible (bool visible)
+	{
+		throw new System.NotImplementedException ();
+	}
+	
+	public override bool IsVisible {
+		get {
+			throw new System.NotImplementedException ();
+		}
 	}
 }

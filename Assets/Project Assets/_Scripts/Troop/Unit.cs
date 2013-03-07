@@ -16,13 +16,6 @@ public class Unit : IStats
 		public AnimationClip[] SpecialAttack;
 	}
 
-	[System.Serializable]
-	public class RendererTeamColor
-	{
-		public SkinnedMeshRenderer skinnedMeshRenderer;
-		public Material materialToApplyColor;
-	}
-	
 	public enum UnitState
 	{
 		Idle = 0,
@@ -115,35 +108,40 @@ public class Unit : IStats
 		normalAngularSpeed = pathfind.angularSpeed;
 		
 		pathfindTarget = transform.position;
+		
+		if (Team < 0)
+		{
+			if (!PhotonNetwork.offlineMode)
+			{
+				if (photonView.isMine)
+				{
+					Team = (int)PhotonNetwork.player.customProperties["team"];
+					playerUnit = true;
+				}
+				else
+				{
+					playerUnit = false;
+				}
+			}
+			else
+			{
+				if (playerUnit)
+				{
+					Team = 0;
+				}
+				else
+				{
+					Team = 1;
+				}
+			}
+		}
 
+		SetColorTeam (Team);
 		if (!PhotonNetwork.offlineMode)
 		{
-			if (photonView.isMine)
-			{
-				Team = (int)PhotonNetwork.player.customProperties["team"];
-				SetColorTeam (Team);
-				photonView.RPC ("SetColorTeam", PhotonTargets.OthersBuffered, Team);
-				playerUnit = true;
-			}
-			else
-			{
-				playerUnit = false;
-			}
+			photonView.RPC ("SetColorTeam", PhotonTargets.OthersBuffered, Team);
 		}
-		else
-		{
-			if (playerUnit)
-			{
-				Team = 0;
-			}
-			else
-			{
-				Team = 1;
-			}
-			
-			SetColorTeam (Team);
-		}
-
+		
 		this.gameObject.tag = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
@@ -159,13 +157,7 @@ public class Unit : IStats
 		
 		foreach (RendererTeamColor rtc in rendererTeamColor)
 		{
-			for (int i = 0; i != rtc.skinnedMeshRenderer.materials.Length; i++)
-			{
-				if (rtc.skinnedMeshRenderer.materials[i].name.Equals (rtc.materialToApplyColor.name + " (Instance)"))
-				{
-					rtc.skinnedMeshRenderer.materials[i].color = gameplayManager.GetColorTeam (Team);
-				}
-			}
+			rtc.SetColorInMaterial (transform, Team);
 		}
 	}
 
