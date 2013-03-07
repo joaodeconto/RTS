@@ -263,7 +263,7 @@ public class Unit : IStats
 		}
 	}
 
-	public void SyncAnimation ()
+	public virtual void SyncAnimation ()
 	{
 		switch (unitState)
 		{
