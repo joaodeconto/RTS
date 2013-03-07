@@ -34,6 +34,7 @@ public class HUDController : MonoBehaviour {
 	{
 		GameObject selectObj = Instantiate (selectedObject, target.position, Quaternion.identity) as GameObject;
 		selectObj.transform.localScale = new Vector3(size * 0.3f, 0.1f, size * 0.3f);
+		selectObj.transform.GetComponent<AnimateTiledTexture>().Play ();
 		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target;
