@@ -108,37 +108,14 @@ public class Unit : IStats
 		normalAngularSpeed = pathfind.angularSpeed;
 
 		pathfindTarget = transform.position;
-
-		if (Team < 0)
+		
+		Debug.Log ("IsNetworkInstantiate: " + IsNetworkInstantiate);
+		
+		if (IsNetworkInstantiate)
 		{
-			if (!PhotonNetwork.offlineMode)
+			if (photonView.isMine)
 			{
-				if (photonView.isMine)
-				{
-					Team = (int)PhotonNetwork.player.customProperties["team"];
-					playerUnit = true;
-				}
-				else
-				{
-					playerUnit = false;
-				}
-			}
-			else
-			{
-				if (playerUnit)
-				{
-					Team = 0;
-				}
-				else
-				{
-					Team = 1;
-				}
-			}
-		}
-		else
-		{
-			if (gameplayManager.IsSameTeam (Team))
-			{
+				Team = (int)PhotonNetwork.player.customProperties["team"];
 				playerUnit = true;
 			}
 			else
@@ -146,11 +123,54 @@ public class Unit : IStats
 				playerUnit = false;
 			}
 		}
-
-		SetColorTeam (Team);
-		if (!PhotonNetwork.offlineMode)
+		else
 		{
-			photonView.RPC ("SetColorTeam", PhotonTargets.OthersBuffered, Team);
+			if (Team < 0)
+			{
+				if (!PhotonNetwork.offlineMode)
+				{
+					if (photonView.isMine)
+					{
+						Team = (int)PhotonNetwork.player.customProperties["team"];
+						playerUnit = true;
+					}
+					else
+					{
+						playerUnit = false;
+					}
+				}
+				else
+				{
+					if (playerUnit)
+					{
+						Team = 0;
+					}
+					else
+					{
+						Team = 1;
+					}
+				}
+			}
+			else
+			{
+				if (gameplayManager.IsSameTeam (Team))
+				{
+					playerUnit = true;
+				}
+				else
+				{
+					playerUnit = false;
+				}
+			}
+		}
+		
+		if (IsNetworkInstantiate)
+		{
+			photonView.RPC ("SetColorTeam", PhotonTargets.AllBuffered, Team);
+		}
+		else
+		{
+			SetColorTeam (Team);
 		}
 
 		this.gameObject.tag = "Unit";
@@ -585,8 +605,11 @@ public class Unit : IStats
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
 
-		if (IsNetworkInstantiate) PhotonNetwork.Destroy(gameObject);
-		else if (photonView.isMine) Destroy (gameObject);
+		if (IsNetworkInstantiate)
+		{
+			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
+		}
+		else Destroy (gameObject);
 	}
 
 	internal void ResetPathfindValue ()
