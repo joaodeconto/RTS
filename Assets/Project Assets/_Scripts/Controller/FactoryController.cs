@@ -27,6 +27,11 @@ public class FactoryController : MonoBehaviour
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (factory.transform, factory);
 	}
 
+	public void ChangeVisibility (FactoryBase factory, bool visibility)
+	{
+		ComponentGetter.Get<MiniMapController> ().SetVisibilityStructure (factory.transform, factory.Team, visibility);
+	}
+
 	public void SelectFactory (FactoryBase factory)
 	{
 		if(!factory.IsVisible)

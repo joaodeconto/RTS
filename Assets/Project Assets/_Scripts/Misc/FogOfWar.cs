@@ -25,7 +25,7 @@ public class FogOfWar : MonoBehaviour
 
 	Renderer r;
 
-	private const int SIZE_TEXTURE = 128;
+	private const int SIZE_TEXTURE = 256;
 
 	private enum FogFlag
 	{
@@ -33,6 +33,12 @@ public class FogOfWar : MonoBehaviour
 		VISIBLE,
 		KNOWN_AREA,
 	}
+
+	//Temporary variables
+	Transform trns = null;
+	int maxX, maxY, minX, minY,
+		range, xRange = 0,
+		posX, posY;
 
 	FogFlag[,] matrixFogFlag;
 
@@ -73,6 +79,8 @@ public class FogOfWar : MonoBehaviour
 		polyTrns.localEulerAngles = new Vector3 (270,180,0);
 
 		r = poly.renderer;//.GetComponent<MeshRenderer>();
+		r.material.mainTexture = texture;
+
 		allies       = new List<Transform>();
 		entityAllies = new List<IStats>();
 		enemies      = new List<Transform>();
@@ -86,24 +94,19 @@ public class FogOfWar : MonoBehaviour
 		if(!UseFog)
 			return;
 
-		Transform trns = null;
-		int maxX, maxY, minX, minY,
-			range, xRange = 0,
-			posX, posY;
-
 		for(int i = allies.Count - 1; i != -1; --i)
 		{
 			trns = allies[i];
 
-			posX = (int)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
-			posY = (int)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+			posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
-			range = (int)(SIZE_TEXTURE * (entityAllies[i].RangeView / mapSize.x));
+			range = Mathf.RoundToInt(SIZE_TEXTURE * (entityAllies[i].RangeView / mapSize.x));
 
 			//maxX = Mathf.CeilToInt (posX + range);
 			//maxY = Mathf.CeilToInt (posY + range);
-			//minX = Mathf.FloorToInt(posX - range);
-			//minY = Mathf.FloorToInt(posY - range);
+			//minX = Mathf.RoundToInt(posX - range);
+			//minY = Mathf.RoundToInt(posY - range);
 
 			//for(int j = minX; j != maxX; ++j)
 			//{
@@ -113,8 +116,8 @@ public class FogOfWar : MonoBehaviour
 				//}
 			//}
 
-			maxY = (int)Mathf.Clamp(posY + range, 0, SIZE_TEXTURE);
-			minY = (int)Mathf.Clamp(posY - range, 0, SIZE_TEXTURE);
+			maxY = Mathf.RoundToInt(Mathf.Clamp(posY + range, 0, SIZE_TEXTURE));
+			minY = Mathf.RoundToInt(Mathf.Clamp(posY - range, 0, SIZE_TEXTURE));
 
 			//float changeAngleRate = 180.0f / (2.0f * range);
 			//float angle = 0.0f;
@@ -123,7 +126,7 @@ public class FogOfWar : MonoBehaviour
 			{
 				//xRange = (int)(Mathf.Sin(Mathf.Deg2Rad * angle) * (float)range);
 
-				xRange = (int)Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) );
+				xRange = Mathf.RoundToInt(Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) ));
 					 //_________
 				//x = V r² + y² `
 
@@ -132,8 +135,8 @@ public class FogOfWar : MonoBehaviour
 				//Debug.Log("changeAngleRate: " + changeAngleRate);
 				//Debug.Log("Mathf.Deg2Rad * angle: " + (Mathf.Deg2Rad * angle));
 
-				maxX = (int)Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE);
-				minX = (int)Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE);
+				maxX = Mathf.RoundToInt(Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
+				minX = Mathf.RoundToInt(Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
 
 				for(int j = minX; j != maxX; ++j)
 				{
@@ -151,7 +154,7 @@ public class FogOfWar : MonoBehaviour
 							 //visibleAreaColor);
 		}
 
-		r.material.mainTexture = texture;
+		UpdateEnemyVisibility();
 
 		for(int i = 0; i != SIZE_TEXTURE; ++i)
 			for(int j = 0; j != SIZE_TEXTURE; ++j)
@@ -170,19 +173,33 @@ public class FogOfWar : MonoBehaviour
 		texture.Apply();
 	}
 
-   /* void UpdateEnemyVisibility()*/
-	//{
-		//for(int i = enemies.Count - 1; i != -1; --i)
-		//{
-			//trns = enemies[i];
+	void UpdateEnemyVisibility()
+	{
+		for(int i = enemies.Count - 1; i != -1; --i)
+		{
+			trns = enemies[i];
 
-			//posX = (int)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
-			//posY = (int)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+			posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
-			//entityEnemies[i].SetVisible(matrixFogFlag[posX,posY] == FogFlag.VISIBLE);
-		//}
+			bool positionIsVisible = (matrixFogFlag[posX,posY] == FogFlag.VISIBLE);
 
-	/*}*/
+			Debug.Log("positionIsVisible: " + positionIsVisible);
+			//Só aplicando se mudar o estado de visibilidade do inimigo
+			if(!entityEnemies[i].IsVisible && positionIsVisible)
+			{
+				Debug.Log("chegou 1");
+				entityEnemies[i].SetVisible(true);
+			}
+			else if(entityEnemies[i].IsVisible && !positionIsVisible)
+			{
+				entityEnemies[i].SetVisible(false);
+			}
+
+			//Debug.Log("matrixFogFlag[posX,posY]: " + matrixFogFlag[posX,posY]);
+			//Debug.Log("posX: " + posX + " - posY: " + posY);
+		}
+	}
 
 	public FogOfWar AddEntity(Transform trnsEntity, IStats entity)
 	{
