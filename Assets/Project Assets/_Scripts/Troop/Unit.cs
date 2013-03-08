@@ -32,7 +32,7 @@ public class Unit : IStats
 	public bool playerUnit;
 
 	public UnitAnimation unitAnimation;
-	
+
 	public int Category;
 	public RendererTeamColor[] rendererTeamColor;
 
@@ -79,7 +79,7 @@ public class Unit : IStats
 	protected float normalAcceleration;
 	protected float normalSpeed;
 	protected float normalAngularSpeed;
-	
+
 	public override void Init ()
 	{
 		base.Init();
@@ -95,7 +95,7 @@ public class Unit : IStats
 //			ControllerAnimation.SetLayer (animation.Walk, 0);
 //			ControllerAnimation.SetLayer (animation.Attack, 0);
 //		}
-		
+
 		factoryController = ComponentGetter.Get<FactoryController> ();
 		troopController = ComponentGetter.Get<TroopController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
@@ -106,9 +106,9 @@ public class Unit : IStats
 		normalAcceleration = pathfind.acceleration;
 		normalSpeed = pathfind.speed;
 		normalAngularSpeed = pathfind.angularSpeed;
-		
+
 		pathfindTarget = transform.position;
-		
+
 		if (Team < 0)
 		{
 			if (!PhotonNetwork.offlineMode)
@@ -152,7 +152,7 @@ public class Unit : IStats
 		{
 			photonView.RPC ("SetColorTeam", PhotonTargets.OthersBuffered, Team);
 		}
-		
+
 		this.gameObject.tag = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
@@ -165,7 +165,7 @@ public class Unit : IStats
 	void SetColorTeam (int teamID)
 	{
 		Team = teamID;
-		
+
 		foreach (RendererTeamColor rtc in rendererTeamColor)
 		{
 			rtc.SetColorInMaterial (transform, Team);
@@ -588,16 +588,15 @@ public class Unit : IStats
 		if (IsNetworkInstantiate) PhotonNetwork.Destroy(gameObject);
 		else if (photonView.isMine) Destroy (gameObject);
 	}
-	
+
 	internal void ResetPathfindValue ()
 	{
 		pathfind.acceleration = normalAcceleration;
 		pathfind.speed = normalSpeed;
 		pathfind.angularSpeed = normalAngularSpeed;
 	}
-	
-	// GIZMOS
 
+	// GIZMOS
 	void OnDrawGizmosSelected ()
 	{
 		DrawGizmosSelected ();
@@ -612,16 +611,20 @@ public class Unit : IStats
 		Gizmos.DrawWireSphere (this.transform.position, rangeAttack);
 	}
 
-	public override void SetVisible(bool visible)
+	public override void SetVisible(bool isVisible)
 	{
+		ComponentGetter
+			.Get<TroopController>()
+				.ChangeVisibility (this, isVisible);
 
+		model.SetActive(isVisible);
 	}
 
 	public override bool IsVisible
 	{
 		get
 		{
-			return true;
+			return model.activeSelf;
 		}
 	}
 }

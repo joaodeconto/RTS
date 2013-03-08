@@ -242,6 +242,11 @@ public class TroopController : MonoBehaviour
 		return null;
 	}
 
+	public void ChangeVisibility (Unit soldier, bool visibility)
+	{
+		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.Team, visibility);
+	}
+
 	//TODO Só para testes
 //	void OnGUI ()
 //	{
