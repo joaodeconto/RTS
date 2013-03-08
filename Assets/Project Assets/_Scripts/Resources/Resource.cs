@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class ResourcesManager
@@ -42,35 +43,38 @@ public class Resource : IStats
 	public Type type;
 	public int numberOfResources = 200;
 	public int resistance = 5;
-	public Worker worker {get; protected set;}
+	public int limitWorkers = 20;
+	
+//	public Worker worker {get; protected set;}
+	// Passa o Worker, sendo o int a Resistência Atual
+	public Dictionary<Worker, int> WorkersResistance {get; protected set;}
 	
 	public bool HasWorker {
 		get
 		{
-			return worker != null;
+//			return worker != null;
+			return WorkersResistance.Count >= limitWorkers;
 		}
 	}
 	
 	public CapsuleCollider collider {get; protected set;}
 	
-	private float currentResistance;
-	
 	void Awake ()
 	{
-		currentResistance = resistance;
+		WorkersResistance = new Dictionary<Worker, int>();
 		collider = GetComponent<CapsuleCollider> ();
 	}
 	
-	public void ExtractResource (int forceToExtract)
+	public void ExtractResource (Worker worker)
 	{
-		currentResistance = Mathf.Max (0, currentResistance - forceToExtract);
-		if (currentResistance == 0f)
+		WorkersResistance[worker] = Mathf.Max (0, WorkersResistance[worker] - worker.forceToExtract);
+		if (WorkersResistance[worker] == 0f)
 		{
 			if (numberOfResources - worker.numberMaxGetResources <= 0)
 			{
 				DiscountResources (worker.numberMaxGetResources);
 				//if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
-				Destroy (gameObject);	
+				Destroy (gameObject);
 				worker.GetResource (numberOfResources);
 			}
 			else
@@ -80,7 +84,7 @@ public class Resource : IStats
 				
 				worker.GetResource ();
 			}
-			currentResistance = resistance;
+			WorkersResistance[worker] = resistance;
 		}
 	}
 	
@@ -91,20 +95,51 @@ public class Resource : IStats
 		if (numberOfResources == 0) Destroy (gameObject);
 	}
 	
-	public bool SetWorker (Worker worker)
+	#region OldCode
+	private bool SetWorker (Worker worker)
 	{
-		if (worker == null)
-		{
-			if (this.worker == null) return false;
-		}
-		else
-		{
-			if (this.worker != null) return false;
-		}
-		
-		this.worker = worker;
+//		if (worker == null)
+//		{
+//			if (this.worker == null) return false;
+//		}
+//		else
+//		{
+//			if (this.worker != null) return false;
+//		}
+//		
+//		this.worker = worker;
 		return true;
 	}
+	#endregion
+	
+	public bool AddWorker (Worker worker)
+	{
+		if (!WorkersResistance.ContainsKey (worker))
+		{
+			if (WorkersResistance.Count < limitWorkers)
+			{
+				WorkersResistance.Add (worker, resistance);
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public bool RemoveWorker (Worker worker)
+	{
+		
+		if (WorkersResistance.ContainsKey (worker))
+		{
+			WorkersResistance.Remove (worker);
+			return true;
+		}
+		return false;
+	}
+	
 	
 	public override void SetVisible (bool visible)
 	{

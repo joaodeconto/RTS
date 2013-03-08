@@ -49,10 +49,12 @@ public abstract class IStats : Photon.MonoBehaviour
 	public float RangeView;
 
 	public bool Actived { get; protected set; }
+	
+	public bool NetworkInstantiate { get; protected set; }
 
 	internal int Group = -1;
 
-	public virtual void Init()
+	public virtual void Init ()
 	{
 		Health = MaxHealth;
 	}
@@ -76,4 +78,9 @@ public abstract class IStats : Photon.MonoBehaviour
 	public GameObject model;
 	public abstract void SetVisible(bool visible);
 	public abstract bool IsVisible { get; }
+	
+	public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        NetworkInstantiate = true;
+    }
 }
