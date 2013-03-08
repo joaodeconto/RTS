@@ -135,6 +135,17 @@ public class Unit : IStats
 				}
 			}
 		}
+		else
+		{
+			if (gameplayManager.IsSameTeam (Team))
+			{
+				playerUnit = true;
+			}
+			else
+			{
+				playerUnit = false;
+			}
+		}
 
 		SetColorTeam (Team);
 		if (!PhotonNetwork.offlineMode)

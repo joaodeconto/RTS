@@ -69,14 +69,14 @@ public class Resource : IStats
 			if (numberOfResources - worker.numberMaxGetResources <= 0)
 			{
 				DiscountResources (worker.numberMaxGetResources);
-				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
-				
+				//if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
+				Destroy (gameObject);	
 				worker.GetResource (numberOfResources);
 			}
 			else
 			{
 				DiscountResources (worker.numberMaxGetResources);
-				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
+				//if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
 				
 				worker.GetResource ();
 			}
@@ -85,7 +85,7 @@ public class Resource : IStats
 	}
 	
 	[RPC]
-	public void DiscountResources (int numberMaxGetResources)
+	void DiscountResources (int numberMaxGetResources)
 	{
 		numberOfResources = Mathf.Max (0, numberOfResources - numberMaxGetResources);
 		if (numberOfResources == 0) Destroy (gameObject);
