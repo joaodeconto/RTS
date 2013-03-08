@@ -381,16 +381,18 @@ public class Unit : IStats
 		if (factory != null) factory.ReceiveAttack (force);
 	}
 
-	public void Active ()
+	public void Select ()
 	{
+		Selected = true;
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 
 		hudController.CreateSelected (transform, pathfind.radius, gameplayManager.GetColorTeam (Team));
 	}
 
-	public void Deactive ()
+	public void Deselect ()
 	{
+		Selected = false;
 		hudController.DestroySelected (transform);
 	}
 

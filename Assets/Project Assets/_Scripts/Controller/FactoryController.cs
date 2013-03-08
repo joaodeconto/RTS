@@ -34,14 +34,14 @@ public class FactoryController : MonoBehaviour
 
 		selectedFactory = factory;
 
-		factory.Active ();
+		factory.Select ();
 	}
 
 	public void DeselectFactory ()
 	{
 		if (selectedFactory != null)
 		{
-			if (selectedFactory.Deactive ()) selectedFactory = null;
+			if (selectedFactory.Deselect ()) selectedFactory = null;
 		}
 	}
 

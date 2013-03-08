@@ -7,7 +7,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	public class RendererTeamColor
 	{
 		public Material materialToApplyColor;
-		
+
 		public void SetColorInMaterial (Transform transform, int teamID)
 		{
 			MeshRenderer[] renderers = transform.GetComponentsInChildren<MeshRenderer>();
@@ -24,7 +24,7 @@ public abstract class IStats : Photon.MonoBehaviour
 					}
 				}
 			}
-			
+
 			SkinnedMeshRenderer[] skinnedMeshRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>();
 			if (skinnedMeshRenderers.Length != 0)
 			{
@@ -40,7 +40,7 @@ public abstract class IStats : Photon.MonoBehaviour
 			}
 		}
 	}
-	
+
 	public int Health { get; protected set; }
 	public int MaxHealth = 200;
 	public int Defense;
@@ -48,8 +48,8 @@ public abstract class IStats : Photon.MonoBehaviour
 	public int Team;
 	public float RangeView;
 
-	public bool Actived { get; protected set; }
-	
+	public bool Selected { get; protected set; }
+
 	public bool IsNetworkInstantiate { get; protected set; }
 
 	internal int Group = -1;
@@ -78,7 +78,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	public GameObject model;
 	public abstract void SetVisible(bool visible);
 	public abstract bool IsVisible { get; }
-	
+
 	public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         IsNetworkInstantiate = true;

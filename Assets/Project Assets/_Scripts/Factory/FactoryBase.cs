@@ -146,7 +146,7 @@ public class FactoryBase : IStats
 
 	void OnGUI ()
 	{
-		if (Actived)
+		if (Selected)
 		{
 			if (inUpgrade)
 			{
@@ -188,9 +188,9 @@ public class FactoryBase : IStats
 		else if (photonView.isMine) Destroy (gameObject);
 	}
 
-	public void Active ()
+	public void Select ()
 	{
-		if (!Actived) Actived = true;
+		if (!Selected) Selected = true;
 		else return;
 
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
@@ -209,11 +209,11 @@ public class FactoryBase : IStats
 		}
 	}
 
-	public bool Deactive ()
+	public bool Deselect ()
 	{
 		if (waypoint.GetComponent<CreationPoint> ().active) return false;
 
-		if (Actived) Actived = false;
+		if (Selected) Selected = false;
 		else return false;
 
 		hudController.DestroySelected (transform);
