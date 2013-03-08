@@ -269,8 +269,8 @@ public class MiniMapController : MonoBehaviour
 
 		if(visibility)
 		{
-			Debug.Log("chegou");
-			Debug.Log("StructureMiniMapList[teamId][index].activeSelf: " + StructureMiniMapList[teamId][index].activeSelf);
+			//Debug.Log("chegou");
+			//Debug.Log("StructureMiniMapList[teamId][index].activeSelf: " + StructureMiniMapList[teamId][index].activeSelf);
 			if(!StructureMiniMapList[teamId][index].activeSelf)
 			{
 				StructureMiniMapList[teamId][index].SetActive(true);
@@ -279,6 +279,7 @@ public class MiniMapController : MonoBehaviour
 		}
 		else
 		{
+			Debug.Log("chegou");
 			if(!WasStructureAlreadyVisible[teamId][index])
 			{
 				StructureMiniMapList[teamId][index].SetActive(false);

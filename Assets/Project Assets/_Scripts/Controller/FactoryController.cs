@@ -6,8 +6,8 @@ using Visiorama;
 
 public class FactoryController : MonoBehaviour
 {
-	internal List<FactoryBase> factorys = new List<FactoryBase> ();
-	internal FactoryBase selectedFactory;
+	public List<FactoryBase> factorys = new List<FactoryBase> ();
+	public FactoryBase selectedFactory;
 
 	public void Init ()
 	{
@@ -25,11 +25,6 @@ public class FactoryController : MonoBehaviour
 		factorys.Remove (factory);
 		ComponentGetter.Get<MiniMapController> ().RemoveStructure (factory.transform, factory.Team);
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (factory.transform, factory);
-	}
-
-	public void ChangeVisibility (FactoryBase factory, bool visibility)
-	{
-		ComponentGetter.Get<MiniMapController> ().SetVisibilityStructure (factory.transform, factory.Team, visibility);
 	}
 
 	public void SelectFactory (FactoryBase factory)
@@ -61,5 +56,10 @@ public class FactoryController : MonoBehaviour
 		}
 
 		return null;
+	}
+
+	public void ChangeVisibility (FactoryBase factory, bool visibility)
+	{
+		ComponentGetter.Get<MiniMapController> ().SetVisibilityStructure (factory.transform, factory.Team, visibility);
 	}
 }
