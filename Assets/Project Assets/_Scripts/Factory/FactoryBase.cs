@@ -29,7 +29,7 @@ public class FactoryBase : IStats
 	public Transform waypoint;
 
 	public bool playerUnit;
-	
+
 	public RendererTeamColor[] rendererTeamColor;
 
 	public Animation ControllerAnimation {get; private set;}
@@ -38,6 +38,8 @@ public class FactoryBase : IStats
 
 	protected HUDController hudController;
 	protected HealthBar healthBar;
+
+	public bool wasVisible = false;
 
 	public bool OverLimitCreateUnit
 	{
@@ -70,7 +72,7 @@ public class FactoryBase : IStats
 				Team = 0;
 			}
 		}
-		
+
 		SetColorTeam (Team);
 		if (!PhotonNetwork.offlineMode)
 		{
@@ -89,15 +91,15 @@ public class FactoryBase : IStats
 		if (!enabled) enabled = playerUnit;
 
 		ComponentGetter.Get<FactoryController> ().AddFactory (this);
-		
+
 		inUpgrade = false;
 	}
-	
+
 	[RPC]
 	void SetColorTeam (int teamID)
 	{
 		Team = teamID;
-		
+
 		foreach (RendererTeamColor rtc in rendererTeamColor)
 		{
 			rtc.SetColorInMaterial (transform, Team);
@@ -141,7 +143,7 @@ public class FactoryBase : IStats
 			}
 		}
 	}
-	
+
 	void OnGUI ()
 	{
 		if (Actived)
@@ -238,20 +240,38 @@ public class FactoryBase : IStats
 				break;
 			}
 		}
-		
+
 		if (canBuy)	listedToCreate.Add (unit);
 	}
 
-	public override void SetVisible(bool visible)
+	public override void SetVisible(bool isVisible)
 	{
-		model.SetActive(visible);
+		ComponentGetter.Get<FactoryController> ().ChangeVisibility (this, isVisible);
+
+		if(isVisible)
+		{
+			model.transform.parent = this.transform;
+
+			if(!wasVisible)
+			{
+				wasVisible = true;
+				model.SetActive(true);
+			}
+		}
+		else
+		{
+			model.transform.parent = null;
+
+			if(!wasVisible)
+				model.SetActive(false);
+		}
 	}
 
 	public override bool IsVisible
 	{
 		get
 		{
-			return model.activeSelf;
+			return model.transform.parent != null;
 		}
 	}
 }

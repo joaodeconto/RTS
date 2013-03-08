@@ -33,6 +33,8 @@ public class MiniMapController : MonoBehaviour
 	private List<GameObject>[] UnitMiniMapList;
 	private List<GameObject>[] StructureMiniMapList;
 
+	private List<bool>[] WasStructureAlreadyVisible;
+
 	private GameObject mainCameraGO;
 
 	private bool WasInitialized;
@@ -57,13 +59,17 @@ public class MiniMapController : MonoBehaviour
 		UnitMiniMapList      = new List<GameObject>[nTeams];
 		StructureMiniMapList = new List<GameObject>[nTeams];
 
+		WasStructureAlreadyVisible = new List<bool>[nTeams];
+
 		for(int i = structureList.Length - 1; i != -1; --i)
 		{
-			unitList[i] = new List<Transform>();
+			unitList[i]      = new List<Transform>();
 			structureList[i] = new List<Transform>();
 
-			UnitMiniMapList[i] = new List<GameObject>();
+			UnitMiniMapList[i]      = new List<GameObject>();
 			StructureMiniMapList[i] = new List<GameObject>();
+
+			WasStructureAlreadyVisible[i] = new List<bool>();
 		}
 
 		InvokeRepeating("UpdateMiniMap",
@@ -214,6 +220,7 @@ public class MiniMapController : MonoBehaviour
 
 		structureList[teamId].Add(trns);
 		StructureMiniMapList[teamId].Add(miniMapObject);
+		WasStructureAlreadyVisible[teamId].Add(false);
 	}
 
 	public void AddUnit (Transform trns, int teamId)
@@ -254,6 +261,36 @@ public class MiniMapController : MonoBehaviour
 
 		unitList[teamId].RemoveAt(index);
 		UnitMiniMapList[teamId].RemoveAt(index);
+	}
+
+	public void SetVisibilityStructure(Transform trns, int teamId, bool visibility)
+	{
+		int index = structureList[teamId].IndexOf(trns);
+
+		if(visibility)
+		{
+			Debug.Log("chegou");
+			Debug.Log("StructureMiniMapList[teamId][index].activeSelf: " + StructureMiniMapList[teamId][index].activeSelf);
+			if(!StructureMiniMapList[teamId][index].activeSelf)
+			{
+				StructureMiniMapList[teamId][index].SetActive(true);
+				WasStructureAlreadyVisible[teamId][index] = true;
+			}
+		}
+		else
+		{
+			if(!WasStructureAlreadyVisible[teamId][index])
+			{
+				StructureMiniMapList[teamId][index].SetActive(false);
+			}
+		}
+	}
+
+	public void SetVisibilityUnit(Transform trns, int teamId, bool visibility)
+	{
+		int index = unitList[teamId].IndexOf(trns);
+
+		UnitMiniMapList[teamId][index].SetActive(visibility);
 	}
 #endregion
 }
