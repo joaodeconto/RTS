@@ -14,12 +14,14 @@ public class FogOfWar : MonoBehaviour
 	public Color visibleAreaColor = new Color(1.0f,1.0f,1.0f,0.0f);
 	public Color knownAreaColor   = new Color(0.5f,0.5f,0.5f,0.5f);
 
-	public Texture2D texture;
+	public float fogHeight = 8.0f;
 
-	public List<Transform> allies;
-	public List<IStats> entityAllies;
-	public List<Transform> enemies;
-	public List<IStats> entityEnemies;
+	private Texture2D texture;
+
+	private List<Transform> allies;
+	private List<IStats> entityAllies;
+	private List<Transform> enemies;
+	private List<IStats> entityEnemies;
 
 	public Vector3 mapSize;
 
@@ -67,6 +69,9 @@ public class FogOfWar : MonoBehaviour
 
 		texture.Apply();
 
+		//posicionando FogOfWar no local correto
+		this.transform.position = new Vector3(mapSize.x * 0.5f , 0, mapSize.z * 0.5f);
+
 		GameObject poly = Instantiate(pref_plane, Vector3.zero, Quaternion.identity) as GameObject;
 
 		poly.layer = LayerMask.NameToLayer("FogOfWar");
@@ -74,11 +79,11 @@ public class FogOfWar : MonoBehaviour
 		Transform polyTrns = poly.transform;
 
 		polyTrns.parent = this.transform;
-		polyTrns.localPosition    = Vector3.zero;
+		polyTrns.localPosition    = Vector3.up * fogHeight;
 		polyTrns.localScale       = new Vector3(mapSize.x, mapSize.z, mapSize.y) * 0.5f;
 		polyTrns.localEulerAngles = new Vector3 (270,180,0);
 
-		r = poly.renderer;//.GetComponent<MeshRenderer>();
+		r = poly.renderer;
 		r.material.mainTexture = texture;
 
 		allies       = new List<Transform>();
