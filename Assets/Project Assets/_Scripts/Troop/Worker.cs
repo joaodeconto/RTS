@@ -79,12 +79,13 @@ public class Worker : Unit
 			switch (workerState)
 			{
 			case WorkerState.Extracting:
-				if (resource == null)
+				if (resource != lastResource)
 				{
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
 					lastResource.RemoveWorker (this);
 					lastResource = null;
+					workerState = WorkerState.None;
 					return;
 				}
 				
@@ -183,7 +184,7 @@ public class Worker : Unit
 									{
 										if (nearbyResources[i].GetComponent<Resource> ().type == typeResource)
 										{
-											if (nearbyResources[i].GetComponent<Resource> ().HasWorker)
+											if (nearbyResources[i].GetComponent<Resource> ().IsLimitWorkers)
 												continue;
 											
 											if (resourceSelected == null) resourceSelected = nearbyResources[i].GetComponent<Resource> ();

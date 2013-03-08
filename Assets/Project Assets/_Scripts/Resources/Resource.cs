@@ -49,7 +49,7 @@ public class Resource : IStats
 	// Passa o Worker, sendo o int a Resistência Atual
 	public Dictionary<Worker, int> WorkersResistance {get; protected set;}
 	
-	public bool HasWorker {
+	public bool IsLimitWorkers {
 		get
 		{
 //			return worker != null;
