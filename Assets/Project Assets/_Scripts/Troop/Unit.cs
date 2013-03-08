@@ -585,7 +585,7 @@ public class Unit : IStats
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
 
-		if (NetworkInstantiate) PhotonNetwork.Destroy(gameObject);
+		if (IsNetworkInstantiate) PhotonNetwork.Destroy(gameObject);
 		else if (photonView.isMine) Destroy (gameObject);
 	}
 	

@@ -50,7 +50,7 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	public bool Actived { get; protected set; }
 	
-	public bool NetworkInstantiate { get; protected set; }
+	public bool IsNetworkInstantiate { get; protected set; }
 
 	internal int Group = -1;
 
@@ -81,6 +81,6 @@ public abstract class IStats : Photon.MonoBehaviour
 	
 	public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        NetworkInstantiate = true;
+        IsNetworkInstantiate = true;
     }
 }

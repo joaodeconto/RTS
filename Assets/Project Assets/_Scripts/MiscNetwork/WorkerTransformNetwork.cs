@@ -8,11 +8,19 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 
     void Awake()
     {
-		workerScript = GetComponent <Worker> ();
-		
-        gameObject.name = gameObject.name + photonView.viewID;
-		
-		enabled = !photonView.isMine;
+		if (PhotonNetwork.offlineMode)
+		{
+			enabled = false;
+		}
+		else
+		{
+			workerScript = GetComponent <Worker> ();
+			
+	        gameObject.name = gameObject.name + photonView.viewID;
+			
+			if (workerScript.IsNetworkInstantiate) enabled = !photonView.isMine;
+			else enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(workerScript);
+		}
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

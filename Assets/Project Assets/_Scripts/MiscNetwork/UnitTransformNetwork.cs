@@ -8,11 +8,19 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 
     void Awake()
     {
-		unitScript = GetComponent <Unit> ();
-		
-        gameObject.name = gameObject.name + photonView.viewID;
-		
-		enabled = !photonView.isMine;
+		if (PhotonNetwork.offlineMode)
+		{
+			enabled = false;
+		}
+		else
+		{
+			unitScript = GetComponent <Unit> ();
+			
+	        gameObject.name = gameObject.name + photonView.viewID;
+			
+			if (unitScript.IsNetworkInstantiate) enabled = !photonView.isMine;
+			else enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(unitScript);
+		}
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
