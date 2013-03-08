@@ -182,9 +182,8 @@ public class FactoryBase : IStats
 	void OnDie ()
 	{
 		ComponentGetter.Get<FactoryController> ().RemoveFactory (this);
-//		if (PhotonNetwork.offlineMode) Destroy (gameObject);
-//		else PhotonNetwork.Destroy(gameObject);
-		Destroy (gameObject);
+		if (NetworkInstantiate) PhotonNetwork.Destroy(gameObject);
+		else if (photonView.isMine) Destroy (gameObject);
 	}
 
 	public void Active ()

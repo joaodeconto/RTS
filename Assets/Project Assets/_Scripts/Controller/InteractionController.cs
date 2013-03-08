@@ -100,7 +100,6 @@ public class InteractionController : MonoBehaviour
 					{
 						if (worker.resource != null)
 						{
-							worker.resource.SetWorker (null);
 							worker.SetResource (null);
 						}
 					}

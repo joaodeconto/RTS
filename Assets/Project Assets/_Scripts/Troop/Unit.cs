@@ -585,8 +585,8 @@ public class Unit : IStats
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
 
-		if (PhotonNetwork.offlineMode) Destroy (gameObject);
-		else if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
+		if (NetworkInstantiate) PhotonNetwork.Destroy(gameObject);
+		else if (photonView.isMine) Destroy (gameObject);
 	}
 	
 	internal void ResetPathfindValue ()
