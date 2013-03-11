@@ -107,7 +107,7 @@ public class TroopController : MonoBehaviour
 	{
 		if (selectedSoldiers.Contains (soldier))
 		{
-			soldier.Deactive ();
+			soldier.Deselect ();
 			selectedSoldiers.Remove (soldier);
 		}
 
@@ -126,12 +126,12 @@ public class TroopController : MonoBehaviour
 			enemySelected = !gameplayManager.IsSameTeam (soldier);
 			selectedSoldiers.Add (soldier);
 
-			soldier.Active ();
+			soldier.Select ();
 		}
 		else
 		{
 			selectedSoldiers.Remove (soldier);
-			soldier.Deactive ();
+			soldier.Deselect ();
 		}
 	}
 
@@ -141,7 +141,7 @@ public class TroopController : MonoBehaviour
 		{
 			if (soldier != null)
 			{
-				soldier.Deactive ();
+				soldier.Deselect ();
 			}
 		}
 

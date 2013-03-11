@@ -3,13 +3,13 @@ using System.Collections;
 using Visiorama;
 
 public class HUDController : MonoBehaviour {
-	
+
 	public GameObject healthBar;
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
 	public Transform transformMenu;
 	public GameObject button;
-	
+
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
 	{
 		if (HUDRoot.go == null || healthBar == null)
@@ -18,18 +18,18 @@ public class HUDController : MonoBehaviour {
 		}
 
 		GameObject child = NGUITools.AddChild(HUDRoot.go, healthBar);
-		
+
 		if (child.GetComponent<HealthBar> () == null) child.AddComponent <HealthBar> ();
 		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
-		
-		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth, 
+
+		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth,
 			child.GetComponent<UISlider> ().fullSize.y), "Background");
-		
+
 		child.AddComponent<UIFollowTarget>().target = target.FindChild (referenceChild).transform;
-		
+
 		return child.GetComponent<HealthBar> ();
 	}
-	
+
 	public void CreateSelected (Transform target, float size, Color color)
 	{
 		GameObject selectObj = Instantiate (selectedObject, target.position, Quaternion.identity) as GameObject;
@@ -43,12 +43,12 @@ public class HUDController : MonoBehaviour {
 		refTransform.positionZ = true;
 		refTransform.destroyObjectWhenLoseReference = true;
 		refTransform.offsetPosition += Vector3.up * 0.4f;
-		
+
 		selectObj.renderer.sharedMaterial.color = color;
-		
+
 		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
-	
+
 	public void DestroySelected (Transform target)
 	{
 		foreach (Transform child in mainTranformSelectedObjects)
@@ -59,17 +59,29 @@ public class HUDController : MonoBehaviour {
 			}
 		}
 	}
-	
-	public void CreateButtonInInspector (string buttonName, Vector3 position, Unit unit, FactoryBase factory)
+
+	public void CreateButtonInInspector(string buttonName,
+										Vector3 position,
+										Hashtable ht,
+										DefaultCallbackButton.OnClickDelegate onClick = null,
+                                        DefaultCallbackButton.OnPressDelegate onPress = null,
+                                        DefaultCallbackButton.OnDragDelegate onDrag = null,
+                                        DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-		GameObject newButton = NGUITools.AddChild (transformMenu.gameObject, button);
-//		newButton.
+		GameObject newButton = NGUITools.AddChild ( transformMenu.gameObject,
+													button);
+
 		newButton.transform.localPosition = position;
-		
-		UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
-		ucb.Init (unit, factory);
+
+		//UnitCallbackButton ucb = newButton
+										//.AddComponent<UnitCallbackButton> ();
+		//ucb.Init (unit, factory);
+		DefaultCallbackButton dcb = newButton
+										.AddComponent<DefaultCallbackButton>();
+
+		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
 	}
-	
+
 	public void DestroyInspector ()
 	{
 		foreach (Transform child in transformMenu)

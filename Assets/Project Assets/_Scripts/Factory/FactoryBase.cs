@@ -146,7 +146,7 @@ public class FactoryBase : IStats
 
 	void OnGUI ()
 	{
-		if (Actived)
+		if (Selected)
 		{
 			if (inUpgrade)
 			{
@@ -191,9 +191,9 @@ public class FactoryBase : IStats
 		else Destroy (gameObject);
 	}
 
-	public void Active ()
+	public void Select ()
 	{
-		if (!Actived) Actived = true;
+		if (!Selected) Selected = true;
 		else return;
 
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
@@ -207,16 +207,30 @@ public class FactoryBase : IStats
 
 			foreach (UnitFactory uf in unitsToCreate)
 			{
-				hudController.CreateButtonInInspector (uf.buttonName, uf.positionButton, uf.unit, this);
+				Hashtable ht = new Hashtable();
+				ht["unit"]    = uf.unit;
+				ht["factory"] = this;
+
+				hudController.CreateButtonInInspector ( uf.buttonName,
+														uf.positionButton,
+														ht,
+														(ht_hud) =>
+														{
+															FactoryBase factory = (FactoryBase)ht_hud["factory"];
+															Unit unit           = (Unit)ht_hud["unit"];
+
+															if (!factory.OverLimitCreateUnit)
+																factory.EnqueueUnitToCreate (unit);
+														});
 			}
 		}
 	}
 
-	public bool Deactive ()
+	public bool Deselect ()
 	{
 		if (waypoint.GetComponent<CreationPoint> ().active) return false;
 
-		if (Actived) Actived = false;
+		if (Selected) Selected = false;
 		else return false;
 
 		hudController.DestroySelected (transform);
@@ -231,7 +245,7 @@ public class FactoryBase : IStats
 		return true;
 	}
 
-	public void CallUnit (Unit unit)
+	public void EnqueueUnitToCreate (Unit unit)
 	{
 		bool canBuy = true;
 		foreach (UnitFactory uf in unitsToCreate)
@@ -243,7 +257,13 @@ public class FactoryBase : IStats
 			}
 		}
 
-		if (canBuy)	listedToCreate.Add (unit);
+		if (canBuy)
+		{
+			listedToCreate.Add (unit);
+			//hudController.CreateButtonInInspector();
+		}
+		else
+			;//TODO mensagem para o usuário saber que não possui recursos suficentes para criar tal unidade
 	}
 
 	public override void SetVisible(bool isVisible)
