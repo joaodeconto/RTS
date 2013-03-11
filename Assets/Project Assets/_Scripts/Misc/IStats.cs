@@ -81,8 +81,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	
 	public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-		Debug.Log ("TESTE");
-		Init ();
         IsNetworkInstantiate = true;
+		Init ();
     }
 }

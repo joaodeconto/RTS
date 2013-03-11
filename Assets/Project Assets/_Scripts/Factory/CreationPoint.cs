@@ -7,12 +7,14 @@ public class CreationPoint : MonoBehaviour {
 	public bool active {get; protected set;}
 	
 	protected TouchController touchController;
+	protected LineRenderer lineRenderer;
 	
 	// Use this for initialization
 	void Awake ()
 	{
 		touchController = ComponentGetter.Get<TouchController> ();
-		active = false;
+		lineRenderer = gameObject.AddComponent<LineRenderer>();
+		lineRenderer.enabled = active = false;
 	}
 	
 	// Update is called once per frame
@@ -20,6 +22,8 @@ public class CreationPoint : MonoBehaviour {
 	{
 		if (active)
 		{
+			lineRenderer.SetPosition (0, transform.position);
+			lineRenderer.SetPosition (1, transform.parent.position);
 			if (touchController.touchType != TouchController.TouchType.First)
 			{
 				Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
@@ -52,7 +56,7 @@ public class CreationPoint : MonoBehaviour {
 						transform.position = hit.point;
 					}
 					
-					active = false;
+					lineRenderer.enabled = active = false;
 				}
 			}
 		}
@@ -65,7 +69,7 @@ public class CreationPoint : MonoBehaviour {
 					if (touchController.GetFirstRaycastHit.transform == transform)
 					{
 						touchController.DisableDragOn = true;
-						active = true;
+						lineRenderer.enabled = active = true;
 					}
 				}
 			}
