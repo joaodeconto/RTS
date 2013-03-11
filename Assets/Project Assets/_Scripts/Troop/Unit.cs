@@ -108,9 +108,9 @@ public class Unit : IStats
 		normalAngularSpeed = pathfind.angularSpeed;
 
 		pathfindTarget = transform.position;
-		
+
 		Debug.Log ("IsNetworkInstantiate: " + IsNetworkInstantiate);
-		
+
 		if (IsNetworkInstantiate)
 		{
 			if (photonView.isMine)
@@ -163,7 +163,7 @@ public class Unit : IStats
 				}
 			}
 		}
-		
+
 		if (IsNetworkInstantiate)
 		{
 			photonView.RPC ("SetColorTeam", PhotonTargets.AllBuffered, Team);

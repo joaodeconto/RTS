@@ -8,7 +8,7 @@ public class HUDController : MonoBehaviour {
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
 	public Transform transformMenu;
-	public GameObject button;
+	public GameObject pref_button;
 
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
 	{
@@ -60,24 +60,160 @@ public class HUDController : MonoBehaviour {
 		}
 	}
 
+	public void CreateEnqueuedButtonInInspector(string buttonName,
+												string queueName,
+												Vector2 rootPosition,
+												bool verticalEnqueue,
+												int maxPerLine,
+												int maxItems,
+												Hashtable ht,
+												Texture2D texture,
+												DefaultCallbackButton.OnClickDelegate onClick = null,
+												DefaultCallbackButton.OnPressDelegate onPress = null,
+												DefaultCallbackButton.OnDragDelegate onDrag = null,
+												DefaultCallbackButton.OnDropDelegate onDrop = null)
+	{
+		GameObject queue = GetQueueGameObject(queueName, rootPosition);
+		UIGrid uiGrid = queue.GetComponent<UIGrid>();
+
+		GameObject button = NGUITools.AddChild (queue,
+												pref_button);
+
+		button.name = buttonName;
+
+		Vector3 position = Vector3.zero;
+
+		uiGrid.cellWidth  = texture.width;
+		uiGrid.cellHeight = texture.height;
+		uiGrid.maxPerLine = maxPerLine;
+		uiGrid.sorted = true;
+		uiGrid.repositionNow = true;
+
+		if(verticalEnqueue)
+		{
+			//TODO
+			uiGrid.arrangement = UIGrid.Arrangement.Vertical;
+		}
+		else
+		{
+			uiGrid.arrangement = UIGrid.Arrangement.Horizontal;
+			//FIXME
+			//position = new Vector3 (rootPosition.x + ((index - 1) * texture.width), rootPosition.y, -5);
+
+		}
+
+		button.transform.localPosition = position;
+
+		if(texture != null)
+		{
+			UITexture t = NGUITools.AddWidget<UITexture>(button);
+			t.transform.localPosition = Vector3.zero;//Vector3.forward * -5;
+			t.transform.localScale = new Vector3 (texture.width, texture.height, 1);
+			t.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
+			t.material.mainTexture = texture;
+		}
+
+		//UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
+		//ucb.Init (unit, factory);
+
+		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
+
+		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
+	}
+
+	public void RemoveEnqueuedButtonInInspector(string queueName,
+												string buttonName)
+	{
+		GameObject queue     = GetQueueGameObject(queueName);
+		Transform trnsButton = queue.transform.FindChild(buttonName);
+
+		if(trnsButton != null)
+		{
+			DestroyImmediate (trnsButton.gameObject);
+			queue.GetComponent<UIGrid>().repositionNow = true;
+		}
+	}
+
+	public void DequeueButtonInInspector(string queueName)
+	{
+		GameObject queue = GetQueueGameObject(queueName);
+		int childIndex   = queue.transform.childCount - 1;
+
+		Debug.Log("childIndex: " + childIndex);
+
+		DestroyImmediate (queue.transform.GetChild(childIndex).gameObject);
+	}
+
+	public bool CheckQueuedButtonIsFirst(string queueName, string buttonName)
+	{
+		GameObject queue     = GetQueueGameObject(queueName);
+		Transform trnsButton = queue.transform.FindChild(buttonName);
+
+		if(trnsButton == null)
+		{
+			return false;
+		}
+
+		Debug.Log("trnsButton.localPosition: " + trnsButton.localPosition);
+		return trnsButton.localPosition == Vector3.zero;
+	}
+
+	private GameObject GetQueueGameObject(string queueName)
+	{
+		return GetQueueGameObject(queueName, Vector3.zero);
+	}
+
+	private GameObject GetQueueGameObject(string queueName, Vector3 rootPosition)
+	{
+		Transform trnsQueue = transformMenu.FindChild(queueName);
+		GameObject queue = null;
+
+		if(trnsQueue == null)
+		{
+			queue = NGUITools.AddChild (transformMenu.gameObject,
+										new GameObject());
+			queue.name = queueName;
+			queue.AddComponent<UIGrid>();
+			queue.transform.localPosition = Vector3.zero;
+		}
+		else
+		{
+			queue = trnsQueue.gameObject;
+		}
+
+		if(rootPosition != Vector3.zero)
+			queue.transform.localPosition = rootPosition;
+
+		return queue;
+	}
+
 	public void CreateButtonInInspector(string buttonName,
 										Vector3 position,
 										Hashtable ht,
 										DefaultCallbackButton.OnClickDelegate onClick = null,
                                         DefaultCallbackButton.OnPressDelegate onPress = null,
                                         DefaultCallbackButton.OnDragDelegate onDrag = null,
-                                        DefaultCallbackButton.OnDropDelegate onDrop = null)
+                                        DefaultCallbackButton.OnDropDelegate onDrop = null,
+										Texture2D texture = null)
 	{
 		GameObject newButton = NGUITools.AddChild ( transformMenu.gameObject,
-													button);
+													pref_button);
 
 		newButton.transform.localPosition = position;
 
-		//UnitCallbackButton ucb = newButton
-										//.AddComponent<UnitCallbackButton> ();
+		if(texture != null)
+		{
+			UITexture t = NGUITools.AddWidget<UITexture>(newButton);
+			t.transform.localPosition = Vector3.forward * -5;
+			t.transform.localScale = new Vector3 (texture.width, texture.height, 1);
+			t.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
+			t.material.mainTexture = texture;
+		}
+
+		//UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
 		//ucb.Init (unit, factory);
-		DefaultCallbackButton dcb = newButton
-										.AddComponent<DefaultCallbackButton>();
+
+		DefaultCallbackButton dcb = newButton.AddComponent<DefaultCallbackButton>();
 
 		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
 	}
