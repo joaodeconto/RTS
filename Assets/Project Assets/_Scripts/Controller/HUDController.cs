@@ -1,14 +1,17 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Visiorama;
 
-public class HUDController : MonoBehaviour {
-
+public class HUDController : MonoBehaviour
+{
 	public GameObject healthBar;
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
 	public Transform transformMenu;
 	public GameObject pref_button;
+
+	private List<UIGrid> gridsToReposition = new List<UIGrid>();
 
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
 	{
@@ -87,7 +90,6 @@ public class HUDController : MonoBehaviour {
 		uiGrid.cellHeight = texture.height;
 		uiGrid.maxPerLine = maxPerLine;
 		uiGrid.sorted = true;
-		uiGrid.repositionNow = true;
 
 		if(verticalEnqueue)
 		{
@@ -99,7 +101,6 @@ public class HUDController : MonoBehaviour {
 			uiGrid.arrangement = UIGrid.Arrangement.Horizontal;
 			//FIXME
 			//position = new Vector3 (rootPosition.x + ((index - 1) * texture.width), rootPosition.y, -5);
-
 		}
 
 		button.transform.localPosition = position;
@@ -119,6 +120,8 @@ public class HUDController : MonoBehaviour {
 		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
 
 		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
+
+		AddGridToReposition(uiGrid);
 	}
 
 	public void RemoveEnqueuedButtonInInspector(string queueName,
@@ -130,7 +133,7 @@ public class HUDController : MonoBehaviour {
 		if(trnsButton != null)
 		{
 			DestroyImmediate (trnsButton.gameObject);
-			queue.GetComponent<UIGrid>().repositionNow = true;
+			AddGridToReposition(queue.GetComponent<UIGrid>());
 		}
 	}
 
@@ -142,6 +145,8 @@ public class HUDController : MonoBehaviour {
 		Debug.Log("childIndex: " + childIndex);
 
 		DestroyImmediate (queue.transform.GetChild(childIndex).gameObject);
+
+		AddGridToReposition(queue.GetComponent<UIGrid>());
 	}
 
 	public bool CheckQueuedButtonIsFirst(string queueName, string buttonName)
@@ -223,6 +228,23 @@ public class HUDController : MonoBehaviour {
 		foreach (Transform child in transformMenu)
 		{
 			DestroyObject (child.gameObject);
+		}
+	}
+
+	private void AddGridToReposition(UIGrid uiGrid)
+	{
+		if(!gridsToReposition.Contains(uiGrid))
+			gridsToReposition.Add(uiGrid);
+
+		Invoke("RepositionGrid", 0.1f);
+	}
+
+	private void RepositionGrid()
+	{
+		while(gridsToReposition.Count != 0)
+		{
+			gridsToReposition[0].repositionNow = true;
+			gridsToReposition.RemoveAt(0);
 		}
 	}
 }
