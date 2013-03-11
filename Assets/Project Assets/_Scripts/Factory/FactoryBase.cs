@@ -204,7 +204,21 @@ public class FactoryBase : IStats
 
 			foreach (UnitFactory uf in unitsToCreate)
 			{
-				hudController.CreateButtonInInspector (uf.buttonName, uf.positionButton, uf.unit, this);
+				Hashtable ht = new Hashtable();
+				ht["unit"]    = uf.unit;
+				ht["factory"] = this;
+
+				hudController.CreateButtonInInspector ( uf.buttonName,
+														uf.positionButton,
+														ht,
+														(ht_hud) =>
+														{
+															FactoryBase factory = (FactoryBase)ht_hud["factory"];
+															Unit unit           = (Unit)ht_hud["unit"];
+
+															if (!factory.OverLimitCreateUnit)
+																factory.EnqueueUnitToCreate (unit);
+														});
 			}
 		}
 	}
@@ -228,7 +242,7 @@ public class FactoryBase : IStats
 		return true;
 	}
 
-	public void CallUnit (Unit unit)
+	public void EnqueueUnitToCreate (Unit unit)
 	{
 		bool canBuy = true;
 		foreach (UnitFactory uf in unitsToCreate)
@@ -240,7 +254,13 @@ public class FactoryBase : IStats
 			}
 		}
 
-		if (canBuy)	listedToCreate.Add (unit);
+		if (canBuy)
+		{
+			listedToCreate.Add (unit);
+			//hudController.CreateButtonInInspector();
+		}
+		else
+			;//TODO mensagem para o usuário saber que não possui recursos suficentes para criar tal unidade
 	}
 
 	public override void SetVisible(bool isVisible)
