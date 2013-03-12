@@ -32,6 +32,7 @@ public class RallyPoint : MonoBehaviour {
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id1)
 			{
+				UpdateRallyPoint ();
 			}
 		}
 	}
