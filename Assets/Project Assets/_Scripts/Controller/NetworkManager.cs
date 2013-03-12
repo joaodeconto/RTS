@@ -8,7 +8,22 @@ public class NetworkManager : Photon.MonoBehaviour {
 	public void Init ()
 	{
 		PhotonNetwork.offlineMode = offlineMode;
-		PhotonNetwork.isMessageQueueRunning = true;
+		
+		int playerLoads = (int)PhotonNetwork.room.customProperties["playerLoads"];
+		playerLoads += 1;
+		Hashtable setPlayerLoads = new Hashtable() {{"playerLoads", playerLoads}};
+		PhotonNetwork.room.SetCustomProperties (setPlayerLoads);
+		
+		InvokeRepeating ("VerifyAllEnterInScene", 0.3f, 0.3f);
+	}
+	
+	void VerifyAllEnterInScene ()
+	{
+		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.countOfPlayersInRooms)
+		{
+			PhotonNetwork.isMessageQueueRunning = true;
+			CancelInvoke ();
+		}
 	}
 
     public void OnLeftRoom()

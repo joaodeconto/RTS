@@ -6,13 +6,26 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 {
     Unit unitScript;
 
-    void Awake()
+    void Awake ()
+	{
+		Init ();
+	}
+	
+    public void Init ()
     {
-		unitScript = GetComponent <Unit> ();
-		
-        gameObject.name = gameObject.name + photonView.viewID;
-		
-		enabled = !photonView.isMine;
+		if (PhotonNetwork.offlineMode)
+		{
+			enabled = false;
+		}
+		else
+		{
+			unitScript = GetComponent <Unit> ();
+			
+	        gameObject.name = gameObject.name + photonView.viewID;
+			
+			if (unitScript.IsNetworkInstantiate) enabled = !photonView.isMine;
+			else enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(unitScript);
+		}
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -22,7 +35,7 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
             //We own this player: send the others our data
             stream.SendNext((int)unitScript.unitState);
             stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation); 
+            stream.SendNext(transform.rotation);
         }
         else
         {

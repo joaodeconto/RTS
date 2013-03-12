@@ -107,7 +107,7 @@ public class TroopController : MonoBehaviour
 	{
 		if (selectedSoldiers.Contains (soldier))
 		{
-			soldier.Deactive ();
+			soldier.Deselect ();
 			selectedSoldiers.Remove (soldier);
 		}
 
@@ -126,12 +126,12 @@ public class TroopController : MonoBehaviour
 			enemySelected = !gameplayManager.IsSameTeam (soldier);
 			selectedSoldiers.Add (soldier);
 
-			soldier.Active ();
+			soldier.Select ();
 		}
 		else
 		{
 			selectedSoldiers.Remove (soldier);
-			soldier.Deactive ();
+			soldier.Deselect ();
 		}
 	}
 
@@ -141,16 +141,11 @@ public class TroopController : MonoBehaviour
 		{
 			if (soldier != null)
 			{
-				soldier.Deactive ();
+				soldier.Deselect ();
 			}
 		}
 
 		selectedSoldiers.Clear ();
-
-		foreach (Transform child in HUDRoot.go.transform)
-		{
-			Destroy (child.gameObject);
-		}
 	}
 
 	public void CreateGroup (int numberGroup)
@@ -211,7 +206,6 @@ public class TroopController : MonoBehaviour
 			{
 				DeselectAllSoldiers ();
 
-				Debug.Log ("selectedSoldiers.Count: " + group.Value.Count);
 				foreach (Unit soldier in group.Value)
 				{
 					SelectSoldier (soldier, true);
@@ -240,6 +234,11 @@ public class TroopController : MonoBehaviour
 		}
 
 		return null;
+	}
+
+	public void ChangeVisibility (Unit soldier, bool visibility)
+	{
+		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.Team, visibility);
 	}
 
 	//TODO Só para testes

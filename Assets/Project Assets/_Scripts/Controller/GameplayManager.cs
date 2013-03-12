@@ -44,7 +44,7 @@ public class GameplayManager : MonoBehaviour
 	
 	public Color GetColorTeam (int teamID)
 	{
-		if (teamID < teams.Length) return teams[teamID].color;
+		if (teamID >= 0 && teamID < teams.Length) return teams[teamID].color;
 		else
 		{
 			Debug.LogError ("Team ID not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
@@ -71,7 +71,6 @@ public class GameplayManager : MonoBehaviour
 	
 	void OnGUI ()
 	{
-		GUI.Label (new Rect(10, 10, 110, 50), "Pedra foderosa:");
-		GUI.Label (new Rect(110, 10, 150, 50), resources.NumberOfRocks.ToString ());
+		GUI.Box (new Rect(10, 10, 150, 25), "Pedra foderosa: " + resources.NumberOfRocks.ToString ());
 	}
 }

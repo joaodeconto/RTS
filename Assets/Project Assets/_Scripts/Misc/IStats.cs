@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour
 {
@@ -7,7 +8,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	public class RendererTeamColor
 	{
 		public Material materialToApplyColor;
-		
+
 		public void SetColorInMaterial (Transform transform, int teamID)
 		{
 			MeshRenderer[] renderers = transform.GetComponentsInChildren<MeshRenderer>();
@@ -24,7 +25,7 @@ public abstract class IStats : Photon.MonoBehaviour
 					}
 				}
 			}
-			
+
 			SkinnedMeshRenderer[] skinnedMeshRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>();
 			if (skinnedMeshRenderers.Length != 0)
 			{
@@ -40,21 +41,76 @@ public abstract class IStats : Photon.MonoBehaviour
 			}
 		}
 	}
-	
+
 	public int Health { get; protected set; }
 	public int MaxHealth = 200;
 	public int Defense;
 
 	public int Team;
 	public float RangeView;
+	public float sizeOfSelected = 1f;
 
-	public bool Actived { get; protected set; }
+	public RendererTeamColor[] rendererTeamColor;
+	
+	public bool playerUnit;
+	
+	public bool Selected { get; protected set; }
+
+	public bool IsNetworkInstantiate { get; protected set; }
 
 	internal int Group = -1;
 
-	public virtual void Init()
+	protected GameplayManager gameplayManager;
+
+	void Awake ()
+	{
+		Init();
+	}
+	
+	public virtual void Init ()
 	{
 		Health = MaxHealth;
+		
+		gameplayManager = ComponentGetter.Get<GameplayManager> ();
+		
+		if (IsNetworkInstantiate)
+		{
+			SetTeamInNetwork ();
+		}
+		else
+		{
+			if (Team < 0)
+			{
+				if (!PhotonNetwork.offlineMode)
+				{
+					SetTeamInNetwork ();
+				}
+				else
+				{
+					if (playerUnit)
+					{
+						Team = 0;
+					}
+					else
+					{
+						Team = 1;
+					}
+				}
+			}
+			else
+			{
+				if (gameplayManager.IsSameTeam (Team))
+				{
+					playerUnit = true;
+				}
+				else
+				{
+					playerUnit = false;
+				}
+			}
+		}
+		
+		SetColorTeam ();
 	}
 
 	public virtual void ReceiveAttack (int Damage)
@@ -76,4 +132,34 @@ public abstract class IStats : Photon.MonoBehaviour
 	public GameObject model;
 	public abstract void SetVisible(bool visible);
 	public abstract bool IsVisible { get; }
+
+	public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        IsNetworkInstantiate = true;
+    }
+	
+	void SetTeamInNetwork ()
+	{
+		if (photonView.isMine)
+		{
+			Team = (int)PhotonNetwork.player.customProperties["team"];
+			
+			playerUnit = true;
+		}
+		else
+		{
+			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
+			Team = (int)other.customProperties["team"];
+			
+			playerUnit = false;
+		}
+	}
+	
+	void SetColorTeam ()
+	{
+		foreach (RendererTeamColor rtc in rendererTeamColor)
+		{
+			rtc.SetColorInMaterial (transform, Team);
+		}
+	}
 }

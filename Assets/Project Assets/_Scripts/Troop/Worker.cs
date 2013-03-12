@@ -41,13 +41,12 @@ public class Worker : Unit
 	
 	public bool IsExtracting {get; protected set;}
 	
+	public int resourceId {get; set;}
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
 	public bool hasResource {get; protected set;}
-	public int resourceId {get; set;}
+	protected Resource lastResource;
 	protected bool settingWorkerNull;
-	
-	protected TouchController touchController;
 	
 	protected FactoryBase mainFactory;
 	protected bool MovingToMainFactory;
@@ -67,8 +66,6 @@ public class Worker : Unit
 		hasResource = settingWorkerNull = false;
 		
 		workerState = WorkerState.None;
-		
-		touchController = Visiorama.ComponentGetter.Get<TouchController>();
 	}
 	
 	public override void UnitStatus ()
@@ -78,13 +75,19 @@ public class Worker : Unit
 			switch (workerState)
 			{
 			case WorkerState.Extracting:
-				if (resource == null)
+				if (resource != lastResource)
 				{
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
+					lastResource.RemoveWorker (this);
+					workerState = WorkerState.None;
 					return;
 				}
-				
+				else
+				{
+					pathfind.Stop ();
+					transform.LookAt (resource.transform);
+				}
 				if (!IsExtracting) StartCoroutine (Extract ());
 				break;
 				
@@ -94,7 +97,7 @@ public class Worker : Unit
 					!settingWorkerNull)
 				{
 					settingWorkerNull = true;
-					resource.SetWorker (null);
+					resource.RemoveWorker (this);
 				}
 				
 				if (!MovingToMainFactory)
@@ -145,7 +148,7 @@ public class Worker : Unit
 					{
 						pathfind.Stop ();
 						
-						if (resource.SetWorker (this))
+						if (resource.AddWorker (this))
 						{
 							int i = 0;
 							foreach (ResourceWorker rw in resourceWorker)
@@ -156,6 +159,8 @@ public class Worker : Unit
 									rw.extractingObject.SetActive (true);
 								}
 							}
+							
+							lastResource = resource;
 							
 							workerState = WorkerState.Extracting;
 						}
@@ -178,7 +183,7 @@ public class Worker : Unit
 									{
 										if (nearbyResources[i].GetComponent<Resource> ().type == typeResource)
 										{
-											if (nearbyResources[i].GetComponent<Resource> ().HasWorker)
+											if (nearbyResources[i].GetComponent<Resource> ().IsLimitWorkers)
 												continue;
 											
 											if (resourceSelected == null) resourceSelected = nearbyResources[i].GetComponent<Resource> ();
@@ -245,14 +250,7 @@ public class Worker : Unit
 	
 	public void SetResource (Resource newResource)
 	{
-		if (resource == null)
-		{
-			resource = newResource;
-			if (newResource == null)
-			{
-				if (workerState != WorkerState.None) workerState = WorkerState.None;
-			}
-		}
+		resource = newResource;
 	}
 	
 	IEnumerator Extract ()
@@ -262,7 +260,7 @@ public class Worker : Unit
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 		
-		if (resource != null) resource.ExtractResource (forceToExtract);
+		if (resource != null) resource.ExtractResource (this);
 		else workerState = WorkerState.None;
 		
 		IsExtracting = false;
