@@ -32,7 +32,7 @@ public class ResourcesManager
 	}
 }
 
-public class Resource : IStats
+public class Resource : Photon.MonoBehaviour
 {
 
 	public enum Type
@@ -139,16 +139,5 @@ public class Resource : IStats
 		}
 		return false;
 	}
-	
-	
-	public override void SetVisible (bool visible)
-	{
-		throw new System.NotImplementedException ();
-	}
-	
-	public override bool IsVisible {
-		get {
-			throw new System.NotImplementedException ();
-		}
-	}
+
 }

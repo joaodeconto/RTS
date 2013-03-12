@@ -6,7 +6,12 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 {
     Unit unitScript;
 
-    void Awake()
+    void Awake ()
+	{
+		Init ();
+	}
+	
+    public void Init ()
     {
 		if (PhotonNetwork.offlineMode)
 		{
@@ -30,7 +35,7 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
             //We own this player: send the others our data
             stream.SendNext((int)unitScript.unitState);
             stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation); 
+            stream.SendNext(transform.rotation);
         }
         else
         {

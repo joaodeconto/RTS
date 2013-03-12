@@ -59,7 +59,7 @@ public class InteractionController : MonoBehaviour
 						if (unit.GetType() == typeof(Worker))
 						{
 							Worker worker = unit as Worker;
-							if (!worker.hasResource)
+							if (worker.hasResource)
 							{
 								worker.SetResourceInMainBuilding(hit.GetComponent<FactoryBase>());
 							}

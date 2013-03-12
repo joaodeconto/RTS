@@ -208,6 +208,9 @@ public class FogOfWar : MonoBehaviour
 
 	public FogOfWar AddEntity(Transform trnsEntity, IStats entity)
 	{
+		if(!UseFog)
+			return null;
+		
 		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.Team))
 		{
 			allies.Add(trnsEntity);
@@ -224,6 +227,9 @@ public class FogOfWar : MonoBehaviour
 
 	public FogOfWar RemoveEntity(Transform trnsEntity, IStats entity)
 	{
+		if(!UseFog)
+			return null;
+		
 		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.Team))
 		{
 			int index = allies.IndexOf(trnsEntity);

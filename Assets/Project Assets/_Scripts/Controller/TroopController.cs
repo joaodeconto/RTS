@@ -146,11 +146,6 @@ public class TroopController : MonoBehaviour
 		}
 
 		selectedSoldiers.Clear ();
-
-		foreach (Transform child in HUDRoot.go.transform)
-		{
-			Destroy (child.gameObject);
-		}
 	}
 
 	public void CreateGroup (int numberGroup)
@@ -211,7 +206,6 @@ public class TroopController : MonoBehaviour
 			{
 				DeselectAllSoldiers ();
 
-				Debug.Log ("selectedSoldiers.Count: " + group.Value.Count);
 				foreach (Unit soldier in group.Value)
 				{
 					SelectSoldier (soldier, true);

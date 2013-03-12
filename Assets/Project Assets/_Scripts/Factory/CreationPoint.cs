@@ -4,6 +4,8 @@ using Visiorama;
 
 public class CreationPoint : MonoBehaviour {
 	
+	public Texture2D lineTexture;
+	
 	public bool active {get; protected set;}
 	
 	protected TouchController touchController;
@@ -14,12 +16,20 @@ public class CreationPoint : MonoBehaviour {
 	{
 		touchController = ComponentGetter.Get<TouchController> ();
 		lineRenderer = gameObject.AddComponent<LineRenderer>();
-		lineRenderer.enabled = active = false;
+		lineRenderer.SetColors (Color.black, Color.black);
+		lineRenderer.material = new Material(Shader.Find("Transparent/Diffuse"));
+		lineRenderer.material.mainTexture = lineTexture;
+		active = false;
+		
+		lineRenderer.SetPosition (0, transform.position);
+		lineRenderer.SetPosition (1, transform.parent.position);
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+		lineRenderer.enabled = enabled;
+		
 		if (active)
 		{
 			lineRenderer.SetPosition (0, transform.position);
@@ -56,7 +66,7 @@ public class CreationPoint : MonoBehaviour {
 						transform.position = hit.point;
 					}
 					
-					lineRenderer.enabled = active = false;
+					active = false;
 				}
 			}
 		}
@@ -69,7 +79,7 @@ public class CreationPoint : MonoBehaviour {
 					if (touchController.GetFirstRaycastHit.transform == transform)
 					{
 						touchController.DisableDragOn = true;
-						lineRenderer.enabled = active = true;
+						active = true;
 					}
 				}
 			}

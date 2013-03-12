@@ -5,8 +5,13 @@ using System.Collections;
 public class WorkerTransformNetwork : Photon.MonoBehaviour
 {
     Worker workerScript;
-
-    void Awake()
+	
+	void Awake ()
+	{
+		Init ();
+	}
+	
+    public void Init ()
     {
 		if (PhotonNetwork.offlineMode)
 		{

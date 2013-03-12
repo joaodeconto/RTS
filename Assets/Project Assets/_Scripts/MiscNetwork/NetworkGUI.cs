@@ -21,6 +21,8 @@ public class NetworkGUI : Photon.MonoBehaviour {
 			PhotonNetwork.ConnectUsingSettings(ConfigurationData.VERSION);
 		}
 		
+		Application.runInBackground = true;
+		
 		CurrentGUI = MainMenu;
 	}
 	
@@ -413,6 +415,11 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		checkingStatus = false;
 		
 		SetPlayer ();
+		
+		Hashtable someCustomPropertiesToSet = new Hashtable();
+		someCustomPropertiesToSet.Add ("playerLoads", 0);
+		PhotonNetwork.room.SetCustomProperties (someCustomPropertiesToSet);
+		
 #if GUI
 		CurrentGUI = ShowRoom;
 #endif

@@ -28,14 +28,18 @@ public class Unit : IStats
 	public float distanceView = 15f;
 	public float rangeAttack = 5f;
 	public float attackDuration = 1f;
+	
+	public float probeRange = 1.0f; // how far the character can "see" 
+    public float turnSpeedAvoidance = 50f; // how fast to turn
 
-	public bool playerUnit;
-
+    public Transform probePoint; // forward probe point
+    public Transform leftReference; // left probe point
+    public Transform rightReference; // right probe point
+	
 	public UnitAnimation unitAnimation;
 
 	public int Category;
-	public RendererTeamColor[] rendererTeamColor;
-
+	
 	public int AdditionalForce { get; set; }
 
 	public bool IsAttacking { get; protected set; }
@@ -56,6 +60,9 @@ public class Unit : IStats
 		}
 	}
 
+    private Transform obstacleInPath; // we found something!  
+    private bool obstacleAvoid = false; // internal var
+	
 	protected GameObject targetAttack;
 	protected bool followingTarget;
 	protected float attackBuff;
@@ -71,7 +78,6 @@ public class Unit : IStats
 
 	protected FactoryController factoryController;
 	protected TroopController troopController;
-	protected GameplayManager gameplayManager;
 	protected HUDController hudController;
 
 	protected HealthBar healthBar;
@@ -84,7 +90,7 @@ public class Unit : IStats
 	{
 		base.Init();
 
-		CharSound = GetComponent<CharacterSound> ();
+		//CharSound = GetComponent<CharacterSound> ();
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -98,7 +104,6 @@ public class Unit : IStats
 
 		factoryController = ComponentGetter.Get<FactoryController> ();
 		troopController = ComponentGetter.Get<TroopController> ();
-		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController = ComponentGetter.Get<HUDController> ();
 
 		pathfind = GetComponent<NavMeshAgent>();
@@ -109,92 +114,32 @@ public class Unit : IStats
 
 		pathfindTarget = transform.position;
 		
-		Debug.Log ("IsNetworkInstantiate: " + IsNetworkInstantiate);
-		
-		if (IsNetworkInstantiate)
-		{
-			if (photonView.isMine)
-			{
-				Team = (int)PhotonNetwork.player.customProperties["team"];
-				playerUnit = true;
-			}
-			else
-			{
-				playerUnit = false;
-			}
-		}
-		else
-		{
-			if (Team < 0)
-			{
-				if (!PhotonNetwork.offlineMode)
-				{
-					if (photonView.isMine)
-					{
-						Team = (int)PhotonNetwork.player.customProperties["team"];
-						playerUnit = true;
-					}
-					else
-					{
-						playerUnit = false;
-					}
-				}
-				else
-				{
-					if (playerUnit)
-					{
-						Team = 0;
-					}
-					else
-					{
-						Team = 1;
-					}
-				}
-			}
-			else
-			{
-				if (gameplayManager.IsSameTeam (Team))
-				{
-					playerUnit = true;
-				}
-				else
-				{
-					playerUnit = false;
-				}
-			}
-		}
-		
-		if (IsNetworkInstantiate)
-		{
-			photonView.RPC ("SetColorTeam", PhotonTargets.AllBuffered, Team);
-		}
-		else
-		{
-			SetColorTeam (Team);
-		}
-
 		this.gameObject.tag = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
 		if (!enabled) enabled = playerUnit;
-
-		troopController.AddSoldier (this);
-	}
-
-	[RPC]
-	void SetColorTeam (int teamID)
-	{
-		Team = teamID;
-
-		foreach (RendererTeamColor rtc in rendererTeamColor)
+		
+		if(probePoint == null)
 		{
-			rtc.SetColorInMaterial (transform, Team);
+		    probePoint = transform;
 		}
-	}
-
-	void Awake ()
-	{
-		Init();
+		
+		if(leftReference == null)
+		{
+		    leftReference = transform;          
+			leftReference.position -= transform.right * collider.bounds.size.x;
+		
+		}
+		
+		if(rightReference == null)
+		{
+		    rightReference = transform;
+			rightReference.position += transform.right * collider.bounds.size.x;
+		}
+		
+		troopController.AddSoldier (this);
+		
+//		enabled = true;
 	}
 
 	void Update ()
@@ -206,6 +151,8 @@ public class Unit : IStats
 	{
 		if (playerUnit)
 		{
+			//MoveAvoidance (pathfindTarget);
+			
 			switch (unitState)
 			{
 
@@ -239,6 +186,7 @@ public class Unit : IStats
 					}
 					else if (InDistanceView (targetAttack.transform.position))
 					{
+						//MoveAvoidance (targetAttack.transform);
 						Move (targetAttack.transform.position);
 					}
 					else
@@ -319,19 +267,190 @@ public class Unit : IStats
 		}
 	}
 
+	#region Move Pathfind w/ Avoidance
 	public void Move (Vector3 destination)
 	{
 		if (!pathfind.updatePosition) pathfind.updatePosition = true;
+		
+		if (pathfindTarget != destination) pathfind.SetDestination (destination);
+		
 		pathfindTarget = destination;
-		pathfind.SetDestination (destination);
-
 		unitState = UnitState.Walk;
 	}
+	
+	void MoveAvoidance (Transform target)
+	{
+        RaycastHit hit; 
+        Vector3 dir = (target.position - transform.position).normalized;
+
+        bool previousCastMissed = true;
+		
+        if(Physics.Raycast(probePoint.position, transform.forward, out hit, probeRange))
+		{
+            if(obstacleInPath != target.transform)
+			{ // ignore our target
+                Debug.Log("Found an object in path! - " + gameObject.name);
+                Debug.DrawLine(transform.position, hit.point, Color.green);
+                previousCastMissed = false;
+                obstacleAvoid = true;
+                pathfind.Stop(true);
+                pathfind.ResetPath();
+                if(hit.transform != transform) {                 
+                    obstacleInPath = hit.transform;
+                    Debug.Log("I hit: " + hit.transform.gameObject.name);               
+                    dir += hit.normal * turnSpeedAvoidance;
+                    Debug.Log("moving around an object - " + gameObject.name);
+                }
+            }
+        }
+
+        if(obstacleAvoid && previousCastMissed && Physics.Raycast(leftReference.position, transform.forward,out hit, probeRange))
+		{ 
+            if(obstacleInPath != target.transform)
+			{ // ignore our target
+                Debug.DrawLine(leftReference.position, hit.point, Color.red);
+                obstacleAvoid = true;
+                pathfind.Stop();
+                if(hit.transform != transform) {
+                    obstacleInPath = hit.transform;
+                    previousCastMissed = false;
+                    //Debug.Log("moving around an object");
+                    dir += hit.normal * turnSpeedAvoidance;              
+                }
+            }
+        }
+
+        // check the other side :)
+        if(obstacleAvoid && previousCastMissed && Physics.Raycast(rightReference.position, transform.forward,out hit, probeRange)) {
+            if(obstacleInPath != target.transform) { // ignore our target
+                Debug.DrawLine(rightReference.position, hit.point, Color.green);
+                obstacleAvoid = true;
+                pathfind.Stop();
+                if(hit.transform != transform) {
+                    obstacleInPath = hit.transform;
+                    dir += hit.normal * turnSpeedAvoidance;
+                }
+            }
+        }
+
+		// turn Nav back on when obstacle is behind the character!!
+		if (obstacleInPath != null) {
+			Vector3 forward = transform.TransformDirection(Vector3.forward);
+			Vector3 toOther = obstacleInPath.position - transform.position;
+			if (Vector3.Dot(forward, toOther) < 0) {
+			    Debug.Log("Back on Navigation! unit - " + gameObject.name);
+			    obstacleAvoid = false; // don't let Unity nav and our avoidance nav fight, character does odd things
+			    obstacleInPath = null; // Hakuna Matata
+			    pathfind.ResetPath();
+			    pathfind.SetDestination(target.position);
+			    pathfind.Resume(); // Unity nav can resume movement control
+			}
+		}
+
+        // this is what actually moves the character when under avoidance control
+        if(obstacleAvoid) {
+            Quaternion rot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime);
+            transform.position += transform.forward * pathfind.speed * Time.deltaTime;
+        }
+    }
+	
+	void MoveAvoidance (Vector3 destination)
+	{
+        RaycastHit hit;
+        Vector3 dir = (destination - transform.position).normalized;
+        bool previousCastMissed = true; // no need to keep testing if something already hit
+
+        // this is the main forward raycast
+        if(Physics.Raycast(probePoint.position, transform.forward, out hit, probeRange))
+		{
+            Debug.DrawLine(transform.position, hit.point, Color.green);
+			
+            previousCastMissed = false;
+
+            obstacleAvoid = true;
+
+            pathfind.Stop(true);
+
+            pathfind.ResetPath();
+
+            if(hit.transform != transform)
+			{
+                obstacleInPath = hit.transform;
+
+                dir += hit.normal * turnSpeedAvoidance;
+            }
+        }
+
+        // if we did see something before, but now the forward raycast is turned out of range, check the sides
+        // without this, the character bumps into the object and sort of bounces (usually) until it gets 
+        // past.  This is a better approach :)
+        if(obstacleAvoid && previousCastMissed && Physics.Raycast(leftReference.position, transform.forward, out hit, probeRange))
+		{ 
+            if(obstacleInPath != transform)
+			{
+                Debug.DrawLine(leftReference.position, hit.point, Color.red);
+                obstacleAvoid = true;
+                pathfind.Stop();
+                if(hit.transform != transform) {
+
+                    obstacleInPath = hit.transform;
+
+                    previousCastMissed = false;
+
+                    dir += hit.normal * turnSpeedAvoidance;              
+                }
+            }
+        }
+
+        // check the other side :)
+        if(obstacleAvoid && previousCastMissed && Physics.Raycast(rightReference.position, transform.forward,out hit, probeRange))
+		{
+            Debug.DrawLine(rightReference.position, hit.point, Color.green);
+            obstacleAvoid = true;
+            pathfind.Stop();
+            if(hit.transform != transform) {
+                obstacleInPath = hit.transform;
+                dir += hit.normal * turnSpeedAvoidance;
+            }
+        }
+
+        // turn Nav back on when obstacle is behind the character!!
+		if (obstacleInPath != null)
+		{
+            Vector3 forward = transform.TransformDirection(Vector3.forward);
+            Vector3 toOther = obstacleInPath.position - transform.position;
+
+            if (Vector3.Dot(forward, toOther) < 0)
+			{
+                Debug.Log("Back on Navigation! unit - " + gameObject.name);
+
+                obstacleAvoid = false; // don't let Unity nav and our avoidance nav fight, character does odd things
+                obstacleInPath = null;
+                pathfind.ResetPath();
+                pathfind.SetDestination(destination);
+                pathfind.Resume(); // Unity nav can resume movement control
+
+				unitState = UnitState.Walk;
+            }
+        }
+
+        // this is what actually moves the character when under avoidance control
+        if(obstacleAvoid)
+		{
+            Quaternion rot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime);
+            transform.position += transform.forward * pathfind.speed * Time.deltaTime;
+			
+			unitState = UnitState.Walk;
+        }
+    }
 
 	private void Stop ()
 	{
 		pathfind.Stop ();
 	}
+	#endregion
 
 	private IEnumerator Attack ()
 	{
@@ -406,8 +525,8 @@ public class Unit : IStats
 		Selected = true;
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
-
-		hudController.CreateSelected (transform, pathfind.radius, gameplayManager.GetColorTeam (Team));
+		
+		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
 	}
 
 	public void Deselect ()
@@ -577,7 +696,7 @@ public class Unit : IStats
 		}
 	}
 
-	private IEnumerator Die ()
+	private IEnumerator OnDie ()
 	{
 		IsDead = true;
 
@@ -653,3 +772,149 @@ public class Unit : IStats
 		}
 	}
 }
+
+
+
+/*
+ * This script will use the Unity navmesh tools in combination with a simple
+ * obstacle avoidance to navigate a map.  There is a lot of room for improvement,
+ * but this does work.
+ */ 
+/*
+[System.Serializable]
+public class AvoidanceCharacter
+{
+    public float probeRange = 1.0f; // how far the character can "see" 
+    public float turnSpeed = 50f; // how fast to turn
+	public NavMeshAgent pathfind;
+	public Vector3 destination;
+
+    // create empty game objects and place them appropriately infront, to the left and right of our object
+    // This creates a little buffer around the character, and I had some trouble with never raycasting 
+    // outside the character rigidbody/collider
+    public Transform probePoint; // forward probe point
+    public Transform leftReference; // left probe point
+    public Transform rightR; // right probe point
+
+    private Transform obstacleInPath; // we found something!  
+    private bool obstacleAvoid = false; // internal var
+
+    // Use this for initialization
+    void Init ()
+	{
+		if(probePoint == null)
+		{
+		    probePoint = transform;
+		}
+		
+		if(leftReference == null)
+		{
+		    leftReference = transform;          
+			leftReference.position -= transform.right * collider.bounds.size.x;
+		
+		}
+		
+		if(rightR == null)
+		{
+		    rightR = transform;
+			rightR.position += transform.right * collider.bounds.size.x;
+		}
+    }
+
+    void MoveAvoidance ()
+	{
+        RaycastHit hit;
+        Vector3 dir = (destination - transform.position).normalized;
+        bool previousCastMissed = true; // no need to keep testing if something already hit
+
+        // this is the main forward raycast
+        if(Physics.Raycast(probePoint.position, transform.forward, out hit, probeRange))
+		{
+            Debug.Log("Found an object in path! - " + gameObject.name);
+            Debug.DrawLine(transform.position, hit.point, Color.green);
+			
+            previousCastMissed = false;
+
+            obstacleAvoid = true;
+
+            pathfind.Stop(true);
+
+            pathfind.ResetPath();
+
+            if(hit.transform != transform)
+			{
+                obstacleInPath = hit.transform;
+                Debug.Log("I hit: " + hit.transform.gameObject.name);               
+
+                dir += hit.normal * turnSpeed;
+                Debug.Log("moving around an object - " + gameObject.name);
+            }
+        }
+
+        // if we did see something before, but now the forward raycast is turned out of range, check the sides
+        // without this, the character bumps into the object and sort of bounces (usually) until it gets 
+        // past.  This is a better approach :)
+        if(obstacleAvoid && previousCastMissed && Physics.Raycast(leftReference.position, transform.forward, out hit, probeRange))
+		{ 
+            if(obstacleInPath != transform)
+			{
+                Debug.DrawLine(leftReference.position, hit.point, Color.red);
+                obstacleAvoid = true;
+                pathfind.Stop();
+                if(hit.transform != transform) {
+
+                    obstacleInPath = hit.transform;
+
+                    previousCastMissed = false;
+
+                    dir += hit.normal * turnSpeed;              
+                }
+            }
+        }
+
+        // check the other side :)
+        if(obstacleAvoid && previousCastMissed && Physics.Raycast(rightR.position, transform.forward,out hit, probeRange))
+		{
+            Debug.DrawLine(rightR.position, hit.point, Color.green);
+            obstacleAvoid = true;
+            pathfind.Stop();
+            if(hit.transform != transform) {
+                obstacleInPath = hit.transform;
+                dir += hit.normal * turnSpeed;
+            }
+        }
+
+        // turn Nav back on when obstacle is behind the character!!
+		if (obstacleInPath != null)
+		{
+            Vector3 forward = transform.TransformDirection(Vector3.forward);
+            Vector3 toOther = obstacleInPath.position - transform.position;
+
+            if (Vector3.Dot(forward, toOther) < 0)
+			{
+                Debug.Log("Back on Navigation! unit - " + gameObject.name);
+
+                obstacleAvoid = false; // don't let Unity nav and our avoidance nav fight, character does odd things
+                obstacleInPath = null;
+                pathfind.ResetPath();
+                pathfind.SetDestination(destination);
+                pathfind.Resume(); // Unity nav can resume movement control
+
+            }
+        }
+
+        // this is what actually moves the character when under avoidance control
+        if(obstacleAvoid) {
+            Quaternion rot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime);
+            transform.position += transform.forward * pathfind.speed * Time.deltaTime;
+        }       
+    }
+
+    public void SetTarget (Vector3 position)
+	{
+        destination = position;
+    }    
+
+}
+*/
