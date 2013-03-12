@@ -68,6 +68,8 @@ public class FactoryBase : IStats
 		ComponentGetter.Get<FactoryController> ().AddFactory (this);
 
 		inUpgrade = false;
+		
+		enabled = playerUnit;
 	}
 
 	void Update ()
@@ -213,8 +215,6 @@ public class FactoryBase : IStats
 
 	public bool Deselect ()
 	{
-		if (waypoint.GetComponent<CreationPoint> ().active) return false;
-
 		if (Selected) Selected = false;
 		else return false;
 
