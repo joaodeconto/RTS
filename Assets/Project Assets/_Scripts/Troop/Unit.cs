@@ -30,6 +30,7 @@ public class Unit : IStats
 	public float attackDuration = 1f;
 
 	public bool playerUnit;
+	public string guiTextureName;
 
 	public UnitAnimation unitAnimation;
 

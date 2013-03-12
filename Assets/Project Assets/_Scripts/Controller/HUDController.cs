@@ -70,7 +70,7 @@ public class HUDController : MonoBehaviour
 												int maxPerLine,
 												int maxItems,
 												Hashtable ht,
-												Texture2D texture,
+												string textureName = "",
 												DefaultCallbackButton.OnClickDelegate onClick = null,
 												DefaultCallbackButton.OnPressDelegate onPress = null,
 												DefaultCallbackButton.OnDragDelegate onDrag = null,
@@ -86,8 +86,8 @@ public class HUDController : MonoBehaviour
 
 		Vector3 position = Vector3.zero;
 
-		uiGrid.cellWidth  = texture.width;
-		uiGrid.cellHeight = texture.height;
+		//TODO refazer essa parte
+		uiGrid.cellWidth  = uiGrid.cellHeight = 50;
 		uiGrid.maxPerLine = maxPerLine;
 		uiGrid.sorted = true;
 
@@ -105,15 +105,11 @@ public class HUDController : MonoBehaviour
 
 		button.transform.localPosition = position;
 
-		if(texture != null)
+		if(!string.IsNullOrEmpty(textureName))
 		{
-			UITexture t = NGUITools.AddWidget<UITexture>(button);
-			t.transform.localPosition = Vector3.zero;//Vector3.forward * -5;
-			t.transform.localScale = new Vector3 (texture.width, texture.height, 1);
-			t.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
-			t.material.mainTexture = texture;
+			Transform trnsForeground = button.transform.FindChild("Foreground");
+			ChangeButtonForegroundTexture(trnsForeground, textureName);
 		}
-
 		//UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
 		//ucb.Init (unit, factory);
 
@@ -195,32 +191,42 @@ public class HUDController : MonoBehaviour
 	public void CreateButtonInInspector(string buttonName,
 										Vector3 position,
 										Hashtable ht,
+										string textureName = "",
 										DefaultCallbackButton.OnClickDelegate onClick = null,
                                         DefaultCallbackButton.OnPressDelegate onPress = null,
                                         DefaultCallbackButton.OnDragDelegate onDrag = null,
-                                        DefaultCallbackButton.OnDropDelegate onDrop = null,
-										Texture2D texture = null)
+                                        DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
 		GameObject newButton = NGUITools.AddChild ( transformMenu.gameObject,
 													pref_button);
 
 		newButton.transform.localPosition = position;
 
-		if(texture != null)
+		if(!string.IsNullOrEmpty(textureName))
 		{
-			UITexture t = NGUITools.AddWidget<UITexture>(newButton);
-			t.transform.localPosition = Vector3.forward * -5;
-			t.transform.localScale = new Vector3 (texture.width, texture.height, 1);
-			t.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
-			t.material.mainTexture = texture;
+			Transform trnsForeground = newButton.transform.FindChild("Foreground");
+			ChangeButtonForegroundTexture(trnsForeground, textureName);
 		}
 
 		//UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
 		//ucb.Init (unit, factory);
 
 		DefaultCallbackButton dcb = newButton.AddComponent<DefaultCallbackButton>();
-
 		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
+	}
+
+	private void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
+	{
+		if(trnsForeground == null || trnsForeground.GetComponent<UISlicedSprite>() == null)
+		{
+			Debug.LogError("Eh necessario que tenha o objeto \"Foreground\" com um sliced sprite dentro");
+			Debug.Break();
+		}
+
+		UISlicedSprite sprite = trnsForeground.GetComponent<UISlicedSprite>();
+		sprite.spriteName = textureName;
+		sprite.MakePixelPerfect();
+		sprite.transform.localPosition = Vector3.forward * -5;
 	}
 
 	public void DestroyInspector ()

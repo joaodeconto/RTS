@@ -219,6 +219,7 @@ public class FactoryBase : IStats
 				hudController.CreateButtonInInspector ( uf.buttonName,
 														uf.positionButton,
 														ht,
+														uf.unit.guiTextureName,
 														(ht_hud) =>
 														{
 															FactoryBase factory = (FactoryBase)ht_hud["factory"];
@@ -244,7 +245,7 @@ public class FactoryBase : IStats
 																5,
 																10,
 																ht,
-																new Texture2D(50,50,TextureFormat.ARGB32, false),
+																listedToCreate[i].guiTextureName,
 																(hud_ht) =>
 																{
 																	DequeueUnit(hud_ht);
@@ -299,7 +300,7 @@ public class FactoryBase : IStats
 															5,
 															10,
 															ht,
-															new Texture2D(50,50,TextureFormat.ARGB32, false),
+															unit.guiTextureName,
 															(hud_ht) =>
 															{
 																//TODO cancelar construnção do item
