@@ -7,6 +7,7 @@ using Visiorama;
 public class FactoryBase : IStats
 {
 	public const int MAX_NUMBER_OF_LISTED = 5;
+	public const string factoryQueueName = "FactoryQueue";
 
 	[System.Serializable]
 	public class UnitFactory
@@ -18,6 +19,7 @@ public class FactoryBase : IStats
 		public Vector3 positionButton;
 	}
 
+	public Vector2 rootEnqueuePosition;
 	public UnitFactory[] unitsToCreate;
 
 	protected List<Unit> listedToCreate = new List<Unit>();
@@ -28,7 +30,7 @@ public class FactoryBase : IStats
 
 	public Transform waypoint;
 
-	public Animation ControllerAnimation {get; private set;}
+	public Animation ControllerAnimation { get; private set; }
 
 	protected HUDController hudController;
 	protected HealthBar healthBar;
@@ -88,11 +90,14 @@ public class FactoryBase : IStats
 		{
 			if (timer > timeToCreate)
 			{
+				listedToCreate.RemoveAt (0);
+				hudController.DequeueButtonInInspector(factoryQueueName);
+
 				InvokeUnit (unitToCreate);
 				timer = 0;
-				listedToCreate.Remove (unitToCreate);
 				unitToCreate = null;
 				inUpgrade = false;
+
 			}
 			else
 			{
@@ -171,6 +176,7 @@ public class FactoryBase : IStats
 				hudController.CreateButtonInInspector ( uf.buttonName,
 														uf.positionButton,
 														ht,
+														uf.unit.guiTextureName,
 														(ht_hud) =>
 														{
 															FactoryBase factory = (FactoryBase)ht_hud["factory"];
@@ -179,6 +185,28 @@ public class FactoryBase : IStats
 															if (!factory.OverLimitCreateUnit)
 																factory.EnqueueUnitToCreate (unit);
 														});
+			}
+
+			for(int i = listedToCreate.Count - 1; i != -1; --i)
+			{
+				Unit unit = listedToCreate[i];
+
+				Hashtable ht = new Hashtable();
+				ht["unit"] = listedToCreate[i];
+				ht["name"] = "button-" + Time.time;
+
+				hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
+																factoryQueueName,
+																rootEnqueuePosition,
+																false,
+																5,
+																10,
+																ht,
+																listedToCreate[i].guiTextureName,
+																(hud_ht) =>
+																{
+																	DequeueUnit(hud_ht);
+																});
 			}
 		}
 	}
@@ -217,10 +245,49 @@ public class FactoryBase : IStats
 		if (canBuy)
 		{
 			listedToCreate.Add (unit);
-			//hudController.CreateButtonInInspector();
+			Hashtable ht = new Hashtable();
+			ht["unit"] = unit;
+			ht["name"] = "button-" + Time.time;
+
+			//TODO colocar mais coisas aqui
+			hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
+															factoryQueueName,
+															rootEnqueuePosition,
+															false,
+															5,
+															10,
+															ht,
+															unit.guiTextureName,
+															(hud_ht) =>
+															{
+																//TODO cancelar construnção do item
+																DequeueUnit(hud_ht);
+															});
+
+					//);
 		}
 		else
-			;//TODO mensagem para o usuário saber que não possui recursos suficentes para criar tal unidade
+			;//TODO mensagem para o usuário saber
+			 //que não possui recursos suficientes para criar tal unidade
+	}
+
+	private void DequeueUnit(Hashtable ht)
+	{
+		string btnName = (string)ht["name"];
+		Unit unit = (Unit)ht["unit"];
+
+		Debug.Log("btnName: " + btnName);
+
+		if(hudController.CheckQueuedButtonIsFirst(factoryQueueName, btnName))
+		{
+			Debug.Log("chegouvids");
+			timer = 0;
+			unitToCreate = null;
+			inUpgrade = false;
+		}
+
+		hudController.RemoveEnqueuedButtonInInspector (factoryQueueName, btnName);
+		listedToCreate.Remove (unit);
 	}
 
 	public override void SetVisible(bool isVisible)
