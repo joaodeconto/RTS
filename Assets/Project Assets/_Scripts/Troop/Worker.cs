@@ -219,10 +219,14 @@ public class Worker : Unit
 		switch (workerState)
 		{
 		case WorkerState.Carrying:
-			if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
+			if (resourceWorker[resourceId].workerAnimation.Carrying)
 			{
-				ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
-				if (IsVisible) resourceWorker[resourceId].carryingObject.SetActive (true);
+				ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying);
+				if (IsVisible)
+				{
+					resourceWorker[resourceId].carryingObject.SetActive (true);
+					resourceWorker[resourceId].extractingObject.SetActive (false);
+				}
 			}
 			break;
 			
@@ -230,7 +234,11 @@ public class Worker : Unit
 			if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
 			{
 				ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
-				if (IsVisible) resourceWorker[resourceId].carryingObject.SetActive (true);
+				if (IsVisible)
+				{
+					resourceWorker[resourceId].carryingObject.SetActive (true);
+					resourceWorker[resourceId].extractingObject.SetActive (false);
+				}
 			}
 			break;
 			
@@ -238,11 +246,19 @@ public class Worker : Unit
 			if (resourceWorker[resourceId].workerAnimation.Extracting)
 			{
 				ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting);
-				if (IsVisible) resourceWorker[resourceId].extractingObject.SetActive (true);
+				if (IsVisible)
+				{
+					resourceWorker[resourceId].extractingObject.SetActive (true);
+				}
 			}
 			break;
 			
 		case WorkerState.None:
+			if (IsVisible)
+			{
+				resourceWorker[resourceId].carryingObject.SetActive (false);
+			}
+			
 			base.SyncAnimation ();
 			break;
 		}

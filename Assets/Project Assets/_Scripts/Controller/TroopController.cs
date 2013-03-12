@@ -146,7 +146,6 @@ public class TroopController : MonoBehaviour
 		}
 
 		selectedSoldiers.Clear ();
-		hudController.DestroyInspector();
 	}
 
 	public void CreateGroup (int numberGroup)

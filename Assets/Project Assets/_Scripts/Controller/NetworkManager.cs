@@ -8,30 +8,16 @@ public class NetworkManager : Photon.MonoBehaviour {
 	public void Init ()
 	{
 		PhotonNetwork.offlineMode = offlineMode;
-		
-		int playerLoads = (int)PhotonNetwork.room.customProperties["playerLoads"];
-		playerLoads += 1;
-		Hashtable setPlayerLoads = new Hashtable() {{"playerLoads", playerLoads}};
-		PhotonNetwork.room.SetCustomProperties (setPlayerLoads);
-		
-		InvokeRepeating ("VerifyAllEnterInScene", 0.3f, 0.3f);
-	}
-	
-	void VerifyAllEnterInScene ()
-	{
-		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.countOfPlayersInRooms)
-		{
-			PhotonNetwork.isMessageQueueRunning = true;
-			CancelInvoke ();
-		}
+		PhotonNetwork.isMessageQueueRunning = true;
 	}
 
     public void OnLeftRoom()
     {
 		Debug.Log("OnLeftRoom (local)");
-        
-        // back to main menu        
-        Application.LoadLevel(0);
+		
+		GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
+		
+		gm.CheckCondition (gm.MyTeam);
     }
 
     public void OnMasterClientSwitched(PhotonPlayer player)
@@ -87,4 +73,10 @@ public class NetworkManager : Photon.MonoBehaviour {
     {
         Debug.Log("OnPhotonInstantiate " + info.sender);
     }
+	
+//	[RPC]
+//	void ChangeLevel (int level)
+//	{
+//		Application.LoadLevel (0);
+//	}
 }

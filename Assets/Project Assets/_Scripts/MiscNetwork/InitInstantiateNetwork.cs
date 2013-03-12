@@ -7,18 +7,32 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	
 	void Awake ()
 	{
-		InvokeRepeating ("Init", 0.5f, 0.5f);
+		InvokeRepeating ("CheckNetwork", 0.1f, 0.5f);
 	}
 	
-	void Init ()
+	void CheckNetwork ()
 	{
 		if (PhotonNetwork.isMessageQueueRunning)
+		{
+			int playerLoads = (int)PhotonNetwork.room.customProperties["playerLoads"];
+			playerLoads += 1;
+			Hashtable setPlayerLoads = new Hashtable() {{"playerLoads", playerLoads}};
+			PhotonNetwork.room.SetCustomProperties (setPlayerLoads);
+			
+			CancelInvoke ("CheckNetwork");
+			InvokeRepeating ("InstantiatePrefab", 0.1f, 0.5f);
+		}
+	}
+	
+	void InstantiatePrefab ()
+	{
+		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.countOfPlayersInRooms)
 		{
 			if ((int)PhotonNetwork.player.customProperties["team"] == (int.Parse (transform.parent.name)))
 			{
 				PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, transform.rotation, 0);
 			}
-			CancelInvoke ();
+			CancelInvoke ("InstantiatePrefab");
 		}
 	}
 }
