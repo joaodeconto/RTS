@@ -7,7 +7,6 @@ using Visiorama;
 public class FactoryBase : IStats
 {
 	public const int MAX_NUMBER_OF_LISTED = 5;
-	public const string factoryQueueName = "FactoryQueue";
 
 	[System.Serializable]
 	public class UnitFactory
@@ -19,7 +18,6 @@ public class FactoryBase : IStats
 		public Vector3 positionButton;
 	}
 
-	public Vector2 rootEnqueuePosition;
 	public UnitFactory[] unitsToCreate;
 
 	protected List<Unit> listedToCreate = new List<Unit>();
@@ -134,7 +132,7 @@ public class FactoryBase : IStats
 			if (timer > timeToCreate)
 			{
 				listedToCreate.RemoveAt (0);
-				hudController.DequeueButtonInInspector(factoryQueueName);
+				hudController.DequeueButtonInInspector(hudController.MainQueue.Name);
 
 				InvokeUnit (unitToCreate);
 				timer = 0;
@@ -239,8 +237,8 @@ public class FactoryBase : IStats
 				ht["name"] = "button-" + Time.time;
 
 				hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
-																factoryQueueName,
-																rootEnqueuePosition,
+																hudController.MainQueue.Name,
+																hudController.MainQueue.Position,
 																false,
 																5,
 																10,
@@ -268,6 +266,7 @@ public class FactoryBase : IStats
 			waypoint.gameObject.SetActive (false);
 
 			hudController.DestroyInspector ();
+			Debug.Log("chegou destruido");
 		}
 
 		return true;
@@ -294,8 +293,8 @@ public class FactoryBase : IStats
 
 			//TODO colocar mais coisas aqui
 			hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
-															factoryQueueName,
-															rootEnqueuePosition,
+															hudController.MainQueue.Name,
+															hudController.MainQueue.Position,
 															false,
 															5,
 															10,
@@ -321,7 +320,7 @@ public class FactoryBase : IStats
 
 		Debug.Log("btnName: " + btnName);
 
-		if(hudController.CheckQueuedButtonIsFirst(factoryQueueName, btnName))
+		if(hudController.CheckQueuedButtonIsFirst(hudController.MainQueue.Name, btnName))
 		{
 			Debug.Log("chegouvids");
 			timer = 0;
@@ -329,7 +328,7 @@ public class FactoryBase : IStats
 			inUpgrade = false;
 		}
 
-		hudController.RemoveEnqueuedButtonInInspector (factoryQueueName, btnName);
+		hudController.RemoveEnqueuedButtonInInspector (hudController.MainQueue.Name, btnName);
 		listedToCreate.Remove (unit);
 	}
 

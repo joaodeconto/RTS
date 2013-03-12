@@ -149,7 +149,7 @@ public class TroopController : MonoBehaviour
 
 		foreach (Transform child in HUDRoot.go.transform)
 		{
-			Destroy (child.gameObject);
+			DestroyImmediate(child.gameObject);
 		}
 	}
 

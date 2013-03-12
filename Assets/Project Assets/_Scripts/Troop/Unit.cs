@@ -409,12 +409,26 @@ public class Unit : IStats
 		healthBar.SetTarget (this);
 
 		hudController.CreateSelected (transform, pathfind.radius, gameplayManager.GetColorTeam (Team));
+		hudController.CreateEnqueuedButtonInInspector ( this.name,
+														hudController.MainQueue.Name,
+														hudController.MainQueue.Position,
+														false,
+														5,
+														10,
+														null,
+														this.guiTextureName,
+														(hud_ht) =>
+														{
+															troopController.DeselectAllSoldiers();
+															troopController.SelectSoldier(this, true);
+														});
 	}
 
 	public void Deselect ()
 	{
 		Selected = false;
 		hudController.DestroySelected (transform);
+		hudController.DestroyInspector();
 	}
 
 	public bool IsRangeAttack (GameObject soldier)

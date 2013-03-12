@@ -5,11 +5,20 @@ using Visiorama;
 
 public class HUDController : MonoBehaviour
 {
+	[System.Serializable]
+	public class NamePosition2D
+	{
+		public string Name;
+		public Vector2 Position;
+	}
+
 	public GameObject healthBar;
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
 	public Transform transformMenu;
 	public GameObject pref_button;
+
+	public NamePosition2D MainQueue;
 
 	private List<UIGrid> gridsToReposition = new List<UIGrid>();
 
@@ -128,7 +137,7 @@ public class HUDController : MonoBehaviour
 
 		if(trnsButton != null)
 		{
-			DestroyImmediate (trnsButton.gameObject);
+			Destroy (trnsButton.gameObject);
 			AddGridToReposition(queue.GetComponent<UIGrid>());
 		}
 	}
@@ -136,11 +145,13 @@ public class HUDController : MonoBehaviour
 	public void DequeueButtonInInspector(string queueName)
 	{
 		GameObject queue = GetQueueGameObject(queueName);
-		int childIndex   = queue.transform.childCount - 1;
 
-		Debug.Log("childIndex: " + childIndex);
+		if(queue.transform.childCount == 0)
+			return;
 
-		DestroyImmediate (queue.transform.GetChild(childIndex).gameObject);
+		int childIndex = queue.transform.childCount - 1;
+
+		Destroy (queue.transform.GetChild(childIndex).gameObject);
 
 		AddGridToReposition(queue.GetComponent<UIGrid>());
 	}
@@ -171,10 +182,13 @@ public class HUDController : MonoBehaviour
 
 		if(trnsQueue == null)
 		{
-			queue = NGUITools.AddChild (transformMenu.gameObject,
-										new GameObject());
+			queue = new GameObject();
+			queue.transform.parent = transformMenu;
+
 			queue.name = queueName;
 			queue.AddComponent<UIGrid>();
+
+			queue.transform.localScale    = Vector3.one;
 			queue.transform.localPosition = Vector3.zero;
 		}
 		else
@@ -233,7 +247,7 @@ public class HUDController : MonoBehaviour
 	{
 		foreach (Transform child in transformMenu)
 		{
-			DestroyObject (child.gameObject);
+			Destroy (child.gameObject);
 		}
 	}
 
