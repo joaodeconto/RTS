@@ -45,7 +45,7 @@ public class HUDController : MonoBehaviour
 	public void CreateSelected (Transform target, float size, Color color)
 	{
 		GameObject selectObj = Instantiate (selectedObject, target.position, Quaternion.identity) as GameObject;
-		selectObj.transform.localScale = new Vector3(size * 0.3f, 0.1f, size * 0.3f);
+		selectObj.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
 		selectObj.transform.GetComponent<AnimateTiledTexture>().Play ();
 		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
@@ -69,6 +69,11 @@ public class HUDController : MonoBehaviour
 			{
 				DestroyObject (child.gameObject);
 			}
+		}
+		
+		foreach (Transform child in HUDRoot.go.transform)
+		{
+			Destroy (child.gameObject);
 		}
 	}
 

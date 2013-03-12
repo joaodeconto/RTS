@@ -48,8 +48,6 @@ public class Worker : Unit
 	protected Resource lastResource;
 	protected bool settingWorkerNull;
 	
-	protected TouchController touchController;
-	
 	protected FactoryBase mainFactory;
 	protected bool MovingToMainFactory;
 	
@@ -68,8 +66,6 @@ public class Worker : Unit
 		hasResource = settingWorkerNull = false;
 		
 		workerState = WorkerState.None;
-		
-		touchController = Visiorama.ComponentGetter.Get<TouchController>();
 	}
 	
 	public override void UnitStatus ()
@@ -84,11 +80,14 @@ public class Worker : Unit
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
 					lastResource.RemoveWorker (this);
-					lastResource = null;
 					workerState = WorkerState.None;
 					return;
 				}
-				
+				else
+				{
+					pathfind.Stop ();
+					transform.LookAt (resource.transform);
+				}
 				if (!IsExtracting) StartCoroutine (Extract ());
 				break;
 				
@@ -251,14 +250,7 @@ public class Worker : Unit
 	
 	public void SetResource (Resource newResource)
 	{
-		if (resource == null)
-		{
-			resource = newResource;
-			if (newResource == null)
-			{
-				if (workerState != WorkerState.None) workerState = WorkerState.None;
-			}
-		}
+		resource = newResource;
 	}
 	
 	IEnumerator Extract ()

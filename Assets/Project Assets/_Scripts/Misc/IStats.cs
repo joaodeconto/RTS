@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour
 {
@@ -47,16 +48,69 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	public int Team;
 	public float RangeView;
+	public float sizeOfSelected = 1f;
 
+	public RendererTeamColor[] rendererTeamColor;
+	
+	public bool playerUnit;
+	
 	public bool Selected { get; protected set; }
 
 	public bool IsNetworkInstantiate { get; protected set; }
 
 	internal int Group = -1;
 
+	protected GameplayManager gameplayManager;
+
+	void Awake ()
+	{
+		Init();
+	}
+	
 	public virtual void Init ()
 	{
 		Health = MaxHealth;
+		
+		gameplayManager = ComponentGetter.Get<GameplayManager> ();
+		
+		if (IsNetworkInstantiate)
+		{
+			SetTeamInNetwork ();
+		}
+		else
+		{
+			if (Team < 0)
+			{
+				if (!PhotonNetwork.offlineMode)
+				{
+					SetTeamInNetwork ();
+				}
+				else
+				{
+					if (playerUnit)
+					{
+						Team = 0;
+					}
+					else
+					{
+						Team = 1;
+					}
+				}
+			}
+			else
+			{
+				if (gameplayManager.IsSameTeam (Team))
+				{
+					playerUnit = true;
+				}
+				else
+				{
+					playerUnit = false;
+				}
+			}
+		}
+		
+		SetColorTeam ();
 	}
 
 	public virtual void ReceiveAttack (int Damage)
@@ -82,6 +136,30 @@ public abstract class IStats : Photon.MonoBehaviour
 	public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         IsNetworkInstantiate = true;
-		Init ();
     }
+	
+	void SetTeamInNetwork ()
+	{
+		if (photonView.isMine)
+		{
+			Team = (int)PhotonNetwork.player.customProperties["team"];
+			
+			playerUnit = true;
+		}
+		else
+		{
+			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
+			Team = (int)other.customProperties["team"];
+			
+			playerUnit = false;
+		}
+	}
+	
+	void SetColorTeam ()
+	{
+		foreach (RendererTeamColor rtc in rendererTeamColor)
+		{
+			rtc.SetColorInMaterial (transform, Team);
+		}
+	}
 }

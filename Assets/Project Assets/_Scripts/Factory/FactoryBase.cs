@@ -28,13 +28,7 @@ public class FactoryBase : IStats
 
 	public Transform waypoint;
 
-	public bool playerUnit;
-
-	public RendererTeamColor[] rendererTeamColor;
-
 	public Animation ControllerAnimation { get; private set; }
-
-	protected GameplayManager gameplayManager;
 
 	protected HUDController hudController;
 	protected HealthBar healthBar;
@@ -55,29 +49,10 @@ public class FactoryBase : IStats
 
 		timer = 0;
 
-		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
-
-		if (Team < 0)
-		{
-			if (!PhotonNetwork.offlineMode)
-			{
-				Team = (int)PhotonNetwork.player.customProperties["team"];
-			}
-			else
-			{
-				Team = 0;
-			}
-		}
-
-		SetColorTeam (Team);
-		if (!PhotonNetwork.offlineMode)
-		{
-			photonView.RPC ("SetColorTeam", PhotonTargets.OthersBuffered, Team);
-		}
 
 		if (waypoint == null) waypoint = transform.FindChild("Waypoint");
 
@@ -88,27 +63,11 @@ public class FactoryBase : IStats
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
-		if (!enabled) enabled = playerUnit;
-
 		ComponentGetter.Get<FactoryController> ().AddFactory (this);
 
 		inUpgrade = false;
-	}
-
-	[RPC]
-	void SetColorTeam (int teamID)
-	{
-		Team = teamID;
-
-		foreach (RendererTeamColor rtc in rendererTeamColor)
-		{
-			rtc.SetColorInMaterial (transform, Team);
-		}
-	}
-
-	void Awake ()
-	{
-		Init ();
+		
+		enabled = playerUnit;
 	}
 
 	void Update ()
@@ -202,7 +161,7 @@ public class FactoryBase : IStats
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 
-		hudController.CreateSelected (transform, GetComponent<CapsuleCollider>().radius, gameplayManager.GetColorTeam (Team));
+		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
 
 		if (playerUnit)
 		{
@@ -254,8 +213,6 @@ public class FactoryBase : IStats
 
 	public bool Deselect ()
 	{
-		if (waypoint.GetComponent<CreationPoint> ().active) return false;
-
 		if (Selected) Selected = false;
 		else return false;
 
