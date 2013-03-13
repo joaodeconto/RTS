@@ -166,12 +166,12 @@ public class SelectionController : MonoBehaviour
 								{
 									troopController.DeselectAllSoldiers ();
 									
-									int category = hit.transform.GetComponent<Unit> ().Category;
+									Unit.UnitType category = hit.transform.GetComponent<Unit> ().category;
 									foreach (Unit soldier in troopController.soldiers)
 									{
 										if (gameplayManager.IsSameTeam (soldier.Team))
 										{
-											if (soldier.Category == category)
+											if (soldier.category == category)
 											{
 												troopController.SelectSoldier (soldier, true);
 											}

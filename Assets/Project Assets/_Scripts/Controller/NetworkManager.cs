@@ -14,21 +14,17 @@ public class NetworkManager : Photon.MonoBehaviour {
     public void OnLeftRoom()
     {
 		Debug.Log("OnLeftRoom (local)");
-		
-		GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
-		
-		gm.CheckCondition (gm.MyTeam);
     }
 
     public void OnMasterClientSwitched(PhotonPlayer player)
     {
         Debug.Log("OnMasterClientSwitched: " + player);
 
-        if (PhotonNetwork.connected)
-        {
-            photonView.RPC("SendChatMessage", PhotonNetwork.masterClient, "Hi master! From:" + PhotonNetwork.player);
-            photonView.RPC("SendChatMessage", PhotonTargets.All, "WE GOT A NEW MASTER: " + player + "==" + PhotonNetwork.masterClient + " From:" + PhotonNetwork.player);
-        }
+//        if (PhotonNetwork.connected)
+//        {
+//            photonView.RPC("SendChatMessage", PhotonNetwork.masterClient, "Hi master! From:" + PhotonNetwork.player);
+//            photonView.RPC("SendChatMessage", PhotonTargets.All, "WE GOT A NEW MASTER: " + player + "==" + PhotonNetwork.masterClient + " From:" + PhotonNetwork.player);
+//        }
     }
 
     public void OnDisconnectedFromPhoton()
@@ -46,7 +42,15 @@ public class NetworkManager : Photon.MonoBehaviour {
 
     public void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
-        Debug.Log("OnPlayerDisconneced: " + player);
+        Debug.Log("OnPlayerDisconnected: " + player);
+		
+        if (PhotonNetwork.connected)
+        {
+            photonView.RPC("SendChatMessage", PhotonTargets.All, "Player Disconnected: " + player.name);
+        }
+		
+		GameplayManager gameplayManager = Visiorama.ComponentGetter.Get<GameplayManager> ();
+		gameplayManager.RemoveAllStats ((int)player.customProperties["team"]);
     }
 
     public void OnReceivedRoomList()
@@ -69,11 +73,6 @@ public class NetworkManager : Photon.MonoBehaviour {
         Debug.Log("OnFailedToConnectToPhoton");
     }
 
-    public void OnPhotonInstantiate(PhotonMessageInfo info)
-    {
-        Debug.Log("OnPhotonInstantiate " + info.sender);
-    }
-	
 //	[RPC]
 //	void ChangeLevel (int level)
 //	{

@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class NetworkGUI : Photon.MonoBehaviour {
 	
@@ -97,12 +98,25 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		}
 		else
 		{
-			foreach (RoomInfo room in PhotonNetwork.GetRoomList ())
+			RoomInfo[] roomQuery =
+            (from r in PhotonNetwork.GetRoomList ()
+            where (bool)r.customProperties["closeRoom"] == false &&
+					r.playerCount != r.maxPlayers
+            select r).ToArray ();
+			
+			if (roomQuery.Length == 0)
 			{
-				if (GUILayout.Button (room.name + " - Players: " + room.playerCount + "/" + room.maxPlayers))
+				GUILayout.Label ("There's anywhere room");
+			}
+			else
+			{
+				foreach (RoomInfo room in roomQuery)
 				{
-					JoinRoom (room.name);
-					CurrentGUI = CheckingStatusGUI;
+					if (GUILayout.Button (room.name + " - Players: " + room.playerCount + "/" + room.maxPlayers))
+					{
+						JoinRoom (room.name);
+						CurrentGUI = CheckingStatusGUI;
+					}
 				}
 			}
 		}
@@ -182,6 +196,9 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		int numberOfReady = 0;
 		
 		int i = 0;
+		
+		PhotonPlayer player = PhotonNetwork.player;
+		
 		foreach (PhotonPlayer p in PhotonNetwork.playerList)
 		{
 			GUI.color = i == 0 ? Color.green : Color.white;
@@ -228,22 +245,38 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		
 		GUILayout.Space (10f);
 		
-		PhotonPlayer player = PhotonNetwork.player;
-		
 		if (player.customProperties["team"] == null)
 		{
 			Hashtable teamProperty = new Hashtable();
 			teamProperty.Add ("team", PhotonNetwork.playerList.Length-1);
 			player.SetCustomProperties(teamProperty);
 		}
+//		else
+//		{
+//			Hashtable teamProperty = new Hashtable() {{"team", PhotonNetwork.playerList.Length-1}};
+//			player.SetCustomProperties (teamProperty);
+//		}
 		
 		bool ready = GUILayout.Toggle ((bool)player.customProperties["ready"], " Ready?");
 		Hashtable readyPropety = new Hashtable() {{"ready", ready}};
 		player.SetCustomProperties (readyPropety);
 		
-		if (GUILayout.Button ("Back to Main Menu")) PhotonNetwork.LeaveRoom ();
+		if (GUILayout.Button ("Back to Main Menu"))
+		{
+			player.customProperties.Remove("team");
+			player.customProperties.Remove("ready");
+			PhotonNetwork.LeaveRoom ();
+		}
 		
-		if (numberOfReady == PhotonNetwork.room.maxPlayers) StartCoroutine (StartGame ());
+		if (numberOfReady == PhotonNetwork.room.maxPlayers)
+		{
+			if (PhotonNetwork.isMasterClient)
+			{
+				Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
+				PhotonNetwork.room.SetCustomProperties(roomProperty);
+			}
+			StartCoroutine (StartGame ());
+		}
 	}
 	
 	PeerState ps;
@@ -334,7 +367,8 @@ public class NetworkGUI : Photon.MonoBehaviour {
 	
 	public void PlayQuickGame ()
 	{
-		PhotonNetwork.JoinRandomRoom ();
+		Hashtable expectedCustomRoomProperties = new Hashtable() { { "closeRoom", false } };
+		PhotonNetwork.JoinRandomRoom (expectedCustomRoomProperties, 0);
 	}
 	
 	public void JoinRoom (string roomName)
@@ -344,7 +378,11 @@ public class NetworkGUI : Photon.MonoBehaviour {
 	
 	public void CreateRoom (string roomName, bool isVisible, bool isOpen, int maxPlayers)
 	{
-		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
+		Hashtable someCustomPropertiesToSet = new Hashtable();
+		someCustomPropertiesToSet.Add ("closeRoom", false);
+		string[] roomPropsInLobby = { "closeRoom", "bool" };
+		
+		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, someCustomPropertiesToSet, roomPropsInLobby);
 	}
 	
 	public string CheckingStatus ()

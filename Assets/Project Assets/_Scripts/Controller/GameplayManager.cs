@@ -71,24 +71,40 @@ public class GameplayManager : MonoBehaviour
 		return factory.Team == MyTeam;
 	}
 	
-	public void AddTeamID (int teamID)
+	public void AddStatTeamID (int teamID)
 	{
 		if (teamNumberOfStats.ContainsKey(teamID))
 		    teamNumberOfStats[teamID] = teamNumberOfStats[teamID] + 1;
 		else
 			teamNumberOfStats.Add (teamID, 1);
-		
-		Debug.Log("teamNumberOfStats: " + teamNumberOfStats[teamID]);
 	}
 	
-	public void RemoveTeamID (int teamID)
+	public void RemoveStatTeamID (int teamID)
 	{
 		if (teamNumberOfStats.ContainsKey(teamID))
 		    teamNumberOfStats[teamID] = teamNumberOfStats[teamID] - 1;
 		else
 			return;
 		
-		Debug.Log("teamNumberOfStats: " + teamNumberOfStats[teamID]);
+		CheckCondition (teamID);
+	}
+	
+	public void RemoveAllStats (int teamID)
+	{
+		if (teamNumberOfStats.ContainsKey(teamID))
+		{
+			if (teamNumberOfStats[teamID] == 0)
+			{
+				return;
+			}
+			else
+			{
+			    teamNumberOfStats[teamID] = 0;
+			}
+		}
+		else
+			return;
+		
 		CheckCondition (teamID);
 	}
 	
