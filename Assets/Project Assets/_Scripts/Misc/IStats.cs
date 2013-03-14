@@ -112,7 +112,7 @@ public abstract class IStats : Photon.MonoBehaviour
 		
 		SetColorTeam ();
 		
-		gameplayManager.AddTeamID (Team);
+		gameplayManager.AddStatTeamID (Team);
 	}
 
 	public virtual void ReceiveAttack (int Damage)
@@ -126,7 +126,7 @@ public abstract class IStats : Photon.MonoBehaviour
 
 		if (Health == 0)
 		{
-			gameplayManager.RemoveTeamID (Team);
+			gameplayManager.RemoveStatTeamID (Team);
 			
 			SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
 			Health = -1;

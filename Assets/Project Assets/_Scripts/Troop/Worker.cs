@@ -256,12 +256,34 @@ public class Worker : Unit
 		case WorkerState.None:
 			if (IsVisible)
 			{
-				resourceWorker[resourceId].carryingObject.SetActive (false);
+				if (unitState == Unit.UnitState.Attack)
+				{
+					resourceWorker[0].carryingObject.SetActive (true);
+				}
+				else
+				{
+					resourceWorker[0].carryingObject.SetActive (false);
+				}
+				
+				if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
 			}
+			
 			
 			base.SyncAnimation ();
 			break;
 		}
+	}
+	
+	[RPC]
+	public override void AttackUnit (string nameUnit, int force)
+	{
+		base.AttackUnit (nameUnit, force);
+	}
+	
+	[RPC]
+	public override void AttackFactory (string nameFactory, int force)
+	{
+		base.AttackFactory (nameFactory, force);
 	}
 	
 	public void SetResource (Resource newResource)

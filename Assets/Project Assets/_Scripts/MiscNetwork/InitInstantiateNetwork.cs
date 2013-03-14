@@ -12,6 +12,12 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	
 	void CheckNetwork ()
 	{
+		if (PhotonNetwork.offlineMode)
+		{
+			CancelInvoke ("CheckNetwork");
+			return;
+		}
+		
 		if (PhotonNetwork.isMessageQueueRunning)
 		{
 			int playerLoads = (int)PhotonNetwork.room.customProperties["playerLoads"];

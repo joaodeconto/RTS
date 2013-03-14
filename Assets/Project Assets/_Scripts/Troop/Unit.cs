@@ -23,8 +23,18 @@ public class Unit : IStats
 		Attack = 2,
 		Die = 3
 	}
+	
+	public enum UnitType
+	{
+		Worker = 0,
+		Neanderthal = 1,
+		Raptor = 2,
+		Triceratops = 3,
+		Rex = 4,
+		Other = 5
+	}
 
-	public int Force;
+	public int force;
 	public float distanceView = 15f;
 	public float rangeAttack = 5f;
 	public float attackDuration = 1f;
@@ -39,7 +49,7 @@ public class Unit : IStats
 
 	public UnitAnimation unitAnimation;
 
-	public int Category;
+	public UnitType category;
 
 	public int AdditionalForce { get; set; }
 
@@ -457,15 +467,15 @@ public class Unit : IStats
 
 		if (unitAnimation.Attack)
 		{
-			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
-			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(Force + AdditionalForce);
+			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
+			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
 
 			if (!PhotonNetwork.offlineMode)
 			{
 				if (targetAttack.GetComponent<Unit>())
-					photonView.RPC ("AttackUnit", PhotonTargets.OthersBuffered, targetAttack.name, Force + AdditionalForce);
+					photonView.RPC ("AttackUnit", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
 				else if (targetAttack.GetComponent<FactoryBase>())
-					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, Force + AdditionalForce);
+					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
 			}
 
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
@@ -484,15 +494,15 @@ public class Unit : IStats
 			{
 				if (PhotonNetwork.offlineMode)
 				{
-					if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(Force + AdditionalForce);
-					else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(Force + AdditionalForce);
+					if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
+					else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
 				}
 				else
 				{
 					if (targetAttack.GetComponent<Unit>())
-						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
+						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 					else if (targetAttack.GetComponent<FactoryBase>())
-						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, Force + AdditionalForce);
+						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 				}
 
 				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -505,14 +515,14 @@ public class Unit : IStats
 	}
 
 	[RPC]
-	void AttackUnit (string nameUnit, int force)
+	public virtual void AttackUnit (string nameUnit, int force)
 	{
 		Unit unit = troopController.FindUnit (nameUnit);
 		if (unit != null) unit.ReceiveAttack (force);
 	}
 
 	[RPC]
-	void AttackFactory (string nameFactory, int force)
+	public virtual void AttackFactory (string nameFactory, int force)
 	{
 		FactoryBase factory = factoryController.FindFactory (nameFactory);
 		if (factory != null) factory.ReceiveAttack (force);

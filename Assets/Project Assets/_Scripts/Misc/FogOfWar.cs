@@ -183,17 +183,19 @@ public class FogOfWar : MonoBehaviour
 		for(int i = enemies.Count - 1; i != -1; --i)
 		{
 			trns = enemies[i];
+			
+			if (trns == null) continue;
 
 			posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
 			posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
 			bool positionIsVisible = (matrixFogFlag[posX,posY] == FogFlag.VISIBLE);
 
-			Debug.Log("positionIsVisible: " + positionIsVisible);
+//			Debug.Log("positionIsVisible: " + positionIsVisible);
 			//Só aplicando se mudar o estado de visibilidade do inimigo
 			if(!entityEnemies[i].IsVisible && positionIsVisible)
 			{
-				Debug.Log("chegou 1");
+//				Debug.Log("chegou 1");
 				entityEnemies[i].SetVisible(true);
 			}
 			else if(entityEnemies[i].IsVisible && !positionIsVisible)
