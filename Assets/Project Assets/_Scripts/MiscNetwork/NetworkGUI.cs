@@ -24,6 +24,8 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		
 		Application.runInBackground = true;
 		
+		qualityNames = QualitySettings.names;
+		
 		CurrentGUI = MainMenu;
 	}
 	
@@ -78,10 +80,42 @@ public class NetworkGUI : Photon.MonoBehaviour {
 			CurrentGUI = JoinGame;
 		}
 		
-		if (!PhotonNetwork.connected) ErrorMessage ("Not have a conection!");
+		GUILayout.Space (10f);
+		
+		if (GUILayout.Button ("Options"))
+		{
+			CurrentGUI = Options;
+		}
+		
+		GUILayout.Space (10f);
+		
+		if (!PhotonNetwork.connected) 
+		{
+			GUI.enabled = true;
+			ErrorMessage ("Not have a conection!");
+		}
 		
 		EndCenter ();
 		
+	}
+	
+	string[] qualityNames;
+	
+	void Options ()
+	{
+		BeginCenter ();
+		
+		int quality = GUILayout.Toolbar (QualitySettings.GetQualityLevel (), qualityNames); 
+		QualitySettings.SetQualityLevel (quality);
+		
+		GUILayout.Space (10f);
+		
+		if (GUILayout.Button ("Back"))
+		{
+			CurrentGUI = MainMenu;
+		}
+		
+		EndCenter ();
 	}
 	
 	protected Vector2 position = Vector2.zero;
