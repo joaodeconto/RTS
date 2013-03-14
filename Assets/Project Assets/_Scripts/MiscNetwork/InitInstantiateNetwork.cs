@@ -15,6 +15,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 		if (PhotonNetwork.offlineMode)
 		{
 			CancelInvoke ("CheckNetwork");
+			InstantiatePrefab ();
 			return;
 		}
 		
@@ -26,11 +27,16 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 			PhotonNetwork.room.SetCustomProperties (setPlayerLoads);
 			
 			CancelInvoke ("CheckNetwork");
-			InvokeRepeating ("InstantiatePrefab", 0.1f, 0.5f);
+			InvokeRepeating ("NetworkInstantiatePrefab", 0.1f, 0.5f);
 		}
 	}
 	
 	void InstantiatePrefab ()
+	{
+		Instantiate (prefabInstantiate, transform.position, transform.rotation);
+	}
+	
+	void NetworkInstantiatePrefab ()
 	{
 		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.countOfPlayersInRooms)
 		{
@@ -38,7 +44,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 			{
 				PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, transform.rotation, 0);
 			}
-			CancelInvoke ("InstantiatePrefab");
+			CancelInvoke ("NetworkInstantiatePrefab");
 		}
 	}
 }
