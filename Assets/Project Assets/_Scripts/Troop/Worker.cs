@@ -24,6 +24,16 @@ public class Worker : Unit
 		public WorkerAnimation workerAnimation;
 	}
 	
+	[System.Serializable]
+	public class FactoryConstruction
+	{
+		public FactoryBase factory;
+		public ResourcesManager costOfResources;
+		public float timeOfProduction = 30f;
+		public string buttonHudName;
+		public Vector3 positionButtonHud;
+	}
+	
 	public enum WorkerState
 	{
 		None = 0,
@@ -36,6 +46,7 @@ public class Worker : Unit
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
 	public ResourceWorker[] resourceWorker;
+	public FactoryConstruction[] factoryConstruction;
 	
 	public WorkerState workerState {get; set;}
 	
@@ -284,6 +295,39 @@ public class Worker : Unit
 	public override void AttackFactory (string nameFactory, int force)
 	{
 		base.AttackFactory (nameFactory, force);
+	}
+	
+	public override void Select ()
+	{
+		base.Select ();
+		
+		if (playerUnit)
+		{
+			foreach (FactoryConstruction fc in factoryConstruction)
+			{
+				Hashtable ht = new Hashtable();
+				ht["factory"]	= fc.factory;
+
+				hudController.CreateButtonInInspector ( fc.buttonHudName,
+														fc.positionButtonHud,
+														ht,
+														fc.factory.guiTextureName, 
+														(ht_hud) =>
+														{
+															FactoryBase factory = (FactoryBase)ht_hud["factory"];
+															
+															InstanceGhostFactory (factory);
+														});
+			}
+		}
+	}
+	
+	public void InstanceGhostFactory (FactoryBase factory)
+	{
+		GameObject ghostFactory = Instantiate (factory.gameObject, Vector3.zero, transform.rotation) as GameObject;
+		Destroy(ghostFactory.GetComponent<FactoryBase> ());
+		ghostFactory.AddComponent<GhostFactory>();
+		ghostFactory.GetComponent<GhostFactory>().Init (factory);
 	}
 	
 	public void SetResource (Resource newResource)
