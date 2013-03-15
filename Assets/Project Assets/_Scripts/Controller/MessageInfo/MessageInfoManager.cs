@@ -66,7 +66,7 @@ public class MessageInfoManager : MonoBehaviour
 
 		if(messageQueue == null)
 		{
-			Debug.Log("nao existe essa message queue!");
+			Debug.Log("nao existe essa message queue: " + queueName);
 			Debug.Break();
 		}
 
