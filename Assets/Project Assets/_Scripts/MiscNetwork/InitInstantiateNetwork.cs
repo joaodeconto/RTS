@@ -35,6 +35,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	{
 		GameObject prefab = Instantiate (prefabInstantiate, transform.position, transform.rotation) as GameObject;
 		prefab.GetComponent<IStats>().Team = int.Parse (transform.parent.name);
+		prefab.GetComponent<IStats>().Init ();
 	}
 	
 	void NetworkInstantiatePrefab ()
