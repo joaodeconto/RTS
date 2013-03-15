@@ -41,7 +41,8 @@ public class FactoryController : MonoBehaviour
 	{
 		if (selectedFactory != null)
 		{
-			if (selectedFactory.Deselect ()) selectedFactory = null;
+			if (selectedFactory.Deselect (false))
+				selectedFactory = null;
 		}
 	}
 

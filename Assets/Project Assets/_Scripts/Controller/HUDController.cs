@@ -5,22 +5,20 @@ using Visiorama;
 
 public class HUDController : MonoBehaviour
 {
-	[System.Serializable]
-	public class NamePosition2D
-	{
-		public string Name;
-		public Vector2 Position;
-	}
-
 	public GameObject healthBar;
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
-	public Transform transformMenu;
+	public Transform trnsOptionsMenu;
 	public GameObject pref_button;
 
-	public NamePosition2D MainQueue;
-
 	private List<UIGrid> gridsToReposition = new List<UIGrid>();
+
+	private MessageInfoManager messageInfoManager;
+
+	public void Init()
+	{
+		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
+	}
 
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
 	{
@@ -70,7 +68,7 @@ public class HUDController : MonoBehaviour
 				DestroyObject (child.gameObject);
 			}
 		}
-		
+
 		foreach (Transform child in HUDRoot.go.transform)
 		{
 			Destroy (child.gameObject);
@@ -79,10 +77,6 @@ public class HUDController : MonoBehaviour
 
 	public void CreateEnqueuedButtonInInspector(string buttonName,
 												string queueName,
-												Vector2 rootPosition,
-												bool verticalEnqueue,
-												int maxPerLine,
-												int maxItems,
 												Hashtable ht,
 												string textureName = "",
 												DefaultCallbackButton.OnClickDelegate onClick = null,
@@ -90,121 +84,31 @@ public class HUDController : MonoBehaviour
 												DefaultCallbackButton.OnDragDelegate onDrag = null,
 												DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-		GameObject queue = GetQueueGameObject(queueName, rootPosition);
-		UIGrid uiGrid = queue.GetComponent<UIGrid>();
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 
-		GameObject button = NGUITools.AddChild (queue,
-												pref_button);
-
-		button.name = buttonName;
-
-		Vector3 position = Vector3.zero;
-
-		//TODO refazer essa parte
-		uiGrid.cellWidth  = uiGrid.cellHeight = 50;
-		uiGrid.maxPerLine = maxPerLine;
-		uiGrid.sorted = true;
-
-		if(verticalEnqueue)
-		{
-			//TODO
-			uiGrid.arrangement = UIGrid.Arrangement.Vertical;
-		}
-		else
-		{
-			uiGrid.arrangement = UIGrid.Arrangement.Horizontal;
-			//FIXME
-			//position = new Vector3 (rootPosition.x + ((index - 1) * texture.width), rootPosition.y, -5);
-		}
-
-		button.transform.localPosition = position;
-
-		if(!string.IsNullOrEmpty(textureName))
-		{
-			Transform trnsForeground = button.transform.FindChild("Foreground");
-			ChangeButtonForegroundTexture(trnsForeground, textureName);
-		}
-		//UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
-		//ucb.Init (unit, factory);
-
-		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
-
-		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
-
-		AddGridToReposition(uiGrid);
+		mq.AddMessageInfo ( buttonName, ht, textureName,
+							onClick, onPress, onDrag, onDrop);
 	}
 
-	public void RemoveEnqueuedButtonInInspector(string queueName,
-												string buttonName)
+	public void RemoveEnqueuedButtonInInspector(string queueName, string buttonName)
 	{
-		GameObject queue     = GetQueueGameObject(queueName);
-		Transform trnsButton = queue.transform.FindChild(buttonName);
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 
-		if(trnsButton != null)
-		{
-			Destroy (trnsButton.gameObject);
-			AddGridToReposition(queue.GetComponent<UIGrid>());
-		}
+		mq.RemoveMessageInfo(buttonName);
 	}
 
 	public void DequeueButtonInInspector(string queueName)
 	{
-		GameObject queue = GetQueueGameObject(queueName);
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 
-		if(queue.transform.childCount == 0)
-			return;
-
-		int childIndex = queue.transform.childCount - 1;
-
-		Destroy (queue.transform.GetChild(childIndex).gameObject);
-
-		AddGridToReposition(queue.GetComponent<UIGrid>());
+		mq.DequeueMessageInfo();
 	}
 
 	public bool CheckQueuedButtonIsFirst(string queueName, string buttonName)
 	{
-		GameObject queue     = GetQueueGameObject(queueName);
-		Transform trnsButton = queue.transform.FindChild(buttonName);
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 
-		if(trnsButton == null)
-		{
-			return false;
-		}
-
-		Debug.Log("trnsButton.localPosition: " + trnsButton.localPosition);
-		return trnsButton.localPosition == Vector3.zero;
-	}
-
-	private GameObject GetQueueGameObject(string queueName)
-	{
-		return GetQueueGameObject(queueName, Vector3.zero);
-	}
-
-	private GameObject GetQueueGameObject(string queueName, Vector3 rootPosition)
-	{
-		Transform trnsQueue = transformMenu.FindChild(queueName);
-		GameObject queue = null;
-
-		if(trnsQueue == null)
-		{
-			queue = new GameObject();
-			queue.transform.parent = transformMenu;
-
-			queue.name = queueName;
-			queue.AddComponent<UIGrid>();
-
-			queue.transform.localScale    = Vector3.one;
-			queue.transform.localPosition = Vector3.zero;
-		}
-		else
-		{
-			queue = trnsQueue.gameObject;
-		}
-
-		if(rootPosition != Vector3.zero)
-			queue.transform.localPosition = rootPosition;
-
-		return queue;
+		return mq.CheckQueuedButtonIsFirst(buttonName);
 	}
 
 	public void CreateButtonInInspector(string buttonName,
@@ -216,21 +120,19 @@ public class HUDController : MonoBehaviour
                                         DefaultCallbackButton.OnDragDelegate onDrag = null,
                                         DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-		GameObject newButton = NGUITools.AddChild ( transformMenu.gameObject,
+		GameObject button = NGUITools.AddChild ( trnsOptionsMenu.gameObject,
 													pref_button);
 
-		newButton.transform.localPosition = position;
+		button.name = buttonName;
+		button.transform.localPosition = position;
 
 		if(!string.IsNullOrEmpty(textureName))
 		{
-			Transform trnsForeground = newButton.transform.FindChild("Foreground");
+			Transform trnsForeground = button.transform.FindChild("Foreground");
 			ChangeButtonForegroundTexture(trnsForeground, textureName);
 		}
 
-		//UnitCallbackButton ucb = newButton.AddComponent<UnitCallbackButton> ();
-		//ucb.Init (unit, factory);
-
-		DefaultCallbackButton dcb = newButton.AddComponent<DefaultCallbackButton>();
+		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
 		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
 	}
 
@@ -250,26 +152,12 @@ public class HUDController : MonoBehaviour
 
 	public void DestroyInspector ()
 	{
-		foreach (Transform child in transformMenu)
+		foreach (Transform child in trnsOptionsMenu)
 		{
 			Destroy (child.gameObject);
 		}
-	}
 
-	private void AddGridToReposition(UIGrid uiGrid)
-	{
-		if(!gridsToReposition.Contains(uiGrid))
-			gridsToReposition.Add(uiGrid);
-
-		Invoke("RepositionGrid", 0.1f);
-	}
-
-	private void RepositionGrid()
-	{
-		while(gridsToReposition.Count != 0)
-		{
-			gridsToReposition[0].repositionNow = true;
-			gridsToReposition.RemoveAt(0);
-		}
+		messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
+		messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
 	}
 }
