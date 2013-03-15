@@ -21,16 +21,19 @@ public class FactoryBase : IStats
 
 	public UnitFactory[] unitsToCreate;
 
+	public Transform waypoint;
+	
+	public string guiTextureName;
+	
 	protected List<Unit> listedToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected float timeToCreate;
 	protected float timer;
 	protected bool inUpgrade;
 
-	public Transform waypoint;
-
 	public Animation ControllerAnimation { get; private set; }
 
+	protected FactoryController factoryController;
 	protected HUDController hudController;
 	protected HealthBar healthBar;
 
@@ -63,8 +66,9 @@ public class FactoryBase : IStats
 
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
-
-		ComponentGetter.Get<FactoryController> ().AddFactory (this);
+		
+		factoryController = ComponentGetter.Get<FactoryController> ();
+		factoryController.AddFactory (this);
 
 		inUpgrade = false;
 
@@ -106,6 +110,11 @@ public class FactoryBase : IStats
 			}
 		}
 	}
+	
+	void OnDestroy ()
+	{
+		if (!IsRemoved && !playerUnit) factoryController.factorys.Remove (this);
+	}
 
 	void OnGUI ()
 	{
@@ -146,7 +155,7 @@ public class FactoryBase : IStats
 
 	void OnDie ()
 	{
-		ComponentGetter.Get<FactoryController> ().RemoveFactory (this);
+		factoryController.RemoveFactory (this);
 		if (IsNetworkInstantiate)
 		{
 			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
@@ -161,13 +170,15 @@ public class FactoryBase : IStats
 
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
-
+		
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
-
+		
 		if (playerUnit)
 		{
 			waypoint.gameObject.SetActive (true);
-
+			if (!waypoint.gameObject.activeSelf)
+				waypoint.gameObject.SetActive (true);
+			
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				Hashtable ht = new Hashtable();

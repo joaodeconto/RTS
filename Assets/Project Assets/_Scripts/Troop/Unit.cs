@@ -156,6 +156,11 @@ public class Unit : IStats
 	{
 		UnitStatus ();
 	}
+	
+	void OnDestroy ()
+	{
+		if (!IsRemoved && !playerUnit) troopController.soldiers.Remove (this);
+	}
 
 	public virtual void UnitStatus ()
 	{
@@ -530,7 +535,7 @@ public class Unit : IStats
 		if (factory != null) factory.ReceiveAttack (force);
 	}
 
-	public void Select ()
+	public virtual void Select ()
 	{
 		Selected = true;
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
