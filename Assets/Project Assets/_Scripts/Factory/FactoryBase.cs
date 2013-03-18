@@ -7,7 +7,7 @@ using Visiorama;
 public class FactoryBase : IStats
 {
 	public const int MAX_NUMBER_OF_LISTED = 5;
-	public const string FactoryQueueName = "Factory Queue";
+	public const string FactoryQueueName = "Factory";
 
 	[System.Serializable]
 	public class UnitFactory
@@ -22,9 +22,10 @@ public class FactoryBase : IStats
 	public UnitFactory[] unitsToCreate;
 
 	public Transform waypoint;
-	
+
 	public string guiTextureName;
-	
+	public string unitCreatedEventMessage;
+
 	protected List<Unit> listedToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected float timeToCreate;
@@ -35,6 +36,7 @@ public class FactoryBase : IStats
 
 	protected FactoryController factoryController;
 	protected HUDController hudController;
+	protected EventManager eventManager;
 	protected HealthBar healthBar;
 
 	public bool wasVisible = false;
@@ -53,7 +55,9 @@ public class FactoryBase : IStats
 
 		timer = 0;
 
-		hudController   = ComponentGetter.Get<HUDController> ();
+		hudController     = ComponentGetter.Get<HUDController> ();
+		eventManager      = ComponentGetter.Get<EventManager> ();
+		factoryController = ComponentGetter.Get<FactoryController> ();
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -66,8 +70,7 @@ public class FactoryBase : IStats
 
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
-		
-		factoryController = ComponentGetter.Get<FactoryController> ();
+
 		factoryController.AddFactory (this);
 
 		inUpgrade = false;
@@ -95,14 +98,11 @@ public class FactoryBase : IStats
 		{
 			if (timer > timeToCreate)
 			{
-				listedToCreate.RemoveAt (0);
-				hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
-
 				InvokeUnit (unitToCreate);
+
 				timer = 0;
 				unitToCreate = null;
 				inUpgrade = false;
-
 			}
 			else
 			{
@@ -110,7 +110,7 @@ public class FactoryBase : IStats
 			}
 		}
 	}
-	
+
 	void OnDestroy ()
 	{
 		if (!IsRemoved && !playerUnit) factoryController.factorys.Remove (this);
@@ -130,7 +130,11 @@ public class FactoryBase : IStats
 
 	void InvokeUnit (Unit unit)
 	{
-//		Vector3 unitSpawnPosition = transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius);
+		listedToCreate.RemoveAt (0);
+
+		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
+
+		eventManager.AddEvent(unitCreatedEventMessage + " " + unit.name, unit.guiTextureName);
 
 		// Look At
 		Vector3 difference = waypoint.position - transform.position;
@@ -170,15 +174,15 @@ public class FactoryBase : IStats
 
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
-		
+
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
-		
+
 		if (playerUnit)
 		{
 			waypoint.gameObject.SetActive (true);
 			if (!waypoint.gameObject.activeSelf)
 				waypoint.gameObject.SetActive (true);
-			
+
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				Hashtable ht = new Hashtable();
