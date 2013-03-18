@@ -1,44 +1,22 @@
 using UnityEngine;
 using System.Collections;
 
-public class MessageQueue : MonoBehaviour
+public abstract class MessageQueue : MonoBehaviour
 {
-	public string queueName;
-	public Vector2 rootPosition;
+	public string QueueName;
+	public Vector2 RootPosition;
 	public bool IsVerticalQueue;
-	public int maxPerLine;
-	public int maxItems;
+	public int MaxPerLine;
+	public int MaxItems;
+	public Vector2 CellSize;
 
-	private GameObject pref_button;
-	private UIGrid uiGrid;
+	protected GameObject Pref_button;
+	protected UIGrid uiGrid;
 
-	private float nQueueItems;
-
-	public MessageQueue Init(GameObject pref_button,
-							 UIGrid uiGrid,
-							 string queueName,
-							 Vector2 rootPosition,
-							 bool IsVerticalQueue,
-							 int maxPerLine,
-							 int maxItems)
-	{
-		this.pref_button = pref_button;
-		this.uiGrid      = uiGrid;
-
-		this.queueName       = queueName;
-		this.rootPosition    = rootPosition;
-		this.IsVerticalQueue = IsVerticalQueue;
-		this.maxPerLine      = maxPerLine;
-		this.maxItems        = maxItems;
-
-		this.nQueueItems = 0;
-
-		return this;
-	}
+	protected float nQueueItems;
 
 	public void AddMessageInfo( string buttonName,
 								Hashtable ht,
-								string textureName,
 								DefaultCallbackButton.OnClickDelegate onClick = null,
 								DefaultCallbackButton.OnPressDelegate onPress = null,
 								DefaultCallbackButton.OnDragDelegate onDrag = null,
@@ -47,36 +25,23 @@ public class MessageQueue : MonoBehaviour
 		++nQueueItems;
 
 		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-												pref_button);
+												Pref_button);
 
 		button.name  = buttonName;
 		button.layer = gameObject.layer;
 
-		Vector3 position = Vector3.zero;
+		//button.transform.localPosition = Vector3.zero;
 
-		//TODO refazer essa parte
-		uiGrid.cellWidth  = uiGrid.cellHeight = 50;
-		uiGrid.maxPerLine = maxPerLine;
-		uiGrid.sorted = true;
-
-		if(IsVerticalQueue)
-		{
-			//TODO
-			uiGrid.arrangement = UIGrid.Arrangement.Vertical;
-		}
-		else
-		{
-			uiGrid.arrangement = UIGrid.Arrangement.Horizontal;
-			//FIXME
-			//position = new Vector3 (rootPosition.x + ((index - 1) * texture.width), rootPosition.y, -5);
-		}
-
-		button.transform.localPosition = position;
-
-		if(!string.IsNullOrEmpty(textureName))
+		if(ht.ContainsKey("textureName"))
 		{
 			Transform trnsForeground = button.transform.FindChild("Foreground");
-			ChangeButtonForegroundTexture(trnsForeground, textureName);
+			ChangeButtonForegroundTexture(trnsForeground, (string)ht["textureName"]);
+		}
+
+		if(ht.ContainsKey("message"))
+		{
+			Transform trnsLabel = button.transform.FindChild("Label");
+			trnsLabel.GetComponent<UILabel>().text = (string)ht["message"];
 		}
 
 		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
@@ -125,6 +90,11 @@ public class MessageQueue : MonoBehaviour
 		}
 	}
 
+	public bool IsEmpty()
+	{
+		return (uiGrid.transform.childCount == 0);
+	}
+
 	public void Clear()
 	{
 		nQueueItems = 0;
@@ -137,7 +107,7 @@ public class MessageQueue : MonoBehaviour
 		Invoke("RepositionGrid", 0.1f);
 	}
 
-	private void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
+	protected void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
 	{
 		if(trnsForeground == null || trnsForeground.GetComponent<UISlicedSprite>() == null)
 		{
@@ -151,7 +121,7 @@ public class MessageQueue : MonoBehaviour
 		sprite.transform.localPosition = Vector3.forward * -5;
 	}
 
-	private void RepositionGrid()
+	protected void RepositionGrid()
 	{
 		if(uiGrid.transform.childCount != nQueueItems)
 			Invoke("RepositionGrid", 0.1f);
