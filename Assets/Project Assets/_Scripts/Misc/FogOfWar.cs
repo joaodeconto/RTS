@@ -259,4 +259,9 @@ public class FogOfWar : MonoBehaviour
 
 		return this;
 	}
+	
+	public bool IsVisitedPosition (Transform trans)
+	{
+		return true;
+	}
 }
