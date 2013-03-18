@@ -141,7 +141,7 @@ public class TroopController : MonoBehaviour
 		{
 			if (soldier != null)
 			{
-				soldier.Deselect ();
+				soldier.Deselect (true);
 			}
 		}
 
