@@ -34,6 +34,8 @@ public class FactoryBase : IStats
 
 	public Animation ControllerAnimation { get; private set; }
 
+	public bool wasBuilt { get; private set; }
+
 	protected FactoryController factoryController;
 	protected HUDController hudController;
 	protected EventManager eventManager;
@@ -74,6 +76,7 @@ public class FactoryBase : IStats
 		factoryController.AddFactory (this);
 
 		inUpgrade = false;
+		wasBuilt = true;
 
 		enabled = playerUnit;
 	}
@@ -167,6 +170,30 @@ public class FactoryBase : IStats
 		else Destroy (gameObject);
 	}
 
+	public void Instance (int teamID)
+	{
+		Health = 1;
+		wasBuilt = false;
+		enabled = false;
+		Team = teamID;
+	}
+
+	public bool Construct (Worker worker)
+	{
+		if (Health == MaxHealth)
+		{
+			worker.SetMoveToFactory (this);
+			wasBuilt = true;
+			return false;
+		}
+		else
+		{
+			Health += worker.constructionAndRepairForce;
+			Health = Mathf.Clamp (Health, 0, MaxHealth);
+			return true;
+		}
+	}
+
 	public void Select ()
 	{
 		if (!Selected) Selected = true;
@@ -177,7 +204,7 @@ public class FactoryBase : IStats
 
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
 
-		if (playerUnit)
+		if (playerUnit && wasBuilt)
 		{
 			waypoint.gameObject.SetActive (true);
 			if (!waypoint.gameObject.activeSelf)
@@ -232,7 +259,7 @@ public class FactoryBase : IStats
 
 		hudController.DestroySelected (transform);
 
-		if (playerUnit)
+		if (playerUnit && wasBuilt)
 		{
 			waypoint.gameObject.SetActive (false);
 

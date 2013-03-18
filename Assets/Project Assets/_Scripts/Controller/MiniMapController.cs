@@ -305,7 +305,6 @@ public class MiniMapController : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("chegou");
 			if(!WasStructureAlreadyVisible[teamId][index])
 			{
 				StructureMiniMapList[teamId][index].SetActive(false);
