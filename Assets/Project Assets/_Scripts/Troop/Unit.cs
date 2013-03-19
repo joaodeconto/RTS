@@ -5,7 +5,7 @@ using Visiorama;
 
 public class Unit : IStats
 {
-	public const string UnitGroupQueueName = "Unit Group Queue";
+	public const string UnitGroupQueueName = "Unit Group";
 
 	[System.Serializable]
 	public class UnitAnimation
@@ -156,7 +156,7 @@ public class Unit : IStats
 	{
 		if (unitState != UnitState.Die) UnitStatus ();
 	}
-	
+
 	void OnDestroy ()
 	{
 		if (!IsRemoved && !playerUnit) troopController.soldiers.Remove (this);

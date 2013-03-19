@@ -144,7 +144,18 @@ public class FactoryBase : IStats
 
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 
-//		eventManager.AddEvent(unitCreatedEventMessage + " " + unit.name, unit.guiTextureName);
+//		string unitName = "";
+//
+//		foreach(UnitFactory uf in unitsToCreate)
+//		{
+//			if(uf.unit == unit)
+//			{
+//				unitName = uf.buttonName;
+//				break;
+//			}
+//		}
+
+		eventManager.AddEvent(unitCreatedEventMessage + " " + unitName, unit.guiTextureName);
 
 		// Look At
 		Vector3 difference = waypoint.position - transform.position;

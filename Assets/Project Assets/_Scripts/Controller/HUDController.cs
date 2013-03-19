@@ -86,7 +86,10 @@ public class HUDController : MonoBehaviour
 	{
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 
-		mq.AddMessageInfo ( buttonName, ht, textureName,
+		if(!string.IsNullOrEmpty(textureName))
+			ht["textureName"] = textureName;
+
+		mq.AddMessageInfo ( buttonName, ht,
 							onClick, onPress, onDrag, onDrop);
 	}
 
