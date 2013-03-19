@@ -40,7 +40,8 @@ public class Worker : Unit
 		Extracting = 1,
 		Carrying = 2,
 		CarryingIdle = 3,
-		Building = 4
+		Building = 4,
+		Repairing = 5
 	}
 	
 	public int forceToExtract;
@@ -53,6 +54,7 @@ public class Worker : Unit
 	public WorkerState workerState {get; set;}
 	
 	public bool IsExtracting {get; protected set;}
+	public bool IsRepairing {get; protected set;}
 	public bool IsBuilding {get; protected set;}
 	
 	public int resourceId {get; set;}
@@ -150,21 +152,33 @@ public class Worker : Unit
 					
 					resourceWorker[resourceId].carryingObject.SetActive (false);
 					
+					factoryChoose = null;
+					
 					resourceId = -1;
 					
 					ResetPathfindValue ();
 				}
 				break;
 			case WorkerState.Building:
+			case WorkerState.Repairing:
 				if (factoryChoose == null)
 				{
 					workerState = WorkerState.None;
+					
+					// Patch para tirar travada ¬¬
+					Move (transform.position - transform.forward);
 				}
 				
 				pathfind.Stop ();
-				if (!IsBuilding) StartCoroutine (StartConstruct ());
+				if (workerState == WorkerState.Building)
+				{
+					if (!IsBuilding) StartCoroutine (StartConstruct ());
+				}
+				else
+				{
+					if (!IsRepairing) StartCoroutine (StartRepair ());
+				}
 				break;
-			
 			case WorkerState.None:
 				CheckConstructFactory ();
 				
@@ -282,6 +296,7 @@ public class Worker : Unit
 			break;
 			
 		case WorkerState.Building:
+		case WorkerState.Repairing:
 			if (resourceWorker[0].workerAnimation.Extracting)
 			{
 				ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting);
@@ -350,10 +365,23 @@ public class Worker : Unit
 		}
 	}
 	
+	void OnDie ()
+	{
+		workerState = WorkerState.None;
+	}
+	
 	public void InstanceGhostFactory (FactoryBase factory)
 	{
-		GameObject ghostFactory = Instantiate (factory.gameObject, Vector3.zero, transform.rotation) as GameObject;
-		ghostFactory.AddComponent<GhostFactory>().Init (this);
+		if (PhotonNetwork.offlineMode)
+		{
+			GameObject ghostFactory = Instantiate (factory.gameObject, Vector3.zero, factory.transform.rotation) as GameObject;
+			ghostFactory.AddComponent<GhostFactory>().Init (this);
+		}
+		else
+		{
+			GameObject ghostFactory = PhotonNetwork.Instantiate (factory.gameObject.name, Vector3.zero, factory.transform.rotation, 0);
+			ghostFactory.AddComponent<GhostFactory>().Init (this);
+		}
 	}
 	
 	public void SetResource (Resource newResource)
@@ -377,6 +405,24 @@ public class Worker : Unit
 		}
 		
 		IsBuilding = false;
+	}
+	
+	IEnumerator StartRepair ()
+	{
+		IsRepairing = true;
+		
+		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
+		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
+		
+		if (factoryChoose != null)
+		{
+			if (!factoryChoose.Repair (this))
+			{
+				factoryChoose = null;
+			}
+		}
+		
+		IsRepairing = false;
 	}
 	
 	IEnumerator Extract ()
@@ -414,8 +460,15 @@ public class Worker : Unit
 	public void SetMoveToFactory (FactoryBase factory)
 	{
 		factoryChoose = factory;
-		Move (factoryChoose.transform.position);
-		movingToFactory = true;
+		if (factoryChoose != null)
+		{
+			Move (factoryChoose.transform.position);
+			movingToFactory = true;
+		}
+		else
+		{
+			movingToFactory = false;
+		}
 	}
 	
 	void SetMoveToFactory (System.Type type)
@@ -460,11 +513,15 @@ public class Worker : Unit
 	{
 		if (factoryChoose != null)
 		{
-			if (!factoryChoose.wasBuilt)
+			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 			{
-				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
+				if (!factoryChoose.wasBuilt)
 				{
 					workerState = WorkerState.Building;
+				}
+				else if (factoryChoose.IsNeededRepair)
+				{
+					workerState = WorkerState.Repairing;
 				}
 			}
 		}

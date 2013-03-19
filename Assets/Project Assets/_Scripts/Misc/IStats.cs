@@ -145,6 +145,11 @@ public abstract class IStats : Photon.MonoBehaviour
         IsNetworkInstantiate = true;
     }
 	
+	public void SetHealth (int health)
+	{
+		Health = health;
+	}
+	
 	void SetTeamInNetwork ()
 	{
 		if (photonView.isMine)

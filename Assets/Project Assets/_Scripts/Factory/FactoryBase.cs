@@ -38,11 +38,18 @@ public class FactoryBase : IStats
 
 	protected FactoryController factoryController;
 	protected HUDController hudController;
-	protected EventManager eventManager;
+//	protected EventManager eventManager;
 	protected HealthBar healthBar;
 
 	public bool wasVisible = false;
-
+	
+	public bool IsNeededRepair
+	{
+		get {
+			return Health != MaxHealth;
+		}
+	}
+	
 	public bool OverLimitCreateUnit
 	{
 		get
@@ -58,7 +65,7 @@ public class FactoryBase : IStats
 		timer = 0;
 
 		hudController     = ComponentGetter.Get<HUDController> ();
-		eventManager      = ComponentGetter.Get<EventManager> ();
+//		eventManager      = ComponentGetter.Get<EventManager> ();
 		factoryController = ComponentGetter.Get<FactoryController> ();
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
@@ -137,7 +144,7 @@ public class FactoryBase : IStats
 
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 
-		eventManager.AddEvent(unitCreatedEventMessage + " " + unit.name, unit.guiTextureName);
+//		eventManager.AddEvent(unitCreatedEventMessage + " " + unit.name, unit.guiTextureName);
 
 		// Look At
 		Vector3 difference = waypoint.position - transform.position;
@@ -169,20 +176,31 @@ public class FactoryBase : IStats
 		}
 		else Destroy (gameObject);
 	}
-
-	public void Instance (int teamID)
+	
+	[RPC]
+	public void InstanceOverdraw (int teamID)
 	{
 		Health = 1;
 		wasBuilt = false;
 		enabled = false;
 		Team = teamID;
+		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
+		
+		if (!gameplayManager.IsSameTeam (teamID)) model.SetActive (false);
+		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;
 	}
-
+	
+	[RPC]
+	public void Instance ()
+	{
+		factoryController.AddFactory (this);
+		if (!gameplayManager.IsSameTeam (Team)) model.SetActive (true);
+	}
+	
 	public bool Construct (Worker worker)
 	{
 		if (Health == MaxHealth)
 		{
-			worker.SetMoveToFactory (this);
 			wasBuilt = true;
 			return false;
 		}
@@ -191,6 +209,20 @@ public class FactoryBase : IStats
 			Health += worker.constructionAndRepairForce;
 			Health = Mathf.Clamp (Health, 0, MaxHealth);
 			return true;
+		}
+	}
+	
+	public bool Repair (Worker worker)
+	{
+		if (IsNeededRepair)
+		{
+			Health += worker.constructionAndRepairForce;
+			Health = Mathf.Clamp (Health, 0, MaxHealth);
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 
