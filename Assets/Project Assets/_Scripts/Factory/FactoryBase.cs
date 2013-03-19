@@ -18,14 +18,36 @@ public class FactoryBase : IStats
 		public string buttonName;
 		public Vector3 positionButton;
 	}
-
+	
+	[System.Serializable]
+	public class BuildingObjects
+	{
+		public GameObject baseObject;
+		public GameObject unfinishedObject;
+		public GameObject finishedObject;
+	}
+	
+	public enum BuildingState
+	{
+		Base = 0,
+		Unfinished = 1,
+		Finished = 2
+	}
+	
 	public UnitFactory[] unitsToCreate;
 
 	public Transform waypoint;
 
+	public Resource.Type receiveResouce;
+	
+	public BuildingObjects buildingObjects;
+	
 	public string guiTextureName;
 	public string unitCreatedEventMessage;
-
+	
+	public BuildingState buildingState { get; set; }
+	protected int levelConstruct;
+	
 	protected List<Unit> listedToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected float timeToCreate;
@@ -90,33 +112,51 @@ public class FactoryBase : IStats
 
 	void Update ()
 	{
-		if (listedToCreate.Count == 0) return;
-
-		if (unitToCreate == null)
+		if (wasBuilt)
 		{
-			unitToCreate = listedToCreate[0];
-			foreach (UnitFactory uf in unitsToCreate)
+			if (listedToCreate.Count == 0) return;
+	
+			if (unitToCreate == null)
 			{
-				if (uf.unit == unitToCreate)
+				unitToCreate = listedToCreate[0];
+				foreach (UnitFactory uf in unitsToCreate)
 				{
-					timeToCreate = uf.timeToCreate;
+					if (uf.unit == unitToCreate)
+					{
+						timeToCreate = uf.timeToCreate;
+					}
 				}
-			}
-			inUpgrade = true;
-		}
-		else
-		{
-			if (timer > timeToCreate)
-			{
-				InvokeUnit (unitToCreate);
-
-				timer = 0;
-				unitToCreate = null;
-				inUpgrade = false;
+				inUpgrade = true;
 			}
 			else
 			{
-				timer += Time.deltaTime;
+				if (timer > timeToCreate)
+				{
+					InvokeUnit (unitToCreate);
+	
+					timer = 0;
+					unitToCreate = null;
+					inUpgrade = false;
+				}
+				else
+				{
+					timer += Time.deltaTime;
+				}
+			}
+		}
+		else
+		{
+			if (levelConstruct < (MaxHealth / 2))
+			{
+				buildingState = BuildingState.Base;
+			}
+			else if (levelConstruct < MaxHealth)
+			{
+				buildingState = BuildingState.Unfinished;
+			}
+			else
+			{
+				buildingState = BuildingState.Finished;
 			}
 		}
 	}
@@ -191,9 +231,9 @@ public class FactoryBase : IStats
 	[RPC]
 	public void InstanceOverdraw (int teamID)
 	{
-		Health = 1;
+		levelConstruct = Health = 1;
+		buildingState = BuildingState.Finished;
 		wasBuilt = false;
-		enabled = false;
 		Team = teamID;
 		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
 		
@@ -210,13 +250,15 @@ public class FactoryBase : IStats
 	
 	public bool Construct (Worker worker)
 	{
-		if (Health == MaxHealth)
+		if (levelConstruct == MaxHealth)
 		{
 			wasBuilt = true;
 			return false;
 		}
 		else
 		{
+			levelConstruct += worker.constructionAndRepairForce;
+			levelConstruct = Mathf.Clamp (levelConstruct, 0, MaxHealth);
 			Health += worker.constructionAndRepairForce;
 			Health = Mathf.Clamp (Health, 0, MaxHealth);
 			return true;

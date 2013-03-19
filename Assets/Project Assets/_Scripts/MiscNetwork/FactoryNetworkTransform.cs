@@ -21,6 +21,7 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
         {
             //We own this player: send the others our data
             //stream.SendNext((int)factory.state);
+//			stream.SendNext(factory.stats);
             stream.SendNext(factory.Health);
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);

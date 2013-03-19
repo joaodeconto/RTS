@@ -20,11 +20,11 @@ public class NetworkManager : Photon.MonoBehaviour {
     {
         Debug.Log("OnMasterClientSwitched: " + player);
 
-//        if (PhotonNetwork.connected)
-//        {
-//            photonView.RPC("SendChatMessage", PhotonNetwork.masterClient, "Hi master! From:" + PhotonNetwork.player);
-//            photonView.RPC("SendChatMessage", PhotonTargets.All, "WE GOT A NEW MASTER: " + player + "==" + PhotonNetwork.masterClient + " From:" + PhotonNetwork.player);
-//        }
+        if (PhotonNetwork.connected)
+        {
+            photonView.RPC("SendChatMessage", PhotonNetwork.masterClient, "Hi master! Welcome (:");
+            photonView.RPC("SendChatMessage", PhotonTargets.All, "WE GOT A NEW MASTER: " + PhotonNetwork.masterClient);
+        }
     }
 
     public void OnDisconnectedFromPhoton()
@@ -53,22 +53,22 @@ public class NetworkManager : Photon.MonoBehaviour {
 		gameplayManager.RemoveAllStats ((int)player.customProperties["team"]);
     }
 
-    public void OnReceivedRoomList()
+    public void OnReceivedRoomList ()
     {
         Debug.Log("OnReceivedRoomList");
     }
 
-    public void OnReceivedRoomListUpdate()
+    public void OnReceivedRoomListUpdate ()
     {
         Debug.Log("OnReceivedRoomListUpdate");
     }
 
-    public void OnConnectedToPhoton()
+    public void OnConnectedToPhoton ()
     {
         Debug.Log("OnConnectedToPhoton");
     }
 
-    public void OnFailedToConnectToPhoton()
+    public void OnFailedToConnectToPhoton ()
     {
         Debug.Log("OnFailedToConnectToPhoton");
     }

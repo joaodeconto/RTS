@@ -479,21 +479,36 @@ public class Unit : IStats
 
 		if (unitAnimation.Attack)
 		{
-			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
-			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
-
-			if (!PhotonNetwork.offlineMode)
-			{
-				if (targetAttack.GetComponent<Unit>())
-					photonView.RPC ("AttackUnit", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
-				else if (targetAttack.GetComponent<FactoryBase>())
-					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
-			}
+//			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
+//			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
+//
+//			if (!PhotonNetwork.offlineMode)
+//			{
+//				if (targetAttack.GetComponent<Unit>())
+//					photonView.RPC ("AttackUnit", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
+//				else if (targetAttack.GetComponent<FactoryBase>())
+//					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
+//			}
 
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 
 			IsAttacking = true;
+			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
+			
+			if (!PhotonNetwork.offlineMode)
+			{
+				if (targetAttack.GetComponent<Unit>())
+					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+				else if (targetAttack.GetComponent<FactoryBase>())
+					photonView.RPC ("AttackFactory", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+			}
+			else
+			{
+				if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
+				else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
+			}
+			
 			IsAttacking = false;
 		}
 		else
