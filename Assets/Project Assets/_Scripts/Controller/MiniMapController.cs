@@ -120,13 +120,31 @@ public class MiniMapController : MonoBehaviour
 			//iterate by structures
 			for(int j = structureList[i].Count - 1; j != -1; --j)
 			{
-				UpdatePosition(StructureMiniMapList[i][j], structureList[i][j]);
+				if (structureList[i][j] != null)
+				{
+					UpdatePosition(StructureMiniMapList[i][j], structureList[i][j]);
+				}
+				else
+				{
+					structureList[i].RemoveAt(j);
+					StructureMiniMapList[i].RemoveAt(j);
+					++j;
+				}
 			}
 
 			//iterate by unit
 			for(int j = unitList[i].Count - 1; j != -1; --j)
 			{
-				UpdatePosition(UnitMiniMapList[i][j], unitList[i][j]);
+				if (unitList[i][j] != null)
+				{
+					UpdatePosition(UnitMiniMapList[i][j], unitList[i][j]);
+				}
+				else
+				{
+					unitList[i].RemoveAt(j);
+					UnitMiniMapList[i].RemoveAt(j);
+					++j;
+				}
 			}
 		}
 	}
@@ -241,7 +259,11 @@ public class MiniMapController : MonoBehaviour
 
 	public void RemoveStructure (Transform trns, int teamId)
 	{
-		int index = structureList[teamId].IndexOf(trns);
+		if (trns == null) return;
+		
+		int index = structureList[teamId].IndexOf(trns) != null ? structureList[teamId].IndexOf(trns) : -1;
+		
+		if (index == -1) return;
 
 		GameObject obj = StructureMiniMapList[teamId][index];
 
@@ -253,8 +275,12 @@ public class MiniMapController : MonoBehaviour
 
 	public void RemoveUnit (Transform trns, int teamId)
 	{
-		int index = unitList[teamId].IndexOf(trns);
-
+		if (trns == null) return;
+		
+		int index = unitList[teamId].IndexOf(trns) != null ? unitList[teamId].IndexOf(trns) : -1;
+		
+		if (index == -1) return;
+		
 		GameObject obj = UnitMiniMapList[teamId][index];
 
 		Destroy(obj);
@@ -279,7 +305,6 @@ public class MiniMapController : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("chegou");
 			if(!WasStructureAlreadyVisible[teamId][index])
 			{
 				StructureMiniMapList[teamId][index].SetActive(false);

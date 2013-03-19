@@ -55,8 +55,8 @@ public abstract class IStats : Photon.MonoBehaviour
 	public bool playerUnit;
 	
 	public bool Selected { get; protected set; }
-
 	public bool IsNetworkInstantiate { get; protected set; }
+	public bool IsRemoved { get; protected set; }
 
 	internal int Group = -1;
 
@@ -113,6 +113,8 @@ public abstract class IStats : Photon.MonoBehaviour
 		SetColorTeam ();
 		
 		gameplayManager.AddStatTeamID (Team);
+		
+		IsRemoved = false;
 	}
 
 	public virtual void ReceiveAttack (int Damage)
@@ -127,6 +129,7 @@ public abstract class IStats : Photon.MonoBehaviour
 		if (Health == 0)
 		{
 			gameplayManager.RemoveStatTeamID (Team);
+			IsRemoved = true;
 			
 			SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
 			Health = -1;

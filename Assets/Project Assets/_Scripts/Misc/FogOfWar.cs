@@ -96,7 +96,7 @@ public class FogOfWar : MonoBehaviour
 
 	void Update()
 	{
-		if(!UseFog)
+		if(!UseFog || allies == null)
 			return;
 
 		for(int i = allies.Count - 1; i != -1; --i)
@@ -184,7 +184,13 @@ public class FogOfWar : MonoBehaviour
 		{
 			trns = enemies[i];
 			
-			if (trns == null) continue;
+			if (trns == null)
+			{
+					  enemies.RemoveAt(i);
+				entityEnemies.RemoveAt(i);
+				++i;
+				continue;
+			}
 
 			posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
 			posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
@@ -229,24 +235,33 @@ public class FogOfWar : MonoBehaviour
 
 	public FogOfWar RemoveEntity(Transform trnsEntity, IStats entity)
 	{
-		if(!UseFog)
+		if(!UseFog || trnsEntity == null)
 			return null;
 		
 		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.Team))
 		{
-			int index = allies.IndexOf(trnsEntity);
-
+			int index = allies.IndexOf(trnsEntity) != null ? allies.IndexOf(trnsEntity) : -1;
+		
+			if (index == -1) return null;
+			
 				  allies.RemoveAt(index);
 			entityAllies.RemoveAt(index);
 		}
 		else
 		{
-			int index = enemies.IndexOf(trnsEntity);
+			int index = enemies.IndexOf(trnsEntity) != null ? enemies.IndexOf(trnsEntity) : -1;
+		
+			if (index == -1) return null;
 
 				  enemies.RemoveAt(index);
 			entityEnemies.RemoveAt(index);
 		}
 
 		return this;
+	}
+	
+	public bool IsVisitedPosition (Transform trans)
+	{
+		return true;
 	}
 }

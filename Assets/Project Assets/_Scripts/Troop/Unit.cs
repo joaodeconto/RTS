@@ -5,6 +5,8 @@ using Visiorama;
 
 public class Unit : IStats
 {
+	public const string UnitGroupQueueName = "Unit Group";
+
 	[System.Serializable]
 	public class UnitAnimation
 	{
@@ -23,7 +25,7 @@ public class Unit : IStats
 		Attack = 2,
 		Die = 3
 	}
-	
+
 	public enum UnitType
 	{
 		Worker = 0,
@@ -153,6 +155,11 @@ public class Unit : IStats
 	void Update ()
 	{
 		UnitStatus ();
+	}
+
+	void OnDestroy ()
+	{
+		if (!IsRemoved && !playerUnit) troopController.soldiers.Remove (this);
 	}
 
 	public virtual void UnitStatus ()
@@ -528,7 +535,7 @@ public class Unit : IStats
 		if (factory != null) factory.ReceiveAttack (force);
 	}
 
-	public void Select ()
+	public virtual void Select ()
 	{
 		Selected = true;
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
@@ -536,11 +543,7 @@ public class Unit : IStats
 
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
 		hudController.CreateEnqueuedButtonInInspector ( this.name,
-														hudController.MainQueue.Name,
-														hudController.MainQueue.Position,
-														false,
-														5,
-														10,
+														Unit.UnitGroupQueueName,
 														null,
 														this.guiTextureName,
 														(hud_ht) =>
@@ -550,11 +553,15 @@ public class Unit : IStats
 														});
 	}
 
-	public void Deselect ()
+	public void Deselect (bool isGroupDelesection = false)
 	{
 		Selected = false;
 		hudController.DestroySelected (transform);
-		hudController.DestroyInspector();
+
+		if(isGroupDelesection)
+		{
+			hudController.DestroyInspector ();
+		}
 	}
 
 	public bool IsRangeAttack (GameObject soldier)

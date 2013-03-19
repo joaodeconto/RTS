@@ -8,12 +8,14 @@ public class GameController : MonoBehaviour
 	{
 		ComponentGetter.Get<NetworkManager> ().Init ();
 		ComponentGetter.Get<GameplayManager> ().Init ();
+		ComponentGetter.Get<HUDController> ().Init ();
 		ComponentGetter.Get<TouchController> ().Init ();
 		ComponentGetter.Get<SelectionController> ().Init ();
 		ComponentGetter.Get<TroopController> ().Init ();
 		ComponentGetter.Get<FactoryController> ().Init ();
 		ComponentGetter.Get<InteractionController> ().Init ();
 		ComponentGetter.Get<MiniMapController> ().Init ();
+		ComponentGetter.Get<EventManager> ().Init ();
 		ComponentGetter.Get<FogOfWar> ().Init ();
 	}
 }

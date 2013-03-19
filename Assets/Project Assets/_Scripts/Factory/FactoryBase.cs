@@ -7,6 +7,7 @@ using Visiorama;
 public class FactoryBase : IStats
 {
 	public const int MAX_NUMBER_OF_LISTED = 5;
+	public const string FactoryQueueName = "Factory";
 
 	[System.Serializable]
 	public class UnitFactory
@@ -20,17 +21,24 @@ public class FactoryBase : IStats
 
 	public UnitFactory[] unitsToCreate;
 
+	public Transform waypoint;
+
+	public string guiTextureName;
+	public string unitCreatedEventMessage;
+
 	protected List<Unit> listedToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected float timeToCreate;
 	protected float timer;
 	protected bool inUpgrade;
 
-	public Transform waypoint;
-
 	public Animation ControllerAnimation { get; private set; }
 
+	public bool wasBuilt { get; private set; }
+
+	protected FactoryController factoryController;
 	protected HUDController hudController;
+	protected EventManager eventManager;
 	protected HealthBar healthBar;
 
 	public bool wasVisible = false;
@@ -49,7 +57,9 @@ public class FactoryBase : IStats
 
 		timer = 0;
 
-		hudController   = ComponentGetter.Get<HUDController> ();
+		hudController     = ComponentGetter.Get<HUDController> ();
+		eventManager      = ComponentGetter.Get<EventManager> ();
+		factoryController = ComponentGetter.Get<FactoryController> ();
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -63,10 +73,11 @@ public class FactoryBase : IStats
 		this.gameObject.tag = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
-		ComponentGetter.Get<FactoryController> ().AddFactory (this);
+		factoryController.AddFactory (this);
 
 		inUpgrade = false;
-		
+		wasBuilt = true;
+
 		enabled = playerUnit;
 	}
 
@@ -90,20 +101,22 @@ public class FactoryBase : IStats
 		{
 			if (timer > timeToCreate)
 			{
-				listedToCreate.RemoveAt (0);
-				hudController.DequeueButtonInInspector(hudController.MainQueue.Name);
-
 				InvokeUnit (unitToCreate);
+
 				timer = 0;
 				unitToCreate = null;
 				inUpgrade = false;
-
 			}
 			else
 			{
 				timer += Time.deltaTime;
 			}
 		}
+	}
+
+	void OnDestroy ()
+	{
+		if (!IsRemoved && !playerUnit) factoryController.factorys.Remove (this);
 	}
 
 	void OnGUI ()
@@ -120,7 +133,22 @@ public class FactoryBase : IStats
 
 	void InvokeUnit (Unit unit)
 	{
-//		Vector3 unitSpawnPosition = transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius);
+		listedToCreate.RemoveAt (0);
+
+		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
+
+		string unitName = "";
+
+		foreach(UnitFactory uf in unitsToCreate)
+		{
+			if(uf.unit == unit)
+			{
+				unitName = uf.buttonName;
+				break;
+			}
+		}
+
+		eventManager.AddEvent(unitCreatedEventMessage + " " + unitName, unit.guiTextureName);
 
 		// Look At
 		Vector3 difference = waypoint.position - transform.position;
@@ -145,12 +173,36 @@ public class FactoryBase : IStats
 
 	void OnDie ()
 	{
-		ComponentGetter.Get<FactoryController> ().RemoveFactory (this);
+		factoryController.RemoveFactory (this);
 		if (IsNetworkInstantiate)
 		{
 			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
 		}
 		else Destroy (gameObject);
+	}
+
+	public void Instance (int teamID)
+	{
+		Health = 1;
+		wasBuilt = false;
+		enabled = false;
+		Team = teamID;
+	}
+
+	public bool Construct (Worker worker)
+	{
+		if (Health == MaxHealth)
+		{
+			worker.SetMoveToFactory (this);
+			wasBuilt = true;
+			return false;
+		}
+		else
+		{
+			Health += worker.constructionAndRepairForce;
+			Health = Mathf.Clamp (Health, 0, MaxHealth);
+			return true;
+		}
 	}
 
 	public void Select ()
@@ -163,15 +215,16 @@ public class FactoryBase : IStats
 
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
 
-		if (playerUnit)
+		if (playerUnit && wasBuilt)
 		{
 			waypoint.gameObject.SetActive (true);
+			if (!waypoint.gameObject.activeSelf)
+				waypoint.gameObject.SetActive (true);
 
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				Hashtable ht = new Hashtable();
 				ht["unit"]    = uf.unit;
-				ht["factory"] = this;
 
 				hudController.CreateButtonInInspector ( uf.buttonName,
 														uf.positionButton,
@@ -179,7 +232,7 @@ public class FactoryBase : IStats
 														uf.unit.guiTextureName,
 														(ht_hud) =>
 														{
-															FactoryBase factory = (FactoryBase)ht_hud["factory"];
+															FactoryBase factory = this;
 															Unit unit           = (Unit)ht_hud["unit"];
 
 															if (!factory.OverLimitCreateUnit)
@@ -196,34 +249,35 @@ public class FactoryBase : IStats
 				ht["name"] = "button-" + Time.time;
 
 				hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
-																hudController.MainQueue.Name,
-																hudController.MainQueue.Position,
-																false,
-																5,
-																10,
+																FactoryBase.FactoryQueueName,
 																ht,
 																listedToCreate[i].guiTextureName,
 																(hud_ht) =>
 																{
+																	//TODO Fazer recuperação do dinheiro quando desistir da
+																	//construção de alguma unidade
+
 																	DequeueUnit(hud_ht);
 																});
 			}
 		}
 	}
 
-	public bool Deselect ()
+	public bool Deselect (bool isGroupDelesection = false)
 	{
 		if (Selected) Selected = false;
 		else return false;
 
 		hudController.DestroySelected (transform);
 
-		if (playerUnit)
+		if (playerUnit && wasBuilt)
 		{
 			waypoint.gameObject.SetActive (false);
 
-			hudController.DestroyInspector ();
-			Debug.Log("chegou destruido");
+			if(!isGroupDelesection)
+			{
+				hudController.DestroyInspector ();
+			}
 		}
 
 		return true;
@@ -250,11 +304,7 @@ public class FactoryBase : IStats
 
 			//TODO colocar mais coisas aqui
 			hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
-															hudController.MainQueue.Name,
-															hudController.MainQueue.Position,
-															false,
-															5,
-															10,
+															FactoryBase.FactoryQueueName,
 															ht,
 															unit.guiTextureName,
 															(hud_ht) =>
@@ -262,8 +312,6 @@ public class FactoryBase : IStats
 																//TODO cancelar construnção do item
 																DequeueUnit(hud_ht);
 															});
-
-					//);
 		}
 		else
 			;//TODO mensagem para o usuário saber
@@ -277,7 +325,7 @@ public class FactoryBase : IStats
 
 		Debug.Log("btnName: " + btnName);
 
-		if(hudController.CheckQueuedButtonIsFirst(hudController.MainQueue.Name, btnName))
+		if(hudController.CheckQueuedButtonIsFirst(FactoryBase.FactoryQueueName, btnName))
 		{
 			Debug.Log("chegouvids");
 			timer = 0;
@@ -285,7 +333,7 @@ public class FactoryBase : IStats
 			inUpgrade = false;
 		}
 
-		hudController.RemoveEnqueuedButtonInInspector (hudController.MainQueue.Name, btnName);
+		hudController.RemoveEnqueuedButtonInInspector (FactoryBase.FactoryQueueName, btnName);
 		listedToCreate.Remove (unit);
 	}
 

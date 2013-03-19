@@ -11,7 +11,7 @@ public class TroopController : MonoBehaviour
 
 	public bool keepFormation {get; set;}
 
-	internal List<Unit> soldiers = new List<Unit> ();
+	public List<Unit> soldiers = new List<Unit> ();
 	internal List<Unit> selectedSoldiers;
 
 	internal Dictionary<int, List<Unit>> troopGroups = new Dictionary<int, List<Unit>>();
@@ -141,7 +141,7 @@ public class TroopController : MonoBehaviour
 		{
 			if (soldier != null)
 			{
-				soldier.Deselect ();
+				soldier.Deselect (true);
 			}
 		}
 
