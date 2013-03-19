@@ -38,22 +38,22 @@ public class SelectionController : MonoBehaviour
 
 				if (touchController.DragOn)
 				{
-					windowSize.x = touchController.GetFirstPoint.x-touchController.GetFinalPoint.x > 0f ?
-						touchController.GetFirstPoint.x-touchController.GetFinalPoint.x : touchController.GetFinalPoint.x-touchController.GetFirstPoint.x;
-					windowSize.y = touchController.GetFirstPoint.y-touchController.GetFinalPoint.y > 0f ?
-						touchController.GetFirstPoint.y-touchController.GetFinalPoint.y : touchController.GetFinalPoint.y-touchController.GetFirstPoint.y;
-					windowSize.z = touchController.GetFirstPoint.z-touchController.GetFinalPoint.z > 0f ?
-						touchController.GetFirstPoint.z-touchController.GetFinalPoint.z : touchController.GetFinalPoint.z-touchController.GetFirstPoint.z;
+					Vector3 first = touchController.GetFirstPoint;
+					Vector3 final = touchController.GetFinalPoint;
+
+					windowSize.x = Mathf.Abs(first.x - final.x);
+					windowSize.y = Mathf.Abs(first.y - final.y);
+					windowSize.z = Mathf.Abs(first.z - final.z);
 
 					Bounds b = new Bounds((touchController.GetFirstPoint+touchController.GetFinalPoint)/2, windowSize + (Vector3.up * 999999f) );
-					
+
 //					VDebug.DrawCube (b, Color.green);
-					
+
 //					Plane[] PlaneBuffer = CalculateRect (new Rect(Mathf.Min(touchController.FirstPosition.x, touchController.FinalPosition.x),
 //						Mathf.Min(touchController.FirstPosition.y, touchController.FinalPosition.y),
-//						Mathf.Abs(touchController.FirstPosition.x - touchController.FinalPosition.x), 
+//						Mathf.Abs(touchController.FirstPosition.x - touchController.FinalPosition.x),
 //						Mathf.Abs(touchController.FirstPosition.y - touchController.FinalPosition.y)));
-					
+
 					troopController.DeselectAllSoldiers ();
 
 #if !UNITY_IPHONE && !UNITY_ANDROID || UNITY_EDITOR
@@ -73,7 +73,7 @@ public class SelectionController : MonoBehaviour
 
 						if (soldier.collider != null)
 						{
-							
+
 							if (b.Intersects (soldier.collider.bounds))
 							{
 //							if (GeometryUtility.TestPlanesAABB (PlaneBuffer, soldier.collider.bounds))
@@ -165,7 +165,7 @@ public class SelectionController : MonoBehaviour
 								if (Input.GetKey (KeyCode.LeftControl))
 								{
 									troopController.DeselectAllSoldiers ();
-									
+
 									Unit.UnitType category = hit.transform.GetComponent<Unit> ().category;
 									foreach (Unit soldier in troopController.soldiers)
 									{
@@ -199,13 +199,14 @@ public class SelectionController : MonoBehaviour
 							{
 								troopController.DeselectAllSoldiers ();
 
-								if (!troopController.selectedSoldiers.Contains (hit.transform.GetComponent<Unit> ()))
+								Unit _unit = hit.transform.GetComponent<Unit> ();
+								if (!troopController.selectedSoldiers.Contains (_unit))
 								{
-									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), true);
+									troopController.SelectSoldier (_unit, true);
 								}
 								else
 								{
-									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), false);
+									troopController.SelectSoldier (_unit, false);
 								}
 								return;
 							}
@@ -229,7 +230,6 @@ public class SelectionController : MonoBehaviour
 						troopController.DeselectAllSoldiers ();
 #endif
 					}
-
 				}
 			}
 		}
@@ -365,19 +365,19 @@ public class SelectionController : MonoBehaviour
 		}
 #endif
 	}
-	
+
 	void SelectGroup (int numberOfGroup)
 	{
 		factoryController.DeselectFactory ();
 		bool hasGroup = troopController.SelectGroup (numberOfGroup);
-		
+
 		if (!hasGroup) return;
-		
+
 		Vector3 getPosition = troopController.selectedSoldiers[0].transform.position - Vector3.forward * touchController.mainCamera.orthographicSize;
 		getPosition = touchController.mainCamera.GetComponent<CameraBounds> ().ClampScenario (getPosition);
-		
+
 		touchController.mainCamera.transform.position = getPosition;
-		
+
 	}
 
 	void OnGUI ()
@@ -386,11 +386,11 @@ public class SelectionController : MonoBehaviour
 		{
 			GUI.Box (new Rect(Mathf.Min(touchController.FirstPosition.x, touchController.CurrentPosition.x),
 						Mathf.Min(touchController.FirstPosition.y, touchController.CurrentPosition.y),
-						Mathf.Abs(touchController.FirstPosition.x - touchController.CurrentPosition.x), 
+						Mathf.Abs(touchController.FirstPosition.x - touchController.CurrentPosition.x),
 						Mathf.Abs(touchController.FirstPosition.y - touchController.CurrentPosition.y)), "");
 		}
 	}
-	
+
 	Plane[] CalculateRect (Rect r)
 	{
 		var c = Camera.mainCamera;
@@ -403,14 +403,14 @@ public class SelectionController : MonoBehaviour
 
 		var c4 = c.ScreenToWorldPoint(new Vector3(r.xMin, r.yMin, c.farClipPlane));
 		var c5 = c.ScreenToWorldPoint(new Vector3(r.xMax, r.yMax, c.farClipPlane));
-		
+
 		Plane[] planes = new Plane[4];
 		// Define the planes of the rectangle projected into the world
 		planes[0] = new Plane(c0, c4, c2);
 		planes[1] = new Plane(c2, c5, c3);
 		planes[2] = new Plane(c3, c5, c1);
 		planes[3] = new Plane(c1, c4, c0);
-		
+
 		return planes;
 	}
 }
