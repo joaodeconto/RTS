@@ -20,22 +20,18 @@ public class InteractionController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if (touchController.touchType != TouchController.TouchType.Ended)
+			return;
+
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-		if (touchController.touchType == TouchController.TouchType.Ended
-			&& !touchController.DragOn)
+		if ((touchController.idTouch == TouchController.IdTouch.Id0) && (!touchController.DragOn))
 		{
-			if (touchController.idTouch == TouchController.IdTouch.Id0)
-			{
-				Interaction (touchController.GetFinalRaycastHit.transform);
-			}
+			Interaction (touchController.GetFinalRaycastHit.transform);
 		}
 #else
-		if (touchController.touchType == TouchController.TouchType.Ended)
+		if (touchController.idTouch == TouchController.IdTouch.Id1)
 		{
-			if (touchController.idTouch == TouchController.IdTouch.Id1)
-			{
-				Interaction (touchController.GetFinalRaycastHit.transform);
-			}
+			Interaction (touchController.GetFinalRaycastHit.transform);
 		}
 #endif
 	}
@@ -43,7 +39,7 @@ public class InteractionController : MonoBehaviour
 	void Interaction (Transform hit)
 	{
 		if (troopController.selectedSoldiers.Count == 0) return;
-		
+
 		if (hit.CompareTag ("Factory"))
 		{
 			if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
@@ -75,7 +71,7 @@ public class InteractionController : MonoBehaviour
 						{
 							Worker worker = unit as Worker;
 							FactoryBase factory = hit.GetComponent<FactoryBase>();
-							
+
 							if (!factory.wasBuilt)
 							{
 								worker.SetMoveToFactory(hit.GetComponent<FactoryBase>());
@@ -94,7 +90,7 @@ public class InteractionController : MonoBehaviour
 			}
 			return;
 		}
-		
+
 		if (hit.GetComponent<Resource> () != null)
 		{
 			foreach (Unit unit in troopController.selectedSoldiers)
