@@ -154,7 +154,7 @@ public class Unit : IStats
 
 	void Update ()
 	{
-		UnitStatus ();
+		if (unitState != UnitState.Die) UnitStatus ();
 	}
 
 	void OnDestroy ()
@@ -278,6 +278,11 @@ public class Unit : IStats
 			if (unitAnimation.Attack)
 				ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 
+			break;
+		case UnitState.Die:
+			if (unitAnimation.DieAnimation)
+				ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
+			
 			break;
 		}
 	}
@@ -728,6 +733,8 @@ public class Unit : IStats
 	private IEnumerator OnDie ()
 	{
 		IsDead = true;
+		
+		unitState = UnitState.Die;
 
 		if (CharSound != null)
 		{
