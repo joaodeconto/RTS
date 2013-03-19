@@ -155,7 +155,7 @@ public class FactoryBase : IStats
 //			}
 //		}
 
-		eventManager.AddEvent(unitCreatedEventMessage + " " + unitName, unit.guiTextureName);
+//		eventManager.AddEvent(unitCreatedEventMessage + " " + unitName, unit.guiTextureName);
 
 		// Look At
 		Vector3 difference = waypoint.position - transform.position;
