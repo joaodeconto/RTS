@@ -119,7 +119,11 @@ public class Worker : Unit
 				
 				if (!movingToFactory)
 				{
-					SetMoveToFactory (typeof(MainFactory));
+					if (factoryChoose == null)
+					{
+						SetMoveToFactory (resource.type);
+						SetMoveToFactory (typeof(MainFactory));
+					}
 				}
 				
 				if (!MoveComplete())
@@ -142,6 +146,12 @@ public class Worker : Unit
 				
 				if (factoryChoose == null) return;
 				
+				if (!factoryChoose.wasBuilt)
+				{
+					workerState = WorkerState.Building;
+					return;
+				}
+				
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 				{
 					if (resource != null) Move (resource.transform.position);
@@ -163,7 +173,14 @@ public class Worker : Unit
 			case WorkerState.Repairing:
 				if (factoryChoose == null)
 				{
-					workerState = WorkerState.None;
+					if (hasResource)
+					{
+						workerState = WorkerState.CarryingIdle;
+					}
+					else
+					{
+						workerState = WorkerState.None;
+					}
 					
 					// Patch para tirar travada ¬¬
 					Move (transform.position - transform.forward);
@@ -389,6 +406,7 @@ public class Worker : Unit
 		resource = newResource;
 	}
 	
+	#region Funções que o Worker pode fazer	
 	IEnumerator StartConstruct ()
 	{
 		IsBuilding = true;
@@ -437,7 +455,9 @@ public class Worker : Unit
 		
 		IsExtracting = false;
 	}
+	#endregion
 	
+	#region Pega os recursos e atribui para ele
 	public void GetResource ()
 	{
 		GetResource (numberMaxGetResources);
@@ -456,7 +476,9 @@ public class Worker : Unit
 		
 		workerState = WorkerState.Carrying;
 	}
+	#endregion
 	
+	#region Mover até factory escolhida
 	public void SetMoveToFactory (FactoryBase factory)
 	{
 		factoryChoose = factory;
@@ -471,14 +493,45 @@ public class Worker : Unit
 		}
 	}
 	
-	void SetMoveToFactory (System.Type type)
+	void SetMoveToFactory (Resource.Type resourceType)
 	{
-		if (factoryChoose == null) SearchFactory (type);
+//		if (factoryChoose == null) SearchFactory (resourceType);
+		
+		SearchFactory (resourceType);
 		
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
 			movingToFactory = true;
+		}
+	}
+	
+	void SetMoveToFactory (System.Type type)
+	{
+//		if (factoryChoose == null) SearchFactory (type);
+		
+		SearchFactory (type);
+		
+		if (factoryChoose != null)
+		{
+			Move (factoryChoose.transform.position);
+			movingToFactory = true;
+		}
+	}
+	#endregion
+	
+	#region Procura resource por resourceType ou System.Type
+	void SearchFactory (Resource.Type resourceType)
+	{
+		foreach (FactoryBase fb in factoryController.factorys)
+		{
+			if (gameplayManager.IsSameTeam (fb))
+			{
+				if (fb.receiveResouce == resourceType)
+				{
+					CheckFactory (fb);
+				}
+			}
 		}
 	}
 	
@@ -490,20 +543,32 @@ public class Worker : Unit
 			{
 				if (fb.GetType () == type)
 				{
-					if (factoryChoose == null)
-					{
-						if (fb.wasBuilt) factoryChoose = fb;
-					}
-					else
-					{
-						if (fb.wasBuilt)
-						{
-							if (Vector3.Distance (transform.position, fb.transform.position) < Vector3.Distance (transform.position, factoryChoose.transform.position))
-							{
-								factoryChoose = fb;
-							}
-						}
-					}
+					CheckFactory (fb);
+				}
+			}
+		}
+	}
+	#endregion
+	
+	/// <summary>
+	/// Verifica se a factory está disponível e atribui para a variavél "factoryChoose"
+	/// </summary>
+	/// <param name='factory'>
+	/// Factory.
+	/// </param>
+	void CheckFactory (FactoryBase factory)
+	{
+		if (factoryChoose == null)
+		{
+			if (factory.wasBuilt) factoryChoose = factory;
+		}
+		else
+		{
+			if (factory.wasBuilt)
+			{
+				if (Vector3.Distance (transform.position, factory.transform.position) < Vector3.Distance (transform.position, factoryChoose.transform.position))
+				{
+					factoryChoose = factory;
 				}
 			}
 		}

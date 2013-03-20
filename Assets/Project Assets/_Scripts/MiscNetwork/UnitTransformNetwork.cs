@@ -11,7 +11,7 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 		Init ();
 	}
 	
-    public void Init ()
+    public virtual void Init ()
     {
 		if (PhotonNetwork.offlineMode)
 		{
@@ -30,21 +30,28 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
+        SerializeView (stream);
+    }
+	
+	public virtual void SerializeView (PhotonStream stream)
+	{
+		if (stream.isWriting)
         {
             //We own this player: send the others our data
-            stream.SendNext((int)unitScript.unitState);
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
+            stream.SendNext (unitScript.Health);
+            stream.SendNext ((int)unitScript.unitState);
+            stream.SendNext (transform.position);
+            stream.SendNext (transform.rotation);
         }
         else
         {
             //Network player, receive data
-            unitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext();
-            correctPlayerPos = (Vector3)stream.ReceiveNext();
-            correctPlayerRot = (Quaternion)stream.ReceiveNext();
+			unitScript.SetHealth ((int)stream.ReceiveNext ());
+            unitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
+            correctPlayerPos = (Vector3)stream.ReceiveNext ();
+            correctPlayerRot = (Quaternion)stream.ReceiveNext ();
         }
-    }
+	}
 
     private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
     private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this

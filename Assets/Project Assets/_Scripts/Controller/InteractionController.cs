@@ -59,17 +59,20 @@ public class InteractionController : MonoBehaviour
 						Worker worker = unit as Worker;
 						FactoryBase factory = hit.GetComponent<FactoryBase>();
 						
-						if (hit.GetComponent<MainFactory>() != null)
-						{
-							if (worker.hasResource)
-							{
-								worker.SetMoveToFactory(factory);
-							}
-						}
-						
 						if (!factory.wasBuilt)
 						{
 							worker.SetMoveToFactory(factory);
+						}
+						else if (worker.hasResource)
+						{
+							if (factory.receiveResouce == worker.resource.type)
+							{
+								worker.SetMoveToFactory(factory);
+							}
+							else if (hit.GetComponent<MainFactory>() != null)
+							{
+								worker.SetMoveToFactory(factory);
+							}
 						}
 						else if (factory.IsNeededRepair)
 						{

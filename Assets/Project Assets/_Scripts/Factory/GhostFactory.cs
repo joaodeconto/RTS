@@ -21,6 +21,7 @@ public class GhostFactory : MonoBehaviour
 		thisFactory = GetComponent<FactoryBase>();
 		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.AllBuffered, worker.Team);
 		
+		ComponentGetter.Get<InteractionController> ().enabled = false;
 		ComponentGetter.Get<SelectionController> ().enabled = false;
 		fogOfWar = ComponentGetter.Get<FogOfWar> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
@@ -64,6 +65,12 @@ public class GhostFactory : MonoBehaviour
 					Debug.Log (numberOfCollisions);
 				}
 			}
+			else
+			{
+				ComponentGetter.Get<SelectionController> ().enabled = true;
+				ComponentGetter.Get<InteractionController> ().enabled = true;
+				PhotonNetwork.Destroy (gameObject);
+			}
 		}
 	}
 	
@@ -95,24 +102,41 @@ public class GhostFactory : MonoBehaviour
 	
 	void Apply ()
 	{
-		collider.isTrigger = false;
-		thisFactory.enabled = true;
-		
-		if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
-		
+		bool canBuy = true;
+		foreach (Worker.FactoryConstruction fc in worker.factoryConstruction)
+		{
+			if (thisFactory == fc.factory)
+			{
+				canBuy = gameplayManager.resources.CanBuy (fc.costOfResources);
+				break;
+			}
+		}
+
 		ComponentGetter.Get<SelectionController> ().enabled = true;
+		ComponentGetter.Get<InteractionController> ().enabled = true;
 		
-		thisFactory.photonView.RPC ("Instance", PhotonTargets.AllBuffered);
-		
-		worker.SetMoveToFactory (GetComponent<FactoryBase> ());
-		
-		DestroyOverdrawModel ();
-		
-		Destroy(rigidbody);
-		Destroy(this);
+		if (canBuy)
+		{
+			collider.isTrigger = false;
+			thisFactory.enabled = true;
+			
+			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
+			
+			thisFactory.photonView.RPC ("Instance", PhotonTargets.AllBuffered);
+			
+			worker.SetMoveToFactory (GetComponent<FactoryBase> ());
+			
+			DestroyOverdrawModel ();
+			
+			Destroy(rigidbody);
+			Destroy(this);
+		}
+		else
+		{
+			PhotonNetwork.Destroy (gameObject);
+		}
 	}
 	
-	[RPC]
 	void SetOverdraw (int teamId)
 	{
 		overdrawModel = Instantiate (thisFactory.model, thisFactory.model.transform.position, thisFactory.model.transform.rotation) as GameObject;
