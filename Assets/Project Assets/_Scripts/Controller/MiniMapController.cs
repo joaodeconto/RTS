@@ -120,30 +120,30 @@ public class MiniMapController : MonoBehaviour
 			//iterate by structures
 			for(int j = structureList[i].Count - 1; j != -1; --j)
 			{
-				if (structureList[i][j] != null)
-				{
-					UpdatePosition(StructureMiniMapList[i][j], structureList[i][j]);
-				}
-				else
+				if (structureList[i][j] == null)
 				{
 					structureList[i].RemoveAt(j);
 					StructureMiniMapList[i].RemoveAt(j);
 					++j;
+				}
+				else
+				{
+					UpdatePosition(StructureMiniMapList[i][j], structureList[i][j]);
 				}
 			}
 
 			//iterate by unit
 			for(int j = unitList[i].Count - 1; j != -1; --j)
 			{
-				if (unitList[i][j] != null)
-				{
-					UpdatePosition(UnitMiniMapList[i][j], unitList[i][j]);
-				}
-				else
+				if (unitList[i][j] == null)
 				{
 					unitList[i].RemoveAt(j);
 					UnitMiniMapList[i].RemoveAt(j);
 					++j;
+				}
+				else
+				{
+					UpdatePosition(UnitMiniMapList[i][j], unitList[i][j]);
 				}
 			}
 		}

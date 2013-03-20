@@ -117,7 +117,7 @@ public abstract class IStats : Photon.MonoBehaviour
 		IsRemoved = false;
 	}
 
-	public virtual void ReceiveAttack (int Damage)
+	public void ReceiveAttack (int Damage)
 	{
 		if (Health == -1) return;
 

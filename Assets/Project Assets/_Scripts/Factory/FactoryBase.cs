@@ -238,7 +238,7 @@ public class FactoryBase : IStats
 		Team = teamID;
 		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
 		
-		if (!gameplayManager.IsSameTeam (teamID)) model.SetActive (false);
+		if (!photonView.isMine) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;
 	}
 	

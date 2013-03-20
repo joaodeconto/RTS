@@ -124,7 +124,16 @@ public class GhostFactory : MonoBehaviour
 			
 			thisFactory.photonView.RPC ("Instance", PhotonTargets.AllBuffered);
 			
-			worker.SetMoveToFactory (GetComponent<FactoryBase> ());
+			worker.SetMoveToFactory (thisFactory);
+			TroopController troopController = ComponentGetter.Get<TroopController> ();
+			foreach (Unit unit in troopController.soldiers)
+			{
+				if (unit.GetType() == typeof(Worker))
+				{
+					Worker otherWorker = unit as Worker;
+					otherWorker.SetMoveToFactory (thisFactory);
+				}
+			}
 			
 			DestroyOverdrawModel ();
 			

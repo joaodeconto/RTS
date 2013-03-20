@@ -1,46 +1,63 @@
 using UnityEngine;
 using System.Collections;
 
-public class WorkerTransformNetwork : UnitTransformNetwork
+public class WorkerTransformNetwork : Photon.MonoBehaviour
 {
     Worker workerScript;
 	
-    public override void Init ()
+    void Awake ()
+	{
+		Init ();
+	}
+	
+    public virtual void Init ()
     {
-		base.Init ();
-		
 		if (PhotonNetwork.offlineMode)
 		{
+			enabled = false;
+		}
+		else
+		{
 			workerScript = GetComponent <Worker> ();
+			
+	        gameObject.name = gameObject.name + photonView.viewID;
+			
+			if (workerScript.IsNetworkInstantiate) enabled = !photonView.isMine;
+			else enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(workerScript);
 		}
     }
 
-	public override void SerializeView (PhotonStream stream)
+	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
 	{
-		base.SerializeView (stream);
-		
-        if (stream.isWriting)
+		if (stream.isWriting)
         {
+            //We own this player: send the others our data
+            stream.SendNext ((int)workerScript.unitState);
+            stream.SendNext (transform.position);
+            stream.SendNext (transform.rotation);
             stream.SendNext ((int)workerScript.workerState);
             stream.SendNext (workerScript.resourceId);
         }
         else
         {
             //Network player, receive data
+            workerScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
+            correctPlayerPos = (Vector3)stream.ReceiveNext ();
+            correctPlayerRot = (Quaternion)stream.ReceiveNext ();
             workerScript.workerState = (Worker.WorkerState)(int)stream.ReceiveNext();
             workerScript.resourceId = (int)stream.ReceiveNext();
         }
 	}
 
-//    private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
-//    private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this
-//
-//    void Update()
-//    {
-//        //Update remote player (smooth this, this looks good, at the cost of some accuracy)
-//        transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-//        transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
-//		
-//		workerScript.SyncAnimation ();
-//    }
+    private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
+    private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this
+
+    void Update()
+    {
+        //Update remote player (smooth this, this looks good, at the cost of some accuracy)
+        transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
+        transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+		
+		workerScript.SyncAnimation ();
+    }
 }

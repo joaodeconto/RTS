@@ -91,13 +91,23 @@ public class Worker : Unit
 			switch (workerState)
 			{
 			case WorkerState.Extracting:
-				if (resource != lastResource ||
-					factoryChoose != null)
+				if (factoryChoose != null)
+				{
+					resourceWorker[resourceId].extractingObject.SetActive (false);
+					resourceId = -1;
+					resource.RemoveWorker (this);
+					lastResource = resource = null;
+					workerState = WorkerState.None;
+					Move (factoryChoose.transform.position);
+				}
+				else if (resource != lastResource ||
+					resource == null)
 				{
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
 					lastResource.RemoveWorker (this);
 					workerState = WorkerState.None;
+					unitState = Unit.UnitState.Idle;
 					return;
 				}
 				else
@@ -105,6 +115,7 @@ public class Worker : Unit
 					pathfind.Stop ();
 					transform.LookAt (resource.transform);
 				}
+				
 				if (!IsExtracting) StartCoroutine (Extract ());
 				break;
 				
@@ -148,7 +159,12 @@ public class Worker : Unit
 				
 				if (!factoryChoose.wasBuilt)
 				{
-					workerState = WorkerState.Building;
+					resource = null;
+					resourceWorker[resourceId].carryingObject.SetActive (false);
+					ResetPathfindValue ();
+					
+					workerState = WorkerState.None;
+					
 					return;
 				}
 				
@@ -173,9 +189,12 @@ public class Worker : Unit
 			case WorkerState.Repairing:
 				if (factoryChoose == null)
 				{
+					resourceWorker[0].extractingObject.SetActive (false);
 					if (hasResource)
 					{
-						workerState = WorkerState.CarryingIdle;
+						resource = lastResource;
+						GetResource (currentNumberOfResources);
+						
 					}
 					else
 					{
@@ -319,7 +338,7 @@ public class Worker : Unit
 				ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting);
 				if (IsVisible)
 				{
-					resourceWorker[resourceId].extractingObject.SetActive (true);
+					resourceWorker[0].extractingObject.SetActive (true);
 				}
 			}
 			break;
@@ -382,9 +401,11 @@ public class Worker : Unit
 		}
 	}
 	
-	void OnDie ()
+	public override IEnumerator OnDie ()
 	{
 		workerState = WorkerState.None;
+		
+		return base.OnDie ();
 	}
 	
 	public void InstanceGhostFactory (FactoryBase factory)
@@ -582,10 +603,12 @@ public class Worker : Unit
 			{
 				if (!factoryChoose.wasBuilt)
 				{
+					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Building;
 				}
 				else if (factoryChoose.IsNeededRepair)
 				{
+					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Repairing;
 				}
 			}

@@ -74,14 +74,14 @@ public class Resource : Photon.MonoBehaviour
 			if (numberOfResources - worker.numberMaxGetResources <= 0)
 			{
 				DiscountResources (worker.numberMaxGetResources);
-				//if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
-				Destroy (gameObject);
+				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
+				else Destroy (gameObject);
 				worker.GetResource (numberOfResources);
 			}
 			else
 			{
 				DiscountResources (worker.numberMaxGetResources);
-				//if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
+				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
 				
 				worker.GetResource ();
 			}
