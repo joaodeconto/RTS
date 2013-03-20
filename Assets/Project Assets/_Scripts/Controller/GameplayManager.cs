@@ -16,6 +16,8 @@ public class GameplayManager : MonoBehaviour
 	
 	public Team[] teams;
 	
+	public int maxOfUnits = 10;
+	
 	protected Dictionary<int, int> teamNumberOfStats = new Dictionary<int, int>();
 	protected int loserTeams;
 	protected bool loseGame = false;
@@ -69,6 +71,16 @@ public class GameplayManager : MonoBehaviour
 	public bool IsSameTeam (FactoryBase factory)
 	{
 		return factory.Team == MyTeam;
+	}
+	
+	public void IncrementMaxOfUnits ()
+	{
+		maxOfUnits += 5;
+	}
+	
+	public void DecrementMaxOfUnits ()
+	{
+		maxOfUnits -= 5;
 	}
 	
 	public void AddStatTeamID (int teamID)
@@ -140,7 +152,8 @@ public class GameplayManager : MonoBehaviour
 	// TODO: Mostrando só os valores na tela
 	void OnGUI ()
 	{
-		GUI.Box (new Rect(10, 10, 150, 25), "Pedra foderosa: " + resources.NumberOfRocks.ToString ());
+		GUI.Box (new Rect(10, 10, 150, 25), "Resources: " + resources.NumberOfRocks.ToString ());
+//		GUI.Box (new Rect(10, 35, 150, 25), "Units: " + teamNumberOfStats[MyTeam].ToString () + "/" + maxOfUnits.ToString ());
 		
 		if (loseGame) GUI.Box (new Rect(Screen.width/2 - 75, Screen.height/2 - 12, 150, 25), "LOSER! ):"); 
 		else if (winGame) GUI.Box (new Rect(Screen.width/2 - 75, Screen.height/2 - 12, 150, 25), "WIN! :D");

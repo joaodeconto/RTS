@@ -20,17 +20,16 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
         if (stream.isWriting)
         {
             //We own this player: send the others our data
-            //stream.SendNext((int)factory.state);
-//			stream.SendNext(factory.stats);
-            stream.SendNext(factory.Health);
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
+            stream.SendNext (factory.Health);
+			stream.SendNext (factory.buildingState);
+            stream.SendNext (transform.position);
+            stream.SendNext (transform.rotation);
         }
         else
         {
             //Network player, receive data
-            //factory.state = (State)(int)stream.ReceiveNext();
 			factory.SetHealth ((int)stream.ReceiveNext());
+			factory.buildingState = (FactoryBase.BuildingState)(int)stream.ReceiveNext();
             correctPlayerPos = (Vector3)stream.ReceiveNext();
             correctPlayerRot = (Quaternion)stream.ReceiveNext();
         }
@@ -43,5 +42,7 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
     {
         transform.position = correctPlayerPos;
         transform.rotation = correctPlayerRot;
+		
+		factory.SyncAnimation ();
     }
 }

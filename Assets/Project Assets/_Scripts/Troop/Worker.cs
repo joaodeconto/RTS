@@ -119,7 +119,11 @@ public class Worker : Unit
 				
 				if (!movingToFactory)
 				{
-					SetMoveToFactory (typeof(MainFactory));
+					if (factoryChoose == null)
+					{
+						SetMoveToFactory (resource.type);
+						SetMoveToFactory (typeof(MainFactory));
+					}
 				}
 				
 				if (!MoveComplete())
@@ -491,7 +495,9 @@ public class Worker : Unit
 	
 	void SetMoveToFactory (Resource.Type resourceType)
 	{
-		if (factoryChoose == null) SearchFactory (resourceType);
+//		if (factoryChoose == null) SearchFactory (resourceType);
+		
+		SearchFactory (resourceType);
 		
 		if (factoryChoose != null)
 		{
@@ -502,7 +508,9 @@ public class Worker : Unit
 	
 	void SetMoveToFactory (System.Type type)
 	{
-		if (factoryChoose == null) SearchFactory (type);
+//		if (factoryChoose == null) SearchFactory (type);
+		
+		SearchFactory (type);
 		
 		if (factoryChoose != null)
 		{
