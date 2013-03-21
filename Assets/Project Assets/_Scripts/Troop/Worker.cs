@@ -412,7 +412,7 @@ public class Worker : Unit
 		GameObject ghostFactory = null;
 
 		if (PhotonNetwork.offlineMode)
-			ghostFactory = Instantiate (factory.gameObject, Vector3.zero, factory.transform.rotation) as GameObject :
+			ghostFactory = Instantiate (factory.gameObject, Vector3.zero, factory.transform.rotation) as GameObject;
 		else
 			ghostFactory = PhotonNetwork.Instantiate ( factory.gameObject.name, Vector3.zero, factory.transform.rotation, 0);
 
