@@ -13,10 +13,12 @@ public class Team
 
 public class GameplayManager : MonoBehaviour
 {
+	public const int NUMBER_INCREMENT_AND_DECREMENT_UNITS = 5;
 	
 	public Team[] teams;
 	
-	public int maxOfUnits = 10;
+	public int numberOfUnits { get; protected set; } 
+	public int maxOfUnits { get; protected set; }
 	
 	protected Dictionary<int, int> teamNumberOfStats = new Dictionary<int, int>();
 	protected int loserTeams;
@@ -46,6 +48,8 @@ public class GameplayManager : MonoBehaviour
 				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
 			}
 		}
+		
+		IncrementMaxOfUnits ();
 	}
 	
 	public Color GetColorTeam (int teamID)
@@ -73,14 +77,29 @@ public class GameplayManager : MonoBehaviour
 		return factory.Team == MyTeam;
 	}
 	
+	public void IncrementUnit ()
+	{
+		++numberOfUnits;
+	}
+	
+	public void DecrementUnit ()
+	{
+		--numberOfUnits;
+	}
+	
 	public void IncrementMaxOfUnits ()
 	{
-		maxOfUnits += 5;
+		maxOfUnits += NUMBER_INCREMENT_AND_DECREMENT_UNITS;
 	}
 	
 	public void DecrementMaxOfUnits ()
 	{
-		maxOfUnits -= 5;
+		maxOfUnits -= NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+	}
+	
+	public bool IsLimitMaxUnits ()
+	{
+		return numberOfUnits == maxOfUnits;
 	}
 	
 	public void AddStatTeamID (int teamID)

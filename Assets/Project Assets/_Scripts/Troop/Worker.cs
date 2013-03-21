@@ -64,7 +64,7 @@ public class Worker : Unit
 	protected Resource lastResource;
 	protected bool settingWorkerNull;
 	
-	protected FactoryBase factoryChoose;
+	protected FactoryBase factoryChoose, lastFactory;
 	protected bool movingToFactory;
 	
 	public override void Init ()
@@ -187,22 +187,22 @@ public class Worker : Unit
 				break;
 			case WorkerState.Building:
 			case WorkerState.Repairing:
-				if (factoryChoose == null)
+				if (factoryChoose == null ||
+					factoryChoose != lastFactory)
 				{
+					// Patch para tirar travada ¬¬
+					Move (transform.position - transform.forward);
+					
 					resourceWorker[0].extractingObject.SetActive (false);
 					if (hasResource)
 					{
 						resource = lastResource;
 						GetResource (currentNumberOfResources);
-						
 					}
 					else
 					{
 						workerState = WorkerState.None;
 					}
-					
-					// Patch para tirar travada ¬¬
-					Move (transform.position - transform.forward);
 				}
 				
 				pathfind.Stop ();
@@ -327,6 +327,7 @@ public class Worker : Unit
 				if (IsVisible)
 				{
 					resourceWorker[resourceId].extractingObject.SetActive (true);
+					resourceWorker[resourceId].carryingObject.SetActive (false);
 				}
 			}
 			break;
@@ -339,6 +340,7 @@ public class Worker : Unit
 				if (IsVisible)
 				{
 					resourceWorker[0].extractingObject.SetActive (true);
+					if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
 				}
 			}
 			break;
@@ -503,6 +505,7 @@ public class Worker : Unit
 	public void SetMoveToFactory (FactoryBase factory)
 	{
 		factoryChoose = factory;
+		
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
@@ -516,9 +519,9 @@ public class Worker : Unit
 	
 	void SetMoveToFactory (Resource.Type resourceType)
 	{
-//		if (factoryChoose == null) SearchFactory (resourceType);
+		if (factoryChoose == null) SearchFactory (resourceType);
 		
-		SearchFactory (resourceType);
+//		SearchFactory (resourceType);
 		
 		if (factoryChoose != null)
 		{
@@ -529,9 +532,9 @@ public class Worker : Unit
 	
 	void SetMoveToFactory (System.Type type)
 	{
-//		if (factoryChoose == null) SearchFactory (type);
+		if (factoryChoose == null) SearchFactory (type);
 		
-		SearchFactory (type);
+//		SearchFactory (type);
 		
 		if (factoryChoose != null)
 		{
@@ -548,7 +551,7 @@ public class Worker : Unit
 		{
 			if (gameplayManager.IsSameTeam (fb))
 			{
-				if (fb.receiveResouce == resourceType)
+				if (fb.receiveResource == resourceType)
 				{
 					CheckFactory (fb);
 				}
@@ -611,6 +614,12 @@ public class Worker : Unit
 					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Repairing;
 				}
+				
+				lastFactory = factoryChoose;
+			}
+			else
+			{
+				Move (factoryChoose.transform.position);
 			}
 		}
 	}
