@@ -48,7 +48,7 @@ public abstract class MessageQueue : MonoBehaviour
 
 		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
 
-		StartCoroutine("RepositionGrid");
+		Invoke("RepositionGrid", 0.1f);
 	}
 
 	public void DequeueMessageInfo()
@@ -103,8 +103,6 @@ public abstract class MessageQueue : MonoBehaviour
 		{
 			Destroy (child.gameObject);
 		}
-
-		Invoke("RepositionGrid", 0.1f);
 	}
 
 	protected void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
@@ -123,9 +121,15 @@ public abstract class MessageQueue : MonoBehaviour
 
 	protected void RepositionGrid()
 	{
+		if(uiGrid.name == "Unit Group")
+			Debug.Log("uiGrid.transform.childCount: " + uiGrid.transform.childCount);
+
 		if(uiGrid.transform.childCount != nQueueItems)
 			Invoke("RepositionGrid", 0.1f);
 		else
+		{
 			uiGrid.repositionNow = true;
+			uiGrid.Reposition();
+		}
 	}
 }

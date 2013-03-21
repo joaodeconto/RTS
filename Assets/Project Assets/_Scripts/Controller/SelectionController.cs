@@ -9,230 +9,251 @@ public class SelectionController : MonoBehaviour
 	protected TroopController troopController;
 	protected FactoryController factoryController;
 	protected GameplayManager gameplayManager;
-
-	protected Vector3 windowSize = Vector3.zero;
+	protected InteractionController interactionController;
 
 	public void Init ()
 	{
-		touchController   = ComponentGetter.Get<TouchController>();
-		troopController   = ComponentGetter.Get<TroopController>();
-		factoryController = ComponentGetter.Get<FactoryController>();
-		gameplayManager   = ComponentGetter.Get<GameplayManager>();
+		touchController       = ComponentGetter.Get<TouchController>();
+		troopController       = ComponentGetter.Get<TroopController>();
+		factoryController     = ComponentGetter.Get<FactoryController>();
+		gameplayManager       = ComponentGetter.Get<GameplayManager>();
+		interactionController = ComponentGetter.Get<InteractionController>();
+	}
+
+	bool WebPlayerAndPcSelection()
+	{
+		//EDITOR ou PC
+		if ((touchController.touchType != TouchController.TouchType.Ended) ||
+			  (touchController.idTouch != TouchController.IdTouch.Id0))
+			return true;
+
+		factoryController.DeselectFactory ();
+
+		if (touchController.DragOn)
+		{
+			troopController.DeselectAllSoldiers ();
+
+			Bounds b = touchController.GetTouchBounds();
+
+			//VDebug.DrawCube (b, Color.green);
+
+			//Verificando seleção de unidades
+			Unit enemySoldier = null;
+
+			foreach (Unit soldier in troopController.soldiers)
+			{
+				if (!gameplayManager.IsSameTeam (soldier))
+				{
+					if (troopController.selectedSoldiers.Count != 0 || enemySoldier != null)
+						continue;
+				}
+
+				if (soldier.collider == null)
+				{
+					Debug.Log("soldado sem colisor!");
+					Debug.Break();
+				}
+
+				if (b.Intersects (soldier.collider.bounds))
+				{
+					if (!gameplayManager.IsSameTeam (soldier))
+						enemySoldier = soldier;
+					else
+						troopController.SelectSoldier (soldier, true);
+				}
+				else
+					troopController.SelectSoldier (soldier, false);
+			}
+
+			//Verificando se foram selecionadas unidades
+			if (troopController.selectedSoldiers.Count != 0)
+				return true;
+
+			if (enemySoldier != null)
+			{
+				troopController.SelectSoldier (enemySoldier, true);
+				return true;
+			}
+
+			foreach (FactoryBase factory in factoryController.factorys)
+			{
+				if (factory.collider == null)
+				{
+					Debug.Log("estrutura sem colisor!");
+					Debug.Break();
+				}
+
+				if (b.Intersects (factory.collider.bounds))
+				{
+					factoryController.SelectFactory (factory);
+					break;
+				}
+			}
+		}
+		else
+		{
+			RaycastHit hit;
+
+			if (!Physics.Raycast (touchController.GetFinalRay, out hit))
+			{
+				return true;
+			}
+
+			if (hit.transform.CompareTag ("Unit")) //return true
+			{
+				Unit selectedUnit = hit.transform.GetComponent<Unit> ();
+				if (!gameplayManager.IsSameTeam (selectedUnit)) //return true
+				{
+					troopController.DeselectAllSoldiers ();
+					troopController.SelectSoldier (selectedUnit, true);
+					return true;
+				}
+				else //return true
+				{
+					if (Input.GetKey (KeyCode.LeftControl)) //return true
+					{
+						troopController.DeselectAllSoldiers ();
+
+						Unit.UnitType category = selectedUnit.category;
+						foreach (Unit soldier in troopController.soldiers)
+						{
+							if (gameplayManager.IsSameTeam (soldier.Team))
+							{
+								//TODO pegar somente da mesma categoria dentro da tela
+								if (soldier.category == category)
+								{
+									troopController.SelectSoldier (soldier, true);
+								}
+							}
+						}
+						return true; //selecionou unidades da mesma categoria da unidade selecionada
+					}
+
+					if (Input.GetKey (KeyCode.LeftShift))
+					{
+						troopController.SoldierToogleSelection (selectedUnit);
+					}
+					else
+					{
+						troopController.DeselectAllSoldiers ();
+						troopController.SelectSoldier (selectedUnit, true);
+					}
+				}
+				return true;
+			}
+
+			if(!interactionController.HaveCallbacksForTouchId(TouchController.IdTouch.Id0))
+				troopController.DeselectAllSoldiers ();
+
+			if (hit.transform.CompareTag ("Factory"))
+			{
+				factoryController.SelectFactory (hit.transform.GetComponent<FactoryBase>());
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool AndroidAndIphoneSelection()
+	{
+		if (touchController.touchType == TouchController.TouchType.Ended) //return
+			return true;
+
+		if (!touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id1) //return
+		{
+			troopController.DeselectAllSoldiers ();
+			return true;
+		}
+		if (touchController.idTouch == TouchController.IdTouch.Id0) //return
+		{
+			factoryController.DeselectFactory ();
+
+			if (touchController.DragOn)
+			{
+				troopController.DeselectAllSoldiers ();
+
+				Bounds b = touchController.GetTouchBounds();
+				Unit enemySoldier = null;
+
+				foreach (Unit soldier in troopController.soldiers)
+				{
+					if (!gameplayManager.IsSameTeam (soldier))
+					{
+						if (troopController.selectedSoldiers.Count != 0 || enemySoldier != null) continue;
+					}
+
+					if (soldier.collider == null)
+					{
+						Debug.Log("soldado sem colisor!");
+						Debug.Break();
+					}
+
+					if (b.Intersects (soldier.collider.bounds))
+					{
+						if (!gameplayManager.IsSameTeam (soldier))
+							enemySoldier = soldier;
+						else
+							troopController.SelectSoldier (soldier, true);
+					}
+					else
+						troopController.SelectSoldier (soldier, false);
+				}
+
+				if (troopController.selectedSoldiers.Count != 0) return true;
+
+				foreach (FactoryBase factory in factoryController.factorys)
+				{
+					if (factory.collider == null)
+					{
+						Debug.Log("estrutura sem colisor!");
+						Debug.Break();
+					}
+
+					if (b.Intersects (factory.collider.bounds))
+					{
+						factoryController.SelectFactory (factory);
+						break;
+					}
+				}
+			}
+			else
+			{
+				RaycastHit hit;
+
+				if (Physics.Raycast (touchController.GetFinalRay, out hit))
+				{
+					if (hit.transform.CompareTag ("Unit"))
+					{
+						Unit selectedUnit = hit.transform.GetComponent<Unit> ();
+
+						troopController.DeselectAllSoldiers ();
+						troopController.SelectSoldier (selectedUnit, true);
+						return true;
+					}
+
+					if (hit.transform.CompareTag ("Factory"))
+					{
+						troopController.DeselectAllSoldiers ();
+						factoryController.SelectFactory (hit.transform.GetComponent<FactoryBase>());
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	void Update ()
 	{
-		if (touchController.touchType == TouchController.TouchType.Ended)
-		{
-#if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-			if (!touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id1)
-			{
-				troopController.DeselectAllSoldiers ();
-				return;
-			}
-			else
-#endif
-			if (touchController.idTouch == TouchController.IdTouch.Id0)
-			{
-				factoryController.DeselectFactory ();
-
-				if (touchController.DragOn)
-				{
-					windowSize.x = touchController.GetFirstPoint.x-touchController.GetFinalPoint.x > 0f ?
-						touchController.GetFirstPoint.x-touchController.GetFinalPoint.x : touchController.GetFinalPoint.x-touchController.GetFirstPoint.x;
-					windowSize.y = touchController.GetFirstPoint.y-touchController.GetFinalPoint.y > 0f ?
-						touchController.GetFirstPoint.y-touchController.GetFinalPoint.y : touchController.GetFinalPoint.y-touchController.GetFirstPoint.y;
-					windowSize.z = touchController.GetFirstPoint.z-touchController.GetFinalPoint.z > 0f ?
-						touchController.GetFirstPoint.z-touchController.GetFinalPoint.z : touchController.GetFinalPoint.z-touchController.GetFirstPoint.z;
-
-					Bounds b = new Bounds((touchController.GetFirstPoint+touchController.GetFinalPoint)/2, windowSize + (Vector3.up * 999999f) );
-					
-//					VDebug.DrawCube (b, Color.green);
-					
-//					Plane[] PlaneBuffer = CalculateRect (new Rect(Mathf.Min(touchController.FirstPosition.x, touchController.FinalPosition.x),
-//						Mathf.Min(touchController.FirstPosition.y, touchController.FinalPosition.y),
-//						Mathf.Abs(touchController.FirstPosition.x - touchController.FinalPosition.x), 
-//						Mathf.Abs(touchController.FirstPosition.y - touchController.FinalPosition.y)));
-					
-					troopController.DeselectAllSoldiers ();
-
-#if !UNITY_IPHONE && !UNITY_ANDROID || UNITY_EDITOR
-					Unit enemySoldier = null;
-#endif
-					foreach (Unit soldier in troopController.soldiers)
-					{
-						if (!gameplayManager.IsSameTeam (soldier))
-						{
-#if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-							continue;
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+	if(WebPlayerAndPcSelection()) //se retornar true tem que sair do Update
+		return;
 #else
-							if (troopController.selectedSoldiers.Count != 0 ||
-								enemySoldier != null) continue;
-#endif
-						}
-
-						if (soldier.collider != null)
-						{
-							
-							if (b.Intersects (soldier.collider.bounds))
-							{
-//							if (GeometryUtility.TestPlanesAABB (PlaneBuffer, soldier.collider.bounds))
-//							{
-#if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-								troopController.SelectSoldier (soldier, true);
-#else
-								if (!gameplayManager.IsSameTeam (soldier))
-								{
-									enemySoldier = soldier;
-									continue;
-								}
-								else
-								{
-									troopController.SelectSoldier (soldier, true);
-								}
-#endif
-							}
-							else
-							{
-								troopController.SelectSoldier (soldier, false);
-							}
-						}
-						else
-						{
-							if (Math.AABBContains (soldier.transform.localPosition, b, Math.IgnoreVector.Y))
-							{
-#if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-								troopController.SelectSoldier (soldier, true);
-#else
-								if (!gameplayManager.IsSameTeam (soldier))
-								{
-									enemySoldier = soldier;
-									continue;
-								}
-								else
-								{
-									troopController.SelectSoldier (soldier, true);
-								}
-#endif
-							}
-							else
-							{
-								troopController.SelectSoldier (soldier, false);
-							}
-						}
-					}
-
-					if (troopController.selectedSoldiers.Count != 0) return;
-#if !UNITY_IPHONE && !UNITY_ANDROID || UNITY_EDITOR
-					else if (enemySoldier != null) troopController.SelectSoldier (enemySoldier, true);
+	if(AndroidAndIphoneSelection())
+		return;
 #endif
 
-					foreach (FactoryBase factory in factoryController.factorys)
-					{
-						if (factory.collider != null)
-						{
-							if (b.Intersects (factory.collider.bounds))
-							{
-//							if (GeometryUtility.TestPlanesAABB (PlaneBuffer, factory.collider.bounds))
-//							{
-								factoryController.SelectFactory (factory);
-								break;
-							}
-						}
-						else
-						{
-							if (Math.AABBContains (factory.transform.localPosition, b, Math.IgnoreVector.Y))
-							{
-								factoryController.SelectFactory (factory);
-								break;
-							}
-						}
-					}
-				}
-				else
-				{
-					RaycastHit hit;
-
-					if (Physics.Raycast (touchController.GetFinalRay, out hit))
-					{
-						if (hit.transform.CompareTag ("Unit"))
-						{
-							if (gameplayManager.IsSameTeam (hit.transform.GetComponent <Unit>()))
-							{
-#if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-								troopController.DeselectAllSoldiers ();
-#else
-								if (Input.GetKey (KeyCode.LeftControl))
-								{
-									troopController.DeselectAllSoldiers ();
-									
-									Unit.UnitType category = hit.transform.GetComponent<Unit> ().category;
-									foreach (Unit soldier in troopController.soldiers)
-									{
-										if (gameplayManager.IsSameTeam (soldier.Team))
-										{
-											if (soldier.category == category)
-											{
-												troopController.SelectSoldier (soldier, true);
-											}
-										}
-									}
-									return;
-								}
-								else
-								if (! Input.GetKey (KeyCode.LeftShift))
-								{
-									troopController.DeselectAllSoldiers ();
-								}
-#endif
-								if (!troopController.selectedSoldiers.Contains (hit.transform.GetComponent<Unit> ()))
-								{
-									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), true);
-								}
-								else
-								{
-									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), false);
-								}
-								return;
-							}
-							else
-							{
-								troopController.DeselectAllSoldiers ();
-
-								if (!troopController.selectedSoldiers.Contains (hit.transform.GetComponent<Unit> ()))
-								{
-									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), true);
-								}
-								else
-								{
-									troopController.SelectSoldier (hit.transform.GetComponent<Unit> (), false);
-								}
-								return;
-							}
-						}
-
-						if (hit.transform.CompareTag ("Factory"))
-						{
-							troopController.DeselectAllSoldiers ();
-
-							factoryController.SelectFactory (hit.transform.GetComponent<FactoryBase>());
-							return;
-						}
-
-#if !UNITY_IPHONE && !UNITY_ANDROID || UNITY_EDITOR
-						troopController.DeselectAllSoldiers ();
-#endif
-					}
-					else
-					{
-#if !UNITY_IPHONE && !UNITY_ANDROID || UNITY_EDITOR
-						troopController.DeselectAllSoldiers ();
-#endif
-					}
-
-				}
-			}
-		}
 #if UNITY_EDITOR
 		if (Input.GetKeyDown (KeyCode.Keypad0))
 		{
@@ -365,19 +386,19 @@ public class SelectionController : MonoBehaviour
 		}
 #endif
 	}
-	
+
 	void SelectGroup (int numberOfGroup)
 	{
 		factoryController.DeselectFactory ();
 		bool hasGroup = troopController.SelectGroup (numberOfGroup);
-		
+
 		if (!hasGroup) return;
-		
+
 		Vector3 getPosition = troopController.selectedSoldiers[0].transform.position - Vector3.forward * touchController.mainCamera.orthographicSize;
 		getPosition = touchController.mainCamera.GetComponent<CameraBounds> ().ClampScenario (getPosition);
-		
+
 		touchController.mainCamera.transform.position = getPosition;
-		
+
 	}
 
 	void OnGUI ()
@@ -386,11 +407,11 @@ public class SelectionController : MonoBehaviour
 		{
 			GUI.Box (new Rect(Mathf.Min(touchController.FirstPosition.x, touchController.CurrentPosition.x),
 						Mathf.Min(touchController.FirstPosition.y, touchController.CurrentPosition.y),
-						Mathf.Abs(touchController.FirstPosition.x - touchController.CurrentPosition.x), 
+						Mathf.Abs(touchController.FirstPosition.x - touchController.CurrentPosition.x),
 						Mathf.Abs(touchController.FirstPosition.y - touchController.CurrentPosition.y)), "");
 		}
 	}
-	
+
 	Plane[] CalculateRect (Rect r)
 	{
 		var c = Camera.mainCamera;
@@ -403,14 +424,14 @@ public class SelectionController : MonoBehaviour
 
 		var c4 = c.ScreenToWorldPoint(new Vector3(r.xMin, r.yMin, c.farClipPlane));
 		var c5 = c.ScreenToWorldPoint(new Vector3(r.xMax, r.yMax, c.farClipPlane));
-		
+
 		Plane[] planes = new Plane[4];
 		// Define the planes of the rectangle projected into the world
 		planes[0] = new Plane(c0, c4, c2);
 		planes[1] = new Plane(c2, c5, c3);
 		planes[2] = new Plane(c3, c5, c1);
 		planes[3] = new Plane(c1, c4, c0);
-		
+
 		return planes;
 	}
 }

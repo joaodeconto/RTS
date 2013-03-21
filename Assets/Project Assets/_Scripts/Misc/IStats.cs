@@ -4,6 +4,8 @@ using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour
 {
+	public static int UniversalEntityCounter = 0;
+
 	[System.Serializable]
 	public class RendererTeamColor
 	{
@@ -11,35 +13,56 @@ public abstract class IStats : Photon.MonoBehaviour
 
 		public void SetColorInMaterial (Transform transform, int teamID)
 		{
+			Color teamColor = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID);
+
 			MeshRenderer[] renderers = transform.GetComponentsInChildren<MeshRenderer>();
-			if (renderers.Length != 0)
+			for (int i = 0; i != renderers.Length; i++)
 			{
-				for (int i = 0; i != renderers.Length; i++)
+				for (int k = 0; k != renderers[i].materials.Length; k++)
 				{
-					for (int k = 0; k != renderers[i].materials.Length; k++)
+					if (renderers[i].materials[k].name.Equals (materialToApplyColor.name + " (Instance)"))
 					{
-						if (renderers[i].materials[k].name.Equals (materialToApplyColor.name + " (Instance)"))
-						{
-							renderers[i].materials[k].color = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID);
-						}
+						renderers[i].materials[k].color = teamColor;
 					}
 				}
 			}
 
 			SkinnedMeshRenderer[] skinnedMeshRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>();
-			if (skinnedMeshRenderers.Length != 0)
+			for (int i = 0; i != skinnedMeshRenderers.Length; i++)
 			{
-				for (int i = 0; i != skinnedMeshRenderers.Length; i++)
+				for (int k = 0; k != skinnedMeshRenderers[i].materials.Length; k++)
 				{
-					for (int k = 0; k != skinnedMeshRenderers[i].materials.Length; k++) {
-						if (skinnedMeshRenderers[i].materials[k].name.Equals (materialToApplyColor.name + " (Instance)"))
-						{
-							skinnedMeshRenderers[i].materials[k].color = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID);
-						}
+					if (skinnedMeshRenderers[i].materials[k].name.Equals (materialToApplyColor.name + " (Instance)"))
+					{
+						skinnedMeshRenderers[i].materials[k].color = teamColor;
 					}
 				}
 			}
 		}
+	}
+
+	[System.Serializable]
+	public class ButtonAttributes
+	{
+		public string name;
+		public string spriteName;
+		public Vector2 position;
+	}
+
+	[System.Serializable]
+	public class MovementAction
+	{
+		public enum ActionType
+		{
+			Move,
+			Patrol,
+			CancelMovement,
+			Follow, //Rally Point
+			Attack, //Even same team
+		}
+
+		public ActionType actionType;
+		public ButtonAttributes buttonAttributes;
 	}
 
 	public int Health { get; protected set; }
@@ -51,9 +74,11 @@ public abstract class IStats : Photon.MonoBehaviour
 	public float sizeOfSelected = 1f;
 
 	public RendererTeamColor[] rendererTeamColor;
-	
+
+	public MovementAction[] movementActions;
+
 	public bool playerUnit;
-	
+
 	public bool Selected { get; protected set; }
 	public bool IsNetworkInstantiate { get; protected set; }
 	public bool IsRemoved { get; protected set; }
@@ -66,13 +91,16 @@ public abstract class IStats : Photon.MonoBehaviour
 	{
 		Init();
 	}
-	
+
 	public virtual void Init ()
 	{
+		//Change name
+		this.name = this.name + (UniversalEntityCounter++);
+
 		Health = MaxHealth;
-		
+
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-		
+
 		if (IsNetworkInstantiate)
 		{
 			SetTeamInNetwork ();
@@ -87,33 +115,19 @@ public abstract class IStats : Photon.MonoBehaviour
 				}
 				else
 				{
-					if (playerUnit)
-					{
-						Team = 0;
-					}
-					else
-					{
-						Team = 1;
-					}
+					Team = (playerUnit) ? 0 : 1;
 				}
 			}
 			else
 			{
-				if (gameplayManager.IsSameTeam (Team))
-				{
-					playerUnit = true;
-				}
-				else
-				{
-					playerUnit = false;
-				}
+				playerUnit = gameplayManager.IsSameTeam (Team);
 			}
 		}
-		
+
 		SetColorTeam ();
-		
+
 		gameplayManager.AddStatTeamID (Team);
-		
+
 		IsRemoved = false;
 	}
 
@@ -123,14 +137,13 @@ public abstract class IStats : Photon.MonoBehaviour
 
 		int newDamage = Mathf.Max (0, Damage - Defense);
 
-		Health -= newDamage;
-		Health = Mathf.Clamp (Health, 0, MaxHealth);
+		Health = Mathf.Max (0, Health - newDamage);
 
 		if (Health == 0)
 		{
 			gameplayManager.RemoveStatTeamID (Team);
 			IsRemoved = true;
-			
+
 			SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
 			Health = -1;
 		}
@@ -144,29 +157,26 @@ public abstract class IStats : Photon.MonoBehaviour
     {
         IsNetworkInstantiate = true;
     }
-	
+
 	public void SetHealth (int health)
 	{
 		Health = health;
 	}
-	
+
 	void SetTeamInNetwork ()
 	{
-		if (photonView.isMine)
+		playerUnit = photonView.isMine;
+		if (playerUnit)
 		{
 			Team = (int)PhotonNetwork.player.customProperties["team"];
-			
-			playerUnit = true;
 		}
 		else
 		{
 			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
 			Team = (int)other.customProperties["team"];
-			
-			playerUnit = false;
 		}
 	}
-	
+
 	void SetColorTeam ()
 	{
 		foreach (RendererTeamColor rtc in rendererTeamColor)

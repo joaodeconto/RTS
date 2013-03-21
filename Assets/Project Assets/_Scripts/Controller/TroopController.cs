@@ -57,6 +57,7 @@ public class TroopController : MonoBehaviour
 			{
 				if (soldier != null)
 				{
+					//TODO ???
 					soldier.TargetingEnemy (null);
 
 					//Vector3 newDestination = destination + (Random.insideUnitSphere * soldier.pathfind.radius * selectedSoldiers.Count);
@@ -118,6 +119,11 @@ public class TroopController : MonoBehaviour
 		soldiers.Remove (soldier);
 		
 		gameplayManager.DecrementUnit ();
+	}
+
+	public void SoldierToogleSelection (Unit soldier)
+	{
+		SelectSoldier (soldier, !selectedSoldiers.Contains (soldier));
 	}
 
 	public void SelectSoldier (Unit soldier, bool select)
