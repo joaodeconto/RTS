@@ -29,19 +29,18 @@ public class Worker : Unit
 		{
 			public FactoryBase factory;
 			public ResourcesManager costOfResources;
-			public float timeOfProduction = 30f;
 			public string buttonHudName;
 			public Vector3 positionButtonHud;
 		}
 
 	public enum WorkerState
 	{
-		None = 0,
-			 Extracting = 1,
-			 Carrying = 2,
-			 CarryingIdle = 3,
-			 Building = 4,
-			 Repairing = 5
+		None		 = 0,
+		Extracting	 = 1,
+		Carrying	 = 2,
+		CarryingIdle = 3,
+		Building	 = 4,
+		Repairing	 = 5
 	}
 
 	public int forceToExtract;

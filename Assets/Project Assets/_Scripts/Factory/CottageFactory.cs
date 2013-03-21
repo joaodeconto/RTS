@@ -4,16 +4,13 @@ using Visiorama;
 
 public class CottageFactory : FactoryBase
 {
-	protected bool construct = false;
-	
-	void FinishedConstruct ()
+	void ConstructFinished ()
 	{
-		construct = true;
 		gameplayManager.IncrementMaxOfUnits ();
 	}
 	
 	void OnDie ()
 	{
-		if (construct) gameplayManager.DecrementMaxOfUnits ();
+		if (wasBuilt) gameplayManager.DecrementMaxOfUnits ();
 	}
 }

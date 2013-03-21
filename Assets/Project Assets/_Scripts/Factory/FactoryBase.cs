@@ -267,8 +267,11 @@ public class FactoryBase : IStats
 		
 		if (levelConstruct == MaxHealth)
 		{
-			wasBuilt = true;
-			SendMessage ("FinishedConstruct");
+			if (!wasBuilt)
+			{
+				wasBuilt = true;
+				SendMessage ("ConstructFinished");
+			}
 			return false;
 		}
 		else

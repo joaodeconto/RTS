@@ -62,9 +62,9 @@ public class GameplayManager : MonoBehaviour
 		}
 	}
 	
-	public bool IsSameTeam (int team)
+	public bool IsSameTeam (int teamID)
 	{
-		return team == MyTeam;
+		return teamID == MyTeam;
 	}
 	
 	public bool IsSameTeam (Unit soldier)
@@ -77,14 +77,14 @@ public class GameplayManager : MonoBehaviour
 		return factory.Team == MyTeam;
 	}
 	
-	public void IncrementUnit ()
+	public void IncrementUnit (int teamID)
 	{
-		++numberOfUnits;
+		if (IsSameTeam (teamID)) ++numberOfUnits;
 	}
 	
-	public void DecrementUnit ()
+	public void DecrementUnit (int teamID)
 	{
-		--numberOfUnits;
+		if (IsSameTeam (teamID)) --numberOfUnits;
 	}
 	
 	public void IncrementMaxOfUnits ()
@@ -172,7 +172,7 @@ public class GameplayManager : MonoBehaviour
 	void OnGUI ()
 	{
 		GUI.Box (new Rect(10, 10, 150, 25), "Resources: " + resources.NumberOfRocks.ToString ());
-//		GUI.Box (new Rect(10, 35, 150, 25), "Units: " + teamNumberOfStats[MyTeam].ToString () + "/" + maxOfUnits.ToString ());
+		GUI.Box (new Rect(10, 35, 150, 25), "Units: " + numberOfUnits.ToString () + "/" + maxOfUnits.ToString ());
 		
 		if (loseGame) GUI.Box (new Rect(Screen.width/2 - 75, Screen.height/2 - 12, 150, 25), "LOSER! ):"); 
 		else if (winGame) GUI.Box (new Rect(Screen.width/2 - 75, Screen.height/2 - 12, 150, 25), "WIN! :D");
