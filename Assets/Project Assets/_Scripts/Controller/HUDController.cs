@@ -86,7 +86,7 @@ public class HUDController : MonoBehaviour
 	{
 		if (ht == null)
 			ht = new Hashtable();
-		
+
 		if(!string.IsNullOrEmpty(textureName))
 			ht["textureName"] = textureName;
 
@@ -95,7 +95,7 @@ public class HUDController : MonoBehaviour
 							onClick, onPress, onDrag, onDrop);
 	}
 
-	public void RemoveEnqueuedButtonInInspector(string queueName, string buttonName)
+	public void RemoveEnqueuedButtonInInspector(string buttonName, string queueName)
 	{
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 
@@ -109,7 +109,7 @@ public class HUDController : MonoBehaviour
 		mq.DequeueMessageInfo();
 	}
 
-	public bool CheckQueuedButtonIsFirst(string queueName, string buttonName)
+	public bool CheckQueuedButtonIsFirst(string buttonName, string queueName)
 	{
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 

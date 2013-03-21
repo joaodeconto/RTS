@@ -38,7 +38,7 @@ public class FactoryBase : IStats
 
 	public Transform waypoint;
 
-	public Resource.Type receiveResouce;
+	public Resource.Type receiveResource;
 	
 	public BuildingObjects buildingObjects;
 	
@@ -267,7 +267,11 @@ public class FactoryBase : IStats
 		
 		if (levelConstruct == MaxHealth)
 		{
-			wasBuilt = true;
+			if (!wasBuilt)
+			{
+				wasBuilt = true;
+				SendMessage ("ConstructFinished");
+			}
 			return false;
 		}
 		else
@@ -418,7 +422,7 @@ public class FactoryBase : IStats
 
 		Debug.Log("btnName: " + btnName);
 
-		if(hudController.CheckQueuedButtonIsFirst(FactoryBase.FactoryQueueName, btnName))
+		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
 		{
 			Debug.Log("chegouvids");
 			timer = 0;
@@ -426,7 +430,7 @@ public class FactoryBase : IStats
 			inUpgrade = false;
 		}
 
-		hudController.RemoveEnqueuedButtonInInspector (FactoryBase.FactoryQueueName, btnName);
+		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);
 		listedToCreate.Remove (unit);
 	}
 

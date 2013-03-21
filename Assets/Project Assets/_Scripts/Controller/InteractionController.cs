@@ -1,41 +1,69 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using Visiorama;
 
 public class InteractionController : MonoBehaviour
 {
+	public delegate void InteractionCallback(Vector3 position);
 
 	protected TouchController touchController;
 	protected TroopController troopController;
 	protected GameplayManager gameplayManager;
+
+	private Stack<InteractionCallback> stackInteractionCallbacks;
 
 	public void Init ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
 		troopController = ComponentGetter.Get<TroopController>();
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
+
+		stackInteractionCallbacks = new Stack<InteractionCallback>();
+	}
+
+	public void AddCallback(TouchController.IdTouch id, InteractionCallback ic)
+	{
+		stackInteractionCallbacks.Push(ic);
+	}
+
+	public bool HaveCallbacksForTouchId(TouchController.IdTouch id)
+	{
+		return (stackInteractionCallbacks.Count != 0);
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{
+		if (touchController.touchType != TouchController.TouchType.Ended)
+			return;
+
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-		if (touchController.touchType == TouchController.TouchType.Ended
-			&& !touchController.DragOn)
+		if (!touchController.DragOn)
 		{
-			if (touchController.idTouch == TouchController.IdTouch.Id0)
+			if (touchController.idTouch == TouchController.IdTouch.Id1 )
 			{
 				Interaction (touchController.GetFinalRaycastHit.transform);
 			}
 		}
 #else
-		if (touchController.touchType == TouchController.TouchType.Ended)
+		switch (touchController.idTouch)
 		{
-			if (touchController.idTouch == TouchController.IdTouch.Id1)
+		case TouchController.IdTouch.Id1:
+			Interaction (touchController.GetFinalRaycastHit.transform);
+			break;
+		case TouchController.IdTouch.Id0:
+			while(stackInteractionCallbacks.Count != 0)
 			{
-				Interaction (touchController.GetFinalRaycastHit.transform);
+				InteractionCallback ic = stackInteractionCallbacks.Pop();
+
+				if(ic != null)
+				{
+					ic(touchController.GetFinalPoint);
+				}
 			}
+			break;
 		}
 #endif
 	}
@@ -43,7 +71,7 @@ public class InteractionController : MonoBehaviour
 	void Interaction (Transform hit)
 	{
 		if (troopController.selectedSoldiers.Count == 0) return;
-		
+
 		if (hit.CompareTag ("Factory"))
 		{
 			if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
@@ -58,14 +86,14 @@ public class InteractionController : MonoBehaviour
 					{
 						Worker worker = unit as Worker;
 						FactoryBase factory = hit.GetComponent<FactoryBase>();
-						
+
 						if (!factory.wasBuilt)
 						{
 							worker.SetMoveToFactory(factory);
 						}
 						else if (worker.hasResource)
 						{
-							if (factory.receiveResouce == worker.resource.type)
+							if (factory.receiveResource == worker.resource.type)
 							{
 								worker.SetMoveToFactory(factory);
 							}
@@ -94,7 +122,7 @@ public class InteractionController : MonoBehaviour
 				}
 			}
 		}
-		
+
 		if (hit.GetComponent<Resource> () != null)
 		{
 			foreach (Unit unit in troopController.selectedSoldiers)
@@ -123,7 +151,7 @@ public class InteractionController : MonoBehaviour
 				}
 			}
 		}
-		
+
 		if (hit.CompareTag ("Unit"))
 		{
 			if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
