@@ -35,21 +35,12 @@ public class Worker : Unit
 
 	public enum WorkerState
 	{
-<<<<<<< HEAD
-		None         = 0,
-		Extracting   = 1,
-		Carrying     = 2,
-		CarryingIdle = 3,
-		Building     = 4,
-		Repairing    = 5
-=======
 		None		 = 0,
 		Extracting	 = 1,
 		Carrying	 = 2,
 		CarryingIdle = 3,
 		Building	 = 4,
 		Repairing	 = 5
->>>>>>> 2d2332808c8e6d31b0e4ef071e70264b15de5c8f
 	}
 
 	public int forceToExtract;
@@ -61,9 +52,9 @@ public class Worker : Unit
 
 	public WorkerState workerState {get; set;}
 
-	public bool IsExtracting { get; protected set; }
-	public bool IsRepairing  { get; protected set; }
-	public bool IsBuilding   { get; protected set; }
+	public bool IsExtracting {get; protected set;}
+	public bool IsRepairing {get; protected set;}
+	public bool IsBuilding {get; protected set;}
 
 	public int resourceId {get; set;}
 	public Resource resource {get; protected set;}
@@ -71,14 +62,9 @@ public class Worker : Unit
 	public bool hasResource {get; protected set;}
 	protected Resource lastResource;
 	protected bool settingWorkerNull;
-<<<<<<< HEAD
 
-	protected FactoryBase factoryChoose;
-	protected FactoryBase lastFactory;
-=======
 	
 	protected FactoryBase factoryChoose, lastFactory;
->>>>>>> 2d2332808c8e6d31b0e4ef071e70264b15de5c8f
 	protected bool movingToFactory;
 
 	public override void Init ()
@@ -380,16 +366,16 @@ public class Worker : Unit
 	}
 
 	[RPC]
-	public override void AttackUnit (string nameUnit, int force)
-	{
-		base.AttackUnit (nameUnit, force);
-	}
+		public override void AttackUnit (string nameUnit, int force)
+		{
+			base.AttackUnit (nameUnit, force);
+		}
 
 	[RPC]
-	public override void AttackFactory (string nameFactory, int force)
-	{
-		base.AttackFactory (nameFactory, force);
-	}
+		public override void AttackFactory (string nameFactory, int force)
+		{
+			base.AttackFactory (nameFactory, force);
+		}
 
 	public override void Select ()
 	{
