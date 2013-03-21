@@ -102,18 +102,10 @@ public class GhostFactory : MonoBehaviour
 	
 	void Apply ()
 	{
-		bool canBuy = true;
-		foreach (Worker.FactoryConstruction fc in worker.factoryConstruction)
-		{
-			if (thisFactory == fc.factory)
-			{
-				canBuy = gameplayManager.resources.CanBuy (fc.costOfResources);
-				break;
-			}
-		}
-
 		ComponentGetter.Get<SelectionController> ().enabled = true;
 		ComponentGetter.Get<InteractionController> ().enabled = true;
+		
+		bool canBuy = worker.CanConstruct (thisFactory);
 		
 		if (canBuy)
 		{

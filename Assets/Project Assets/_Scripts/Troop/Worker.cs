@@ -424,7 +424,21 @@ public class Worker : Unit
 	{
 		resource = newResource;
 	}
-
+	
+	public bool CanConstruct (FactoryBase factory)
+	{
+		foreach (FactoryConstruction fc in factoryConstruction)
+		{
+			Debug.Log ("FactoryConstruction: " + fc.factory.GetType () + " - " + factory.GetType ());
+			if (factory.GetType () == fc.factory.GetType ())
+			{
+				return gameplayManager.resources.CanBuy (fc.costOfResources);
+				break;
+			}
+		}
+		return false;
+	}
+	
 #region Funções que o Worker pode fazer
 	IEnumerator StartConstruct ()
 	{

@@ -121,7 +121,8 @@ public class FactoryBase : IStats
 		SyncAnimation ();
 		
 		if (!wasBuilt ||
-			listedToCreate.Count == 0) return;
+			listedToCreate.Count == 0 ||
+			gameplayManager.IsLimitMaxUnits ()) return;
 
 		if (unitToCreate == null)
 		{
