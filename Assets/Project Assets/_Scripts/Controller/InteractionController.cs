@@ -1,20 +1,36 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using Visiorama;
 
 public class InteractionController : MonoBehaviour
 {
+	public delegate void InteractionCallback(Vector3 position);
 
 	protected TouchController touchController;
 	protected TroopController troopController;
 	protected GameplayManager gameplayManager;
+
+	private Stack<InteractionCallback> stackInteractionCallbacks;
 
 	public void Init ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
 		troopController = ComponentGetter.Get<TroopController>();
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
+
+		stackInteractionCallbacks = new Stack<InteractionCallback>();
+	}
+
+	public void AddCallback(TouchController.IdTouch id, InteractionCallback ic)
+	{
+		stackInteractionCallbacks.Push(ic);
+	}
+
+	public bool HaveCallbacksForTouchId(TouchController.IdTouch id)
+	{
+		return (stackInteractionCallbacks.Count != 0);
 	}
 
 	// Update is called once per frame
@@ -24,14 +40,30 @@ public class InteractionController : MonoBehaviour
 			return;
 
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-		if ((touchController.idTouch == TouchController.IdTouch.Id0) && (!touchController.DragOn))
+		if (!touchController.DragOn)
 		{
-			Interaction (touchController.GetFinalRaycastHit.transform);
+			if (touchController.idTouch == TouchController.IdTouch.Id1 )
+			{
+				Interaction (touchController.GetFinalRaycastHit.transform);
+			}
 		}
 #else
-		if (touchController.idTouch == TouchController.IdTouch.Id1)
+		switch (touchController.idTouch)
 		{
+		case TouchController.IdTouch.Id1:
 			Interaction (touchController.GetFinalRaycastHit.transform);
+			break;
+		case TouchController.IdTouch.Id0:
+			while(stackInteractionCallbacks.Count != 0)
+			{
+				InteractionCallback ic = stackInteractionCallbacks.Pop();
+
+				if(ic != null)
+				{
+					ic(touchController.GetFinalPoint);
+				}
+			}
+			break;
 		}
 #endif
 	}

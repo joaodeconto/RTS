@@ -25,7 +25,8 @@ public class DefaultMessageQueue : MessageQueue
 		this.uiGrid.cellWidth  = cellSize.x;
 		this.uiGrid.cellHeight = cellSize.y;
 		this.uiGrid.maxPerLine = maxPerLine;
-		this.uiGrid.sorted = true;
+		this.uiGrid.sorted       = true;
+		this.uiGrid.hideInactive = false;
 
 		this.uiGrid.arrangement = (IsVerticalQueue) ?
 										UIGrid.Arrangement.Vertical :

@@ -325,7 +325,7 @@ public class FactoryBase : IStats
 
 		Debug.Log("btnName: " + btnName);
 
-		if(hudController.CheckQueuedButtonIsFirst(FactoryBase.FactoryQueueName, btnName))
+		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
 		{
 			Debug.Log("chegouvids");
 			timer = 0;
@@ -333,7 +333,7 @@ public class FactoryBase : IStats
 			inUpgrade = false;
 		}
 
-		hudController.RemoveEnqueuedButtonInInspector (FactoryBase.FactoryQueueName, btnName);
+		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);
 		listedToCreate.Remove (unit);
 	}
 

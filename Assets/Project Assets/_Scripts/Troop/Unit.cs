@@ -20,27 +20,27 @@ public class Unit : IStats
 
 	public enum UnitState
 	{
-		Idle = 0,
-		Walk = 1,
+		Idle   = 0,
+		Walk   = 1,
 		Attack = 2,
-		Die = 3
+		Die    = 3
 	}
 
 	public enum UnitType
 	{
-		Worker = 0,
+		Worker      = 0,
 		Neanderthal = 1,
-		Raptor = 2,
+		Raptor      = 2,
 		Triceratops = 3,
-		Rex = 4,
-		Other = 5
+		Rex         = 4,
+		Other       = 5
 	}
 
 	public int force;
-	public float distanceView = 15f;
-	public float rangeAttack = 5f;
-	public float attackDuration = 1f;
-	public float probeRange = 1.0f; // how far the character can "see"
+	public float distanceView       = 15f;
+	public float rangeAttack        = 5f;
+	public float attackDuration     = 1f;
+	public float probeRange         = 1.0f; // how far the character can "see"
     public float turnSpeedAvoidance = 50f; // how fast to turn
 
     public Transform probePoint; // forward probe point
@@ -63,12 +63,12 @@ public class Unit : IStats
 	public CharacterSound CharSound { get; protected set; }
 
 	private bool canHit;
-	public bool CanHit {
-		get {
-			if (!canHit)
-			{
-				canHit = (IsDead);
-			}
+	public bool CanHit
+	{
+		get
+		{
+			if (!canHit) canHit = (IsDead);
+
 			return canHit;
 		}
 	}
@@ -92,6 +92,7 @@ public class Unit : IStats
 	protected FactoryController factoryController;
 	protected TroopController troopController;
 	protected HUDController hudController;
+	protected InteractionController interactionController;
 
 	protected HealthBar healthBar;
 
@@ -115,32 +116,30 @@ public class Unit : IStats
 //			ControllerAnimation.SetLayer (animation.Attack, 0);
 //		}
 
-		factoryController = ComponentGetter.Get<FactoryController> ();
-		troopController = ComponentGetter.Get<TroopController> ();
-		hudController = ComponentGetter.Get<HUDController> ();
+		factoryController     = ComponentGetter.Get<FactoryController> ();
+		troopController       = ComponentGetter.Get<TroopController> ();
+		hudController         = ComponentGetter.Get<HUDController> ();
+		interactionController = ComponentGetter.Get<InteractionController>();
 
 		pathfind = GetComponent<NavMeshAgent>();
 
 		normalAcceleration = pathfind.acceleration;
-		normalSpeed = pathfind.speed;
+		normalSpeed        = pathfind.speed;
 		normalAngularSpeed = pathfind.angularSpeed;
 
 		pathfindTarget = transform.position;
-		this.gameObject.tag = "Unit";
+
+		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
 		if (!enabled) enabled = playerUnit;
 
-		if(probePoint == null)
-		{
-		    probePoint = transform;
-		}
+		if (probePoint == null) probePoint = transform;
 
 		if(leftReference == null)
 		{
 		    leftReference = transform;
 			leftReference.position -= transform.right * collider.bounds.size.x;
-
 		}
 
 		if(rightReference == null)
@@ -154,7 +153,7 @@ public class Unit : IStats
 
 	void Update ()
 	{
-		UnitStatus ();
+		IAStep ();
 	}
 
 	void OnDestroy ()
@@ -162,26 +161,23 @@ public class Unit : IStats
 		if (!IsRemoved && !playerUnit) troopController.soldiers.Remove (this);
 	}
 
-	public virtual void UnitStatus ()
+	public virtual void IAStep ()
 	{
-		if (playerUnit)
+		if (!playerUnit) return;
+
+		//MoveAvoidance (pathfindTarget);
+
+		switch (unitState)
 		{
-			//MoveAvoidance (pathfindTarget);
-
-			switch (unitState)
-			{
-
 			case UnitState.Idle:
 				if (unitAnimation.Idle)
 					ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
 
 				StartCheckEnemy ();
-				if (targetAttack != null)
-				{
-					unitState = UnitState.Walk;
-				}
-				break;
 
+				if (targetAttack != null) unitState = UnitState.Walk;
+
+				break;
 			case UnitState.Walk:
 				if (unitAnimation.Walk)
 				{
@@ -206,16 +202,15 @@ public class Unit : IStats
 					}
 					else
 					{
+						targetAttack    = null;
 						if (followingTarget)
 						{
-							targetAttack = null;
-							unitState = UnitState.Idle;
+							unitState       = UnitState.Idle;
 							followingTarget = false;
 						}
 						else
 						{
 							pathfindTarget = targetAttack.transform.position + (targetAttack.transform.forward * targetAttack.GetComponent<CapsuleCollider>().radius);
-							targetAttack = null;
 							Move (pathfindTarget);
 						}
 					}
@@ -226,7 +221,6 @@ public class Unit : IStats
 					unitState = UnitState.Idle;
 				}
 				break;
-
 			case UnitState.Attack:
 
 				followingTarget = true;
@@ -253,7 +247,6 @@ public class Unit : IStats
 					unitState = UnitState.Idle;
 				}
 				break;
-			}
 		}
 	}
 
@@ -551,6 +544,41 @@ public class Unit : IStats
 															troopController.DeselectAllSoldiers();
 															troopController.SelectSoldier(this, true);
 														});
+		Hashtable ht;
+		foreach (MovementAction ma in movementActions)
+		{
+			ht = new Hashtable();
+			ht["actionType"] = ma.actionType;
+
+			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
+													ma.buttonAttributes.position,
+													ht,
+													ma.buttonAttributes.spriteName,
+													(ht_hud) =>
+													{
+														switch((MovementAction.ActionType)ht["actionType"])
+														{
+														case MovementAction.ActionType.Move:
+															interactionController.AddCallback(TouchController.IdTouch.Id0,
+																								(position) =>
+																								{
+																									troopController.MoveTroop(position);
+																								});
+															break;
+														case MovementAction.ActionType.Patrol:
+
+															break;
+														case MovementAction.ActionType.CancelMovement:
+															Stop();
+															break;
+														case MovementAction.ActionType.Follow: //Rally Point
+
+															break;
+														case MovementAction.ActionType.Attack:
+															break;
+														}
+													});
+		}
 	}
 
 	public void Deselect (bool isGroupDelesection = false)
@@ -561,6 +589,10 @@ public class Unit : IStats
 		if(isGroupDelesection)
 		{
 			hudController.DestroyInspector ();
+		}
+		else
+		{
+			hudController.RemoveEnqueuedButtonInInspector(this.name, Unit.UnitGroupQueueName);
 		}
 	}
 
@@ -650,7 +682,7 @@ public class Unit : IStats
 	{
 		if (!invokeCheckEnemy)
 		{
-			InvokeRepeating ("CheckEnemyToClose", 0.3f, 0.3f);
+			InvokeRepeating ("CheckEnemyIsClose", 0.3f, 0.3f);
 			invokeCheckEnemy = true;
 		}
 	}
@@ -659,12 +691,12 @@ public class Unit : IStats
 	{
 		if (invokeCheckEnemy)
 		{
-			CancelInvoke ("CheckEnemyToClose");
+			CancelInvoke ("CheckEnemyIsClose");
 			invokeCheckEnemy = false;
 		}
 	}
 
-	private void CheckEnemyToClose ()
+	private void CheckEnemyIsClose ()
 	{
 		/*
 		Unit[] soldiers = ComponentGetter.Get<TroopController>().soldiers.ToArray();

@@ -4,6 +4,8 @@ using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour
 {
+	public static int UniversalEntityCounter = 0;
+
 	[System.Serializable]
 	public class RendererTeamColor
 	{
@@ -39,6 +41,30 @@ public abstract class IStats : Photon.MonoBehaviour
 		}
 	}
 
+	[System.Serializable]
+	public class ButtonAttributes
+	{
+		public string name;
+		public string spriteName;
+		public Vector2 position;
+	}
+
+	[System.Serializable]
+	public class MovementAction
+	{
+		public enum ActionType
+		{
+			Move,
+			Patrol,
+			CancelMovement,
+			Follow, //Rally Point
+			Attack, //Even same team
+		}
+
+		public ActionType actionType;
+		public ButtonAttributes buttonAttributes;
+	}
+
 	public int Health { get; protected set; }
 	public int MaxHealth = 200;
 	public int Defense;
@@ -48,6 +74,8 @@ public abstract class IStats : Photon.MonoBehaviour
 	public float sizeOfSelected = 1f;
 
 	public RendererTeamColor[] rendererTeamColor;
+
+	public MovementAction[] movementActions;
 
 	public bool playerUnit;
 
@@ -66,6 +94,9 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	public virtual void Init ()
 	{
+		//Change name
+		this.name = this.name + (UniversalEntityCounter++);
+
 		Health = MaxHealth;
 
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();

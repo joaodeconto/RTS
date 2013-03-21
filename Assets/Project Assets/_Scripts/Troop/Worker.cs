@@ -4,6 +4,7 @@ using Visiorama.Extension;
 
 public class Worker : Unit
 {
+
 	[System.Serializable]
 	public class WorkerAnimation
 	{
@@ -13,7 +14,7 @@ public class Worker : Unit
 	}
 
 	[System.Serializable]
-	public class ResourceWorker 
+	public class ResourceWorker
 	{
 		public Resource.Type type;
 		public GameObject extractingObject;
@@ -23,7 +24,7 @@ public class Worker : Unit
 		public float carryingAngularSpeed;
 		public WorkerAnimation workerAnimation;
 	}
-	
+
 	[System.Serializable]
 	public class FactoryConstruction
 	{
@@ -33,7 +34,7 @@ public class Worker : Unit
 		public string buttonHudName;
 		public Vector3 positionButtonHud;
 	}
-	
+
 	public enum WorkerState
 	{
 		None = 0,
@@ -42,206 +43,207 @@ public class Worker : Unit
 		CarryingIdle = 3,
 		Building = 4
 	}
-	
+
 	public int forceToExtract;
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
 	public ResourceWorker[] resourceWorker;
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
-	
+
 	public WorkerState workerState {get; set;}
-	
+
 	public bool IsExtracting {get; protected set;}
 	public bool IsBuilding {get; protected set;}
-	
+
 	public int resourceId {get; set;}
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
 	public bool hasResource {get; protected set;}
 	protected Resource lastResource;
 	protected bool settingWorkerNull;
-	
+
 	protected FactoryBase factoryChoose;
 	protected bool movingToFactory;
-	
+
 	public override void Init ()
 	{
 		base.Init ();
-		
+
 		resourceId = -1;
-		
+
 		foreach (ResourceWorker rw in resourceWorker)
 		{
 			rw.carryingObject.SetActive (false);
 			rw.extractingObject.SetActive (false);
 		}
-		
+
 		hasResource = settingWorkerNull = false;
-		
+
 		workerState = WorkerState.None;
 	}
-	
-	public override void UnitStatus ()
+
+	public override void IAStep ()
 	{
-		if (playerUnit)
+		if (!playerUnit)
+			return;
+
+		switch (workerState)
 		{
-			switch (workerState)
+		case WorkerState.Extracting:
+			if (resource != lastResource ||
+				factoryChoose != null)
 			{
-			case WorkerState.Extracting:
-				if (resource != lastResource ||
-					factoryChoose != null)
+				resourceWorker[resourceId].extractingObject.SetActive (false);
+				resourceId = -1;
+				lastResource.RemoveWorker (this);
+				workerState = WorkerState.None;
+				return;
+			}
+			else
+			{
+				pathfind.Stop ();
+				transform.LookAt (resource.transform);
+			}
+			if (!IsExtracting) StartCoroutine (Extract ());
+			break;
+
+		case WorkerState.Carrying:
+		case WorkerState.CarryingIdle:
+			if (resource != null &&
+				!settingWorkerNull)
+			{
+				settingWorkerNull = true;
+				resource.RemoveWorker (this);
+			}
+
+			if (!movingToFactory)
+			{
+				SetMoveToFactory (typeof(MainFactory));
+			}
+
+			if (!MoveComplete())
+			{
+				if (resourceWorker[resourceId].workerAnimation.Carrying)
 				{
-					resourceWorker[resourceId].extractingObject.SetActive (false);
-					resourceId = -1;
-					lastResource.RemoveWorker (this);
-					workerState = WorkerState.None;
-					return;
+					ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
+					ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying, WrapMode.Loop);
 				}
-				else
+
+				workerState = WorkerState.Carrying;
+			}
+			else
+			{
+				if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
+					ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
+
+				workerState = WorkerState.CarryingIdle;
+			}
+
+			if (factoryChoose == null) return;
+
+			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
+			{
+				if (resource != null) Move (resource.transform.position);
+				gameplayManager.resources.Set (resource.type, currentNumberOfResources);
+				currentNumberOfResources = 0;
+				workerState = WorkerState.None;
+				movingToFactory = hasResource = settingWorkerNull = false;
+
+				resourceWorker[resourceId].carryingObject.SetActive (false);
+
+				resourceId = -1;
+
+				ResetPathfindValue ();
+			}
+			break;
+		case WorkerState.Building:
+			if (factoryChoose == null)
+			{
+				workerState = WorkerState.None;
+			}
+
+			pathfind.Stop ();
+			if (!IsBuilding) StartCoroutine (StartConstruct ());
+			break;
+
+		case WorkerState.None:
+			CheckConstructFactory ();
+
+			if (resource != null)
+			{
+				if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.collider.radius)
 				{
 					pathfind.Stop ();
-					transform.LookAt (resource.transform);
-				}
-				if (!IsExtracting) StartCoroutine (Extract ());
-				break;
-				
-			case WorkerState.Carrying:
-			case WorkerState.CarryingIdle:
-				if (resource != null &&
-					!settingWorkerNull)
-				{
-					settingWorkerNull = true;
-					resource.RemoveWorker (this);
-				}
-				
-				if (!movingToFactory)
-				{
-					SetMoveToFactory (typeof(MainFactory));
-				}
-				
-				if (!MoveComplete())
-				{
-					if (resourceWorker[resourceId].workerAnimation.Carrying)
-					{
-						ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
-						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying, WrapMode.Loop);
-					}
-					
-					workerState = WorkerState.Carrying;
-				}
-				else
-				{
-					if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
-						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
-					
-					workerState = WorkerState.CarryingIdle;
-				}
-				
-				if (factoryChoose == null) return;
-				
-				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
-				{
-					if (resource != null) Move (resource.transform.position);
-					gameplayManager.resources.Set (resource.type, currentNumberOfResources);
-					currentNumberOfResources = 0;
-					workerState = WorkerState.None;
-					movingToFactory = hasResource = settingWorkerNull = false;
-					
-					resourceWorker[resourceId].carryingObject.SetActive (false);
-					
-					resourceId = -1;
-					
-					ResetPathfindValue ();
-				}
-				break;
-			case WorkerState.Building:
-				if (factoryChoose == null)
-				{
-					workerState = WorkerState.None;
-				}
-				
-				pathfind.Stop ();
-				if (!IsBuilding) StartCoroutine (StartConstruct ());
-				break;
-			
-			case WorkerState.None:
-				CheckConstructFactory ();
-				
-				if (resource != null)
-				{
-					if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.collider.radius)
-					{
-						pathfind.Stop ();
-						
-						if (resource.AddWorker (this))
-						{
-							int i = 0;
-							foreach (ResourceWorker rw in resourceWorker)
-							{
-								if (rw.type == resource.type)
-								{
-									resourceId = i;
-									rw.extractingObject.SetActive (true);
-								}
-							}
-							
-							lastResource = resource;
-							
-							workerState = WorkerState.Extracting;
-						}
-						else
-						{
-							if (unitState != Unit.UnitState.Idle)
-							{
-								unitState = Unit.UnitState.Idle;
-								
-								Collider[] nearbyResources = Physics.OverlapSphere (transform.position, distanceView);
 
-								if (nearbyResources.Length == 0) return;
-								
-								Resource.Type typeResource = resource.type;
-								
-								Resource resourceSelected = null;
-						        for (int i = 0; i != nearbyResources.Length; i++)
-								{
-									if (nearbyResources[i].GetComponent<Resource> ())
-									{
-										if (nearbyResources[i].GetComponent<Resource> ().type == typeResource)
-										{
-											if (nearbyResources[i].GetComponent<Resource> ().IsLimitWorkers)
-												continue;
-											
-											if (resourceSelected == null) resourceSelected = nearbyResources[i].GetComponent<Resource> ();
-											else
-											{
-												if (Vector3.Distance (transform.position, nearbyResources[i].transform.position) <
-													Vector3.Distance (transform.position, resourceSelected.transform.position))
-												{
-													resourceSelected = nearbyResources[i].GetComponent<Resource> ();
-												}
-											}
-										}
-									}
-						        }
-						
-								if (resourceSelected == null) return;
+					if (resource.AddWorker (this))
+					{
+						int i = 0;
+						foreach (ResourceWorker rw in resourceWorker)
+						{
+							if (rw.type == resource.type)
+							{
+								resourceId = i;
+								rw.extractingObject.SetActive (true);
+							}
+						}
+
+						lastResource = resource;
+
+						workerState = WorkerState.Extracting;
+					}
+					else
+					{
+						if (unitState != Unit.UnitState.Idle)
+						{
+							unitState = Unit.UnitState.Idle;
+
+							Collider[] nearbyResources = Physics.OverlapSphere (transform.position, distanceView);
+
+							if (nearbyResources.Length == 0) return;
+
+							Resource.Type typeResource = resource.type;
+
+							Resource resourceSelected = null;
+							Resource cResource = null;
+
+							for (int i = 0; i != nearbyResources.Length; i++)
+							{
+								cResource = nearbyResources[i].GetComponent<Resource> ();
+
+								if (cResource == null ||
+									cResource.type == typeResource ||
+									cResource.IsLimitWorkers)
+									continue;
+
+								if (resourceSelected == null)
+									resourceSelected = cResource;
 								else
 								{
-									resource = resourceSelected;
-									Move (resource.transform.position);
+									if (Vector3.Distance (transform.position, nearbyResources[i].transform.position) <
+										Vector3.Distance (transform.position, resourceSelected.transform.position))
+									{
+										resourceSelected = cResource;
+									}
 								}
+							}
+
+							if (resourceSelected == null) return;
+							else
+							{
+								resource = resourceSelected;
+								Move (resource.transform.position);
 							}
 						}
 					}
 				}
-				
-				base.UnitStatus ();
-				break;
 			}
+
+			base.IAStep ();
+			break;
 		}
 	}
-	
+
 	public override void SyncAnimation ()
 	{
 		switch (workerState)
@@ -257,7 +259,7 @@ public class Worker : Unit
 				}
 			}
 			break;
-			
+
 		case WorkerState.CarryingIdle:
 			if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
 			{
@@ -269,7 +271,7 @@ public class Worker : Unit
 				}
 			}
 			break;
-			
+
 		case WorkerState.Extracting:
 			if (resourceWorker[resourceId].workerAnimation.Extracting)
 			{
@@ -280,7 +282,7 @@ public class Worker : Unit
 				}
 			}
 			break;
-			
+
 		case WorkerState.Building:
 			if (resourceWorker[0].workerAnimation.Extracting)
 			{
@@ -291,7 +293,7 @@ public class Worker : Unit
 				}
 			}
 			break;
-			
+
 		case WorkerState.None:
 			if (IsVisible)
 			{
@@ -303,132 +305,131 @@ public class Worker : Unit
 				{
 					resourceWorker[0].extractingObject.SetActive (false);
 				}
-				
+
 				if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
 			}
-			
-			
+
+
 			base.SyncAnimation ();
 			break;
 		}
 	}
-	
+
 	[RPC]
 	public override void AttackUnit (string nameUnit, int force)
 	{
 		base.AttackUnit (nameUnit, force);
 	}
-	
+
 	[RPC]
 	public override void AttackFactory (string nameFactory, int force)
 	{
 		base.AttackFactory (nameFactory, force);
 	}
-	
+
 	public override void Select ()
 	{
 		base.Select ();
-		
-		if (playerUnit)
-		{
-			foreach (FactoryConstruction fc in factoryConstruction)
-			{
-				Hashtable ht = new Hashtable();
-				ht["factory"]	= fc.factory;
 
-				hudController.CreateButtonInInspector ( fc.buttonHudName,
-														fc.positionButtonHud,
-														ht,
-														fc.factory.guiTextureName, 
-														(ht_hud) =>
-														{
-															FactoryBase factory = (FactoryBase)ht_hud["factory"];
-															
-															InstanceGhostFactory (factory);
-														});
-			}
+		if (!playerUnit) return;
+
+		Hashtable ht = null;
+		foreach (FactoryConstruction fc in factoryConstruction)
+		{
+			ht = new Hashtable();
+			ht["factory"] = fc.factory;
+
+			hudController.CreateButtonInInspector ( fc.buttonHudName,
+													fc.positionButtonHud,
+													ht,
+													fc.factory.guiTextureName,
+													(ht_hud) =>
+													{
+														FactoryBase factory = (FactoryBase)ht_hud["factory"];
+
+														InstanceGhostFactory (factory);
+													});
 		}
 	}
-	
+
 	public void InstanceGhostFactory (FactoryBase factory)
 	{
-		GameObject ghostFactory = Instantiate (factory.gameObject, Vector3.zero, transform.rotation) as GameObject;
+		GameObject ghostFactory = Instantiate ( factory.gameObject,
+												Vector3.zero,
+												transform.rotation) as GameObject;
 		ghostFactory.AddComponent<GhostFactory>().Init (this);
 	}
-	
+
 	public void SetResource (Resource newResource)
 	{
 		resource = newResource;
 	}
-	
+
 	IEnumerator StartConstruct ()
 	{
 		IsBuilding = true;
-		
+
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
-		
-		if (factoryChoose != null)
+
+		if (factoryChoose != null && !factoryChoose.Construct (this))
 		{
-			if (!factoryChoose.Construct (this))
-			{
-				factoryChoose = null;
-			}
+			factoryChoose = null;
 		}
-		
+
 		IsBuilding = false;
 	}
-	
+
 	IEnumerator Extract ()
 	{
 		IsExtracting = true;
-		
+
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
-		
+
 		if (resource != null) resource.ExtractResource (this);
 		else workerState = WorkerState.None;
-		
+
 		IsExtracting = false;
 	}
-	
+
 	public void GetResource ()
 	{
 		GetResource (numberMaxGetResources);
 	}
-	
+
 	public void GetResource (int gotNumberResources)
 	{
 		currentNumberOfResources = gotNumberResources;
 		hasResource = true;
-		
+
 		pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
 		pathfind.speed = resourceWorker[resourceId].carryingSpeed;
 		pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
-		
+
 		workerState = WorkerState.Carrying;
 	}
-	
+
 	public void SetMoveToFactory (FactoryBase factory)
 	{
 		factoryChoose = factory;
 		Move (factoryChoose.transform.position);
 		movingToFactory = true;
 	}
-	
+
 	void SetMoveToFactory (System.Type type)
 	{
 		if (factoryChoose == null) SearchFactory (type);
-		
+
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
 			movingToFactory = true;
 		}
 	}
-	
+
 	void SearchFactory (System.Type type)
 	{
 		foreach (FactoryBase fb in factoryController.factorys)
@@ -455,7 +456,7 @@ public class Worker : Unit
 			}
 		}
 	}
-	
+
 	void CheckConstructFactory ()
 	{
 		if (factoryChoose != null)
@@ -469,13 +470,13 @@ public class Worker : Unit
 			}
 		}
 	}
-	
+
 	// GIZMOS
-	
+
 	public override void DrawGizmosSelected ()
 	{
 		base.DrawGizmosSelected ();
-		
+
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
 	}
