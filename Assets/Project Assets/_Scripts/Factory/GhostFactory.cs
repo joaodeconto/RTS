@@ -126,7 +126,7 @@ public class GhostFactory : MonoBehaviour
 			
 			worker.SetMoveToFactory (thisFactory);
 			TroopController troopController = ComponentGetter.Get<TroopController> ();
-			foreach (Unit unit in troopController.soldiers)
+			foreach (Unit unit in troopController.selectedSoldiers)
 			{
 				if (unit.GetType() == typeof(Worker))
 				{
