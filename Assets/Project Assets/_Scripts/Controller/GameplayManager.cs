@@ -13,10 +13,12 @@ public class Team
 
 public class GameplayManager : MonoBehaviour
 {
+	public const int NUMBER_INCREMENT_AND_DECREMENT_UNITS = 5;
 	
 	public Team[] teams;
 	
-	public int maxOfUnits = 10;
+	public int numberOfUnits { get; protected set; } 
+	public int maxOfUnits { get; protected set; }
 	
 	protected Dictionary<int, int> teamNumberOfStats = new Dictionary<int, int>();
 	protected int loserTeams;
@@ -46,6 +48,8 @@ public class GameplayManager : MonoBehaviour
 				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
 			}
 		}
+		
+		IncrementMaxOfUnits ();
 	}
 	
 	public Color GetColorTeam (int teamID)
@@ -58,9 +62,9 @@ public class GameplayManager : MonoBehaviour
 		}
 	}
 	
-	public bool IsSameTeam (int team)
+	public bool IsSameTeam (int teamID)
 	{
-		return team == MyTeam;
+		return teamID == MyTeam;
 	}
 	
 	public bool IsSameTeam (Unit soldier)
@@ -73,14 +77,29 @@ public class GameplayManager : MonoBehaviour
 		return factory.Team == MyTeam;
 	}
 	
+	public void IncrementUnit (int teamID)
+	{
+		if (IsSameTeam (teamID)) ++numberOfUnits;
+	}
+	
+	public void DecrementUnit (int teamID)
+	{
+		if (IsSameTeam (teamID)) --numberOfUnits;
+	}
+	
 	public void IncrementMaxOfUnits ()
 	{
-		maxOfUnits += 5;
+		maxOfUnits += NUMBER_INCREMENT_AND_DECREMENT_UNITS;
 	}
 	
 	public void DecrementMaxOfUnits ()
 	{
-		maxOfUnits -= 5;
+		maxOfUnits -= NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+	}
+	
+	public bool IsLimitMaxUnits ()
+	{
+		return numberOfUnits == maxOfUnits;
 	}
 	
 	public void AddStatTeamID (int teamID)
@@ -153,7 +172,7 @@ public class GameplayManager : MonoBehaviour
 	void OnGUI ()
 	{
 		GUI.Box (new Rect(10, 10, 150, 25), "Resources: " + resources.NumberOfRocks.ToString ());
-//		GUI.Box (new Rect(10, 35, 150, 25), "Units: " + teamNumberOfStats[MyTeam].ToString () + "/" + maxOfUnits.ToString ());
+		GUI.Box (new Rect(10, 35, 150, 25), "Units: " + numberOfUnits.ToString () + "/" + maxOfUnits.ToString ());
 		
 		if (loseGame) GUI.Box (new Rect(Screen.width/2 - 75, Screen.height/2 - 12, 150, 25), "LOSER! ):"); 
 		else if (winGame) GUI.Box (new Rect(Screen.width/2 - 75, Screen.height/2 - 12, 150, 25), "WIN! :D");

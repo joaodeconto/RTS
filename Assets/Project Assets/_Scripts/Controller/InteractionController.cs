@@ -93,7 +93,7 @@ public class InteractionController : MonoBehaviour
 						}
 						else if (worker.hasResource)
 						{
-							if (factory.receiveResouce == worker.resource.type)
+							if (factory.receiveResource == worker.resource.type)
 							{
 								worker.SetMoveToFactory(factory);
 							}

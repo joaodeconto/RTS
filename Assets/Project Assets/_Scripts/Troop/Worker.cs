@@ -29,19 +29,27 @@ public class Worker : Unit
 		{
 			public FactoryBase factory;
 			public ResourcesManager costOfResources;
-			public float timeOfProduction = 30f;
 			public string buttonHudName;
 			public Vector3 positionButtonHud;
 		}
 
 	public enum WorkerState
 	{
+<<<<<<< HEAD
 		None         = 0,
 		Extracting   = 1,
 		Carrying     = 2,
 		CarryingIdle = 3,
 		Building     = 4,
 		Repairing    = 5
+=======
+		None		 = 0,
+		Extracting	 = 1,
+		Carrying	 = 2,
+		CarryingIdle = 3,
+		Building	 = 4,
+		Repairing	 = 5
+>>>>>>> 2d2332808c8e6d31b0e4ef071e70264b15de5c8f
 	}
 
 	public int forceToExtract;
@@ -63,9 +71,14 @@ public class Worker : Unit
 	public bool hasResource {get; protected set;}
 	protected Resource lastResource;
 	protected bool settingWorkerNull;
+<<<<<<< HEAD
 
 	protected FactoryBase factoryChoose;
 	protected FactoryBase lastFactory;
+=======
+	
+	protected FactoryBase factoryChoose, lastFactory;
+>>>>>>> 2d2332808c8e6d31b0e4ef071e70264b15de5c8f
 	protected bool movingToFactory;
 
 	public override void Init ()
@@ -189,7 +202,7 @@ public class Worker : Unit
 			case WorkerState.Building:
 			case WorkerState.Repairing:
 				if (factoryChoose == null ||
-						factoryChoose != lastFactory)
+					factoryChoose != lastFactory)
 				{
 					// Patch para tirar travada ¬¬
 					Move (transform.position - transform.forward);
@@ -297,11 +310,11 @@ public class Worker : Unit
 		switch (workerState)
 		{
 			case WorkerState.Carrying:
-				if (resourceWorker[resourceId].workerAnimation.Carrying)
+				if (IsVisible)
 				{
-					ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying);
-					if (IsVisible)
+					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
+						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
 					}
@@ -309,11 +322,11 @@ public class Worker : Unit
 				break;
 
 			case WorkerState.CarryingIdle:
-				if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
+				if (IsVisible)
 				{
-					ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
-					if (IsVisible)
+					if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
 					{
+						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
 					}
@@ -321,24 +334,26 @@ public class Worker : Unit
 				break;
 
 			case WorkerState.Extracting:
-				if (resourceWorker[resourceId].workerAnimation.Extracting)
+				if (IsVisible)
 				{
-					ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting);
-					if (IsVisible)
+					if (resourceWorker[resourceId].workerAnimation.Extracting)
 					{
+						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting);
 						resourceWorker[resourceId].extractingObject.SetActive (true);
+						resourceWorker[resourceId].carryingObject.SetActive (false);
 					}
 				}
 				break;
 
 			case WorkerState.Building:
 			case WorkerState.Repairing:
-				if (resourceWorker[0].workerAnimation.Extracting)
+				if (IsVisible)
 				{
-					ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting);
-					if (IsVisible)
+					if (resourceWorker[0].workerAnimation.Extracting)
 					{
+						ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting);
 						resourceWorker[0].extractingObject.SetActive (true);
+						if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
 					}
 				}
 				break;
@@ -498,6 +513,7 @@ public class Worker : Unit
 	public void SetMoveToFactory (FactoryBase factory)
 	{
 		factoryChoose = factory;
+		
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
@@ -511,10 +527,10 @@ public class Worker : Unit
 
 	void SetMoveToFactory (Resource.Type resourceType)
 	{
-		//		if (factoryChoose == null) SearchFactory (resourceType);
-
-		SearchFactory (resourceType);
-
+		if (factoryChoose == null) SearchFactory (resourceType);
+		
+//		SearchFactory (resourceType);
+		
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
@@ -524,10 +540,10 @@ public class Worker : Unit
 
 	void SetMoveToFactory (System.Type type)
 	{
-		//		if (factoryChoose == null) SearchFactory (type);
-
-		SearchFactory (type);
-
+		if (factoryChoose == null) SearchFactory (type);
+		
+//		SearchFactory (type);
+		
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
@@ -543,7 +559,7 @@ public class Worker : Unit
 		{
 			if (gameplayManager.IsSameTeam (fb))
 			{
-				if (fb.receiveResouce == resourceType)
+				if (fb.receiveResource == resourceType)
 				{
 					CheckFactory (fb);
 				}
@@ -606,6 +622,12 @@ public class Worker : Unit
 					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Repairing;
 				}
+				
+				lastFactory = factoryChoose;
+			}
+			else
+			{
+				Move (factoryChoose.transform.position);
 			}
 		}
 	}

@@ -38,7 +38,7 @@ public class FactoryBase : IStats
 
 	public Transform waypoint;
 
-	public Resource.Type receiveResouce;
+	public Resource.Type receiveResource;
 	
 	public BuildingObjects buildingObjects;
 	
@@ -267,7 +267,11 @@ public class FactoryBase : IStats
 		
 		if (levelConstruct == MaxHealth)
 		{
-			wasBuilt = true;
+			if (!wasBuilt)
+			{
+				wasBuilt = true;
+				SendMessage ("ConstructFinished");
+			}
 			return false;
 		}
 		else
