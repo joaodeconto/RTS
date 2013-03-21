@@ -153,7 +153,7 @@ public class Unit : IStats
 
 	void Update ()
 	{
-		IAStep ();
+		if (unitState != UnitState.Die) IAStep ();
 	}
 
 	void OnDestroy ()
@@ -270,6 +270,11 @@ public class Unit : IStats
 		case UnitState.Attack:
 			if (unitAnimation.Attack)
 				ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
+
+			break;
+		case UnitState.Die:
+			if (unitAnimation.DieAnimation)
+				ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
 
 			break;
 		}
@@ -467,22 +472,39 @@ public class Unit : IStats
 
 		if (unitAnimation.Attack)
 		{
-			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
-			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
-
-			if (!PhotonNetwork.offlineMode)
-			{
-				if (targetAttack.GetComponent<Unit>())
-					photonView.RPC ("AttackUnit", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
-				else if (targetAttack.GetComponent<FactoryBase>())
-					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
-			}
+//			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
+//			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
+//
+//			if (!PhotonNetwork.offlineMode)
+//			{
+//				if (targetAttack.GetComponent<Unit>())
+//					photonView.RPC ("AttackUnit", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
+//				else if (targetAttack.GetComponent<FactoryBase>())
+//					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
+//			}
 
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 
 			IsAttacking = true;
+
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
+
 			IsAttacking = false;
+
+			if (targetAttack == null) return false;
+
+			if (!PhotonNetwork.offlineMode)
+			{
+				if (targetAttack.GetComponent<Unit>())
+					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
+				else if (targetAttack.GetComponent<FactoryBase>())
+					photonView.RPC ("AttackFactory", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+			}
+			else
+			{
+				if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
+				else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
+			}
 		}
 		else
 		{
@@ -502,7 +524,7 @@ public class Unit : IStats
 					if (targetAttack.GetComponent<Unit>())
 						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 					else if (targetAttack.GetComponent<FactoryBase>())
-						photonView.RPC ("AttackFactory", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
+						photonView.RPC ("AttackFactory", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 				}
 
 				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -757,9 +779,11 @@ public class Unit : IStats
 		}
 	}
 
-	private IEnumerator OnDie ()
+	public virtual IEnumerator OnDie ()
 	{
 		IsDead = true;
+
+		unitState = UnitState.Die;
 
 		if (CharSound != null)
 		{

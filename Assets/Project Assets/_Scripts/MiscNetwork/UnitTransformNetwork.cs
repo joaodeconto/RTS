@@ -11,7 +11,7 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 		Init ();
 	}
 	
-    public void Init ()
+    public virtual void Init ()
     {
 		if (PhotonNetwork.offlineMode)
 		{
@@ -28,21 +28,21 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 		}
     }
 
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
+		if (stream.isWriting)
         {
             //We own this player: send the others our data
-            stream.SendNext((int)unitScript.unitState);
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
+            stream.SendNext ((int)unitScript.unitState);
+            stream.SendNext (transform.position);
+            stream.SendNext (transform.rotation);
         }
         else
         {
             //Network player, receive data
-            unitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext();
-            correctPlayerPos = (Vector3)stream.ReceiveNext();
-            correctPlayerRot = (Quaternion)stream.ReceiveNext();
+            unitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
+            correctPlayerPos = (Vector3)stream.ReceiveNext ();
+            correctPlayerRot = (Quaternion)stream.ReceiveNext ();
         }
     }
 

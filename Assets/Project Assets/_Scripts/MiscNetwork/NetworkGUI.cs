@@ -7,6 +7,7 @@ using System.Linq;
 public class NetworkGUI : Photon.MonoBehaviour {
 	
 	public string playerName = "";
+	public bool automaticTestConnect;
 	
 	protected bool checkingStatus = false;
 	
@@ -37,6 +38,20 @@ public class NetworkGUI : Photon.MonoBehaviour {
 									PhotonNetwork.PhotonServerSettings.ServerPort,
 									PhotonNetwork.PhotonServerSettings.AppID,
 									ConfigurationData.VERSION);
+		}
+		
+		if (automaticTestConnect)
+		{
+			if (PhotonNetwork.connectionStateDetailed == PeerState.JoinedLobby)
+			{
+				playerName = "Tester";
+				
+				CreateTestRoom ();
+			}
+			else if (PhotonNetwork.connectionStateDetailed == PeerState.Connecting)
+			{
+				CurrentGUI = CheckingStatusGUI;
+			}
 		}
 		
 		if (PhotonNetwork.room == null &&
@@ -408,6 +423,11 @@ public class NetworkGUI : Photon.MonoBehaviour {
 	public void JoinRoom (string roomName)
 	{
 		PhotonNetwork.JoinRoom (roomName);
+	}
+	
+	public void CreateTestRoom ()
+	{
+		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1), true, true, 1);
 	}
 	
 	public void CreateRoom (string roomName, bool isVisible, bool isOpen, int maxPlayers)

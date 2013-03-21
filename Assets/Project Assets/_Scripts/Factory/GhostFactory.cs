@@ -7,15 +7,24 @@ public class GhostFactory : MonoBehaviour
 	protected Worker worker;
 	protected TouchController touchController;
 	protected FogOfWar fogOfWar;
+	protected GameplayManager gameplayManager;
+	
+	protected FactoryBase thisFactory;
+	protected GameObject overdrawModel;
+	protected int numberOfCollisions = 0;
 	
 	public void Init (Worker worker)
 	{
 		this.worker = worker;
 		worker.Deselect ();
-		GetComponent<FactoryBase>().Instance (worker.Team);
+		
+		thisFactory = GetComponent<FactoryBase>();
+		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.AllBuffered, worker.Team);
+		
+		ComponentGetter.Get<InteractionController> ().enabled = false;
 		ComponentGetter.Get<SelectionController> ().enabled = false;
-		ComponentGetter.Get<FactoryController> ().RemoveFactory (GetComponent<FactoryBase> ());
 		fogOfWar = ComponentGetter.Get<FogOfWar> ();
+		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		touchController = ComponentGetter.Get<TouchController> ();
 		
 		touchController.DisableDragOn = true;
@@ -26,6 +35,8 @@ public class GhostFactory : MonoBehaviour
 		rigidbody.isKinematic = true;
 		
 		if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = false;
+		
+		SetOverdraw (worker.Team);
 	}
 	
 	void Update ()
@@ -45,24 +56,34 @@ public class GhostFactory : MonoBehaviour
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id0)
 			{
-				if (i == 0 && fogOfWar.IsVisitedPosition (transform))
+				if (numberOfCollisions == 0 && fogOfWar.IsVisitedPosition (transform))
 				{
 					Apply ();
 				}
 				else
 				{
-					Debug.Log (i);
+					Debug.Log (numberOfCollisions);
 				}
+			}
+			else
+			{
+				ComponentGetter.Get<SelectionController> ().enabled = true;
+				ComponentGetter.Get<InteractionController> ().enabled = true;
+				PhotonNetwork.Destroy (gameObject);
 			}
 		}
 	}
 	
-	int i = 0;
 	void OnTriggerEnter (Collider other)
 	{
 		if (!other.name.Equals ("Terrain"))
 		{
-			i++;
+			numberOfCollisions++;
+		}
+		
+		if (numberOfCollisions == 1)
+		{
+			SetColorOverdraw (new Color (0.25f, 0f, 0f));
 		}
 	}
 	
@@ -70,22 +91,91 @@ public class GhostFactory : MonoBehaviour
 	{
 		if (!other.name.Equals ("Terrain"))
 		{
-			i--;
+			numberOfCollisions--;
+		}
+		
+		if (numberOfCollisions == 0)
+		{
+			SetColorOverdraw (new Color (0f, 0.25f, 0f));
 		}
 	}
 	
 	void Apply ()
 	{
-		collider.isTrigger = false;
-		GetComponent<FactoryBase>().enabled = true;
-		if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
-		
-		ComponentGetter.Get<FactoryController> ().AddFactory (GetComponent<FactoryBase> ());
+		bool canBuy = true;
+		foreach (Worker.FactoryConstruction fc in worker.factoryConstruction)
+		{
+			if (thisFactory == fc.factory)
+			{
+				canBuy = gameplayManager.resources.CanBuy (fc.costOfResources);
+				break;
+			}
+		}
+
 		ComponentGetter.Get<SelectionController> ().enabled = true;
+		ComponentGetter.Get<InteractionController> ().enabled = true;
 		
-		worker.SetMoveToFactory (GetComponent<FactoryBase> ());
+		if (canBuy)
+		{
+			collider.isTrigger = false;
+			thisFactory.enabled = true;
+			
+			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
+			
+			thisFactory.photonView.RPC ("Instance", PhotonTargets.AllBuffered);
+			
+			worker.SetMoveToFactory (thisFactory);
+			TroopController troopController = ComponentGetter.Get<TroopController> ();
+			foreach (Unit unit in troopController.selectedSoldiers)
+			{
+				if (unit.GetType() == typeof(Worker))
+				{
+					Worker otherWorker = unit as Worker;
+					otherWorker.SetMoveToFactory (thisFactory);
+				}
+			}
+			
+			DestroyOverdrawModel ();
+			
+			Destroy(rigidbody);
+			Destroy(this);
+		}
+		else
+		{
+			PhotonNetwork.Destroy (gameObject);
+		}
+	}
+	
+	void SetOverdraw (int teamId)
+	{
+		overdrawModel = Instantiate (thisFactory.model, thisFactory.model.transform.position, thisFactory.model.transform.rotation) as GameObject;
+		overdrawModel.transform.parent = thisFactory.model.transform.parent;
+		thisFactory.model.SetActive (false);
 		
-		Destroy(rigidbody);
-		Destroy(this);
+		foreach (Renderer r in overdrawModel.GetComponentsInChildren<Renderer>())
+		{
+			foreach (Material m in r.materials)
+			{
+				m.shader = Shader.Find ("Overdraw");
+				m.color = new Color (0f, 0.25f, 0f);
+			}
+		}
+	}
+	
+	void SetColorOverdraw (Color color)
+	{
+		foreach (Renderer r in overdrawModel.GetComponentsInChildren<Renderer>())
+		{
+			foreach (Material m in r.materials)
+			{
+				m.color = color;
+			}
+		}
+	}
+	
+	void DestroyOverdrawModel ()
+	{
+		thisFactory.model.SetActive (true);
+		Destroy (overdrawModel);
 	}
 }

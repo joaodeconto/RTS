@@ -80,47 +80,47 @@ public class InteractionController : MonoBehaviour
 			}
 			else
 			{
-				if (hit.GetComponent<MainFactory>() != null)
+				foreach (Unit unit in troopController.selectedSoldiers)
 				{
-					foreach (Unit unit in troopController.selectedSoldiers)
+					if (unit.GetType() == typeof(Worker))
 					{
-						if (unit.GetType() == typeof(Worker))
+						Worker worker = unit as Worker;
+						FactoryBase factory = hit.GetComponent<FactoryBase>();
+
+						if (!factory.wasBuilt)
 						{
-							Worker worker = unit as Worker;
-							if (worker.hasResource)
+							worker.SetMoveToFactory(factory);
+						}
+						else if (worker.hasResource)
+						{
+							if (factory.receiveResouce == worker.resource.type)
 							{
-								worker.SetMoveToFactory(hit.GetComponent<FactoryBase>());
+								worker.SetMoveToFactory(factory);
+							}
+							else if (hit.GetComponent<MainFactory>() != null)
+							{
+								worker.SetMoveToFactory(factory);
 							}
 						}
-					}
-				}
-				else
-				{
-					Debug.Log ("HERE");
-					foreach (Unit unit in troopController.selectedSoldiers)
-					{
-						if (unit.GetType() == typeof(Worker))
+						else if (factory.IsNeededRepair)
 						{
-							Worker worker = unit as Worker;
-							FactoryBase factory = hit.GetComponent<FactoryBase>();
-
-							if (!factory.wasBuilt)
-							{
-								worker.SetMoveToFactory(hit.GetComponent<FactoryBase>());
-							}
+							worker.SetMoveToFactory(factory);
 						}
 					}
 				}
 			}
 			return;
 		}
-		if (hit.CompareTag ("Unit"))
+		else
 		{
-			if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
+			foreach (Unit unit in troopController.selectedSoldiers)
 			{
-				troopController.AttackTroop (hit.gameObject);
+				if (unit.GetType() == typeof(Worker))
+				{
+					Worker worker = unit as Worker;
+					worker.SetMoveToFactory (null);
+				}
 			}
-			return;
 		}
 
 		if (hit.GetComponent<Resource> () != null)
@@ -150,6 +150,15 @@ public class InteractionController : MonoBehaviour
 					}
 				}
 			}
+		}
+
+		if (hit.CompareTag ("Unit"))
+		{
+			if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
+			{
+				troopController.AttackTroop (hit.gameObject);
+			}
+			return;
 		}
 
 		troopController.MoveTroop (touchController.GetFinalPoint);

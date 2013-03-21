@@ -84,14 +84,13 @@ public class HUDController : MonoBehaviour
 												DefaultCallbackButton.OnDragDelegate onDrag = null,
 												DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-
-		if(ht == null)
+		if (ht == null)
 			ht = new Hashtable();
 
 		if(!string.IsNullOrEmpty(textureName))
 			ht["textureName"] = textureName;
 
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 		mq.AddMessageInfo ( buttonName, ht,
 							onClick, onPress, onDrag, onDrop);
 	}

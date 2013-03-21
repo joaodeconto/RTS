@@ -37,7 +37,8 @@ public class Resource : Photon.MonoBehaviour
 
 	public enum Type
 	{
-		Rock
+		Rock,
+		None
 	}
 	
 	public Type type;
@@ -73,14 +74,14 @@ public class Resource : Photon.MonoBehaviour
 			if (numberOfResources - worker.numberMaxGetResources <= 0)
 			{
 				DiscountResources (worker.numberMaxGetResources);
-				//if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
-				Destroy (gameObject);
+				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
+				else Destroy (gameObject);
 				worker.GetResource (numberOfResources);
 			}
 			else
 			{
 				DiscountResources (worker.numberMaxGetResources);
-				//if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
+				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
 				
 				worker.GetResource ();
 			}
@@ -94,23 +95,6 @@ public class Resource : Photon.MonoBehaviour
 		numberOfResources = Mathf.Max (0, numberOfResources - numberMaxGetResources);
 		if (numberOfResources == 0) Destroy (gameObject);
 	}
-	
-	#region OldCode
-	private bool SetWorker (Worker worker)
-	{
-//		if (worker == null)
-//		{
-//			if (this.worker == null) return false;
-//		}
-//		else
-//		{
-//			if (this.worker != null) return false;
-//		}
-//		
-//		this.worker = worker;
-		return true;
-	}
-	#endregion
 	
 	public bool AddWorker (Worker worker)
 	{
@@ -131,7 +115,6 @@ public class Resource : Photon.MonoBehaviour
 	
 	public bool RemoveWorker (Worker worker)
 	{
-		
 		if (WorkersResistance.ContainsKey (worker))
 		{
 			WorkersResistance.Remove (worker);

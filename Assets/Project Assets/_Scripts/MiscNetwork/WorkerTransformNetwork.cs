@@ -1,17 +1,16 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(PhotonView))]
 public class WorkerTransformNetwork : Photon.MonoBehaviour
 {
     Worker workerScript;
 	
-	void Awake ()
+    void Awake ()
 	{
 		Init ();
 	}
 	
-    public void Init ()
+    public virtual void Init ()
     {
 		if (PhotonNetwork.offlineMode)
 		{
@@ -28,27 +27,27 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 		}
     }
 
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.isWriting)
+	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
+	{
+		if (stream.isWriting)
         {
             //We own this player: send the others our data
-            stream.SendNext((int)workerScript.unitState);
-            stream.SendNext((int)workerScript.workerState);
-            stream.SendNext(workerScript.resourceId);
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation); 
+            stream.SendNext ((int)workerScript.unitState);
+            stream.SendNext (transform.position);
+            stream.SendNext (transform.rotation);
+            stream.SendNext ((int)workerScript.workerState);
+            stream.SendNext (workerScript.resourceId);
         }
         else
         {
             //Network player, receive data
-            workerScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext();
+            workerScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
+            correctPlayerPos = (Vector3)stream.ReceiveNext ();
+            correctPlayerRot = (Quaternion)stream.ReceiveNext ();
             workerScript.workerState = (Worker.WorkerState)(int)stream.ReceiveNext();
             workerScript.resourceId = (int)stream.ReceiveNext();
-            correctPlayerPos = (Vector3)stream.ReceiveNext();
-            correctPlayerRot = (Quaternion)stream.ReceiveNext();
         }
-    }
+	}
 
     private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
     private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this
