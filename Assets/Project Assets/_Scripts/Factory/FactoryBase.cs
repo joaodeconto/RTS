@@ -121,7 +121,8 @@ public class FactoryBase : IStats
 		SyncAnimation ();
 
 		if (!wasBuilt ||
-			listedToCreate.Count == 0) return;
+			listedToCreate.Count == 0 ||
+			gameplayManager.IsLimitMaxUnits ()) return;
 
 		if (unitToCreate == null)
 		{
@@ -270,7 +271,7 @@ public class FactoryBase : IStats
 			if (!wasBuilt)
 			{
 				wasBuilt = true;
-				SendMessage ("ConstructFinished");
+				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}
 			return false;
 		}

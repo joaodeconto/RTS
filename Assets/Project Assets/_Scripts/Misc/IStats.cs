@@ -157,11 +157,14 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	public void ReceiveAttack (int Damage)
 	{
-		if (Health == -1) return;
-
-		int newDamage = Mathf.Max (0, Damage - Defense);
-
-		Health = Mathf.Max (0, Health - newDamage);
+		Debug.Log (Health);
+		
+		if (Health != 0)
+		{
+			int newDamage = Mathf.Max (0, Damage - Defense);
+	
+			Health = Mathf.Max (0, Health - newDamage);
+		}
 
 		if (Health == 0)
 		{
@@ -169,7 +172,6 @@ public abstract class IStats : Photon.MonoBehaviour
 			IsRemoved = true;
 
 			SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
-			Health = -1;
 		}
 	}
 
