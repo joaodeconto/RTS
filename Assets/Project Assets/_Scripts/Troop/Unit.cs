@@ -60,7 +60,7 @@ public class Unit : IStats
 
 	public Animation ControllerAnimation;
 	public int TypeSoundId { get; protected set; }
-	public CharacterSound CharSound { get; protected set; }
+	public SoundManager CharSound { get; protected set; }
 
 	private bool canHit;
 	public bool CanHit
