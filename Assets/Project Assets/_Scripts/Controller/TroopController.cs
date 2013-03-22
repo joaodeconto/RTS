@@ -185,22 +185,22 @@ public class TroopController : MonoBehaviour
 
 			foreach (Unit soldier in selectedSoldiers)
 			{
-				if (soldier.Group != numberGroup)
+				if (soldier.Group == numberGroup)
+					continue;
+
+				if (soldier.Group != -1)
 				{
-					if (soldier.Group != -1)
+					foreach (int key in troopGroups.Keys)
 					{
-						foreach (int key in troopGroups.Keys)
+						if (key == soldier.Group)
 						{
-							if (key == soldier.Group)
-							{
-								troopGroups[key].Remove (soldier);
-							}
-							break;
+							troopGroups[key].Remove (soldier);
 						}
+						break;
 					}
-					soldier.Group = numberGroup;
-					troopGroups[numberGroup].Add (soldier);
 				}
+				soldier.Group = numberGroup;
+				troopGroups[numberGroup].Add (soldier);
 			}
 		}
 		else VDebug.LogError ("Hasn't unit selected.");

@@ -62,6 +62,7 @@ public class Worker : Unit
 	public bool hasResource {get; protected set;}
 	protected Resource lastResource;
 	protected bool settingWorkerNull;
+
 	
 	protected FactoryBase factoryChoose, lastFactory;
 	protected bool movingToFactory;
