@@ -68,8 +68,6 @@ public abstract class IStats : Photon.MonoBehaviour
 	{
 		public string name;
 		public string spriteName;
-		public int gridXIndex;
-		public int gridYIndex;
 		public GridItemAttributes gridItemAttributes;
 	}
 
@@ -158,11 +156,11 @@ public abstract class IStats : Photon.MonoBehaviour
 	public void ReceiveAttack (int Damage)
 	{
 		Debug.Log (Health);
-		
+
 		if (Health != 0)
 		{
 			int newDamage = Mathf.Max (0, Damage - Defense);
-	
+
 			Health = Mathf.Max (0, Health - newDamage);
 		}
 
