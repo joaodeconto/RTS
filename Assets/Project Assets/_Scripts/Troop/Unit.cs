@@ -571,6 +571,7 @@ public class Unit : IStats
 															troopController.DeselectAllSoldiers();
 															troopController.SelectSoldier(this, true);
 														});
+
 		Hashtable ht;
 		foreach (MovementAction ma in movementActions)
 		{
@@ -578,7 +579,7 @@ public class Unit : IStats
 			ht["actionType"] = ma.actionType;
 
 			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
-													ma.buttonAttributes.position,
+													ma.buttonAttributes.gridItemAttributes.Position,
 													ht,
 													ma.buttonAttributes.spriteName,
 													(ht_hud) =>

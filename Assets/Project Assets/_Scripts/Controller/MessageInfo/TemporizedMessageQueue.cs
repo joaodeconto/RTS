@@ -11,6 +11,8 @@ public class TemporizedMessageQueue : MessageQueue
 										 string queueName,
 										 Vector2 rootPosition,
 										 Vector2 cellSize,
+										 Vector2 padding,
+										 float labelSize,
 										 bool IsVerticalQueue,
 										 float timeToFadeout,
 										 Color fadeColor,
@@ -24,30 +26,38 @@ public class TemporizedMessageQueue : MessageQueue
 		this.IsVerticalQueue = IsVerticalQueue;
 		this.MaxPerLine      = maxPerLine;
 		this.MaxItems        = maxItems;
+		this.LabelSize       = labelSize;
+
+		this.timeToFadeout = timeToFadeout;
+		this.fadeColor     = fadeColor;
 
 		this.uiGrid = uiGrid;
 
-		this.uiGrid.cellWidth  = cellSize.x;
-		this.uiGrid.cellHeight = cellSize.y;
+		this.uiGrid.cellWidth  = cellSize.x + padding.x;
+		this.uiGrid.cellHeight = cellSize.y + padding.y;
 		this.uiGrid.maxPerLine = maxPerLine;
-		this.uiGrid.sorted = true;
+		this.uiGrid.sorted       = true;
+		this.uiGrid.hideInactive = false;
 
 		this.uiGrid.arrangement = (IsVerticalQueue) ?
-										UIGrid.Arrangement.Vertical :
-										UIGrid.Arrangement.Horizontal;
+									UIGrid.Arrangement.Vertical :
+									UIGrid.Arrangement.Horizontal;
+
 		return this;
 	}
 
-	public void AddMessageInfo( string buttonName,
-								Hashtable ht,
-								DefaultCallbackButton.OnClickDelegate onClick = null,
-								DefaultCallbackButton.OnPressDelegate onPress = null,
-								DefaultCallbackButton.OnDragDelegate onDrag = null,
-								DefaultCallbackButton.OnDropDelegate onDrop = null)
+	public override void AddMessageInfo(string buttonName,
+										Hashtable ht,
+										DefaultCallbackButton.OnClickDelegate onClick = null,
+										DefaultCallbackButton.OnPressDelegate onPress = null,
+										DefaultCallbackButton.OnDragDelegate onDrag = null,
+										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
+		Debug.Log("chegou AddMessageInfo");
 		if(IsEmpty())
 		{
 			Invoke ("CleanFirstMessage", timeToFadeout);
+			Debug.Log("teste");
 		}
 
 		base.AddMessageInfo (buttonName, ht, onClick, onPress, onDrag, onDrop);
