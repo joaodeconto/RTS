@@ -32,6 +32,20 @@ public class HUDController : MonoBehaviour
 	public Transform trnsOptionsMenu;
 	public GameObject pref_button;
 
+	public UISlider[] sliders;
+
+	public UISlider GetSlider(string name)
+	{
+		foreach(UISlider slider in sliders)
+		{
+			if(slider.name.ToLower().Equals(name.ToLower()))
+			{
+				return slider;
+			}
+		}
+		return null;
+	}
+
 	public GridDefinition[] grids;
 
 	public GridDefinition GetGrid(string name)

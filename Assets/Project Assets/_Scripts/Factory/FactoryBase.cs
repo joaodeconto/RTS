@@ -62,8 +62,9 @@ public class FactoryBase : IStats
 
 	protected FactoryController factoryController;
 	protected HUDController hudController;
-//	protected EventManager eventManager;
+	protected EventManager eventManager;
 	protected HealthBar healthBar;
+	protected UISlider buildingSlider;
 
 	public bool wasVisible = false;
 
@@ -89,8 +90,10 @@ public class FactoryBase : IStats
 		timer = 0;
 
 		hudController     = ComponentGetter.Get<HUDController> ();
-//		eventManager      = ComponentGetter.Get<EventManager> ();
+		eventManager      = ComponentGetter.Get<EventManager> ();
 		factoryController = ComponentGetter.Get<FactoryController> ();
+		buildingSlider    = hudController.GetSlider("Building Unit");
+		buildingSlider.gameObject.SetActive(false);
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -103,13 +106,13 @@ public class FactoryBase : IStats
 
 		playerUnit = gameplayManager.IsSameTeam (this);
 
-		this.gameObject.tag = "Factory";
+		this.gameObject.tag   = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
 		factoryController.AddFactory (this);
 
 		inUpgrade = false;
-		wasBuilt = true;
+		wasBuilt  = true;
 
 		buildingState = BuildingState.Finished;
 
@@ -149,6 +152,7 @@ public class FactoryBase : IStats
 			else
 			{
 				timer += Time.deltaTime;
+				buildingSlider.sliderValue = (timer / timeToCreate);
 			}
 		}
 	}
@@ -158,17 +162,17 @@ public class FactoryBase : IStats
 		if (!IsRemoved && !playerUnit) factoryController.factorys.Remove (this);
 	}
 
-	void OnGUI ()
-	{
-		if (Selected)
-		{
-			if (inUpgrade)
-			{
-				GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100, 25), "");
-				GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100 * (timer / timeToCreate), 25), "");
-			}
-		}
-	}
+	//void OnGUI ()
+	//{
+		//if (Selected)
+		//{
+			//if (inUpgrade)
+			//{
+				//GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100, 25), "");
+				//GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100 * (timer / timeToCreate), 25), "");
+			//}
+		//}
+	//}
 
 	public virtual void SyncAnimation ()
 	{
@@ -181,6 +185,8 @@ public class FactoryBase : IStats
 
 	void InvokeUnit (Unit unit)
 	{
+		buildingSlider.gameObject.SetActive(false);
+
 		listedToCreate.RemoveAt (0);
 
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
@@ -304,6 +310,9 @@ public class FactoryBase : IStats
 		if (!Selected) Selected = true;
 		else return;
 
+		if(unitToCreate != null)
+			buildingSlider.gameObject.SetActiveRecursively(true);
+
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 
@@ -331,8 +340,12 @@ public class FactoryBase : IStats
 															FactoryBase factory = this;
 															Unit unit           = (Unit)ht_hud["unit"];
 
+															buildingSlider.gameObject.SetActiveRecursively(true);
+
 															if (!factory.OverLimitCreateUnit)
 																factory.EnqueueUnitToCreate (unit);
+															else
+																;//TODO enviar mensagem
 														});
 			}
 
@@ -361,6 +374,8 @@ public class FactoryBase : IStats
 
 	public bool Deselect (bool isGroupDelesection = false)
 	{
+		buildingSlider.gameObject.SetActive(false);
+
 		if (Selected) Selected = false;
 		else return false;
 
