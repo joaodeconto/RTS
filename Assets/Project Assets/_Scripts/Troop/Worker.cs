@@ -429,7 +429,6 @@ public class Worker : Unit
 	{
 		foreach (FactoryConstruction fc in factoryConstruction)
 		{
-			Debug.Log ("FactoryConstruction: " + fc.factory.GetType () + " - " + factory.GetType ());
 			if (factory.GetType () == fc.factory.GetType ())
 			{
 				return gameplayManager.resources.CanBuy (fc.costOfResources);
