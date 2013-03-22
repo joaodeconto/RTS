@@ -18,11 +18,13 @@ public abstract class IStats : Photon.MonoBehaviour
 			MeshRenderer[] renderers = transform.GetComponentsInChildren<MeshRenderer>();
 			for (int i = 0; i != renderers.Length; i++)
 			{
-				for (int k = 0; k != renderers[i].materials.Length; k++)
+				Material[] materials = renderers[i].materials;
+				for (int k = 0; k != materials.Length; k++)
 				{
-					if (renderers[i].materials[k].name.Equals (materialToApplyColor.name + " (Instance)"))
+					Material m = materials[k];
+					if (m.name.Equals (materialToApplyColor.name + " (Instance)"))
 					{
-						renderers[i].materials[k].color = teamColor;
+						m.color = teamColor;
 					}
 				}
 			}
@@ -30,13 +32,33 @@ public abstract class IStats : Photon.MonoBehaviour
 			SkinnedMeshRenderer[] skinnedMeshRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>();
 			for (int i = 0; i != skinnedMeshRenderers.Length; i++)
 			{
-				for (int k = 0; k != skinnedMeshRenderers[i].materials.Length; k++)
+				Material[] materials = skinnedMeshRenderers[i].materials;
+				for (int k = 0; k != materials.Length; k++)
 				{
-					if (skinnedMeshRenderers[i].materials[k].name.Equals (materialToApplyColor.name + " (Instance)"))
+					Material m = materials[k];
+					if (m.name.Equals (materialToApplyColor.name + " (Instance)"))
 					{
-						skinnedMeshRenderers[i].materials[k].color = teamColor;
+						m.color = teamColor;
 					}
 				}
+			}
+		}
+	}
+
+	[System.Serializable]
+	public class GridItemAttributes
+	{
+		public int gridXIndex;
+		public int gridYIndex;
+		public Vector3 Position
+		{
+			get
+			{
+				return ComponentGetter
+							.Get<HUDController>()
+								.GetGrid("actions")
+									.GetGridPosition(gridXIndex, gridYIndex);
+
 			}
 		}
 	}
@@ -46,7 +68,9 @@ public abstract class IStats : Photon.MonoBehaviour
 	{
 		public string name;
 		public string spriteName;
-		public Vector2 position;
+		public int gridXIndex;
+		public int gridYIndex;
+		public GridItemAttributes gridItemAttributes;
 	}
 
 	[System.Serializable]
