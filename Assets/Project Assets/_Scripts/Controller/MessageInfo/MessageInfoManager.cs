@@ -17,6 +17,8 @@ public class MessageInfoManager : MonoBehaviour
 		public string queueName;
 		public Vector2 rootPosition;
 		public Vector2 cellSize;
+		public Vector2 padding;
+		public float labelSize;
 		public bool IsVerticalQueue;
 		public int maxPerLine;
 		public int maxItems;
@@ -55,18 +57,23 @@ public class MessageInfoManager : MonoBehaviour
 						 messageQueuesAttributes[i].queueName,
 						 messageQueuesAttributes[i].rootPosition,
 						 messageQueuesAttributes[i].cellSize,
+						 messageQueuesAttributes[i].padding,
+						 messageQueuesAttributes[i].labelSize,
 						 messageQueuesAttributes[i].IsVerticalQueue,
 						 messageQueuesAttributes[i].maxPerLine,
 						 messageQueuesAttributes[i].maxItems);
 			}
 			else
 			{
+				Debug.Log("hmm");
 				messageQueues[i] = transformPanelMenu.gameObject.AddComponent<TemporizedMessageQueue>();
 				TemporizedMessageQueue tmq = (TemporizedMessageQueue)(messageQueues[i]);
 				tmq.Init(pref_button, uiGrid,
 						 messageQueuesAttributes[i].queueName,
 						 messageQueuesAttributes[i].rootPosition,
 						 messageQueuesAttributes[i].cellSize,
+						 messageQueuesAttributes[i].padding,
+						 messageQueuesAttributes[i].labelSize,
 						 messageQueuesAttributes[i].IsVerticalQueue,
 						 messageQueuesAttributes[i].temporizedQueueAttributes.timeToFadeout,
 						 messageQueuesAttributes[i].temporizedQueueAttributes.fadeColor,

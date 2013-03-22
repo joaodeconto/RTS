@@ -43,7 +43,6 @@ public class FactoryBase : IStats
 	public BuildingObjects buildingObjects;
 
 	public string guiTextureName;
-	public string unitCreatedEventMessage;
 
 	public BuildingState buildingState { get; set; }
 	protected int levelConstruct;
@@ -191,18 +190,26 @@ public class FactoryBase : IStats
 
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 
-//		string unitName = "";
-//
-//		foreach(UnitFactory uf in unitsToCreate)
-//		{
-//			if(uf.unit == unit)
-//			{
-//				unitName = uf.buttonName;
-//				break;
-//			}
-//		}
-//
-//		eventManager.AddEvent(unitCreatedEventMessage + " " + unitName, unit.guiTextureName);
+		string unitName = "";
+
+		foreach(UnitFactory uf in unitsToCreate)
+		{
+			if(uf.unit == unit)
+			{
+				unitName = uf.buttonName;
+				break;
+			}
+		}
+
+		if(string.IsNullOrEmpty(unitName))
+		{
+			Debug.LogError("Eh necessario colocar um nome no UnitFactory.\nUtilizando nome padrao");
+			unitName = unit.name;
+		}
+
+		EventManager.Event e = GetEvent("create unit");
+
+		eventManager.AddEvent(string.Format(e.Message, unitName), unit.guiTextureName);
 
 		if (!hasWaypoint) return;
 

@@ -1,5 +1,8 @@
 using UnityEngine;
+
 using System.Collections;
+using System.Collections.Generic;
+
 using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour
@@ -100,6 +103,25 @@ public abstract class IStats : Photon.MonoBehaviour
 	public MovementAction[] movementActions;
 
 	public bool playerUnit;
+
+	public List<EventManager.Event> events;
+	protected EventManager.Event GetEvent(string name)
+	{
+		foreach(EventManager.Event e in events)
+		{
+			if(e.Name.Equals(name))
+				return e;
+		}
+
+		EventManager.Event newEvent = new EventManager.Event();
+
+		newEvent.Name    = name;
+		newEvent.Message = "standard message : argument => {0}";
+
+		events.Add(newEvent);
+
+		return newEvent;
+	}
 
 	public bool Selected { get; protected set; }
 	public bool IsNetworkInstantiate { get; protected set; }
