@@ -15,12 +15,13 @@ public class GameplayManager : MonoBehaviour
 {
 	public const int MAX_POPULATION_ALLOWED = 200;
 	public const int NUMBER_INCREMENT_AND_DECREMENT_UNITS = 5;
-
+	
 	public Team[] teams;
 
 	public int numberOfUnits { get; protected set; }
 	public int maxOfUnits { get; protected set; }
-
+	protected int excessHousesIncrements;
+	
 	protected Dictionary<int, int> teamNumberOfStats = new Dictionary<int, int>();
 	protected int loserTeams;
 	protected bool loseGame = false;
@@ -49,7 +50,7 @@ public class GameplayManager : MonoBehaviour
 				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
 			}
 		}
-
+		excessHousesIncrements = 0;
 		IncrementMaxOfUnits ();
 	}
 
@@ -72,33 +73,32 @@ public class GameplayManager : MonoBehaviour
 	{
 		return stats.Team == MyTeam;
 	}
-
-	public void IncrementUnit (int teamID)
+	
+	public void IncrementUnit (int teamID, int numberOfUnits)
 	{
-		if (IsSameTeam (teamID)) ++numberOfUnits;
+		if (IsSameTeam (teamID)) this.numberOfUnits += numberOfUnits;
 	}
-
-	public void DecrementUnit (int teamID)
+	
+	public void DecrementUnit (int teamID, int numberOfUnits)
 	{
-		if (IsSameTeam (teamID)) --numberOfUnits;
+		if (IsSameTeam (teamID)) this.numberOfUnits -= numberOfUnits;
 	}
 
 	public void IncrementMaxOfUnits ()
 	{
-		maxOfUnits += NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		if (!ReachedMaxPopulation) maxOfUnits += NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		else ++excessHousesIncrements;
 	}
 
 	public void DecrementMaxOfUnits ()
 	{
-		maxOfUnits -= NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		if (excessHousesIncrements == 0) maxOfUnits -= NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		else --excessHousesIncrements;
 	}
-
-	public bool NeedMoreHouses
+	
+	public bool NeedMoreHouses (int additionalUnits)
 	{
-		get
-		{
-			return (numberOfUnits >= maxOfUnits);
-		}
+		return (numberOfUnits + additionalUnits >= maxOfUnits);
 	}
 
 	public bool ReachedMaxPopulation
@@ -108,6 +108,7 @@ public class GameplayManager : MonoBehaviour
 			return (maxOfUnits >= MAX_POPULATION_ALLOWED);
 		}
 	}
+	
 	public void AddStatTeamID (int teamID)
 	{
 		if (teamNumberOfStats.ContainsKey(teamID))
