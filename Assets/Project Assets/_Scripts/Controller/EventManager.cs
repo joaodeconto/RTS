@@ -13,7 +13,7 @@ public class EventManager : MonoBehaviour
 		public string spriteName;
 	}
 
-	public List<EventManager.Event> events;
+	public List<EventManager.Event> events = new List<EventManager.Event>();
 
 	HUDController hudController;
 
