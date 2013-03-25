@@ -77,14 +77,14 @@ public class GameplayManager : MonoBehaviour
 		return factory.Team == MyTeam;
 	}
 	
-	public void IncrementUnit (int teamID)
+	public void IncrementUnit (int teamID, int numberOfUnits)
 	{
-		if (IsSameTeam (teamID)) ++numberOfUnits;
+		if (IsSameTeam (teamID)) this.numberOfUnits += numberOfUnits;
 	}
 	
-	public void DecrementUnit (int teamID)
+	public void DecrementUnit (int teamID, int numberOfUnits)
 	{
-		if (IsSameTeam (teamID)) --numberOfUnits;
+		if (IsSameTeam (teamID)) this.numberOfUnits -= numberOfUnits;
 	}
 	
 	public void IncrementMaxOfUnits ()
