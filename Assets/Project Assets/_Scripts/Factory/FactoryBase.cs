@@ -123,8 +123,9 @@ public class FactoryBase : IStats
 		SyncAnimation ();
 
 		if (!wasBuilt ||
-			listedToCreate.Count == 0 ||
-			gameplayManager.IsLimitMaxUnits ()) return;
+			listedToCreate.Count == 0) return;
+		
+		if (gameplayManager.IsLimitMaxUnits (listedToCreate[0].numberOfUnits)) return;
 
 		if (unitToCreate == null)
 		{
@@ -260,6 +261,7 @@ public class FactoryBase : IStats
 	public void Instance ()
 	{
 		factoryController.AddFactory (this);
+		ComponentGetter.Get<FogOfWar> ().RemoveEntity (transform, this);
 		buildingState = BuildingState.Base;
 		if (!gameplayManager.IsSameTeam (Team)) model.SetActive (true);
 	}
@@ -284,6 +286,7 @@ public class FactoryBase : IStats
 			if (!wasBuilt)
 			{
 				wasBuilt = true;
+				ComponentGetter.Get<FogOfWar> ().AddEntity (transform, this);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}
 			return false;

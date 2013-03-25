@@ -14,11 +14,13 @@ public class Team
 public class GameplayManager : MonoBehaviour
 {
 	public const int NUMBER_INCREMENT_AND_DECREMENT_UNITS = 5;
+	public const int MAX_INCREMENT_UNITS = 200;
 	
 	public Team[] teams;
 	
 	public int numberOfUnits { get; protected set; } 
 	public int maxOfUnits { get; protected set; }
+	protected int numberOfDecrementUnits;
 	
 	protected Dictionary<int, int> teamNumberOfStats = new Dictionary<int, int>();
 	protected int loserTeams;
@@ -49,6 +51,7 @@ public class GameplayManager : MonoBehaviour
 			}
 		}
 		
+		numberOfDecrementUnits = 0;
 		IncrementMaxOfUnits ();
 	}
 	
@@ -89,17 +92,19 @@ public class GameplayManager : MonoBehaviour
 	
 	public void IncrementMaxOfUnits ()
 	{
-		maxOfUnits += NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		if (maxOfUnits < MAX_INCREMENT_UNITS) maxOfUnits += NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		else ++numberOfDecrementUnits;
 	}
 	
 	public void DecrementMaxOfUnits ()
 	{
-		maxOfUnits -= NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		if (numberOfDecrementUnits == 0) maxOfUnits -= NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		else --numberOfDecrementUnits;
 	}
 	
-	public bool IsLimitMaxUnits ()
+	public bool IsLimitMaxUnits (int additionalUnits)
 	{
-		return numberOfUnits >= maxOfUnits;
+		return (numberOfUnits + additionalUnits) >= maxOfUnits;
 	}
 	
 	public void AddStatTeamID (int teamID)
