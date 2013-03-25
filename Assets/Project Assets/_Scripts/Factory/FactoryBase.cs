@@ -296,12 +296,8 @@ public class FactoryBase : IStats
 			if (!wasBuilt)
 			{
 				wasBuilt = true;
-<<<<<<< HEAD
 				ComponentGetter.Get<FogOfWar> ().AddEntity (transform, this);
-=======
-
 				eventManager.AddEvent("building finish", this.name, this.guiTextureName);
->>>>>>> e7882dc762161778eff394c1d082982fc2cd0fa9
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}
 			return false;
