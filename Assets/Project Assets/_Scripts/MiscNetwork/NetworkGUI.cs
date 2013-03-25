@@ -430,7 +430,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 	public void CreateTestRoom ()
 	{
-		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1), true, true, 1);
+		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1) + (Random.value * 10000), true, true, 1);
 	}
 
 	public void CreateRoom (string roomName, bool isVisible, bool isOpen, int maxPlayers)
