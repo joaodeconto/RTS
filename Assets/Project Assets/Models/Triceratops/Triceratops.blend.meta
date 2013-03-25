@@ -25,15 +25,15 @@ ModelImporter:
     100038: Neck1
     100040: Neck2
     100042: Root
-    100044: Tail1
-    100046: Tail2
-    100048: Tail3
-    100050: Tail4
-    100052: Torso
-    100054: //RootNode
-    100056: Triceratops
-    100058: Up_Spine
-    100060: Mesh_002
+    100044: Sela
+    100046: Tail1
+    100048: Tail2
+    100050: Tail3
+    100052: Tail4
+    100054: Torso
+    100056: //RootNode
+    100058: Triceratops
+    100060: Up_Spine
     400000: Armature
     400002: BFoot_L
     400004: BFoot_R
@@ -56,27 +56,28 @@ ModelImporter:
     400038: Neck1
     400040: Neck2
     400042: Root
-    400044: Tail1
-    400046: Tail2
-    400048: Tail3
-    400050: Tail4
-    400052: Torso
-    400054: //RootNode
+    400044: Sela
+    400046: Tail1
+    400048: Tail2
+    400050: Tail3
+    400052: Tail4
+    400054: Torso
     400056: Triceratops
-    400058: Up_Spine
-    400060: Mesh_002
-    4300000: Triceratops
-    4300002: Mesh_002
+    400058: //RootNode
+    400060: Up_Spine
+    4300000: Sela
+    4300002: Triceratops
     7400000: Default Take
     7400002: BrachioPoseLib_001
     7400004: Triceratops_Attack
-    7400006: Triceratops_Idle
-    7400008: Triceratops_Run
-    7400010: Triceratops_Walk
+    7400006: Triceratops_Death
+    7400008: Triceratops_Idle
+    7400010: Triceratops_Run
+    7400012: Triceratops_Walk
     9500000: //RootNode
     11100000: //RootNode
-    13700000: Triceratops
-    13700002: Mesh_002
+    13700000: Sela
+    13700002: Triceratops
   materials:
     importMaterials: 1
     materialName: 0
@@ -93,7 +94,7 @@ ModelImporter:
     - name: Default Take
       takeName: Default Take
       firstFrame: 0
-      lastFrame: 15
+      lastFrame: 60
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -108,10 +109,9 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      keepAdditionalBonesAnimation: 1
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      skeletonMaskElements: []
+      transformMask: []
     - name: BrachioPoseLib_001
       takeName: BrachioPoseLib_001
       firstFrame: 0
@@ -130,10 +130,9 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      keepAdditionalBonesAnimation: 1
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      skeletonMaskElements: []
+      transformMask: []
     - name: Triceratops_Attack
       takeName: Triceratops_Attack
       firstFrame: 1
@@ -152,10 +151,30 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      keepAdditionalBonesAnimation: 1
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      skeletonMaskElements: []
+      transformMask: []
+    - name: Triceratops_Death
+      takeName: Triceratops_Death
+      firstFrame: 1
+      lastFrame: 44
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
     - name: Triceratops_Idle
       takeName: Triceratops_Idle
       firstFrame: 1
@@ -174,14 +193,13 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      keepAdditionalBonesAnimation: 1
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      skeletonMaskElements: []
+      transformMask: []
     - name: Triceratops_Run
       takeName: Triceratops_Run
       firstFrame: 1
-      lastFrame: 15
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -196,14 +214,13 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      keepAdditionalBonesAnimation: 1
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      skeletonMaskElements: []
+      transformMask: []
     - name: Triceratops_Walk
       takeName: Triceratops_Walk
       firstFrame: 1
-      lastFrame: 19
+      lastFrame: 20
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -218,20 +235,21 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      keepAdditionalBonesAnimation: 1
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      skeletonMaskElements: []
+      transformMask: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
