@@ -29,9 +29,9 @@ public class FactoryBase : IStats
 
 	public enum BuildingState
 	{
-		Base = 0,
+		Base       = 0,
 		Unfinished = 1,
-		Finished = 2
+		Finished   = 2
 	}
 
 	public UnitFactory[] unitsToCreate;
@@ -66,10 +66,12 @@ public class FactoryBase : IStats
 	protected UISlider buildingSlider;
 
 	public bool wasVisible = false;
+	public bool alreadyCheckedMaxPopulation = false;
 
 	public bool IsNeededRepair
 	{
-		get {
+		get
+		{
 			return Health != MaxHealth;
 		}
 	}
@@ -122,10 +124,20 @@ public class FactoryBase : IStats
 	{
 		SyncAnimation ();
 
-		if (!wasBuilt ||
-			listedToCreate.Count == 0) return;
-		
-		if (gameplayManager.IsLimitMaxUnits (listedToCreate[0].numberOfUnits)) return;
+		if (!wasBuilt || listedToCreate.Count == 0)
+			return;
+
+		if (gameplayManager.NeedMoreHouses (listedToCreate[0].numberOfUnits))
+		{
+			if (!alreadyCheckedMaxPopulation)
+			{
+				alreadyCheckedMaxPopulation = true;
+				eventManager.AddEvent("reach max population");
+			}
+			return;
+		}
+		else
+			alreadyCheckedMaxPopulation = false;
 
 		if (unitToCreate == null)
 		{
@@ -208,9 +220,7 @@ public class FactoryBase : IStats
 			unitName = unit.name;
 		}
 
-		EventManager.Event e = GetEvent("create unit");
-
-		eventManager.AddEvent(string.Format(e.Message, unitName), unit.guiTextureName);
+		eventManager.AddEvent("create unit", unitName, unit.guiTextureName);
 
 		if (!hasWaypoint) return;
 
@@ -286,7 +296,12 @@ public class FactoryBase : IStats
 			if (!wasBuilt)
 			{
 				wasBuilt = true;
+<<<<<<< HEAD
 				ComponentGetter.Get<FogOfWar> ().AddEntity (transform, this);
+=======
+
+				eventManager.AddEvent("building finish", this.name, this.guiTextureName);
+>>>>>>> e7882dc762161778eff394c1d082982fc2cd0fa9
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}
 			return false;
@@ -355,7 +370,8 @@ public class FactoryBase : IStats
 															if (!factory.OverLimitCreateUnit)
 																factory.EnqueueUnitToCreate (unit);
 															else
-																;//TODO enviar mensagem
+																//TODO enviar mensagem
+																eventManager.AddEvent("reach enqueued units");
 														});
 			}
 
@@ -425,7 +441,6 @@ public class FactoryBase : IStats
 			ht["unit"] = unit;
 			ht["name"] = "button-" + Time.time;
 
-			//TODO colocar mais coisas aqui
 			hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
 															FactoryBase.FactoryQueueName,
 															ht,
@@ -437,8 +452,7 @@ public class FactoryBase : IStats
 															});
 		}
 		else
-			;//TODO mensagem para o usuário saber
-			 //que não possui recursos suficientes para criar tal unidade
+			eventManager.AddEvent("out of founds", unit.name);
 	}
 
 	private void DequeueUnit(Hashtable ht)

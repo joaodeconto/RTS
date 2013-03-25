@@ -203,9 +203,9 @@ public class Unit : IStats
 					}
 					else
 					{
-						targetAttack    = null;
 						if (followingTarget)
 						{
+							targetAttack    = null;
 							unitState       = UnitState.Idle;
 							followingTarget = false;
 						}

@@ -1,14 +1,16 @@
 using UnityEngine;
 using System.Collections;
-using Visiorama;
 
 public class CottageFactory : FactoryBase
 {
 	void ConstructFinished ()
 	{
-		gameplayManager.IncrementMaxOfUnits ();
+		if (gameplayManager.ReachedMaxPopulation)
+			eventManager.AddEvent("reach max population");
+		else
+			gameplayManager.IncrementMaxOfUnits ();
 	}
-	
+
 	void OnDie ()
 	{
 		if (wasBuilt) gameplayManager.DecrementMaxOfUnits ();
