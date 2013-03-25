@@ -99,7 +99,7 @@ public class HUDController : MonoBehaviour
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
 		refTransform.destroyObjectWhenLoseReference = true;
-		refTransform.offsetPosition += Vector3.up * 0.4f;
+		refTransform.offsetPosition += Vector3.up * 0.1f;
 
 		selectObj.renderer.sharedMaterial.color = color;
 
