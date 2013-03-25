@@ -59,7 +59,9 @@ public class SelectionController : MonoBehaviour
 					if (!gameplayManager.IsSameTeam (soldier))
 						enemySoldier = soldier;
 					else
+					{
 						troopController.SelectSoldier (soldier, true);
+					}
 				}
 				else
 					troopController.SelectSoldier (soldier, false);
@@ -67,7 +69,10 @@ public class SelectionController : MonoBehaviour
 
 			//Verificando se foram selecionadas unidades
 			if (troopController.selectedSoldiers.Count != 0)
+			{
+				troopController.PlaySelectSound ();
 				return true;
+			}
 
 			if (enemySoldier != null)
 			{
@@ -137,6 +142,7 @@ public class SelectionController : MonoBehaviour
 					{
 						troopController.DeselectAllSoldiers ();
 						troopController.SelectSoldier (selectedUnit, true);
+						troopController.PlaySelectSound ();
 					}
 				}
 				return true;
