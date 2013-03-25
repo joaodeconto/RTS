@@ -37,8 +37,8 @@ public class Resource : Photon.MonoBehaviour
 
 	public enum Type
 	{
-		Rock,
-		None
+		None,
+		Rock
 	}
 	
 	public Type type;

@@ -31,7 +31,9 @@ public class SoundManager : MonoBehaviour
 		{
 			if (index < soundsClip.Count)
 			{
-				source.PlayOneShot (soundsClip[index]);
+				if (source.isPlaying) source.Stop ();
+				source.clip = soundsClip[index];
+				source.Play ();
 			}
 			else	
 			{
