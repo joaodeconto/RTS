@@ -1,15 +1,62 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
 using Visiorama;
+using Visiorama.Utils;
 
 public class HUDController : MonoBehaviour
 {
+	[System.Serializable]
+	public class GridDefinition
+	{
+		public string name;
+		public Vector3 rootPosition;
+		public float xPadding;
+		public float yPadding;
+		public float cellSizeX;
+		public float cellSizeY;
+
+		public Vector3 GetGridPosition(int xIndex, int yIndex)
+		{
+			Vector2 vec = Math.GetGridPosition(xIndex,   yIndex,
+											   xPadding, yPadding,
+											   cellSizeX,cellSizeY);
+			return rootPosition + new Vector3(vec.x, vec.y, 0);
+		}
+	}
+
 	public GameObject healthBar;
 	public GameObject selectedObject;
 	public Transform mainTranformSelectedObjects;
 	public Transform trnsOptionsMenu;
 	public GameObject pref_button;
+
+	public UISlider[] sliders;
+
+	public UISlider GetSlider(string name)
+	{
+		foreach(UISlider slider in sliders)
+		{
+			if(slider.name.ToLower().Equals(name.ToLower()))
+			{
+				return slider;
+			}
+		}
+		return null;
+	}
+
+	public GridDefinition[] grids;
+
+	public GridDefinition GetGrid(string name)
+	{
+		foreach(GridDefinition gd in grids)
+		{
+			if(gd.name.Equals(name))
+				return gd;
+		}
+		return null;
+	}
 
 	private List<UIGrid> gridsToReposition = new List<UIGrid>();
 

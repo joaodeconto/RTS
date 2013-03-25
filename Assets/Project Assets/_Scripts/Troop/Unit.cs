@@ -60,7 +60,7 @@ public class Unit : IStats
 
 	public Animation ControllerAnimation;
 	public int TypeSoundId { get; protected set; }
-	public CharacterSound CharSound { get; protected set; }
+	public SoundManager CharSound { get; protected set; }
 
 	private bool canHit;
 	public bool CanHit
@@ -490,8 +490,13 @@ public class Unit : IStats
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
 
 			IsAttacking = false;
-
+			
 			if (targetAttack == null) return false;
+			if (targetAttack.GetComponent<IStats>().IsRemoved)
+			{
+				targetAttack = null;
+				return false;
+			}
 
 			if (!PhotonNetwork.offlineMode)
 			{
@@ -566,6 +571,7 @@ public class Unit : IStats
 															troopController.DeselectAllSoldiers();
 															troopController.SelectSoldier(this, true);
 														});
+
 		Hashtable ht;
 		foreach (MovementAction ma in movementActions)
 		{
@@ -573,7 +579,7 @@ public class Unit : IStats
 			ht["actionType"] = ma.actionType;
 
 			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
-													ma.buttonAttributes.position,
+													ma.buttonAttributes.gridItemAttributes.Position,
 													ht,
 													ma.buttonAttributes.spriteName,
 													(ht_hud) =>
@@ -785,23 +791,23 @@ public class Unit : IStats
 
 		unitState = UnitState.Die;
 
-		if (CharSound != null)
-		{
-			if (CharSound.DeathAudioSource.isPlaying)
-			{
-				if (CharSound.DeathAudioSource.clip != CharSound.deathSoundClips[TypeSoundId])
-				{
-					CharSound.DeathAudioSource.Stop ();
-					CharSound.DeathAudioSource.clip = CharSound.deathSoundClips[TypeSoundId];
-					CharSound.DeathAudioSource.Play ();
-				}
-			}
-			else
-			{
-				CharSound.DeathAudioSource.clip = CharSound.deathSoundClips[TypeSoundId];
-				CharSound.DeathAudioSource.Play ();
-			}
-		}
+//		if (CharSound != null)
+//		{
+//			if (CharSound.DeathAudioSource.isPlaying)
+//			{
+//				if (CharSound.DeathAudioSource.clip != CharSound.deathSoundClips[TypeSoundId])
+//				{
+//					CharSound.DeathAudioSource.Stop ();
+//					CharSound.DeathAudioSource.clip = CharSound.deathSoundClips[TypeSoundId];
+//					CharSound.DeathAudioSource.Play ();
+//				}
+//			}
+//			else
+//			{
+//				CharSound.DeathAudioSource.clip = CharSound.deathSoundClips[TypeSoundId];
+//				CharSound.DeathAudioSource.Play ();
+//			}
+//		}
 
 		troopController.RemoveSoldier(this);
 

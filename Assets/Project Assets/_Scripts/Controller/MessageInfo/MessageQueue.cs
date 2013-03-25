@@ -8,19 +8,20 @@ public abstract class MessageQueue : MonoBehaviour
 	public bool IsVerticalQueue;
 	public int MaxPerLine;
 	public int MaxItems;
-	public Vector2 CellSize;
+
+	public float LabelSize;
 
 	protected GameObject Pref_button;
 	protected UIGrid uiGrid;
 
 	protected float nQueueItems;
 
-	public void AddMessageInfo( string buttonName,
-								Hashtable ht,
-								DefaultCallbackButton.OnClickDelegate onClick = null,
-								DefaultCallbackButton.OnPressDelegate onPress = null,
-								DefaultCallbackButton.OnDragDelegate onDrag = null,
-								DefaultCallbackButton.OnDropDelegate onDrop = null)
+	public virtual void AddMessageInfo( string buttonName,
+										Hashtable ht,
+										DefaultCallbackButton.OnClickDelegate onClick = null,
+										DefaultCallbackButton.OnPressDelegate onPress = null,
+										DefaultCallbackButton.OnDragDelegate onDrag = null,
+										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
 		++nQueueItems;
 
@@ -29,6 +30,9 @@ public abstract class MessageQueue : MonoBehaviour
 
 		button.name  = buttonName;
 		button.layer = gameObject.layer;
+		button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
+		button.transform.FindChild("Background").localScale = new Vector3(uiGrid.cellWidth, uiGrid.cellWidth, 1);
+		button.transform.FindChild("Foreground").localScale = new Vector3(uiGrid.cellWidth, uiGrid.cellWidth, 1);
 
 		//button.transform.localPosition = Vector3.zero;
 
@@ -41,7 +45,12 @@ public abstract class MessageQueue : MonoBehaviour
 		if(ht.ContainsKey("message"))
 		{
 			Transform trnsLabel = button.transform.FindChild("Label");
-			trnsLabel.GetComponent<UILabel>().text = (string)ht["message"];
+
+			UILabel l = trnsLabel.GetComponent<UILabel>();
+			l.text = (string)ht["message"];
+
+			if(!Mathf.Approximately(LabelSize, 0.0f))
+				trnsLabel.transform.localScale = Vector3.one * LabelSize;
 		}
 
 		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
@@ -92,7 +101,7 @@ public abstract class MessageQueue : MonoBehaviour
 
 	public bool IsEmpty()
 	{
-		return (uiGrid.transform.childCount == 0);
+		return (nQueueItems == 0);
 	}
 
 	public void Clear()

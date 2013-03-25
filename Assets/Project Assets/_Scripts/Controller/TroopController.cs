@@ -20,11 +20,13 @@ public class TroopController : MonoBehaviour
 	protected Vector3 centerOfTroop;
 
 	protected GameplayManager gameplayManager;
+	protected SoundManager soundManager;
 
 	public void Init ()
 	{
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-
+		soundManager = ComponentGetter.Get<SoundManager> ();
+		
 		selectedSoldiers = new List<Unit> ();
 
 		keepFormation = false;
@@ -249,6 +251,19 @@ public class TroopController : MonoBehaviour
 	public void ChangeVisibility (Unit soldier, bool visibility)
 	{
 		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.Team, visibility);
+	}
+	
+	public void PlaySelectSound ()
+	{
+		if (selectedSoldiers.Count == 1)
+		{
+			soundManager.PlayRandom ("SoldierSelected");
+		}
+		else
+		{
+			soundManager.Play ("TroopSelected");
+			soundManager.Play ("StructureSelected");
+		}
 	}
 
 	//TODO Só para testes

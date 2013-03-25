@@ -99,7 +99,7 @@ public class GameplayManager : MonoBehaviour
 	
 	public bool IsLimitMaxUnits ()
 	{
-		return numberOfUnits == maxOfUnits;
+		return numberOfUnits >= maxOfUnits;
 	}
 	
 	public void AddStatTeamID (int teamID)

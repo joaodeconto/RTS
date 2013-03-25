@@ -16,9 +16,9 @@ public class FactoryBase : IStats
 		public ResourcesManager costOfResources;
 		public float timeToCreate = 3f;
 		public string buttonName;
-		public Vector3 positionButton;
+		public IStats.GridItemAttributes gridItemAttributes;
 	}
-	
+
 	[System.Serializable]
 	public class BuildingObjects
 	{
@@ -26,34 +26,33 @@ public class FactoryBase : IStats
 		public GameObject unfinishedObject;
 		public GameObject finishedObject;
 	}
-	
+
 	public enum BuildingState
 	{
 		Base = 0,
 		Unfinished = 1,
 		Finished = 2
 	}
-	
+
 	public UnitFactory[] unitsToCreate;
 
 	public Transform waypoint;
 
 	public Resource.Type receiveResource;
-	
+
 	public BuildingObjects buildingObjects;
-	
+
 	public string guiTextureName;
-	public string unitCreatedEventMessage;
-	
+
 	public BuildingState buildingState { get; set; }
 	protected int levelConstruct;
-	
+
 	protected List<Unit> listedToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected float timeToCreate;
 	protected float timer;
 	protected bool inUpgrade;
-	
+
 	protected bool hasWaypoint;
 
 	public Animation ControllerAnimation { get; private set; }
@@ -62,18 +61,19 @@ public class FactoryBase : IStats
 
 	protected FactoryController factoryController;
 	protected HUDController hudController;
-//	protected EventManager eventManager;
+	protected EventManager eventManager;
 	protected HealthBar healthBar;
+	protected UISlider buildingSlider;
 
 	public bool wasVisible = false;
-	
+
 	public bool IsNeededRepair
 	{
 		get {
 			return Health != MaxHealth;
 		}
 	}
-	
+
 	public bool OverLimitCreateUnit
 	{
 		get
@@ -89,39 +89,42 @@ public class FactoryBase : IStats
 		timer = 0;
 
 		hudController     = ComponentGetter.Get<HUDController> ();
-//		eventManager      = ComponentGetter.Get<EventManager> ();
+		eventManager      = ComponentGetter.Get<EventManager> ();
 		factoryController = ComponentGetter.Get<FactoryController> ();
+		buildingSlider    = hudController.GetSlider("Building Unit");
+		buildingSlider.gameObject.SetActive(false);
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 
 		if (waypoint == null) waypoint = transform.FindChild("Waypoint");
-		
+
 		hasWaypoint = (waypoint != null);
-		
+
 		if (hasWaypoint) waypoint.gameObject.SetActive (false);
 
 		playerUnit = gameplayManager.IsSameTeam (this);
 
-		this.gameObject.tag = "Factory";
+		this.gameObject.tag   = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
 		factoryController.AddFactory (this);
 
 		inUpgrade = false;
-		wasBuilt = true;
-		
+		wasBuilt  = true;
+
 		buildingState = BuildingState.Finished;
-		
+
 		enabled = playerUnit;
 	}
 
 	void Update ()
 	{
 		SyncAnimation ();
-		
+
 		if (!wasBuilt ||
-			listedToCreate.Count == 0) return;
+			listedToCreate.Count == 0 ||
+			gameplayManager.IsLimitMaxUnits ()) return;
 
 		if (unitToCreate == null)
 		{
@@ -148,6 +151,7 @@ public class FactoryBase : IStats
 			else
 			{
 				timer += Time.deltaTime;
+				buildingSlider.sliderValue = (timer / timeToCreate);
 			}
 		}
 	}
@@ -157,22 +161,22 @@ public class FactoryBase : IStats
 		if (!IsRemoved && !playerUnit) factoryController.factorys.Remove (this);
 	}
 
-	void OnGUI ()
-	{
-		if (Selected)
-		{
-			if (inUpgrade)
-			{
-				GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100, 25), "");
-				GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100 * (timer / timeToCreate), 25), "");
-			}
-		}
-	}
-	
+	//void OnGUI ()
+	//{
+		//if (Selected)
+		//{
+			//if (inUpgrade)
+			//{
+				//GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100, 25), "");
+				//GUI.Box(new Rect(Screen.width/2 - 50, Screen.height - 50, 100 * (timer / timeToCreate), 25), "");
+			//}
+		//}
+	//}
+
 	public virtual void SyncAnimation ()
 	{
 		if (!IsVisible) return;
-		
+
 		buildingObjects.baseObject.SetActive (buildingState == BuildingState.Base);
 		buildingObjects.unfinishedObject.SetActive (buildingState == BuildingState.Unfinished);
 		buildingObjects.finishedObject.SetActive (buildingState == BuildingState.Finished);
@@ -180,25 +184,35 @@ public class FactoryBase : IStats
 
 	void InvokeUnit (Unit unit)
 	{
+		buildingSlider.gameObject.SetActive(false);
+
 		listedToCreate.RemoveAt (0);
 
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 
-//		string unitName = "";
-//
-//		foreach(UnitFactory uf in unitsToCreate)
-//		{
-//			if(uf.unit == unit)
-//			{
-//				unitName = uf.buttonName;
-//				break;
-//			}
-//		}
-//
-//		eventManager.AddEvent(unitCreatedEventMessage + " " + unitName, unit.guiTextureName);
-		
+		string unitName = "";
+
+		foreach(UnitFactory uf in unitsToCreate)
+		{
+			if(uf.unit == unit)
+			{
+				unitName = uf.buttonName;
+				break;
+			}
+		}
+
+		if(string.IsNullOrEmpty(unitName))
+		{
+			Debug.LogError("Eh necessario colocar um nome no UnitFactory.\nUtilizando nome padrao");
+			unitName = unit.name;
+		}
+
+		EventManager.Event e = GetEvent("create unit");
+
+		eventManager.AddEvent(string.Format(e.Message, unitName), unit.guiTextureName);
+
 		if (!hasWaypoint) return;
-		
+
 		// Look At
 		Vector3 difference = waypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);
@@ -229,7 +243,7 @@ public class FactoryBase : IStats
 		}
 		else Destroy (gameObject);
 	}
-	
+
 	[RPC]
 	public void InstanceOverdraw (int teamID)
 	{
@@ -237,11 +251,11 @@ public class FactoryBase : IStats
 		wasBuilt = false;
 		Team = teamID;
 		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
-		
+
 		if (!photonView.isMine) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;
 	}
-	
+
 	[RPC]
 	public void Instance ()
 	{
@@ -249,7 +263,7 @@ public class FactoryBase : IStats
 		buildingState = BuildingState.Base;
 		if (!gameplayManager.IsSameTeam (Team)) model.SetActive (true);
 	}
-	
+
 	public bool Construct (Worker worker)
 	{
 		if (levelConstruct < (MaxHealth / 2))
@@ -264,13 +278,13 @@ public class FactoryBase : IStats
 		{
 			buildingState = BuildingState.Finished;
 		}
-		
+
 		if (levelConstruct == MaxHealth)
 		{
 			if (!wasBuilt)
 			{
 				wasBuilt = true;
-				SendMessage ("ConstructFinished");
+				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}
 			return false;
 		}
@@ -283,7 +297,7 @@ public class FactoryBase : IStats
 			return true;
 		}
 	}
-	
+
 	public bool Repair (Worker worker)
 	{
 		if (IsNeededRepair)
@@ -303,6 +317,9 @@ public class FactoryBase : IStats
 		if (!Selected) Selected = true;
 		else return;
 
+		if(unitToCreate != null)
+			buildingSlider.gameObject.SetActiveRecursively(true);
+
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 
@@ -311,7 +328,7 @@ public class FactoryBase : IStats
 		if (playerUnit && wasBuilt)
 		{
 			if (!hasWaypoint) return;
-			
+
 			waypoint.gameObject.SetActive (true);
 			if (!waypoint.gameObject.activeSelf)
 				waypoint.gameObject.SetActive (true);
@@ -322,7 +339,7 @@ public class FactoryBase : IStats
 				ht["unit"]    = uf.unit;
 
 				hudController.CreateButtonInInspector ( uf.buttonName,
-														uf.positionButton,
+														uf.gridItemAttributes.Position,
 														ht,
 														uf.unit.guiTextureName,
 														(ht_hud) =>
@@ -330,8 +347,12 @@ public class FactoryBase : IStats
 															FactoryBase factory = this;
 															Unit unit           = (Unit)ht_hud["unit"];
 
+															buildingSlider.gameObject.SetActiveRecursively(true);
+
 															if (!factory.OverLimitCreateUnit)
 																factory.EnqueueUnitToCreate (unit);
+															else
+																;//TODO enviar mensagem
 														});
 			}
 
@@ -360,6 +381,8 @@ public class FactoryBase : IStats
 
 	public bool Deselect (bool isGroupDelesection = false)
 	{
+		buildingSlider.gameObject.SetActive(false);
+
 		if (Selected) Selected = false;
 		else return false;
 
@@ -368,7 +391,7 @@ public class FactoryBase : IStats
 		if (playerUnit && wasBuilt)
 		{
 			if (!hasWaypoint) return true;
-			
+
 			waypoint.gameObject.SetActive (false);
 
 			if(!isGroupDelesection)

@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama;
+using Visiorama.Utils;
 using Visiorama.Extension;
 
 public class Worker : Unit
@@ -29,8 +31,7 @@ public class Worker : Unit
 		{
 			public FactoryBase factory;
 			public ResourcesManager costOfResources;
-			public string buttonHudName;
-			public Vector3 positionButtonHud;
+			public IStats.GridItemAttributes gridItemAttributes;
 		}
 
 	public enum WorkerState
@@ -63,7 +64,7 @@ public class Worker : Unit
 	protected Resource lastResource;
 	protected bool settingWorkerNull;
 
-	
+
 	protected FactoryBase factoryChoose, lastFactory;
 	protected bool movingToFactory;
 
@@ -389,16 +390,15 @@ public class Worker : Unit
 			ht = new Hashtable();
 			ht["factory"] = fc.factory;
 
-			hudController.CreateButtonInInspector ( fc.buttonHudName,
-					fc.positionButtonHud,
-					ht,
-					fc.factory.guiTextureName,
-					(ht_hud) =>
-					{
-					FactoryBase factory = (FactoryBase)ht_hud["factory"];
-
-					InstanceGhostFactory (factory);
-					});
+			hudController.CreateButtonInInspector ( fc.factory.name,
+													fc.gridItemAttributes.Position,
+													ht,
+													fc.factory.guiTextureName,
+													(ht_hud) =>
+													{
+														FactoryBase factory = (FactoryBase)ht_hud["factory"];
+														InstanceGhostFactory (factory);
+													});
 		}
 	}
 
@@ -425,7 +425,20 @@ public class Worker : Unit
 	{
 		resource = newResource;
 	}
-
+	
+	public bool CanConstruct (FactoryBase factory)
+	{
+		foreach (FactoryConstruction fc in factoryConstruction)
+		{
+			if (factory.GetType () == fc.factory.GetType ())
+			{
+				return gameplayManager.resources.CanBuy (fc.costOfResources);
+				break;
+			}
+		}
+		return false;
+	}
+	
 #region Funções que o Worker pode fazer
 	IEnumerator StartConstruct ()
 	{
@@ -499,7 +512,7 @@ public class Worker : Unit
 	public void SetMoveToFactory (FactoryBase factory)
 	{
 		factoryChoose = factory;
-		
+
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
@@ -514,9 +527,9 @@ public class Worker : Unit
 	void SetMoveToFactory (Resource.Type resourceType)
 	{
 		if (factoryChoose == null) SearchFactory (resourceType);
-		
+
 //		SearchFactory (resourceType);
-		
+
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
@@ -527,9 +540,9 @@ public class Worker : Unit
 	void SetMoveToFactory (System.Type type)
 	{
 		if (factoryChoose == null) SearchFactory (type);
-		
+
 //		SearchFactory (type);
-		
+
 		if (factoryChoose != null)
 		{
 			Move (factoryChoose.transform.position);
@@ -608,7 +621,7 @@ public class Worker : Unit
 					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Repairing;
 				}
-				
+
 				lastFactory = factoryChoose;
 			}
 			else
