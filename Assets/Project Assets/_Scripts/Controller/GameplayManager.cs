@@ -68,14 +68,9 @@ public class GameplayManager : MonoBehaviour
 		return teamID == MyTeam;
 	}
 
-	public bool IsSameTeam (Unit soldier)
+	public bool IsSameTeam (IStats stats)
 	{
-		return soldier.Team == MyTeam;
-	}
-
-	public bool IsSameTeam (FactoryBase factory)
-	{
-		return factory.Team == MyTeam;
+		return stats.Team == MyTeam;
 	}
 
 	public void IncrementUnit (int teamID)
