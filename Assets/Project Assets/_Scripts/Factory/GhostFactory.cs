@@ -16,7 +16,6 @@ public class GhostFactory : MonoBehaviour
 	public void Init (Worker worker)
 	{
 		this.worker = worker;
-		worker.Deselect ();
 		
 		thisFactory = GetComponent<FactoryBase>();
 		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.AllBuffered, worker.Team);

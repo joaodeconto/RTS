@@ -12,6 +12,7 @@ public class CameraMovement : MonoBehaviour {
 	public float zoomSpeed;
 	public MinMaxFloat zoom;
 	
+	protected Camera thisCamera;
 	protected Camera[] cameras;
 	
 	protected TouchController touchController;
@@ -19,7 +20,13 @@ public class CameraMovement : MonoBehaviour {
 	void Start ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
+		thisCamera = gameObject.camera;
 		cameras = GetComponentsInChildren<Camera> ();
+		
+		foreach (Camera camera in cameras)
+		{
+			camera.orthographicSize = thisCamera.orthographicSize;
+		}
 	}
 
 	void Update ()
@@ -39,11 +46,12 @@ public class CameraMovement : MonoBehaviour {
 		
 		if (Input.GetAxis ("Mouse ScrollWheel") != 0)
 		{
+			float size = thisCamera.orthographicSize;
+			size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
+			thisCamera.orthographicSize = Mathf.Clamp (size, zoom.min, zoom.max);
 			foreach (Camera camera in cameras)
 			{
-				float size = camera.orthographicSize;
-				size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
-				camera.orthographicSize = Mathf.Clamp (size, zoom.min, zoom.max);
+				camera.orthographicSize = thisCamera.orthographicSize;
 			}
 		}
 

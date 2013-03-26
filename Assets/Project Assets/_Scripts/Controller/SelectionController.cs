@@ -28,7 +28,7 @@ public class SelectionController : MonoBehaviour
 			return true;
 
 		factoryController.DeselectFactory ();
-
+		
 		if (touchController.DragOn)
 		{
 			troopController.DeselectAllSoldiers ();

@@ -30,6 +30,7 @@ public class HUDController : MonoBehaviour
 
 	public GameObject healthBar;
 	public GameObject selectedObject;
+	public UIRoot uiRoot;
 	public Transform mainTranformSelectedObjects;
 	public Transform trnsOptionsMenu;
 	public GameObject pref_button;
@@ -62,11 +63,13 @@ public class HUDController : MonoBehaviour
 
 	private List<UIGrid> gridsToReposition = new List<UIGrid>();
 
+	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
 
 	public void Init()
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
+		touchController = ComponentGetter.Get<TouchController>();
 	}
 
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
@@ -85,6 +88,8 @@ public class HUDController : MonoBehaviour
 			child.GetComponent<UISlider> ().fullSize.y), "Background");
 
 		child.AddComponent<UIFollowTarget>().target = target.FindChild (referenceChild).transform;
+		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
+		child.GetComponent<UIFollowTarget>().mUICamera = uiRoot.transform.FindChild ("CameraHUD").camera;
 
 		return child.GetComponent<HealthBar> ();
 	}
@@ -175,23 +180,50 @@ public class HUDController : MonoBehaviour
                                         DefaultCallbackButton.OnDropDelegate onDrop = null,
 										bool persistent = false)
 	{
-		GameObject button = NGUITools.AddChild ( trnsOptionsMenu.gameObject,
-													pref_button);
+		CreateOrChangeButtonInInspector(buttonName, position, ht,
+										textureName,
+										onClick, onPress, onDrag, onDrop,
+										persistent);
+	}
 
-		button.name = persistent ?
+	public void CreateOrChangeButtonInInspector(string buttonName,
+												Vector3 position,
+												Hashtable ht,
+												string textureName = "",
+												DefaultCallbackButton.OnClickDelegate onClick = null,
+												DefaultCallbackButton.OnPressDelegate onPress = null,
+												DefaultCallbackButton.OnDragDelegate onDrag = null,
+												DefaultCallbackButton.OnDropDelegate onDrop = null,
+												bool persistent = false)
+	{
+		buttonName = persistent ?
 						PERSIST_STRING + buttonName :
 						buttonName;
 
+		if(!string.IsNullOrEmpty(textureName))
+			ht["textureName"] = textureName;
+
+		Transform trns = trnsOptionsMenu.Find(buttonName);
+		GameObject button = null;
+
+		if (trns != null)
+			button = trns.gameObject;
+		else
+			button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
+										pref_button);
+
+		button.name = buttonName;
 		button.transform.localPosition = position;
 
-		if(!string.IsNullOrEmpty(textureName))
-		{
-			Transform trnsForeground = button.transform.FindChild("Foreground");
-			ChangeButtonForegroundTexture(trnsForeground, textureName);
-		}
+		PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();
 
-		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
-		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
+		if ( pcb == null )
+		{
+			pcb = button.AddComponent<PersonalizedCallbackButton>();
+			pcb.Init(ht, onClick, onPress, onDrag, onDrop);
+		}
+		else
+			pcb.ChangeParams(ht, onClick, onPress, onDrag, onDrop);
 	}
 
 	public void RemoveButtonInInspector(string buttonName)
@@ -205,20 +237,6 @@ public class HUDController : MonoBehaviour
 				break;
 			}
 		}
-	}
-
-	private void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
-	{
-		if(trnsForeground == null || trnsForeground.GetComponent<UISlicedSprite>() == null)
-		{
-			Debug.LogError("Eh necessario que tenha o objeto \"Foreground\" com um sliced sprite dentro");
-			Debug.Break();
-		}
-
-		UISlicedSprite sprite = trnsForeground.GetComponent<UISlicedSprite>();
-		sprite.spriteName = textureName;
-		sprite.MakePixelPerfect();
-		sprite.transform.localPosition = Vector3.forward * -5;
 	}
 
 	public void DestroyInspector ()

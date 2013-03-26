@@ -24,7 +24,7 @@ public class TroopController : MonoBehaviour
 	protected GameplayManager gameplayManager;
 	protected SoundManager soundManager;
 
-	protected List<Unit> idleWorkers;
+	protected List<Worker> idleWorkers;
 
 	public void Init ()
 	{
@@ -32,13 +32,12 @@ public class TroopController : MonoBehaviour
 		soundManager    = ComponentGetter.Get<SoundManager> ();
 
 		selectedSoldiers = new List<Unit> ();
-		idleWorkers      = new List<Unit>();
+		idleWorkers      = new List<Worker>();
 
 		keepFormation = false;
 
 		InvokeRepeating("CheckWorkersInIdle",1.0f,1.0f);
-
-		//InvokeRepeating("OrganizeUnits",1.0f,1.0f);
+		InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
 
 	public void MoveTroop (Vector3 destination)
@@ -67,7 +66,6 @@ public class TroopController : MonoBehaviour
 			{
 				if (soldier != null)
 				{
-					//TODO ???
 					soldier.TargetingEnemy (null);
 
 					//Vector3 newDestination = destination + (Random.insideUnitSphere * soldier.pathfind.radius * selectedSoldiers.Count);
@@ -295,7 +293,6 @@ public class TroopController : MonoBehaviour
 
 	void CheckWorkersInIdle()
 	{
-		idleWorkers.Clear();
 		HUDController hud = ComponentGetter.Get<HUDController>();
 
 		foreach(Unit u in soldiers)
@@ -304,14 +301,18 @@ public class TroopController : MonoBehaviour
 
 			if (w == null) continue;
 
+			idleWorkers.Remove(w);
+
 			switch(w.workerState)
 			{
 				case Worker.WorkerState.None:
-				case Worker.WorkerState.CarryingIdle:
-					if (w.unitState != Unit.UnitState.Walk)
-					{
+					if (w.unitState == Unit.UnitState.Idle &&
+						!selectedSoldiers.Contains(w))
 						idleWorkers.Add(w);
-					}
+					break;
+				case Worker.WorkerState.CarryingIdle:
+					if (!selectedSoldiers.Contains(w))
+						idleWorkers.Add(w);
 					break;
 				default:
 					break;
@@ -327,31 +328,41 @@ public class TroopController : MonoBehaviour
 			Hashtable ht = new Hashtable();
 
 			ht["currentIdleWorker"] = 0;
+			ht["counter"] = idleWorkers.Count.ToString();
 
-			hud.CreateButtonInInspector(buttonIdleWorkersName,
-										idleButtonPosition,
-										ht,
-										idleWorkers[0].guiTextureName,
-										(hud_ht) =>
-										{
-											int currentIdleWorker = (int)hud_ht["currentIdleWorker"];
+			hud.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
+												idleButtonPosition,
+												ht,
+												idleWorkers[0].guiTextureName,
+												(hud_ht) =>
+												{
+													int currentIdleWorker = (int)hud_ht["currentIdleWorker"];
 
-											Vector3 position = idleWorkers[currentIdleWorker].transform.position;
+													if(currentIdleWorker < idleWorkers.Count)
+													{
+														Vector3 pos = idleWorkers[currentIdleWorker].transform.position;
 
-											Transform trnsCamera = Camera.main.transform;
+														Transform trnsCamera = Camera.main.transform;
 
-											trnsCamera.position = position + (Vector3.forward
-																				* Mathf.Atan(trnsCamera.localEulerAngles.x * Mathf.Deg2Rad));
+														trnsCamera.position = pos - (Vector3.forward
+																						* trnsCamera.position.y
+																						* Mathf.Tan(trnsCamera.localEulerAngles.x * Mathf.Deg2Rad));
 
-											if((++currentIdleWorker) == idleWorkers.Count)
-												currentIdleWorker = 0;
+														DeselectAllSoldiers();
+														SelectSoldier(idleWorkers[currentIdleWorker], true);
 
-											hud_ht["currentIdleWorker"] = currentIdleWorker;
-										},
-										null,
-										null,
-										null,
-										true);
+														idleWorkers.RemoveAt(currentIdleWorker);
+													}
+
+													if((++currentIdleWorker) >= idleWorkers.Count)
+														currentIdleWorker = 0;
+
+													hud_ht["currentIdleWorker"] = currentIdleWorker;
+												},
+												null,
+												null,
+												null,
+												true);
 		}
 	}
 }

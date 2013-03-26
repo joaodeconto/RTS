@@ -159,6 +159,7 @@ public class Unit : IStats
 
 	void OnDestroy ()
 	{
+		if (Selected) Deselect ();
 		if (!IsRemoved && !playerUnit) troopController.soldiers.Remove (this);
 	}
 
@@ -612,6 +613,7 @@ public class Unit : IStats
 
 	public void Deselect (bool isGroupDelesection = false)
 	{
+		Debug.Log ("isGroupDelesection: ");
 		Selected = false;
 		hudController.DestroySelected (transform);
 
@@ -811,6 +813,8 @@ public class Unit : IStats
 //		}
 
 		troopController.RemoveSoldier(this);
+		
+		if (Selected) Deselect ();
 
 		if (unitAnimation.DieAnimation)
 		{

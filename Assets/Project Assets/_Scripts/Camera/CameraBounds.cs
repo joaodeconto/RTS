@@ -14,6 +14,7 @@ public class CameraBounds : MonoBehaviour {
 	// Editor
 	public Vector3MinMax scenario;
 	public float height = 15f;
+	public float relativeSize = 15f;
 	
 	private Vector3 positionInitial;
 	private bool wasInitialized;
@@ -33,6 +34,10 @@ public class CameraBounds : MonoBehaviour {
 	
 	public Vector3 ClampScenario (Vector3 position)
 	{
+//		Debug.Log (relativeSize/camera.orthographicSize);
+//		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min + (relativeSize/camera.orthographicSize), scenario.x.max + (relativeSize/camera.orthographicSize)), 
+//		                    height, 
+//		                    Mathf.Clamp (position.z, scenario.z.min + (relativeSize/camera.orthographicSize), scenario.z.max + (relativeSize/camera.orthographicSize)));
 		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min, scenario.x.max), 
 		                    height, 
 		                    Mathf.Clamp (position.z, scenario.z.min, scenario.z.max));

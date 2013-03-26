@@ -6,9 +6,10 @@ public class UIFollowTarget : MonoBehaviour
 
 	public bool disableIfInvisible = true;
 
+	public Camera mGameCamera { get; set; }
+	public Camera mUICamera { get; set; }
+	
 	Transform mTrans;
-	Camera mGameCamera;
-	Camera mUICamera;
 	bool mIsVisible = false;
 
 	void Awake () { mTrans = transform; }
@@ -17,8 +18,8 @@ public class UIFollowTarget : MonoBehaviour
 	{
 		if (target != null)
 		{
-			mGameCamera = NGUITools.FindCameraForLayer(target.gameObject.layer);
-			mUICamera = NGUITools.FindCameraForLayer(gameObject.layer);
+			if (mGameCamera == null) mGameCamera = NGUITools.FindCameraForLayer(target.gameObject.layer);
+			if (mUICamera == null) mUICamera = NGUITools.FindCameraForLayer(gameObject.layer);
 			SetVisible(false);
 		}
 		else

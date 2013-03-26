@@ -53,11 +53,9 @@ public class TemporizedMessageQueue : MessageQueue
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-		Debug.Log("chegou AddMessageInfo");
 		if(IsEmpty())
 		{
 			Invoke ("CleanFirstMessage", timeToFadeout);
-			Debug.Log("teste");
 		}
 
 		base.AddMessageInfo (buttonName, ht, onClick, onPress, onDrag, onDrop);

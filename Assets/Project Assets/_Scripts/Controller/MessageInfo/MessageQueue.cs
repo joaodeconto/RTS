@@ -36,26 +36,9 @@ public abstract class MessageQueue : MonoBehaviour
 
 		//button.transform.localPosition = Vector3.zero;
 
-		if(ht.ContainsKey("textureName"))
-		{
-			Transform trnsForeground = button.transform.FindChild("Foreground");
-			ChangeButtonForegroundTexture(trnsForeground, (string)ht["textureName"]);
-		}
+		PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
 
-		if(ht.ContainsKey("message"))
-		{
-			Transform trnsLabel = button.transform.FindChild("Label");
-
-			UILabel l = trnsLabel.GetComponent<UILabel>();
-			l.text = (string)ht["message"];
-
-			if(!Mathf.Approximately(LabelSize, 0.0f))
-				trnsLabel.transform.localScale = Vector3.one * LabelSize;
-		}
-
-		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
-
-		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
+		pcb.Init(ht, onClick, onPress, onDrag, onDrop);
 
 		Invoke("RepositionGrid", 0.1f);
 	}
