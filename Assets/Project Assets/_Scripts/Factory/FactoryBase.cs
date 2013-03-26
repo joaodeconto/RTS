@@ -171,7 +171,7 @@ public class FactoryBase : IStats
 
 	void OnDestroy ()
 	{
-		if (Selected) Deselect ();
+		if (Selected && !playerUnit) Deselect ();
 		if (!IsRemoved && !playerUnit) factoryController.factorys.Remove (this);
 	}
 
@@ -237,12 +237,14 @@ public class FactoryBase : IStats
 			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
 //			newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 			newUnit.Move (waypoint.position);
+			newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 		}
 		else
 		{
 	        GameObject newUnit = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
 //			newUnit.GetComponent<Unit> ().Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 			newUnit.GetComponent<Unit> ().Move (waypoint.position);
+			newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 		}
 	}
 
@@ -460,11 +462,8 @@ public class FactoryBase : IStats
 		string btnName = (string)ht["name"];
 		Unit unit = (Unit)ht["unit"];
 
-		Debug.Log("btnName: " + btnName);
-
 		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
 		{
-			Debug.Log("chegouvids");
 			timer = 0;
 			unitToCreate = null;
 			inUpgrade = false;

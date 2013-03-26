@@ -108,6 +108,8 @@ public class GhostFactory : MonoBehaviour
 		
 		if (canBuy)
 		{
+			transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
+			
 			collider.isTrigger = false;
 			thisFactory.enabled = true;
 			
