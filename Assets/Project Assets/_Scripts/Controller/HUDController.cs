@@ -7,6 +7,8 @@ using Visiorama.Utils;
 
 public class HUDController : MonoBehaviour
 {
+	private string PERSIST_STRING = "###_";
+
 	[System.Serializable]
 	public class GridDefinition
 	{
@@ -175,43 +177,74 @@ public class HUDController : MonoBehaviour
 										DefaultCallbackButton.OnClickDelegate onClick = null,
                                         DefaultCallbackButton.OnPressDelegate onPress = null,
                                         DefaultCallbackButton.OnDragDelegate onDrag = null,
-                                        DefaultCallbackButton.OnDropDelegate onDrop = null)
+                                        DefaultCallbackButton.OnDropDelegate onDrop = null,
+										bool persistent = false)
 	{
-		GameObject button = NGUITools.AddChild ( trnsOptionsMenu.gameObject,
-													pref_button);
+		CreateOrChangeButtonInInspector(buttonName, position, ht,
+										textureName,
+										onClick, onPress, onDrag, onDrop,
+										persistent);
+	}
+
+	public void CreateOrChangeButtonInInspector(string buttonName,
+												Vector3 position,
+												Hashtable ht,
+												string textureName = "",
+												DefaultCallbackButton.OnClickDelegate onClick = null,
+												DefaultCallbackButton.OnPressDelegate onPress = null,
+												DefaultCallbackButton.OnDragDelegate onDrag = null,
+												DefaultCallbackButton.OnDropDelegate onDrop = null,
+												bool persistent = false)
+	{
+		buttonName = persistent ?
+						PERSIST_STRING + buttonName :
+						buttonName;
+
+		if(!string.IsNullOrEmpty(textureName))
+			ht["textureName"] = textureName;
+
+		Transform trns = trnsOptionsMenu.Find(buttonName);
+		GameObject button = null;
+
+		if (trns != null)
+			button = trns.gameObject;
+		else
+			button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
+										pref_button);
 
 		button.name = buttonName;
 		button.transform.localPosition = position;
 
-		if(!string.IsNullOrEmpty(textureName))
-		{
-			Transform trnsForeground = button.transform.FindChild("Foreground");
-			ChangeButtonForegroundTexture(trnsForeground, textureName);
-		}
+		PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();
 
-		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
-		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
+		if ( pcb == null )
+		{
+			pcb = button.AddComponent<PersonalizedCallbackButton>();
+			pcb.Init(ht, onClick, onPress, onDrag, onDrop);
+		}
+		else
+			pcb.ChangeParams(ht, onClick, onPress, onDrag, onDrop);
 	}
 
-	private void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
+	public void RemoveButtonInInspector(string buttonName)
 	{
-		if(trnsForeground == null || trnsForeground.GetComponent<UISlicedSprite>() == null)
+		foreach (Transform child in trnsOptionsMenu)
 		{
-			Debug.LogError("Eh necessario que tenha o objeto \"Foreground\" com um sliced sprite dentro");
-			Debug.Break();
+			if (child.gameObject.name.Equals(buttonName) ||
+				child.gameObject.name.Equals(PERSIST_STRING + buttonName))
+			{
+				Destroy (child.gameObject);
+				break;
+			}
 		}
-
-		UISlicedSprite sprite = trnsForeground.GetComponent<UISlicedSprite>();
-		sprite.spriteName = textureName;
-		sprite.MakePixelPerfect();
-		sprite.transform.localPosition = Vector3.forward * -5;
 	}
 
 	public void DestroyInspector ()
 	{
 		foreach (Transform child in trnsOptionsMenu)
 		{
-			Destroy (child.gameObject);
+			if (!child.gameObject.name.Contains(PERSIST_STRING))
+				Destroy (child.gameObject);
 		}
 
 		messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);

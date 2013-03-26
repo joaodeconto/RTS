@@ -308,7 +308,10 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 		bool ready = false;
 
-		ready = GUILayout.Toggle ((bool)player.customProperties["ready"], " Ready?");
+		if (automaticTestConnect)
+			ready = true;
+		else
+			ready = GUILayout.Toggle ((bool)player.customProperties["ready"], " Ready?");
 
 		Hashtable readyPropety = new Hashtable() {{"ready", ready}};
 		player.SetCustomProperties (readyPropety);
@@ -430,7 +433,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 	public void CreateTestRoom ()
 	{
-		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1), true, true, 1);
+		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1) + (Random.value * 10000), true, true, 1);
 	}
 
 	public void CreateRoom (string roomName, bool isVisible, bool isOpen, int maxPlayers)

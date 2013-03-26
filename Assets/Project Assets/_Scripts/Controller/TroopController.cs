@@ -8,9 +8,11 @@ using Visiorama;
 public class TroopController : MonoBehaviour
 {
 	public const int MAX_NUMBER_OF_GROUPS = 9;
+	public const string buttonIdleWorkersName = "IdleWorkers";
 
 	public bool keepFormation {get; set;}
 
+	public Vector3 idleButtonPosition;
 	public List<Unit> soldiers = new List<Unit> ();
 	internal List<Unit> selectedSoldiers;
 
@@ -22,15 +24,20 @@ public class TroopController : MonoBehaviour
 	protected GameplayManager gameplayManager;
 	protected SoundManager soundManager;
 
+	protected List<Worker> idleWorkers;
+
 	public void Init ()
 	{
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-		soundManager = ComponentGetter.Get<SoundManager> ();
-		
+		soundManager    = ComponentGetter.Get<SoundManager> ();
+
 		selectedSoldiers = new List<Unit> ();
+		idleWorkers      = new List<Worker>();
 
 		keepFormation = false;
-		//InvokeRepeating("OrganizeUnits",1.0f,1.0f);
+
+		InvokeRepeating("CheckWorkersInIdle",1.0f,1.0f);
+		InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
 
 	public void MoveTroop (Vector3 destination)
@@ -59,7 +66,6 @@ public class TroopController : MonoBehaviour
 			{
 				if (soldier != null)
 				{
-					//TODO ???
 					soldier.TargetingEnemy (null);
 
 					//Vector3 newDestination = destination + (Random.insideUnitSphere * soldier.pathfind.radius * selectedSoldiers.Count);
@@ -104,7 +110,7 @@ public class TroopController : MonoBehaviour
 		soldiers.Add (soldier);
 		ComponentGetter.Get<MiniMapController> ().AddUnit (soldier.transform, soldier.Team);
 		ComponentGetter.Get<FogOfWar> ().AddEntity (soldier.transform, soldier);
-		
+
 		gameplayManager.IncrementUnit (soldier.Team, soldier.numberOfUnits);
 	}
 
@@ -119,7 +125,7 @@ public class TroopController : MonoBehaviour
 		ComponentGetter.Get<MiniMapController> ().RemoveUnit (soldier.transform, soldier.Team);
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (soldier.transform, soldier);
 		soldiers.Remove (soldier);
-		
+
 		gameplayManager.DecrementUnit (soldier.Team, soldier.numberOfUnits);
 	}
 
@@ -252,7 +258,7 @@ public class TroopController : MonoBehaviour
 	{
 		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.Team, visibility);
 	}
-	
+
 	public void PlaySelectSound ()
 	{
 		if (selectedSoldiers.Count == 1)
@@ -284,4 +290,79 @@ public class TroopController : MonoBehaviour
 		});
 	}
 
+
+	void CheckWorkersInIdle()
+	{
+		HUDController hud = ComponentGetter.Get<HUDController>();
+
+		foreach(Unit u in soldiers)
+		{
+			Worker w = (Worker)u;
+
+			if (w == null) continue;
+
+			idleWorkers.Remove(w);
+
+			switch(w.workerState)
+			{
+				case Worker.WorkerState.None:
+					if (w.unitState == Unit.UnitState.Idle &&
+						!selectedSoldiers.Contains(w))
+						idleWorkers.Add(w);
+					break;
+				case Worker.WorkerState.CarryingIdle:
+					if (!selectedSoldiers.Contains(w))
+						idleWorkers.Add(w);
+					break;
+				default:
+					break;
+			}
+		}
+
+		if(idleWorkers.Count == 0)
+		{
+			hud.RemoveButtonInInspector(buttonIdleWorkersName);
+		}
+		else
+		{
+			Hashtable ht = new Hashtable();
+
+			ht["currentIdleWorker"] = 0;
+			ht["counter"] = idleWorkers.Count.ToString();
+
+			hud.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
+												idleButtonPosition,
+												ht,
+												idleWorkers[0].guiTextureName,
+												(hud_ht) =>
+												{
+													int currentIdleWorker = (int)hud_ht["currentIdleWorker"];
+
+													if(currentIdleWorker < idleWorkers.Count)
+													{
+														Vector3 pos = idleWorkers[currentIdleWorker].transform.position;
+
+														Transform trnsCamera = Camera.main.transform;
+
+														trnsCamera.position = pos - (Vector3.forward
+																						* trnsCamera.position.y
+																						* Mathf.Tan(trnsCamera.localEulerAngles.x * Mathf.Deg2Rad));
+
+														DeselectAllSoldiers();
+														SelectSoldier(idleWorkers[currentIdleWorker], true);
+
+														idleWorkers.RemoveAt(currentIdleWorker);
+													}
+
+													if((++currentIdleWorker) >= idleWorkers.Count)
+														currentIdleWorker = 0;
+
+													hud_ht["currentIdleWorker"] = currentIdleWorker;
+												},
+												null,
+												null,
+												null,
+												true);
+		}
+	}
 }
