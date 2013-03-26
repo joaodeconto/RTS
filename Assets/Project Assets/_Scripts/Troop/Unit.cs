@@ -42,6 +42,7 @@ public class Unit : IStats
 	public float attackDuration     = 1f;
 	public float probeRange         = 1.0f; // how far the character can "see"
     public float turnSpeedAvoidance = 50f; // how fast to turn
+	public int numberOfUnits = 1;
 
     public Transform probePoint; // forward probe point
     public Transform leftReference; // left probe point
@@ -202,9 +203,9 @@ public class Unit : IStats
 					}
 					else
 					{
-						targetAttack    = null;
 						if (followingTarget)
 						{
+							targetAttack    = null;
 							unitState       = UnitState.Idle;
 							followingTarget = false;
 						}

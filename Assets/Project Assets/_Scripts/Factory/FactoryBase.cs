@@ -127,7 +127,7 @@ public class FactoryBase : IStats
 		if (!wasBuilt || listedToCreate.Count == 0)
 			return;
 
-		if (gameplayManager.ReachedMaxPopulation)
+		if (gameplayManager.NeedMoreHouses (listedToCreate[0].numberOfUnits))
 		{
 			if (!alreadyCheckedMaxPopulation)
 			{
@@ -271,6 +271,7 @@ public class FactoryBase : IStats
 	public void Instance ()
 	{
 		factoryController.AddFactory (this);
+		ComponentGetter.Get<FogOfWar> ().RemoveEntity (transform, this);
 		buildingState = BuildingState.Base;
 		if (!gameplayManager.IsSameTeam (Team)) model.SetActive (true);
 	}
@@ -295,7 +296,7 @@ public class FactoryBase : IStats
 			if (!wasBuilt)
 			{
 				wasBuilt = true;
-
+				ComponentGetter.Get<FogOfWar> ().AddEntity (transform, this);
 				eventManager.AddEvent("building finish", this.name, this.guiTextureName);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}

@@ -113,7 +113,7 @@ public class TroopController : MonoBehaviour
 		ComponentGetter.Get<MiniMapController> ().AddUnit (soldier.transform, soldier.Team);
 		ComponentGetter.Get<FogOfWar> ().AddEntity (soldier.transform, soldier);
 
-		gameplayManager.IncrementUnit (soldier.Team);
+		gameplayManager.IncrementUnit (soldier.Team, soldier.numberOfUnits);
 	}
 
 	public void RemoveSoldier (Unit soldier)
@@ -128,7 +128,7 @@ public class TroopController : MonoBehaviour
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (soldier.transform, soldier);
 		soldiers.Remove (soldier);
 
-		gameplayManager.DecrementUnit (soldier.Team);
+		gameplayManager.DecrementUnit (soldier.Team, soldier.numberOfUnits);
 	}
 
 	public void SoldierToogleSelection (Unit soldier)
