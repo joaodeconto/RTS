@@ -118,7 +118,7 @@ public class GameplayManager : MonoBehaviour
 	
 	public bool NeedMoreHouses (int additionalUnits)
 	{
-		return (numberOfUnits + additionalUnits >= maxOfUnits);
+		return (numberOfUnits + additionalUnits > maxOfUnits);
 	}
 
 	public bool ReachedMaxPopulation
