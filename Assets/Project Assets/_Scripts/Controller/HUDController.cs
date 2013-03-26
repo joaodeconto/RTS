@@ -28,6 +28,7 @@ public class HUDController : MonoBehaviour
 
 	public GameObject healthBar;
 	public GameObject selectedObject;
+	public UIRoot uiRoot;
 	public Transform mainTranformSelectedObjects;
 	public Transform trnsOptionsMenu;
 	public GameObject pref_button;
@@ -60,11 +61,13 @@ public class HUDController : MonoBehaviour
 
 	private List<UIGrid> gridsToReposition = new List<UIGrid>();
 
+	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
 
 	public void Init()
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
+		touchController = ComponentGetter.Get<TouchController>();
 	}
 
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
@@ -83,6 +86,8 @@ public class HUDController : MonoBehaviour
 			child.GetComponent<UISlider> ().fullSize.y), "Background");
 
 		child.AddComponent<UIFollowTarget>().target = target.FindChild (referenceChild).transform;
+		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
+		child.GetComponent<UIFollowTarget>().mUICamera = uiRoot.transform.FindChild ("CameraHUD").camera;
 
 		return child.GetComponent<HealthBar> ();
 	}

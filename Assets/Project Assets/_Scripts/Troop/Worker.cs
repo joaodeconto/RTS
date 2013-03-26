@@ -89,6 +89,12 @@ public class Worker : Unit
 	{
 		if (!playerUnit)
 			return;
+		
+		if (Selected)
+		{
+			Debug.Log ("Worker State: " + workerState);
+			Debug.Log ("State: " + unitState);
+		}
 
 		switch (workerState)
 		{
@@ -123,7 +129,7 @@ public class Worker : Unit
 			case WorkerState.Carrying:
 			case WorkerState.CarryingIdle:
 				if (resource != null &&
-						!settingWorkerNull)
+					!settingWorkerNull)
 				{
 					settingWorkerNull = true;
 					resource.RemoveWorker (this);
@@ -172,14 +178,18 @@ public class Worker : Unit
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 				{
 					if (resource != null) Move (resource.transform.position);
+				
 					gameplayManager.resources.Set (resource.type, currentNumberOfResources);
+					
 					currentNumberOfResources = 0;
+				
+					factoryChoose = null;
+				
 					workerState = WorkerState.None;
+					
 					movingToFactory = hasResource = settingWorkerNull = false;
 
 					resourceWorker[resourceId].carryingObject.SetActive (false);
-
-					factoryChoose = null;
 
 					resourceId = -1;
 

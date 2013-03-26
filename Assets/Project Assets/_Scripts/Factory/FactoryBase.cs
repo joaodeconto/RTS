@@ -171,6 +171,7 @@ public class FactoryBase : IStats
 
 	void OnDestroy ()
 	{
+		if (Selected) Deselect ();
 		if (!IsRemoved && !playerUnit) factoryController.factorys.Remove (this);
 	}
 
@@ -248,6 +249,9 @@ public class FactoryBase : IStats
 	void OnDie ()
 	{
 		factoryController.RemoveFactory (this);
+		
+		if (Selected) Deselect ();
+		
 		if (IsNetworkInstantiate)
 		{
 			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);

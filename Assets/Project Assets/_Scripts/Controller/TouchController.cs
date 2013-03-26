@@ -70,7 +70,7 @@ public class TouchController : MonoBehaviour
 	void Update ()
 	{
 		RelativePosition = new Vector2 (Mathf.Clamp (Input.mousePosition.x / Screen.width, 0f, 1f),
-											 Mathf.Clamp (Input.mousePosition.y / Screen.height, 0f, 1f));
+										Mathf.Clamp (Input.mousePosition.y / Screen.height, 0f, 1f));
 
 		if (Input.GetMouseButtonDown(0) ||
 			Input.GetMouseButtonDown(1))
