@@ -8,9 +8,11 @@ using Visiorama;
 public class TroopController : MonoBehaviour
 {
 	public const int MAX_NUMBER_OF_GROUPS = 9;
+	public const string buttonIdleWorkersName = "IdleWorkers";
 
 	public bool keepFormation {get; set;}
 
+	public Vector3 idleButtonPosition;
 	public List<Unit> soldiers = new List<Unit> ();
 	internal List<Unit> selectedSoldiers;
 
@@ -22,14 +24,20 @@ public class TroopController : MonoBehaviour
 	protected GameplayManager gameplayManager;
 	protected SoundManager soundManager;
 
+	protected List<Unit> idleWorkers;
+
 	public void Init ()
 	{
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-		soundManager = ComponentGetter.Get<SoundManager> ();
-		
+		soundManager    = ComponentGetter.Get<SoundManager> ();
+
 		selectedSoldiers = new List<Unit> ();
+		idleWorkers      = new List<Unit>();
 
 		keepFormation = false;
+
+		InvokeRepeating("CheckWorkersInIdle",1.0f,1.0f);
+
 		//InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
 
@@ -104,7 +112,7 @@ public class TroopController : MonoBehaviour
 		soldiers.Add (soldier);
 		ComponentGetter.Get<MiniMapController> ().AddUnit (soldier.transform, soldier.Team);
 		ComponentGetter.Get<FogOfWar> ().AddEntity (soldier.transform, soldier);
-		
+
 		gameplayManager.IncrementUnit (soldier.Team);
 	}
 
@@ -119,7 +127,7 @@ public class TroopController : MonoBehaviour
 		ComponentGetter.Get<MiniMapController> ().RemoveUnit (soldier.transform, soldier.Team);
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (soldier.transform, soldier);
 		soldiers.Remove (soldier);
-		
+
 		gameplayManager.DecrementUnit (soldier.Team);
 	}
 
@@ -252,7 +260,7 @@ public class TroopController : MonoBehaviour
 	{
 		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.Team, visibility);
 	}
-	
+
 	public void PlaySelectSound ()
 	{
 		if (selectedSoldiers.Count == 1)
@@ -284,4 +292,66 @@ public class TroopController : MonoBehaviour
 		});
 	}
 
+
+	void CheckWorkersInIdle()
+	{
+		idleWorkers.Clear();
+		HUDController hud = ComponentGetter.Get<HUDController>();
+
+		foreach(Unit u in soldiers)
+		{
+			Worker w = (Worker)u;
+
+			if (w == null) continue;
+
+			switch(w.workerState)
+			{
+				case Worker.WorkerState.None:
+				case Worker.WorkerState.CarryingIdle:
+					if (w.unitState != Unit.UnitState.Walk)
+					{
+						idleWorkers.Add(w);
+					}
+					break;
+				default:
+					break;
+			}
+		}
+
+		if(idleWorkers.Count == 0)
+		{
+			hud.RemoveButtonInInspector(buttonIdleWorkersName);
+		}
+		else
+		{
+			Hashtable ht = new Hashtable();
+
+			ht["currentIdleWorker"] = 0;
+
+			hud.CreateButtonInInspector(buttonIdleWorkersName,
+										idleButtonPosition,
+										ht,
+										idleWorkers[0].guiTextureName,
+										(hud_ht) =>
+										{
+											int currentIdleWorker = (int)hud_ht["currentIdleWorker"];
+
+											Vector3 position = idleWorkers[currentIdleWorker].transform.position;
+
+											Transform trnsCamera = Camera.main.transform;
+
+											trnsCamera.position = position + (Vector3.forward
+																				* Mathf.Atan(trnsCamera.localEulerAngles.x * Mathf.Deg2Rad));
+
+											if((++currentIdleWorker) == idleWorkers.Count)
+												currentIdleWorker = 0;
+
+											hud_ht["currentIdleWorker"] = currentIdleWorker;
+										},
+										null,
+										null,
+										null,
+										true);
+		}
+	}
 }

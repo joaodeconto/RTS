@@ -7,6 +7,8 @@ using Visiorama.Utils;
 
 public class HUDController : MonoBehaviour
 {
+	private string PERSIST_STRING = "###_";
+
 	[System.Serializable]
 	public class GridDefinition
 	{
@@ -170,12 +172,16 @@ public class HUDController : MonoBehaviour
 										DefaultCallbackButton.OnClickDelegate onClick = null,
                                         DefaultCallbackButton.OnPressDelegate onPress = null,
                                         DefaultCallbackButton.OnDragDelegate onDrag = null,
-                                        DefaultCallbackButton.OnDropDelegate onDrop = null)
+                                        DefaultCallbackButton.OnDropDelegate onDrop = null,
+										bool persistent = false)
 	{
 		GameObject button = NGUITools.AddChild ( trnsOptionsMenu.gameObject,
 													pref_button);
 
-		button.name = buttonName;
+		button.name = persistent ?
+						PERSIST_STRING + buttonName :
+						buttonName;
+
 		button.transform.localPosition = position;
 
 		if(!string.IsNullOrEmpty(textureName))
@@ -186,6 +192,19 @@ public class HUDController : MonoBehaviour
 
 		DefaultCallbackButton dcb = button.AddComponent<DefaultCallbackButton>();
 		dcb.Init(ht, onClick, onPress, onDrag, onDrop);
+	}
+
+	public void RemoveButtonInInspector(string buttonName)
+	{
+		foreach (Transform child in trnsOptionsMenu)
+		{
+			if (child.gameObject.name.Equals(buttonName) ||
+				child.gameObject.name.Equals(PERSIST_STRING + buttonName))
+			{
+				Destroy (child.gameObject);
+				break;
+			}
+		}
 	}
 
 	private void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
@@ -206,7 +225,8 @@ public class HUDController : MonoBehaviour
 	{
 		foreach (Transform child in trnsOptionsMenu)
 		{
-			Destroy (child.gameObject);
+			if (!child.gameObject.name.Contains(PERSIST_STRING))
+				Destroy (child.gameObject);
 		}
 
 		messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
