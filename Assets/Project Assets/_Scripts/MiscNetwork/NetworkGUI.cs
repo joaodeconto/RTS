@@ -308,7 +308,10 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 		bool ready = false;
 
-		ready = GUILayout.Toggle ((bool)player.customProperties["ready"], " Ready?");
+		if (automaticTestConnect)
+			ready = true;
+		else
+			ready = GUILayout.Toggle ((bool)player.customProperties["ready"], " Ready?");
 
 		Hashtable readyPropety = new Hashtable() {{"ready", ready}};
 		player.SetCustomProperties (readyPropety);
