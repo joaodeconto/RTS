@@ -40,6 +40,8 @@ public class SelectionController : MonoBehaviour
 			//Verificando seleção de unidades
 			Unit enemySoldier = null;
 
+			troopController.DeselectAllSoldiers ();
+			
 			foreach (Unit soldier in troopController.soldiers)
 			{
 				if (!gameplayManager.IsSameTeam (soldier))
@@ -63,8 +65,8 @@ public class SelectionController : MonoBehaviour
 						troopController.SelectSoldier (soldier, true);
 					}
 				}
-				else
-					troopController.SelectSoldier (soldier, false);
+//				else
+//					troopController.SelectSoldier (soldier, false);
 			}
 
 			//Verificando se foram selecionadas unidades
@@ -253,11 +255,9 @@ public class SelectionController : MonoBehaviour
 	void Update ()
 	{
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
-	if(WebPlayerAndPcSelection()) //se retornar true tem que sair do Update
-		return;
+		WebPlayerAndPcSelection();
 #else
-	if(AndroidAndIphoneSelection())
-		return;
+		AndroidAndIphoneSelection();
 #endif
 
 #if UNITY_EDITOR
@@ -304,6 +304,7 @@ public class SelectionController : MonoBehaviour
 #endif
 #if !UNITY_IPHONE && !UNITY_ANDROID
 		bool leftCtrl = Input.GetKey(KeyCode.LeftControl);
+		
 		if (leftCtrl)
 		{
 			if (Input.GetKeyDown (KeyCode.Alpha0))
@@ -395,10 +396,11 @@ public class SelectionController : MonoBehaviour
 
 	void SelectGroup (int numberOfGroup)
 	{
-		factoryController.DeselectFactory ();
 		bool hasGroup = troopController.SelectGroup (numberOfGroup);
 
 		if (!hasGroup) return;
+		
+		factoryController.DeselectFactory ();		
 
 		Vector3 getPosition = troopController.selectedSoldiers[0].transform.position - Vector3.forward * touchController.mainCamera.orthographicSize;
 		getPosition = touchController.mainCamera.GetComponent<CameraBounds> ().ClampScenario (getPosition);

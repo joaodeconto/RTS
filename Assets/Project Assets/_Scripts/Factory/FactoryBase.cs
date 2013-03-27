@@ -248,7 +248,7 @@ public class FactoryBase : IStats
 		}
 	}
 
-	void OnDie ()
+	public virtual void OnDie ()
 	{
 		factoryController.RemoveFactory (this);
 		

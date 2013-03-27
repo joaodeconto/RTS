@@ -503,7 +503,8 @@ public class Unit : IStats
 			if (!PhotonNetwork.offlineMode)
 			{
 				if (targetAttack.GetComponent<Unit>())
-					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
+					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+//					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 				else if (targetAttack.GetComponent<FactoryBase>())
 					photonView.RPC ("AttackFactory", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 			}
@@ -529,7 +530,8 @@ public class Unit : IStats
 				else
 				{
 					if (targetAttack.GetComponent<Unit>())
-						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
+						photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+//						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 					else if (targetAttack.GetComponent<FactoryBase>())
 						photonView.RPC ("AttackFactory", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 				}
