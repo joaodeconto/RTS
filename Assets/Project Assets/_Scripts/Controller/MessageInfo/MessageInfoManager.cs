@@ -65,7 +65,6 @@ public class MessageInfoManager : MonoBehaviour
 			}
 			else
 			{
-				Debug.Log("hmm");
 				messageQueues[i] = transformPanelMenu.gameObject.AddComponent<TemporizedMessageQueue>();
 				TemporizedMessageQueue tmq = (TemporizedMessageQueue)(messageQueues[i]);
 				tmq.Init(pref_button, uiGrid,

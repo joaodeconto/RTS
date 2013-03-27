@@ -295,15 +295,15 @@ public class TroopController : MonoBehaviour
 	{
 		HUDController hud = ComponentGetter.Get<HUDController>();
 
-		foreach(Unit u in soldiers)
+		foreach (Unit u in soldiers)
 		{
 			Worker w = (Worker)u;
 
-			if (w == null) continue;
+			if ( (w == null) || (!gameplayManager.IsSameTeam(w.Team)) ) continue;
 
 			idleWorkers.Remove(w);
 
-			switch(w.workerState)
+			switch (w.workerState)
 			{
 				case Worker.WorkerState.None:
 					if (w.unitState == Unit.UnitState.Idle &&
@@ -348,7 +348,10 @@ public class TroopController : MonoBehaviour
 																						* trnsCamera.position.y
 																						* Mathf.Tan(trnsCamera.localEulerAngles.x * Mathf.Deg2Rad));
 
+														//Deselect anything was selected
 														DeselectAllSoldiers();
+														ComponentGetter.Get<FactoryController>().DeselectFactory();
+
 														SelectSoldier(idleWorkers[currentIdleWorker], true);
 
 														idleWorkers.RemoveAt(currentIdleWorker);

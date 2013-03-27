@@ -20,28 +20,24 @@ public class TemporizedMessageQueue : MessageQueue
 										 int maxItems)
 	{
 		this.Pref_button = pref_button;
+		this.uiGrid = uiGrid;
+
 		this.QueueName   = queueName;
 
 		this.RootPosition    = RootPosition;
 		this.IsVerticalQueue = IsVerticalQueue;
 		this.MaxPerLine      = maxPerLine;
 		this.MaxItems        = maxItems;
+		this.CellSize        = cellSize;
+		this.Padding         = padding;
 		this.LabelSize       = labelSize;
 
-		this.timeToFadeout = timeToFadeout;
-		this.fadeColor     = fadeColor;
-
-		this.uiGrid = uiGrid;
-
-		this.uiGrid.cellWidth  = cellSize.x + padding.x;
-		this.uiGrid.cellHeight = cellSize.y + padding.y;
 		this.uiGrid.maxPerLine = maxPerLine;
 		this.uiGrid.sorted       = true;
 		this.uiGrid.hideInactive = false;
 
-		this.uiGrid.arrangement = (IsVerticalQueue) ?
-									UIGrid.Arrangement.Vertical :
-									UIGrid.Arrangement.Horizontal;
+		this.timeToFadeout = timeToFadeout;
+		this.fadeColor     = fadeColor;
 
 		return this;
 	}

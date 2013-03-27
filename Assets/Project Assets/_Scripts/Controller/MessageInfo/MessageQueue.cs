@@ -3,13 +3,58 @@ using System.Collections;
 
 public abstract class MessageQueue : MonoBehaviour
 {
-	public string QueueName;
-	public Vector2 RootPosition;
-	public bool IsVerticalQueue;
-	public int MaxPerLine;
-	public int MaxItems;
+	public string QueueName { get; protected set; }
+	public Vector2 RootPosition { get; protected set; }
 
-	public float LabelSize;
+	private Vector2 _padding;
+	public Vector2 Padding
+	{
+		get
+		{
+			return _padding;
+		}
+		protected set
+		{
+			Vector2 oldPadding = _padding;
+			_padding = value;
+			this.uiGrid.cellWidth  = this.uiGrid.cellWidth  + (_padding.x - oldPadding.x);
+			this.uiGrid.cellHeight = this.uiGrid.cellHeight + (_padding.y - oldPadding.y);
+		}
+	}
+
+	public Vector2 CellSize
+	{
+		get {
+			return new Vector2(uiGrid.cellWidth - _padding.x, uiGrid.cellHeight - _padding.y);
+		}
+		set {
+			uiGrid.cellWidth  = value.x + _padding.x;
+			uiGrid.cellHeight = value.y + _padding.y;
+		}
+	}
+
+	public bool IsVerticalQueue
+	{
+		get
+		{
+			return (uiGrid.arrangement == UIGrid.Arrangement.Vertical);
+		}
+		protected set
+		{
+			this.uiGrid.arrangement = (value) ?
+										UIGrid.Arrangement.Vertical :
+										UIGrid.Arrangement.Horizontal;
+		}
+	}
+
+	public int MaxPerLine
+	{
+		get { return uiGrid.maxPerLine; }
+		protected set { uiGrid.maxPerLine = value; }
+	}
+	public int MaxItems { get; protected set; }
+
+	public float LabelSize { get; protected set; }
 
 	protected GameObject Pref_button;
 	protected UIGrid uiGrid;
@@ -31,8 +76,8 @@ public abstract class MessageQueue : MonoBehaviour
 		button.name  = buttonName;
 		button.layer = gameObject.layer;
 		button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-		button.transform.FindChild("Background").localScale = new Vector3(uiGrid.cellWidth, uiGrid.cellWidth, 1);
-		button.transform.FindChild("Foreground").localScale = new Vector3(uiGrid.cellWidth, uiGrid.cellWidth, 1);
+		button.transform.FindChild("Background").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+		button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 
 		//button.transform.localPosition = Vector3.zero;
 
