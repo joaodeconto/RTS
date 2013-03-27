@@ -16,6 +16,8 @@ public class FogOfWar : MonoBehaviour
 
 	public float fogHeight = 8.0f;
 
+	public Transform[] fogTrns;
+
 	private Texture2D texture;
 
 	private List<Transform> allies;
@@ -24,8 +26,6 @@ public class FogOfWar : MonoBehaviour
 	private List<IStats> entityEnemies;
 
 	public Vector3 mapSize;
-
-	Renderer r;
 
 	private const int SIZE_TEXTURE = 256;
 
@@ -78,6 +78,8 @@ public class FogOfWar : MonoBehaviour
 
 		Transform polyTrns = poly.transform;
 
+		Renderer r;
+
 		polyTrns.parent = this.transform;
 		polyTrns.localPosition    = Vector3.up * fogHeight;
 		polyTrns.localScale       = new Vector3(mapSize.x, mapSize.z, mapSize.y) * 0.5f;
@@ -86,10 +88,26 @@ public class FogOfWar : MonoBehaviour
 		r = poly.renderer;
 		r.material.mainTexture = texture;
 
-		allies       = new List<Transform>();
-		entityAllies = new List<IStats>();
-		enemies      = new List<Transform>();
-		entityEnemies= new List<IStats>();
+		foreach(Transform t in fogTrns)
+		{
+			poly       = Instantiate(pref_plane, Vector3.zero, Quaternion.identity) as GameObject;
+			poly.layer = t.gameObject.layer;
+
+			polyTrns = poly.transform;
+
+			polyTrns.parent = t;
+			polyTrns.localPosition    = Vector3.zero;
+			polyTrns.localScale       = Vector3.one;
+			polyTrns.localEulerAngles = Vector3.zero;
+
+			r = poly.renderer;
+			r.material.mainTexture = texture;
+		}
+
+		allies        = new List<Transform>();
+		entityAllies  = new List<IStats>();
+		enemies       = new List<Transform>();
+		entityEnemies = new List<IStats>();
 
 		return this;
 	}
@@ -183,7 +201,7 @@ public class FogOfWar : MonoBehaviour
 		for(int i = enemies.Count - 1; i != -1; --i)
 		{
 			trns = enemies[i];
-			
+
 			if (trns == null)
 			{
 					  enemies.RemoveAt(i);
@@ -218,7 +236,7 @@ public class FogOfWar : MonoBehaviour
 	{
 		if(!UseFog)
 			return null;
-		
+
 		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.Team))
 		{
 			allies.Add(trnsEntity);
@@ -237,20 +255,20 @@ public class FogOfWar : MonoBehaviour
 	{
 		if(!UseFog || trnsEntity == null)
 			return null;
-		
+
 		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.Team))
 		{
 			int index = allies.IndexOf(trnsEntity) != null ? allies.IndexOf(trnsEntity) : -1;
-		
+
 			if (index == -1) return null;
-			
+
 				  allies.RemoveAt(index);
 			entityAllies.RemoveAt(index);
 		}
 		else
 		{
 			int index = enemies.IndexOf(trnsEntity) != null ? enemies.IndexOf(trnsEntity) : -1;
-		
+
 			if (index == -1) return null;
 
 				  enemies.RemoveAt(index);
@@ -259,7 +277,7 @@ public class FogOfWar : MonoBehaviour
 
 		return this;
 	}
-	
+
 	public bool IsVisitedPosition (Transform trans)
 	{
 		return true;

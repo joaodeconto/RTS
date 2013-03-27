@@ -19,8 +19,6 @@ public class MiniMapController : MonoBehaviour
 	public Vector3 visualizationSize;
 	public Vector3 visualizationPosition;
 
-	private Vector3 offsetCamPos = new Vector3(20,0,30);
-
 	public float MiniMapRefreshInterval = 0.4f;
 
 	private Vector3 miniMapSize;
@@ -154,7 +152,7 @@ public class MiniMapController : MonoBehaviour
 		//CamPositionMiniMap, mainCameraGO.transform
 
 		Vector3 percentPos = new Vector3 (  (mainCameraGO.transform.position.x) / mapSize.x,
-											(offsetCamPos.z + mainCameraGO.transform.position.z) / mapSize.z,
+											(visualizationPosition.z + mainCameraGO.transform.position.z) / mapSize.z,
 											-5);
 
 		//Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
@@ -199,9 +197,9 @@ public class MiniMapController : MonoBehaviour
 		//Debug.Log("mapSize: " + mapSize);
 		//Debug.Log("mainCameraGO.transform.position: " + mainCameraGO.transform.position);
 
-		Vector3 newCameraPosition = new Vector3((camBoundsSize.x * percentPos.x)         - (offsetCamPos.x ),
-											    (mainCameraGO.transform.localPosition.y) - (offsetCamPos.y),
-											    (camBoundsSize.z * percentPos.y)         - (offsetCamPos.z * 1.5f)  );
+		Vector3 newCameraPosition = new Vector3((camBoundsSize.x * percentPos.x)         - (visualizationPosition.x),
+											    (mainCameraGO.transform.localPosition.y) - (visualizationPosition.y),
+											    (camBoundsSize.z * percentPos.y)         - (visualizationPosition.z * 1.5f)  );
 
 		mainCameraGO.transform.position = mainCameraGO.GetComponent<CameraBounds>().ClampScenario(newCameraPosition);
 	}
@@ -260,9 +258,9 @@ public class MiniMapController : MonoBehaviour
 	public void RemoveStructure (Transform trns, int teamId)
 	{
 		if (trns == null) return;
-		
+
 		int index = structureList[teamId].IndexOf(trns) != null ? structureList[teamId].IndexOf(trns) : -1;
-		
+
 		if (index == -1) return;
 
 		GameObject obj = StructureMiniMapList[teamId][index];
@@ -276,11 +274,11 @@ public class MiniMapController : MonoBehaviour
 	public void RemoveUnit (Transform trns, int teamId)
 	{
 		if (trns == null) return;
-		
+
 		int index = unitList[teamId].IndexOf(trns) != null ? unitList[teamId].IndexOf(trns) : -1;
-		
+
 		if (index == -1) return;
-		
+
 		GameObject obj = UnitMiniMapList[teamId][index];
 
 		Destroy(obj);
