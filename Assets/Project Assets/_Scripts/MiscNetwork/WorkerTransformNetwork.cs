@@ -32,6 +32,7 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 		if (stream.isWriting)
         {
             //We own this player: send the others our data
+			stream.SendNext (workerScript.Health);
             stream.SendNext ((int)workerScript.unitState);
             stream.SendNext (transform.position);
             stream.SendNext (transform.rotation);
@@ -41,6 +42,7 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
         else
         {
             //Network player, receive data
+            workerScript.SetHealth((int)stream.ReceiveNext ());
             workerScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
             correctPlayerPos = (Vector3)stream.ReceiveNext ();
             correctPlayerRot = (Quaternion)stream.ReceiveNext ();

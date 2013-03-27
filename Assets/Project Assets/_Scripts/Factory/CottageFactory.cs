@@ -10,9 +10,11 @@ public class CottageFactory : FactoryBase
 		else
 			gameplayManager.IncrementMaxOfUnits ();
 	}
-
-	void OnDie ()
+	
+	public override void OnDie ()
 	{
 		if (wasBuilt) gameplayManager.DecrementMaxOfUnits ();
+		
+		base.OnDie ();
 	}
 }
