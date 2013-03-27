@@ -53,7 +53,27 @@ public class GameplayManager : MonoBehaviour
 		excessHousesIncrements = 0;
 		IncrementMaxOfUnits ();
 	}
-
+	
+	/// <summary>
+	/// Gets the color of my team.
+	/// </summary>
+	/// <returns>
+	/// The of my color team.
+	/// </returns>
+	public Color GetColorTeam ()
+	{
+		return GetColorTeam (MyTeam);
+	}
+	
+	/// <summary>
+	/// Gets the color team.
+	/// </summary>
+	/// <returns>
+	/// The color team.
+	/// </returns>
+	/// <param name='teamID'>
+	/// Team ID.
+	/// </param>
 	public Color GetColorTeam (int teamID)
 	{
 		if (teamID >= 0 && teamID < teams.Length) return teams[teamID].color;
@@ -98,7 +118,7 @@ public class GameplayManager : MonoBehaviour
 	
 	public bool NeedMoreHouses (int additionalUnits)
 	{
-		return (numberOfUnits + additionalUnits >= maxOfUnits);
+		return (numberOfUnits + additionalUnits > maxOfUnits);
 	}
 
 	public bool ReachedMaxPopulation

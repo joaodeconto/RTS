@@ -17,6 +17,9 @@ public class RallyPoint : MonoBehaviour {
 		lineRenderer.SetColors (Color.black, Color.black);
 		lineRenderer.material = new Material(Shader.Find("Transparent/Diffuse"));
 		lineRenderer.material.mainTexture = lineTexture;
+		lineRenderer.material.color = ComponentGetter.Get<GameplayManager>().GetColorTeam ();
+		lineRenderer.SetColors (lineRenderer.material.color, lineRenderer.material.color);
+		transform.GetChild (0).renderer.material.color = lineRenderer.material.color;
 		active = false;
 		
 		lineRenderer.SetPosition (0, transform.position);

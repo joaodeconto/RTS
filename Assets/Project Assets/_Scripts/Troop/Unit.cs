@@ -159,7 +159,7 @@ public class Unit : IStats
 
 	void OnDestroy ()
 	{
-		if (Selected) Deselect ();
+		if (Selected && !playerUnit) Deselect ();
 		if (!IsRemoved && !playerUnit) troopController.soldiers.Remove (this);
 	}
 

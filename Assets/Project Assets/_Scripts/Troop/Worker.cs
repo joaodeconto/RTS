@@ -58,6 +58,7 @@ public class Worker : Unit
 	public bool IsBuilding {get; protected set;}
 
 	public int resourceId {get; set;}
+	public Resource.Type resourceType {get; protected set;}
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
 	public bool hasResource {get; protected set;}
@@ -177,10 +178,15 @@ public class Worker : Unit
 
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 				{
-					if (resource != null) Move (resource.transform.position);
-				
-					gameplayManager.resources.Set (resource.type, currentNumberOfResources);
+					gameplayManager.resources.Set (resourceType, currentNumberOfResources);
 					
+					if (resource != null) Move (resource.transform.position);
+					else
+					{
+						pathfind.Stop ();
+						unitState = Unit.UnitState.Idle;
+					}
+				
 					currentNumberOfResources = 0;
 				
 					factoryChoose = null;
@@ -244,6 +250,7 @@ public class Worker : Unit
 								{
 									resourceId = i;
 									rw.extractingObject.SetActive (true);
+									resourceType = resource.type;
 								}
 							}
 
