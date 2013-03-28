@@ -13,8 +13,11 @@ public class MiniMapController : MonoBehaviour
 	public UIRoot MiniMapRoot;
 
 	public GameObject CamPositionMiniMap;
+	public Texture2D CamPositionTexture;
 
 	public Transform mapTransform;
+
+	public GameObject fogMiniMap;
 
 	public Vector3 visualizationSize;
 	public Vector3 visualizationPosition;
@@ -74,14 +77,28 @@ public class MiniMapController : MonoBehaviour
 						MiniMapRefreshInterval,
 						MiniMapRefreshInterval);
 
-		TerrainData td = ComponentGetter.Get<Terrain>("Terrain").terrainData;
-		mapSize = td.size;
+		mapSize = ComponentGetter.Get<Terrain>("Terrain").terrainData.size;
 
 		//CameraBounds cb = ComponentGetter.Get<CameraBounds>("Main Camera");
 
 		//mapSize = new Vector3 ( cb.scenario.x.max - cb.scenario.x.min,
 								//0,
 								//cb.scenario.z.max - cb.scenario.z.min);
+
+		UITexture ut = NGUITools.AddWidget<UITexture> (fogMiniMap);
+		ut.pivot = UIWidget.Pivot.BottomLeft;
+		ut.transform.localPosition    = Vector3.forward * 10;
+		ut.transform.localScale       = Vector3.one;
+		ut.transform.localEulerAngles = Vector3.forward * 90f;
+		ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
+		ut.material.mainTexture = ComponentGetter.Get<FogOfWar>().FogTexture;
+
+		ut = NGUITools.AddWidget<UITexture> (CamPositionMiniMap);
+		ut.transform.localPosition    = Vector3.forward * -1;
+		ut.transform.localScale       = Vector3.one;
+		ut.transform.localEulerAngles = Vector3.forward * 90f;
+		ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
+		ut.material.mainTexture = CamPositionTexture;
 
 		mainCameraGO = GameObject.Find("Main Camera");
 
@@ -153,13 +170,13 @@ public class MiniMapController : MonoBehaviour
 
 		Vector3 percentPos = new Vector3 (  (mainCameraGO.transform.position.x) / mapSize.x,
 											(visualizationPosition.z + mainCameraGO.transform.position.z) / mapSize.z,
-											-5);
+											0);
 
 		//Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
 
 		CamPositionMiniMap.transform.localPosition = new Vector3((mapTransform.localPosition.x + (miniMapSize.x * percentPos.x)),
 																 (mapTransform.localPosition.y + (miniMapSize.y * percentPos.y)),
-																 (-5));
+																 (-50));
 	}
 
 	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns)
@@ -187,21 +204,26 @@ public class MiniMapController : MonoBehaviour
 
 		//Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
 		//Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
+		//Debug.Log("mapTransform.localPosition: " + mapTransform.localPosition);
+		//Debug.Log("miniMapSize: " + miniMapSize);
 
-		Vector2 percentPos = new Vector2 (  (mapTransform.localPosition.x +
-												(MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x)) / miniMapSize.x,
-											(mapTransform.localPosition.y +
-												(MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y)) / miniMapSize.y);
+		Vector2 percentPos = new Vector2(((MiniMapRoot.pixelSizeAdjustment
+												* UICamera.lastTouchPosition.x) - mapTransform.localPosition.x),
+										 ((MiniMapRoot.pixelSizeAdjustment
+												* UICamera.lastTouchPosition.y) - mapTransform.localPosition.y));
+		percentPos.x /= miniMapSize.x;
+		percentPos.y /= miniMapSize.y;
 
 		//Debug.Log("percentPos: " + percentPos);
 		//Debug.Log("mapSize: " + mapSize);
-		//Debug.Log("mainCameraGO.transform.position: " + mainCameraGO.transform.position);
 
 		Vector3 newCameraPosition = new Vector3((camBoundsSize.x * percentPos.x)         - (visualizationPosition.x),
 											    (mainCameraGO.transform.localPosition.y) - (visualizationPosition.y),
 											    (camBoundsSize.z * percentPos.y)         - (visualizationPosition.z * 1.5f)  );
 
 		mainCameraGO.transform.position = mainCameraGO.GetComponent<CameraBounds>().ClampScenario(newCameraPosition);
+
+		Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
 	}
 
 #region Add and Remove Structures/Units

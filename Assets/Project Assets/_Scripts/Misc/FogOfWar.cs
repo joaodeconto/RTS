@@ -6,6 +6,8 @@ using Visiorama;
 
 public class FogOfWar : MonoBehaviour
 {
+	private const int SIZE_TEXTURE = 256;
+
 	public bool UseFog  = true;
 	public bool DarkFog = true;
 
@@ -16,18 +18,14 @@ public class FogOfWar : MonoBehaviour
 
 	public float fogHeight = 8.0f;
 
-	public Transform[] fogTrns;
-
-	private Texture2D texture;
+	public Texture2D FogTexture { get; private set; }
 
 	private List<Transform> allies;
-	private List<IStats> entityAllies;
 	private List<Transform> enemies;
+	private List<IStats> entityAllies;
 	private List<IStats> entityEnemies;
 
-	public Vector3 mapSize;
-
-	private const int SIZE_TEXTURE = 256;
+	private Vector3 mapSize;
 
 	private enum FogFlag
 	{
@@ -49,8 +47,8 @@ public class FogOfWar : MonoBehaviour
 		if(!UseFog)
 			return this;
 
-		texture        = new Texture2D (SIZE_TEXTURE, SIZE_TEXTURE, TextureFormat.ARGB32, false);
-		matrixFogFlag  = new FogFlag[SIZE_TEXTURE,SIZE_TEXTURE];
+		FogTexture    = new Texture2D (SIZE_TEXTURE, SIZE_TEXTURE, TextureFormat.ARGB32, false);
+		matrixFogFlag = new FogFlag[SIZE_TEXTURE,SIZE_TEXTURE];
 
 		//GameplayManager
 		TerrainData td = ComponentGetter.Get<Terrain>("Terrain").terrainData;
@@ -60,14 +58,14 @@ public class FogOfWar : MonoBehaviour
 			for(int j = 0; j != SIZE_TEXTURE; ++j)
 			{
 				if(DarkFog)
-					texture.SetPixel(i,j, Color.black);
+					FogTexture.SetPixel(i,j, Color.black);
 				else
-					texture.SetPixel(i,j, knownAreaColor);
+					FogTexture.SetPixel(i,j, knownAreaColor);
 
 				matrixFogFlag[i,j] = FogFlag.NOT_KNOWN_AREA;
 			}
 
-		texture.Apply();
+		FogTexture.Apply();
 
 		//posicionando FogOfWar no local correto
 		this.transform.position = new Vector3(mapSize.x * 0.5f , 0, mapSize.z * 0.5f);
@@ -86,23 +84,7 @@ public class FogOfWar : MonoBehaviour
 		polyTrns.localEulerAngles = new Vector3 (270,180,0);
 
 		r = poly.renderer;
-		r.material.mainTexture = texture;
-
-		foreach(Transform t in fogTrns)
-		{
-			poly       = Instantiate(pref_plane, Vector3.zero, Quaternion.identity) as GameObject;
-			poly.layer = t.gameObject.layer;
-
-			polyTrns = poly.transform;
-
-			polyTrns.parent = t;
-			polyTrns.localPosition    = Vector3.zero;
-			polyTrns.localScale       = Vector3.one;
-			polyTrns.localEulerAngles = Vector3.zero;
-
-			r = poly.renderer;
-			r.material.mainTexture = texture;
-		}
+		r.material.mainTexture = FogTexture;
 
 		allies        = new List<Transform>();
 		entityAllies  = new List<IStats>();
@@ -184,16 +166,16 @@ public class FogOfWar : MonoBehaviour
 			{
 				if(matrixFogFlag[i,j] == FogFlag.VISIBLE)//== FogFlag.VISIBLE)
 				{
-					texture.SetPixel(i, j, visibleAreaColor);
+					FogTexture.SetPixel(i, j, visibleAreaColor);
 
 					//deixar área invisivel para que seja verificada posteriormente se é visivel
 					matrixFogFlag[i,j] = FogFlag.KNOWN_AREA;
 				}
 				else if(matrixFogFlag[i,j] == FogFlag.KNOWN_AREA)//fogNodeVisited[i,j])
-					texture.SetPixel(i, j, knownAreaColor);
+					FogTexture.SetPixel(i, j, knownAreaColor);
 			}
 
-		texture.Apply();
+		FogTexture.Apply();
 	}
 
 	void UpdateEnemyVisibility()
