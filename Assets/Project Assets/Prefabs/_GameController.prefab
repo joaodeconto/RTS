@@ -556,9 +556,11 @@ MonoBehaviour:
   miniMapPanel: {fileID: 0}
   MiniMapRoot: {fileID: 0}
   CamPositionMiniMap: {fileID: 0}
+  CamPositionTexture: {fileID: 2800000, guid: f92f0095c09765246a81892919654288, type: 3}
   mapTransform: {fileID: 0}
-  visualizationSize: {x: 48, y: 30, z: 0}
-  visualizationPosition: {x: 0, y: -40, z: 40}
+  fogMiniMap: {fileID: 0}
+  visualizationSize: {x: 85, y: 60, z: 0}
+  visualizationPosition: {x: 20, y: 0, z: 30}
   MiniMapRefreshInterval: .200000003
 --- !u!114 &11400022
 MonoBehaviour:
@@ -605,9 +607,9 @@ MonoBehaviour:
   transformPanelMenu: {fileID: 0}
   messageQueuesAttributes:
   - queueName: Unit Group
-    rootPosition: {x: -800, y: 100}
+    rootPosition: {x: 450, y: 100}
     cellSize: {x: 50, y: 50}
-    padding: {x: 5, y: 5}
+    padding: {x: 10, y: 10}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
@@ -617,9 +619,9 @@ MonoBehaviour:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Factory
-    rootPosition: {x: -800, y: 100}
+    rootPosition: {x: 450, y: 100}
     cellSize: {x: 50, y: 50}
-    padding: {x: 5, y: 5}
+    padding: {x: 10, y: 10}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
@@ -629,9 +631,9 @@ MonoBehaviour:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Events
-    rootPosition: {x: -1200, y: 600}
-    cellSize: {x: 30, y: 30}
-    padding: {x: 0, y: 0}
+    rootPosition: {x: 25, y: 600}
+    cellSize: {x: 40, y: 40}
+    padding: {x: 5, y: 5}
     labelSize: 18
     IsVerticalQueue: 1
     maxPerLine: 10
