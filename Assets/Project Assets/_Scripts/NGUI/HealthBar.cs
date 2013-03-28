@@ -3,48 +3,37 @@ using System.Collections;
 
 public class HealthBar : MonoBehaviour {
 
-	private Unit soldierTarget;
-	private FactoryBase factoryTarget;
-	
+	private IStats target;
+
 	protected UISlider slider;
-	
+
 	public delegate void UpdateHealthMethod ();
-	protected UpdateHealthMethod CurrentTarget;
-	
+	protected UpdateHealthMethod updateHealthMethod;
+
 	void Awake ()
 	{
 		slider = GetComponent<UISlider> ();
 	}
-	
-	public void SetTarget (Unit soldier)
+
+	public void SetTarget (IStats target)
 	{
-		soldierTarget = soldier;
-		CurrentTarget = UnitHealth;
+		this.target        = target;
+		updateHealthMethod = DefaultMethod;
 	}
-	
-	public void SetTarget (FactoryBase factory)
-	{
-		factoryTarget = factory;
-		CurrentTarget = FactoryHealth;
-	}
-	
+
 	public void Close ()
 	{
+		updateHealthMethod = null;
 	}
-	
+
 	// Update is called once per frame
 	void Update ()
 	{
-		if (CurrentTarget != null) CurrentTarget ();
+		if (updateHealthMethod != null) updateHealthMethod ();
 	}
-	
-	void UnitHealth ()
+
+	void DefaultMethod ()
 	{
-		slider.sliderValue = (float)soldierTarget.Health / (float)soldierTarget.MaxHealth;
-	}
-	
-	void FactoryHealth ()
-	{
-		slider.sliderValue = (float)factoryTarget.Health / (float)factoryTarget.MaxHealth;
+		slider.sliderValue = (float)target.Health / (float)target.MaxHealth;
 	}
 }
