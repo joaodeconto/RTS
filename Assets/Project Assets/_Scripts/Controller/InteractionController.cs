@@ -16,9 +16,9 @@ public class InteractionController : MonoBehaviour
 
 	public void Init ()
 	{
-		touchController = ComponentGetter.Get<TouchController>();
-		troopController = ComponentGetter.Get<TroopController>();
-		gameplayManager = ComponentGetter.Get<GameplayManager>();
+		touchController = ComponentGetter.Get<TouchController> ();
+		troopController = ComponentGetter.Get<TroopController> ();
+		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 
 		stackInteractionCallbacks = new Stack<InteractionCallback>();
 	}
@@ -80,48 +80,21 @@ public class InteractionController : MonoBehaviour
 			}
 			else
 			{
-				foreach (Unit unit in troopController.selectedSoldiers)
-				{
-					if (unit.GetType() == typeof(Worker))
-					{
-						Worker worker = unit as Worker;
-						FactoryBase factory = hit.GetComponent<FactoryBase>();
-
-						if (!factory.wasBuilt)
-						{
-							worker.SetMoveToFactory(factory);
-						}
-						else if (worker.hasResource)
-						{
-							if (factory.receiveResource == worker.resource.type)
-							{
-								worker.SetMoveToFactory(factory);
-							}
-							else if (hit.GetComponent<MainFactory>() != null)
-							{
-								worker.SetMoveToFactory(factory);
-							}
-						}
-						else if (factory.IsNeededRepair)
-						{
-							worker.SetMoveToFactory(factory);
-						}
-					}
-				}
+				troopController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
 			}
 			return;
 		}
-		else
-		{
-			foreach (Unit unit in troopController.selectedSoldiers)
-			{
-				if (unit.GetType() == typeof(Worker))
-				{
-					Worker worker = unit as Worker;
-					worker.SetMoveToFactory (null);
-				}
-			}
-		}
+//		else
+//		{
+//			foreach (Unit unit in troopController.selectedSoldiers)
+//			{
+//				if (unit.GetType() == typeof(Worker))
+//				{
+//					Worker worker = unit as Worker;
+//					worker.SetMoveToFactory (null);
+//				}
+//			}
+//		}
 
 		if (hit.GetComponent<Resource> () != null)
 		{
@@ -160,7 +133,7 @@ public class InteractionController : MonoBehaviour
 			}
 			return;
 		}
-
+		
 		troopController.MoveTroop (touchController.GetFinalPoint);
 	}
 }

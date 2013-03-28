@@ -11,7 +11,7 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 		Init ();
 	}
 	
-    public virtual void Init ()
+    public void Init ()
     {
 		if (PhotonNetwork.offlineMode)
 		{

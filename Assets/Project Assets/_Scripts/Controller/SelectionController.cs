@@ -393,7 +393,9 @@ public class SelectionController : MonoBehaviour
 		}
 #endif
 	}
-
+	
+	float tempTime = -1f;
+	
 	void SelectGroup (int numberOfGroup)
 	{
 		bool hasGroup = troopController.SelectGroup (numberOfGroup);
@@ -401,12 +403,16 @@ public class SelectionController : MonoBehaviour
 		if (!hasGroup) return;
 		
 		factoryController.DeselectFactory ();		
-
-		Vector3 getPosition = troopController.selectedSoldiers[0].transform.position - Vector3.forward * touchController.mainCamera.orthographicSize;
-		getPosition = touchController.mainCamera.GetComponent<CameraBounds> ().ClampScenario (getPosition);
-
-		touchController.mainCamera.transform.position = getPosition;
-
+		
+//		if (Time.time - tempTime < 1f)
+//		{
+//			Vector3 getPosition = troopController.selectedSoldiers[0].transform.position - Vector3.forward * touchController.mainCamera.orthographicSize;
+//			getPosition = touchController.mainCamera.GetComponent<CameraBounds> ().ClampScenario (getPosition);
+//	
+//			touchController.mainCamera.transform.position = getPosition;
+//		}
+//		
+//		tempTime = Time.time;
 	}
 
 	void OnGUI ()

@@ -27,13 +27,24 @@ public class HUDController : MonoBehaviour
 			return rootPosition + new Vector3(vec.x, vec.y, 0);
 		}
 	}
+	
+	public enum Feedbacks
+	{
+		Move,
+		Attack,
+		Self
+	}
 
-	public GameObject healthBar;
-	public GameObject selectedObject;
+	public GameObject pref_healthBar;
+	public GameObject pref_selectedObject;
 	public UIRoot uiRoot;
 	public Transform mainTranformSelectedObjects;
 	public Transform trnsOptionsMenu;
 	public GameObject pref_button;
+	public Vector3 offesetFeedback;
+	public GameObject pref_moveFeedback;
+	public GameObject pref_selfFeedback;
+	public GameObject pref_attackFeedback;
 
 	public UISlider[] sliders;
 
@@ -62,6 +73,8 @@ public class HUDController : MonoBehaviour
 	}
 
 	private List<UIGrid> gridsToReposition = new List<UIGrid>();
+	
+	private GameObject oldFeedback;
 
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
@@ -74,12 +87,12 @@ public class HUDController : MonoBehaviour
 
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
 	{
-		if (HUDRoot.go == null || healthBar == null)
+		if (HUDRoot.go == null || pref_healthBar == null)
 		{
 			return null;
 		}
 
-		GameObject child = NGUITools.AddChild(HUDRoot.go, healthBar);
+		GameObject child = NGUITools.AddChild(HUDRoot.go, pref_healthBar);
 
 		if (child.GetComponent<HealthBar> () == null) child.AddComponent <HealthBar> ();
 		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
@@ -96,7 +109,7 @@ public class HUDController : MonoBehaviour
 
 	public void CreateSelected (Transform target, float size, Color color)
 	{
-		GameObject selectObj = Instantiate (selectedObject, target.position, Quaternion.identity) as GameObject;
+		GameObject selectObj = Instantiate (pref_selectedObject, target.position, Quaternion.identity) as GameObject;
 		selectObj.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
 		selectObj.transform.GetComponent<AnimateTiledTexture>().Play ();
 		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
@@ -249,5 +262,33 @@ public class HUDController : MonoBehaviour
 
 		messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
 		messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
+	}
+	
+	public void CreateFeedback (Feedbacks feedback, Vector3 position, float size)
+	{
+		if (oldFeedback != null) Destroy (oldFeedback);
+		
+		GameObject newFeedback;
+		if (feedback == Feedbacks.Move)
+		{
+			newFeedback = Instantiate (pref_moveFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
+		}
+		else if (feedback == Feedbacks.Self)
+		{
+			newFeedback = Instantiate (pref_selfFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
+		}
+		else
+		{
+			newFeedback = Instantiate (pref_attackFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
+		}
+		
+//		newFeedback.layer = LayerMask.NameToLayer ("HUD3D");
+		newFeedback.name = "Feedback";
+		newFeedback.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
+		newFeedback.transform.GetComponent<AnimateTiledTexture>().Play ();
+		
+		oldFeedback = newFeedback;
+		
+		Destroy (newFeedback, 2f);
 	}
 }
