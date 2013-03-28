@@ -8,7 +8,7 @@ public class UIFollowTarget : MonoBehaviour
 
 	public Camera mGameCamera { get; set; }
 	public Camera mUICamera { get; set; }
-	
+
 	Transform mTrans;
 	bool mIsVisible = false;
 
@@ -46,9 +46,10 @@ public class UIFollowTarget : MonoBehaviour
 			Destroy (this.gameObject);
 			return;
 		}
-			
+
 		Vector3 pos = mGameCamera.WorldToViewportPoint(target.position);
 
+		Debug.Log("pos: " + pos);
 		// Determine the visibility and the target alpha
 		bool isVisible = (pos.z > 0f && pos.x > 0f && pos.x < 1f && pos.y > 0f && pos.y < 1f);
 
@@ -58,12 +59,19 @@ public class UIFollowTarget : MonoBehaviour
 		// If visible, update the position
 		if (isVisible)
 		{
+			mGameCamera.ResetAspect();
+			  mUICamera.ResetAspect();
+
+			//pos.x *= (mUICamera.pixelWidth  / mGameCamera.pixelWidth);
+			//pos.y *= (mUICamera.pixelHeight / mGameCamera.pixelHeight);
+
 			transform.position = mUICamera.ViewportToWorldPoint(pos);
 			pos = mTrans.localPosition;
 			pos.x = Mathf.RoundToInt(pos.x);
 			pos.y = Mathf.RoundToInt(pos.y);
 			pos.z = 0f;
 			mTrans.localPosition = pos;
+			Debug.Log("mTrans: " + mTrans);
 		}
 	}
 }

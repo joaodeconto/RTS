@@ -340,12 +340,18 @@ public class TroopController : MonoBehaviour
 
 													if(currentIdleWorker < idleWorkers.Count)
 													{
-														Vector3 pos = idleWorkers[currentIdleWorker].transform.position;
+														Vector3 idlePos = idleWorkers[currentIdleWorker].transform.position;
+														Vector3 pos = idlePos;
+														pos.y = 0.0f;
 
 														Transform trnsCamera = Camera.main.transform;
 
-														trnsCamera.position = pos - (Vector3.forward
-																						* trnsCamera.position.y
+														if(!Mathf.Approximately(trnsCamera.localEulerAngles.x, 45))
+															Debug.Log("Centralizacao da camera so funciona com a camera em 45 graus");
+														trnsCamera.position += pos - (Vector3.right * trnsCamera.position.x)
+																				   - (Vector3.forward * trnsCamera.position.z)
+																				   - (Vector3.forward
+																						* (trnsCamera.position.y - idlePos.y)
 																						* Mathf.Tan(trnsCamera.localEulerAngles.x * Mathf.Deg2Rad));
 
 														//Deselect anything was selected
