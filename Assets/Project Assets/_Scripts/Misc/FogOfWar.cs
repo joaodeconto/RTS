@@ -38,7 +38,8 @@ public class FogOfWar : MonoBehaviour
 	Transform trns = null;
 	int maxX, maxY, minX, minY,
 		range, xRange = 0,
-		posX, posY;
+		posX, posY,
+		i,j,k;
 
 	FogFlag[,] matrixFogFlag;
 
@@ -54,8 +55,8 @@ public class FogOfWar : MonoBehaviour
 		TerrainData td = ComponentGetter.Get<Terrain>("Terrain").terrainData;
 		mapSize = td.size;
 
-		for(int i = 0; i != SIZE_TEXTURE; ++i)
-			for(int j = 0; j != SIZE_TEXTURE; ++j)
+		for (i = 0; i != SIZE_TEXTURE; ++i)
+			for (j = 0; j != SIZE_TEXTURE; ++j)
 			{
 				if(DarkFog)
 					FogTexture.SetPixel(i,j, Color.black);
@@ -76,15 +77,12 @@ public class FogOfWar : MonoBehaviour
 
 		Transform polyTrns = poly.transform;
 
-		Renderer r;
-
 		polyTrns.parent = this.transform;
 		polyTrns.localPosition    = Vector3.up * fogHeight;
 		polyTrns.localScale       = new Vector3(mapSize.x, mapSize.z, mapSize.y) * 0.5f;
 		polyTrns.localEulerAngles = new Vector3 (270,180,0);
 
-		r = poly.renderer;
-		r.material.mainTexture = FogTexture;
+		poly.renderer.material.mainTexture = FogTexture;
 
 		allies        = new List<Transform>();
 		entityAllies  = new List<IStats>();
@@ -96,10 +94,10 @@ public class FogOfWar : MonoBehaviour
 
 	void Update()
 	{
-		if(!UseFog || allies == null)
+		if (!UseFog || allies == null)
 			return;
 
-		for(int i = allies.Count - 1; i != -1; --i)
+		for (i = allies.Count - 1; i != -1; --i)
 		{
 			trns = allies[i];
 
@@ -127,7 +125,7 @@ public class FogOfWar : MonoBehaviour
 			//float changeAngleRate = 180.0f / (2.0f * range);
 			//float angle = 0.0f;
 
-			for(int k = minY; k != maxY; ++k)//, angle += changeAngleRate)
+			for (k = minY; k != maxY; ++k)//, angle += changeAngleRate)
 			{
 				//xRange = (int)(Mathf.Sin(Mathf.Deg2Rad * angle) * (float)range);
 
@@ -143,7 +141,7 @@ public class FogOfWar : MonoBehaviour
 				maxX = Mathf.RoundToInt(Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
 				minX = Mathf.RoundToInt(Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
 
-				for(int j = minX; j != maxX; ++j)
+				for (j = minX; j != maxX; ++j)
 				{
 					matrixFogFlag [j,k] = FogFlag.VISIBLE;
 				}
@@ -161,8 +159,8 @@ public class FogOfWar : MonoBehaviour
 
 		UpdateEnemyVisibility();
 
-		for(int i = 0; i != SIZE_TEXTURE; ++i)
-			for(int j = 0; j != SIZE_TEXTURE; ++j)
+		for (i = 0; i != SIZE_TEXTURE; ++i)
+			for (j = 0; j != SIZE_TEXTURE; ++j)
 			{
 				if(matrixFogFlag[i,j] == FogFlag.VISIBLE)//== FogFlag.VISIBLE)
 				{
@@ -180,7 +178,7 @@ public class FogOfWar : MonoBehaviour
 
 	void UpdateEnemyVisibility()
 	{
-		for(int i = enemies.Count - 1; i != -1; --i)
+		for (i = enemies.Count - 1; i != -1; --i)
 		{
 			trns = enemies[i];
 
@@ -260,8 +258,11 @@ public class FogOfWar : MonoBehaviour
 		return this;
 	}
 
-	public bool IsVisitedPosition (Transform trans)
+	public bool IsKnownArea (Transform trns)
 	{
-		return true;
+		posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+		posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+
+		return (matrixFogFlag[posX, posY] == FogFlag.KNOWN_AREA);
 	}
 }
