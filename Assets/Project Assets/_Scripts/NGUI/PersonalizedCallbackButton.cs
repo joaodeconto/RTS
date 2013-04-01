@@ -21,7 +21,17 @@ public class PersonalizedCallbackButton : DefaultCallbackButton
 	{
 		base.ChangeParams(ht, onClick, onPress, onDrag, onDrop);
 
-		if(ht.ContainsKey("textureName"))
+		Transform trnsLabel = transform.FindChild("Label");
+		UILabel l = trnsLabel.GetComponent<UILabel>();
+		l.text = "";
+
+		if( !ht.ContainsKey("textureName") )
+		{
+			transform.FindChild("Foreground").GetComponent<UISlicedSprite>().enabled = false;
+			transform.FindChild("Background").GetComponent<UISlicedSprite>().enabled = false;
+			trnsLabel.localPosition = Vector3.zero;
+		}
+		else
 		{
 			string textureName = (string)ht["textureName"];
 			if ( !string.IsNullOrEmpty(textureName) )
@@ -30,10 +40,6 @@ public class PersonalizedCallbackButton : DefaultCallbackButton
 				ChangeButtonForegroundTexture(trnsForeground, textureName);
 			}
 		}
-
-		Transform trnsLabel = transform.FindChild("Label");
-		UILabel l = trnsLabel.GetComponent<UILabel>();
-		l.text = "";
 
 		if ( ht.ContainsKey("message") )
 		{
