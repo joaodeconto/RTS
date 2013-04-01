@@ -69,6 +69,8 @@ public class FactoryBase : IStats
 	public bool wasVisible = false;
 	public bool alreadyCheckedMaxPopulation = false;
 
+	protected float realRangeView;
+
 	public bool IsNeededRepair
 	{
 		get
@@ -252,9 +254,9 @@ public class FactoryBase : IStats
 	public virtual void OnDie ()
 	{
 		factoryController.RemoveFactory (this);
-		
+
 		if (Selected) Deselect ();
-		
+
 		if (IsNetworkInstantiate)
 		{
 			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
@@ -282,9 +284,10 @@ public class FactoryBase : IStats
 	[RPC]
 	public void Instance ()
 	{
+		realRangeView  = this.RangeView;
+		this.RangeView = 0.0f;
+
 		factoryController.AddFactory (this);
-		ComponentGetter.Get<FogOfWar> ().RemoveEntity (transform, this);
-		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);
@@ -315,7 +318,9 @@ public class FactoryBase : IStats
 			if (!wasBuilt)
 			{
 				wasBuilt = true;
-				ComponentGetter.Get<FogOfWar> ().AddEntity (transform, this);
+
+				this.RangeView = realRangeView;
+
 				eventManager.AddEvent("building finish", this.name, this.guiTextureName);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}

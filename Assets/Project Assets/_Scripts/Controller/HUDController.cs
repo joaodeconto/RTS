@@ -27,7 +27,7 @@ public class HUDController : MonoBehaviour
 			return rootPosition + new Vector3(vec.x, vec.y, 0);
 		}
 	}
-	
+
 	public enum Feedbacks
 	{
 		Move,
@@ -35,11 +35,27 @@ public class HUDController : MonoBehaviour
 		Self
 	}
 
+	[System.Serializable]
+	public class ButtonStatus
+	{
+		public string buttonName;
+		public Vector3 position;
+		public Hashtable ht;
+		public string textureName;
+		public DefaultCallbackButton.OnClickDelegate onClick;
+		public DefaultCallbackButton.OnPressDelegate onPress;
+		public DefaultCallbackButton.OnDragDelegate onDrag;
+		public DefaultCallbackButton.OnDropDelegate onDrop;
+		public bool persistent;
+	}
+
 	public GameObject pref_healthBar;
 	public GameObject pref_selectedObject;
+
 	public UIRoot uiRoot;
 	public Transform mainTranformSelectedObjects;
 	public Transform trnsOptionsMenu;
+
 	public GameObject pref_button;
 	public Vector3 offesetFeedback;
 	public GameObject pref_moveFeedback;
@@ -73,16 +89,47 @@ public class HUDController : MonoBehaviour
 	}
 
 	private List<UIGrid> gridsToReposition = new List<UIGrid>();
-	
+
 	private GameObject oldFeedback;
 
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
 
+	private Stack<ButtonStatus> stackButtonToCreate;
+
+	private bool _isDestroying;
+	private bool IsDestroying
+	{
+		get
+		{
+			if(_isDestroying == true)
+			{
+				bool hasChild = false;
+				foreach(Transform c in trnsOptionsMenu)
+				{
+					if (!c.gameObject.name.Contains(PERSIST_STRING))
+					{
+						hasChild = true;
+						break;
+					}
+				}
+				return _isDestroying = hasChild;
+			}
+			else return _isDestroying;
+		}
+		set
+		{
+			_isDestroying = value;
+		}
+	}
+
 	public void Init()
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
-		touchController = ComponentGetter.Get<TouchController>();
+		touchController    = ComponentGetter.Get<TouchController>();
+		stackButtonToCreate = new Stack<ButtonStatus>();
+
+		IsDestroying = false;
 	}
 
 	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
@@ -209,12 +256,37 @@ public class HUDController : MonoBehaviour
 												DefaultCallbackButton.OnDropDelegate onDrop = null,
 												bool persistent = false)
 	{
-		buttonName = persistent ?
-						PERSIST_STRING + buttonName :
-						buttonName;
+		ButtonStatus bs = new ButtonStatus();
 
-		if(!string.IsNullOrEmpty(textureName))
-			ht["textureName"] = textureName;
+		bs.buttonName  = buttonName;
+		bs.position    = position;
+		bs.ht          = ht;
+		bs.textureName = textureName;
+		bs.onClick     = onClick;
+		bs.onPress     = onPress;
+		bs.onDrag      = onDrag;
+		bs.onDrop      = onDrop;
+		bs.persistent  = persistent;
+
+		stackButtonToCreate.Push(bs);
+
+		StartCoroutine("CreateButton");
+	}
+
+	IEnumerator CreateButton()
+	{
+		while (IsDestroying)
+		{
+			yield return new WaitForSeconds(0.001f);
+		}
+
+		ButtonStatus bs = stackButtonToCreate.Pop();
+		string buttonName = bs.persistent ?
+								PERSIST_STRING + bs.buttonName :
+								bs.buttonName;
+
+		if(!string.IsNullOrEmpty(bs.textureName))
+			bs.ht["textureName"] = bs.textureName;
 
 		Transform trns = trnsOptionsMenu.Find(buttonName);
 		GameObject button = null;
@@ -226,17 +298,17 @@ public class HUDController : MonoBehaviour
 										pref_button);
 
 		button.name = buttonName;
-		button.transform.localPosition = position;
+		button.transform.localPosition = bs.position;
 
 		PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();
 
 		if ( pcb == null )
 		{
 			pcb = button.AddComponent<PersonalizedCallbackButton>();
-			pcb.Init(ht, onClick, onPress, onDrag, onDrop);
+			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
 		}
 		else
-			pcb.ChangeParams(ht, onClick, onPress, onDrag, onDrop);
+			pcb.ChangeParams(bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
 	}
 
 	public void RemoveButtonInInspector(string buttonName)
@@ -254,6 +326,7 @@ public class HUDController : MonoBehaviour
 
 	public void DestroyInspector ()
 	{
+		IsDestroying = true;
 		foreach (Transform child in trnsOptionsMenu)
 		{
 			if (!child.gameObject.name.Contains(PERSIST_STRING))
@@ -263,11 +336,11 @@ public class HUDController : MonoBehaviour
 		messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
 		messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
 	}
-	
+
 	public void CreateFeedback (Feedbacks feedback, Vector3 position, float size)
 	{
 		if (oldFeedback != null) Destroy (oldFeedback);
-		
+
 		GameObject newFeedback;
 		if (feedback == Feedbacks.Move)
 		{
@@ -281,14 +354,14 @@ public class HUDController : MonoBehaviour
 		{
 			newFeedback = Instantiate (pref_attackFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
 		}
-		
+
 //		newFeedback.layer = LayerMask.NameToLayer ("HUD3D");
 		newFeedback.name = "Feedback";
 		newFeedback.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
 		newFeedback.transform.GetComponent<AnimateTiledTexture>().Play ();
-		
+
 		oldFeedback = newFeedback;
-		
+
 		Destroy (newFeedback, 2f);
 	}
 }
