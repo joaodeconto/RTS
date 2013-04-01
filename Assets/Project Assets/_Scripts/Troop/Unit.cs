@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Visiorama.Extension;
 using Visiorama;
+using System.Linq;
 
 public class Unit : IStats
 {
@@ -77,6 +78,7 @@ public class Unit : IStats
     private Transform obstacleInPath; // we found something!
     private bool obstacleAvoid = false; // internal var
 
+	protected PhotonPlayer playerTargetAttack;
 	protected GameObject targetAttack;
 	protected bool followingTarget;
 	protected float attackBuff;
@@ -489,24 +491,30 @@ public class Unit : IStats
 
 			IsAttacking = true;
 
+			if (targetAttack == null) return true;
+			
+			if (targetAttack.GetComponent<IStats>().IsRemoved)
+			{
+				TargetingEnemy (null);
+				return true;
+			}
+			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
 
 			IsAttacking = false;
-			
-			if (targetAttack == null) return false;
-			if (targetAttack.GetComponent<IStats>().IsRemoved)
-			{
-				targetAttack = null;
-				return false;
-			}
 
 			if (!PhotonNetwork.offlineMode)
 			{
 				if (targetAttack.GetComponent<Unit>())
-					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+				{
+					photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+//					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 //					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
+				}
 				else if (targetAttack.GetComponent<FactoryBase>())
-					photonView.RPC ("AttackFactory", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+				{
+					photonView.RPC ("AttackFactory", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+				}
 			}
 			else
 			{
@@ -530,10 +538,15 @@ public class Unit : IStats
 				else
 				{
 					if (targetAttack.GetComponent<Unit>())
-						photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
-//						photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
+					{
+						photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+	//					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+	//					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
+					}
 					else if (targetAttack.GetComponent<FactoryBase>())
-						photonView.RPC ("AttackFactory", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+					{
+						photonView.RPC ("AttackFactory", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+					}
 				}
 
 				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -658,6 +671,15 @@ public class Unit : IStats
 
 	public void TargetingEnemy (GameObject enemy)
 	{
+		if (enemy != null)
+		{
+			PhotonPlayer[] pp = (from pps in PhotonNetwork.playerList
+	        where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().Team
+	        select pps).ToArray ();
+			playerTargetAttack = pp[0];
+		}
+		else playerTargetAttack = null;
+		
 		targetAttack = enemy;
 	}
 
@@ -793,26 +815,10 @@ public class Unit : IStats
 	public virtual IEnumerator OnDie ()
 	{
 		IsDead = true;
+		
+		pathfind.Stop ();
 
 		unitState = UnitState.Die;
-
-//		if (CharSound != null)
-//		{
-//			if (CharSound.DeathAudioSource.isPlaying)
-//			{
-//				if (CharSound.DeathAudioSource.clip != CharSound.deathSoundClips[TypeSoundId])
-//				{
-//					CharSound.DeathAudioSource.Stop ();
-//					CharSound.DeathAudioSource.clip = CharSound.deathSoundClips[TypeSoundId];
-//					CharSound.DeathAudioSource.Play ();
-//				}
-//			}
-//			else
-//			{
-//				CharSound.DeathAudioSource.clip = CharSound.deathSoundClips[TypeSoundId];
-//				CharSound.DeathAudioSource.Play ();
-//			}
-//		}
 
 		troopController.RemoveSoldier(this);
 		

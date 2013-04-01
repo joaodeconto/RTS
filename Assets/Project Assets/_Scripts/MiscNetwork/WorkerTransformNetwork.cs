@@ -10,7 +10,7 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 		Init ();
 	}
 	
-    public virtual void Init ()
+    public void Init ()
     {
 		if (PhotonNetwork.offlineMode)
 		{

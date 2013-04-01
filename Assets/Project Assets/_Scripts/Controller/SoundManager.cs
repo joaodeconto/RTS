@@ -7,6 +7,8 @@ public class SoundManager : MonoBehaviour
 	[System.Serializable]
 	public class Sound
 	{
+		public static bool soundOn = true;
+		
 		public string name;
 		public List<AudioClip> soundsClip;
 		
@@ -29,6 +31,8 @@ public class SoundManager : MonoBehaviour
 		
 		public void Play (AudioSource source, int index)
 		{
+			if (!soundOn) return;
+			
 			if (index < soundsClip.Count)
 			{
 				if (source.isPlaying) source.Stop ();

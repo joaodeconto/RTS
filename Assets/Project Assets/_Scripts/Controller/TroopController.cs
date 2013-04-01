@@ -23,6 +23,7 @@ public class TroopController : MonoBehaviour
 
 	protected GameplayManager gameplayManager;
 	protected SoundManager soundManager;
+	protected HUDController hudController;
 
 	protected List<Worker> idleWorkers;
 
@@ -30,6 +31,7 @@ public class TroopController : MonoBehaviour
 	{
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		soundManager    = ComponentGetter.Get<SoundManager> ();
+		hudController   = ComponentGetter.Get<HUDController> ();
 
 		selectedSoldiers = new List<Unit> ();
 		idleWorkers      = new List<Worker>();
@@ -43,6 +45,8 @@ public class TroopController : MonoBehaviour
 	public void MoveTroop (Vector3 destination)
 	{
 		if (enemySelected) return;
+		
+		hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f);
 
 		if (keepFormation)
 		{
@@ -99,6 +103,8 @@ public class TroopController : MonoBehaviour
 	{
 		if (enemy == null) return;
 
+		hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform.position, enemy.GetComponent<IStats> ().sizeOfSelected);
+		
 		foreach (Unit soldier in selectedSoldiers)
 		{
 			soldier.TargetingEnemy (enemy);
@@ -253,7 +259,47 @@ public class TroopController : MonoBehaviour
 
 		return null;
 	}
+	
+	public void WorkerCheckFactory (FactoryBase factory)
+	{
+		bool hudFeedback = false;
+		
+		foreach (Unit unit in selectedSoldiers)
+		{
+			if (unit.GetType() == typeof(Worker))
+			{
+				Worker w = unit as Worker;
 
+				if (!factory.wasBuilt)
+				{
+					w.SetMoveToFactory(factory);
+					hudFeedback = true;
+				}
+				else if (w.hasResource)
+				{
+					if (factory.receiveResource == w.resource.type)
+					{
+						w.SetMoveToFactory(factory);
+						hudFeedback = true;
+					}
+					else if (factory.gameObject.GetComponent<MainFactory>() != null)
+					{
+						w.SetMoveToFactory(factory);
+						hudFeedback = true;
+					}
+				}
+				else if (factory.IsNeededRepair)
+				{
+					w.SetMoveToFactory(factory);
+					hudFeedback = true;
+				}
+			}
+		}
+		
+		if (hudFeedback) 
+			hudController.CreateFeedback (HUDController.Feedbacks.Self, factory.transform.position, factory.sizeOfSelected);
+	}
+	
 	public void ChangeVisibility (Unit soldier, bool visibility)
 	{
 		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.Team, visibility);
@@ -289,7 +335,6 @@ public class TroopController : MonoBehaviour
 			return unit1.transform.position.x.CompareTo(unit2.transform.position.x);
 		});
 	}
-
 
 	void CheckWorkersInIdle()
 	{

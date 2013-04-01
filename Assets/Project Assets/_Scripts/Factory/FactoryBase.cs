@@ -132,7 +132,7 @@ public class FactoryBase : IStats
 			if (!alreadyCheckedMaxPopulation)
 			{
 				alreadyCheckedMaxPopulation = true;
-				eventManager.AddEvent("reach max population");
+				eventManager.AddEvent("need more houses");
 			}
 			return;
 		}

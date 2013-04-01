@@ -377,23 +377,22 @@ public class Worker : Unit
 					if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
 				}
 
-
 				base.SyncAnimation ();
 				break;
 		}
 	}
 
 	[RPC]
-		public override void AttackUnit (string nameUnit, int force)
-		{
-			base.AttackUnit (nameUnit, force);
-		}
+	public override void AttackUnit (string nameUnit, int force)
+	{
+		base.AttackUnit (nameUnit, force);
+	}
 
 	[RPC]
-		public override void AttackFactory (string nameFactory, int force)
-		{
-			base.AttackFactory (nameFactory, force);
-		}
+	public override void AttackFactory (string nameFactory, int force)
+	{
+		base.AttackFactory (nameFactory, force);
+	}
 
 	public override void Select ()
 	{
@@ -543,9 +542,7 @@ public class Worker : Unit
 
 	void SetMoveToFactory (Resource.Type resourceType)
 	{
-		if (factoryChoose == null) SearchFactory (resourceType);
-
-//		SearchFactory (resourceType);
+		SearchFactory (resourceType);
 
 		if (factoryChoose != null)
 		{
@@ -556,9 +553,7 @@ public class Worker : Unit
 
 	void SetMoveToFactory (System.Type type)
 	{
-		if (factoryChoose == null) SearchFactory (type);
-
-//		SearchFactory (type);
+		SearchFactory (type);
 
 		if (factoryChoose != null)
 		{
