@@ -297,7 +297,7 @@ public class TroopController : MonoBehaviour
 
 		foreach (Unit u in soldiers)
 		{
-			Worker w = (Worker)u;
+			Worker w = u as Worker;
 
 			if ( (w == null) || (!gameplayManager.IsSameTeam(w.Team)) ) continue;
 
