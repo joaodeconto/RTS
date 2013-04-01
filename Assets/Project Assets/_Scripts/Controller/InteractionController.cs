@@ -36,6 +36,14 @@ public class InteractionController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+#if !UNITY_IPHONE || !UNITY_ANDROID || UNITY_EDITOR
+		if (Input.GetKeyDown (KeyCode.Escape))
+		{
+			PhotonNetwork.LeaveRoom ();
+			Application.LoadLevel (0);
+		}
+#endif
+		
 		if (touchController.touchType != TouchController.TouchType.Ended)
 			return;
 

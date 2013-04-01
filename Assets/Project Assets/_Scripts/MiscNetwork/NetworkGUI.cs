@@ -124,6 +124,10 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		QualitySettings.SetQualityLevel (quality);
 
 		GUILayout.Space (10f);
+		
+		SoundManager.Sound.soundOn = GUILayout.Toggle (SoundManager.Sound.soundOn, "Sound:");
+		
+		GUILayout.Space (10f);
 
 		if (GUILayout.Button ("Back"))
 		{
