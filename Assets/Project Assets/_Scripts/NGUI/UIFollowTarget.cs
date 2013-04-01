@@ -49,7 +49,6 @@ public class UIFollowTarget : MonoBehaviour
 
 		Vector3 pos = mGameCamera.WorldToViewportPoint(target.position);
 
-		Debug.Log("pos: " + pos);
 		// Determine the visibility and the target alpha
 		bool isVisible = (pos.z > 0f && pos.x > 0f && pos.x < 1f && pos.y > 0f && pos.y < 1f);
 
@@ -71,7 +70,6 @@ public class UIFollowTarget : MonoBehaviour
 			pos.y = Mathf.RoundToInt(pos.y);
 			pos.z = 0f;
 			mTrans.localPosition = pos;
-			Debug.Log("mTrans: " + mTrans);
 		}
 	}
 }

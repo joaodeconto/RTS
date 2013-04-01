@@ -32,13 +32,29 @@ public class GlowEffect : MonoBehaviour
 	// In the combiner glow amount can be only in 0..1 range; we apply extra
 	// amount during the blurring phase.
 	
-    public Shader compositeShader;
-    Material m_CompositeMaterial = null;
-	protected Material compositeMaterial {
+	private static string compositeMatString =
+@"Shader ""GlowCompose"" {
+	Properties {
+		_Color (""Glow Amount"", Color) = (1,1,1,1)
+		_MainTex ("""", RECT) = ""white"" {}
+	}
+	SubShader {
+		Pass {
+			ZTest Always Cull Off ZWrite Off Fog { Mode Off }
+			Blend One One
+			SetTexture [_MainTex] {constantColor [_Color] combine constant * texture DOUBLE}
+		}
+	}
+	Fallback off
+}";
+	
+	static Material m_CompositeMaterial = null;
+	protected static Material compositeMaterial {
 		get {
 			if (m_CompositeMaterial == null) {
-                m_CompositeMaterial = new Material(compositeShader);
+				m_CompositeMaterial = new Material (compositeMatString);
 				m_CompositeMaterial.hideFlags = HideFlags.HideAndDontSave;
+				m_CompositeMaterial.shader.hideFlags = HideFlags.HideAndDontSave;
 			}
 			return m_CompositeMaterial;
 		} 
@@ -52,14 +68,32 @@ public class GlowEffect : MonoBehaviour
 	// we get a Gaussian blur approximation.
 	// The alpha value in _Color would normally be 0.25 (to average 4 samples),
 	// however if we have glow amount larger than 1 then we increase this.
+	
+	private static string blurMatString =
+@"Shader ""GlowConeTap"" {
+	Properties {
+		_Color (""Blur Boost"", Color) = (0,0,0,0.25)
+		_MainTex ("""", RECT) = ""white"" {}
+	}
+	SubShader {
+		Pass {
+			ZTest Always Cull Off ZWrite Off Fog { Mode Off }
+			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant alpha}
+			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+		}
+	}
+	Fallback off
+}";
 
-    public Shader blurShader;
-    Material m_BlurMaterial = null;
-	protected Material blurMaterial {
+	static Material m_BlurMaterial = null;
+	protected static Material blurMaterial {
 		get {
 			if (m_BlurMaterial == null) {
-                m_BlurMaterial = new Material(blurShader);
-                m_BlurMaterial.hideFlags = HideFlags.HideAndDontSave;
+				m_BlurMaterial = new Material( blurMatString );
+				m_BlurMaterial.hideFlags = HideFlags.HideAndDontSave;
+				m_BlurMaterial.shader.hideFlags = HideFlags.HideAndDontSave;
 			}
 			return m_BlurMaterial;
 		} 
@@ -69,6 +103,7 @@ public class GlowEffect : MonoBehaviour
 	// --------------------------------------------------------
 	// The image downsample shaders for each brightness mode.
 	// It is in external assets as it's quite complex and uses Cg.
+	
 	public Shader downsampleShader;
 	Material m_DownsampleMaterial = null;
 	protected Material downsampleMaterial {
@@ -88,9 +123,11 @@ public class GlowEffect : MonoBehaviour
 	protected void OnDisable()
 	{
 		if( m_CompositeMaterial ) {
+			DestroyImmediate( m_CompositeMaterial.shader );
 			DestroyImmediate( m_CompositeMaterial );
 		}
 		if( m_BlurMaterial ) {
+			DestroyImmediate( m_BlurMaterial.shader );
 			DestroyImmediate( m_BlurMaterial );
 		}
 		if( m_DownsampleMaterial )
@@ -129,10 +166,10 @@ public class GlowEffect : MonoBehaviour
 	{
 		float off = 0.5f + iteration*blurSpread;
 		Graphics.BlitMultiTap (source, dest, blurMaterial,
-            new Vector2( off, off),
-			new Vector2(-off, off),
-            new Vector2( off,-off),
-            new Vector2(-off,-off)
+			new Vector2(-off, -off),
+			new Vector2(-off,  off),
+			new Vector2( off,  off),
+			new Vector2( off, -off)
 		);
 	}
 	
@@ -170,7 +207,7 @@ public class GlowEffect : MonoBehaviour
 				FourTapCone (buffer2, buffer, i);
 			oddEven = !oddEven;
 		}
-		Graphics.Blit(source,destination);
+		ImageEffects.Blit(source,destination);
 				
 		if( oddEven )
 			BlitGlow(buffer, destination);

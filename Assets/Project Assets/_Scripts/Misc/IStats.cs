@@ -120,7 +120,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	public virtual void Init ()
 	{
 		//Change name
-		this.name = this.name + (UniversalEntityCounter++);
+//		this.name = this.name + (UniversalEntityCounter++);
 
 		Health = MaxHealth;
 

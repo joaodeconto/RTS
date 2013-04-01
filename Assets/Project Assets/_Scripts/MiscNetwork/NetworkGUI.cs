@@ -322,8 +322,6 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 		if (GUILayout.Button ("Back to Main Menu"))
 		{
-			player.customProperties.Remove("team");
-			player.customProperties.Remove("ready");
 			PhotonNetwork.LeaveRoom ();
 		}
 
@@ -529,6 +527,8 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 	public void OnLeftRoom()
     {
+		PhotonNetwork.player.customProperties.Remove("team");
+		PhotonNetwork.player.customProperties.Remove("ready");
 #if GUI
 		CurrentGUI = MainMenu;
 #endif

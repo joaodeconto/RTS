@@ -9,16 +9,23 @@ public class GhostFactory : MonoBehaviour
 	protected FogOfWar fogOfWar;
 	protected GameplayManager gameplayManager;
 
+	protected string correctName;
 	protected FactoryBase thisFactory;
 	protected GameObject overdrawModel;
 	protected int numberOfCollisions = 0;
 
 	public void Init (Worker worker)
 	{
+		GameObject oldGhost = GameObject.Find ("GhostFactory");
+		if (oldGhost != null) Destroy (oldGhost);
+		
 		this.worker = worker;
 
 		thisFactory = GetComponent<FactoryBase>();
 		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.AllBuffered, worker.Team);
+		
+		correctName = thisFactory.name;
+		thisFactory.name = "GhostFactory";
 
 		ComponentGetter.Get<InteractionController> ().enabled = false;
 		ComponentGetter.Get<SelectionController> ().enabled = false;

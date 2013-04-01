@@ -175,6 +175,18 @@ public class TouchController : MonoBehaviour
 			return new Vector3(x, 0, z);
 		}
 	}
+	
+	public Rect GetDragInvertedRect ()
+	{
+		return new Rect(Mathf.Min(FirstPosition.x, CurrentPosition.x),  Screen.height - Mathf.Min(FirstPosition.y, CurrentPosition.y),
+				 		Mathf.Abs(FirstPosition.x - CurrentPosition.x), Mathf.Abs(FirstPosition.y - CurrentPosition.y));
+	}
+	
+	public Rect GetDragRect ()
+	{
+		return new Rect(Mathf.Min(FirstPosition.x, CurrentPosition.x),  Mathf.Min(FirstPosition.y, CurrentPosition.y),
+				 		Mathf.Abs(FirstPosition.x - CurrentPosition.x), Mathf.Abs(FirstPosition.y - CurrentPosition.y));
+	}
 
 	public Bounds GetTouchBounds()
 	{

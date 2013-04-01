@@ -25,6 +25,7 @@ public class FactoryBase : IStats
 		public GameObject baseObject;
 		public GameObject unfinishedObject;
 		public GameObject finishedObject;
+		public GameObject[] desactiveObjectsWhenInstance;
 	}
 
 	public enum BuildingState
@@ -268,6 +269,11 @@ public class FactoryBase : IStats
 		wasBuilt = false;
 		Team = teamID;
 		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
+		
+		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
+		{
+			obj.SetActive (false);
+		}
 
 		if (!photonView.isMine) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;
@@ -278,7 +284,14 @@ public class FactoryBase : IStats
 	{
 		factoryController.AddFactory (this);
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (transform, this);
+		
+		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
+		{
+			obj.SetActive (true);
+		}
+		
 		buildingState = BuildingState.Base;
+		
 		if (!gameplayManager.IsSameTeam (Team)) model.SetActive (true);
 	}
 

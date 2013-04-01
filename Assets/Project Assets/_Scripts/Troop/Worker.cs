@@ -90,12 +90,6 @@ public class Worker : Unit
 	{
 		if (!playerUnit)
 			return;
-		
-		if (Selected)
-		{
-			Debug.Log ("Worker State: " + workerState);
-			Debug.Log ("State: " + unitState);
-		}
 
 		switch (workerState)
 		{

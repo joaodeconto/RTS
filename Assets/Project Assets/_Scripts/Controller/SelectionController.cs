@@ -68,7 +68,7 @@ public class SelectionController : MonoBehaviour
 //				else
 //					troopController.SelectSoldier (soldier, false);
 			}
-
+			
 			//Verificando se foram selecionadas unidades
 			if (troopController.selectedSoldiers.Count != 0)
 			{
@@ -90,7 +90,8 @@ public class SelectionController : MonoBehaviour
 					Debug.Break();
 				}
 
-				if (b.Intersects (factory.collider.bounds))
+//				if (b.Intersects (factory.collider.bounds))
+				if (touchController.GetDragRect ().Contains (factory.transform.position))
 				{
 					factoryController.SelectFactory (factory);
 					break;
@@ -419,10 +420,7 @@ public class SelectionController : MonoBehaviour
 	{
 		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
 		{
-			GUI.Box (new Rect(Mathf.Min(touchController.FirstPosition.x, touchController.CurrentPosition.x),
-						Mathf.Min(touchController.FirstPosition.y, touchController.CurrentPosition.y),
-						Mathf.Abs(touchController.FirstPosition.x - touchController.CurrentPosition.x),
-						Mathf.Abs(touchController.FirstPosition.y - touchController.CurrentPosition.y)), "");
+			GUI.Box (touchController.GetDragRect (), "");
 		}
 	}
 
