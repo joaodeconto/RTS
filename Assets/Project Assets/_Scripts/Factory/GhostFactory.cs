@@ -120,6 +120,8 @@ public class GhostFactory : MonoBehaviour
 			collider.isTrigger = false;
 			thisFactory.enabled = true;
 
+			thisFactory.name = correctName;
+			
 			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
 
 			thisFactory.photonView.RPC ("Instance", PhotonTargets.AllBuffered);
