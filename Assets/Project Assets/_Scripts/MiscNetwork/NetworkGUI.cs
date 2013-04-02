@@ -54,16 +54,16 @@ public class NetworkGUI : Photon.MonoBehaviour {
 			}
 		}
 
-		if (PhotonNetwork.room == null &&
-			!checkingStatus)
+		if (PhotonNetwork.room == null && !checkingStatus)
 		{
 			bool error = false;
 
-			GUILayout.Label ("Player name:");
-			playerName = GUILayout.TextField (playerName, 12, GUILayout.Width(200f));
+			//FIXME só uma gambizinha pra rodar hj
+			//GUILayout.Label ("Player name:");
+			//playerName = GUILayout.TextField (playerName, 12, GUILayout.Width(200f));
 			if (string.IsNullOrEmpty(playerName))
 			{
-				ErrorMessage ("Name is empty");
+				//ErrorMessage ("Name is empty");
 
 				error = true;
 			}
@@ -124,9 +124,9 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		QualitySettings.SetQualityLevel (quality);
 
 		GUILayout.Space (10f);
-		
+
 		SoundManager.Sound.soundOn = GUILayout.Toggle (SoundManager.Sound.soundOn, "Sound:");
-		
+
 		GUILayout.Space (10f);
 
 		if (GUILayout.Button ("Back"))

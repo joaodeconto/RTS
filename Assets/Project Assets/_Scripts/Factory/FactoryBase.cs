@@ -271,7 +271,7 @@ public class FactoryBase : IStats
 		wasBuilt = false;
 		Team = teamID;
 		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
-		
+
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (false);
@@ -292,9 +292,9 @@ public class FactoryBase : IStats
 		{
 			obj.SetActive (true);
 		}
-		
+
 		buildingState = BuildingState.Base;
-		
+
 		if (!gameplayManager.IsSameTeam (Team)) model.SetActive (true);
 	}
 
@@ -390,7 +390,6 @@ public class FactoryBase : IStats
 															if (!factory.OverLimitCreateUnit)
 																factory.EnqueueUnitToCreate (unit);
 															else
-																//TODO enviar mensagem
 																eventManager.AddEvent("reach enqueued units");
 														});
 			}
