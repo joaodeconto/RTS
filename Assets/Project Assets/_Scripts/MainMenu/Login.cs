@@ -37,13 +37,13 @@ public class Login : MonoBehaviour
 						PhotonNetwork.playerName = username.text;
 						PhotonPlayer player      = PhotonNetwork.player;
 						Hashtable properties = new Hashtable();
-						properties.Add ("ready", false);
+						properties.Add ("ready", true);
 						player.SetCustomProperties (properties);
 
 						mainMenu.SetActive (true);
 						mainMenu.GetComponent<InternalMainMenu> ().Init ();
 
-						networkGUI.playerName = PhotonNetwork.playerName;
+						//networkGUI.playerName = PhotonNetwork.playerName;
 
 						this.gameObject.SetActive (false);
 					});
