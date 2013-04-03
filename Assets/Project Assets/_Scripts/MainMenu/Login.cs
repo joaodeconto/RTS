@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using Visiorama;
+
 public class Login : MonoBehaviour
 {
 	public UIInput username;
@@ -24,9 +26,6 @@ public class Login : MonoBehaviour
 
 		Application.runInBackground = true;
 
-		if (!PhotonNetwork.connected)
-			 PhotonNetwork.ConnectUsingSettings (ConfigurationData.VERSION);
-
 		DefaultCallbackButton dcb = submitButton.AddComponent<DefaultCallbackButton>();
 
 		Hashtable ht = new Hashtable();
@@ -34,16 +33,12 @@ public class Login : MonoBehaviour
 					(ht_hud) =>
 					{
 						//TODO lógica de login do jogo
-						PhotonNetwork.playerName = username.text;
-						PhotonPlayer player      = PhotonNetwork.player;
-						Hashtable properties = new Hashtable();
-						properties.Add ("ready", true);
-						player.SetCustomProperties (properties);
+						PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+
+						pw.SetPlayer (username.text, true);
 
 						mainMenu.SetActive (true);
 						mainMenu.GetComponent<InternalMainMenu> ().Init ();
-
-						//networkGUI.playerName = PhotonNetwork.playerName;
 
 						this.gameObject.SetActive (false);
 					});

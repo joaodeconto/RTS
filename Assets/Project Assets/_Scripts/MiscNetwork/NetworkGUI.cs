@@ -1,4 +1,3 @@
-#define GUI
 
 using UnityEngine;
 using System.Collections;
@@ -375,6 +374,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 		GUI.color = tempColor;
 	}
+#endif
 
 	void SetPlayer ()
 	{
@@ -385,6 +385,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		player.SetCustomProperties (someCustomPropertiesToSet);
 	}
 
+#if GUI
 	void BeginCenter ()
 	{
 		GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));

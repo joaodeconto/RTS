@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using Visiorama;
+
 public class NewGame : MonoBehaviour
 {
 	float RefreshingInterval = 2.0f;
@@ -11,13 +13,13 @@ public class NewGame : MonoBehaviour
 		if (wasInitialized)
 			return;
 
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+
 		wasInitialized = true;
 
 		string roomName;
 		bool isVisible = true, isOpen = true;
 		int maxPlayers;
-		Hashtable properties;
-		string[] roomPropsInLobby;
 
 		DefaultCallbackButton dcb;
 
@@ -28,9 +30,7 @@ public class NewGame : MonoBehaviour
 		dcb = quickMatch.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								Hashtable roomProperties = new Hashtable() { { "closeRoom", false } };
-								PhotonNetwork.JoinRandomRoom (roomProperties, 0);
-
+								pw.JoinQuickMatch ();
 								//TODO fazer timeout de conexão
 							});
 
@@ -39,18 +39,15 @@ public class NewGame : MonoBehaviour
 		dcb = match1x1.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								PhotonNetwork.player.customProperties["team"] = 0;
-
 								roomName = "Room" + PhotonNetwork.GetRoomList().Length + 1;
 								maxPlayers = 2;
-								properties = new Hashtable() { {"closeRoom", false } };
-								roomPropsInLobby = new string[] { "closeRoom", "bool" };
-								PhotonNetwork.CreateRoom(roomName, isVisible,
-														 isOpen, maxPlayers,
-														 properties, roomPropsInLobby);
 
+								pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
 
-								InvokeRepeating ("TryToEnterGame", 0.0f, RefreshingInterval);
+								pw.SetProperty ("team", 0);
+								pw.SetProperty ("ready", true);
+
+								InvokeRepeating ("TryToEnterGame", 1.0f, RefreshingInterval);
 							});
 
 		GameObject match2x2 = menu.FindChild ("Match 2x2").gameObject;
@@ -58,15 +55,13 @@ public class NewGame : MonoBehaviour
 		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								PhotonNetwork.player.customProperties["team"] = 0;
-
 								roomName = "Room" + PhotonNetwork.GetRoomList().Length + 1;
 								maxPlayers = 3;
-								properties = new Hashtable() { {"closeRoom", false } };
-								roomPropsInLobby = new string[] { "closeRoom", "bool" };
-								PhotonNetwork.CreateRoom(roomName, isVisible,
-														 isOpen, maxPlayers,
-														 properties, roomPropsInLobby);
+
+								pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
+
+								pw.SetProperty ("team", 0);
+								pw.SetProperty ("ready", true);
 
 								InvokeRepeating ("TryToEnterGame", 0.0f, RefreshingInterval);
 							});
@@ -76,31 +71,28 @@ public class NewGame : MonoBehaviour
 		dcb = matchTxT.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								PhotonNetwork.player.customProperties["team"] = 0;
-
 								roomName = "Room" + PhotonNetwork.GetRoomList().Length + 1;
 								maxPlayers = 4;
-								properties = new Hashtable() { {"closeRoom", false } };
-								roomPropsInLobby = new string[] { "closeRoom", "bool" };
-								PhotonNetwork.CreateRoom(roomName, isVisible,
-														 isOpen, maxPlayers,
-														 properties, roomPropsInLobby);
+
+								pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
+
+								pw.SetProperty ("team", 0);
+								pw.SetProperty ("ready", true);
 
 								InvokeRepeating ("TryToEnterGame", 0.0f, RefreshingInterval);
 							});
-
 	}
 
 	public void Close ()
 	{
-
+		CancelInvoke ("TryToEnterGame");
 	}
 
 	private void TryToEnterGame ()
 	{
 		if (PhotonNetwork.room == null)
 		{
-			Debug.Log("Algo estranho por aqui");
+			//Debug.Log("Algo estranho por aqui");
 			return;
 		}
 

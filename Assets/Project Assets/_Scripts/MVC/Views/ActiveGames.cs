@@ -1,7 +1,8 @@
 using UnityEngine;
 
 using System.Collections;
-using System.Linq;
+
+using Visiorama;
 
 public class ActiveGames : MonoBehaviour
 {
@@ -45,10 +46,9 @@ public class ActiveGames : MonoBehaviour
 	{
 		ClearRows ();
 
-		RoomInfo[] roomQuery = (from r in PhotonNetwork.GetRoomList ()
-									where ((bool)r.customProperties["closeRoom"] == false)
-									   && (r.playerCount != r.maxPlayers)
-									select r).ToArray ();
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+
+		RoomInfo[] roomQuery = pw.GetRoomList();
 
 		int counter = 0;
 		if (roomQuery.Length == 0)
@@ -91,10 +91,9 @@ public class ActiveGames : MonoBehaviour
 					DefaultCallbackButton dcb = join.AddComponent<DefaultCallbackButton> ();
 					dcb.Init (ht, (ht_hud) =>
 										{
-											PhotonNetwork.JoinRoom ((string)ht_hud["room.name"]);
-											PhotonNetwork.player.customProperties["ready"] = true;
-											PhotonNetwork.player.customProperties["team"]  = PhotonNetwork.playerList.Length-1;
-
+											pw.JoinRoom ((string)ht_hud["room.name"]);
+											pw.SetProperty ("ready", true);
+											pw.SetProperty ("team", PhotonNetwork.playerList.Length - 1);
 
 											ClearRows ();
 
