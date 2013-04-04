@@ -7,7 +7,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	public delegate void ConnectionCallback (string message);
 	public delegate void PlayerReadyCallback (int nPlayersReady, int nPlayers);
 
-	public float RefreshingInterval = 1.0f;
+	public float RefreshingInterval = 0.2f;
 
 	protected bool checkingStatus = false;
 
@@ -88,7 +88,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			PhotonNetwork.player.customProperties.Add (key, value);
 	}
 
-	public void SetProperty (PhotonPlayer player, string key, object value)
+	public void SetPropertyOnPlayer (PhotonPlayer player, string key, object value)
 	{
 		if (player.customProperties.ContainsKey (key))
 			player.customProperties [key] = value;
@@ -158,10 +158,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		checkingStatus = false;
 
 		SetPlayer ( playerName, true );
-
-		Hashtable someCustomPropertiesToSet = new Hashtable();
-		someCustomPropertiesToSet.Add ("playerLoads", 0);
-		PhotonNetwork.room.SetCustomProperties (someCustomPropertiesToSet);
 	}
 
 	public void OnLeftRoom()
@@ -206,6 +202,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		}
 
 		int numberOfReady = 0;
+		int c = 0;
 		foreach (PhotonPlayer p in PhotonNetwork.playerList)
 		{
 			if (      p.customProperties.ContainsKey("ready") &&
@@ -213,6 +210,10 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			{
 				numberOfReady++;
 			}
+
+			if (PhotonNetwork.isMasterClient)
+				SetPropertyOnPlayer (p, "team", (c++));
+
 		}
 
 		if (prc != null)

@@ -6,6 +6,7 @@ using Visiorama;
 public class NewGame : MonoBehaviour
 {
 	public UILabel messageActiveGame;
+	public UILabel errorMessage;
 
 	float RefreshingInterval = 2.0f;
 	bool wasInitialized      = false;
@@ -68,7 +69,7 @@ public class NewGame : MonoBehaviour
 
 	private void CreateRoom (int maxPlayers)
 	{
-		string roomName = "Room" + PhotonNetwork.GetRoomList().Length + 1;
+		string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + System.DateTime.Now.ToString ("mm-ss");
 		bool isVisible = true, isOpen = true;
 
 		pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
@@ -81,13 +82,17 @@ public class NewGame : MonoBehaviour
 
 		buttons.gameObject.SetActive (false);
 
-		pw.TryToEnterGame (20.0f, (message) =>
+		pw.TryToEnterGame (10000.0f, (message) =>
 									{
 										Debug.Log("message: " + message);
 
-										messageActiveGame.enabled = true;
+										messageActiveGame.enabled = false;
 
 										buttons.gameObject.SetActive (true);
+
+										errorMessage.enabled = true;
+
+										Invoke ("CloseErrorMessage", 5.0f);
 									},
 									(playersReady, nMaxPlayers) =>
 									{
@@ -95,5 +100,10 @@ public class NewGame : MonoBehaviour
 																	+ playersReady + "/" + nMaxPlayers;
 
 									});
+	}
+
+	private void CloseErrorMessage ()
+	{
+		errorMessage.enabled = false;
 	}
 }

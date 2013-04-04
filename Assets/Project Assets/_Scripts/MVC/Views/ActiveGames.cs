@@ -7,7 +7,10 @@ using Visiorama;
 public class ActiveGames : MonoBehaviour
 {
 	public float RefreshingInterval = 2.0f;
+
 	public UILabel messageActiveGame;
+	public UILabel errorMessage;
+
 	public GameObject pref_Row;
 	public Transform rowsContainer;
 
@@ -102,13 +105,16 @@ public class ActiveGames : MonoBehaviour
 
 											CancelInvoke ("Refresh");
 
-											pw.TryToEnterGame ( 10.0f,
+											pw.TryToEnterGame ( 100000.0f,
 																(message) =>
 																{
 																	Debug.Log("message: " + message);
 
 																	messageActiveGame.enabled = true;
 
+																	errorMessage.enabled = true;
+
+																	Invoke ("CloseErrorMessage", 5.0f);
 																	InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
 																},
 																(playersReady, maxPlayers) =>
@@ -120,5 +126,10 @@ public class ActiveGames : MonoBehaviour
 										});
 				}
 			}
+	}
+
+	private void CloseErrorMessage ()
+	{
+		errorMessage.enabled = false;
 	}
 }

@@ -1286,6 +1286,70 @@ MeshFilter:
   m_PrefabInternal: {fileID: 1712982822}
   m_GameObject: {fileID: 109273836}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &120738561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 120738564}
+  - 114: {fileID: 120738563}
+  - 154: {fileID: 120738562}
+  m_Layer: 0
+  m_Name: Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!154 &120738562
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 120738561}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_TerrainData: {fileID: 15600000, guid: 9c11e8d879690164b981177575022e1d, type: 2}
+  m_CreateTreeColliders: 1
+--- !u!114 &120738563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 120738561}
+  m_Enabled: 1
+  m_EditorHideFlags: 1
+  m_Script: {fileID: 12000, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_TerrainData: {fileID: 15600000, guid: 9c11e8d879690164b981177575022e1d, type: 2}
+  m_TreeDistance: 5000
+  m_TreeBillboardDistance: 50
+  m_TreeCrossFadeLength: 5
+  m_TreeMaximumFullLODCount: 50
+  m_DetailObjectDistance: 80
+  m_DetailObjectDensity: 1
+  m_HeightmapPixelError: 5
+  m_SplatMapDistance: 1000
+  m_HeightmapMaximumLOD: 0
+  m_CastShadows: 1
+  m_LightmapIndex: -1
+  m_LightmapSize: 1024
+  m_DrawTreesAndFoliage: 1
+  m_MaterialTemplate: {fileID: 0}
+--- !u!4 &120738564
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 120738561}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1 &121630475
 GameObject:
   m_ObjectHideFlags: 0
@@ -5174,70 +5238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c77ec4f91ea553642b5a23a5494b4eeb, type: 3}
   m_Name: 
   prefabInstantiate: {fileID: 100000, guid: 097090cf2466e1b408f34f8b34778481, type: 2}
---- !u!1 &610565258
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 610565261}
-  - 114: {fileID: 610565260}
-  - 154: {fileID: 610565259}
-  m_Layer: 11
-  m_Name: Terrain
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
---- !u!154 &610565259
-TerrainCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 610565258}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_TerrainData: {fileID: 15600000, guid: a99980893592a7f42a8049d86f698cf0, type: 2}
-  m_CreateTreeColliders: 1
---- !u!114 &610565260
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 610565258}
-  m_Enabled: 1
-  m_EditorHideFlags: 1
-  m_Script: {fileID: 12000, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_TerrainData: {fileID: 15600000, guid: a99980893592a7f42a8049d86f698cf0, type: 2}
-  m_TreeDistance: 2000
-  m_TreeBillboardDistance: 50
-  m_TreeCrossFadeLength: 5
-  m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 250
-  m_DetailObjectDensity: 1
-  m_HeightmapPixelError: 5
-  m_SplatMapDistance: 1000
-  m_HeightmapMaximumLOD: 0
-  m_CastShadows: 1
-  m_LightmapIndex: -1
-  m_LightmapSize: 1024
-  m_DrawTreesAndFoliage: 1
-  m_MaterialTemplate: {fileID: 2100000, guid: fee241973d35e4c4fb0c5977c082a4b0, type: 2}
---- !u!4 &610565261
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 610565258}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
 --- !u!1 &611720254
 GameObject:
   m_ObjectHideFlags: 0
@@ -11675,19 +11675,19 @@ Prefab:
     - target: {fileID: 11400014, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
       propertyPath: teams.Array.data[0].initialPosition
       value: 
-      objectReference: {fileID: 1188304835}
+      objectReference: {fileID: 1988825612}
     - target: {fileID: 11400014, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
       propertyPath: teams.Array.data[1].initialPosition
       value: 
-      objectReference: {fileID: 1138212894}
+      objectReference: {fileID: 1288439803}
     - target: {fileID: 11400014, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
       propertyPath: teams.Array.data[2].initialPosition
       value: 
-      objectReference: {fileID: 1663420612}
+      objectReference: {fileID: 1463830552}
     - target: {fileID: 11400014, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
       propertyPath: teams.Array.data[3].initialPosition
       value: 
-      objectReference: {fileID: 84721836}
+      objectReference: {fileID: 913258246}
     - target: {fileID: 11400016, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
       propertyPath: mainCamera
       value: 
@@ -12427,19 +12427,19 @@ MonoBehaviour:
   - name: Time lol
     color: {r: .00699329376, g: 0, b: 1, a: 1}
     colorTexture: {fileID: 0}
-    initialPosition: {fileID: 1188304835}
+    initialPosition: {fileID: 1988825612}
   - name: Time legalzinho
     color: {r: 1, g: 0, b: 0, a: 1}
     colorTexture: {fileID: 0}
-    initialPosition: {fileID: 1138212894}
+    initialPosition: {fileID: 1288439803}
   - name: time mais massa
     color: {r: .930069923, g: 1, b: 0, a: 1}
     colorTexture: {fileID: 0}
-    initialPosition: {fileID: 1663420612}
+    initialPosition: {fileID: 1463830552}
   - name: super time
     color: {r: .174825072, g: 1, b: 0, a: 1}
     colorTexture: {fileID: 0}
-    initialPosition: {fileID: 84721836}
+    initialPosition: {fileID: 913258246}
   resources:
     NumberOfRocks: 400
 --- !u!1001 &1357583272
