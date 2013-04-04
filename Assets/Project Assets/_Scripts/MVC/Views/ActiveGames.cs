@@ -93,7 +93,6 @@ public class ActiveGames : MonoBehaviour
 										{
 											pw.JoinRoom ((string)ht_hud["room.name"]);
 											pw.SetProperty ("ready", true);
-											pw.SetProperty ("team", PhotonNetwork.playerList.Length - 1);
 
 											ClearRows ();
 

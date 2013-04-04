@@ -70,13 +70,21 @@ public class PhotonWrapper : Photon.MonoBehaviour
 									   && (r.playerCount != r.maxPlayers)
 									select r).ToArray ();
 	}
-
+	
 	public void SetProperty (string key, object value)
 	{
 		if (PhotonNetwork.player.customProperties.ContainsKey (key))
 			PhotonNetwork.player.customProperties [key] = value;
 		else
 			PhotonNetwork.player.customProperties.Add (key, value);
+	}
+	
+	public void SetProperty (string key, object value, PhotonPlayer player)
+	{
+		if (player.customProperties.ContainsKey (key))
+			player.customProperties [key] = value;
+		else
+			player.customProperties.Add (key, value);
 	}
 
 	public string CheckingStatus ()
@@ -133,6 +141,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		checkingStatus = false;
 
 		SetPlayer ( playerName, true );
+		SetProperty ("team", PhotonNetwork.playerList.Length - 1);
 	}
 
 	private void OnCreatedRoom()
