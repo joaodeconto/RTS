@@ -1,13 +1,14 @@
-//#define DEBUG //Draws a ray for each node visited
+//#define ASTARDEBUG //Draws a ray for each node visited
 
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Pathfinding;
 
 namespace Pathfinding {
 	
 	/** Finds all nodes within a specified distance from the start.
-	 This class will search outwards from the start point and find all nodes which it costs less than ConstantPath::maxGScore to reach, this is usually the same as the distance to them multiplied with 100
+	 This class will search outwards from the start point and find all nodes which it costs less than ConstantPath.maxGScore to reach, this is usually the same as the distance to them multiplied with 100
 	 
 	 The path can be called like:
 	 \code
@@ -17,7 +18,7 @@ ConstantPath cpath = new ConstantPath(transform.position,2000,null);
 mySeeker.StartPath (cpath,myCallbackFunction);
 	 \endcode
 	 
-	 Then when getting the callback, all nodes will be stored in the variable ConstantPath::allNodes (remember that you need to cast it from Path to ConstantPath first to get the variable).
+	 Then when getting the callback, all nodes will be stored in the variable ConstantPath.allNodes (remember that you need to cast it from Path to ConstantPath first to get the variable).
 	 \note Due to the nature of the system, there might be duplicates of some nodes in the array.
 	 
 	 This list will be sorted by G score (cost/distance to reach the node), however only the last duplicate of a node in the list is guaranteed to be sorted in this way.
@@ -29,15 +30,32 @@ mySeeker.StartPath (cpath,myCallbackFunction);
 	**/
 	public class ConstantPath : Path {
 		
+		public Node startNode;
+		public Vector3 startPoint;
+		public Vector3 originalStartPoint;
+		
+		/** Contains all nodes the path found.
+		  * \note Due to the nature of the search, there might be duplicates of some nodes in the array.
+		  * This list will be sorted by G score (cost/distance to reach the node), however only the last duplicate of a node in the list is guaranteed to be sorted in this way.
+	 	  */
+		public List<Node> allNodes;
+		
+		/** Controls when the path should terminate.
+		 * This is set up automatically in the constructor to an instance of the Pathfinding.EndingConditionDistance class with a \a maxGScore is specified in the constructor.
+		 * If you want to use another ending condition.
+		 * \see Pathfinding.PathEndingCondition for examples
+		 */
+		public PathEndingCondition endingCondition;
+		
 		public ConstantPath ()  : base () {}
 		
 		/** Creates a new ConstantPath starting from the specified point.
 		 * \param start 			From where the path will be started from (the closest node to that point will be used)
 		 * \param callbackDelegate	Will be called when the path has completed, leave this to null if you use a Seeker to handle calls
-		 * Searching will be stopped when a node has a G score (cost to reach it) higher than what's specified as default value in Pathfinding::EndingConditionDistance  */
-		public ConstantPath (Vector3 start, OnPathDelegate callbackDelegate) : base (start,Vector3.zero,callbackDelegate) {
-			endingCondition = new EndingConditionDistance ();
-			hasEndPoint = false;
+		 * Searching will be stopped when a node has a G score (cost to reach it) higher than what's specified as default value in Pathfinding.EndingConditionDistance  */
+		[System.Obsolete("Please use the Construct method instead")]
+		public ConstantPath (Vector3 start, OnPathDelegate callbackDelegate) {
+			throw new System.Exception ("This constructor is obsolete, please use the Construct method instead");
 		}
 		
 		/** Creates a new ConstantPath starting from the specified point.
@@ -46,9 +64,39 @@ mySeeker.StartPath (cpath,myCallbackFunction);
 		 * \param callbackDelegate	Will be called when the path has completed, leave this to null if you use a Seeker to handle calls
 		 * 
 		 * Searching will be stopped when a node has a G score (cost to reach it) greater than \a maxGScore */
-		public ConstantPath (Vector3 start, int maxGScore, OnPathDelegate callbackDelegate) : base (start,Vector3.zero,callbackDelegate) {
-			endingCondition = new EndingConditionDistance (maxGScore);
-			hasEndPoint = false;
+		[System.Obsolete("Please use the Construct method instead")]
+		public ConstantPath (Vector3 start, int maxGScore, OnPathDelegate callbackDelegate) {
+			throw new System.Exception ("This constructor is obsolete, please use the Construct method instead");
+		}
+		
+		/** Constructs a ConstantPath starting from the specified point.
+		 * \param start 			From where the path will be started from (the closest node to that point will be used)
+		 * \param maxGScore			Searching will be stopped when a node has a G score greater than this
+		 * \param callback			Will be called when the path has completed, leave this to null if you use a Seeker to handle calls
+		 * 
+		 * Searching will be stopped when a node has a G score (cost to reach it) greater than \a maxGScore */
+		public static ConstantPath Construct (Vector3 start, int maxGScore, OnPathDelegate callback = null) {
+			ConstantPath p = PathPool<ConstantPath>.GetPath ();
+			p.Setup (start,maxGScore,callback);
+			return p;
+		}
+		
+		/** Sets up a ConstantPath starting from the specified point */
+		protected void Setup (Vector3 start, int maxGScore, OnPathDelegate callback) {
+			this.callback = callback;
+			startPoint = start;
+			originalStartPoint = startPoint;
+			
+			endingCondition = new EndingConditionDistance (this,maxGScore);
+		}
+		
+		public override void OnEnterPool () {
+			base.OnEnterPool ();
+			if (allNodes != null) Util.ListPool<Node>.Release (allNodes);
+		}
+		
+		protected override void Recycle () {
+			PathPool<ConstantPath>.Recycle (this);
 		}
 		
 		/** Reset the path to default values.
@@ -57,140 +105,103 @@ mySeeker.StartPath (cpath,myCallbackFunction);
 		 * 
 		 * Also sets #heuristic to Heuristic.None as it is the default value for this path type
 		 */
-		public override void Reset (Vector3 start, Vector3 end, OnPathDelegate callbackDelegate, bool reset)
+		public override void Reset ()
 		{
-			base.Reset (start, end, callbackDelegate, reset);
+			base.Reset ();
+			allNodes = Util.ListPool<Node>.Claim ();
+			endingCondition = null;
+			originalStartPoint = Vector3.zero;
+			startPoint = Vector3.zero;
+			startNode = null;
 			heuristic = Heuristic.None;
-			allNodes.Clear ();
 		}
 		
-		//public ConstantPath (Vector3 start, Vector3 end, OnPathDelegate callbackDelegate) : base (start,end,callbackDelegate) {}
+		public override void Prepare () {
+			nnConstraint.tags = enabledTags;
+			NNInfo startNNInfo 	= AstarPath.active.GetNearest (startPoint,nnConstraint);
+			
+			startNode = startNNInfo.node;
+			if (startNode == null) {
+				Error ();
+				LogError ("Could not find close node to the start point");
+				return;
+			}
+		}
 		
-		//Declare some variables
-		
-		/** Contains all nodes the path found.
-		  * \note Due to the nature of the system, there might be duplicates of some nodes in the array.
-		  * This list will be sorted by G score (cost/distance to reach the node), however only the last duplicate of a node in the list is guaranteed to be sorted in this way.
-	 	  */
-		public List<Node> allNodes = new List<Node>();
-		
-		/** Controls when the path should terminate.
-		 * This is set up automatically in the constructor to an instance of the Pathfinding::EndingConditionDistance class with a \a maxGScore is specified in the constructor.
-		 * If you want to use another ending condition.
-		 * \see Pathfinding::PathEndingCondition for examples
-		 */
-		public PathEndingCondition endingCondition;
-		
-		/** Initializes the path. Sets up the open list and adds the first node to it */
+		/** Initializes the path.
+		 * Sets up the open list and adds the first node to it */
 		public override void Initialize () {
-			//endNode = null;//--Change!
-			base.Initialize ();
+			
+			NodeRun startRNode = startNode.GetNodeRun (runData);
+			
+			startRNode.pathID = pathID;
+			startRNode.parent = null;
+			startRNode.cost = 0;
+			startRNode.g = startNode.penalty;
+			startNode.UpdateH (Int3.zero,heuristic,heuristicScale, startRNode);
+
+			startNode.Open (runData,startRNode,Int3.zero,this);
+			
+			searchedNodes++;
+			
 			allNodes.Add (startNode);
 			
-			/*
-			System.DateTime startTime = System.DateTime.Now;
-
-			
-
-			//Resets the binary heap, don't clear it because that takes an awful lot of time, instead we can just change the numberOfItems in it (which is just an int)
-			//Binary heaps are just like a standard array but are always sorted so the node with the lowest F value can be retrieved faster
-
-			open = AstarPath.active.binaryHeap;
-			open.numberOfItems = 1;
-			
-			//This will not 
-			if (startNode == endNode) {
-				endNode.parent = null;
-				endNode.h = 0;
-				endNode.g = 0;
-				Trace (endNode);
-				foundEnd = true;
-
-				//When using multithreading, this signals that another function should call the callback function for this path
-				//sendCompleteCall = true;
-				return;
-			}
-
-			//Adjust the costs for the end node
-			//--Commented out the next two lines!
-			//endNodeCosts = endNode.InitialOpen (open,hTarget,(Int3)endPoint,this,false);
-			//callback += ResetCosts; /* \todo Might interfere with other paths since other paths might be calculated before #callback is called *
-
-
-			Node.activePath = this;
-			startNode.pathID = pathID;
-			startNode.parent = null;
-			startNode.cost = 0;
-			startNode.g = startNode.penalty;
-			startNode.UpdateH (hTarget,heuristic,heuristicScale);
-
-			startNode.InitialOpen (open,hTarget,startIntPoint,this,true);
-			searchedNodes++;
-
 			//any nodes left to search?
-			if (open.numberOfItems <= 1) {
-				LogError ("No open points, the start node didn't open any nodes");
-				duration += (System.DateTime.Now.Ticks-startTime.Ticks)*0.0001F;
+			if (runData.open.numberOfItems <= 1) {
+				CompleteState = PathCompleteState.Complete;
 				return;
 			}
 			
-			current = open.Remove ();
-			duration += (System.DateTime.Now.Ticks-startTime.Ticks)*0.0001F;*/
+			currentR = runData.open.Remove ();
 		}
 		
-		public override float CalculateStep (float remainingFrameTime)
+		public override void CalculateStep (long targetTick)
 		{
-			
-			System.DateTime startTime = System.DateTime.Now;
-			
-			System.Int64 maxTicks = (System.Int64)(remainingFrameTime*10000);
 			
 			int counter = 0;
 			
 			//Continue to search while there hasn't ocurred an error and the end hasn't been found
-			while (!foundEnd && !error) {
+			while (!IsDone()) {
 				
 				//@Performance Just for debug info
 				searchedNodes++;
 				
 //--- Here's the important stuff				
 				//Close the current node, if the current node satisfies the ending condition, the path is finished
-				if (endingCondition.TargetFound (this,current)) {
-					foundEnd = true;
+				if (endingCondition.TargetFound (currentR)) {
+					CompleteState = PathCompleteState.Complete;
 					break;
 				}
 				
 				//Add Node to allNodes
-				allNodes.Add (current);
+				allNodes.Add (currentR.node);
 				
+#if ASTARDEBUG
+				Debug.DrawRay ((Vector3)currentR.node.position,Vector3.up*5,Color.cyan);
+#endif
 				
 //--- Here the important stuff ends
 				
-				//Loop through all walkable neighbours of the node
-				current.Open (open, hTarget,this);
+				//Loop through all walkable neighbours of the node and add them to the open list.
+				currentR.node.Open (runData,currentR, Int3.zero ,this);
 				
 				//any nodes left to search?
-				if (open.numberOfItems <= 1) {
-					//For this path type, this is actually a valid end
-					foundEnd = true;
+				if (runData.open.numberOfItems <= 1) {
+					CompleteState = PathCompleteState.Complete;
 					break;
 				}
 				
 				//Select the node with the lowest F score and remove it from the open list
-				current = open.Remove ();
+				currentR = runData.open.Remove ();
 				
-				//Check for time every 500 nodes
+				//Check for time every 500 nodes, roughly every 0.5 ms usually
 				if (counter > 500) {
 					
 					//Have we exceded the maxFrameTime, if so we should wait one frame before continuing the search since we don't want the game to lag
-					if ((System.DateTime.Now.Ticks-startTime.Ticks) > maxTicks) {//searchedNodesThisFrame > 20000) {
-						
-						
-						float durationThisFrame = (System.DateTime.Now.Ticks-startTime.Ticks)*0.0001F;
-						duration += durationThisFrame;
+					if (System.DateTime.UtcNow.Ticks >= targetTick) {
 						
 						//Return instead of yield'ing, a separate function handles the yield (CalculatePaths)
-						return durationThisFrame;
+						return;
 					}
 					
 					counter = 0;
@@ -200,36 +211,30 @@ mySeeker.StartPath (cpath,myCallbackFunction);
 			
 			}
 			
-			if (foundEnd && !error) {
-				Trace (endNode);
+			if (CompleteState == PathCompleteState.Complete) {
+				Trace (currentR);
 			}
-			
-			float durationThisFrame2 = (System.DateTime.Now.Ticks-startTime.Ticks)*0.0001F;
-			duration += durationThisFrame2;
-			
-			//Return instead of yield'ing, a separate function handles the yield (CalculatePaths)
-			return durationThisFrame2;
 		}
 	}
 	
 	/** Target is found when the path is longer than a specified value.
-	 * Actually this is defined as when the current node's G score is >= a specified amount (EndingConditionDistance::maxGScore).\n
+	 * Actually this is defined as when the current node's G score is >= a specified amount (EndingConditionDistance.maxGScore).\n
 	 * The G score is the cost from the start node to the current node, so an area with a higher penalty (weight) will add more to the G score.
 	 * However the G score is usually just the shortest distance from the start to the current node.
 	 * 
-	 * \see Pathfinding::ConstantPath which uses this ending condition
+	 * \see Pathfinding.ConstantPath which uses this ending condition
 	 */
 	public class EndingConditionDistance : PathEndingCondition {
 		
 		/** Max G score a node may have */
 		public int maxGScore = 100;
 		
-		public EndingConditionDistance () {}
-		public EndingConditionDistance (int maxGScore) {
+		//public EndingConditionDistance () {}
+		public EndingConditionDistance (Path p, int maxGScore) : base (p) {
 			this.maxGScore = maxGScore;
 		}
 		
-		public override bool TargetFound (Path p, Node node) {
+		public override bool TargetFound (NodeRun node) {
 			return node.g >= maxGScore;
 		}
 	}

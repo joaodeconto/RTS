@@ -11,8 +11,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-#pragma warning disable 649
-
 public class ObjImporter {
 
     private struct meshStruct
