@@ -13,19 +13,9 @@ public class InternalMainMenu : MonoBehaviour
 
 	public Transform quickMatch;
 	public Transform options;
+	public Transform menus;
 
 	private List<Transform> listChildOptions;
-
-	//protected Menu GetMenu(string name)
-	//{
-		//name = name.ToLower();
-		//foreach (Menu m in Menus)
-		//{
-			//if (m.name.ToLower().Equals(name))
-				//return m;
-		//}
-		//return null;
-	//}
 
 	public void Init ()
 	{
@@ -65,7 +55,7 @@ public class InternalMainMenu : MonoBehaviour
 	private void ShowMenu (string optionName)
 	{
 		Transform menu;
-		foreach (Transform child in options)
+		foreach (Transform child in menus)
 		{
 			menu = child.FindChild ("Menu");
 
@@ -77,7 +67,7 @@ public class InternalMainMenu : MonoBehaviour
 			child.SendMessage ("Close", SendMessageOptions.DontRequireReceiver);
 		}
 
-		Transform option = options.FindChild (optionName);
+		Transform option = menus.FindChild (optionName);
 
 		menu = option.FindChild ("Menu");
 

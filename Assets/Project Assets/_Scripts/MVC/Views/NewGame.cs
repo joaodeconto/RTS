@@ -5,27 +5,29 @@ using Visiorama;
 
 public class NewGame : MonoBehaviour
 {
+	public UILabel messageActiveGame;
+
 	float RefreshingInterval = 2.0f;
-	bool wasInitialized = false;
+	bool wasInitialized      = false;
+
+	PhotonWrapper pw;
+	Transform buttons;
 
 	public void Open ()
 	{
 		if (wasInitialized)
 			return;
 
-		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-
 		wasInitialized = true;
+		messageActiveGame.enabled = false;
 
-		string roomName;
-		bool isVisible = true, isOpen = true;
-		int maxPlayers;
+		pw = ComponentGetter.Get<PhotonWrapper> ();
 
 		DefaultCallbackButton dcb;
 
-		Transform menu = this.transform.FindChild ("Menu");
+		buttons = this.transform.FindChild ("Menu").FindChild ("Buttons");
 
-		GameObject quickMatch = menu.FindChild ("Quick Match").gameObject;
+		GameObject quickMatch = buttons.FindChild ("Quick Match").gameObject;
 
 		dcb = quickMatch.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
@@ -34,52 +36,28 @@ public class NewGame : MonoBehaviour
 								//TODO fazer timeout de conexão
 							});
 
-		GameObject match1x1 = menu.FindChild ("Match 1x1").gameObject;
+		GameObject match1x1 = buttons.FindChild ("Match 1x1").gameObject;
 
 		dcb = match1x1.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								roomName = "Room" + PhotonNetwork.GetRoomList().Length + 1;
-								maxPlayers = 2;
-
-								pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
-
-								pw.SetProperty ("team", 0);
-								pw.SetProperty ("ready", true);
-
-								InvokeRepeating ("TryToEnterGame", 1.0f, RefreshingInterval);
+								CreateRoom (2);
 							});
 
-		GameObject match2x2 = menu.FindChild ("Match 2x2").gameObject;
+		GameObject match2x2 = buttons.FindChild ("Match 2x2").gameObject;
 
 		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								roomName = "Room" + PhotonNetwork.GetRoomList().Length + 1;
-								maxPlayers = 3;
-
-								pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
-
-								pw.SetProperty ("team", 0);
-								pw.SetProperty ("ready", true);
-
-								InvokeRepeating ("TryToEnterGame", 0.0f, RefreshingInterval);
+								CreateRoom (3);
 							});
 
-		GameObject matchTxT = menu.FindChild ("Match TxT").gameObject;
+		GameObject matchTxT = buttons.FindChild ("Match TxT").gameObject;
 
 		dcb = matchTxT.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								roomName = "Room" + PhotonNetwork.GetRoomList().Length + 1;
-								maxPlayers = 4;
-
-								pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
-
-								pw.SetProperty ("team", 0);
-								pw.SetProperty ("ready", true);
-
-								InvokeRepeating ("TryToEnterGame", 0.0f, RefreshingInterval);
+								CreateRoom (4);
 							});
 	}
 
@@ -88,44 +66,34 @@ public class NewGame : MonoBehaviour
 		CancelInvoke ("TryToEnterGame");
 	}
 
-	private void TryToEnterGame ()
+	private void CreateRoom (int maxPlayers)
 	{
-		if (PhotonNetwork.room == null)
-		{
-			//Debug.Log("Algo estranho por aqui");
-			return;
-		}
+		string roomName = "Room" + PhotonNetwork.GetRoomList().Length + 1;
+		bool isVisible = true, isOpen = true;
 
-		int numberOfReady = 0;
-		foreach (PhotonPlayer p in PhotonNetwork.playerList)
-		{
-			if (      p.customProperties.ContainsKey("ready") &&
-			    (bool)p.customProperties["ready"] == true)
-			{
-				numberOfReady++;
-			}
-		}
+		pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
 
-		if (numberOfReady == PhotonNetwork.room.maxPlayers)
-		{
-			if (PhotonNetwork.isMasterClient)
-			{
-				Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
-				PhotonNetwork.room.SetCustomProperties(roomProperty);
-			}
-			StartCoroutine (StartGame ());
-		}
+		pw.SetPropertyOnPlayer ("team", 0);
+		pw.SetPropertyOnPlayer ("ready", true);
+
+		messageActiveGame.enabled = true;
+		messageActiveGame.text = "Waiting For Other Players...";
+
+		buttons.gameObject.SetActive (false);
+
+		pw.TryToEnterGame (20.0f, (message) =>
+									{
+										Debug.Log("message: " + message);
+
+										messageActiveGame.enabled = true;
+
+										buttons.gameObject.SetActive (true);
+									},
+									(playersReady, nMaxPlayers) =>
+									{
+										messageActiveGame.text = "Wating For Other Players - "
+																	+ playersReady + "/" + nMaxPlayers;
+
+									});
 	}
-
-	private IEnumerator StartGame ()
-    {
-        while (PhotonNetwork.room == null)
-        {
-            yield return 0;
-        }
-
-        // Temporary disable processing of futher network messages
-        PhotonNetwork.isMessageQueueRunning = false;
-		Application.LoadLevel(1);
-    }
 }

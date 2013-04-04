@@ -4,9 +4,18 @@ using System.Linq;
 
 public class PhotonWrapper : Photon.MonoBehaviour
 {
-	string playerName = "";
+	public delegate void ConnectionCallback (string message);
+	public delegate void PlayerReadyCallback (int nPlayersReady, int nPlayers);
+
+	public float RefreshingInterval = 1.0f;
 
 	protected bool checkingStatus = false;
+
+	private string playerName = "";
+	private bool isTryingToEnterGame;
+
+	private ConnectionCallback cb;
+	private PlayerReadyCallback prc;
 
 	private bool wasInitialized = false;
 	public void Init ()
@@ -70,16 +79,16 @@ public class PhotonWrapper : Photon.MonoBehaviour
 									   && (r.playerCount != r.maxPlayers)
 									select r).ToArray ();
 	}
-	
-	public void SetProperty (string key, object value)
+
+	public void SetPropertyOnPlayer (string key, object value)
 	{
 		if (PhotonNetwork.player.customProperties.ContainsKey (key))
 			PhotonNetwork.player.customProperties [key] = value;
 		else
 			PhotonNetwork.player.customProperties.Add (key, value);
 	}
-	
-	public void SetProperty (string key, object value, PhotonPlayer player)
+
+	public void SetProperty (PhotonPlayer player, string key, object value)
 	{
 		if (player.customProperties.ContainsKey (key))
 			player.customProperties [key] = value;
@@ -141,7 +150,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		checkingStatus = false;
 
 		SetPlayer ( playerName, true );
-		SetProperty ("team", PhotonNetwork.playerList.Length - 1);
+		SetPropertyOnPlayer ("team", PhotonNetwork.playerList.Length - 1);
 	}
 
 	private void OnCreatedRoom()
@@ -170,15 +179,67 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		Debug.LogWarning ("OnFailedToConnectToPhoton. StatusCode: " + parameters);
 	}
 
-	public IEnumerator StartGame ()
+	public void TryToEnterGame (float maxTimeToWait, ConnectionCallback cb, PlayerReadyCallback prc = null)
 	{
-		while (PhotonNetwork.room == null)
+		this.cb  = cb;
+		this.prc = prc;
+
+		InvokeRepeating ("_TryToEnterGame", 1.0f, RefreshingInterval);
+		Invoke ("StopTryingEnterGame", maxTimeToWait);
+	}
+
+	private void StopTryingEnterGame ()
+	{
+		CancelInvoke ("_TryToEnterGame");
+
+		cb ("Timeout");
+	}
+
+	private void _TryToEnterGame ()
+	{
+		Room room = PhotonNetwork.room;
+
+		if (room == null)
 		{
-			yield return 0;
+			//Debug.Log("Algo estranho por aqui");
+			return;
 		}
 
-		// Temporary disable processing of futher network messages
-		PhotonNetwork.isMessageQueueRunning = false;
-		Application.LoadLevel(1);
+		int numberOfReady = 0;
+		foreach (PhotonPlayer p in PhotonNetwork.playerList)
+		{
+			if (      p.customProperties.ContainsKey("ready") &&
+			    (bool)p.customProperties["ready"] == true)
+			{
+				numberOfReady++;
+			}
+		}
+
+		if (prc != null)
+		{
+			prc (numberOfReady, room.maxPlayers);
+		}
+
+		if (numberOfReady == room.maxPlayers)
+		{
+			if (PhotonNetwork.isMasterClient)
+			{
+				Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
+				room.SetCustomProperties(roomProperty);
+			}
+			StartCoroutine (StartGame ());
+		}
 	}
+
+	private IEnumerator StartGame ()
+    {
+        while (PhotonNetwork.room == null)
+        {
+            yield return 0;
+        }
+
+        // Temporary disable processing of futher network messages
+        PhotonNetwork.isMessageQueueRunning = false;
+		Application.LoadLevel(1);
+    }
 }
