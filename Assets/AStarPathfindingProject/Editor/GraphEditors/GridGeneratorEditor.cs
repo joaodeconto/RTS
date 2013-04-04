@@ -1,15 +1,45 @@
+#if UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_4_8 || UNITY_4_9
+#define UNITY_4
+#endif
+
 using UnityEngine;
 using UnityEditor;
 using Pathfinding;
 using System.Collections;
+using Pathfinding.Serialization.JsonFx;
 
+/*
+#if !AstarRelease
+[CustomGraphEditor (typeof(CustomGridGraph),"CustomGrid Graph")]
+//[CustomGraphEditor (typeof(LineTraceGraph),"Grid Tracing Graph")]
+#endif
+*/
 [CustomGraphEditor (typeof(GridGraph),"Grid Graph")]
 public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 	
-	bool locked = true;
+	[JsonMember]
+	public bool locked = true;
+	
 	float newNodeSize;
 	
+	[JsonMember]
 	public bool showExtra = false;
+	
+	/** Should textures be allowed to be used.
+	  * This can be set to false by inheriting graphs not implemeting that feature */
+	[JsonMember]
+	public bool textureVisible = true;
+	
+	Matrix4x4 savedMatrix;
+	
+	Vector3 savedCenter;
+	
+	public bool isMouseDown = false;
+	
+	[JsonMember]
+	public GridPivot pivot;
+	
+	Node node1;
 	
 	/** Draws an integer field */
 	public int IntField (string label, int value, int offset, int adjust, out Rect r, out bool selected) {
@@ -20,13 +50,12 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 	public int IntField (GUIContent label, int value, int offset, int adjust, out Rect r, out bool selected) {
 		GUIStyle intStyle = EditorStyles.numberField;
 		
-		GUILayout.BeginHorizontal ();
-		GUILayout.Space (15*EditorGUI.indentLevel);
+		EditorGUILayoutx.BeginIndent ();
 		Rect r1 = GUILayoutUtility.GetRect (label,intStyle);
 		
 		Rect r2 = GUILayoutUtility.GetRect (new GUIContent (value.ToString ()),intStyle);
 		
-		GUILayout.EndHorizontal ();
+		EditorGUILayoutx.EndIndent();
 		
 		
 		r2.width += (r2.x-r1.x);
@@ -68,8 +97,14 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		
 		bool sizeSelected1 = false;
 		bool sizeSelected2 = false;
+		
+#if UNITY_4
+		int newWidth = IntField (new GUIContent ("Width (nodes)","Width of the graph in nodes"),graph.width,100,0, out lockRect, out sizeSelected1);
+		int newDepth = IntField (new GUIContent ("Depth (nodes)","Depth (or height you might also call it) of the graph in nodes"),graph.depth,100,0, out tmpLockRect, out sizeSelected2);
+#else
 		int newWidth = IntField (new GUIContent ("Width (nodes)","Width of the graph in nodes"),graph.width,50,0, out lockRect, out sizeSelected1);
 		int newDepth = IntField (new GUIContent ("Depth (nodes)","Depth (or height you might also call it) of the graph in nodes"),graph.depth,50,0, out tmpLockRect, out sizeSelected2);
+#endif
 		
 		//Rect r = GUILayoutUtility.GetRect (0,0,lockStyle);
 		
@@ -81,8 +116,6 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		locked = GUI.Toggle (lockRect,locked,new GUIContent ("","If the width and depth values are locked, changing the node size will scale the grid which keeping the number of nodes consistent instead of keeping the size the same and changing the number of nodes in the graph"),lockStyle);
 		
 		//GUILayout.EndHorizontal ();
-		
-		
 		
 		if (newWidth != graph.width || newDepth != graph.depth) {
 			SnapSizeToNodes (newWidth,newDepth,graph);
@@ -130,7 +163,12 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		Vector3 pivotPoint;
 		Vector3 diff;
 		
+		EditorGUIUtility.LookLikeControls ();
+#if !UNITY_4
+		EditorGUILayoutx.BeginIndent ();
+#else
 		GUILayout.BeginHorizontal ();
+#endif
 		
 		switch (pivot) {
 			case GridPivot.Center:
@@ -166,13 +204,23 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		
 		pivot = PivotPointSelector (pivot);
 		
-		GUILayout.EndHorizontal ();
+#if !UNITY_4
+		EditorGUILayoutx.EndIndent ();
 		
-		GUILayout.BeginHorizontal ();
+		EditorGUILayoutx.BeginIndent ();
+#else
+		GUILayout.EndHorizontal ();
+#endif
+		
 		graph.rotation = EditorGUILayout.Vector3Field ("Rotation",graph.rotation);
 		//Add some space to make the Rotation and postion fields be better aligned (instead of the pivot point selector)
-		GUILayout.Space (19+4+7);
-		GUILayout.EndHorizontal ();
+		GUILayout.Space (19+7);
+		//GUILayout.EndHorizontal ();
+		
+#if !UNITY_4
+		EditorGUILayoutx.EndIndent ();
+#endif
+		EditorGUIUtility.LookLikeInspector ();
 		
 		if (GUILayout.Button (new GUIContent ("Snap Size","Snap the size to exactly fit nodes"),GUILayout.MaxWidth (100),GUILayout.MaxHeight (16))) {
 			SnapSizeToNodes (newWidth,newDepth,graph);
@@ -192,16 +240,20 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		EditorGUI.indentLevel--;
 		//GUILayout.EndHorizontal ();
 		
-		GUILayout.BeginHorizontal ();
-		bool preEnabled = GUI.enabled;
-		GUI.enabled = graph.useRaycastNormal;
-		graph.maxSlope = EditorGUILayout.Slider (new GUIContent ("Max Slope","Sets the max slope in degrees for a point to be walkable"),graph.maxSlope,0,90F);
-		GUI.enabled = preEnabled;
-		graph.useRaycastNormal = GUILayout.Toggle (graph.useRaycastNormal,new GUIContent ("","Use the heigh raycast's normal to figure out the slope of the ground and check if it flat enough to stand on"),GUILayout.Width (10));
-		GUILayout.EndHorizontal ();
+		graph.maxSlope = EditorGUILayout.Slider (new GUIContent ("Max Slope","Sets the max slope in degrees for a point to be walkable. Only enabled if Height Testing is enabled."),graph.maxSlope,0,90F);
 		
 		graph.erodeIterations = EditorGUILayout.IntField (new GUIContent ("Erode iterations","Sets how many times the graph should be eroded. This adds extra margin to objects. This will not work when using Graph Updates, so if you can, use the Diameter setting in collision settings instead"),graph.erodeIterations);
 		graph.erodeIterations = graph.erodeIterations > 16 ? 16 : graph.erodeIterations; //Clamp iterations to 16
+		
+		graph.erosionUseTags = EditorGUILayout.Toggle (new GUIContent ("Erosion Uses Tags","Instead of making nodes unwalkable, " +
+			"nodes will have their tag set to a value corresponding to their erosion level, " +
+			"which is a quite good measurement of their distance to the closest wall."),
+		                                               graph.erosionUseTags);
+		if (graph.erosionUseTags) {
+			EditorGUI.indentLevel++;
+			graph.erosionFirstTag = EditorGUILayoutx.SingleTagField ("First Tag",graph.erosionFirstTag);
+			EditorGUI.indentLevel--;
+		}
 		
 		DrawCollisionEditor (graph.collision);
 		
@@ -232,22 +284,76 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 				EditorGUI.indentLevel++;
 				graph.penaltyPositionOffset = EditorGUILayout.FloatField ("Offset",graph.penaltyPositionOffset);
 				graph.penaltyPositionFactor = EditorGUILayout.FloatField ("Factor",graph.penaltyPositionFactor);
-				HelpBox ("Applies penalty to nodes based on their Y coordinate\nSampled in Int3 space, i.e it is multiplied with Int3.Precision first (usually 100)");
+				HelpBox ("Applies penalty to nodes based on their Y coordinate\nSampled in Int3 space, i.e it is multiplied with Int3.Precision first ("+Int3.Precision+")\n" +
+					"Be very careful when using negative values since a negative penalty will underflow and instead get really high");
 				//GUI.enabled = preGUI;
 				EditorGUI.indentLevel--;
 			}
 			
-			GUI.enabled = false;
-			ToggleGroup (new GUIContent ("Use Texture",AstarPathEditor.AstarProTooltip),false);
-			GUI.enabled = true;
+			if (textureVisible) {
+				DrawTextureData (graph.textureData, graph);
+			}
 			EditorGUI.indentLevel-=2;
 		}
 	}
 
 	
+	public void SaveReferenceTexture (GridGraph graph) {
+		//GridGraph graph = target as GridGraph;
+		
+		if (graph.nodes == null || graph.nodes.Length != graph.width * graph.depth) {
+			AstarPath.active.Scan ();
+		}
+		
+		if (graph.nodes.Length != graph.width * graph.depth) {
+			Debug.LogError ("Couldn't create reference image since width*depth != nodes.Length");
+			return;
+		}
+		
+		if (graph.nodes.Length == 0) {
+			Debug.LogError ("Couldn't create reference image since the graph is too small (0*0)");
+			return;
+		}
+		
+		Texture2D tex = new Texture2D (graph.width,graph.depth);
+		
+		float maxY = float.NegativeInfinity;
+		for (int i=0;i<graph.nodes.Length;i++) {
+			Vector3 p = graph.inverseMatrix.MultiplyPoint ((Vector3)graph.nodes[i].position);
+			maxY = p.y > maxY ? p.y : maxY;
+		}
+		
+		Color[] cols = new Color[graph.width*graph.depth];
+		
+		for (int z=0;z<graph.depth;z++) {
+			for (int x=0;x<graph.width;x++) {
+				Node node = graph.nodes[z*graph.width+x];
+				float v = node.walkable ? 1F : 0.0F;
+				Vector3 p = graph.inverseMatrix.MultiplyPoint ((Vector3)node.position);
+				float q = p.y / maxY;
+				cols[z*graph.width+x] = new Color (v,q,0);
+			}
+		}
+		tex.SetPixels (cols);
+		tex.Apply ();
+		
+		string path = AssetDatabase.GenerateUniqueAssetPath ("Assets/gridReference.png");
+		
+		using (System.IO.StreamWriter outstream = new System.IO.StreamWriter (path)) {
+			using (System.IO.BinaryWriter outfile = new System.IO.BinaryWriter (outstream.BaseStream)) {
+				outfile.Write (tex.EncodeToPNG ());
+			}
+		}
+		AssetDatabase.Refresh ();
+		Object obj = AssetDatabase.LoadAssetAtPath (path,typeof (Texture));
+		
+		EditorGUIUtility.PingObject (obj);
+	}
+	
 	/** Displays an object field for objects which must be in the 'Resources' folder.
 	 * If the selected object is not in the resources folder, a warning message with a Fix button will be shown
 	 */
+	[System.Obsolete("Use ObjectField instead")]
 	public UnityEngine.Object ResourcesField (string label, UnityEngine.Object obj, System.Type type) {
 		
 #if UNITY_3_3
@@ -280,6 +386,84 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		return obj;
 	}
 	
+	
+	public static readonly string[] ChannelUseNames = new string[4] {"None","Penalty","Height","Walkability and Penalty"};
+	
+	/** Draws settings for using a texture as source for a grid.
+	 * \astarpro */
+	public void DrawTextureData (GridGraph.TextureData data, GridGraph graph) {
+		if (data == null) {
+			return;
+		}
+		
+		data.enabled = ToggleGroup ("Use Texture",data.enabled);
+			//EditorGUILayout.Toggle ("Use Texture",data.enabled);
+		//data.enabled = ToggleGroup ("Use Texture",data.enabled);
+		if (!data.enabled) {
+			return;
+		}
+		
+		bool preGUI = GUI.enabled;
+		GUI.enabled = data.enabled && GUI.enabled;
+		
+		EditorGUI.indentLevel++;
+		//data.source = EditorGUILayout.ObjectField ("Source",data.source,typeof(Texture2D),false) as Texture2D;
+		data.source = ObjectField ("Source",data.source,typeof(Texture2D),false) as Texture2D;
+		
+		if (data.source != null) {
+			string path = AssetDatabase.GetAssetPath (data.source);
+			
+			if (path != "") {
+				TextureImporter importer = AssetImporter.GetAtPath (path) as TextureImporter;
+				if (!importer.isReadable) {
+					if (FixLabel ("Texture is not readable")) {
+						importer.isReadable = true;
+						EditorUtility.SetDirty (importer);
+						AssetDatabase.ImportAsset (path);
+					}
+				}
+			}
+		}
+		
+		for (int i=0;i<3;i++) {
+			string channelName = i == 0 ? "R" : (i == 1 ? "G" : "B");
+			data.channels[i] = (GridGraph.TextureData.ChannelUse)EditorGUILayout.Popup (channelName, (int)data.channels[i], ChannelUseNames);
+			
+			if (data.channels[i] != GridGraph.TextureData.ChannelUse.None) {
+				EditorGUI.indentLevel++;
+				data.factors[i] = EditorGUILayout.FloatField ("Factor",data.factors[i]);
+				
+				string help = "";
+				switch (data.channels[i]) {
+				case GridGraph.TextureData.ChannelUse.Penalty:
+					help = "Nodes are applied penalty according to channel '"+channelName+"', multiplied with factor";
+					break;
+				case GridGraph.TextureData.ChannelUse.Position:
+					help = "Nodes Y position is changed according to channel '"+channelName+"', multiplied with factor";
+					
+					if (graph.collision.heightCheck) {
+						HelpBox ("Getting position both from raycast and from texture. You should disable one of them");
+					}
+					break;
+				case GridGraph.TextureData.ChannelUse.WalkablePenalty:
+					help = "If channel '"+channelName+"' is 0, the node is made unwalkable. Otherwise the node is applied penalty multiplied with factor";
+					break;
+				}
+				
+				HelpBox (help);
+				
+				EditorGUI.indentLevel--;
+			}
+			
+		}
+		
+		if (GUILayout.Button ("Generate Reference")) {
+			SaveReferenceTexture (graph);
+		}
+		
+		GUI.enabled = preGUI;
+		EditorGUI.indentLevel--;
+	}
 	
 	public void SnapSizeToNodes (int newWidth, int newDepth, GridGraph graph) {
 		//Vector2 preSize = graph.unclampedSize;
@@ -339,25 +523,6 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		return pivot;
 	}
 	
-	public GridPivot pivot;
-	
-	public enum GridPivot {
-		Center,
-		TopLeft,
-		TopRight,
-		BottomLeft,
-		BottomRight
-	}
-	
-	Matrix4x4 savedMatrix;
-	
-	Vector3 savedCenter;
-	
-	public bool isMouseDown = false;
-	
-	
-	Node node1;
-	
 	//GraphUndo undoState;
 	//byte[] savedBytes;
 	
@@ -386,9 +551,10 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		Handles.matrix = savedMatrix;
 		
 		if (graph.nodes == null || (graph.uniformWidhtDepthGrid && graph.depth*graph.width != graph.nodes.Length) || graph.matrix != matrixPre) {
-			//Rescann the graphs
-			AstarPath.active.AutoScan ();
-			GUI.changed = true;
+			//Rescan the graphs
+			if (AstarPath.active.AutoScan ()) {
+				GUI.changed = true;
+			}
 		}
 		
 		Matrix4x4 inversed = savedMatrix.inverse;
@@ -475,6 +641,35 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		
 		
 		
+#if ASTARDEBUG
+		//Draws some info over the node closest to the mouse
+		Ray ray = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+		
+		Vector3 p = ray.GetPoint (100);
+		
+		
+		if (Event.current.shift) {
+			
+			Node close = graph.GetNearest (p).node;
+			
+			if (close != null) {
+				node1 = close;
+			}
+				
+			if (node1 == null) {
+				return;
+			}
+			
+			Handles.SphereCap (0,(Vector3)node1.position,Quaternion.identity,graph.nodeSize*0.5F);
+			
+			
+			//Node node = node1;
+			
+			GUI.color = Color.white;
+			//Handles.Label((Vector3)node.position + Vector3.up*2,"G : "+node.+"\nH : "+node.h+"\nF : "+node.f+"\nPosition : "+node.position.ToString (),EditorStyles.whiteBoldLabel);
+		}
+		
+#endif
 		
 	}
 	
@@ -490,5 +685,13 @@ public class GridGraphEditor : GraphEditor, ISerializableGraphEditor {
 		locked = (bool)serializer.GetValue ("locked",typeof(bool),true);
 		showExtra = (bool)serializer.GetValue ("showExtra",typeof(bool));
 			
+	}
+	
+	public enum GridPivot {
+		Center,
+		TopLeft,
+		TopRight,
+		BottomLeft,
+		BottomRight
 	}
 }
