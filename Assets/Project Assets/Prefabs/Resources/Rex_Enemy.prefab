@@ -536,7 +536,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400070}
   m_Layer: 10
-  m_Name: Health Reference
+  m_Name: Blood Reference
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -574,6 +574,21 @@ GameObject:
   - 33: {fileID: 3300000}
   m_Layer: 10
   m_Name: Mesh_002
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400076}
+  m_Layer: 10
+  m_Name: Health Reference
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1006,7 +1021,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100070}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -.5, z: 0}
+  m_LocalPosition: {x: 0, y: 2.5, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400072}
@@ -1020,6 +1035,7 @@ Transform:
   m_LocalPosition: {x: 27.1922646, y: 10.0012207, z: 32.6901932}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 400076}
   - {fileID: 400070}
   - {fileID: 400068}
   m_Father: {fileID: 0}
@@ -1034,6 +1050,17 @@ Transform:
   m_LocalScale: {x: 9.20790672, y: 9.20790672, z: 9.20790863}
   m_Children: []
   m_Father: {fileID: 400052}
+--- !u!4 &400076
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100076}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400072}
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -1120,6 +1147,8 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 2
         gridYIndex: 0
+  pref_Blood: {fileID: 100008, guid: 1ec58827013789f4c9fc0b646a635065, type: 2}
+  transformBloodReference: {fileID: 400070}
   playerUnit: 1
   model: {fileID: 100068}
   force: 12

@@ -10,8 +10,6 @@ public class Login : MonoBehaviour
 	public GameObject submitButton;
 	public GameObject mainMenu;
 
-	public NetworkGUI networkGUI;
-
 	public void Start ()
 	{
 		Init ();

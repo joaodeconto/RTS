@@ -7,7 +7,10 @@ using Visiorama;
 public class ActiveGames : MonoBehaviour
 {
 	public float RefreshingInterval = 2.0f;
+
 	public UILabel messageActiveGame;
+	public UILabel errorMessage;
+
 	public GameObject pref_Row;
 	public Transform rowsContainer;
 
@@ -92,61 +95,41 @@ public class ActiveGames : MonoBehaviour
 					dcb.Init (ht, (ht_hud) =>
 										{
 											pw.JoinRoom ((string)ht_hud["room.name"]);
-											pw.SetProperty ("ready", true);
-											pw.SetProperty ("team", PhotonNetwork.playerList.Length - 1);
+
+											pw.SetPropertyOnPlayer ("ready", true);
 
 											ClearRows ();
 
 											messageActiveGame.enabled = true;
-											messageActiveGame.text = "Wating For Other Players";
+											messageActiveGame.text = "Waiting For Other Players...";
 
 											CancelInvoke ("Refresh");
-											InvokeRepeating ("TryToEnterGame", 0.0f, RefreshingInterval);
+
+											pw.TryToEnterGame ( 100000.0f,
+																(message) =>
+																{
+																	Debug.Log("message: " + message);
+
+																	messageActiveGame.enabled = true;
+
+																	errorMessage.enabled = true;
+
+																	Invoke ("CloseErrorMessage", 5.0f);
+																	InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
+																},
+																(playersReady, maxPlayers) =>
+																{
+																	messageActiveGame.text = "Wating For Other Players - "
+																								+ playersReady + "/" + maxPlayers;
+
+																});
 										});
 				}
 			}
 	}
 
-	private void TryToEnterGame ()
+	private void CloseErrorMessage ()
 	{
-		if (PhotonNetwork.room == null)
-		{
-			Debug.Log("Algo estranho por aqui");
-			return;
-		}
-
-		int numberOfReady = 0;
-		foreach (PhotonPlayer p in PhotonNetwork.playerList)
-		{
-			if (      p.customProperties.ContainsKey("ready") &&
-			    (bool)p.customProperties["ready"] == true)
-			{
-				numberOfReady++;
-			}
-		}
-
-		if (numberOfReady == PhotonNetwork.room.maxPlayers)
-		{
-			if (PhotonNetwork.isMasterClient)
-			{
-				Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
-				PhotonNetwork.room.SetCustomProperties(roomProperty);
-			}
-			StartCoroutine (StartGame ());
-		}
-
-		messageActiveGame.text = "Wating For Other Players - " + numberOfReady + "/" + PhotonNetwork.room.maxPlayers;
+		errorMessage.enabled = false;
 	}
-
-	private IEnumerator StartGame ()
-    {
-        while (PhotonNetwork.room == null)
-        {
-            yield return 0;
-        }
-
-        // Temporary disable processing of futher network messages
-        PhotonNetwork.isMessageQueueRunning = false;
-		Application.LoadLevel(1);
-    }
 }

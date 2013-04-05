@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   m_Layer: 10
-  m_Name: Health Reference
+  m_Name: Blood Reference
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -503,6 +503,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400066}
+  m_Layer: 10
+  m_Name: Health Reference
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -510,7 +525,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.71570957, z: 1.75241816}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -524,6 +539,7 @@ Transform:
   m_LocalPosition: {x: 30.3081112, y: 10, z: 29.1225758}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 400066}
   - {fileID: 400000}
   - {fileID: 400050}
   m_Father: {fileID: 0}
@@ -898,6 +914,17 @@ Transform:
   - {fileID: 400052}
   - {fileID: 400060}
   m_Father: {fileID: 400056}
+--- !u!4 &400066
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100066}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400002}
 --- !u!111 &11100000
 Animation:
   m_ObjectHideFlags: 1
@@ -962,6 +989,8 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 2
         gridYIndex: 0
+  pref_Blood: {fileID: 100008, guid: 1ec58827013789f4c9fc0b646a635065, type: 2}
+  transformBloodReference: {fileID: 400000}
   playerUnit: 1
   model: {fileID: 100056, guid: f8c78f6a63e45af4c86e2ce158817546, type: 3}
   force: 8

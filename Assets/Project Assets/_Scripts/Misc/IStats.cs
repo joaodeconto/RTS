@@ -101,7 +101,10 @@ public abstract class IStats : Photon.MonoBehaviour
 	public RendererTeamColor[] rendererTeamColor;
 
 	public MovementAction[] movementActions;
-
+	
+	public GameObject pref_Blood;
+	public Transform transformBloodReference;
+	
 	public bool playerUnit;
 
 	public bool Selected { get; protected set; }
@@ -158,13 +161,25 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	public void ReceiveAttack (int Damage)
 	{
-		Debug.Log (Health);
-
 		if (Health != 0)
 		{
 			int newDamage = Mathf.Max (0, Damage - Defense);
 
 			Health = Mathf.Max (0, Health - newDamage);
+			
+			if (pref_Blood != null)
+			{
+				GameObject newBlood;
+				
+				if (transformBloodReference != null)
+				{
+					newBlood = Instantiate (pref_Blood, transformBloodReference.position, transformBloodReference.rotation) as GameObject;
+				}
+				else
+				{
+					newBlood = Instantiate (pref_Blood, transform.position, Quaternion.Euler (transform.forward)) as GameObject;
+				}
+			}
 		}
 
 		if (Health == 0)
