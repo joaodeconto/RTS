@@ -82,8 +82,6 @@ public class InteractionController : MonoBehaviour
 
 		if (hit.CompareTag ("Factory"))
 		{
-			worker.SetResource (null);
-			
 			if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
 			{
 				troopController.AttackTroop (hit.transform.gameObject);
