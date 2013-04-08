@@ -562,7 +562,10 @@ public class Unit : IStats
 	public virtual void AttackUnit (string nameUnit, int force)
 	{
 		Unit unit = troopController.FindUnit (nameUnit);
-		if (unit != null) unit.ReceiveAttack (force);
+		if (unit != null)
+		{
+			unit.ReceiveAttack (force);
+		}
 	}
 
 	[RPC]

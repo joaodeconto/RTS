@@ -67,6 +67,7 @@ public class Worker : Unit
 
 
 	protected FactoryBase factoryChoose, lastFactory;
+	protected EventManager eventManager;
 	protected bool movingToFactory;
 
 	public override void Init ()
@@ -80,7 +81,9 @@ public class Worker : Unit
 			rw.carryingObject.SetActive (false);
 			rw.extractingObject.SetActive (false);
 		}
-
+		
+		eventManager = ComponentGetter.Get<EventManager> ();
+		
 		hasResource = settingWorkerNull = false;
 
 		workerState = WorkerState.None;
@@ -205,6 +208,9 @@ public class Worker : Unit
 					Move (transform.position - transform.forward);
 
 					resourceWorker[0].extractingObject.SetActive (false);
+					
+					movingToFactory = false;
+				
 					if (hasResource)
 					{
 						resource = lastResource;
@@ -421,14 +427,19 @@ public class Worker : Unit
 
 	public void InstanceGhostFactory (FactoryBase factory)
 	{
-		GameObject ghostFactory = null;
-
-		if (PhotonNetwork.offlineMode)
-			ghostFactory = Instantiate (factory.gameObject, Vector3.zero, factory.transform.rotation) as GameObject;
+		if (CanConstruct (factory))
+		{
+			GameObject ghostFactory = null;
+	
+			if (PhotonNetwork.offlineMode)
+				ghostFactory = Instantiate (factory.gameObject, Vector3.zero, factory.transform.rotation) as GameObject;
+			else
+				ghostFactory = PhotonNetwork.Instantiate ( factory.gameObject.name, Vector3.zero, factory.transform.rotation, 0);
+	
+			ghostFactory.AddComponent<GhostFactory>().Init (this);
+		}
 		else
-			ghostFactory = PhotonNetwork.Instantiate ( factory.gameObject.name, Vector3.zero, factory.transform.rotation, 0);
-
-		ghostFactory.AddComponent<GhostFactory>().Init (this);
+			eventManager.AddEvent("out of founds", factory.name);
 	}
 
 	public void SetResource (Resource newResource)

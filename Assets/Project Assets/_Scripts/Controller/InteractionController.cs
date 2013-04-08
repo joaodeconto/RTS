@@ -82,6 +82,8 @@ public class InteractionController : MonoBehaviour
 
 		if (hit.CompareTag ("Factory"))
 		{
+			worker.SetResource (null);
+			
 			if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
 			{
 				troopController.AttackTroop (hit.transform.gameObject);
@@ -92,25 +94,20 @@ public class InteractionController : MonoBehaviour
 			}
 			return;
 		}
-//		else
-//		{
-//			foreach (Unit unit in troopController.selectedSoldiers)
-//			{
-//				if (unit.GetType() == typeof(Worker))
-//				{
-//					Worker worker = unit as Worker;
-//					worker.SetMoveToFactory (null);
-//				}
-//			}
-//		}
-
-		if (hit.GetComponent<Resource> () != null)
+		else if (hit.GetComponent<Resource> () != null)
 		{
 			foreach (Unit unit in troopController.selectedSoldiers)
 			{
 				if (unit.GetType() == typeof(Worker))
 				{
 					Worker worker = unit as Worker;
+					
+					if (worker.IsRepairing ||
+						worker.IsBuilding)
+					{
+						worker.SetMoveToFactory (null);
+					}
+					
 					worker.SetResource(hit.GetComponent<Resource> ());
 				}
 			}
@@ -128,6 +125,11 @@ public class InteractionController : MonoBehaviour
 						{
 							worker.SetResource (null);
 						}
+					}
+					if (worker.IsRepairing ||
+						worker.IsBuilding)
+					{
+						worker.SetMoveToFactory (null);
 					}
 				}
 			}

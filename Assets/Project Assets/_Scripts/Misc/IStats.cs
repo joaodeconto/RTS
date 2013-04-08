@@ -169,16 +169,7 @@ public abstract class IStats : Photon.MonoBehaviour
 			
 			if (pref_Blood != null)
 			{
-				GameObject newBlood;
-				
-				if (transformBloodReference != null)
-				{
-					newBlood = Instantiate (pref_Blood, transformBloodReference.position, transformBloodReference.rotation) as GameObject;
-				}
-				else
-				{
-					newBlood = Instantiate (pref_Blood, transform.position, Quaternion.Euler (transform.forward)) as GameObject;
-				}
+				photonView.RPC ("InstantiateBlood", PhotonTargets.All);
 			}
 		}
 
@@ -188,6 +179,21 @@ public abstract class IStats : Photon.MonoBehaviour
 			IsRemoved = true;
 
 			SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
+		}
+	}
+	
+	[RPC]
+	private void InstantiateBlood ()
+	{
+		GameObject newBlood;
+		
+		if (transformBloodReference != null)
+		{
+			newBlood = Instantiate (pref_Blood, transformBloodReference.position, transformBloodReference.rotation) as GameObject;
+		}
+		else
+		{
+			newBlood = Instantiate (pref_Blood, transform.position, Quaternion.Euler (transform.forward)) as GameObject;
 		}
 	}
 
