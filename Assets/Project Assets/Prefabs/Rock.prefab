@@ -11,6 +11,7 @@ GameObject:
   - 114: {fileID: 11400000}
   - 136: {fileID: 13600000}
   - 114: {fileID: 11400002}
+  - 208: {fileID: 20800000}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -41,8 +42,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: -1}
-  m_LocalPosition: {x: 87.9202118, y: 20.2255859, z: 63.5067825}
+  m_LocalRotation: {x: -.0153736165, y: -.00647836085, z: .0101193329, w: -.999809623}
+  m_LocalPosition: {x: 13.2412262, y: 20.2255859, z: 14.2150726}
   m_LocalScale: {x: 2.43398094, y: 2.43398094, z: 2.43398094}
   m_Children:
   - {fileID: 400002}
@@ -54,7 +55,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -128,7 +129,16 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &20800000
+NavMeshObstacle:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

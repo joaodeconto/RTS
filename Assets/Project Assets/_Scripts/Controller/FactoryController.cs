@@ -18,14 +18,14 @@ public class FactoryController : MonoBehaviour
 	public void AddFactory (FactoryBase factory)
 	{
 		factorys.Add (factory);
-		ComponentGetter.Get<MiniMapController> ().AddStructure (factory.transform, factory.Team);
+		ComponentGetter.Get<MiniMapController> ().AddStructure (factory.transform, factory.team);
 		ComponentGetter.Get<FogOfWar> ().AddEntity (factory.transform, factory);
 	}
 
 	public void RemoveFactory (FactoryBase factory)
 	{
 		factorys.Remove (factory);
-		ComponentGetter.Get<MiniMapController> ().RemoveStructure (factory.transform, factory.Team);
+		ComponentGetter.Get<MiniMapController> ().RemoveStructure (factory.transform, factory.team);
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (factory.transform, factory);
 	}
 
@@ -63,6 +63,6 @@ public class FactoryController : MonoBehaviour
 
 	public void ChangeVisibility (FactoryBase factory, bool visibility)
 	{
-		ComponentGetter.Get<MiniMapController> ().SetVisibilityStructure (factory.transform, factory.Team, visibility);
+		ComponentGetter.Get<MiniMapController> ().SetVisibilityStructure (factory.transform, factory.team, visibility);
 	}
 }

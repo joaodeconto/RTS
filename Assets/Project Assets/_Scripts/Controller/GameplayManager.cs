@@ -89,7 +89,7 @@ public class GameplayManager : MonoBehaviour
 
 	public bool IsSameTeam (IStats stats)
 	{
-		return stats.Team == MyTeam;
+		return stats.team == MyTeam;
 	}
 	
 	public void IncrementUnit (int teamID, int numberOfUnits)

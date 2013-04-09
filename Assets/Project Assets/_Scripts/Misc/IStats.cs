@@ -94,8 +94,8 @@ public abstract class IStats : Photon.MonoBehaviour
 	public int MaxHealth = 200;
 	public int Defense;
 
-	public int Team;
-	public float RangeView;
+	public int team;
+	public float fieldOfView;
 	public float sizeOfSelected = 1f;
 
 	public RendererTeamColor[] rendererTeamColor;
@@ -135,7 +135,7 @@ public abstract class IStats : Photon.MonoBehaviour
 		}
 		else
 		{
-			if (Team < 0)
+			if (team < 0)
 			{
 				if (!PhotonNetwork.offlineMode)
 				{
@@ -143,18 +143,18 @@ public abstract class IStats : Photon.MonoBehaviour
 				}
 				else
 				{
-					Team = (playerUnit) ? 0 : 1;
+					team = (playerUnit) ? 0 : 1;
 				}
 			}
 			else
 			{
-				playerUnit = gameplayManager.IsSameTeam (Team);
+				playerUnit = gameplayManager.IsSameTeam (team);
 			}
 		}
 
 		SetColorTeam ();
 
-		gameplayManager.AddStatTeamID (Team);
+		gameplayManager.AddStatTeamID (team);
 
 		IsRemoved = false;
 	}
@@ -175,7 +175,7 @@ public abstract class IStats : Photon.MonoBehaviour
 
 		if (Health == 0)
 		{
-			gameplayManager.RemoveStatTeamID (Team);
+			gameplayManager.RemoveStatTeamID (team);
 			IsRemoved = true;
 
 			SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
@@ -216,12 +216,12 @@ public abstract class IStats : Photon.MonoBehaviour
 		playerUnit = photonView.isMine;
 		if (playerUnit)
 		{
-			Team = (int)PhotonNetwork.player.customProperties["team"];
+			team = (int)PhotonNetwork.player.customProperties["team"];
 		}
 		else
 		{
 			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
-			Team = (int)other.customProperties["team"];
+			team = (int)other.customProperties["team"];
 		}
 	}
 
@@ -229,7 +229,19 @@ public abstract class IStats : Photon.MonoBehaviour
 	{
 		foreach (RendererTeamColor rtc in rendererTeamColor)
 		{
-			rtc.SetColorInMaterial (transform, Team);
+			rtc.SetColorInMaterial (transform, team);
 		}
+	}
+	
+	// GIZMOS
+	void OnDrawGizmosSelected ()
+	{
+		DrawGizmosSelected ();
+	}
+	
+	public virtual void DrawGizmosSelected ()
+	{
+		Gizmos.color = Color.white;
+		Gizmos.DrawWireSphere (this.transform.position, fieldOfView);
 	}
 }

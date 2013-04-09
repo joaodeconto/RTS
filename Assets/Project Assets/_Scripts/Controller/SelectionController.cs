@@ -125,7 +125,7 @@ public class SelectionController : MonoBehaviour
 						Unit.UnitType category = selectedUnit.category;
 						foreach (Unit soldier in troopController.soldiers)
 						{
-							if (gameplayManager.IsSameTeam (soldier.Team))
+							if (gameplayManager.IsSameTeam (soldier.team))
 							{
 								//TODO pegar somente da mesma categoria dentro da tela
 								if (soldier.category == category)

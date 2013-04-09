@@ -30,6 +30,11 @@ public class ResourcesManager
 		if (discount) NumberOfRocks -= resourceCost.NumberOfRocks;
 		return true;
 	}
+	
+	public void ReturnResources (ResourcesManager resourceCost)
+	{
+		NumberOfRocks += resourceCost.NumberOfRocks;
+	}
 }
 
 public class Resource : Photon.MonoBehaviour

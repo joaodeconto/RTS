@@ -39,7 +39,7 @@ public class Unit : IStats
 
 	public int force;
 	public float distanceView       = 15f;
-	public float rangeAttack        = 5f;
+	public float attackRange        = 5f;
 	public float attackDuration     = 1f;
 	public float probeRange         = 1.0f; // how far the character can "see"
     public float turnSpeedAvoidance = 50f; // how fast to turn
@@ -581,7 +581,7 @@ public class Unit : IStats
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 
-		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
+		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		hudController.CreateEnqueuedButtonInInspector ( this.name,
 														Unit.UnitGroupQueueName,
 														null,
@@ -647,7 +647,7 @@ public class Unit : IStats
 
 	public bool IsRangeAttack (GameObject soldier)
 	{
-		return Vector3.Distance(transform.position, soldier.transform.position) <= (rangeAttack + soldier.GetComponent<CapsuleCollider>().radius);
+		return Vector3.Distance(transform.position, soldier.transform.position) <= (attackRange + soldier.GetComponent<CapsuleCollider>().radius);
 	}
 
 	public bool InDistanceView (Vector3 position)
@@ -677,7 +677,7 @@ public class Unit : IStats
 		if (enemy != null)
 		{
 			PhotonPlayer[] pp = (from pps in PhotonNetwork.playerList
-	        where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().Team
+	        where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
 	        select pps).ToArray ();
 			playerTargetAttack = pp[0];
 		}
@@ -697,7 +697,7 @@ public class Unit : IStats
 		Unit testedUnit = units[mid];
 
 		//verificar se é do mesmo time
-		if (testedUnit.Team == unit.Team)
+		if (testedUnit.team == unit.team)
 		{
 			if(Random.value % 2 == 0)
 				return BinarySearch(units, unit, first, mid - 1);
@@ -705,7 +705,7 @@ public class Unit : IStats
 				return BinarySearch(units, unit, mid + 1, last);
 		}
 
-		Debug.Log (testedUnit.Team + " == " + unit.Team);
+		Debug.Log (testedUnit.team + " == " + unit.team);
 
 		//obtendo posição x
 		float testedUnitX = testedUnit.transform.position.x;
@@ -777,7 +777,7 @@ public class Unit : IStats
 		{
 			if (nearbyUnits[i].GetComponent<Unit> ())
 			{
-				if (nearbyUnits[i].GetComponent<Unit> ().Team != Team)
+				if (nearbyUnits[i].GetComponent<Unit> ().team != team)
 				{
 					if (unitSelected == null) unitSelected = nearbyUnits[i].gameObject;
 					else
@@ -792,7 +792,7 @@ public class Unit : IStats
 			}
 			else
 			{
-				if (nearbyUnits[i].GetComponent<FactoryBase> ().Team != Team)
+				if (nearbyUnits[i].GetComponent<FactoryBase> ().team != team)
 				{
 					if (unitSelected == null) unitSelected = nearbyUnits[i].gameObject;
 					else
@@ -847,19 +847,15 @@ public class Unit : IStats
 		pathfind.angularSpeed = normalAngularSpeed;
 	}
 
-	// GIZMOS
-	void OnDrawGizmosSelected ()
+	public override void DrawGizmosSelected ()
 	{
-		DrawGizmosSelected ();
-	}
-
-	public virtual void DrawGizmosSelected ()
-	{
+		base.DrawGizmosSelected ();
+		
 		Gizmos.color = Color.cyan;
 		Gizmos.DrawWireSphere (this.transform.position, distanceView);
 
 		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere (this.transform.position, rangeAttack);
+		Gizmos.DrawWireSphere (this.transform.position, attackRange);
 	}
 
 	public override void SetVisible(bool isVisible)

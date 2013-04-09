@@ -451,7 +451,7 @@ public class Worker : Unit
 	{
 		foreach (FactoryConstruction fc in factoryConstruction)
 		{
-			if (factory.GetType () == fc.factory.GetType ())
+			if (factory == fc.factory)
 			{
 				return gameplayManager.resources.CanBuy (fc.costOfResources, discount);
 				break;
