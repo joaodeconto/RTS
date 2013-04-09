@@ -14,7 +14,6 @@ public class Team
 public class GameplayManager : MonoBehaviour
 {
 	public const int MAX_POPULATION_ALLOWED = 200;
-	public const int NUMBER_INCREMENT_AND_DECREMENT_UNITS = 5;
 	
 	public Team[] teams;
 
@@ -51,7 +50,6 @@ public class GameplayManager : MonoBehaviour
 			}
 		}
 		excessHousesIncrements = 0;
-		IncrementMaxOfUnits ();
 	}
 	
 	/// <summary>
@@ -104,15 +102,15 @@ public class GameplayManager : MonoBehaviour
 		if (IsSameTeam (teamID)) this.numberOfUnits -= numberOfUnits;
 	}
 
-	public void IncrementMaxOfUnits ()
+	public void IncrementMaxOfUnits (int numberOfIncrementUnits)
 	{
-		if (!ReachedMaxPopulation) maxOfUnits += NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		if (!ReachedMaxPopulation) maxOfUnits += numberOfIncrementUnits;
 		else ++excessHousesIncrements;
 	}
 
-	public void DecrementMaxOfUnits ()
+	public void DecrementMaxOfUnits (int numberOfDecrementUnits)
 	{
-		if (excessHousesIncrements == 0) maxOfUnits -= NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		if (excessHousesIncrements == 0) maxOfUnits -= numberOfDecrementUnits;
 		else --excessHousesIncrements;
 	}
 	
