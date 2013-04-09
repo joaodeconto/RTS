@@ -6,7 +6,9 @@ using Visiorama;
 
 public class FactoryController : MonoBehaviour
 {
+	[System.NonSerialized]
 	public List<FactoryBase> factorys = new List<FactoryBase> ();
+	[System.NonSerialized]
 	public FactoryBase selectedFactory;
 
 	public void Init ()

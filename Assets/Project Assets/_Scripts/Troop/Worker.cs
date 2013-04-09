@@ -427,7 +427,7 @@ public class Worker : Unit
 
 	public void InstanceGhostFactory (FactoryBase factory)
 	{
-		if (CanConstruct (factory))
+		if (CanConstruct (factory, false))
 		{
 			GameObject ghostFactory = null;
 	
@@ -447,13 +447,13 @@ public class Worker : Unit
 		resource = newResource;
 	}
 	
-	public bool CanConstruct (FactoryBase factory)
+	public bool CanConstruct (FactoryBase factory, bool discount = true)
 	{
 		foreach (FactoryConstruction fc in factoryConstruction)
 		{
 			if (factory.GetType () == fc.factory.GetType ())
 			{
-				return gameplayManager.resources.CanBuy (fc.costOfResources);
+				return gameplayManager.resources.CanBuy (fc.costOfResources, discount);
 				break;
 			}
 		}
