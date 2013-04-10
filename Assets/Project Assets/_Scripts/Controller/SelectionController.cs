@@ -125,7 +125,7 @@ public class SelectionController : MonoBehaviour
 						Unit.UnitType category = selectedUnit.category;
 						foreach (Unit soldier in troopController.soldiers)
 						{
-							if (gameplayManager.IsSameTeam (soldier.Team))
+							if (gameplayManager.IsSameTeam (soldier.team))
 							{
 								//TODO pegar somente da mesma categoria dentro da tela
 								if (soldier.category == category)
@@ -210,20 +210,6 @@ public class SelectionController : MonoBehaviour
 
 				if (troopController.selectedSoldiers.Count != 0) return true;
 
-				foreach (FactoryBase factory in factoryController.factorys)
-				{
-					if (factory.collider == null)
-					{
-						Debug.Log("estrutura sem colisor!");
-						Debug.Break();
-					}
-
-					if (b.Intersects (factory.collider.bounds))
-					{
-						factoryController.SelectFactory (factory);
-						break;
-					}
-				}
 			}
 			else
 			{

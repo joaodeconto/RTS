@@ -10,19 +10,21 @@ public class GhostFactory : MonoBehaviour
 	protected GameplayManager gameplayManager;
 
 	protected string correctName;
+	protected Worker.FactoryConstruction factoryConstruction;
 	protected FactoryBase thisFactory;
 	protected GameObject overdrawModel;
 	protected int numberOfCollisions = 0;
 
-	public void Init (Worker worker)
+	public void Init (Worker worker, Worker.FactoryConstruction factoryConstruction)
 	{
 		GameObject oldGhost = GameObject.Find ("GhostFactory");
 		if (oldGhost != null) Destroy (oldGhost);
 		
-		this.worker = worker;
+		this.worker 			 = worker;
+		this.factoryConstruction = factoryConstruction;
 
 		thisFactory = GetComponent<FactoryBase>();
-		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.AllBuffered, worker.Team);
+		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.AllBuffered, worker.team);
 		
 		correctName = thisFactory.name;
 		thisFactory.name = "GhostFactory";
@@ -42,7 +44,7 @@ public class GhostFactory : MonoBehaviour
 
 		if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = false;
 
-		SetOverdraw (worker.Team);
+		SetOverdraw (worker.team);
 	}
 
 	void Update ()
@@ -111,7 +113,7 @@ public class GhostFactory : MonoBehaviour
 		ComponentGetter.Get<SelectionController> ().enabled = true;
 		ComponentGetter.Get<InteractionController> ().enabled = true;
 
-		bool canBuy = worker.CanConstruct (thisFactory);
+		bool canBuy = worker.CanConstruct (factoryConstruction);
 
 		if (canBuy)
 		{
