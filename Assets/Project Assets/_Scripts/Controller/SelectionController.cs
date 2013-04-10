@@ -210,20 +210,6 @@ public class SelectionController : MonoBehaviour
 
 				if (troopController.selectedSoldiers.Count != 0) return true;
 
-				foreach (FactoryBase factory in factoryController.factorys)
-				{
-					if (factory.collider == null)
-					{
-						Debug.Log("estrutura sem colisor!");
-						Debug.Break();
-					}
-
-					if (b.Intersects (factory.collider.bounds))
-					{
-						factoryController.SelectFactory (factory);
-						break;
-					}
-				}
 			}
 			else
 			{

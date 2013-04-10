@@ -52,6 +52,7 @@ public class GameplayManager : MonoBehaviour
 		excessHousesIncrements = 0;
 	}
 	
+#if !UNITY_ANDROID && !UNITY_IPHONE 
 	/// <summary>
 	/// Gets the color of my team.
 	/// </summary>
@@ -74,13 +75,50 @@ public class GameplayManager : MonoBehaviour
 	/// </param>
 	public Color GetColorTeam (int teamID)
 	{
-		if (teamID >= 0 && teamID < teams.Length) return teams[teamID].color;
+		if (teamID >= 0 && teamID < teams.Length)
+		{
+			return teams[teamID].color;
+		}
 		else
 		{
 			Debug.LogError ("Team ID not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
 			return Color.black;
 		}
 	}
+#else
+	/// <summary>
+	/// Gets the color of my team.
+	/// </summary>
+	/// <returns>
+	/// The of my color team.
+	/// </returns>
+	public Texture2D GetColorTeam ()
+	{
+		return GetColorTeam (MyTeam);
+	}
+	
+	/// <summary>
+	/// Gets the color team.
+	/// </summary>
+	/// <returns>
+	/// The color team.
+	/// </returns>
+	/// <param name='teamID'>
+	/// Team ID.
+	/// </param>
+	public Texture2D GetColorTeam (int teamID)
+	{
+		if (teamID >= 0 && teamID < teams.Length)
+		{
+			return teams[teamID].colorTexture;
+		}
+		else
+		{
+			Debug.LogError ("Team ID not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
+			return Color.black;
+		}
+	}
+#endif
 
 	public bool IsSameTeam (int teamID)
 	{

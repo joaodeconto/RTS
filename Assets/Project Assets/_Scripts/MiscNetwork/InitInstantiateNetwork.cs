@@ -37,7 +37,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 
 	void InstantiatePrefab ()
 	{
-		GameObject prefab = Instantiate (prefabInstantiate, transform.position, transform.rotation) as GameObject;
+		GameObject prefab = Instantiate (prefabInstantiate, transform.position, prefabInstantiate.transform.rotation) as GameObject;
 		prefab.GetComponent<IStats>().team = int.Parse (transform.parent.name);
 		prefab.GetComponent<IStats>().Init ();
 	}
@@ -48,7 +48,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 		{
 			if ((int)PhotonNetwork.player.customProperties["team"] == (int.Parse (transform.parent.name)))
 			{
-				GameObject prefab = PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, transform.rotation, 0);
+				GameObject prefab = PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, prefabInstantiate.transform.rotation, 0);
 				prefab.transform.parent = transform.parent;
 				if (prefab.GetComponent<FactoryBase>() != null) prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}

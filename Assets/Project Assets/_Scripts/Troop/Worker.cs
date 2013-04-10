@@ -404,7 +404,7 @@ public class Worker : Unit
 		foreach (FactoryConstruction fc in factoryConstruction)
 		{
 			ht = new Hashtable();
-			ht["factory"] = fc.factory;
+			ht["factory"] = fc;
 
 			hudController.CreateButtonInInspector ( fc.factory.name,
 													fc.gridItemAttributes.Position,
@@ -412,8 +412,9 @@ public class Worker : Unit
 													fc.factory.guiTextureName,
 													(ht_hud) =>
 													{
-														FactoryBase factory = (FactoryBase)ht_hud["factory"];
-														InstanceGhostFactory (factory);
+//														FactoryConstruction factory = (FactoryConstruction)ht_hud["factory"];
+//														InstanceGhostFactory (factory);
+														InstanceGhostFactory (ht_hud);
 													});
 		}
 	}
@@ -425,21 +426,23 @@ public class Worker : Unit
 		return base.OnDie ();
 	}
 
-	public void InstanceGhostFactory (FactoryBase factory)
+	public void InstanceGhostFactory (Hashtable ht)
 	{
-		if (CanConstruct (factory, false))
+		FactoryConstruction factoryConstruct = (FactoryConstruction)ht["factory"];
+		
+		if (CanConstruct (factoryConstruct, false))
 		{
 			GameObject ghostFactory = null;
 	
 			if (PhotonNetwork.offlineMode)
-				ghostFactory = Instantiate (factory.gameObject, Vector3.zero, factory.transform.rotation) as GameObject;
+				ghostFactory = Instantiate (factoryConstruct.factory.gameObject, Vector3.zero, factoryConstruct.factory.transform.rotation) as GameObject;
 			else
-				ghostFactory = PhotonNetwork.Instantiate ( factory.gameObject.name, Vector3.zero, factory.transform.rotation, 0);
+				ghostFactory = PhotonNetwork.Instantiate ( factoryConstruct.factory.gameObject.name, Vector3.zero, factoryConstruct.factory.transform.rotation, 0);
 	
-			ghostFactory.AddComponent<GhostFactory>().Init (this);
+			ghostFactory.AddComponent<GhostFactory>().Init (this, factoryConstruct);
 		}
 		else
-			eventManager.AddEvent("out of founds", factory.name);
+			eventManager.AddEvent("out of founds", factoryConstruct.factory.name);
 	}
 
 	public void SetResource (Resource newResource)
@@ -447,17 +450,9 @@ public class Worker : Unit
 		resource = newResource;
 	}
 	
-	public bool CanConstruct (FactoryBase factory, bool discount = true)
+	public bool CanConstruct (FactoryConstruction factory, bool discount = true)
 	{
-		foreach (FactoryConstruction fc in factoryConstruction)
-		{
-			if (factory == fc.factory)
-			{
-				return gameplayManager.resources.CanBuy (fc.costOfResources, discount);
-				break;
-			}
-		}
-		return false;
+		return gameplayManager.resources.CanBuy (factory.costOfResources, discount);
 	}
 	
 #region Funções que o Worker pode fazer

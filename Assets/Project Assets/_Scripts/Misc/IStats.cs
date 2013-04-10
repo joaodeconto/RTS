@@ -135,21 +135,30 @@ public abstract class IStats : Photon.MonoBehaviour
 		}
 		else
 		{
-			if (team < 0)
+//			if (team < 0)
+//			{
+//				if (!PhotonNetwork.offlineMode)
+//				{
+//					SetTeamInNetwork ();
+//				}
+//				else
+//				{
+//					team = (playerUnit) ? 0 : 1;
+//				}
+//			}
+//			else
+//			{
+//				playerUnit = gameplayManager.IsSameTeam (team);
+//			}
+			if (!PhotonNetwork.offlineMode)
 			{
-				if (!PhotonNetwork.offlineMode)
-				{
-					SetTeamInNetwork ();
-				}
-				else
-				{
-					team = (playerUnit) ? 0 : 1;
-				}
+				SetTeamInNetwork ();
 			}
 			else
 			{
-				playerUnit = gameplayManager.IsSameTeam (team);
+				team = (playerUnit) ? 0 : 1;
 			}
+
 		}
 
 		SetColorTeam ();
