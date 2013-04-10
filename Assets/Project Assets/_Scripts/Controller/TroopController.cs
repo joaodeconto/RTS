@@ -260,9 +260,9 @@ public class TroopController : MonoBehaviour
 		return null;
 	}
 	
-	public void WorkerCheckFactory (FactoryBase factory)
+	public bool WorkerCheckFactory (FactoryBase factory)
 	{
-		bool hudFeedback = false;
+		bool feedback = false;
 		
 		foreach (Unit unit in selectedSoldiers)
 		{
@@ -273,31 +273,33 @@ public class TroopController : MonoBehaviour
 				if (!factory.wasBuilt)
 				{
 					w.SetMoveToFactory(factory);
-					hudFeedback = true;
+					feedback = true;
 				}
 				else if (w.hasResource)
 				{
 					if (factory.receiveResource == w.resource.type)
 					{
 						w.SetMoveToFactory(factory);
-						hudFeedback = true;
+						feedback = true;
 					}
 					else if (factory.gameObject.GetComponent<MainFactory>() != null)
 					{
 						w.SetMoveToFactory(factory);
-						hudFeedback = true;
+						feedback = true;
 					}
 				}
 				else if (factory.IsNeededRepair)
 				{
 					w.SetMoveToFactory(factory);
-					hudFeedback = true;
+					feedback = true;
 				}
 			}
 		}
 		
-		if (hudFeedback) 
+		if (feedback) 
 			hudController.CreateFeedback (HUDController.Feedbacks.Self, factory.transform.position, factory.sizeOfSelected);
+		
+		return feedback;
 	}
 	
 	public void ChangeVisibility (Unit soldier, bool visibility)

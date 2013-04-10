@@ -33,29 +33,24 @@ public class InteractionController : MonoBehaviour
 		return (stackInteractionCallbacks.Count != 0);
 	}
 
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 	// Update is called once per frame
 	void Update ()
 	{
-#if !UNITY_IPHONE || !UNITY_ANDROID || UNITY_EDITOR
 		if (Input.GetKeyDown (KeyCode.Escape))
 		{
 			PhotonNetwork.LeaveRoom ();
 			Application.LoadLevel (0);
 		}
-#endif
+		
+//		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
+//		{
+//			gameplayManager.resources.NumberOfRocks += 100;
+//		}
 		
 		if (touchController.touchType != TouchController.TouchType.Ended)
 			return;
 
-#if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
-		if (!touchController.DragOn)
-		{
-			if (touchController.idTouch == TouchController.IdTouch.Id0 )
-			{
-				Interaction (touchController.GetFinalRaycastHit.transform);
-			}
-		}
-#else
 		switch (touchController.idTouch)
 		{
 		case TouchController.IdTouch.Id1:
@@ -73,10 +68,10 @@ public class InteractionController : MonoBehaviour
 			}
 			break;
 		}
-#endif
 	}
+#endif
 
-	void Interaction (Transform hit)
+	public void Interaction (Transform hit)
 	{
 		if (troopController.selectedSoldiers.Count == 0) return;
 
@@ -86,10 +81,12 @@ public class InteractionController : MonoBehaviour
 			{
 				troopController.AttackTroop (hit.transform.gameObject);
 			}
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 			else
 			{
 				troopController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
 			}
+#endif
 			return;
 		}
 		else if (hit.GetComponent<Resource> () != null)

@@ -31,6 +31,7 @@ public class RallyPoint : MonoBehaviour {
 	{
 		lineRenderer.enabled = enabled;
 		
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 		if (touchController.touchType == TouchController.TouchType.First)
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id1)
@@ -38,6 +39,15 @@ public class RallyPoint : MonoBehaviour {
 				UpdateRallyPoint ();
 			}
 		}
+#else
+		if (touchController.touchType == TouchController.TouchType.First)
+		{
+			if (touchController.idTouch == TouchController.IdTouch.Id0)
+			{
+				UpdateRallyPoint ();
+			}
+		}
+#endif
 	}
 	
 	public void UpdateRallyPoint ()
