@@ -24,7 +24,8 @@ public class ServerSettings : ScriptableObject
     public string ServerAddress = DefaultServerAddress;
     public int ServerPort = 5055;
     public string AppID = "";
-
+    public List<string> RpcList;
+        
     [HideInInspector]
     public bool DisableAutoOpenWizard;
 

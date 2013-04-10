@@ -1,7 +1,24 @@
+v1.19 (14. March 2013)
+Updated: PUN Wizard for setup and help.
+Added: Editor key shortcuts. For PUN Wizard: ALT+P. To add PhotonView: ALT+V.
+Added: PUN Wizard button to select the PhotonServerSettings file in project (to have a look at the config and RPC list).
+Added: Wizard shows a note when iOS or Android Pro licenses are not available. Ignore if you don't build for those platforms.
+Added: Context menu for PhotonView Components to open the PUN Wizard.
+Added: Demo Hub scene to select the different demos.
+Added: Demo "Boxes" and "Synchronization".
+Updated: Marco Polo Tutorial. This "result" is slightly different from the online tutorial. Read it's readme for details. Also uses the current "Monster" asset from Asset Store (minus some surplus scene, geometry, etc).
+Added: PunStartup. On import this Editor script opens the Hub scene (if no scene is open) and adds all demo scenes to the build settings (if no scenes are in the list).
+Fixed: OnPhotonSerializeView was fired for playerpropertychange.
+Changed: Log entries for failed random matchmaking. It's perfectly ok that sometimes no room is available, so that is no Error.
+Changed: Instead of sending RPC names, PUN now compiles an index of RPC-methods and sends a shortcut (just a byte). RPC searching is done in-Editor. Currently a byte is used as shortcut, enabling 255 distinct RPC methods. PUN can be modified to use short or int as shortcuts (look up comments "LIMITS RPC COUNT").
+Changed: ServerSettings class is extended by the RPC-List. The PhotonServerSettings asset will be updated seamlessly if this new PUN version is imported. Copying the new class file over older ones will erease your settinsg and you might need to edit them again.
+Changed: RPC calls without parameters are now a little more compact, cause the key for parameters is skipped.
+
+
 v1.18.2 (18. February 2013)
 Updated: To a new Photon Client library (v3.2.0.1) which includes a fix for disconnects caused by network simulation.
 Fixed: A potential endless loading-loop on the master client, when using level synchronization
-
+Added: callback for changes to custom room properties and changes to player properties
 
 v1.18 (31. January 2013)
 Note: Open all scenes that have PhotonViews and just save them again.

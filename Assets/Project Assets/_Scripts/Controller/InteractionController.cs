@@ -50,7 +50,7 @@ public class InteractionController : MonoBehaviour
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 		if (!touchController.DragOn)
 		{
-			if (touchController.idTouch == TouchController.IdTouch.Id1 )
+			if (touchController.idTouch == TouchController.IdTouch.Id0 )
 			{
 				Interaction (touchController.GetFinalRaycastHit.transform);
 			}

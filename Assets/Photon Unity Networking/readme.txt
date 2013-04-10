@@ -1,23 +1,31 @@
 
 Photon Unity Networking (PUN)
 	This package is a re-implementation of Unity's Networking, using the Photon Cloud Service.
-	Also included: a setup wizard, demo scene, documentation and editor extensions.
+	Also included: A setup wizard, demo scenes, documentation and editor extensions.
+
+
+Requirements
+	Unity iOS PRO and Unity Android PRO for exports to these platforms
 
 
 Help and Documentation
 	Please read the included pdf.
+	Unity Forum Thread (up to date info): http://forum.unity3d.com/threads/101734-Submitting-Photon-Unity-Networking
 	Exit Games Forum: http://forum.exitgames.com/viewforum.php?f=17
 	Online documentation: http://doc.exitgames.com/photon-cloud
 
 
 Integration
-	This package adds a editor window:
-	Menu -> Window, Photon Unity Networking
+	This package adds a editor window "PUN Wizard" for connection setup:
+		Menu -> Window -> Photon Unity Networking (shortcut: ALT+P)
+	It also adds a commonly used component "PhotonView" to this menu:
+		Menu -> Component -> Miscellaneous -> PhotonView (shortcut: ALT+V)
+	When imported into a new, empty project, the "PunStartup" script opens the "demo hub" and setup scenes to build.
 
 
 Clean PUN Import (no demos)
-	To import only the scripts of Photon Unity Networking into an existing project, 
-	skip anything except the folders: "Plugins" and "Editor".
+	To import only the scripts of Photon Unity Networking into an existing project: 
+	skip anything except the folders "Plugins" and "Editor".
 
 
 Server
@@ -56,10 +64,8 @@ Important Files
 		Editor\PhotonNetwork\*.*
 		Plugins\PhotonNetwork\*.*
 
-	Demo Scene
-		DemoWorker\DemoWorker-Scene.unity
-	Tutorial "Marco Polo"
-		MarcoPolo-Tutorial\GameScene.unity
-	
-	The server-setup will be saved as file (created by Wizard but can be edited in inspector)
+	The server-setup will be saved as file (can be moved into any Resources folder and edited in inspector)
 		Photon Unity Networking\Resources\PhotonServerSettings.asset
+
+	Demos
+		All demos are in separate folders. Each has a Demo<name>-Scene.

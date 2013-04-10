@@ -1,9 +1,8 @@
 using UnityEngine;
-using System.Collections;
 
 public class RandomMatchmaker : Photon.MonoBehaviour
 {
-    private PhotonView myMonsterPv;
+    private PhotonView myPhotonView;
 
     // Use this for initialization
     void Start()
@@ -13,20 +12,20 @@ public class RandomMatchmaker : Photon.MonoBehaviour
 
     void OnJoinedLobby()
     {
+        Debug.Log("JoinRandom");
         PhotonNetwork.JoinRandomRoom();
     }
 
     void OnPhotonRandomJoinFailed()
     {
-        PhotonNetwork.CreateRoom(null, true, true, 4);  // no name (gets a guid), visible and open with 4 players max
+        PhotonNetwork.CreateRoom(null);
     }
 
     void OnJoinedRoom()
     {
         GameObject monster = PhotonNetwork.Instantiate("monsterprefab", Vector3.zero, Quaternion.identity, 0);
-        ThirdPersonController controller = monster.GetComponent<ThirdPersonController>();
-        myMonsterPv = monster.GetComponent<PhotonView>();
-        controller.enabled = true;
+        monster.GetComponent<myThirdPersonController>().isControllable = true;
+        myPhotonView = monster.GetComponent<PhotonView>();
     }
 
     void OnGUI()
@@ -39,18 +38,12 @@ public class RandomMatchmaker : Photon.MonoBehaviour
 
             if (shoutMarco && GUILayout.Button("Marco!"))
             {
-                this.myMonsterPv.RPC("Marco", PhotonTargets.All);
+                myPhotonView.RPC("Marco", PhotonTargets.All);
             }
             if (!shoutMarco && GUILayout.Button("Polo!"))
             {
-                this.myMonsterPv.RPC("Polo", PhotonTargets.All);
+                myPhotonView.RPC("Polo", PhotonTargets.All);
             }
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

@@ -8,8 +8,9 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 public enum ViewSynchronization { Off, ReliableDeltaCompressed, Unreliable }
@@ -20,9 +21,18 @@ public enum OnSerializeRigidBody { OnlyVelocity, OnlyAngularVelocity, All }
 /// PUN's NetworkView replacement class for networking. Use it like a NetworkView.
 /// </summary>
 /// \ingroup publicApi
-[AddComponentMenu("Miscellaneous/Photon View")]
+[AddComponentMenu("Miscellaneous/Photon View &v")]
 public class PhotonView : Photon.MonoBehaviour
 {
+
+#if UNITY_EDITOR
+    [ContextMenu("Open PUN Wizard")]
+    void OpenPunWizard()
+    {
+        EditorApplication.ExecuteMenuItem("Window/Photon Unity Networking");
+    }
+#endif
+
     public int subId;
 
     public int ownerId;

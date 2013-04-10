@@ -6,7 +6,7 @@ using Visiorama;
 
 public class FogOfWar : MonoBehaviour
 {
-	private const int SIZE_TEXTURE = 256;
+	private const int SIZE_TEXTURE = 128;
 
 	public bool UseFog  = true;
 	public bool DarkFog = true;

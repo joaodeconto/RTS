@@ -4,7 +4,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 
 public class MainMenu : MonoBehaviour
@@ -38,7 +40,8 @@ public class MainMenu : MonoBehaviour
         {
             if (PhotonNetwork.connectionState == ConnectionState.Connecting)
             {
-                GUILayout.Label("Connecting...");
+                GUILayout.Label("Connecting " + PhotonNetwork.networkingPeer.ServerAddress);
+                GUILayout.Label(Time.time.ToString());
             }
             else
             {
@@ -48,8 +51,8 @@ public class MainMenu : MonoBehaviour
             if (this.connectFailed)
             {
                 GUILayout.Label("Connection failed. Check setup and use Setup Wizard to fix configuration.");
-                GUILayout.Label(string.Format("Server: {0}:{1}", PhotonNetwork.PhotonServerSettings.ServerAddress, PhotonNetwork.PhotonServerSettings.ServerPort));
-                GUILayout.Label(string.Format("AppId: {0}", PhotonNetwork.PhotonServerSettings.AppID));
+                GUILayout.Label(string.Format("Server: {0}:{1}", new object[] {PhotonNetwork.PhotonServerSettings.ServerAddress, PhotonNetwork.PhotonServerSettings.ServerPort}));
+                GUILayout.Label("AppId: " + PhotonNetwork.PhotonServerSettings.AppID);
                 
                 if (GUILayout.Button("Try Again", GUILayout.Width(100)))
                 {
@@ -61,79 +64,83 @@ public class MainMenu : MonoBehaviour
             return;
         }
 
-        GUILayout.BeginArea(new Rect((Screen.width - 400) / 2, (Screen.height - 400) / 2, 400, 300));
 
-        GUILayout.Label("Main Menu");
-        GUILayout.Label(string.Format("Players: {0} Players on Master: {1} Games: {2}", PhotonNetwork.countOfPlayers, PhotonNetwork.countOfPlayersOnMaster, PhotonNetwork.countOfRooms));
+        GUI.skin.box.fontStyle = FontStyle.Bold;
+        GUI.Box(new Rect((Screen.width - 400) / 2, (Screen.height - 350) / 2, 400, 300), "Join or Create a Room");
+        GUILayout.BeginArea(new Rect((Screen.width - 400) / 2, (Screen.height - 350) / 2, 400, 300));
+
+        GUILayout.Space(25);
 
         // Player name
         GUILayout.BeginHorizontal();
-        GUILayout.Label("Player name:", GUILayout.Width(150));
+        GUILayout.Label("Player name:", GUILayout.Width(100));
         PhotonNetwork.playerName = GUILayout.TextField(PhotonNetwork.playerName);
+        GUILayout.Space(105);
         if (GUI.changed)
         {
             // Save name
             PlayerPrefs.SetString("playerName", PhotonNetwork.playerName);
         }
-
         GUILayout.EndHorizontal();
 
         GUILayout.Space(15);
 
         // Join room by title
         GUILayout.BeginHorizontal();
-        GUILayout.Label("JOIN ROOM:", GUILayout.Width(150));
+        GUILayout.Label("Roomname:", GUILayout.Width(100));
         this.roomName = GUILayout.TextField(this.roomName);
-        if (GUILayout.Button("GO"))
-        {
-            PhotonNetwork.JoinRoom(this.roomName);
-        }
-
-        GUILayout.EndHorizontal();
-
-        // Create a room (fails if exist!)
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("CREATE ROOM:", GUILayout.Width(150));
-        this.roomName = GUILayout.TextField(this.roomName);
-        if (GUILayout.Button("GO"))
+        
+        if (GUILayout.Button("Create Room", GUILayout.Width(100)))
         {
             PhotonNetwork.CreateRoom(this.roomName, true, true, 10);
         }
 
         GUILayout.EndHorizontal();
 
-        // Join random room
+        // Create a room (fails if exist!)
         GUILayout.BeginHorizontal();
-        GUILayout.Label("JOIN RANDOM ROOM:", GUILayout.Width(150));
-        if (PhotonNetwork.GetRoomList().Length == 0)
+        GUILayout.FlexibleSpace();
+        //this.roomName = GUILayout.TextField(this.roomName);
+        if (GUILayout.Button("Join Room", GUILayout.Width(100)))
         {
-            GUILayout.Label("..no games available...");
-        }
-        else
-        {
-            if (GUILayout.Button("GO"))
-            {
-                PhotonNetwork.JoinRandomRoom();
-            }
+            PhotonNetwork.JoinRoom(this.roomName);
         }
 
         GUILayout.EndHorizontal();
 
-        GUILayout.Space(30);
-        GUILayout.Label("ROOM LISTING:");
+
+        GUILayout.Space(15);
+
+        // Join random room
+        GUILayout.BeginHorizontal();
+
+        GUILayout.Label(PhotonNetwork.countOfPlayers + " users are online in " + PhotonNetwork.countOfRooms + " rooms.");
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("Join Random", GUILayout.Width(100)))
+        {
+            PhotonNetwork.JoinRandomRoom();
+        }
+        
+
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(15);
         if (PhotonNetwork.GetRoomList().Length == 0)
         {
-            GUILayout.Label("..no games available..");
+            GUILayout.Label("Currently no games are available.");
+            GUILayout.Label("Rooms will be listed here, when they become available.");
         }
         else
         {
+            GUILayout.Label(PhotonNetwork.GetRoomList() + " currently available. Join either:");
+
             // Room listing: simply call GetRoomList: no need to fetch/poll whatever!
             this.scrollPos = GUILayout.BeginScrollView(this.scrollPos);
             foreach (RoomInfo roomInfo in PhotonNetwork.GetRoomList())
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(roomInfo.name + " " + roomInfo.playerCount + "/" + roomInfo.maxPlayers);
-                if (GUILayout.Button("JOIN"))
+                if (GUILayout.Button("Join"))
                 {
                     PhotonNetwork.JoinRoom(roomInfo.name);
                 }
@@ -172,6 +179,7 @@ public class MainMenu : MonoBehaviour
 
     private IEnumerator MoveToGameScene()
     {
+        Debug.Log("MoveToGameScene");
         while (PhotonNetwork.room == null)
         {
             yield return 0;

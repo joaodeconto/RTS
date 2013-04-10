@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: muktargame-Mat
-  m_Shader: {fileID: 2, guid: 0000000000000000e000000000000000, type: 0}
+  m_Shader: {fileID: 10705, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: []
   m_SavedProperties:
     serializedVersion: 2
@@ -23,14 +23,25 @@ Material:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 2800000, guid: a272a4b52b4ba9447b4352aea6cf7767, type: 3}
+          m_Texture: {fileID: 2800000, guid: 8f3b8af169a9a814698111fd64643579, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ParallaxMap
+        second:
+          m_Texture: {fileID: 2800000, guid: 436d356a040ec124e91964e4d1c83508, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
           name: _Shininess
-        second: 1
+        second: .435373098
+      data:
+        first:
+          name: _Parallax
+        second: .00499999989
     m_Colors:
       data:
         first:
@@ -39,7 +50,7 @@ Material:
       data:
         first:
           name: _SpecColor
-        second: {r: .298507452, g: .287369102, b: .287369102, a: 1}
+        second: {r: .208955228, g: .193361551, b: .193361551, a: 1}
 --- !u!1002 &2100001
 EditorExtensionImpl:
   serializedVersion: 6

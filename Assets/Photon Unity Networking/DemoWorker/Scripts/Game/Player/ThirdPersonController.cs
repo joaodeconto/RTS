@@ -209,7 +209,7 @@ public class ThirdPersonController : MonoBehaviour
                 targetSpeed *= walkSpeed;
                 _characterState = CharacterState.Walking;
             }
-
+        
             moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, curSmooth);
 
             // Reset walk time start when we slow down
@@ -339,25 +339,42 @@ public class ThirdPersonController : MonoBehaviour
             }
             else
             {
-                if (velocity.sqrMagnitude < 0.001f)
+                if (this.isControllable && velocity.sqrMagnitude < 0.001f)
                 {
+                    _characterState = CharacterState.Idle;
                     _animation.CrossFade(idleAnimation.name);
                 }
                 else
                 {
-                    if (_characterState == CharacterState.Running)
+                    if (_characterState == CharacterState.Idle)
                     {
-                        _animation[runAnimation.name].speed = Mathf.Clamp(velocity.magnitude, 0.0f, runMaxAnimationSpeed);
+                        _animation.CrossFade(idleAnimation.name);
+                    }
+                    else if (_characterState == CharacterState.Running)
+                    {
+                        _animation[runAnimation.name].speed = runMaxAnimationSpeed;
+                        if (this.isControllable)
+                        {
+                            _animation[runAnimation.name].speed = Mathf.Clamp(velocity.magnitude, 0.0f, runMaxAnimationSpeed);
+                        }
                         _animation.CrossFade(runAnimation.name);
                     }
                     else if (_characterState == CharacterState.Trotting)
                     {
-                        _animation[walkAnimation.name].speed = Mathf.Clamp(velocity.magnitude, 0.0f, trotMaxAnimationSpeed);
+                        _animation[walkAnimation.name].speed = trotMaxAnimationSpeed;
+                        if (this.isControllable)
+                        {
+                            _animation[walkAnimation.name].speed = Mathf.Clamp(velocity.magnitude, 0.0f, trotMaxAnimationSpeed);
+                        }
                         _animation.CrossFade(walkAnimation.name);
                     }
                     else if (_characterState == CharacterState.Walking)
                     {
-                        _animation[walkAnimation.name].speed = Mathf.Clamp(velocity.magnitude, 0.0f, walkMaxAnimationSpeed);
+                        _animation[walkAnimation.name].speed = walkMaxAnimationSpeed;
+                        if (this.isControllable)
+                        {
+                            _animation[walkAnimation.name].speed = Mathf.Clamp(velocity.magnitude, 0.0f, walkMaxAnimationSpeed);
+                        }
                         _animation.CrossFade(walkAnimation.name);
                     }
 
