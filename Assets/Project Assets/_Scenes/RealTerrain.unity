@@ -1058,7 +1058,7 @@ Transform:
   m_PrefabInternal: {fileID: 488291560}
   m_GameObject: {fileID: 90716844}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 1454762354}
@@ -1376,7 +1376,7 @@ MonoBehaviour:
   trnsOptionsMenu: {fileID: 1722315118}
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
   offesetFeedback: {x: 0, y: .100000001, z: 0}
-  pref_moveFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
+  pref_moveFeedback: {fileID: 100000, guid: 7284cc1ebb84af64c94175297803d96b, type: 2}
   pref_selfFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   pref_attackFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   sliders:
@@ -1784,6 +1784,7 @@ MonoBehaviour:
   allowMultiTouch: 1
   useKeyboard: 1
   useController: 1
+  stickyPress: 1
   eventReceiverMask:
     serializedVersion: 2
     m_Bits: 256
@@ -1826,7 +1827,7 @@ Transform:
   m_PrefabInternal: {fileID: 1498372062}
   m_GameObject: {fileID: 185953835}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 1714334425}
@@ -2075,7 +2076,7 @@ Transform:
   m_PrefabInternal: {fileID: 633752995}
   m_GameObject: {fileID: 208805751}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 735392139}
@@ -2380,6 +2381,7 @@ GameObject:
   - 114: {fileID: 245970454}
   - 136: {fileID: 245970453}
   - 114: {fileID: 245970452}
+  - 208: {fileID: 245970455}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -2432,7 +2434,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &245970454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2448,6 +2450,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &245970455
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1489655274}
+  m_GameObject: {fileID: 245970450}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &247292669
 GameObject:
   m_ObjectHideFlags: 0
@@ -2703,6 +2715,33 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1437937156}
+--- !u!1 &271543570
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 271543571}
+  m_Layer: 0
+  m_Name: Components
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &271543571
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 271543570}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 113.277481, y: 113.507004, z: 227.121658}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1274454341}
+  m_Father: {fileID: 0}
 --- !u!1001 &277719864
 Prefab:
   m_ObjectHideFlags: 0
@@ -3674,7 +3713,7 @@ Transform:
   m_PrefabInternal: {fileID: 93186349}
   m_GameObject: {fileID: 343144217}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 1007401263}
@@ -4122,7 +4161,7 @@ Transform:
   m_PrefabInternal: {fileID: 1451235451}
   m_GameObject: {fileID: 393818981}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 574.928284, y: -358.928833, z: 0}
+  m_LocalPosition: {x: 639.143372, y: -359.143066, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1924284231}
@@ -4502,7 +4541,7 @@ Transform:
   m_PrefabInternal: {fileID: 628686611}
   m_GameObject: {fileID: 426378805}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 2099532376}
@@ -4544,6 +4583,7 @@ GameObject:
   - 114: {fileID: 427293292}
   - 136: {fileID: 427293291}
   - 114: {fileID: 427293290}
+  - 208: {fileID: 427293293}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -4596,7 +4636,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &427293292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4612,6 +4652,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &427293293
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 614119214}
+  m_GameObject: {fileID: 427293288}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &429134558
 GameObject:
   m_ObjectHideFlags: 0
@@ -5755,6 +5805,7 @@ GameObject:
   - 114: {fileID: 589463921}
   - 136: {fileID: 589463920}
   - 114: {fileID: 589463919}
+  - 208: {fileID: 589463922}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -5807,7 +5858,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &589463921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5823,6 +5874,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &589463922
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 2126849703}
+  m_GameObject: {fileID: 589463917}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &592843184
 GameObject:
   m_ObjectHideFlags: 0
@@ -6066,6 +6127,7 @@ GameObject:
   - 114: {fileID: 612147787}
   - 136: {fileID: 612147786}
   - 114: {fileID: 612147785}
+  - 208: {fileID: 612147788}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -6118,7 +6180,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &612147787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6134,6 +6196,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &612147788
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1359830327}
+  m_GameObject: {fileID: 612147783}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1001 &614119214
 Prefab:
   m_ObjectHideFlags: 0
@@ -6838,7 +6910,7 @@ Transform:
   m_PrefabInternal: {fileID: 1489655274}
   m_GameObject: {fileID: 647577498}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 245970451}
@@ -7135,6 +7207,7 @@ GameObject:
   - 114: {fileID: 675077452}
   - 136: {fileID: 675077451}
   - 114: {fileID: 675077450}
+  - 208: {fileID: 675077454}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -7175,7 +7248,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &675077452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7203,6 +7276,16 @@ Transform:
   m_Children:
   - {fileID: 1517008460}
   m_Father: {fileID: 7913879}
+--- !u!208 &675077454
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 333700839}
+  m_GameObject: {fileID: 675077449}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1001 &676191304
 Prefab:
   m_ObjectHideFlags: 0
@@ -8191,6 +8274,7 @@ GameObject:
   - 114: {fileID: 735392142}
   - 136: {fileID: 735392141}
   - 114: {fileID: 735392140}
+  - 208: {fileID: 735392143}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -8243,7 +8327,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &735392142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8259,6 +8343,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &735392143
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 633752995}
+  m_GameObject: {fileID: 735392138}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1001 &739527778
 Prefab:
   m_ObjectHideFlags: 0
@@ -8413,7 +8507,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
       propertyPath: autoload
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
@@ -9116,6 +9210,7 @@ GameObject:
   - 114: {fileID: 792482698}
   - 136: {fileID: 792482697}
   - 114: {fileID: 792482696}
+  - 208: {fileID: 792482699}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -9168,7 +9263,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &792482698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9184,6 +9279,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &792482699
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1848316115}
+  m_GameObject: {fileID: 792482694}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &793858514
 GameObject:
   m_ObjectHideFlags: 0
@@ -9207,7 +9312,7 @@ Transform:
   m_PrefabInternal: {fileID: 1451235451}
   m_GameObject: {fileID: 793858514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -577.070618, y: -358.928833, z: 0}
+  m_LocalPosition: {x: -640.857239, y: -359.143066, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 318045695}
@@ -9393,7 +9498,7 @@ Transform:
   m_PrefabInternal: {fileID: 1848316115}
   m_GameObject: {fileID: 810129339}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 792482695}
@@ -9582,8 +9687,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6354f44c67b6aa645801fca34f7c12e6, type: 3}
   m_Name: 
-  factorys: []
-  selectedFactory: {fileID: 0}
 --- !u!1 &842428765
 GameObject:
   m_ObjectHideFlags: 0
@@ -10560,7 +10663,7 @@ Transform:
   m_PrefabInternal: {fileID: 385763950}
   m_GameObject: {fileID: 934292760}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 1537899043}
@@ -10928,7 +11031,7 @@ Transform:
   m_PrefabInternal: {fileID: 614119214}
   m_GameObject: {fileID: 971086453}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 427293289}
@@ -11575,6 +11678,7 @@ GameObject:
   - 114: {fileID: 1007401266}
   - 136: {fileID: 1007401265}
   - 114: {fileID: 1007401264}
+  - 208: {fileID: 1007401267}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -11627,7 +11731,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1007401266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11643,6 +11747,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &1007401267
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 93186349}
+  m_GameObject: {fileID: 1007401262}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &1013110436
 GameObject:
   m_ObjectHideFlags: 0
@@ -11869,6 +11983,7 @@ GameObject:
   - 114: {fileID: 1025526354}
   - 136: {fileID: 1025526353}
   - 114: {fileID: 1025526352}
+  - 208: {fileID: 1025526355}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -11921,7 +12036,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1025526354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11937,6 +12052,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &1025526355
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1392849884}
+  m_GameObject: {fileID: 1025526350}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &1041433565
 GameObject:
   m_ObjectHideFlags: 0
@@ -13325,6 +13450,48 @@ MeshFilter:
   m_PrefabInternal: {fileID: 867672920}
   m_GameObject: {fileID: 1270033429}
   m_Mesh: {fileID: 4300000, guid: fbe6759f9e37f4519a54d6bb299ede38, type: 3}
+--- !u!1 &1274454340
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1274454341}
+  - 114: {fileID: 1274454342}
+  m_Layer: 0
+  m_Name: PrefabCache
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1274454341
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1274454340}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 271543571}
+--- !u!114 &1274454342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1274454340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e392a9d4b7c79c6438c23767d9029872, type: 3}
+  m_Name: 
+  Prefabs:
+  - Name: Button
+    minimumCacheRemaining: 30
+    prefab: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
+  fakePanel: {fileID: 1919143403}
 --- !u!1001 &1274795728
 Prefab:
   m_ObjectHideFlags: 0
@@ -13557,7 +13724,7 @@ Transform:
   m_PrefabInternal: {fileID: 694953971}
   m_GameObject: {fileID: 1282786696}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 1454823231}
@@ -15512,7 +15679,7 @@ Transform:
   m_PrefabInternal: {fileID: 1451235451}
   m_GameObject: {fileID: 1448290668}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.33758545, y: -358.662415, z: 0}
+  m_LocalPosition: {x: -2.14233398, y: -358.928833, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 969284530}
@@ -15683,27 +15850,31 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400022, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 574.928284
+      value: 639.143372
       objectReference: {fileID: 0}
     - target: {fileID: 400022, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -358.928833
+      value: -359.143066
       objectReference: {fileID: 0}
     - target: {fileID: 400026, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -577.070618
+      value: -640.857239
       objectReference: {fileID: 0}
     - target: {fileID: 400026, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -358.928833
+      value: -359.143066
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -1.33758545
+      value: -2.14233398
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -358.662415
+      value: -358.928833
+      objectReference: {fileID: 0}
+    - target: {fileID: 100010, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_Name
+      value: FakePanel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
@@ -15721,6 +15892,7 @@ GameObject:
   - 114: {fileID: 1454762357}
   - 136: {fileID: 1454762356}
   - 114: {fileID: 1454762355}
+  - 208: {fileID: 1454762358}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -15773,7 +15945,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1454762357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15789,6 +15961,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &1454762358
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 488291560}
+  m_GameObject: {fileID: 1454762353}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &1454823230
 GameObject:
   m_ObjectHideFlags: 0
@@ -15800,6 +15982,7 @@ GameObject:
   - 114: {fileID: 1454823234}
   - 136: {fileID: 1454823233}
   - 114: {fileID: 1454823232}
+  - 208: {fileID: 1454823235}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -15852,7 +16035,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1454823234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15868,6 +16051,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &1454823235
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 694953971}
+  m_GameObject: {fileID: 1454823230}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1001 &1459903138
 Prefab:
   m_ObjectHideFlags: 0
@@ -15984,7 +16177,7 @@ Transform:
   m_PrefabInternal: {fileID: 1392849884}
   m_GameObject: {fileID: 1468926022}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 1025526351}
@@ -16602,7 +16795,7 @@ Transform:
   m_PrefabInternal: {fileID: 333700839}
   m_GameObject: {fileID: 1517008459}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 675077453}
@@ -16921,6 +17114,7 @@ GameObject:
   - 114: {fileID: 1537899045}
   - 136: {fileID: 1537899044}
   - 114: {fileID: 1537899046}
+  - 208: {fileID: 1537899047}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -16953,7 +17147,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1537899045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16989,6 +17183,16 @@ MonoBehaviour:
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   instantiationId: 0
+--- !u!208 &1537899047
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 385763950}
+  m_GameObject: {fileID: 1537899042}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &1541917361
 GameObject:
   m_ObjectHideFlags: 0
@@ -18824,23 +19028,23 @@ MonoBehaviour:
   m_Name: 
   teams:
   - name: Time lol
-    color: {r: .00699329376, g: 0, b: 1, a: 1}
+    color: {r: .072176449, g: .113122597, b: .604477644, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 1188304835}
   - name: Time legalzinho
-    color: {r: 1, g: 0, b: 0, a: 1}
+    color: {r: .522388101, g: .0311873537, b: .0311873537, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 1138212894}
   - name: time mais massa
-    color: {r: .930069923, g: 1, b: 0, a: 1}
+    color: {r: 1, g: .650349617, b: 0, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 1663420612}
   - name: super time
-    color: {r: .174825072, g: 1, b: 0, a: 1}
+    color: {r: .32680428, g: .0527957194, b: .589552283, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 84721836}
   resources:
-    NumberOfRocks: 500
+    NumberOfRocks: 400
 --- !u!1001 &1694877387
 Prefab:
   m_ObjectHideFlags: 0
@@ -19231,6 +19435,7 @@ GameObject:
   - 114: {fileID: 1714334428}
   - 136: {fileID: 1714334427}
   - 114: {fileID: 1714334426}
+  - 208: {fileID: 1714334429}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -19283,7 +19488,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1714334428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19299,6 +19504,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &1714334429
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1498372062}
+  m_GameObject: {fileID: 1714334424}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &1718668699
 GameObject:
   m_ObjectHideFlags: 0
@@ -19804,6 +20019,7 @@ GameObject:
   - 114: {fileID: 1737949372}
   - 136: {fileID: 1737949371}
   - 114: {fileID: 1737949370}
+  - 208: {fileID: 1737949373}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -19856,7 +20072,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1737949372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19872,6 +20088,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &1737949373
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 342880720}
+  m_GameObject: {fileID: 1737949368}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &1760011571
 GameObject:
   m_ObjectHideFlags: 0
@@ -20000,7 +20226,7 @@ Transform:
   m_PrefabInternal: {fileID: 342880720}
   m_GameObject: {fileID: 1765069733}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 1737949369}
@@ -20524,6 +20750,7 @@ MonoBehaviour:
   allowMultiTouch: 1
   useKeyboard: 1
   useController: 1
+  stickyPress: 1
   eventReceiverMask:
     serializedVersion: 2
     m_Bits: 512
@@ -20582,6 +20809,7 @@ GameObject:
   - 114: {fileID: 1857667556}
   - 136: {fileID: 1857667555}
   - 114: {fileID: 1857667554}
+  - 208: {fileID: 1857667557}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -20634,7 +20862,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1857667556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20650,6 +20878,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &1857667557
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 863578913}
+  m_GameObject: {fileID: 1857667552}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &1865237680
 GameObject:
   m_ObjectHideFlags: 0
@@ -21180,7 +21418,7 @@ GameObject:
   - 4: {fileID: 1919143402}
   - 114: {fileID: 1919143403}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: FakePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21667,7 +21905,7 @@ Transform:
   m_PrefabInternal: {fileID: 863578913}
   m_GameObject: {fileID: 1946878055}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 1857667553}
@@ -21722,7 +21960,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
-  autoload: 0
+  autoload: 1
 --- !u!1 &1962350547
 GameObject:
   m_ObjectHideFlags: 0
@@ -22103,7 +22341,7 @@ Transform:
   m_PrefabInternal: {fileID: 1359830327}
   m_GameObject: {fileID: 2006828221}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 612147784}
@@ -22449,7 +22687,7 @@ Transform:
   m_PrefabInternal: {fileID: 2126849703}
   m_GameObject: {fileID: 2064186912}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
   m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
   m_Children: []
   m_Father: {fileID: 589463918}
@@ -23044,6 +23282,7 @@ GameObject:
   - 114: {fileID: 2099532379}
   - 136: {fileID: 2099532378}
   - 114: {fileID: 2099532377}
+  - 208: {fileID: 2099532380}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -23096,7 +23335,7 @@ CapsuleCollider:
   m_Radius: 1.67999995
   m_Height: 1.64999998
   m_Direction: 1
-  m_Center: {x: .360000014, y: 0, z: -.170000002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2099532379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23112,6 +23351,16 @@ MonoBehaviour:
   numberOfResources: 4000
   resistance: 5
   limitWorkers: 20
+--- !u!208 &2099532380
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 20800000, guid: c4968ee3ae7a9cc4da2f36803a167f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 628686611}
+  m_GameObject: {fileID: 2099532375}
+  m_Enabled: 1
+  m_Radius: 1.40999997
+  m_Height: 1.48000002
 --- !u!1 &2116977535
 GameObject:
   m_ObjectHideFlags: 0
