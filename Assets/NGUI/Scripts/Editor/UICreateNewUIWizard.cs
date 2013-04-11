@@ -96,7 +96,7 @@ public class UICreateNewUIWizard : EditorWindow
 		{
 			// No camera requested -- simply add a panel
 			UIPanel panel = NGUITools.AddChild<UIPanel>(root.gameObject);
-			UnityEditor.Selection.activeGameObject = panel.gameObject;
+			Selection.activeGameObject = panel.gameObject;
 		}
 		else
 		{
@@ -160,7 +160,7 @@ public class UICreateNewUIWizard : EditorWindow
 
 			// And finally -- the first UI panel
 			UIPanel panel = NGUITools.AddChild<UIPanel>(anchor.gameObject);
-			UnityEditor.Selection.activeGameObject = panel.gameObject;
+			Selection.activeGameObject = panel.gameObject;
 		}
 	}
 }

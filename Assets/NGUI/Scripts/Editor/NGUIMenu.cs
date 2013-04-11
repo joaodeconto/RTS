@@ -33,7 +33,7 @@ static public class NGUIMenu
 	[MenuItem("NGUI/Attach a Collider #&c")]
 	static public void AddCollider ()
 	{
-		GameObject go = UnityEditor.Selection.activeGameObject;
+		GameObject go = Selection.activeGameObject;
 
 		if (NGUIEditorTools.WillLosePrefab(go))
 		{
@@ -52,7 +52,7 @@ static public class NGUIMenu
 	[MenuItem("NGUI/Attach an Anchor #&h")]
 	static public void AddAnchor ()
 	{
-		GameObject go = UnityEditor.Selection.activeGameObject;
+		GameObject go = Selection.activeGameObject;
 
 		if (go != null)
 		{
@@ -68,7 +68,7 @@ static public class NGUIMenu
 	[MenuItem("NGUI/Attach UIStretch #&s")]
 	static public void AddUIStretch ()
 	{
-		GameObject go = UnityEditor.Selection.activeGameObject;
+		GameObject go = Selection.activeGameObject;
 
 		if (go != null)
 		{
@@ -84,12 +84,12 @@ static public class NGUIMenu
 	[MenuItem("NGUI/Make Pixel Perfect #&p")]
 	static void PixelPerfectSelection ()
 	{
-		if (UnityEditor.Selection.activeTransform == null)
+		if (Selection.activeTransform == null)
 		{
 			Debug.Log("You must select an object in the scene hierarchy first");
 			return;
 		}
-		foreach (Transform t in UnityEditor.Selection.transforms) NGUITools.MakePixelPerfect(t);
+		foreach (Transform t in Selection.transforms) NGUITools.MakePixelPerfect(t);
 	}
 
 	[MenuItem("NGUI/Create a Panel")]
@@ -111,7 +111,7 @@ static public class NGUIMenu
 			ct.localScale = Vector3.one;
 
 			child.AddComponent<UIPanel>();
-			UnityEditor.Selection.activeGameObject = child;
+			Selection.activeGameObject = child;
 		}
 	}
 

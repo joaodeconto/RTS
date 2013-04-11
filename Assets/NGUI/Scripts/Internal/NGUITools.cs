@@ -7,6 +7,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 /// <summary>
 /// Helper class containing generic functions used throughout the UI library.
@@ -20,7 +21,7 @@ static public class NGUITools
 	static float mGlobalVolume = 1f;
 
 	/// <summary>
-	/// Globally accessible volume affecting all music.
+	/// Globally accessible volume affecting all sounds played via NGUITools.PlaySound().
 	/// </summary>
 
 	static public float soundVolume

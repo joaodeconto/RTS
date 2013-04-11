@@ -72,9 +72,14 @@ public class UIAnchor : MonoBehaviour
 	public Vector2 relativeOffset = Vector2.zero;
 
 	Animation mAnim;
+	Rect mRect;
 	UIRoot mRoot;
-
-	void Awake () { mAnim = animation; }
+	
+	void Awake () 
+	{ 
+		mAnim = animation; 
+		mRect = new Rect();
+	}
 
 	/// <summary>
 	/// Automatically find the camera responsible for drawing the widgets under this object.
@@ -97,8 +102,7 @@ public class UIAnchor : MonoBehaviour
 	void Update ()
 	{
 		if (mAnim != null && mAnim.enabled && mAnim.isPlaying) return;
-
-		Rect rect = new Rect();
+		
 		bool useCamera = false;
 
 		if (panelContainer != null)
@@ -106,20 +110,20 @@ public class UIAnchor : MonoBehaviour
 			if (panelContainer.clipping == UIDrawCall.Clipping.None)
 			{
 				// Panel has no clipping -- just use the screen's dimensions
-				float ratio = (mRoot != null) ? (float)mRoot.manualHeight / Screen.height * 0.5f : 0.5f;
-				rect.xMin = -Screen.width * ratio;
-				rect.yMin = -Screen.height * ratio;
-				rect.xMax = -rect.xMin;
-				rect.yMax = -rect.yMin;
+				float ratio = (mRoot != null) ? (float)mRoot.activeHeight / Screen.height * 0.5f : 0.5f;
+				mRect.xMin = -Screen.width * ratio;
+				mRect.yMin = -Screen.height * ratio;
+				mRect.xMax = -mRect.xMin;
+				mRect.yMax = -mRect.yMin;
 			}
 			else
 			{
 				// Panel has clipping -- use it as the rect
 				Vector4 pos = panelContainer.clipRange;
-				rect.x = pos.x - (pos.z * 0.5f);
-				rect.y = pos.y - (pos.w * 0.5f);
-				rect.width = pos.z;
-				rect.height = pos.w;
+				mRect.x = pos.x - (pos.z * 0.5f);
+				mRect.y = pos.y - (pos.w * 0.5f);
+				mRect.width = pos.z;
+				mRect.height = pos.w;
 			}
 		}
 		else if (widgetContainer != null)
@@ -136,36 +140,36 @@ public class UIAnchor : MonoBehaviour
 			offset.x *= (widgetContainer.relativeSize.x * ls.x);
 			offset.y *= (widgetContainer.relativeSize.y * ls.y);
 			
-			rect.x = lp.x + offset.x;
-			rect.y = lp.y + offset.y;
+			mRect.x = lp.x + offset.x;
+			mRect.y = lp.y + offset.y;
 			
-			rect.width = size.x * ls.x;
-			rect.height = size.y * ls.y;
+			mRect.width = size.x * ls.x;
+			mRect.height = size.y * ls.y;
 		}
 		else if (uiCamera != null)
 		{
 			useCamera = true;
-			rect = uiCamera.pixelRect;
+			mRect = uiCamera.pixelRect;
 		}
 		else return;
 
-		float cx = (rect.xMin + rect.xMax) * 0.5f;
-		float cy = (rect.yMin + rect.yMax) * 0.5f;
+		float cx = (mRect.xMin + mRect.xMax) * 0.5f;
+		float cy = (mRect.yMin + mRect.yMax) * 0.5f;
 		Vector3 v = new Vector3(cx, cy, depthOffset);
 
 		if (side != Side.Center)
 		{
-			if (side == Side.Right || side == Side.TopRight || side == Side.BottomRight) v.x = rect.xMax;
+			if (side == Side.Right || side == Side.TopRight || side == Side.BottomRight) v.x = mRect.xMax;
 			else if (side == Side.Top || side == Side.Center || side == Side.Bottom) v.x = cx;
-			else v.x = rect.xMin;
+			else v.x = mRect.xMin;
 
-			if (side == Side.Top || side == Side.TopRight || side == Side.TopLeft) v.y = rect.yMax;
+			if (side == Side.Top || side == Side.TopRight || side == Side.TopLeft) v.y = mRect.yMax;
 			else if (side == Side.Left || side == Side.Center || side == Side.Right) v.y = cy;
-			else v.y = rect.yMin;
+			else v.y = mRect.yMin;
 		}
 
-		float width  = rect.width;
-		float height = rect.height;
+		float width  = mRect.width;
+		float height = mRect.height;
 
 		v.x += relativeOffset.x * width;
 		v.y += relativeOffset.y * height;
@@ -186,9 +190,6 @@ public class UIAnchor : MonoBehaviour
 
 			// Convert from screen to world coordinates, since the two may not match (UIRoot set to manual size)
 			v = uiCamera.ScreenToWorldPoint(v);
-
-			// Wrapped in an 'if' so the scene doesn't get marked as 'edited' every frame
-			if (transform.position != v) transform.position = v;
 		}
 		else
 		{
@@ -204,9 +205,9 @@ public class UIAnchor : MonoBehaviour
 				Transform t = widgetContainer.transform.parent;
 				if (t != null) v = t.TransformPoint(v);
 			}
-
-			// Wrapped in an 'if' so the scene doesn't get marked as 'edited' every frame
-			if (transform.position != v) transform.position = v;
 		}
+		
+		// Wrapped in an 'if' so the scene doesn't get marked as 'edited' every frame
+		if (transform.position != v) transform.position = v;
 	}
 }

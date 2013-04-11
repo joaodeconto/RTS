@@ -51,9 +51,9 @@ public class UIAtlasMaker : EditorWindow
 	{
 		List<Texture> textures = new List<Texture>();
 
-		if (UnityEditor.Selection.objects != null && UnityEditor.Selection.objects.Length > 0)
+		if (Selection.objects != null && Selection.objects.Length > 0)
 		{
-			Object[] objects = EditorUtility.CollectDependencies(UnityEditor.Selection.objects);
+			Object[] objects = EditorUtility.CollectDependencies(Selection.objects);
 
 			foreach (Object o in objects)
 			{
@@ -765,7 +765,7 @@ public class UIAtlasMaker : EditorWindow
 			}
 		}
 
-		ComponentSelector.Draw<UIAtlas>("...or select", NGUISettings.atlas, OnSelectAtlas);
+		ComponentSelector.Draw<UIAtlas>("Select", NGUISettings.atlas, OnSelectAtlas);
 
 		List<Texture> textures = GetSelectedTextures();
 
@@ -779,7 +779,7 @@ public class UIAtlasMaker : EditorWindow
 			{
 				if (mat != null)
 				{
-					if (GUILayout.Button("Material", GUILayout.Width(76f))) UnityEditor.Selection.activeObject = mat;
+					if (GUILayout.Button("Material", GUILayout.Width(76f))) Selection.activeObject = mat;
 					GUILayout.Label(" " + mat.name);
 				}
 				else
@@ -797,7 +797,7 @@ public class UIAtlasMaker : EditorWindow
 			{
 				if (tex != null)
 				{
-					if (GUILayout.Button("Texture", GUILayout.Width(76f))) UnityEditor.Selection.activeObject = tex;
+					if (GUILayout.Button("Texture", GUILayout.Width(76f))) Selection.activeObject = tex;
 					GUILayout.Label(" " + tex.width + "x" + tex.height);
 				}
 				else
@@ -821,7 +821,7 @@ public class UIAtlasMaker : EditorWindow
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
-			NGUISettings.unityPacking = EditorGUILayout.Toggle("Unity Packer", NGUISettings.unityPacking, GUILayout.MinWidth(100f));
+			NGUISettings.unityPacking = EditorGUILayout.Toggle("Unity Packer", NGUISettings.unityPacking, GUILayout.Width(100f));
 			GUILayout.Label("if off, use a custom packer");
 			GUILayout.EndHorizontal();
 

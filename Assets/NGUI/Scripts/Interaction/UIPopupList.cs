@@ -166,7 +166,7 @@ public class UIPopupList : MonoBehaviour
 				
 				if (textLabel != null)
 				{
-					textLabel.text = (isLocalized && Localization.instance != null) ? Localization.instance.Get(value) : value;
+					textLabel.text = (isLocalized) ? Localization.Localize(value) : value;
 #if UNITY_EDITOR
 					UnityEditor.EditorUtility.SetDirty(textLabel.gameObject);
 #endif
@@ -440,7 +440,7 @@ public class UIPopupList : MonoBehaviour
 
 	void OnClick()
 	{
-		if (mChild == null && atlas != null && font != null && items.Count > 1)
+		if (mChild == null && atlas != null && font != null && items.Count > 0)
 		{
 			mLabelList.Clear();
 
@@ -497,7 +497,7 @@ public class UIPopupList : MonoBehaviour
 				lbl.font = font;
 				lbl.text = (isLocalized && Localization.instance != null) ? Localization.instance.Get(s) : s;
 				lbl.color = textColor;
-				lbl.cachedTransform.localPosition = new Vector3(bgPadding.x + padding.x, y, 0f);
+				lbl.cachedTransform.localPosition = new Vector3(bgPadding.x + padding.x, y, -0.01f);
 				lbl.MakePixelPerfect();
 
 				if (textScale != 1f)
