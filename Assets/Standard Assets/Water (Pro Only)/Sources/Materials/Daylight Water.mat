@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Daylight Water
-  m_Shader: {fileID: 4800000, guid: 8aaff0751054e4a9cb4642d01eaf5be9, type: 3}
+  m_Shader: {fileID: 4800000, guid: af040a092e2114e9fbd6fab7402e066d, type: 3}
   m_ShaderKeywords: []
   m_SavedProperties:
     serializedVersion: 2
@@ -36,6 +36,20 @@ Material:
       data:
         first:
           name: _RefractionTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _LightMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Reflect
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -87,6 +101,10 @@ Material:
           name: _RefrDistort
         second: 1.15384614
     m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
           name: _MainTex_ST

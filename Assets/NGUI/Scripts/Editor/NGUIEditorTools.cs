@@ -496,7 +496,7 @@ public class NGUIEditorTools
 
 	static public GameObject SelectedRoot ()
 	{
-		GameObject go = UnityEditor.Selection.activeGameObject;
+		GameObject go = Selection.activeGameObject;
 
 		// Only use active objects
 		if (go != null && !NGUITools.GetActive(go)) go = null;
@@ -685,9 +685,9 @@ public class NGUIEditorTools
 
 	static public string GetSelectionFolder ()
 	{
-		if (UnityEditor.Selection.activeObject != null)
+		if (Selection.activeObject != null)
 		{
-			string path = AssetDatabase.GetAssetPath(UnityEditor.Selection.activeObject.GetInstanceID());
+			string path = AssetDatabase.GetAssetPath(Selection.activeObject.GetInstanceID());
 
 			if (!string.IsNullOrEmpty(path))
 			{
@@ -1006,8 +1006,8 @@ public class NGUIEditorTools
 
 	static public void Select (GameObject go)
 	{
-		mPrevious = UnityEditor.Selection.activeGameObject;
-		UnityEditor.Selection.activeGameObject = go;
+		mPrevious = Selection.activeGameObject;
+		Selection.activeGameObject = go;
 	}
 	
 	/// <summary>
@@ -1018,7 +1018,7 @@ public class NGUIEditorTools
 	{
 		if (mPrevious != null)
 		{
-			UnityEditor.Selection.activeGameObject = mPrevious;
+			Selection.activeGameObject = mPrevious;
 			mPrevious = null;
 		}
 	}

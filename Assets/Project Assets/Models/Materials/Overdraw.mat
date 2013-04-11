@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Overdraw
-  m_Shader: {fileID: 4800000, guid: f91075fcaa2ffa248b0ee53ddb6adb04, type: 3}
+  m_Shader: {fileID: 4800000, guid: e14df94c1bd5d475bb0fb92fefa1f00d, type: 3}
   m_ShaderKeywords: []
   m_SavedProperties:
     serializedVersion: 2
@@ -26,7 +26,18 @@ Material:
           m_Texture: {fileID: 2800000, guid: 350a9b9ab9b5541a496598c55a89a500, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _LightMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
+      data:
+        first:
+          name: _Cutoff
+        second: .5
       data:
         first:
           name: _Shininess

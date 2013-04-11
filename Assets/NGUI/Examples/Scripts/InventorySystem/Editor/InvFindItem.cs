@@ -73,8 +73,8 @@ public class InvFindItem : ScriptableWizard
 					fr.item.name, NGUITools.GetHierarchy(fr.db.gameObject), true))
 				{
 					InvDatabaseInspector.SelectIndex(fr.db, fr.item);
-					UnityEditor.Selection.activeGameObject = fr.db.gameObject;
-					EditorUtility.SetDirty(UnityEditor.Selection.activeGameObject);
+					Selection.activeGameObject = fr.db.gameObject;
+					EditorUtility.SetDirty(Selection.activeGameObject);
 				}
 			}
 		}

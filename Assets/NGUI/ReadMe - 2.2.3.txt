@@ -1,7 +1,7 @@
 ----------------------------------------------
             NGUI: Next-Gen UI kit
  Copyright © 2011-2012 Tasharen Entertainment
-                Version 2.2.6c
+                Version 2.2.7c
     http://www.tasharen.com/?page_id=197
             support@tasharen.com
 ----------------------------------------------
@@ -34,6 +34,17 @@ Using NGUI with JavaScript (UnityScript)? Read this first: http://www.tasharen.c
 -----------------
  Version History
 -----------------
+
+2.2.7:
+- NEW: Added UICamera.stickyPress option that makes it possible for multiple objects to receive OnPress notifications from a single touch.
+- NEW: UICamera.hoveredObject now works for touch events as well, and will always hold the result of the last Raycast.
+- NEW: Added "Edit" buttons to all atlase and font fields, making easy to select the atlas/font for modification.
+- NEW: Added Localization.Localize. Was going to change Localization.Get to be static, but didn't want to break backwards compatibility.
+- FIX: Inventory example should work correctly in Unity 4.0.
+- FIX: You can now set UILabel.text to null.
+- FIX: UIPanel was not drawing its rect correctly in some cases.
+- FIX: Assortment of tweaks and fixes submitted by Andrew Osborne (community contribution).
+- FIX: Switching a mainTexture of a UITexture belonging to a clipped panel will now work properly.
 
 2.2.6:
 - NEW: Mouse and touch events now have an option to be clipped by the panel's clipping rect, just like widgets.

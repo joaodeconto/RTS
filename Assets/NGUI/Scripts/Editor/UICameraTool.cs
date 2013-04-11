@@ -199,8 +199,8 @@ public class UICameraTool : EditorWindow
 				GUILayout.Space(30f);
 			}
 
-			bool highlight = (cam == null || UnityEditor.Selection.activeGameObject == null) ? false :
-				(0 != (cam.cullingMask & (1 << UnityEditor.Selection.activeGameObject.layer)));
+			bool highlight = (cam == null || Selection.activeGameObject == null) ? false :
+				(0 != (cam.cullingMask & (1 << Selection.activeGameObject.layer)));
 
 			if (enabled)
 			{
@@ -230,7 +230,7 @@ public class UICameraTool : EditorWindow
 			if (GUILayout.Button(camName, EditorStyles.label, GUILayout.MinWidth(100f)) && cam != null)
 #endif
 			{
-				UnityEditor.Selection.activeGameObject = cam.gameObject;
+				Selection.activeGameObject = cam.gameObject;
 				EditorUtility.SetDirty(cam.gameObject);
 			}
 			GUILayout.Label(camLayer, GUILayout.Width(70f));

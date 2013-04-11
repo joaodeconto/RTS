@@ -46,8 +46,14 @@ public class UIStretch : MonoBehaviour
 	Transform mTrans;
 	UIRoot mRoot;
 	Animation mAnim;
-
-	void Awake () { mAnim = animation; }
+	Rect mRect;
+	
+	void Awake () 
+	{ 
+		mAnim = animation; 
+		mRect = new Rect();
+		mTrans = transform;
+	}
 
 	void Start ()
 	{
@@ -61,28 +67,25 @@ public class UIStretch : MonoBehaviour
 
 		if (style != Style.None)
 		{
-			if (mTrans == null) mTrans = transform;
-
-			Rect rect = new Rect();
 
 			if (panelContainer != null)
 			{
 				if (panelContainer.clipping == UIDrawCall.Clipping.None)
 				{
 					// Panel has no clipping -- just use the screen's dimensions
-					rect.xMin = -Screen.width * 0.5f;
-					rect.yMin = -Screen.height * 0.5f;
-					rect.xMax = -rect.xMin;
-					rect.yMax = -rect.yMin;
+					mRect.xMin = -Screen.width * 0.5f;
+					mRect.yMin = -Screen.height * 0.5f;
+					mRect.xMax = -mRect.xMin;
+					mRect.yMax = -mRect.yMin;
 				}
 				else
 				{
 					// Panel has clipping -- use it as the rect
 					Vector4 pos = panelContainer.clipRange;
-					rect.x = pos.x - (pos.z * 0.5f);
-					rect.y = pos.y - (pos.w * 0.5f);
-					rect.width = pos.z;
-					rect.height = pos.w;
+					mRect.x = pos.x - (pos.z * 0.5f);
+					mRect.y = pos.y - (pos.w * 0.5f);
+					mRect.width = pos.z;
+					mRect.height = pos.w;
 				}
 			}
 			else if (widgetContainer != null)
@@ -99,21 +102,21 @@ public class UIStretch : MonoBehaviour
 				offset.x *= (widgetContainer.relativeSize.x * ls.x);
 				offset.y *= (widgetContainer.relativeSize.y * ls.y);
 
-				rect.x = lp.x + offset.x;
-				rect.y = lp.y + offset.y;
+				mRect.x = lp.x + offset.x;
+				mRect.y = lp.y + offset.y;
 
-				rect.width = size.x * ls.x;
-				rect.height = size.y * ls.y;
+				mRect.width = size.x * ls.x;
+				mRect.height = size.y * ls.y;
 			}
 			else if (uiCamera != null)
 			{
-				rect = uiCamera.pixelRect;
+				mRect = uiCamera.pixelRect;
 			}
 			else return;
 			
 			
-			float rectWidth  = rect.width;
-			float rectHeight = rect.height;
+			float rectWidth  = mRect.width;
+			float rectHeight = mRect.height;
 			float adj = (mRoot != null) ? mRoot.pixelSizeAdjustment : 1f;
 
 			if (adj != 1f && rectHeight > 1f)
