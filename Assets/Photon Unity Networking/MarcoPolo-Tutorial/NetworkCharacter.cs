@@ -1,23 +1,9 @@
 using UnityEngine;
-using System.Collections;
 
 public class NetworkCharacter : Photon.MonoBehaviour
 {
     private Vector3 correctPlayerPos = Vector3.zero; // We lerp towards this
     private Quaternion correctPlayerRot = Quaternion.identity; // We lerp towards this
-
-    void Awake()
-    {
-        ThirdPersonController myC = GetComponent<ThirdPersonController>();
-        myC.isControllable = photonView.isMine;
-    }
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -36,7 +22,7 @@ public class NetworkCharacter : Photon.MonoBehaviour
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
 
-            ThirdPersonController myC = GetComponent<ThirdPersonController>();
+            myThirdPersonController myC = GetComponent<myThirdPersonController>();
             stream.SendNext((int)myC._characterState);
         }
         else
@@ -45,7 +31,7 @@ public class NetworkCharacter : Photon.MonoBehaviour
             this.correctPlayerPos = (Vector3)stream.ReceiveNext();
             this.correctPlayerRot = (Quaternion)stream.ReceiveNext();
 
-            ThirdPersonController myC = GetComponent<ThirdPersonController>();
+            myThirdPersonController myC = GetComponent<myThirdPersonController>();
             myC._characterState = (CharacterState)stream.ReceiveNext();
         }
     }

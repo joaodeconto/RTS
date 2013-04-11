@@ -7,6 +7,8 @@
 // </summary>
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -94,6 +96,98 @@ public class PhotonMessageInfo
     public override string ToString()
     {
         return string.Format("[PhotonMessageInfo: player='{1}' timestamp={0}]", this.timestamp, this.sender);
+    }
+}
+
+public class PBitStream
+{
+    List<byte> streamBytes;
+    private int currentByte;
+    private int totalBits = 0;
+
+    public int ByteCount
+    {
+        get { return BytesForBits(this.totalBits); }
+    }
+
+    public int BitCount
+    {
+        get { return this.totalBits; }
+        private set { this.totalBits = value; }
+    }
+
+    public PBitStream()
+    {
+        this.streamBytes = new List<byte>(1);
+    }
+
+    public PBitStream(int bitCount)
+    {
+        this.streamBytes = new List<byte>(BytesForBits(bitCount));
+    }
+
+    public PBitStream(IEnumerable<byte> bytes, int bitCount)
+    {
+        this.streamBytes = new List<byte>(bytes);
+        this.BitCount = bitCount;
+    }
+
+    public static int BytesForBits(int bitCount)
+    {
+        if (bitCount <= 0)
+        {
+            return 0;
+        }
+
+        return ((bitCount - 1) / 8) + 1;
+    }
+
+    public void Add(bool val)
+    {
+        int bytePos = this.totalBits / 8;
+        if (bytePos > this.streamBytes.Count-1 || totalBits == 0)
+        {
+            this.streamBytes.Add(0);
+        }
+
+        if (val)
+        {
+            int currentByteBit = 7 - (this.totalBits % 8);
+            this.streamBytes[bytePos] |= (byte)(1 << currentByteBit);
+        }
+
+        this.totalBits++;
+    }
+
+    public byte[] ToBytes()
+    {
+        return streamBytes.ToArray();
+    }
+
+    public int Position { get; set; }
+
+    public bool GetNext()
+    {
+        if (this.Position > this.totalBits)
+        {
+            throw new Exception("End of PBitStream reached. Can't read more.");
+        }
+
+        return Get(this.Position++);
+    }
+
+    public bool Get(int bitIndex)
+    {
+        int byteIndex = bitIndex / 8;
+        int bitInByIndex = 7 - (bitIndex % 8);
+        return ((streamBytes[byteIndex] & (byte)(1 << bitInByIndex)) > 0);
+    }
+
+    public void Set(int bitIndex, bool value)
+    {
+        int byteIndex = bitIndex / 8;
+        int bitInByIndex = 7 - (bitIndex % 8);
+        this.streamBytes[byteIndex] |= (byte)(1 << bitInByIndex);
     }
 }
 

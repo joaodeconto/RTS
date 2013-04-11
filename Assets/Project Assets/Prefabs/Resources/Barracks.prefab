@@ -30,7 +30,6 @@ GameObject:
   - 114: {fileID: 11400000}
   - 114: {fileID: 11400004}
   - 114: {fileID: 11400002}
-  - 65: {fileID: 6500000}
   - 208: {fileID: 20800000}
   m_Layer: 0
   m_Name: Barracks
@@ -190,7 +189,7 @@ Transform:
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .139765128, y: .139765128, z: .139765128}
+  m_LocalScale: {x: .140000001, y: .140000001, z: .140000001}
   m_Children: []
   m_Father: {fileID: 400004}
 --- !u!4 &400002
@@ -200,7 +199,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: -.318752438, z: 0, w: .947838008}
-  m_LocalPosition: {x: 66.3975067, y: 10.0012207, z: 75.7554245}
+  m_LocalPosition: {x: 155.369736, y: 10.0012207, z: 173.645599}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400034}
@@ -270,7 +269,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100034}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -.14500308, y: 0, z: .629396975}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400066}
@@ -421,18 +420,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_Mesh: {fileID: 4300004, guid: d5d57c4c2e7bd9e42bdbdc6b313ea22c, type: 3}
---- !u!65 &6500000
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100002}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 20.1995678, y: 5, z: 9.68000031}
-  m_Center: {x: .0811214447, y: 0, z: 1.09000003}
 --- !u!65 &6500002
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -476,9 +463,9 @@ MonoBehaviour:
   m_Name: 
   MaxHealth: 300
   Defense: 0
-  Team: -1
-  RangeView: 40
-  sizeOfSelected: 9.48999977
+  team: 0
+  fieldOfView: 40
+  sizeOfSelected: 15
   rendererTeamColor:
   - materialToApplyColor: {fileID: 2100000, guid: b7996bb7383fc3041997c2fbd4985248,
       type: 2}
@@ -490,6 +477,8 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 0
         gridYIndex: 0
+  pref_Blood: {fileID: 0}
+  transformBloodReference: {fileID: 0}
   playerUnit: 0
   model: {fileID: 100034}
   unitsToCreate:
@@ -507,23 +496,23 @@ MonoBehaviour:
     timeToCreate: 15
     buttonName: 
     gridItemAttributes:
-      gridXIndex: 1
+      gridXIndex: 2
       gridYIndex: 1
   - unit: {fileID: 11400000, guid: 1d3e301ff447d644a90dcabff9dfc493, type: 2}
     costOfResources:
       NumberOfRocks: 300
-    timeToCreate: 30
-    buttonName: 
-    gridItemAttributes:
-      gridXIndex: 2
-      gridYIndex: 1
-  - unit: {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    costOfResources:
-      NumberOfRocks: 150
-    timeToCreate: 30
+    timeToCreate: 20
     buttonName: 
     gridItemAttributes:
       gridXIndex: 3
+      gridYIndex: 1
+  - unit: {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
+    costOfResources:
+      NumberOfRocks: 200
+    timeToCreate: 15
+    buttonName: 
+    gridItemAttributes:
+      gridXIndex: 1
       gridYIndex: 1
   waypoint: {fileID: 400004}
   receiveResource: 0
@@ -570,7 +559,7 @@ MonoBehaviour:
   rows: 1
   framesPerSecond: 15
   playOnAwake: 1
-  wrapMode: 2
+  wrapMode: 1
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -580,7 +569,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 9
+  m_Radius: 6.78000021
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -591,8 +580,8 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
-  m_Radius: 8
-  m_Height: 4
+  m_Radius: 6.51000023
+  m_Height: 3.5
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

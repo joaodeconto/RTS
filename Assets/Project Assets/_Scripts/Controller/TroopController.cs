@@ -114,10 +114,10 @@ public class TroopController : MonoBehaviour
 	public void AddSoldier (Unit soldier)
 	{
 		soldiers.Add (soldier);
-		ComponentGetter.Get<MiniMapController> ().AddUnit (soldier.transform, soldier.Team);
+		ComponentGetter.Get<MiniMapController> ().AddUnit (soldier.transform, soldier.team);
 		ComponentGetter.Get<FogOfWar> ().AddEntity (soldier.transform, soldier);
 
-		gameplayManager.IncrementUnit (soldier.Team, soldier.numberOfUnits);
+		gameplayManager.IncrementUnit (soldier.team, soldier.numberOfUnits);
 	}
 
 	public void RemoveSoldier (Unit soldier)
@@ -128,11 +128,11 @@ public class TroopController : MonoBehaviour
 			selectedSoldiers.Remove (soldier);
 		}
 
-		ComponentGetter.Get<MiniMapController> ().RemoveUnit (soldier.transform, soldier.Team);
+		ComponentGetter.Get<MiniMapController> ().RemoveUnit (soldier.transform, soldier.team);
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (soldier.transform, soldier);
 		soldiers.Remove (soldier);
 
-		gameplayManager.DecrementUnit (soldier.Team, soldier.numberOfUnits);
+		gameplayManager.DecrementUnit (soldier.team, soldier.numberOfUnits);
 	}
 
 	public void SoldierToogleSelection (Unit soldier)
@@ -260,9 +260,9 @@ public class TroopController : MonoBehaviour
 		return null;
 	}
 	
-	public void WorkerCheckFactory (FactoryBase factory)
+	public bool WorkerCheckFactory (FactoryBase factory)
 	{
-		bool hudFeedback = false;
+		bool feedback = false;
 		
 		foreach (Unit unit in selectedSoldiers)
 		{
@@ -273,36 +273,38 @@ public class TroopController : MonoBehaviour
 				if (!factory.wasBuilt)
 				{
 					w.SetMoveToFactory(factory);
-					hudFeedback = true;
+					feedback = true;
 				}
 				else if (w.hasResource)
 				{
 					if (factory.receiveResource == w.resource.type)
 					{
 						w.SetMoveToFactory(factory);
-						hudFeedback = true;
+						feedback = true;
 					}
 					else if (factory.gameObject.GetComponent<MainFactory>() != null)
 					{
 						w.SetMoveToFactory(factory);
-						hudFeedback = true;
+						feedback = true;
 					}
 				}
 				else if (factory.IsNeededRepair)
 				{
 					w.SetMoveToFactory(factory);
-					hudFeedback = true;
+					feedback = true;
 				}
 			}
 		}
 		
-		if (hudFeedback) 
+		if (feedback) 
 			hudController.CreateFeedback (HUDController.Feedbacks.Self, factory.transform.position, factory.sizeOfSelected);
+		
+		return feedback;
 	}
 	
 	public void ChangeVisibility (Unit soldier, bool visibility)
 	{
-		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.Team, visibility);
+		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.team, visibility);
 	}
 
 	public void PlaySelectSound ()
@@ -344,7 +346,7 @@ public class TroopController : MonoBehaviour
 		{
 			Worker w = u as Worker;
 
-			if ( (w == null) || (!gameplayManager.IsSameTeam(w.Team)) ) continue;
+			if ( (w == null) || (!gameplayManager.IsSameTeam(w.team)) ) continue;
 
 			idleWorkers.Remove(w);
 

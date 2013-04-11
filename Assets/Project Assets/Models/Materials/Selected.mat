@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Selected
-  m_Shader: {fileID: 34, guid: 0000000000000000e000000000000000, type: 0}
+  m_Shader: {fileID: 51, guid: 0000000000000000e000000000000000, type: 0}
   m_ShaderKeywords: []
   m_SavedProperties:
     serializedVersion: 2
@@ -16,7 +16,7 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: f802893b32e9a274486aafad515c2c10, type: 3}
+          m_Texture: {fileID: 2800000, guid: 0617028c810d47d4baed4421a89d9b4b, type: 3}
           m_Scale: {x: .200000003, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -33,11 +33,18 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ParallaxMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
           name: _Cutoff
-        second: 0
+        second: .597014904
       data:
         first:
           name: _Shininess
@@ -46,11 +53,15 @@ Material:
         first:
           name: _EmissionLM
         second: 0
+      data:
+        first:
+          name: _Parallax
+        second: .0199999996
     m_Colors:
       data:
         first:
           name: _Color
-        second: {r: .00699329376, g: 0, b: 1, a: 1}
+        second: {r: .072176449, g: .113122597, b: .604477644, a: 1}
       data:
         first:
           name: _SpecColor

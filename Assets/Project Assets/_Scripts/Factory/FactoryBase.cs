@@ -48,8 +48,8 @@ public class FactoryBase : IStats
 	public BuildingState buildingState { get; set; }
 	protected int levelConstruct;
 
-	protected List<Unit> listedToCreate = new List<Unit>();
-	protected Unit unitToCreate;
+	protected List<UnitFactory> listedToCreate = new List<UnitFactory>();
+	protected UnitFactory unitToCreate;
 	protected float timeToCreate;
 	protected float timer;
 	protected bool inUpgrade;
@@ -130,7 +130,7 @@ public class FactoryBase : IStats
 		if (!wasBuilt || listedToCreate.Count == 0)
 			return;
 
-		if (gameplayManager.NeedMoreHouses (listedToCreate[0].numberOfUnits))
+		if (gameplayManager.NeedMoreHouses (listedToCreate[0].unit.numberOfUnits))
 		{
 			if (!alreadyCheckedMaxPopulation)
 			{
@@ -145,20 +145,14 @@ public class FactoryBase : IStats
 		if (unitToCreate == null)
 		{
 			unitToCreate = listedToCreate[0];
-			foreach (UnitFactory uf in unitsToCreate)
-			{
-				if (uf.unit == unitToCreate)
-				{
-					timeToCreate = uf.timeToCreate;
-				}
-			}
+			timeToCreate = unitToCreate.timeToCreate;
 			inUpgrade = true;
 		}
 		else
 		{
 			if (timer > timeToCreate)
 			{
-				InvokeUnit (unitToCreate);
+				InvokeUnit (unitToCreate.unit);
 
 				timer = 0;
 				unitToCreate = null;
@@ -269,7 +263,7 @@ public class FactoryBase : IStats
 	{
 		levelConstruct = Health = 1;
 		wasBuilt = false;
-		Team = teamID;
+		team = teamID;
 		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
 
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
@@ -284,8 +278,8 @@ public class FactoryBase : IStats
 	[RPC]
 	public void Instance ()
 	{
-		realRangeView  = this.RangeView;
-		this.RangeView = 0.0f;
+		realRangeView  = this.fieldOfView;
+		this.fieldOfView = 0.0f;
 
 		factoryController.AddFactory (this);
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
@@ -295,7 +289,7 @@ public class FactoryBase : IStats
 
 		buildingState = BuildingState.Base;
 
-		if (!gameplayManager.IsSameTeam (Team)) model.SetActive (true);
+		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
 	}
 
 	public bool Construct (Worker worker)
@@ -319,7 +313,7 @@ public class FactoryBase : IStats
 			{
 				wasBuilt = true;
 
-				this.RangeView = realRangeView;
+				this.fieldOfView = realRangeView;
 
 				eventManager.AddEvent("building finish", this.name, this.guiTextureName);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
@@ -361,7 +355,7 @@ public class FactoryBase : IStats
 		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 
-		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (Team));
+		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 
 		if (playerUnit && wasBuilt)
 		{
@@ -374,7 +368,7 @@ public class FactoryBase : IStats
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				Hashtable ht = new Hashtable();
-				ht["unit"]    = uf.unit;
+				ht["unitFactory"]    = uf;
 
 				hudController.CreateButtonInInspector ( uf.buttonName,
 														uf.gridItemAttributes.Position,
@@ -382,13 +376,13 @@ public class FactoryBase : IStats
 														uf.unit.guiTextureName,
 														(ht_hud) =>
 														{
-															FactoryBase factory = this;
-															Unit unit           = (Unit)ht_hud["unit"];
+															FactoryBase factory     = this;
+															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
 
 															buildingSlider.gameObject.SetActiveRecursively(true);
 
 															if (!factory.OverLimitCreateUnit)
-																factory.EnqueueUnitToCreate (unit);
+																factory.EnqueueUnitToCreate (unitFactory.unit);
 															else
 																eventManager.AddEvent("reach enqueued units");
 														});
@@ -396,16 +390,16 @@ public class FactoryBase : IStats
 
 			for(int i = listedToCreate.Count - 1; i != -1; --i)
 			{
-				Unit unit = listedToCreate[i];
+				UnitFactory unitFactory = listedToCreate[i];
 
 				Hashtable ht = new Hashtable();
-				ht["unit"] = listedToCreate[i];
+				ht["unitFactory"] = unitFactory;
 				ht["name"] = "button-" + Time.time;
 
 				hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
 																FactoryBase.FactoryQueueName,
 																ht,
-																listedToCreate[i].guiTextureName,
+																listedToCreate[i].unit.guiTextureName,
 																(hud_ht) =>
 																{
 																	//TODO Fazer recuperação do dinheiro quando desistir da
@@ -444,20 +438,29 @@ public class FactoryBase : IStats
 	public void EnqueueUnitToCreate (Unit unit)
 	{
 		bool canBuy = true;
+		UnitFactory unitFactory = null;
+		
 		foreach (UnitFactory uf in unitsToCreate)
 		{
 			if (unit == uf.unit)
 			{
 				canBuy = gameplayManager.resources.CanBuy (uf.costOfResources);
+				unitFactory = uf;
 				break;
 			}
 		}
-
+		
+		if (unitFactory == null)
+		{
+			Debug.LogError ("variable unitFactory is 'null'!");
+			return;
+		}
+		
 		if (canBuy)
 		{
-			listedToCreate.Add (unit);
+			listedToCreate.Add (unitFactory);
 			Hashtable ht = new Hashtable();
-			ht["unit"] = unit;
+			ht["unitFactory"] = unitFactory;
 			ht["name"] = "button-" + Time.time;
 
 			hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
@@ -477,7 +480,9 @@ public class FactoryBase : IStats
 	private void DequeueUnit(Hashtable ht)
 	{
 		string btnName = (string)ht["name"];
-		Unit unit = (Unit)ht["unit"];
+		UnitFactory unitFactory = (UnitFactory)ht["unitFactory"];
+		
+		gameplayManager.resources.ReturnResources (unitFactory.costOfResources);
 
 		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
 		{
@@ -487,7 +492,7 @@ public class FactoryBase : IStats
 		}
 
 		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);
-		listedToCreate.Remove (unit);
+		listedToCreate.Remove (unitFactory);
 	}
 
 	public override void SetVisible(bool isVisible)

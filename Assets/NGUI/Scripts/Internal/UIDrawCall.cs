@@ -165,9 +165,18 @@ public class UIDrawCall : MonoBehaviour
 			// If we found the shader, create a new material
 			if (shader != null)
 			{
-				mClippedMat = new Material(mSharedMat);
-				mClippedMat.hideFlags = HideFlags.DontSave;
+				if (mClippedMat == null)
+				{
+					mClippedMat = new Material(mSharedMat);
+					mClippedMat.hideFlags = HideFlags.DontSave;
+				}
 				mClippedMat.shader = shader;
+				mClippedMat.mainTexture = mSharedMat.mainTexture;
+			}
+			else if (mClippedMat != null)
+			{
+				NGUITools.Destroy(mClippedMat);
+				mClippedMat = null;
 			}
 		}
 		else if (mClippedMat != null)
@@ -184,8 +193,8 @@ public class UIDrawCall : MonoBehaviour
 				Shader shader = Shader.Find("Unlit/Depth Cutout");
 				mDepthMat = new Material(shader);
 				mDepthMat.hideFlags = HideFlags.DontSave;
-				mDepthMat.mainTexture = mSharedMat.mainTexture;
 			}
+			mDepthMat.mainTexture = mSharedMat.mainTexture;
 		}
 		else if (mDepthMat != null)
 		{
@@ -233,6 +242,10 @@ public class UIDrawCall : MonoBehaviour
 			if (mRen == null)
 			{
 				mRen = gameObject.AddComponent<MeshRenderer>();
+				UpdateMaterials();
+			}
+			else if (mClippedMat != null && mClippedMat.mainTexture != mSharedMat.mainTexture)
+			{
 				UpdateMaterials();
 			}
 

@@ -15,6 +15,7 @@ using UnityEngine;
 [CustomEditor(typeof(PhotonView))]
 public class PhotonViewInspector : Editor
 {
+
     private static GameObject GetPrefabParent(GameObject mp)
     {
         #if UNITY_2_6_1 || UNITY_2_6 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4

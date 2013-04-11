@@ -6,7 +6,7 @@ using Visiorama;
 
 public class FogOfWar : MonoBehaviour
 {
-	private const int SIZE_TEXTURE = 256;
+	private const int SIZE_TEXTURE = 128;
 
 	public bool UseFog  = true;
 	public bool DarkFog = true;
@@ -104,7 +104,7 @@ public class FogOfWar : MonoBehaviour
 			posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
 			posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
-			range = Mathf.RoundToInt(SIZE_TEXTURE * (entityAllies[i].RangeView / mapSize.x));
+			range = Mathf.RoundToInt(SIZE_TEXTURE * (entityAllies[i].fieldOfView / mapSize.x));
 
 			//maxX = Mathf.CeilToInt (posX + range);
 			//maxY = Mathf.CeilToInt (posY + range);
@@ -217,7 +217,7 @@ public class FogOfWar : MonoBehaviour
 		if(!UseFog)
 			return null;
 
-		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.Team))
+		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.team))
 		{
 			allies.Add(trnsEntity);
 			entityAllies.Add(entity);
@@ -236,7 +236,7 @@ public class FogOfWar : MonoBehaviour
 		if(!UseFog || trnsEntity == null)
 			return null;
 
-		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.Team))
+		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.team))
 		{
 			int index = allies.IndexOf(trnsEntity) != null ? allies.IndexOf(trnsEntity) : -1;
 

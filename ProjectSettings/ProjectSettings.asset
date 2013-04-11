@@ -23,9 +23,9 @@ PlayerSettings:
   m_MTRendering: 1
   m_UseDX11: 0
   iosShowActivityIndicatorOnLoading: -1
-  androidShowActivityIndicatorOnLoading: 2
+  androidShowActivityIndicatorOnLoading: 0
   displayResolutionDialog: 1
-  allowedAutorotateToPortrait: 0
+  allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 0
   allowedAutorotateToLandscapeRight: 1
   allowedAutorotateToLandscapeLeft: 1
@@ -36,6 +36,7 @@ PlayerSettings:
   runInBackground: 1
   captureSingleScreen: 0
   Override IPod Music: 0
+  enableHWStatistics: 1
   usePlayerLog: 1
   stripPhysics: 0
   resizableWindow: 0
@@ -47,6 +48,7 @@ PlayerSettings:
   xboxEnableFitness: 0
   macFullscreenMode: 2
   xboxSpeechDB: 0
+  xboxEnableHeadOrientation: 0
   wiiHio2Usage: -1
   wiiLoadingScreenRectPlacement: 0
   wiiLoadingScreenBackground: {r: 1, g: 1, b: 1, a: 1}
@@ -67,7 +69,7 @@ PlayerSettings:
   iPhoneBundleIdentifier: com.Visiorama.RTS
   iPhoneBundleVersion: 1.0
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 15
+  AndroidMinSdkVersion: 8
   AndroidPreferredInstallLocation: 0
   aotOptions: 
   apiCompatibilityLevel: 2
@@ -100,7 +102,7 @@ PlayerSettings:
   m_BuildTargetIcons:
   - m_BuildTarget: 
     m_Icons:
-    - m_Icon: {fileID: 0}
+    - m_Icon: {fileID: 2800000, guid: 1eadb71f352f7124bb8eaeba5d7a05cc, type: 3}
       m_Size: 128
   m_BuildTargetBatching:
   - m_BuildTarget: Android
@@ -122,8 +124,6 @@ PlayerSettings:
   wiiControllerCount: 1
   wiiFloatingPointExceptions: 0
   wiiScreenCrashDumps: 1
-  wiiMemoryLabelCount: 155
-  wiiMemorySetup: 5effbee7ffffffafbb1f00000000000000000000
   XboxTitleId: 
   XboxImageXexPath: 
   XboxSpaPath: 
@@ -132,6 +132,8 @@ PlayerSettings:
   XboxSplashScreen: {fileID: 0}
   xboxEnableSpeech: 0
   xboxAdditionalTitleMemorySize: 0
+  xboxDeployKinectHeadOrientation: 0
+  xboxDeployKinectHeadPosition: 0
   ps3TitleConfigPath: 
   ps3DLCConfigPath: 
   ps3ThumbnailPath: 
@@ -173,12 +175,14 @@ PlayerSettings:
   metroTileWideLogo: 
   metroTileSmallLogo: 
   metroTileShortName: 
+  metroCommandLineArgsFile: 
   metroTileShowName: 0
   metroTileForegroundText: 1
   metroTileBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenImage: 
   metroSplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenUseBackgroundColor: 0
+  metroCapabilities: {}
   firstStreamedLevelWithResources: 0
   unityRebuildLibraryVersion: 9
   unityForwardCompatibleVersion: 37

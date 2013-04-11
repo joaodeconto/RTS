@@ -265,7 +265,23 @@ public enum PhotonNetworkingMessage
     /// The Photon Cloud will mail you when the CCU limit was reached. This is also visible in the Dashboard (webpage).
     /// Example: void OnPhotonMaxCccuReached(){ ... }
     /// </remarks>
-    OnPhotonMaxCccuReached
+    OnPhotonMaxCccuReached,
+	
+	/// <summary>
+    /// Called when inside a room when its custom properties have changed. This is ALSO called for room property changes by the local players.
+    /// </summary>
+    /// <remarks>
+    /// Example: void OnPhotonCustomRoomPropertiesChanged(){ ... }
+    /// </remarks>
+	OnPhotonCustomRoomPropertiesChanged,
+	
+	/// <summary>
+    /// Called when inside a room when a players custom properties change.
+    /// </summary>
+    /// <remarks>
+    /// Example: void OnPhotonPlayerPropertiesChanged(PhotonPlayer player){ ... }
+    /// </remarks>
+	OnPhotonPlayerPropertiesChanged
 }
 
 /// <summary>

@@ -13,7 +13,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	private string playerName = "";
 	private bool isTryingToEnterGame;
-
 	private ConnectionCallback cb;
 	private PlayerReadyCallback prc;
 
@@ -74,10 +73,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	public RoomInfo[] GetRoomList ()
 	{
-		return  (from r in PhotonNetwork.GetRoomList ()
-									where ((bool)r.customProperties["closeRoom"] == false)
-									   && (r.playerCount != r.maxPlayers)
-									select r).ToArray ();
+		return PhotonNetwork.GetRoomList ();
 	}
 
 	public RoomInfo GetRoomInfo ()
@@ -87,18 +83,24 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	public void SetPropertyOnPlayer (string key, object value)
 	{
-		if (PhotonNetwork.player.customProperties.ContainsKey (key))
-			PhotonNetwork.player.customProperties [key] = value;
-		else
-			PhotonNetwork.player.customProperties.Add (key, value);
+		Hashtable someCustomPropertiesToSet = new Hashtable();
+		someCustomPropertiesToSet.Add (key, value);
+		
+//		if (PhotonNetwork.player.customProperties.ContainsKey (key))
+//			PhotonNetwork.player.customProperties [key] = value;
+//		else
+			PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
 	}
 
 	public void SetPropertyOnPlayer (PhotonPlayer player, string key, object value)
 	{
-		if (player.customProperties.ContainsKey (key))
-			player.customProperties [key] = value;
-		else
-			player.customProperties.Add (key, value);
+		Hashtable someCustomPropertiesToSet = new Hashtable();
+		someCustomPropertiesToSet.Add (key, value);
+		
+//		if (player.customProperties.ContainsKey (key))
+//			player.customProperties [key] = value;
+//		else
+			player.SetCustomProperties (someCustomPropertiesToSet);
 	}
 
 	public string CheckingStatus ()
@@ -173,6 +175,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	private void OnDisconnectedFromPhoton()
 	{
+		
 	}
 
 	private void OnFailedToConnectToPhoton(object parameters)
@@ -207,7 +210,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		}
 
 		int numberOfReady = 0;
-		int c = 0;
 		foreach (PhotonPlayer p in PhotonNetwork.playerList)
 		{
 			if (      p.customProperties.ContainsKey("ready") &&
@@ -215,12 +217,8 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			{
 				numberOfReady++;
 			}
-
-			if (PhotonNetwork.isMasterClient)
-				SetPropertyOnPlayer (p, "team", (c++));
-
 		}
-
+		
 		if (prc != null)
 		{
 			prc (numberOfReady, room.maxPlayers);
@@ -243,6 +241,15 @@ public class PhotonWrapper : Photon.MonoBehaviour
         {
             yield return 0;
         }
+		
+//		if (PhotonNetwork.isMasterClient)
+//		{
+//			int t = 0;
+//			foreach (PhotonPlayer p in PhotonNetwork.playerList)
+//			{
+//				SetPropertyOnPlayer (p, "team", (t++));
+//			}
+//		}
 
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;

@@ -26,7 +26,7 @@ using Object = UnityEngine.Object;
 public static class PhotonNetwork
 {
     /// <summary>Version number of PUN. Also used in GameVersion to separate client version from each other.</summary>
-    public const string versionPUN = "1.18";
+    public const string versionPUN = "1.19";
 
     /// <summary>
     /// This Monobehaviour allows Photon to run an Update loop.

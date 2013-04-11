@@ -182,7 +182,7 @@ public class UICreateWidgetWizard : EditorWindow
 		GUILayout.Label("Select the parent in the Hierarchy View", GUILayout.MinWidth(10000f));
 		GUILayout.EndHorizontal();
 
-		if (sel != go) UnityEditor.Selection.activeGameObject = sel;
+		if (sel != go) Selection.activeGameObject = sel;
 
 		if (retVal && isValid)
 		{
@@ -216,7 +216,7 @@ public class UICreateWidgetWizard : EditorWindow
 			lbl.text = "New Label";
 			lbl.color = mColor;
 			lbl.MakePixelPerfect();
-			UnityEditor.Selection.activeGameObject = lbl.gameObject;
+			Selection.activeGameObject = lbl.gameObject;
 		}
 	}
 
@@ -248,7 +248,7 @@ public class UICreateWidgetWizard : EditorWindow
 			sprite.spriteName = field;
 			sprite.pivot = NGUISettings.pivot;
 			sprite.MakePixelPerfect();
-			UnityEditor.Selection.activeGameObject = sprite.gameObject;
+			Selection.activeGameObject = sprite.gameObject;
 		}
 	}
 
@@ -266,7 +266,7 @@ public class UICreateWidgetWizard : EditorWindow
 		if (ShouldCreate(go, true))
 		{
 			UITexture tex = NGUITools.AddWidget<UITexture>(go);
-			UnityEditor.Selection.activeGameObject = tex.gameObject;
+			Selection.activeGameObject = tex.gameObject;
 		}
 	}
 
@@ -312,7 +312,7 @@ public class UICreateWidgetWizard : EditorWindow
 			go.AddComponent<UIButtonOffset>();
 			go.AddComponent<UIButtonSound>();
 
-			UnityEditor.Selection.activeGameObject = go;
+			Selection.activeGameObject = go;
 		}
 	}
 
@@ -367,7 +367,7 @@ public class UICreateWidgetWizard : EditorWindow
 			ib.pressedSprite = mImage2;
 			go.AddComponent<UIButtonSound>();
 
-			UnityEditor.Selection.activeGameObject = go;
+			Selection.activeGameObject = go;
 		}
 	}
 
@@ -426,7 +426,7 @@ public class UICreateWidgetWizard : EditorWindow
 			go.AddComponent<UIButtonScale>().tweenTarget = bg.transform;
 			go.AddComponent<UIButtonSound>();
 
-			UnityEditor.Selection.activeGameObject = go;
+			Selection.activeGameObject = go;
 		}
 	}
 
@@ -491,7 +491,7 @@ public class UICreateWidgetWizard : EditorWindow
 				NGUITools.AddWidgetCollider(bg.gameObject);
 				NGUITools.AddWidgetCollider(fg.gameObject);
 			}
-			UnityEditor.Selection.activeGameObject = go;
+			Selection.activeGameObject = go;
 		}
 	}
 
@@ -580,7 +580,7 @@ public class UICreateWidgetWizard : EditorWindow
 			uiSlider.sliderValue = 0.75f;
 
 			// Select the slider
-			UnityEditor.Selection.activeGameObject = go;
+			Selection.activeGameObject = go;
 		}
 	}
 
@@ -634,7 +634,7 @@ public class UICreateWidgetWizard : EditorWindow
 			input.label = lbl;
 
 			// Update the selection
-			UnityEditor.Selection.activeGameObject = go;
+			Selection.activeGameObject = go;
 		}
 	}
 
@@ -703,7 +703,7 @@ public class UICreateWidgetWizard : EditorWindow
 			go.AddComponent<UIButton>().tweenTarget = sprite.gameObject;
 			go.AddComponent<UIButtonSound>();
 
-			UnityEditor.Selection.activeGameObject = go;
+			Selection.activeGameObject = go;
 		}
 	}
 

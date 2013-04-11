@@ -55,12 +55,14 @@ public class ActiveGames : MonoBehaviour
 
 		int counter = 0;
 		if (roomQuery.Length == 0)
-			;
+		{}
 			//GUILayout.Label ("There's anywhere room");
 		else
+		{
 			foreach (RoomInfo room in roomQuery)
 			{
 				bool isRoomClosed = (bool)room.customProperties["closeRoom"];
+				if (!isRoomClosed) isRoomClosed = (room.playerCount == room.maxPlayers);
 
 				GameObject r = Instantiate (pref_Row, Vector3.zero, Quaternion.identity) as GameObject;
 
@@ -127,6 +129,7 @@ public class ActiveGames : MonoBehaviour
 
 				}
 			}
+		}
 	}
 
 	private void CloseErrorMessage ()

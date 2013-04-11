@@ -12,7 +12,7 @@ public class NGUISelectionTools
 	[MenuItem("GameObject/Selection/Force Delete")]
 	static void ForceDelete()
 	{
-		GameObject go = UnityEditor.Selection.activeGameObject;
+		GameObject go = Selection.activeGameObject;
 
 		if (go != null)
 		{
@@ -34,8 +34,8 @@ public class NGUISelectionTools
 	{
 		if (HasValidTransform())
 		{
-			GameObject[] gos = UnityEditor.Selection.gameObjects;
-			bool val = !NGUITools.GetActive(UnityEditor.Selection.activeGameObject);
+			GameObject[] gos = Selection.gameObjects;
+			bool val = !NGUITools.GetActive(Selection.activeGameObject);
 			foreach (GameObject go in gos) NGUITools.SetActive(go, val);
 		}
 	}
@@ -45,7 +45,7 @@ public class NGUISelectionTools
 	{
 		if (HasValidTransform())
 		{
-			Transform t = UnityEditor.Selection.activeTransform;
+			Transform t = Selection.activeTransform;
 			NGUIEditorTools.RegisterUndo("Clear Local Transform", t);
 			t.localPosition = Vector3.zero;
 			t.localRotation = Quaternion.identity;
@@ -66,20 +66,20 @@ public class NGUISelectionTools
 			newGameObject.name = "GameObject";
 
 			// If there is a selected object in the scene then make the new object its child.
-			if (UnityEditor.Selection.activeTransform != null)
+			if (Selection.activeTransform != null)
 			{
-				newGameObject.transform.parent = UnityEditor.Selection.activeTransform;
+				newGameObject.transform.parent = Selection.activeTransform;
 				newGameObject.name = "Child";
 
 				// Place the new GameObject at the same position as the parent.
 				newGameObject.transform.localPosition = Vector3.zero;
 				newGameObject.transform.localRotation = Quaternion.identity;
 				newGameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-				newGameObject.layer = UnityEditor.Selection.activeGameObject.layer;
+				newGameObject.layer = Selection.activeGameObject.layer;
 			}
 
 			// Select our newly created GameObject
-			UnityEditor.Selection.activeGameObject = newGameObject;
+			Selection.activeGameObject = newGameObject;
 		}
 	}
 	
@@ -88,7 +88,7 @@ public class NGUISelectionTools
 	{
 		if (HasValidSelection())
 		{
-			Debug.Log("Selection depends on the following assets:\n\n" + GetDependencyText(UnityEditor.Selection.objects, false));
+			Debug.Log("Selection depends on the following assets:\n\n" + GetDependencyText(Selection.objects, false));
 		}
 	}
 	
@@ -108,7 +108,7 @@ public class NGUISelectionTools
 
 	static bool HasValidSelection()
 	{
-		if (UnityEditor.Selection.objects == null || UnityEditor.Selection.objects.Length == 0)
+		if (Selection.objects == null || Selection.objects.Length == 0)
 		{
 			Debug.LogWarning("You must select an object first");
 			return false;
@@ -122,7 +122,7 @@ public class NGUISelectionTools
 	
 	static bool HasValidTransform()
 	{
-		if (UnityEditor.Selection.activeTransform == null)
+		if (Selection.activeTransform == null)
 		{
 			Debug.LogWarning("You must select an object first");
 			return false;
@@ -136,13 +136,13 @@ public class NGUISelectionTools
 
 	static bool PrefabCheck()
 	{
-		if (UnityEditor.Selection.activeTransform != null)
+		if (Selection.activeTransform != null)
         {
             // Check if the selected object is a prefab instance and display a warning
 #if UNITY_3_4
-			PrefabType type = EditorUtility.GetPrefabType(UnityEditor.Selection.activeGameObject);
+			PrefabType type = EditorUtility.GetPrefabType(Selection.activeGameObject);
 #else
-			PrefabType type = PrefabUtility.GetPrefabType(UnityEditor.Selection.activeGameObject);
+			PrefabType type = PrefabUtility.GetPrefabType(Selection.activeGameObject);
 #endif
 
             if (type == PrefabType.PrefabInstance)

@@ -197,6 +197,7 @@ public class PhotonPlayer
         // send (sync) these new values
         Hashtable customProps = propertiesToSet.StripToStringKeys() as Hashtable;
         PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(this.actorID, customProps, true, 0);
+		NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, this);
     }
 
     /// <summary>

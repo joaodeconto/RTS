@@ -20,15 +20,20 @@ public class ResourcesManager
 		}
 	}
 	
-	public bool CanBuy (ResourcesManager resourceCost)
+	public bool CanBuy (ResourcesManager resourceCost, bool discount = true)
 	{
 		if (NumberOfRocks - resourceCost.NumberOfRocks < 0)
 		{
 			return false;
 		}
 		
-		NumberOfRocks -= resourceCost.NumberOfRocks;
+		if (discount) NumberOfRocks -= resourceCost.NumberOfRocks;
 		return true;
+	}
+	
+	public void ReturnResources (ResourcesManager resourceCost)
+	{
+		NumberOfRocks += resourceCost.NumberOfRocks;
 	}
 }
 

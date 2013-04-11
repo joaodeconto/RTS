@@ -49,7 +49,7 @@ public class UIRoot : MonoBehaviour
 	/// If the screen height goes above this value, it will be as if 'automatic' is turned off with the 'manualHeight' set to this value.
 	/// </summary>
 
-	public int maximumHeight = 1080;
+	public int maximumHeight = 1536;
 
 	/// <summary>
 	/// UI Root's active height, based on the size of the screen.
@@ -111,14 +111,20 @@ public class UIRoot : MonoBehaviour
 	{
 		if (mTrans != null)
 		{
-			float size = 2f / activeHeight;
-			Vector3 ls = mTrans.localScale;
+			float calcActiveHeight = activeHeight;
 
-			if (!(Mathf.Abs(ls.x - size) <= float.Epsilon) ||
-				!(Mathf.Abs(ls.y - size) <= float.Epsilon) ||
-				!(Mathf.Abs(ls.z - size) <= float.Epsilon))
+			if (calcActiveHeight > 0f )
 			{
-				mTrans.localScale = new Vector3(size, size, size);
+				float size = 2f / calcActiveHeight;
+				
+				Vector3 ls = mTrans.localScale;
+	
+				if (!(Mathf.Abs(ls.x - size) <= float.Epsilon) ||
+					!(Mathf.Abs(ls.y - size) <= float.Epsilon) ||
+					!(Mathf.Abs(ls.z - size) <= float.Epsilon))
+				{
+					mTrans.localScale = new Vector3(size, size, size);
+				}
 			}
 		}
 	}

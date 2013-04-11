@@ -8,12 +8,12 @@ public class CottageFactory : FactoryBase
 		if (gameplayManager.ReachedMaxPopulation)
 			eventManager.AddEvent("reach max population");
 		else
-			gameplayManager.IncrementMaxOfUnits ();
+			gameplayManager.IncrementMaxOfUnits (5);
 	}
 	
 	public override void OnDie ()
 	{
-		if (wasBuilt) gameplayManager.DecrementMaxOfUnits ();
+		if (wasBuilt) gameplayManager.DecrementMaxOfUnits (5);
 		
 		base.OnDie ();
 	}

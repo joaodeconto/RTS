@@ -1,10 +1,18 @@
 
 
-This tutorial shows you the basics of using Photon Unity Networking.
+The Marco Polo Tutorial
+	is an online-only resource to learn the basics of using Photon Unity Networking (PUN).
+	Covered are: Connect, find a room, react to joining players, synchronizing positions and animations and more.
+	This package includes the result of the tutorial but in best case, you implement each step while reading.
 
-Read the included PDF or the online version here:
-http://doc.exitgames.com/photon-cloud/Marco_Polo_Tutorial
 
-Note:
-This package only includes the "final" code of the tutorial. Some code will differ from the individual passages.
-In best case, you work through the text and code most of this yourself.
+The step-by-step guide can be found here:
+	http://doc.exitgames.com/photon-cloud/Marco_Polo_Tutorial
+
+
+Disclaimer
+	The results of the tutorial have been adjusted to better fit into this packge:
+		The myThirdPersonController used here is a C# script (which saves some file moving).
+		A 3D Text offers you info and to open the tutorial online.
+		Some code will differ from the individual passages.
+		Removed some of the "Monster" package's to reduce package size.

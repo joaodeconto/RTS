@@ -29,6 +29,7 @@ GameObject:
   - 136: {fileID: 13600000}
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400000}
+  - 208: {fileID: 20800000}
   m_Layer: 0
   m_Name: Cottage
   m_TagString: Untagged
@@ -118,7 +119,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: .32904768, z: 0, w: .944313347}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 223.114365, y: 10.0012207, z: 186.574677}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400010}
@@ -290,13 +291,15 @@ MonoBehaviour:
   m_Name: 
   MaxHealth: 150
   Defense: 0
-  Team: -1
-  RangeView: 15
+  team: 0
+  fieldOfView: 25
   sizeOfSelected: 7.67999983
   rendererTeamColor:
   - materialToApplyColor: {fileID: 2100000, guid: b7996bb7383fc3041997c2fbd4985248,
       type: 2}
   movementActions: []
+  pref_Blood: {fileID: 0}
+  transformBloodReference: {fileID: 0}
   playerUnit: 0
   model: {fileID: 100010}
   unitsToCreate: []
@@ -306,6 +309,7 @@ MonoBehaviour:
     baseObject: {fileID: 100004}
     unfinishedObject: {fileID: 100006}
     finishedObject: {fileID: 100000}
+    desactiveObjectsWhenInstance: []
   guiTextureName: cottage
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
@@ -322,6 +326,15 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &20800000
+NavMeshObstacle:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_Radius: 2.55999994
+  m_Height: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

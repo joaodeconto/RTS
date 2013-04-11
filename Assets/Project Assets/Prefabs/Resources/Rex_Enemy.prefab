@@ -1032,7 +1032,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100072}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.1922646, y: 10.0012207, z: 32.6901932}
+  m_LocalPosition: {x: 176.958023, y: 10.0012207, z: 194.911819}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400076}
@@ -1117,10 +1117,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
-  MaxHealth: 150
+  MaxHealth: 125
   Defense: 0
-  Team: -1
-  RangeView: 16
+  team: 0
+  fieldOfView: 20
   sizeOfSelected: 3
   rendererTeamColor:
   - materialToApplyColor: {fileID: 2100000, guid: b7996bb7383fc3041997c2fbd4985248,
@@ -1147,13 +1147,13 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 2
         gridYIndex: 0
-  pref_Blood: {fileID: 100008, guid: 1ec58827013789f4c9fc0b646a635065, type: 2}
+  pref_Blood: {fileID: 100000, guid: 462f032b6d15d904bb7fbeb2ee3e1e81, type: 2}
   transformBloodReference: {fileID: 400070}
   playerUnit: 1
   model: {fileID: 100068}
-  force: 12
-  distanceView: 20
-  rangeAttack: 4
+  force: 10
+  distanceView: 10
+  attackRange: 5
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50

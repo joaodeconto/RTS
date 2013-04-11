@@ -15,48 +15,6 @@ using System.Text;
 [AddComponentMenu("NGUI/UI/Font")]
 public class UIFont : MonoBehaviour
 {
-	//UNISIP
-	
-    //store a list of all dynamic fonts used, in order to trigger callbacks when a font texture is rebuilt
-    static List<Font> _fontList = new List<Font>();
-
-    public static void RegisterFont(UIFont font)
-    {
-		if (font.UseDynamicFont)
-        {
-			if (!_fontList.Contains(font.dynamicFont))
-				_fontList.Add(font.dynamicFont);
-
-			font.dynamicFont.textureRebuildCallback += font.OnFontTextureRebuilt;
-        }
-    }
-
-	// zh4ox
-    private void OnFontTextureRebuilt()
-    {
-		if (UseDynamicFont)
-			OnFontTextureRebuilt(this);
-    }
-
-    public static void OnFontTextureRebuilt(UIFont font)
-    {
-		UILabel[] list = NGUITools.FindActive<UILabel>();
-        foreach (UILabel label in list)
-        {
-            if (label.font == font)
-                label.MarkAsChanged();
-        }
-    }
-
-
-    //UNISIP - ADDITIONAL FIELDS FOR DYNAMIC FONTS
-    public Font dynamicFont;
-    public Material dynamicFontMaterial;
-    public int dynamicFontSize = 12;
-    public FontStyle dynamicFontStyle;
-
-    public bool UseDynamicFont { get { return (dynamicFont != null); } }
-
 	public enum Alignment
 	{
 		Left,
@@ -147,18 +105,6 @@ public class UIFont : MonoBehaviour
 	{
 		get
 		{
-            //UNISIP
-            if (UseDynamicFont)
-            {
-                if (dynamicFontMaterial != null)
-                {
-                    dynamicFontMaterial.mainTexture = dynamicFont.material.mainTexture;
-                    return dynamicFontMaterial;
-
-                }
-                return dynamicFont.material;
-            }
-
 			if (mReplacement != null) return mReplacement.material;
 			return (mAtlas != null) ? mAtlas.spriteMaterial : mMat;
 		}
@@ -334,7 +280,7 @@ public class UIFont : MonoBehaviour
 	/// Pixel-perfect size of this font.
 	/// </summary>
 
-	public int size { get { return (mReplacement != null) ? mReplacement.size : charSize; } }
+	public int size { get { return (mReplacement != null) ? mReplacement.size : mFont.charSize; } }
 
 	/// <summary>
 	/// Retrieves the sprite used by the font, if any.
@@ -467,20 +413,16 @@ public class UIFont : MonoBehaviour
 
 		Vector2 v = Vector2.zero;
 
-		if (UseDynamicFont || (mFont != null && mFont.isValid && !string.IsNullOrEmpty(text)))
+		if (mFont != null && mFont.isValid && !string.IsNullOrEmpty(text))
 		{
 			if (encoding) text = NGUITools.StripSymbols(text);
-
-            if (UseDynamicFont)
-                dynamicFont.RequestCharactersInTexture(text, dynamicFontSize, dynamicFontStyle);
-            CharacterInfo charInfo;
 
 			int length = text.Length;
 			int maxX = 0;
 			int x = 0;
 			int y = 0;
 			int prev = 0;
-			int lineHeight = (charSize + mSpacingY);
+			int lineHeight = (mFont.charSize + mSpacingY);
 
 			for (int i = 0; i < length; ++i)
 			{
@@ -499,59 +441,36 @@ public class UIFont : MonoBehaviour
 				// Skip invalid characters
 				if (c < ' ') { prev = 0; continue; }
 
-                if (UseDynamicFont)
-                {
-                    if (dynamicFont.GetCharacterInfo(c, out charInfo, dynamicFontSize, dynamicFontStyle))
-                    {
-                        x += (int)(mSpacingX + charInfo.width);
-                    }
-                    else
-                    {
-                    }
-                }
-                else
-                {
-                    // See if there is a symbol matching this text
-                    BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, i, length) : null;
+				// See if there is a symbol matching this text
+				BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, i, length) : null;
 
-                    if (symbol == null)
-                    {
-                        // Get the glyph for this character
-                        BMGlyph glyph = mFont.GetGlyph(c);
+				if (symbol == null)
+				{
+					// Get the glyph for this character
+					BMGlyph glyph = mFont.GetGlyph(c);
 
-                        if (glyph != null)
-                        {
-                            x += mSpacingX + ((prev != 0) ? glyph.advance + glyph.GetKerning(prev) : glyph.advance);
-                            prev = c;
-                        }
-                    }
-                    else
-                    {
-                        // Symbol found -- use it
-                        x += mSpacingX + symbol.width;
-                        i += symbol.length - 1;
-                        prev = 0;
-                    }
-                }
+					if (glyph != null)
+					{
+						x += mSpacingX + ((prev != 0) ? glyph.advance + glyph.GetKerning(prev) : glyph.advance);
+						prev = c;
+					}
+				}
+				else
+				{
+					// Symbol found -- use it
+					x += mSpacingX + symbol.width;
+					i += symbol.length - 1;
+					prev = 0;
+				}
 			}
 
 			// Convert from pixel coordinates to local coordinates
-			float scale = (charSize > 0) ? 1f / charSize : 1f;
+			float scale = (mFont.charSize > 0) ? 1f / mFont.charSize : 1f;
 			v.x = scale * ((x > maxX) ? x : maxX);
 			v.y = scale * (y + lineHeight);
 		}
-        
 		return v;
 	}
-
-	//UNISIP
-    int charSize
-    {
-        get
-        {
-            return (UseDynamicFont ? dynamicFontSize : mFont.charSize);
-        }
-    }
 
 	/// <summary>
 	/// Convenience function that ends the line by either appending a new line character or replacing a space with one.
@@ -581,49 +500,33 @@ public class UIFont : MonoBehaviour
 		BMGlyph followingGlyph = null;
 		int currentCharacterIndex = textLength;
 
-        if (UseDynamicFont)
-            dynamicFont.RequestCharactersInTexture(text, dynamicFontSize, dynamicFontStyle);
-        CharacterInfo charInfo;
-
-
 		while (currentCharacterIndex > 0 && remainingWidth > 0)
 		{
 			char currentCharacter = text[--currentCharacterIndex];
-            
-            // Calculate how wide this symbol or character is going to be
-            int glyphWidth = mSpacingX;
 
-            if (UseDynamicFont)
-            {
-                if (dynamicFont.GetCharacterInfo(currentCharacter, out charInfo, dynamicFontSize, dynamicFontStyle))
-                {
-                    glyphWidth += (int)charInfo.width;
-                }
-            }
-            else
-            {
+			// See if there is a symbol matching this text
+			BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, currentCharacterIndex, textLength) : null;
 
-                // See if there is a symbol matching this text
-                BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, currentCharacterIndex, textLength) : null;
+			// Find the glyph for this character
+			BMGlyph glyph = (symbol == null) ? mFont.GetGlyph(currentCharacter) : null;
 
-                // Find the glyph for this character
-                BMGlyph glyph = (symbol == null) ? mFont.GetGlyph(currentCharacter) : null;
+			// Calculate how wide this symbol or character is going to be
+			int glyphWidth = mSpacingX;
 
-                if (symbol != null)
-                {
-                    glyphWidth += symbol.width;
-                }
-                else if (glyph != null)
-                {
-                    glyphWidth += glyph.advance + ((followingGlyph == null) ? 0 : followingGlyph.GetKerning(currentCharacter));
-                    followingGlyph = glyph;
-                }
-                else
-                {
-                    followingGlyph = null;
-                    continue;
-                }
-            }
+			if (symbol != null)
+			{
+				glyphWidth += symbol.width;
+			}
+			else if (glyph != null)
+			{
+				glyphWidth += glyph.advance + ((followingGlyph == null) ? 0 : followingGlyph.GetKerning(currentCharacter));
+				followingGlyph = glyph;
+			}
+			else
+			{
+				followingGlyph = null;
+				continue;
+			}
 
 			// Remaining width after this glyph gets printed
 			remainingWidth -= glyphWidth;
@@ -654,11 +557,6 @@ public class UIFont : MonoBehaviour
 		bool lineIsEmpty = true;
 		bool multiline = (maxLineCount != 1);
 		int lineCount = 1;
-
-        if (UseDynamicFont)
-            dynamicFont.RequestCharactersInTexture(text, dynamicFontSize, dynamicFontStyle);
-        CharacterInfo charInfo;
-
 
 		// Run through all characters
 		for (; offset < textLength; ++offset)
@@ -712,40 +610,27 @@ public class UIFont : MonoBehaviour
 				}
 			}
 
-            // Calculate how wide this symbol or character is going to be
-            int glyphWidth = mSpacingX;
-            BMSymbol symbol = null;
+			// See if there is a symbol matching this text
+			BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, offset, textLength) : null;
 
-            if (UseDynamicFont)
-            {
-                if (dynamicFont.GetCharacterInfo(ch, out charInfo, dynamicFontSize, dynamicFontStyle))
-                {
-                    glyphWidth += (int)charInfo.width;
-                }
-            }
-            else
-            {
-                // See if there is a symbol matching this text
-                symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, offset, textLength) : null;
+			// Find the glyph for this character
+			BMGlyph glyph = (symbol == null) ? mFont.GetGlyph(ch) : null;
 
-                // Find the glyph for this character
-                BMGlyph glyph = (symbol == null) ? mFont.GetGlyph(ch) : null;
+			// Calculate how wide this symbol or character is going to be
+			int glyphWidth = mSpacingX;
 
-                if (symbol != null)
-                {
-                    glyphWidth += symbol.width;
-                }
-                else if (glyph != null)
-                {
-                    glyphWidth += (previousChar != 0) ? glyph.advance + glyph.GetKerning(previousChar) : glyph.advance;
-                }
-                else continue;
-            }
+			if (symbol != null)
+			{
+				glyphWidth += symbol.width;
+			}
+			else if (glyph != null)
+			{
+				glyphWidth += (previousChar != 0) ? glyph.advance + glyph.GetKerning(previousChar) : glyph.advance;
+			}
+			else continue;
 
-            // Remaining width after this glyph gets printed
-            remainingWidth -= glyphWidth;
-
-			
+			// Remaining width after this glyph gets printed
+			remainingWidth -= glyphWidth;
 
 			// Doesn't fit?
 			if (remainingWidth < 0)
@@ -798,7 +683,7 @@ public class UIFont : MonoBehaviour
 			else previousChar = ch;
 
 			// Advance the offset past the symbol
-			if (!UseDynamicFont && symbol != null)
+			if (symbol != null)
 			{
 				offset += symbol.length - 1;
 				previousChar = 0;
@@ -827,12 +712,12 @@ public class UIFont : MonoBehaviour
 
 	void Align (BetterList<Vector3> verts, int indexOffset, Alignment alignment, int x, int lineWidth)
 	{
-		if (alignment != Alignment.Left && charSize > 0)
+		if (alignment != Alignment.Left && mFont.charSize > 0)
 		{
 			float offset = (alignment == Alignment.Right) ? lineWidth - x : (lineWidth - x) * 0.5f;
 			offset = Mathf.RoundToInt(offset);
 			if (offset < 0f) offset = 0f;
-			offset /= charSize;
+			offset /= mFont.charSize;
 
 			Vector3 temp;
 			for (int i = indexOffset; i < verts.size; ++i)
@@ -863,31 +748,23 @@ public class UIFont : MonoBehaviour
 		}
 		else if (mFont != null && text != null)
 		{
-			if (!mFont.isValid && !UseDynamicFont)
+			if (!mFont.isValid)
 			{
 				Debug.LogError("Attempting to print using an invalid font!");
 				return;
 			}
 
-            //JUDIVA, include symbols in font
-            RegisterFont(this);
-			if (UseDynamicFont)
-			{
-				dynamicFont.RequestCharactersInTexture(" ");
-				dynamicFont.RequestCharactersInTexture(text, dynamicFontSize, dynamicFontStyle);
-			}
-
 			mColors.Clear();
 			mColors.Add(color);
 
-			Vector2 scale = charSize > 0 ? new Vector2(1f / charSize, 1f / charSize) : Vector2.one;
+			Vector2 scale = mFont.charSize > 0 ? new Vector2(1f / mFont.charSize, 1f / mFont.charSize) : Vector2.one;
 
 			int indexOffset = verts.size;
 			int maxX = 0;
 			int x = 0;
 			int y = 0;
 			int prev = 0;
-			int lineHeight = (charSize + mSpacingY);
+			int lineHeight = (mFont.charSize + mSpacingY);
 			Vector3 v0 = Vector3.zero, v1 = Vector3.zero;
 			Vector2 u0 = Vector2.zero, u1 = Vector2.zero;
 			float invX = uvRect.width / mFont.texWidth;
@@ -932,171 +809,106 @@ public class UIFont : MonoBehaviour
 					}
 				}
 
-                if (!UseDynamicFont)
-                {
-                    // See if there is a symbol matching this text
-                    BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, i, textLength) : null;
+				// See if there is a symbol matching this text
+				BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, i, textLength) : null;
 
-                    if (symbol == null)
-                    {
-                        BMGlyph glyph = mFont.GetGlyph(c);
-                        if (glyph == null) continue;
+				if (symbol == null)
+				{
+					BMGlyph glyph = mFont.GetGlyph(c);
+					if (glyph == null) continue;
 
-                        if (prev != 0) x += glyph.GetKerning(prev);
+					if (prev != 0) x += glyph.GetKerning(prev);
 
-                        if (c == ' ')
-                        {
-                            x += mSpacingX + glyph.advance;
-                            prev = c;
-                            continue;
-                        }
-
-                        v0.x = scale.x * (x + glyph.offsetX);
-                        v0.y = -scale.y * (y + glyph.offsetY);
-
-                        v1.x = v0.x + scale.x * glyph.width;
-                        v1.y = v0.y - scale.y * glyph.height;
-
-                        u0.x = mUVRect.xMin + invX * glyph.x;
-                        u0.y = mUVRect.yMax - invY * glyph.y;
-
-                        u1.x = u0.x + invX * glyph.width;
-                        u1.y = u0.y - invY * glyph.height;
-
-                        x += mSpacingX + glyph.advance;
-                        prev = c;
-
-                        if (glyph.channel == 0 || glyph.channel == 15)
-                        {
-                            for (int b = 0; b < 4; ++b) cols.Add(color);
-                        }
-                        else
-                        {
-                            // Packed fonts come as alpha masks in each of the RGBA channels.
-                            // In order to use it we need to use a special shader.
-                            //
-                            // Limitations:
-                            // - Effects (drop shadow, outline) will not work.
-                            // - Should not be a part of the atlas (eastern fonts rarely are anyway).
-                            // - Lower color precision
-
-                            Color col = color;
-
-                            col *= 0.49f;
-
-                            switch (glyph.channel)
-                            {
-                                case 1: col.b += 0.51f; break;
-                                case 2: col.g += 0.51f; break;
-                                case 4: col.r += 0.51f; break;
-                                case 8: col.a += 0.51f; break;
-                            }
-
-                            for (int b = 0; b < 4; ++b) cols.Add(col);
-                        }
-                    }
-                    else
-                    {
-                        v0.x = scale.x * x;
-                        v0.y = -scale.y * y;
-
-                        v1.x = v0.x + scale.x * symbol.width;
-                        v1.y = v0.y - scale.y * symbol.height;
-
-                        u0.x = mUVRect.xMin + invX * symbol.x;
-                        u0.y = mUVRect.yMax - invY * symbol.y;
-
-                        u1.x = u0.x + invX * symbol.width;
-                        u1.y = u0.y - invY * symbol.height;
-
-                        x += mSpacingX + symbol.width;
-                        i += symbol.length - 1;
-                        prev = 0;
-
-                        if (symbolStyle == SymbolStyle.Colored)
-                        {
-                            for (int b = 0; b < 4; ++b) cols.Add(color);
-                        }
-                        else
-                        {
-                            Color32 col = Color.white;
-                            col.a = color.a;
-                            for (int b = 0; b < 4; ++b) cols.Add(col);
-                        }
-                    }
-
-                    uvs.Add(new Vector2(u1.x, u0.y));
-                    uvs.Add(new Vector2(u1.x, u1.y));
-                    uvs.Add(new Vector2(u0.x, u1.y));
-                    uvs.Add(new Vector2(u0.x, u0.y));
-
-                    verts.Add(new Vector3(v1.x, v0.y));
-                    verts.Add(new Vector3(v1.x, v1.y));
-                    verts.Add(new Vector3(v0.x, v1.y));
-                    verts.Add(new Vector3(v0.x, v0.y));
-                }
-                else
-                {
-					// zh4ox
-					CharacterInfo spaceCharInfo;
-					if (!dynamicFont.GetCharacterInfo(' ', out spaceCharInfo))
+					if (c == ' ')
 					{
-						Debug.LogError("space character not found in font");
+						x += mSpacingX + glyph.advance;
+						prev = c;
 						continue;
 					}
 
-                    //v0 v1 are the two corners
-                    CharacterInfo charInfo;
-                    if (!dynamicFont.GetCharacterInfo(c, out charInfo, dynamicFontSize, dynamicFontStyle))
-                    {
-                        Debug.LogError("character not found in font");
-                        continue;
-                    }
+					v0.x =  scale.x * (x + glyph.offsetX);
+					v0.y = -scale.y * (y + glyph.offsetY);
 
-					// zh4ox
-					float m = -0.8203215f; // the baseLine of font size ONE
-					float baseLine = spaceCharInfo.vert.yMax; // current baseline in font texture
-					float realBaseLine = m * charSize; // real baseline of charSize
-					float offsetY = baseLine - realBaseLine;
+					v1.x = v0.x + scale.x * glyph.width;
+					v1.y = v0.y - scale.y * glyph.height;
 
-                    v0.x = scale.x * (x + charInfo.vert.xMin);
-                    v0.y = scale.x * (-y + charInfo.vert.yMax - offsetY);
-					v1.x = scale.y * (x + charInfo.vert.xMax);
-                    v1.y = scale.y * (-y + charInfo.vert.yMin - offsetY);
+					u0.x = mUVRect.xMin + invX * glyph.x;
+					u0.y = mUVRect.yMax - invY * glyph.y;
 
-                    u0.x = charInfo.uv.xMin;
-                    u0.y = charInfo.uv.yMin;
-                    u1.x = charInfo.uv.xMax;
-                    u1.y = charInfo.uv.yMax;
+					u1.x = u0.x + invX * glyph.width;
+					u1.y = u0.y - invY * glyph.height;
 
-					x += mSpacingX + (int)charInfo.width;
+					x += mSpacingX + glyph.advance;
+					prev = c;
 
-                    for (int b = 0; b < 4; ++b) cols.Add(color);
+					if (glyph.channel == 0 || glyph.channel == 15)
+					{
+						for (int b = 0; b < 4; ++b) cols.Add(color);
+					}
+					else
+					{
+						// Packed fonts come as alpha masks in each of the RGBA channels.
+						// In order to use it we need to use a special shader.
+						//
+						// Limitations:
+						// - Effects (drop shadow, outline) will not work.
+						// - Should not be a part of the atlas (eastern fonts rarely are anyway).
+						// - Lower color precision
 
-                    if (charInfo.flipped)
-                    {
-                        //swap entries
-                        uvs.Add(new Vector2(u0.x, u1.y));
-                        uvs.Add(new Vector2(u0.x, u0.y));
-                        uvs.Add(new Vector2(u1.x, u0.y));
-                        uvs.Add(new Vector2(u1.x, u1.y));
-                    }
-                    else
-                    {
-                        uvs.Add(new Vector2(u1.x, u0.y));
-                        uvs.Add(new Vector2(u0.x, u0.y));
-                        uvs.Add(new Vector2(u0.x, u1.y));
-                        uvs.Add(new Vector2(u1.x, u1.y));
-                    }
+						Color col = color;
 
-                    verts.Add(new Vector3(v1.x, v0.y));
-                    verts.Add(new Vector3(v0.x, v0.y));
-                    verts.Add(new Vector3(v0.x, v1.y));
-                    verts.Add(new Vector3(v1.x, v1.y));
+						col *= 0.49f;
 
-                }
+						switch (glyph.channel)
+						{
+							case 1: col.b += 0.51f; break;
+							case 2: col.g += 0.51f; break;
+							case 4: col.r += 0.51f; break;
+							case 8: col.a += 0.51f; break;
+						}
 
-				
+						for (int b = 0; b < 4; ++b) cols.Add(col);
+					}
+				}
+				else
+				{
+					v0.x =  scale.x * x;
+					v0.y = -scale.y * y;
+
+					v1.x = v0.x + scale.x * symbol.width;
+					v1.y = v0.y - scale.y * symbol.height;
+
+					u0.x = mUVRect.xMin + invX * symbol.x;
+					u0.y = mUVRect.yMax - invY * symbol.y;
+
+					u1.x = u0.x + invX * symbol.width;
+					u1.y = u0.y - invY * symbol.height;
+
+					x += mSpacingX + symbol.width;
+					i += symbol.length - 1;
+					prev = 0;
+
+					if (symbolStyle == SymbolStyle.Colored)
+					{
+						for (int b = 0; b < 4; ++b) cols.Add(color); 
+					}
+					else
+					{
+						Color32 col = Color.white;
+						col.a = color.a;
+						for (int b = 0; b < 4; ++b) cols.Add(col);
+					}
+				}
+
+				verts.Add(new Vector3(v1.x, v0.y));
+				verts.Add(new Vector3(v1.x, v1.y));
+				verts.Add(new Vector3(v0.x, v1.y));
+				verts.Add(new Vector3(v0.x, v0.y));
+
+				uvs.Add(new Vector2(u1.x, u0.y));
+				uvs.Add(new Vector2(u1.x, u1.y));
+				uvs.Add(new Vector2(u0.x, u1.y));
+				uvs.Add(new Vector2(u0.x, u0.y));
 			}
 
 			if (alignment != Alignment.Left && indexOffset < verts.size)

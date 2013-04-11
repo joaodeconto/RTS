@@ -216,6 +216,6 @@ public class Room : RoomInfo
 
         // send (sync) these new values
         Hashtable customProps = propertiesToSet.StripToStringKeys() as Hashtable;
-        PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfRoom(customProps, true, 0);
-    }
+		PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfRoom(customProps, true, 0);
+		NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonCustomRoomPropertiesChanged);    }
 }

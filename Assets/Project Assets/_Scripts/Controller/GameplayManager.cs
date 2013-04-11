@@ -14,7 +14,6 @@ public class Team
 public class GameplayManager : MonoBehaviour
 {
 	public const int MAX_POPULATION_ALLOWED = 200;
-	public const int NUMBER_INCREMENT_AND_DECREMENT_UNITS = 5;
 	
 	public Team[] teams;
 
@@ -51,7 +50,6 @@ public class GameplayManager : MonoBehaviour
 			}
 		}
 		excessHousesIncrements = 0;
-		IncrementMaxOfUnits ();
 	}
 	
 	/// <summary>
@@ -76,7 +74,10 @@ public class GameplayManager : MonoBehaviour
 	/// </param>
 	public Color GetColorTeam (int teamID)
 	{
-		if (teamID >= 0 && teamID < teams.Length) return teams[teamID].color;
+		if (teamID >= 0 && teamID < teams.Length)
+		{
+			return teams[teamID].color;
+		}
 		else
 		{
 			Debug.LogError ("Team ID not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
@@ -91,7 +92,7 @@ public class GameplayManager : MonoBehaviour
 
 	public bool IsSameTeam (IStats stats)
 	{
-		return stats.Team == MyTeam;
+		return stats.team == MyTeam;
 	}
 	
 	public void IncrementUnit (int teamID, int numberOfUnits)
@@ -104,15 +105,15 @@ public class GameplayManager : MonoBehaviour
 		if (IsSameTeam (teamID)) this.numberOfUnits -= numberOfUnits;
 	}
 
-	public void IncrementMaxOfUnits ()
+	public void IncrementMaxOfUnits (int numberOfIncrementUnits)
 	{
-		if (!ReachedMaxPopulation) maxOfUnits += NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		if (!ReachedMaxPopulation) maxOfUnits += numberOfIncrementUnits;
 		else ++excessHousesIncrements;
 	}
 
-	public void DecrementMaxOfUnits ()
+	public void DecrementMaxOfUnits (int numberOfDecrementUnits)
 	{
-		if (excessHousesIncrements == 0) maxOfUnits -= NUMBER_INCREMENT_AND_DECREMENT_UNITS;
+		if (excessHousesIncrements == 0) maxOfUnits -= numberOfDecrementUnits;
 		else --excessHousesIncrements;
 	}
 	

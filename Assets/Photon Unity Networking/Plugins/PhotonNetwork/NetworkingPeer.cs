@@ -130,7 +130,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
     internal protected short currentLevelPrefix = 0;
 
-    private Dictionary<Type, Dictionary<PhotonNetworkingMessage, MethodInfo>> cachedMethods = new Dictionary<Type, Dictionary<PhotonNetworkingMessage, MethodInfo>>();
+    private readonly Dictionary<Type, Dictionary<PhotonNetworkingMessage, MethodInfo>> cachedMethods = new Dictionary<Type, Dictionary<PhotonNetworkingMessage, MethodInfo>>();
+
+    private readonly Dictionary<string, int> rpcShortcuts;  // lookup "table" for the index (shortcut) of an RPC name
 
     public NetworkingPeer(IPhotonPeerListener listener, string playername, ConnectionProtocol connectionProtocol) : base(listener, connectionProtocol)
     {
@@ -141,6 +143,14 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         this.PlayerName = playername;
         this.mLocalActor = new PhotonPlayer(true, -1, this.playername);
         this.AddNewPlayer(this.mLocalActor.ID, this.mLocalActor);
+
+        // RPC shortcut lookup creation (from list of RPCs, which is updated by Editor scripts)
+        rpcShortcuts = new Dictionary<string, int>(PhotonNetwork.PhotonServerSettings.RpcList.Count);
+	    for (int index = 0; index < PhotonNetwork.PhotonServerSettings.RpcList.Count; index++)
+	    {
+	        var name = PhotonNetwork.PhotonServerSettings.RpcList[index];
+	        rpcShortcuts[name] = index;
+	    }
 
         this.State = global::PeerState.PeerCreated;
     }
@@ -317,6 +327,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         if (this.mCurrentGame != null && gameProperties != null)
         {
             this.mCurrentGame.CacheProperties(gameProperties);
+			SendMonoMessage(PhotonNetworkingMessage.OnPhotonCustomRoomPropertiesChanged);
             if (PhotonNetwork.automaticallySyncScene)
             {
                 this.AutomaticallySyncScene();   // will load new scene if sceneName was changed
@@ -334,6 +345,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 if (target != null)
                 {
                     target.InternalCacheProperties(this.GetActorPropertiesForActorNr(pActorProperties, targetActorNr));
+					SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, target);
                 }
             }
             else
@@ -359,6 +371,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     }
 
                     target.InternalCacheProperties(props);
+					SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, target);
                 }
             }
         }
@@ -924,11 +937,15 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     // the operation OpJoinRandom either fails (with returncode 8) or returns game-to-join information
                     if (operationResponse.ReturnCode != 0)
                     {
-                        SendMonoMessage(PhotonNetworkingMessage.OnPhotonRandomJoinFailed);
-                        if (this.DebugOut >= DebugLevel.WARNING)
+                        if (operationResponse.ReturnCode == ErrorCode.NoRandomMatchFound)
                         {
-                            this.DebugReturn(DebugLevel.WARNING, string.Format("JoinRandom failed (no open game). Client stays on masterserver: {0}.", operationResponse.ToStringFull()));
+                            this.DebugReturn(DebugLevel.WARNING, "JoinRandom failed: No open game. Client stays in lobby.");
                         }
+                        else if (this.DebugOut >= DebugLevel.ERROR)
+                        {
+                            this.DebugReturn(DebugLevel.ERROR, string.Format("JoinRandom failed: {0}.", operationResponse.ToStringFull()));
+                        }
+                        SendMonoMessage(PhotonNetworkingMessage.OnPhotonRandomJoinFailed);
 
                         // this.mListener.createGameReturn(0, null, null, returnCode, debugMsg);
                         break;
@@ -1437,8 +1454,31 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             otherSidePrefix = (short)rpcData[(byte)1];
         }
-        string inMethodName = (string)rpcData[(byte)3];
-        object[] inMethodParameters = (object[])rpcData[(byte)4];
+
+        string inMethodName;
+        if (rpcData.ContainsKey((byte)5))
+        {
+            int rpcIndex = (byte)rpcData[(byte)5];  // LIMITS RPC COUNT
+            if (rpcIndex > PhotonNetwork.PhotonServerSettings.RpcList.Count - 1)
+            {
+                Debug.LogError("Could not find RPC with index: " + rpcIndex + ". Going to ignore! Check PhotonServerSettings.RpcList");
+                return;
+            }
+            else
+            {
+                inMethodName = PhotonNetwork.PhotonServerSettings.RpcList[rpcIndex];
+            }
+        }
+        else
+        {
+            inMethodName = (string)rpcData[(byte)3];
+        }
+
+        object[] inMethodParameters = null;
+        if (rpcData.ContainsKey((byte)4))
+        {
+            inMethodParameters = (object[])rpcData[(byte)4];
+        }
 
         if (inMethodParameters == null)
         {
@@ -1625,7 +1665,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     this.DebugReturn(
                         DebugLevel.ERROR,
                         "PhotonView with ID " + netViewID + " has no method \"" + inMethodName
-                        + "\" marked with the [RPC](C#) or @RPC(JS) property!");
+                        + "\" marked with the [RPC](C#) or @RPC(JS) property! Args: " + argsString);
                 }
                 else
                 {
@@ -2281,8 +2321,22 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             rpcEvent[(byte)1] = (short)view.prefix;
         }
         rpcEvent[(byte)2] = this.ServerTimeInMilliSeconds;
-        rpcEvent[(byte)3] = methodName;
-        rpcEvent[(byte)4] = (object[])parameters;
+
+        // send name or shortcut (if available)
+        int shortcut = 0;
+        if (rpcShortcuts.TryGetValue(methodName, out shortcut))
+        {
+            rpcEvent[(byte)5] = (byte)shortcut; // LIMITS RPC COUNT
+        }
+        else
+        {
+            rpcEvent[(byte)3] = methodName;
+        }
+
+        if (parameters != null || parameters.Length == 0)
+        {
+            rpcEvent[(byte) 4] = (object[]) parameters;
+        }
 
         if (this.mLocalActor == player)
         {
@@ -2295,12 +2349,13 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
     }
 
-    /// RPC Hashtable Struture
+    /// RPC Hashtable Structure
     /// (byte)0 -> (int) ViewId (combined from actorNr and actor-unique-id)
     /// (byte)1 -> (short) prefix (level)
     /// (byte)2 -> (int) server timestamp
     /// (byte)3 -> (string) methodname
     /// (byte)4 -> (object[]) parameters
+    /// (byte)5 -> (string) method shortcut (alternative to name)
     /// 
     /// This is sent as event (code: 200) which will contain a sender (origin of this RPC).
 
@@ -2329,8 +2384,23 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             rpcEvent[(byte)1] = (short)view.prefix;
         }
         rpcEvent[(byte)2] = this.ServerTimeInMilliSeconds;
-        rpcEvent[(byte)3] = methodName;
-        rpcEvent[(byte)4] = (object[])parameters;
+
+
+        // send name or shortcut (if available)
+        int shortcut = 0;
+        if (rpcShortcuts.TryGetValue(methodName, out shortcut))
+        {
+            rpcEvent[(byte)5] = (byte)shortcut; // LIMITS RPC COUNT
+        }
+        else
+        {
+            rpcEvent[(byte)3] = methodName;
+        }
+
+        if (parameters != null || parameters.Length == 0)
+        {
+            rpcEvent[(byte)4] = (object[])parameters;
+        }
 
         // Check scoping
         if (target == PhotonTargets.All)

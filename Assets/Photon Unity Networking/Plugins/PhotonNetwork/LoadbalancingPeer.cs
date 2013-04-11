@@ -202,7 +202,7 @@ internal class LoadbalancingPeer : PhotonPeer
     }
 
     public bool OpSetCustomPropertiesOfRoom(Hashtable gameProperties, bool broadcast, byte channelId)
-    {
+    {		
         return this.OpSetPropertiesOfRoom(gameProperties.StripToStringKeys(), broadcast, channelId);
     }
 
