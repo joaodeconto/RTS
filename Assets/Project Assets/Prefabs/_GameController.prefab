@@ -218,6 +218,22 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400026}
+  - 114: {fileID: 11400032}
+  m_Layer: 0
+  m_Name: PrefabCache
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100028
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400028}
   - 114: {fileID: 11400030}
   m_Layer: 0
   m_Name: EventManager
@@ -236,6 +252,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 400028}
   - {fileID: 400026}
   - {fileID: 400014}
   - {fileID: 400004}
@@ -393,6 +410,17 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
+--- !u!4 &400028
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100028}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400000}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -403,7 +431,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
-  autoload: 0
+  autoload: 1
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -497,7 +525,7 @@ MonoBehaviour:
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   resources:
-    NumberOfRocks: 100000
+    NumberOfRocks: 500
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -678,7 +706,7 @@ MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100026}
+  m_GameObject: {fileID: 100028}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aeacf3f39fe51bf418444dc35a79112b, type: 3}
@@ -699,6 +727,21 @@ MonoBehaviour:
   - Name: reach max population
     Message: Limit max population
     spriteName: 
+--- !u!114 &11400032
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e392a9d4b7c79c6438c23767d9029872, type: 3}
+  m_Name: 
+  Prefabs:
+  - Name: Button
+    minimumCacheRemaining: 30
+    prefab: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
+  fakePanel: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -31,7 +31,7 @@ public class NewGame : MonoBehaviour
 		GameObject quickMatch = buttons.FindChild ("Quick Match").gameObject;
 
 		dcb = quickMatch.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
+		dcb.Init ().Show (null, (ht_hud) =>
 							{
 								pw.JoinQuickMatch ();
 								//TODO fazer timeout de conexão
@@ -40,7 +40,7 @@ public class NewGame : MonoBehaviour
 		GameObject match1x1 = buttons.FindChild ("Match 1x1").gameObject;
 
 		dcb = match1x1.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
+		dcb.Init ().Show (null, (ht_hud) =>
 							{
 								CreateRoom (2);
 							});
@@ -48,7 +48,7 @@ public class NewGame : MonoBehaviour
 		GameObject match2x2 = buttons.FindChild ("Match 2x2").gameObject;
 
 		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
+		dcb.Init ().Show (null, (ht_hud) =>
 							{
 								CreateRoom (3);
 							});
@@ -56,7 +56,7 @@ public class NewGame : MonoBehaviour
 		GameObject matchTxT = buttons.FindChild ("Match TxT").gameObject;
 
 		dcb = matchTxT.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
+		dcb.Init ().Show (null, (ht_hud) =>
 							{
 								CreateRoom (4);
 							});

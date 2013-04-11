@@ -23,7 +23,7 @@ public class InternalMainMenu : MonoBehaviour
 
 		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 
-		dcb.Init(null, (ht_hud) =>
+		dcb.Init ().Show (null, (ht_hud) =>
 							{
 								Hashtable roomProperties = new Hashtable() { { "closeRoom", false } };
 								PhotonNetwork.JoinRandomRoom (roomProperties, 0);
@@ -44,7 +44,7 @@ public class InternalMainMenu : MonoBehaviour
 				ht["optionName"] = child.name;
 
 				dcb = button.gameObject.AddComponent<DefaultCallbackButton>();
-				dcb.Init (ht, (ht_hud) =>
+				dcb.Init ().Show (ht, (ht_hud) =>
 								{
 									ShowMenu ((string)ht_hud["optionName"]);
 								});

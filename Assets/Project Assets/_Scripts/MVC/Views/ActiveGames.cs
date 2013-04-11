@@ -92,7 +92,7 @@ public class ActiveGames : MonoBehaviour
 					ht["room.name"] = room.name;
 
 					DefaultCallbackButton dcb = join.AddComponent<DefaultCallbackButton> ();
-					dcb.Init (ht, (ht_hud) =>
+					dcb.Init ().Show (ht, (ht_hud) =>
 										{
 											pw.JoinRoom ((string)ht_hud["room.name"]);
 
@@ -119,11 +119,12 @@ public class ActiveGames : MonoBehaviour
 																},
 																(playersReady, maxPlayers) =>
 																{
-																	messageActiveGame.text = "Wating For Other Players - "
+																	messageActiveGame.text = "Waiting For Other Players - "
 																								+ playersReady + "/" + maxPlayers;
 
 																});
 										});
+
 				}
 			}
 	}

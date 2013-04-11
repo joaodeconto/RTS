@@ -15,16 +15,12 @@ public class DefaultCallbackButton : MonoBehaviour
 	OnDragDelegate onDragDelegate;
 	OnDropDelegate onDropDelegate;
 
-	public void Init(Hashtable ht,
-					 OnClickDelegate onClick = null,
-					 OnPressDelegate onPress = null,
-					 OnDragDelegate onDrag = null,
-					 OnDropDelegate onDrop = null)
+	public DefaultCallbackButton Init()
 	{
-		ChangeParams(ht, onClick, onPress, onDrag, onDrop);
+		return this;
 	}
 
-	public void ChangeParams(Hashtable ht,
+	public void Show(Hashtable ht,
 							 OnClickDelegate onClick = null,
 							 OnPressDelegate onPress = null,
 							 OnDragDelegate onDrag = null,
@@ -35,6 +31,11 @@ public class DefaultCallbackButton : MonoBehaviour
 		onPressDelegate = onPress;
 		onDragDelegate  = onDrag;
 		onDropDelegate  = onDrop;
+	}
+
+	public void Hide ()
+	{
+
 	}
 
 	void OnClick ()

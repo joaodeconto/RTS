@@ -28,5 +28,6 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<FogOfWar> ().Init ();
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<EventManager> ().Init ();
+		ComponentGetter.Get<MessageInfoManager> ().Init ();
 	}
 }

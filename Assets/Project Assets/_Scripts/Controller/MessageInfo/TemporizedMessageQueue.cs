@@ -13,28 +13,22 @@ public class TemporizedMessageQueue : MessageQueue
 										 Vector2 cellSize,
 										 Vector2 padding,
 										 float labelSize,
-										 bool IsVerticalQueue,
+										 bool isVerticalQueue,
 										 float timeToFadeout,
 										 Color fadeColor,
 										 int maxPerLine,
 										 int maxItems)
 	{
-		this.Pref_button = pref_button;
-		this.uiGrid = uiGrid;
-
-		this.QueueName   = queueName;
-
-		this.RootPosition    = RootPosition;
-		this.IsVerticalQueue = IsVerticalQueue;
-		this.MaxPerLine      = maxPerLine;
-		this.MaxItems        = maxItems;
-		this.CellSize        = cellSize;
-		this.Padding         = padding;
-		this.LabelSize       = labelSize;
-
-		this.uiGrid.maxPerLine = maxPerLine;
-		this.uiGrid.sorted       = true;
-		this.uiGrid.hideInactive = false;
+		base.Init ( pref_button,
+					uiGrid,
+					queueName,
+					rootPosition,
+					cellSize,
+					padding,
+					labelSize,
+					isVerticalQueue,
+					maxPerLine,
+					maxItems);
 
 		this.timeToFadeout = timeToFadeout;
 		this.fadeColor     = fadeColor;

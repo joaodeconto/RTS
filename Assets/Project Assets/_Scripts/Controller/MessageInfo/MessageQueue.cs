@@ -1,8 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
+using Visiorama;
+
 public abstract class MessageQueue : MonoBehaviour
 {
+	private string NOT_IN_USE_STRING = "ZZZZ";
+
 	public string QueueName { get; protected set; }
 	public Vector2 RootPosition { get; protected set; }
 
@@ -52,6 +56,7 @@ public abstract class MessageQueue : MonoBehaviour
 		get { return uiGrid.maxPerLine; }
 		protected set { uiGrid.maxPerLine = value; }
 	}
+
 	public int MaxItems { get; protected set; }
 
 	public float LabelSize { get; protected set; }
@@ -59,7 +64,63 @@ public abstract class MessageQueue : MonoBehaviour
 	protected GameObject Pref_button;
 	protected UIGrid uiGrid;
 
-	protected float nQueueItems;
+	protected int nQueueItems;
+
+	//GameObject itemBag;
+
+	PrefabCache prefabCache;
+
+	public virtual MessageQueue Init(GameObject pref_button,
+									 UIGrid uiGrid,
+									 string queueName,
+									 Vector2 rootPosition,
+									 Vector2 cellSize,
+									 Vector2 padding,
+									 float labelSize,
+									 bool isVerticalQueue,
+									 int maxPerLine,
+									 int maxItems)
+	{
+		prefabCache        = ComponentGetter.Get<PrefabCache>();
+
+		this.Pref_button = pref_button;
+		this.uiGrid      = uiGrid;
+
+		this.QueueName   = queueName;
+
+		this.RootPosition    = rootPosition;
+		this.IsVerticalQueue = isVerticalQueue;
+		this.MaxPerLine      = maxPerLine;
+		this.MaxItems        = maxItems;
+		this.CellSize        = cellSize;
+		this.Padding         = padding;
+		this.LabelSize       = labelSize;
+
+		this.uiGrid.sorted       = true;
+		this.uiGrid.hideInactive = false;
+
+		//itemBag = new GameObject ("itemBag");
+		//itemBag.transform.parent = uiGrid.transform;
+
+		//for (int i = 0; i != maxItems; ++i)
+		//{
+			//GameObject button = NGUITools.AddChild (itemBag,
+													//Pref_button);
+			//button.name = NOT_IN_USE_STRING;
+
+			//button.layer = gameObject.layer;
+			//button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar distante para somente aparecer no reposition grid
+			//button.transform.FindChild("Background").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+			//button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+
+			////button.transform.localPosition = Vector3.zero;
+
+			//PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
+			//pcb.Init ();//.Hide ();
+		//}
+
+		return this;
+	}
 
 	public virtual void AddMessageInfo( string buttonName,
 										Hashtable ht,
@@ -70,20 +131,45 @@ public abstract class MessageQueue : MonoBehaviour
 	{
 		++nQueueItems;
 
-		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-												Pref_button);
+		if (nQueueItems == MaxItems)
+		{
+			//TODO Agrupar unidades
+			Debug.LogError ("adicionado mais itens do que é possível suportar");
+			return;
+		}
 
-		button.name  = buttonName;
+		GameObject button = prefabCache.Get (uiGrid.transform, "button");
+
+		UIPanel p = uiGrid.transform.parent.parent.GetComponent<UIPanel>();
+
+		foreach (UIWidget w in button.GetComponentsInChildren <UIWidget>())
+		{
+			w.panel = p;
+		}
+			//button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
+										//pref_button);
+
+		//itemBag.transform.FindChild (NOT_IN_USE_STRING).gameObject;
+		//button.transform.parent = uiGrid.transform;
+
 		button.layer = gameObject.layer;
-		button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
+		button.transform.localScale = Vector3.one;
+		button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar distante para somente aparecer no reposition grid
+
 		button.transform.FindChild("Background").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 		button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 
-		//button.transform.localPosition = Vector3.zero;
+		button.name = buttonName;
+
+		//if (button.GetComponent<PersonalizedCallbackButton>() == null)
+		//{
+			//button.AddComponent<PersonalizedCallbackButton>();
+		//}
 
 		PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
+		//PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();
 
-		pcb.Init(ht, onClick, onPress, onDrag, onDrop);
+		pcb.Init ().Show (ht, onClick, onPress, onDrag, onDrop);
 
 		Invoke("RepositionGrid", 0.1f);
 	}
@@ -95,9 +181,17 @@ public abstract class MessageQueue : MonoBehaviour
 
 		--nQueueItems;
 
-		int childIndex = uiGrid.transform.childCount - 1;
+		int childIndex = nQueueItems;
 
+		Transform trnsButton = uiGrid.transform.GetChild(childIndex);
+
+		//trnsButton.parent = itemBag.transform;
+
+		//trnsButton.GetComponent <PersonalizedCallbackButton> ().Hide ();
+		//trnsButton.name = NOT_IN_USE_STRING;
+		//int childIndex = uiGrid.transform.childCount - 1;
 		Destroy (uiGrid.transform.GetChild(childIndex).gameObject);
+
 		Invoke("RepositionGrid", 0.1f);
 	}
 
@@ -111,7 +205,7 @@ public abstract class MessageQueue : MonoBehaviour
 		}
 
 		Debug.Log("trnsButton.localPosition: " + trnsButton.localPosition);
-		return trnsButton.localPosition == Vector3.zero;
+		return (trnsButton.localPosition == Vector3.zero);
 	}
 
 	public void RemoveMessageInfo(string buttonName)
@@ -122,7 +216,10 @@ public abstract class MessageQueue : MonoBehaviour
 		{
 			--nQueueItems;
 
-			Destroy (trnsButton.gameObject);
+			trnsButton.gameObject.GetComponent <PersonalizedCallbackButton> ();//.Hide ();
+			trnsButton.name = NOT_IN_USE_STRING;
+
+			//Destroy (trnsButton.gameObject);
 			Invoke("RepositionGrid", 0.1f);
 		}
 	}
@@ -138,6 +235,8 @@ public abstract class MessageQueue : MonoBehaviour
 
 		foreach (Transform child in uiGrid.transform)
 		{
+			//child.gameObject.GetComponent <PersonalizedCallbackButton> ();//.Hide ();
+			//child.name = NOT_IN_USE_STRING;
 			Destroy (child.gameObject);
 		}
 	}
@@ -158,15 +257,33 @@ public abstract class MessageQueue : MonoBehaviour
 
 	protected void RepositionGrid()
 	{
-		if(uiGrid.name == "Unit Group")
-			Debug.Log("uiGrid.transform.childCount: " + uiGrid.transform.childCount);
+		//if(uiGrid.name == "Unit Group")
+			//Debug.Log("uiGrid.transform.childCount: " + uiGrid.transform.childCount);
+
+		//int childCount = 0;
+
+		//foreach (Transform child in uiGrid.transform)
+		//{
+			//if (child.name != NOT_IN_USE_STRING)
+				//++childCount;
+		//}
 
 		if(uiGrid.transform.childCount != nQueueItems)
+		//if(childCount != nQueueItems)
 			Invoke("RepositionGrid", 0.1f);
 		else
 		{
 			uiGrid.repositionNow = true;
 			uiGrid.Reposition();
+
+			//StartCoroutine (() =>
+							//{
+								//foreach (Transform child in uiGrid.transform)
+								//{
+									//if (child.name == NOT_IN_USE_STRING)
+										//child.localPosition = Vector3.up * 10000;
+								//}
+							//});
 		}
 	}
 }

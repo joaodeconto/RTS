@@ -80,6 +80,11 @@ public class PhotonWrapper : Photon.MonoBehaviour
 									select r).ToArray ();
 	}
 
+	public RoomInfo GetRoomInfo ()
+	{
+		return PhotonNetwork.room;
+	}
+
 	public void SetPropertyOnPlayer (string key, object value)
 	{
 		if (PhotonNetwork.player.customProperties.ContainsKey (key))
@@ -223,7 +228,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 		if (numberOfReady == room.maxPlayers)
 		{
-			if (PhotonNetwork.isMasterClient)
+			//if (PhotonNetwork.isMasterClient)
 			{
 				Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
 				room.SetCustomProperties(roomProperty);

@@ -62,6 +62,8 @@ public class HUDController : MonoBehaviour
 	public GameObject pref_selfFeedback;
 	public GameObject pref_attackFeedback;
 
+	PrefabCache prefabCache;
+
 	public UISlider[] sliders;
 
 	public UISlider GetSlider(string name)
@@ -127,6 +129,8 @@ public class HUDController : MonoBehaviour
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
 		touchController    = ComponentGetter.Get<TouchController>();
+		prefabCache        = ComponentGetter.Get<PrefabCache>();
+
 		stackButtonToCreate = new Stack<ButtonStatus>();
 
 		IsDestroying = false;
@@ -294,21 +298,33 @@ public class HUDController : MonoBehaviour
 		if (trns != null)
 			button = trns.gameObject;
 		else
-			button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
-										pref_button);
+		{
+			button = prefabCache.Get (trnsOptionsMenu, "button");
+
+			UIPanel p = trnsOptionsMenu.parent.parent.GetComponent<UIPanel>();
+
+			foreach (UIWidget w in button.GetComponentsInChildren <UIWidget>())
+			{
+				w.panel = p;
+			}
+			//button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
+										//pref_button);
+		}
 
 		button.name = buttonName;
-		button.transform.localPosition = bs.position;
+		button.transform.localPosition  = bs.position;
+		button.transform.localScale		= Vector3.one;
 
 		PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();
 
 		if ( pcb == null )
 		{
 			pcb = button.AddComponent<PersonalizedCallbackButton>();
-			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
+			pcb.Init ()
+			   .Show (bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
 		}
 		else
-			pcb.ChangeParams(bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
+			pcb.Show (bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
 	}
 
 	public void RemoveButtonInInspector(string buttonName)
@@ -335,6 +351,8 @@ public class HUDController : MonoBehaviour
 
 		messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
 		messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
+
+		IsDestroying = false;
 	}
 
 	public void CreateFeedback (Feedbacks feedback, Vector3 position, float size)

@@ -31,7 +31,7 @@ public class GraphicQuality : MonoBehaviour
 		GameObject lowQuality = buttons.FindChild ("Low").gameObject;
 
 		dcb = lowQuality.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
+		dcb.Init ().Show (null, (ht_hud) =>
 							{
 								QualitySettings.SetQualityLevel (0);
 							});
@@ -39,7 +39,7 @@ public class GraphicQuality : MonoBehaviour
 		GameObject midQuality = buttons.FindChild ("Mid").gameObject;
 
 		dcb = midQuality.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
+		dcb.Init ().Show (null, (ht_hud) =>
 							{
 								QualitySettings.SetQualityLevel (1);
 							});
@@ -47,7 +47,7 @@ public class GraphicQuality : MonoBehaviour
 		GameObject highQuality = buttons.FindChild ("High").gameObject;
 
 		dcb = highQuality.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
+		dcb.Init ().Show (null, (ht_hud) =>
 							{
 								QualitySettings.SetQualityLevel (2);
 							});

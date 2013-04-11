@@ -27,7 +27,7 @@ public class Login : MonoBehaviour
 		DefaultCallbackButton dcb = submitButton.AddComponent<DefaultCallbackButton>();
 
 		Hashtable ht = new Hashtable();
-		dcb.Init (null,
+		dcb.Init ().Show (null,
 					(ht_hud) =>
 					{
 						//TODO lógica de login do jogo
