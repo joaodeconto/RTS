@@ -78,7 +78,7 @@ public class PrefabCache : MonoBehaviour
 
 		if (index != -1)
 		{
-			if (Cache[index].Count != 0)
+			if (Cache[index].Count == 0)
 				_fillCache (index);
 
 			go = Cache[index].Pop ();
