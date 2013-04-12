@@ -17,7 +17,8 @@ public class TemporizedMessageQueue : MessageQueue
 										 float timeToFadeout,
 										 Color fadeColor,
 										 int maxPerLine,
-										 int maxItems)
+										 int maxItems,
+										 bool groupIfReachMaxMessages)
 	{
 		this.Pref_button = pref_button;
 		this.uiGrid = uiGrid;
@@ -31,6 +32,8 @@ public class TemporizedMessageQueue : MessageQueue
 		this.CellSize        = cellSize;
 		this.Padding         = padding;
 		this.LabelSize       = labelSize;
+
+		this.GroupIfReachMaxMessages = groupIfReachMaxMessages;
 
 		this.uiGrid.maxPerLine = maxPerLine;
 		this.uiGrid.sorted       = true;
