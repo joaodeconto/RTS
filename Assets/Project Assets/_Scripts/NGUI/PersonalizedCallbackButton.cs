@@ -44,6 +44,10 @@ public class PersonalizedCallbackButton : DefaultCallbackButton
 		if ( ht.ContainsKey("message") )
 		{
 			l.text = (string)ht["message"];
+			if (ht.ContainsKey( "LabelSize" ))
+			{
+				l.transform.localScale = Vector3.one * (float)ht["LabelSize"];
+			}
 		}
 
 		trnsLabel = transform.FindChild("Label Counter");

@@ -7,9 +7,18 @@ public class PrefabCache : MonoBehaviour
 	[System.Serializable]
 	public class Prefab
 	{
+		[System.Serializable]
+		public class KeyValue
+		{
+			public string Key;
+			public UnityEngine.Object Value;
+		}
+
 		public string Name;
 		public int minimumCacheRemaining;
 		public GameObject prefab;
+
+		//public KeyValue[] KeyValues;
 	}
 
 	public Prefab[] Prefabs;
@@ -70,14 +79,9 @@ public class PrefabCache : MonoBehaviour
 		if (index != -1)
 		{
 			if (Cache[index].Count != 0)
-			{
-				go = Cache[index].Pop ();
-				//go.SetActive (false);
-			}
-			else
-			{
 				_fillCache (index);
-			}
+
+			go = Cache[index].Pop ();
 		}
 
 		//TODO adicionar aviso de problema
@@ -100,6 +104,13 @@ public class PrefabCache : MonoBehaviour
 		return go;
 	}
 
+	//public UnityEngine.Object GetData (string prefabName, )
+	//{
+
+
+
+	//}
+
 	private int GetPrefabIndex (string prefabName)
 	{
 		prefabName = prefabName.ToLower ();
@@ -115,4 +126,3 @@ public class PrefabCache : MonoBehaviour
 		return -1;
 	}
 }
-
