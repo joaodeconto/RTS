@@ -158,7 +158,7 @@ public class HUDController : MonoBehaviour
 	{
 		GameObject selectObj = Instantiate (pref_selectedObject, target.position, Quaternion.identity) as GameObject;
 		selectObj.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
-		selectObj.transform.GetComponent<AnimateTiledTexture>().Play ();
+//		selectObj.transform.GetComponent<AnimateTiledTexture>().Play ();
 		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target;
@@ -358,7 +358,7 @@ public class HUDController : MonoBehaviour
 //		newFeedback.layer = LayerMask.NameToLayer ("HUD3D");
 		newFeedback.name = "Feedback";
 		newFeedback.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
-		newFeedback.transform.GetComponent<AnimateTiledTexture>().Play ();
+//		newFeedback.transform.GetComponent<AnimateTiledTexture>().Play ();
 
 		oldFeedback = newFeedback;
 
