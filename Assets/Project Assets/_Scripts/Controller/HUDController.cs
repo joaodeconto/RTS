@@ -158,7 +158,15 @@ public class HUDController : MonoBehaviour
 	{
 		GameObject selectObj = Instantiate (pref_selectedObject, target.position, Quaternion.identity) as GameObject;
 		selectObj.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
-//		selectObj.transform.GetComponent<AnimateTiledTexture>().Play ();
+		float duration = 0;
+		foreach (ParticleSystem ps in selectObj.GetComponentsInChildren<ParticleSystem>())
+		{
+			ps.startSize = size * 2f;
+			ps.renderer.material.SetColor ("_TintColor", color);
+			ps.startColor = color;
+			if (ps.duration > duration) duration = ps.duration;
+		}
+		selectObj.renderer.enabled = false;
 		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target;
@@ -168,9 +176,16 @@ public class HUDController : MonoBehaviour
 		refTransform.destroyObjectWhenLoseReference = true;
 		refTransform.offsetPosition += Vector3.up * 0.1f;
 
-		selectObj.renderer.sharedMaterial.color = color;
-
+		selectObj.renderer.material.SetColor ("_TintColor", color);
 		selectObj.transform.parent = mainTranformSelectedObjects;
+		
+		StartCoroutine (EnableRenderer (selectObj.renderer, duration));
+	}
+	
+	IEnumerator EnableRenderer (Renderer renderer, float duration)
+	{
+		yield return new WaitForSeconds (duration);
+		renderer.enabled = true;
 	}
 
 	public void DestroySelected (Transform target)
