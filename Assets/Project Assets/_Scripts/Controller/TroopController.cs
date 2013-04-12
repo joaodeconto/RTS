@@ -103,7 +103,7 @@ public class TroopController : MonoBehaviour
 	{
 		if (enemy == null) return;
 
-		hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform.position, 
+		hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform,
 									  enemy.GetComponent<IStats> ().sizeOfSelected, gameplayManager.GetColorTeam(enemy.GetComponent<IStats> ().team));
 		
 		foreach (Unit soldier in selectedSoldiers)

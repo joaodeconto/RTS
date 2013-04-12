@@ -102,8 +102,8 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	public MovementAction[] movementActions;
 
-	public GameObject pref_Blood;
-	public Transform transformBloodReference;
+	public GameObject pref_ParticleDamage;
+	public Transform transformParticleDamageReference;
 
 	public bool playerUnit;
 
@@ -173,9 +173,9 @@ public abstract class IStats : Photon.MonoBehaviour
 
 			Health = Mathf.Max (0, Health - newDamage);
 
-			if (pref_Blood != null)
+			if (pref_ParticleDamage != null)
 			{
-				photonView.RPC ("InstantiateBlood", PhotonTargets.All);
+				photonView.RPC ("InstantiatParticleDamage", PhotonTargets.All);
 			}
 		}
 
@@ -189,17 +189,17 @@ public abstract class IStats : Photon.MonoBehaviour
 	}
 
 	[RPC]
-	private void InstantiateBlood ()
+	public virtual void InstantiatParticleDamage ()
 	{
-		GameObject newBlood;
+		GameObject newParticleDamage;
 
-		if (transformBloodReference != null)
+		if (transformParticleDamageReference != null)
 		{
-			newBlood = Instantiate (pref_Blood, transformBloodReference.position, transformBloodReference.rotation) as GameObject;
+			newParticleDamage = Instantiate (pref_ParticleDamage, transformParticleDamageReference.position, transformParticleDamageReference.rotation) as GameObject;
 		}
 		else
 		{
-			newBlood = Instantiate (pref_Blood, transform.position, Quaternion.Euler (transform.forward)) as GameObject;
+			newParticleDamage = Instantiate (pref_ParticleDamage, transform.position, Quaternion.Euler (transform.forward)) as GameObject;
 		}
 	}
 

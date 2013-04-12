@@ -558,23 +558,6 @@ public class Unit : IStats
 		}
 	}
 
-	[RPC]
-	public virtual void AttackUnit (string nameUnit, int force)
-	{
-		Unit unit = troopController.FindUnit (nameUnit);
-		if (unit != null)
-		{
-			unit.ReceiveAttack (force);
-		}
-	}
-
-	[RPC]
-	public virtual void AttackFactory (string nameFactory, int force)
-	{
-		FactoryBase factory = factoryController.FindFactory (nameFactory);
-		if (factory != null) factory.ReceiveAttack (force);
-	}
-
 	public virtual void Select ()
 	{
 		Selected = true;
@@ -873,5 +856,29 @@ public class Unit : IStats
 		{
 			return model.activeSelf;
 		}
+	}
+	
+	// RPC
+	[RPC]
+	public virtual void AttackUnit (string nameUnit, int force)
+	{
+		Unit unit = troopController.FindUnit (nameUnit);
+		if (unit != null)
+		{
+			unit.ReceiveAttack (force);
+		}
+	}
+
+	[RPC]
+	public virtual void AttackFactory (string nameFactory, int force)
+	{
+		FactoryBase factory = factoryController.FindFactory (nameFactory);
+		if (factory != null) factory.ReceiveAttack (force);
+	}
+	
+	[RPC]
+	public override void InstantiatParticleDamage ()
+	{
+		base.InstantiatParticleDamage ();
 	}
 }

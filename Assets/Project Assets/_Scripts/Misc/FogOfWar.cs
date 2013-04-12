@@ -260,6 +260,9 @@ public class FogOfWar : MonoBehaviour
 
 	public bool IsKnownArea (Transform trns)
 	{
+		if (!UseFog)
+			return this;
+		
 		posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
 		posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
