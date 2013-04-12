@@ -40,13 +40,13 @@ public class RallyPoint : MonoBehaviour {
 			}
 		}
 #else
-		if (touchController.touchType == TouchController.TouchType.First)
-		{
-			if (touchController.idTouch == TouchController.IdTouch.Id0)
-			{
-				UpdateRallyPoint ();
-			}
-		}
+//		if (touchController.touchType == TouchController.TouchType.First)
+//		{
+//			if (touchController.idTouch == TouchController.IdTouch.Id0)
+//			{
+//				UpdateRallyPoint ();
+//			}
+//		}
 #endif
 	}
 	
