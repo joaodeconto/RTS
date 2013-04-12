@@ -81,6 +81,9 @@ public abstract class MessageQueue : MonoBehaviour
 
 		//button.transform.localPosition = Vector3.zero;
 
+		if (!Mathf.Approximately (LabelSize, 0.0f))
+			ht["LabelSize"] = LabelSize;
+
 		PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
 
 		pcb.Init(ht, onClick, onPress, onDrag, onDrop);
