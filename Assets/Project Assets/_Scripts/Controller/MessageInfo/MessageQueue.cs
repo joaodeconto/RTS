@@ -1,8 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
+using Visiorama;
 
 public abstract class MessageQueue : MonoBehaviour
 {
+	private const string ITEM_TOKEN  = "(Clone)";
+	private const string GROUP_TOKEN = "(Group)";
+
 	public string QueueName { get; protected set; }
 	public Vector2 RootPosition { get; protected set; }
 
@@ -56,10 +62,15 @@ public abstract class MessageQueue : MonoBehaviour
 
 	public float LabelSize { get; protected set; }
 
+	public bool GroupIfReachMaxMessages { get; protected set; }
+
 	protected GameObject Pref_button;
 	protected UIGrid uiGrid;
 
+	private PrefabCache prefabCache;
+
 	protected float nQueueItems;
+	protected bool IsGrouped;
 
 	public virtual void AddMessageInfo( string buttonName,
 										Hashtable ht,
@@ -68,10 +79,24 @@ public abstract class MessageQueue : MonoBehaviour
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
+
+		if (prefabCache == null)
+			prefabCache = ComponentGetter.Get<PrefabCache>();
+
+		if (nQueueItems > MaxItems)
+		{
+			if (!GroupIfReachMaxMessages)
+				DequeueMessageInfo ();
+			else
+				GroupButtons ();
+		}
+
 		++nQueueItems;
 
-		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-												Pref_button);
+		//GameObject button = NGUITools.AddChild (uiGrid.gameObject,
+												//Pref_button);
+
+		GameObject button = prefabCache.Get(uiGrid.transform, "Button");
 
 		button.name  = buttonName;
 		button.layer = gameObject.layer;
@@ -80,6 +105,9 @@ public abstract class MessageQueue : MonoBehaviour
 		button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 
 		//button.transform.localPosition = Vector3.zero;
+
+		if (!Mathf.Approximately (LabelSize, 0.0f))
+			ht["LabelSize"] = LabelSize;
 
 		PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
 
@@ -127,6 +155,57 @@ public abstract class MessageQueue : MonoBehaviour
 		}
 	}
 
+	private void GroupButtons ()
+	{
+		int i = 0;
+
+		if (IsGrouped)
+		{
+
+		}
+		else
+		{
+			int indexToken   = 0;
+			string tmpString = "";
+
+			//Qtd de cada nome
+			Dictionary<string, int> dic = new Dictionary<string, int>();
+			foreach (Transform child in uiGrid.transform)
+			{
+				indexToken = child.name.IndexOf (ITEM_TOKEN);
+				tmpString  = child.name.Substring (0, indexToken - 1);
+
+				if (!dic.ContainsKey (tmpString))
+					dic.Add (tmpString, 1);
+				else
+					dic[tmpString]++;
+
+				++i;
+			}
+
+			foreach (KeyValuePair<string, int> de in dic)
+			{
+				bool foundButton = false;
+
+				foreach (Transform child in uiGrid.transform)
+				{
+					indexToken = child.name.IndexOf (ITEM_TOKEN);
+					tmpString  = child.name.Substring (0, indexToken - 1);
+
+					if (de.Key.Equals (tmpString))
+					{
+
+					}
+				}
+			}
+
+			//deletar todos
+			//Clear ();
+
+			//criar um de cada grupo
+		}
+	}
+
 	public bool IsEmpty()
 	{
 		return (nQueueItems == 0);
@@ -158,8 +237,8 @@ public abstract class MessageQueue : MonoBehaviour
 
 	protected void RepositionGrid()
 	{
-		if(uiGrid.name == "Unit Group")
-			Debug.Log("uiGrid.transform.childCount: " + uiGrid.transform.childCount);
+		//if(uiGrid.name == "Unit Group")
+			//Debug.Log("uiGrid.transform.childCount: " + uiGrid.transform.childCount);
 
 		if(uiGrid.transform.childCount != nQueueItems)
 			Invoke("RepositionGrid", 0.1f);

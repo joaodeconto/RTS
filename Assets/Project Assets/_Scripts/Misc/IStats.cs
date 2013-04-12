@@ -101,10 +101,10 @@ public abstract class IStats : Photon.MonoBehaviour
 	public RendererTeamColor[] rendererTeamColor;
 
 	public MovementAction[] movementActions;
-	
+
 	public GameObject pref_Blood;
 	public Transform transformBloodReference;
-	
+
 	public bool playerUnit;
 
 	public bool Selected { get; protected set; }
@@ -122,9 +122,6 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	public virtual void Init ()
 	{
-		//Change name
-//		this.name = this.name + (UniversalEntityCounter++);
-
 		Health = MaxHealth;
 
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
@@ -175,7 +172,7 @@ public abstract class IStats : Photon.MonoBehaviour
 			int newDamage = Mathf.Max (0, Damage - Defense);
 
 			Health = Mathf.Max (0, Health - newDamage);
-			
+
 			if (pref_Blood != null)
 			{
 				photonView.RPC ("InstantiateBlood", PhotonTargets.All);
@@ -190,12 +187,12 @@ public abstract class IStats : Photon.MonoBehaviour
 			SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
 		}
 	}
-	
+
 	[RPC]
 	private void InstantiateBlood ()
 	{
 		GameObject newBlood;
-		
+
 		if (transformBloodReference != null)
 		{
 			newBlood = Instantiate (pref_Blood, transformBloodReference.position, transformBloodReference.rotation) as GameObject;
@@ -241,13 +238,13 @@ public abstract class IStats : Photon.MonoBehaviour
 			rtc.SetColorInMaterial (transform, team);
 		}
 	}
-	
+
 	// GIZMOS
 	void OnDrawGizmosSelected ()
 	{
 		DrawGizmosSelected ();
 	}
-	
+
 	public virtual void DrawGizmosSelected ()
 	{
 		Gizmos.color = Color.white;

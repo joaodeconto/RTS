@@ -33,7 +33,6 @@ public class InteractionController : MonoBehaviour
 		return (stackInteractionCallbacks.Count != 0);
 	}
 
-#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 	// Update is called once per frame
 	void Update ()
 	{
@@ -43,10 +42,11 @@ public class InteractionController : MonoBehaviour
 			Application.LoadLevel (0);
 		}
 		
-//		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
-//		{
-//			gameplayManager.resources.NumberOfRocks += 100;
-//		}
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
+		{
+			gameplayManager.resources.NumberOfRocks += 100;
+		}
 		
 		if (touchController.touchType != TouchController.TouchType.Ended)
 			return;
@@ -68,8 +68,8 @@ public class InteractionController : MonoBehaviour
 			}
 			break;
 		}
-	}
 #endif
+	}
 
 	public void Interaction (Transform hit)
 	{

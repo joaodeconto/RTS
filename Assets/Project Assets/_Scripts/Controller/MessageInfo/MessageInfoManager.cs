@@ -22,6 +22,7 @@ public class MessageInfoManager : MonoBehaviour
 		public bool IsVerticalQueue;
 		public int maxPerLine;
 		public int maxItems;
+		public bool GroupIfReachMaxMessages;
 		public bool IsTemporizedQueue;
 		public TemporizedMessageQueueAttributes temporizedQueueAttributes;
 	}
@@ -61,7 +62,8 @@ public class MessageInfoManager : MonoBehaviour
 						 messageQueuesAttributes[i].labelSize,
 						 messageQueuesAttributes[i].IsVerticalQueue,
 						 messageQueuesAttributes[i].maxPerLine,
-						 messageQueuesAttributes[i].maxItems);
+						 messageQueuesAttributes[i].maxItems,
+						 messageQueuesAttributes[i].GroupIfReachMaxMessages);
 			}
 			else
 			{
@@ -77,7 +79,8 @@ public class MessageInfoManager : MonoBehaviour
 						 messageQueuesAttributes[i].temporizedQueueAttributes.timeToFadeout,
 						 messageQueuesAttributes[i].temporizedQueueAttributes.fadeColor,
 						 messageQueuesAttributes[i].maxPerLine,
-						 messageQueuesAttributes[i].maxItems);
+						 messageQueuesAttributes[i].maxItems,
+						 messageQueuesAttributes[i].GroupIfReachMaxMessages);
 			}
 		}
 
