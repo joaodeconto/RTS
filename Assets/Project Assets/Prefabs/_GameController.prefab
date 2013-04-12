@@ -226,6 +226,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100028
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400028}
+  - 114: {fileID: 11400032}
+  m_Layer: 0
+  m_Name: PrefabCache
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -239,6 +255,7 @@ Transform:
   - {fileID: 400026}
   - {fileID: 400014}
   - {fileID: 400004}
+  - {fileID: 400028}
   - {fileID: 400024}
   - {fileID: 400016}
   - {fileID: 400020}
@@ -390,6 +407,17 @@ Transform:
   m_GameObject: {fileID: 100026}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400000}
+--- !u!4 &400028
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100028}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 112.153915, y: 115.089561, z: 226.521805}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -634,14 +662,14 @@ MonoBehaviour:
     rootPosition: {x: 25, y: 600}
     cellSize: {x: 40, y: 40}
     padding: {x: 5, y: 5}
-    labelSize: 18
+    labelSize: 32
     IsVerticalQueue: 1
     maxPerLine: 10
     maxItems: 10
     GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 5
+      timeToFadeout: 3
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Chat
     rootPosition: {x: -800, y: 110}
@@ -687,20 +715,38 @@ MonoBehaviour:
   m_Name: 
   events:
   - Name: building finish
-    Message: Building finish
+    Message: '{0} construction complete'
     spriteName: 
   - Name: out of founds
-    Message: Insuficient resources
+    Message: Insufficient resources
     spriteName: 
   - Name: reach enqueued units
-    Message: Over limit to units
+    Message: Queue is full
     spriteName: 
   - Name: need more houses
-    Message: Need more houses
+    Message: 'Need more houses '
     spriteName: 
   - Name: reach max population
-    Message: Limit max population
+    Message: Reached on max population
     spriteName: 
+  - Name: create unit
+    Message: '{0} trained'
+    spriteName: 
+--- !u!114 &11400032
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b338df8c8d57a53489899e21f89e0172, type: 3}
+  m_Name: 
+  Prefabs:
+  - Name: Button
+    minimumCacheRemaining: 10
+    prefab: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
+  fakePanel: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

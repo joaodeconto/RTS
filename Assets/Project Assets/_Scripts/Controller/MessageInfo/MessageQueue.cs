@@ -183,9 +183,15 @@ public abstract class MessageQueue : MonoBehaviour
 				++i;
 			}
 
+			bool foundButton;
+			List<Unit> units;
+			PersonalizedCallbackButton pcb = null;
+			Hashtable ht = new Hashtable ();
+
 			foreach (KeyValuePair<string, int> de in dic)
 			{
-				bool foundButton = false;
+				foundButton = false;
+				units       = new List<Unit>();
 
 				foreach (Transform child in uiGrid.transform)
 				{
@@ -194,13 +200,33 @@ public abstract class MessageQueue : MonoBehaviour
 
 					if (de.Key.Equals (tmpString))
 					{
+						if (!foundButton)
+						{
+							foundButton = true;
+							pcb = child.GetComponent<PersonalizedCallbackButton>();
+						}
+						else
+						{
+							Unit unit = (Unit)child.GetComponent<PersonalizedCallbackButton>().hashtable["unit"];
+							units.Add (unit);
 
+							Destroy (child.gameObject);
+						}
 					}
 				}
+
+				ht = pcb.hashtable;
+
+				ht["units"] = units;
+
+				pcb.ChangeParams (ht,
+									(ht_btn) => {
+										//List<Unit> units = (List)ht_btn[]
+									});
 			}
 
 			//deletar todos
-			//Clear ();
+			Clear ();
 
 			//criar um de cada grupo
 		}
