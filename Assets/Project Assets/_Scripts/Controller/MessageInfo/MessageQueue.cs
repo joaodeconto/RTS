@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using Visiorama;
+
 public abstract class MessageQueue : MonoBehaviour
 {
 	private const string ITEM_TOKEN  = "(Clone)";
@@ -65,6 +67,8 @@ public abstract class MessageQueue : MonoBehaviour
 	protected GameObject Pref_button;
 	protected UIGrid uiGrid;
 
+	private PrefabCache prefabCache;
+
 	protected float nQueueItems;
 	protected bool IsGrouped;
 
@@ -75,6 +79,10 @@ public abstract class MessageQueue : MonoBehaviour
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
+
+		if (prefabCache == null)
+			prefabCache = ComponentGetter.Get<PrefabCache>();
+
 		if (nQueueItems > MaxItems)
 		{
 			if (!GroupIfReachMaxMessages)
@@ -85,8 +93,10 @@ public abstract class MessageQueue : MonoBehaviour
 
 		++nQueueItems;
 
-		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-												Pref_button);
+		//GameObject button = NGUITools.AddChild (uiGrid.gameObject,
+												//Pref_button);
+
+		GameObject button = prefabCache.Get(uiGrid.transform, "Button");
 
 		button.name  = buttonName;
 		button.layer = gameObject.layer;

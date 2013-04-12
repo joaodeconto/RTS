@@ -94,6 +94,7 @@ public class HUDController : MonoBehaviour
 
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
+	private PrefabCache prefabCache;
 
 	private Stack<ButtonStatus> stackButtonToCreate;
 
@@ -127,6 +128,8 @@ public class HUDController : MonoBehaviour
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
 		touchController    = ComponentGetter.Get<TouchController>();
+		prefabCache        = ComponentGetter.Get<PrefabCache>();
+
 		stackButtonToCreate = new Stack<ButtonStatus>();
 
 		IsDestroying = false;
@@ -178,10 +181,10 @@ public class HUDController : MonoBehaviour
 
 		selectObj.renderer.material.SetColor ("_TintColor", color);
 		selectObj.transform.parent = mainTranformSelectedObjects;
-		
+
 		StartCoroutine (EnableRenderer (selectObj.renderer, duration));
 	}
-	
+
 	IEnumerator EnableRenderer (Renderer renderer, float duration)
 	{
 		yield return new WaitForSeconds (duration);
@@ -309,8 +312,9 @@ public class HUDController : MonoBehaviour
 		if (trns != null)
 			button = trns.gameObject;
 		else
-			button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
-										pref_button);
+			button = prefabCache.Get(trnsOptionsMenu, "Button");
+			//button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
+										//pref_button);
 
 		button.name = buttonName;
 		button.transform.localPosition = bs.position;
