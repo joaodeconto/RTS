@@ -233,11 +233,11 @@ public class SelectionController : MonoBehaviour
 					{
 						factoryController.DeselectFactory ();
 						FactoryBase factory = hit.transform.GetComponent<FactoryBase>();
+						troopController.DeselectAllSoldiers ();
 						if (!troopController.WorkerCheckFactory (factory))
 						{
 							factoryController.SelectFactory (factory);
 						}
-						troopController.DeselectAllSoldiers ();
 						return true;
 					}
 				}

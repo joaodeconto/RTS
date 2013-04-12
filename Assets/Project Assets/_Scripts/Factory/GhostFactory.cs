@@ -68,7 +68,11 @@ public class GhostFactory : MonoBehaviour
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id0)
 			{
+#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
+				if (numberOfCollisions == 0)
+#else
 				if (numberOfCollisions == 0 && fogOfWar.IsKnownArea (transform))
+#endif
 				{
 					Apply ();
 				}

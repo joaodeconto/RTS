@@ -43,10 +43,10 @@ public class InteractionController : MonoBehaviour
 		}
 		
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
-//		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
-//		{
-//			gameplayManager.resources.NumberOfRocks += 100;
-//		}
+		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
+		{
+			gameplayManager.resources.NumberOfRocks += 100;
+		}
 		
 		if (touchController.touchType != TouchController.TouchType.Ended)
 			return;

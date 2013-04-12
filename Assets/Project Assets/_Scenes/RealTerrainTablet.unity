@@ -1376,7 +1376,7 @@ MonoBehaviour:
   trnsOptionsMenu: {fileID: 1722315118}
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
   offesetFeedback: {x: 0, y: .100000001, z: 0}
-  pref_moveFeedback: {fileID: 100000, guid: 7284cc1ebb84af64c94175297803d96b, type: 2}
+  pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   pref_selfFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   pref_attackFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   sliders:
@@ -1651,7 +1651,7 @@ Transform:
   m_LocalPosition: {x: 0, y: .174805239, z: 0}
   m_LocalScale: {x: .100000001, y: 1, z: .100000001}
   m_Children:
-  - {fileID: 1306947674}
+  - {fileID: 868071081}
   m_Father: {fileID: 0}
 --- !u!1001 &167533336
 Prefab:
@@ -7436,7 +7436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &690512158
 Transform:
   m_ObjectHideFlags: 0
@@ -8058,11 +8058,11 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1048884281}
   m_GameObject: {fileID: 721890086}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5199a5a76aa1992479c7401ba1bb3cad, type: 3}
   m_Name: 
-  UseFog: 1
+  UseFog: 0
   DarkFog: 1
   pref_plane: {fileID: 100000, guid: e110e4594c30be740861d48334d615be, type: 2}
   visibleAreaColor: {r: 1, g: 1, b: 1, a: 0}
@@ -10060,7 +10060,7 @@ ParticleSystem:
     type: 2}
   m_PrefabInternal: {fileID: 698250535}
   m_GameObject: {fileID: 868071077}
-  lengthInSec: 1.5
+  lengthInSec: 1
   startDelay: 0
   speed: 1
   randomSeed: 0
@@ -10076,7 +10076,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: .75
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -10092,7 +10092,7 @@ ParticleSystem:
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-      minMaxState: 3
+      minMaxState: 0
     startSpeed:
       scalar: 0
       maxCurve:
@@ -10244,7 +10244,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startRotation:
-      scalar: 6.28318501
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10265,10 +10265,10 @@ ParticleSystem:
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-      minMaxState: 3
+      minMaxState: 0
     gravityModifier: 0
     inheritVelocity: 0
-    maxNumParticles: 10
+    maxNumParticles: 3
   ShapeModule:
     serializedVersion: 2
     enabled: 0
@@ -10286,7 +10286,7 @@ ParticleSystem:
     enabled: 1
     m_Type: 0
     rate:
-      scalar: 6
+      scalar: 3
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10393,7 +10393,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
   ColorModule:
-    enabled: 1
+    enabled: 0
     gradient:
       maxGradient:
         key0:
@@ -11081,7 +11081,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1942882364}
-  m_Father: {fileID: 1306947674}
+  m_Father: {fileID: 156983069}
 --- !u!1 &870258444
 GameObject:
   m_ObjectHideFlags: 0
@@ -13200,11 +13200,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 2bdf8360728e4b64d9167a7db10483fe, type: 2}
       propertyPath: UseFog
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 2bdf8360728e4b64d9167a7db10483fe, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 2bdf8360728e4b64d9167a7db10483fe, type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2bdf8360728e4b64d9167a7db10483fe, type: 2}
@@ -15015,33 +15019,6 @@ Transform:
   - {fileID: 1729779156}
   - {fileID: 1661873273}
   m_Father: {fileID: 134987986}
---- !u!1 &1306947673
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 100006, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
-  m_PrefabInternal: {fileID: 698250535}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1306947674}
-  m_Layer: 0
-  m_Name: sacredGroundOffset
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1306947674
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 400006, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
-  m_PrefabInternal: {fileID: 698250535}
-  m_GameObject: {fileID: 1306947673}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 1, z: 10}
-  m_Children:
-  - {fileID: 868071081}
-  m_Father: {fileID: 156983069}
 --- !u!1 &1309488969
 GameObject:
   m_ObjectHideFlags: 0
@@ -22846,7 +22823,7 @@ ParticleSystemRenderer:
   m_MaxParticleSize: .5
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
-  m_LengthScale: -20
+  m_LengthScale: -10
   m_SortingFudge: 0
   m_NormalDirection: 0
   m_SortMode: 0
@@ -22861,7 +22838,7 @@ ParticleSystem:
     type: 2}
   m_PrefabInternal: {fileID: 698250535}
   m_GameObject: {fileID: 1942882363}
-  lengthInSec: 1.5
+  lengthInSec: 1
   startDelay: 0
   speed: 1
   randomSeed: 0
