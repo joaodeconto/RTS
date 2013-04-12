@@ -170,15 +170,15 @@ public class SelectionController : MonoBehaviour
 
 		if (!touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id1) //return
 		{
+			factoryController.DeselectFactory ();
 			troopController.DeselectAllSoldiers ();
 			return true;
 		}
 		if (touchController.idTouch == TouchController.IdTouch.Id0) //return
 		{
-			factoryController.DeselectFactory ();
-
 			if (touchController.DragOn)
 			{
+				factoryController.DeselectFactory ();
 				troopController.DeselectAllSoldiers ();
 
 				Bounds b = touchController.GetTouchBounds();
@@ -219,6 +219,7 @@ public class SelectionController : MonoBehaviour
 						
 						if (gameplayManager.IsSameTeam (selectedUnit))
 						{
+							factoryController.DeselectFactory ();
 							troopController.DeselectAllSoldiers ();
 							troopController.SelectSoldier (selectedUnit, true);
 							return true;
@@ -230,17 +231,21 @@ public class SelectionController : MonoBehaviour
 					
 					if (hit.transform.CompareTag ("Factory"))
 					{
+						factoryController.DeselectFactory ();
 						FactoryBase factory = hit.transform.GetComponent<FactoryBase>();
 						if (!troopController.WorkerCheckFactory (factory))
 						{
+							troopController.DeselectAllSoldiers ();
 							factoryController.SelectFactory (factory);
 						}
-						troopController.DeselectAllSoldiers ();
+						else
+							troopController.DeselectAllSoldiers ();
 						return true;
 					}
 				}
 				
-				interactionController.Interaction (touchController.GetFinalRaycastHit.transform);
+				if (factoryController.selectedFactory == null)
+					interactionController.Interaction (touchController.GetFinalRaycastHit.transform);
 			}
 		}
 		

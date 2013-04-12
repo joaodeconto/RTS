@@ -40,13 +40,16 @@ public class RallyPoint : MonoBehaviour {
 			}
 		}
 #else
-//		if (touchController.touchType == TouchController.TouchType.First)
-//		{
-//			if (touchController.idTouch == TouchController.IdTouch.Id0)
-//			{
-//				UpdateRallyPoint ();
-//			}
-//		}
+		if (touchController.touchType == TouchController.TouchType.Ended)
+		{
+			if (!touchController.DragOn)
+			{
+				if (touchController.idTouch == TouchController.IdTouch.Id0)
+				{
+					UpdateRallyPoint ();
+				}
+			}
+		}
 #endif
 	}
 	
@@ -55,14 +58,22 @@ public class RallyPoint : MonoBehaviour {
 		Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit;
 		
-		int layerMask = 1 << LayerMask.NameToLayer("Terrain");
+		int layerMask = LayerMask.NameToLayer("Terrain");
 		
 		// Patch transform com hit.point
+		Vector3 oldPosition = transform.position;
 		transform.position = Vector3.zero;
 		
-		if (Physics.Raycast (ray, out hit, layerMask))
+		if (Physics.Raycast (ray, out hit))
 		{
-			transform.position = hit.point;
+			if (hit.transform.gameObject.layer == layerMask)
+				transform.position = hit.point;
+			else
+				transform.position = oldPosition;
+		}
+		else
+		{
+			transform.position = oldPosition;
 		}
 		
 		lineRenderer.SetPosition (0, transform.position);

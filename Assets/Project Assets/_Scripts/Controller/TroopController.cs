@@ -46,7 +46,7 @@ public class TroopController : MonoBehaviour
 	{
 		if (enemySelected) return;
 		
-		hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f);
+		hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f, gameplayManager.GetColorTeam ());
 
 		if (keepFormation)
 		{
@@ -103,7 +103,8 @@ public class TroopController : MonoBehaviour
 	{
 		if (enemy == null) return;
 
-		hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform.position, enemy.GetComponent<IStats> ().sizeOfSelected);
+		hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform.position, 
+									  enemy.GetComponent<IStats> ().sizeOfSelected, gameplayManager.GetColorTeam(enemy.GetComponent<IStats> ().team));
 		
 		foreach (Unit soldier in selectedSoldiers)
 		{
@@ -161,6 +162,8 @@ public class TroopController : MonoBehaviour
 
 	public void DeselectAllSoldiers ()
 	{
+		if (selectedSoldiers.Count == 0) return;
+		
 		foreach (Unit soldier in selectedSoldiers)
 		{
 			if (soldier != null)
@@ -297,7 +300,7 @@ public class TroopController : MonoBehaviour
 		}
 		
 		if (feedback) 
-			hudController.CreateFeedback (HUDController.Feedbacks.Self, factory.transform.position, factory.sizeOfSelected);
+			hudController.CreateFeedback (HUDController.Feedbacks.Self, factory.transform.position, factory.sizeOfSelected, gameplayManager.GetColorTeam ());
 		
 		return feedback;
 	}

@@ -1011,16 +1011,18 @@ MonoBehaviour:
   m_Name: 
   MaxHealth: 120
   Defense: 0
-  Team: -1
-  RangeView: 0
+  team: 0
+  fieldOfView: 0
   sizeOfSelected: 2
   rendererTeamColor: []
   movementActions: []
+  pref_Blood: {fileID: 0}
+  transformBloodReference: {fileID: 0}
   playerUnit: 1
   model: {fileID: 100070}
   force: 0
   distanceView: 20
-  rangeAttack: 7
+  attackRange: 5
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -1135,7 +1137,7 @@ NavMeshAgent:
   m_Acceleration: 15
   avoidancePriority: 10
   m_AngularSpeed: 360
-  m_StoppingDistance: 0
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
