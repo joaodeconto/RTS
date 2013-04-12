@@ -382,18 +382,6 @@ public class Worker : Unit
 		}
 	}
 
-	[RPC]
-	public override void AttackUnit (string nameUnit, int force)
-	{
-		base.AttackUnit (nameUnit, force);
-	}
-
-	[RPC]
-	public override void AttackFactory (string nameFactory, int force)
-	{
-		base.AttackFactory (nameFactory, force);
-	}
-
 	public override void Select ()
 	{
 		base.Select ();
@@ -651,5 +639,24 @@ public class Worker : Unit
 
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
+	}
+	
+	// RPC
+	[RPC]
+	public override void AttackUnit (string nameUnit, int force)
+	{
+		base.AttackUnit (nameUnit, force);
+	}
+
+	[RPC]
+	public override void AttackFactory (string nameFactory, int force)
+	{
+		base.AttackFactory (nameFactory, force);
+	}
+	
+	[RPC]
+	public override void InstantiatParticleDamage ()
+	{
+		base.InstantiatParticleDamage ();
 	}
 }
