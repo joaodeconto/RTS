@@ -43,6 +43,7 @@ public class FactoryBase : IStats
 
 	public BuildingObjects buildingObjects;
 
+	public string buttonName;
 	public string guiTextureName;
 
 	public BuildingState buildingState { get; set; }
@@ -315,7 +316,15 @@ public class FactoryBase : IStats
 
 				this.fieldOfView = realRangeView;
 
-				eventManager.AddEvent("building finish", this.name, this.guiTextureName);
+				string factoryName = buttonName;
+
+				if(string.IsNullOrEmpty(factoryName))
+				{
+					Debug.LogError("Eh necessario colocar um nome no buttonName.\nUtilizando nome padrao");
+					factoryName = this.name;
+				}
+
+				eventManager.AddEvent("building finish", factoryName, this.guiTextureName);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			}
 			return false;
@@ -439,7 +448,7 @@ public class FactoryBase : IStats
 	{
 		bool canBuy = true;
 		UnitFactory unitFactory = null;
-		
+
 		foreach (UnitFactory uf in unitsToCreate)
 		{
 			if (unit == uf.unit)
@@ -449,13 +458,13 @@ public class FactoryBase : IStats
 				break;
 			}
 		}
-		
+
 		if (unitFactory == null)
 		{
 			Debug.LogError ("variable unitFactory is 'null'!");
 			return;
 		}
-		
+
 		if (canBuy)
 		{
 			listedToCreate.Add (unitFactory);
@@ -481,7 +490,7 @@ public class FactoryBase : IStats
 	{
 		string btnName = (string)ht["name"];
 		UnitFactory unitFactory = (UnitFactory)ht["unitFactory"];
-		
+
 		gameplayManager.resources.ReturnResources (unitFactory.costOfResources);
 
 		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))

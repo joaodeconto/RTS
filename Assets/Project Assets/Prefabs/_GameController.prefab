@@ -612,6 +612,7 @@ MonoBehaviour:
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 10
+    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
@@ -624,6 +625,7 @@ MonoBehaviour:
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 5
+    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
@@ -636,9 +638,10 @@ MonoBehaviour:
     IsVerticalQueue: 1
     maxPerLine: 10
     maxItems: 10
+    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 5
+      timeToFadeout: 3
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Chat
     rootPosition: {x: -800, y: 110}
@@ -648,6 +651,7 @@ MonoBehaviour:
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 10
+    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
@@ -683,19 +687,22 @@ MonoBehaviour:
   m_Name: 
   events:
   - Name: building finish
-    Message: Building finish
+    Message: '{0} construction complete'
     spriteName: 
   - Name: out of founds
-    Message: Insuficient resources
+    Message: Insufficient resources
     spriteName: 
   - Name: reach enqueued units
-    Message: Over limit to units
+    Message: Queue is full
     spriteName: 
   - Name: need more houses
-    Message: Need more houses
+    Message: 'Need more houses '
     spriteName: 
   - Name: reach max population
-    Message: Limit max population
+    Message: Reached on max population
+    spriteName: 
+  - Name: create unit
+    Message: '{0} trained'
     spriteName: 
 --- !u!1001 &100100000
 Prefab:
