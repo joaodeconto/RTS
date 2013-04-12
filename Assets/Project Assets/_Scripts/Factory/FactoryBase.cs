@@ -266,6 +266,8 @@ public class FactoryBase : IStats
 		team = teamID;
 		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
 
+		GetComponent<NavMeshObstacle> ().enabled = false;
+		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (false);
@@ -281,6 +283,8 @@ public class FactoryBase : IStats
 		realRangeView  = this.fieldOfView;
 		this.fieldOfView = 0.0f;
 
+		GetComponent<NavMeshObstacle> ().enabled = true;
+		
 		factoryController.AddFactory (this);
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{

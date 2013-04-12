@@ -158,15 +158,12 @@ public class HUDController : MonoBehaviour
 	{
 		GameObject selectObj = Instantiate (pref_selectedObject, target.position, Quaternion.identity) as GameObject;
 		selectObj.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
-		float duration = 0;
 		foreach (ParticleSystem ps in selectObj.GetComponentsInChildren<ParticleSystem>())
 		{
 			ps.startSize = size * 2f;
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
-			if (ps.duration > duration) duration = ps.duration;
 		}
-		selectObj.renderer.enabled = false;
 		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target;
@@ -177,15 +174,8 @@ public class HUDController : MonoBehaviour
 		refTransform.offsetPosition += Vector3.up * 0.1f;
 
 		selectObj.renderer.material.SetColor ("_TintColor", color);
-		selectObj.transform.parent = mainTranformSelectedObjects;
 		
-		StartCoroutine (EnableRenderer (selectObj.renderer, duration));
-	}
-	
-	IEnumerator EnableRenderer (Renderer renderer, float duration)
-	{
-		yield return new WaitForSeconds (duration);
-		renderer.enabled = true;
+		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
 
 	public void DestroySelected (Transform target)
@@ -352,7 +342,7 @@ public class HUDController : MonoBehaviour
 		messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
 	}
 
-	public void CreateFeedback (Feedbacks feedback, Vector3 position, float size)
+	public void CreateFeedback (Feedbacks feedback, Vector3 position, float size, Color color)
 	{
 		if (oldFeedback != null) Destroy (oldFeedback);
 
@@ -370,13 +360,22 @@ public class HUDController : MonoBehaviour
 			newFeedback = Instantiate (pref_attackFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
 		}
 
-//		newFeedback.layer = LayerMask.NameToLayer ("HUD3D");
 		newFeedback.name = "Feedback";
 		newFeedback.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
-//		newFeedback.transform.GetComponent<AnimateTiledTexture>().Play ();
-
+		newFeedback.renderer.material.SetColor ("_TintColor", color);
+		
+		float duration = 0;
+		
+		foreach (ParticleSystem ps in newFeedback.GetComponentsInChildren<ParticleSystem>())
+		{
+			ps.startSize = size * 2f;
+			ps.renderer.material.SetColor ("_TintColor", color);
+			ps.startColor = color;
+			if (ps.duration > duration) duration = ps.duration;
+		}
+		
 		oldFeedback = newFeedback;
 
-		Destroy (newFeedback, 2f);
+		Destroy (newFeedback, duration);
 	}
 }
