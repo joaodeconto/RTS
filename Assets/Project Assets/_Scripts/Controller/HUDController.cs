@@ -346,6 +346,12 @@ public class HUDController : MonoBehaviour
 		messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
 	}
 
+	public void CreateFeedback (Feedbacks feedback, Transform transform, float size, Color color)
+	{
+		CreateFeedback (feedback, transform.position, size, color);
+		oldFeedback.transform.parent = transform;
+	}
+	
 	public void CreateFeedback (Feedbacks feedback, Vector3 position, float size, Color color)
 	{
 		if (oldFeedback != null) Destroy (oldFeedback);
