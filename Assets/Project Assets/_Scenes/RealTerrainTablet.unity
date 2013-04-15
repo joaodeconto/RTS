@@ -2716,7 +2716,7 @@ MonoBehaviour:
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 10
-    GroupIfReachMaxMessages: 0
+    GroupIfReachMaxMessages: 1
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
@@ -2918,7 +2918,7 @@ Prefab:
     - target: {fileID: 11400074, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: mMat
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2100000, guid: c26d497bb12303043afcbeccab2dc965, type: 2}
     - target: {fileID: 11400050, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: mMat
       value: 
@@ -2950,6 +2950,18 @@ Prefab:
     - target: {fileID: 100088, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400074, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: mPivot
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 400092, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 400060, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
@@ -8195,7 +8207,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
       propertyPath: autoload
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 387d37c6d95bac04bbaf711227a52bff, type: 2}
@@ -8737,7 +8749,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5199a5a76aa1992479c7401ba1bb3cad, type: 3}
   m_Name: 
-  UseFog: 0
+  UseFog: 1
   DarkFog: 1
   pref_plane: {fileID: 100000, guid: e110e4594c30be740861d48334d615be, type: 2}
   visibleAreaColor: {r: 1, g: 1, b: 1, a: 0}
@@ -12923,7 +12935,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 2bdf8360728e4b64d9167a7db10483fe, type: 2}
       propertyPath: UseFog
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 2bdf8360728e4b64d9167a7db10483fe, type: 2}
       propertyPath: m_IsActive
@@ -15633,7 +15645,7 @@ Transform:
   m_PrefabInternal: {fileID: 266315733}
   m_GameObject: {fileID: 1361850595}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -185, y: -20, z: -1}
+  m_LocalPosition: {x: -5, y: -20, z: -1}
   m_LocalScale: {x: 32, y: 32, z: 1}
   m_Children: []
   m_Father: {fileID: 1880209269}
@@ -15651,7 +15663,7 @@ MonoBehaviour:
   mMat: {fileID: 2100000, guid: c26d497bb12303043afcbeccab2dc965, type: 2}
   mTex: {fileID: 0}
   mColor: {r: 1, g: 1, b: 1, a: 1}
-  mPivot: 3
+  mPivot: 5
   mDepth: 1
   mFont: {fileID: 11400000, guid: edde075199246a7439224dd1ef0a112f, type: 2}
   mText: 999999999
@@ -21313,7 +21325,7 @@ Transform:
   m_PrefabInternal: {fileID: 266315733}
   m_GameObject: {fileID: 1769636030}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -20, z: -1}
+  m_LocalPosition: {x: 5, y: -20, z: -1}
   m_LocalScale: {x: 32, y: 32, z: 1}
   m_Children: []
   m_Father: {fileID: 1767048735}
@@ -23060,7 +23072,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
-  autoload: 1
+  autoload: 0
 --- !u!1 &1962350547
 GameObject:
   m_ObjectHideFlags: 0
