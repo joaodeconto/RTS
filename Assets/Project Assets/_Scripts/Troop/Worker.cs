@@ -81,9 +81,9 @@ public class Worker : Unit
 			rw.carryingObject.SetActive (false);
 			rw.extractingObject.SetActive (false);
 		}
-		
+
 		eventManager = ComponentGetter.Get<EventManager> ();
-		
+
 		hasResource = settingWorkerNull = false;
 
 		workerState = WorkerState.None;
@@ -176,20 +176,20 @@ public class Worker : Unit
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 				{
 					gameplayManager.resources.Set (resourceType, currentNumberOfResources);
-					
+
 					if (resource != null) Move (resource.transform.position);
 					else
 					{
 						pathfind.Stop ();
 						unitState = Unit.UnitState.Idle;
 					}
-				
+
 					currentNumberOfResources = 0;
-				
+
 					factoryChoose = null;
-				
+
 					workerState = WorkerState.None;
-					
+
 					movingToFactory = hasResource = settingWorkerNull = false;
 
 					resourceWorker[resourceId].carryingObject.SetActive (false);
@@ -208,9 +208,9 @@ public class Worker : Unit
 					Move (transform.position - transform.forward);
 
 					resourceWorker[0].extractingObject.SetActive (false);
-					
+
 					movingToFactory = false;
-				
+
 					if (hasResource)
 					{
 						resource = lastResource;
@@ -393,6 +393,7 @@ public class Worker : Unit
 		{
 			ht = new Hashtable();
 			ht["factory"] = fc;
+			ht["price"]   = fc.costOfResources.NumberOfRocks;
 
 			hudController.CreateButtonInInspector ( fc.factory.name,
 													fc.gridItemAttributes.Position,
@@ -417,16 +418,16 @@ public class Worker : Unit
 	public void InstanceGhostFactory (Hashtable ht)
 	{
 		FactoryConstruction factoryConstruct = (FactoryConstruction)ht["factory"];
-		
+
 		if (CanConstruct (factoryConstruct, false))
 		{
 			GameObject ghostFactory = null;
-	
+
 			if (PhotonNetwork.offlineMode)
 				ghostFactory = Instantiate (factoryConstruct.factory.gameObject, Vector3.zero, factoryConstruct.factory.transform.rotation) as GameObject;
 			else
 				ghostFactory = PhotonNetwork.Instantiate ( factoryConstruct.factory.gameObject.name, Vector3.zero, factoryConstruct.factory.transform.rotation, 0);
-	
+
 			ghostFactory.AddComponent<GhostFactory>().Init (this, factoryConstruct);
 		}
 		else
@@ -437,12 +438,12 @@ public class Worker : Unit
 	{
 		resource = newResource;
 	}
-	
+
 	public bool CanConstruct (FactoryConstruction factory, bool discount = true)
 	{
 		return gameplayManager.resources.CanBuy (factory.costOfResources, discount);
 	}
-	
+
 #region Funções que o Worker pode fazer
 	IEnumerator StartConstruct ()
 	{
@@ -640,7 +641,7 @@ public class Worker : Unit
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
 	}
-	
+
 	// RPC
 	[RPC]
 	public override void AttackUnit (string nameUnit, int force)
@@ -653,7 +654,7 @@ public class Worker : Unit
 	{
 		base.AttackFactory (nameFactory, force);
 	}
-	
+
 	[RPC]
 	public override void InstantiatParticleDamage ()
 	{

@@ -83,14 +83,6 @@ public abstract class MessageQueue : MonoBehaviour
 		if (prefabCache == null)
 			prefabCache = ComponentGetter.Get<PrefabCache>();
 
-		if (nQueueItems > MaxItems)
-		{
-			if (!GroupIfReachMaxMessages)
-				DequeueMessageInfo ();
-			else
-				GroupButtons ();
-		}
-
 		++nQueueItems;
 
 		//GameObject button = NGUITools.AddChild (uiGrid.gameObject,
@@ -113,7 +105,21 @@ public abstract class MessageQueue : MonoBehaviour
 
 		pcb.Init(ht, onClick, onPress, onDrag, onDrop);
 
-		Invoke("RepositionGrid", 0.1f);
+		if (nQueueItems > MaxItems)
+		{
+			if (!GroupIfReachMaxMessages)
+			{
+				while (nQueueItems > MaxItems)
+				{
+					Debug.Log ("nQueueItems: " + nQueueItems + " : MaxItems: " + MaxItems);
+					DequeueMessageInfo ();
+				}
+			}
+			else
+				GroupButtons ();
+		}
+
+		//Invoke("RepositionGrid", 0.1f);
 	}
 
 	public void DequeueMessageInfo()
@@ -157,6 +163,8 @@ public abstract class MessageQueue : MonoBehaviour
 
 	private void GroupButtons ()
 	{
+		Debug.Log ("Chegou GroupButtons");
+
 		int i = 0;
 
 		if (IsGrouped)
@@ -183,9 +191,11 @@ public abstract class MessageQueue : MonoBehaviour
 				++i;
 			}
 
+			//Escolhendo um botão de cada tipo de unidade e setando quantidade
 			bool foundButton;
 			List<Unit> units;
 			PersonalizedCallbackButton pcb = null;
+			UILabel counterLabel;
 			Hashtable ht = new Hashtable ();
 
 			foreach (KeyValuePair<string, int> de in dic)
@@ -202,8 +212,10 @@ public abstract class MessageQueue : MonoBehaviour
 					{
 						if (!foundButton)
 						{
-							foundButton = true;
-							pcb = child.GetComponent<PersonalizedCallbackButton>();
+							foundButton  = true;
+							pcb          = child.GetComponent<PersonalizedCallbackButton>();
+							Unit unit = (Unit)pcb.hashtable["unit"];
+							units.Add (unit);
 						}
 						else
 						{
@@ -216,20 +228,28 @@ public abstract class MessageQueue : MonoBehaviour
 				}
 
 				ht = pcb.hashtable;
-
-				ht["units"] = units;
+				ht["units"]   = units;
+				ht["counter"] = units.Count;
 
 				pcb.ChangeParams (ht,
-									(ht_btn) => {
-										//List<Unit> units = (List)ht_btn[]
+									(ht_btn) =>
+									{
+										List<Unit> units_btn = (List<Unit>)ht_btn["units"];
+
+										TroopController troopController = ComponentGetter.Get<TroopController> ();
+
+										troopController.DeselectAllSoldiers ();
+
+										foreach (Unit u in units_btn)
+										{
+											troopController.SelectSoldier (u, true);
+										}
 									});
 			}
-
-			//deletar todos
-			Clear ();
-
-			//criar um de cada grupo
+			pcb.transform.localPosition = Vector3.zero;
 		}
+
+		//Invoke("RepositionGrid", 0.2f);
 	}
 
 	public bool IsEmpty()
