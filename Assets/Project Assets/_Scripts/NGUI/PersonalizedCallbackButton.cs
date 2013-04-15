@@ -71,6 +71,7 @@ public class PersonalizedCallbackButton : DefaultCallbackButton
 		{
 			Debug.LogError("Eh necessario que tenha o objeto \"Foreground\" com um sliced sprite dentro");
 			Debug.Break();
+			return;
 		}
 
 		UISlicedSprite sprite = trnsForeground.GetComponent<UISlicedSprite>();

@@ -199,7 +199,8 @@ public class Unit : IStats
 					{
 						unitState = UnitState.Attack;
 					}
-					else if (InDistanceView (targetAttack.transform.position))
+//					else if (InDistanceView (targetAttack.transform.position))
+					else if (targetAttack.GetComponent<IStats> ().IsVisible)
 					{
 						//MoveAvoidance (targetAttack.transform);
 						Move (targetAttack.transform.position);

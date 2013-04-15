@@ -11,6 +11,7 @@ public class InteractionController : MonoBehaviour
 	protected TouchController touchController;
 	protected TroopController troopController;
 	protected GameplayManager gameplayManager;
+	protected HUDController hudController;
 
 	private Stack<InteractionCallback> stackInteractionCallbacks;
 
@@ -19,7 +20,8 @@ public class InteractionController : MonoBehaviour
 		touchController = ComponentGetter.Get<TouchController> ();
 		troopController = ComponentGetter.Get<TroopController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-
+		hudController   = ComponentGetter.Get<HUDController> ();
+		
 		stackInteractionCallbacks = new Stack<InteractionCallback>();
 	}
 
@@ -91,6 +93,8 @@ public class InteractionController : MonoBehaviour
 		}
 		else if (hit.GetComponent<Resource> () != null)
 		{
+			bool feedback = false;
+			
 			foreach (Unit unit in troopController.selectedSoldiers)
 			{
 				if (unit.GetType() == typeof(Worker))
@@ -103,9 +107,22 @@ public class InteractionController : MonoBehaviour
 						worker.SetMoveToFactory (null);
 					}
 					
+					worker.Move (touchController.GetFinalPoint);
 					worker.SetResource(hit.GetComponent<Resource> ());
+					
+					feedback = true;
 				}
 			}
+			
+			if (feedback)
+			{
+				hudController.CreateFeedback (HUDController.Feedbacks.Self, 
+											  hit.position,
+											  hit.GetComponent<Resource>().collider.radius * hit.localScale.x * 2f, 
+											  gameplayManager.GetColorTeam ());
+				
+			}
+			return;
 		}
 		else
 		{
