@@ -59,10 +59,18 @@ public class PersonalizedCallbackButton : DefaultCallbackButton
 		if ( ht.ContainsKey("counter") )
 		{
 			trnsBackCounter.GetComponent<UISlicedSprite>().enabled = true;
-			l.text = (string)ht["counter"];
+			l.text = ((int)ht["counter"]).ToString ();
 		}
 		else
 			trnsBackCounter.GetComponent<UISlicedSprite>().enabled = false;
+
+
+		trnsLabel = transform.FindChild("Label Price");
+		l = trnsLabel.GetComponent<UILabel>();
+		l.text = "";
+
+		if ( ht.ContainsKey("price") )
+			l.text = ((int)ht["price"]).ToString ();
 	}
 
 	private void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)

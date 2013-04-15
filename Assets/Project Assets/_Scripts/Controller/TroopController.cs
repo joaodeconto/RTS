@@ -45,7 +45,7 @@ public class TroopController : MonoBehaviour
 	public void MoveTroop (Vector3 destination)
 	{
 		if (enemySelected) return;
-		
+
 		hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f, gameplayManager.GetColorTeam ());
 
 		if (keepFormation)
@@ -105,7 +105,7 @@ public class TroopController : MonoBehaviour
 
 		hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform,
 									  enemy.GetComponent<IStats> ().sizeOfSelected, gameplayManager.GetColorTeam(enemy.GetComponent<IStats> ().team));
-		
+
 		foreach (Unit soldier in selectedSoldiers)
 		{
 			soldier.TargetingEnemy (enemy);
@@ -163,7 +163,7 @@ public class TroopController : MonoBehaviour
 	public void DeselectAllSoldiers ()
 	{
 		if (selectedSoldiers.Count == 0) return;
-		
+
 		foreach (Unit soldier in selectedSoldiers)
 		{
 			if (soldier != null)
@@ -262,11 +262,11 @@ public class TroopController : MonoBehaviour
 
 		return null;
 	}
-	
+
 	public bool WorkerCheckFactory (FactoryBase factory)
 	{
 		bool feedback = false;
-		
+
 		foreach (Unit unit in selectedSoldiers)
 		{
 			if (unit.GetType() == typeof(Worker))
@@ -298,13 +298,13 @@ public class TroopController : MonoBehaviour
 				}
 			}
 		}
-		
-		if (feedback) 
+
+		if (feedback)
 			hudController.CreateFeedback (HUDController.Feedbacks.Self, factory.transform.position, factory.sizeOfSelected, gameplayManager.GetColorTeam ());
-		
+
 		return feedback;
 	}
-	
+
 	public void ChangeVisibility (Unit soldier, bool visibility)
 	{
 		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (soldier.transform, soldier.team, visibility);
@@ -378,7 +378,7 @@ public class TroopController : MonoBehaviour
 			Hashtable ht = new Hashtable();
 
 			ht["currentIdleWorker"] = 0;
-			ht["counter"] = idleWorkers.Count.ToString();
+			ht["counter"] = idleWorkers.Count;
 
 			hud.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
 												idleButtonPosition,
