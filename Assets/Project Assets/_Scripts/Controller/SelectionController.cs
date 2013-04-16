@@ -233,14 +233,19 @@ public class SelectionController : MonoBehaviour
 					{
 						factoryController.DeselectFactory ();
 						FactoryBase factory = hit.transform.GetComponent<FactoryBase>();
-						if (!troopController.WorkerCheckFactory (factory))
+						
+						if (gameplayManager.IsSameTeam (factory))
 						{
-							troopController.DeselectAllSoldiers ();
-							factoryController.SelectFactory (factory);
+							if (!troopController.WorkerCheckFactory (factory))
+							{
+								troopController.DeselectAllSoldiers ();
+								factoryController.SelectFactory (factory);
+							}
+							else
+								troopController.DeselectAllSoldiers ();
+							
+							return true;
 						}
-						else
-							troopController.DeselectAllSoldiers ();
-						return true;
 					}
 				}
 				

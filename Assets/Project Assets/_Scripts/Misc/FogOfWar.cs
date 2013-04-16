@@ -36,10 +36,10 @@ public class FogOfWar : MonoBehaviour
 
 	//Temporary variables
 	Transform trns = null;
-	int maxX, maxY, minX, minY,
-		range, xRange = 0,
-		posX, posY,
-		i,j,k;
+	short maxX, maxY, minX, minY,
+		  range, xRange = 0,
+		  posX, posY,
+		  i,j,k;
 
 	FogFlag[,] matrixFogFlag;
 
@@ -97,14 +97,19 @@ public class FogOfWar : MonoBehaviour
 		if (!UseFog || allies == null)
 			return;
 
-		for (i = allies.Count - 1; i != -1; --i)
+		for (i = (short)(allies.Count - 1); i != -1; --i)
 		{
 			trns = allies[i];
 
-			posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
-			posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+			//posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			//posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
-			range = Mathf.RoundToInt(SIZE_TEXTURE * (entityAllies[i].fieldOfView / mapSize.x));
+			//range = Mathf.RoundToInt(SIZE_TEXTURE * (entityAllies[i].fieldOfView / mapSize.x));
+
+			posX = (short)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = (short)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+
+			range = (short)(SIZE_TEXTURE * (entityAllies[i].fieldOfView / mapSize.x));
 
 			//maxX = Mathf.CeilToInt (posX + range);
 			//maxY = Mathf.CeilToInt (posY + range);
@@ -119,8 +124,11 @@ public class FogOfWar : MonoBehaviour
 				//}
 			//}
 
-			maxY = Mathf.RoundToInt(Mathf.Clamp(posY + range, 0, SIZE_TEXTURE));
-			minY = Mathf.RoundToInt(Mathf.Clamp(posY - range, 0, SIZE_TEXTURE));
+			//maxY = Mathf.RoundToInt(Mathf.Clamp(posY + range, 0, SIZE_TEXTURE));
+			//minY = Mathf.RoundToInt(Mathf.Clamp(posY - range, 0, SIZE_TEXTURE));
+
+			maxY = (short)(Mathf.Clamp(posY + range, 0, SIZE_TEXTURE));
+			minY = (short)(Mathf.Clamp(posY - range, 0, SIZE_TEXTURE));
 
 			//float changeAngleRate = 180.0f / (2.0f * range);
 			//float angle = 0.0f;
@@ -129,7 +137,8 @@ public class FogOfWar : MonoBehaviour
 			{
 				//xRange = (int)(Mathf.Sin(Mathf.Deg2Rad * angle) * (float)range);
 
-				xRange = Mathf.RoundToInt(Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) ));
+				//xRange = Mathf.RoundToInt(Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) ));
+				xRange = (short)(Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) ));
 					 //_________
 				//x = V r² + y² `
 
@@ -138,8 +147,11 @@ public class FogOfWar : MonoBehaviour
 				//Debug.Log("changeAngleRate: " + changeAngleRate);
 				//Debug.Log("Mathf.Deg2Rad * angle: " + (Mathf.Deg2Rad * angle));
 
-				maxX = Mathf.RoundToInt(Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
-				minX = Mathf.RoundToInt(Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
+				//maxX = Mathf.RoundToInt(Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
+				//minX = Mathf.RoundToInt(Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
+
+				maxX = (short)(Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
+				minX = (short)(Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
 
 				for (j = minX; j != maxX; ++j)
 				{
@@ -178,7 +190,7 @@ public class FogOfWar : MonoBehaviour
 
 	void UpdateEnemyVisibility()
 	{
-		for (i = enemies.Count - 1; i != -1; --i)
+		for (i = (short)(enemies.Count - 1); i != -1; --i)
 		{
 			trns = enemies[i];
 
@@ -190,8 +202,11 @@ public class FogOfWar : MonoBehaviour
 				continue;
 			}
 
-			posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
-			posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+			//posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			//posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+
+			posX = (short)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = (short)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
 			bool positionIsVisible = (matrixFogFlag[posX,posY] == FogFlag.VISIBLE);
 
@@ -262,9 +277,12 @@ public class FogOfWar : MonoBehaviour
 	{
 		if (!UseFog)
 			return this;
-		
-		posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
-		posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+
+		//posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+		//posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+
+		posX = (short)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+		posY = (short)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
 		return (matrixFogFlag[posX, posY] == FogFlag.KNOWN_AREA);
 	}

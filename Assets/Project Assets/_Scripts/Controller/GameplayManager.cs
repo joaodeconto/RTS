@@ -13,10 +13,20 @@ public class Team
 
 public class GameplayManager : MonoBehaviour
 {
+	[System.Serializable]
+	public class HUD
+	{
+		public UILabel labelResources;
+		public UILabel labelUnits;
+		public GameObject endGameScreen;
+		public UILabel labelWin;
+		public UILabel labelDefeat;
+	}
+	
 	public const int MAX_POPULATION_ALLOWED = 200;
 	
 	public Team[] teams;
-
+	
 	public int numberOfUnits { get; protected set; }
 	public int maxOfUnits { get; protected set; }
 	protected int excessHousesIncrements;
@@ -30,6 +40,8 @@ public class GameplayManager : MonoBehaviour
 
 	// Resources
 	public ResourcesManager resources;
+
+	public HUD hud;
 
 	public void Init ()
 	{
@@ -49,6 +61,9 @@ public class GameplayManager : MonoBehaviour
 				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
 			}
 		}
+		
+		hud.endGameScreen.SetActive (false);
+		
 		excessHousesIncrements = 0;
 	}
 	
@@ -197,13 +212,26 @@ public class GameplayManager : MonoBehaviour
 	}
 
 	// TODO: Mostrando só os valores na tela
-	void OnGUI ()
+	void Update ()
 	{
-		GUI.Box (new Rect(10, 10, 150, 25), "Resources: " + resources.NumberOfRocks.ToString ());
-		GUI.Box (new Rect(10, 35, 150, 25), "Units: " + numberOfUnits.ToString () + "/" + maxOfUnits.ToString ());
+		hud.labelResources.text = resources.NumberOfRocks.ToString ();
+		hud.labelUnits.text = "Units: " + numberOfUnits.ToString () + "/" + maxOfUnits.ToString ();
 
-		if (loseGame) GUI.Box (new Rect(Screen.width/2 - 75, Screen.height/2 - 12, 150, 25), "LOSER! ):");
-		else if (winGame) GUI.Box (new Rect(Screen.width/2 - 75, Screen.height/2 - 12, 150, 25), "WIN! :D");
+		if (loseGame || winGame)
+		{
+			hud.endGameScreen.SetActive (true);
+			if (winGame)
+			{
+				hud.labelWin.gameObject.SetActive (true);
+				hud.labelDefeat.gameObject.SetActive (false);
+			}
+			else
+			{
+				hud.labelWin.gameObject.SetActive (false);
+				hud.labelDefeat.gameObject.SetActive (true);
+			}
+			enabled = false;
+		}
 	}
 
 	void EndGame ()

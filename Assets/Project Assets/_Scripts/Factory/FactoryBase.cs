@@ -268,7 +268,7 @@ public class FactoryBase : IStats
 		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
 
 		GetComponent<NavMeshObstacle> ().enabled = false;
-		
+
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (false);
@@ -285,7 +285,7 @@ public class FactoryBase : IStats
 		this.fieldOfView = 0.0f;
 
 		GetComponent<NavMeshObstacle> ().enabled = true;
-		
+
 		factoryController.AddFactory (this);
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
@@ -381,7 +381,8 @@ public class FactoryBase : IStats
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				Hashtable ht = new Hashtable();
-				ht["unitFactory"]    = uf;
+				ht["unitFactory"] = uf;
+				ht["price"]       = uf.costOfResources.NumberOfRocks;
 
 				hudController.CreateButtonInInspector ( uf.buttonName,
 														uf.gridItemAttributes.Position,
