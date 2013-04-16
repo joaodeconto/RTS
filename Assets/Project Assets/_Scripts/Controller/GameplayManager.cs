@@ -220,8 +220,16 @@ public class GameplayManager : MonoBehaviour
 		if (loseGame || winGame)
 		{
 			hud.endGameScreen.SetActive (true);
-			hud.labelDefeat.gameObject.SetActive (loseGame && !winGame);
-			hud.labelWin.gameObject.SetActive (winGame);
+			if (winGame)
+			{
+				hud.labelWin.gameObject.SetActive (true);
+				hud.labelDefeat.gameObject.SetActive (false);
+			}
+			else
+			{
+				hud.labelWin.gameObject.SetActive (false);
+				hud.labelDefeat.gameObject.SetActive (true);
+			}
 			enabled = false;
 		}
 	}

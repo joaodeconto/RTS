@@ -371,14 +371,16 @@ public class HUDController : MonoBehaviour
 		}
 
 		newFeedback.name = "Feedback";
-		newFeedback.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
+		newFeedback.transform.localScale = new Vector3(size * newFeedback.transform.localScale.x, 
+													   newFeedback.transform.localScale.y,
+													   size * newFeedback.transform.localScale.x);
 		newFeedback.renderer.material.SetColor ("_TintColor", color);
 
 		float duration = 0;
 
 		foreach (ParticleSystem ps in newFeedback.GetComponentsInChildren<ParticleSystem>())
 		{
-			ps.startSize = size * 2f;
+			ps.startSize = size * ps.startSize;
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
 			if (ps.duration > duration) duration = ps.duration;
