@@ -7,6 +7,7 @@ public class Login : MonoBehaviour
 {
 	public UIInput username;
 	public UIInput password;
+	public UILabel errorMessage;
 	public GameObject submitButton;
 	public GameObject mainMenu;
 
@@ -23,7 +24,9 @@ public class Login : MonoBehaviour
 		wasInitialized = true;
 
 		Application.runInBackground = true;
-
+		
+		errorMessage.enabled = false;
+		
 		DefaultCallbackButton dcb = submitButton.AddComponent<DefaultCallbackButton>();
 
 		Hashtable ht = new Hashtable();
@@ -31,14 +34,29 @@ public class Login : MonoBehaviour
 					(ht_hud) =>
 					{
 						//TODO lógica de login do jogo
-						PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+						if (!string.IsNullOrEmpty(username.text))
+						{
+				
+							PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+	
+							pw.SetPlayer (username.text, true);
+	
+							mainMenu.SetActive (true);
+							mainMenu.GetComponent<InternalMainMenu> ().Init ();
+	
+							this.gameObject.SetActive (false);
+						}
+						else
+						{
+							errorMessage.enabled = true;
 
-						pw.SetPlayer (username.text, true);
-
-						mainMenu.SetActive (true);
-						mainMenu.GetComponent<InternalMainMenu> ().Init ();
-
-						this.gameObject.SetActive (false);
+							Invoke ("CloseErrorMessage", 5.0f);
+						}
 					});
+	}
+	
+	private void CloseErrorMessage ()
+	{
+		errorMessage.enabled = false;
 	}
 }

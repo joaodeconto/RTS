@@ -16,10 +16,10 @@ public class NewGame : MonoBehaviour
 
 	public void Open ()
 	{
-		if (wasInitialized)
-			return;
-
-		wasInitialized = true;
+//		if (wasInitialized)
+//			return;
+//
+//		wasInitialized = true;
 		messageActiveGame.enabled = false;
 
 		pw = ComponentGetter.Get<PhotonWrapper> ();
@@ -33,7 +33,7 @@ public class NewGame : MonoBehaviour
 		dcb = quickMatch.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								pw.JoinQuickMatch ();
+								//pw.JoinQuickMatch ();
 								//TODO fazer timeout de conexão
 							});
 
@@ -60,11 +60,34 @@ public class NewGame : MonoBehaviour
 							{
 								CreateRoom (4);
 							});
+		
+		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
+		
+		dcb = leaveRoom.AddComponent<DefaultCallbackButton> ();
+		dcb.Init (null, (ht) => 
+							{
+								if (pw.LeaveRoom ())
+									Close ();
+							});
+		
+		leaveRoom.SetActive (false);
 	}
 
 	public void Close ()
 	{
 		CancelInvoke ("TryToEnterGame");
+		
+		if (buttons == null) return;
+		
+		foreach (Transform button in buttons)
+		{
+			button.gameObject.SetActive (true);
+		}
+
+		messageActiveGame.enabled = false;
+		
+		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
+		leaveRoom.SetActive (false);
 	}
 
 	private void CreateRoom (int maxPlayers)
@@ -79,9 +102,15 @@ public class NewGame : MonoBehaviour
 
 		messageActiveGame.enabled = true;
 		messageActiveGame.text = "Waiting For Other Players...";
+		
+		foreach (Transform button in buttons)
+		{
+			button.gameObject.SetActive (false);
+		}
 
-		buttons.gameObject.SetActive (false);
-
+		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
+		leaveRoom.SetActive (true);
+		
 		pw.TryToEnterGame (10000.0f, (message) =>
 									{
 										Debug.Log("message: " + message);
@@ -98,7 +127,6 @@ public class NewGame : MonoBehaviour
 									{
 										messageActiveGame.text = "Wating For Other Players - "
 																	+ playersReady + "/" + nMaxPlayers;
-
 									});
 	}
 

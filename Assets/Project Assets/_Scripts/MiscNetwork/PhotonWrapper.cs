@@ -8,6 +8,8 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	public delegate void PlayerReadyCallback (int nPlayersReady, int nPlayers);
 
 	public float RefreshingInterval = 0.2f;
+	
+	public GameObject[] menusDissapearWhenLogged;
 
 	protected bool checkingStatus = false;
 
@@ -15,6 +17,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	private bool isTryingToEnterGame;
 	private ConnectionCallback cb;
 	private PlayerReadyCallback prc;
+	
 
 	private bool wasInitialized = false;
 	public void Init ()
@@ -50,16 +53,46 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Hashtable expectedCustomRoomProperties = new Hashtable() { { "closeRoom", false } };
 		PhotonNetwork.JoinRandomRoom (expectedCustomRoomProperties, 0);
+		
+		foreach (GameObject menu in menusDissapearWhenLogged)
+		{
+			menu.SetActive (false);
+		}
 	}
 
 	public void JoinRoom (string roomName)
 	{
 		PhotonNetwork.JoinRoom (roomName);
+		
+		foreach (GameObject menu in menusDissapearWhenLogged)
+		{
+			menu.SetActive (false);
+		}
+	}
+	
+	public bool LeaveRoom ()
+	{
+		if (PhotonNetwork.room == null)
+			return false;
+		
+		PhotonNetwork.LeaveRoom ();
+		
+		foreach (GameObject menu in menusDissapearWhenLogged)
+		{
+			menu.SetActive (true);
+		}
+		
+		return true;
 	}
 
 	public void CreateTestRoom ()
 	{
 		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1) + (Random.value * 10000), true, true, 1);
+		
+		foreach (GameObject menu in menusDissapearWhenLogged)
+		{
+			menu.SetActive (false);
+		}
 	}
 
 	public void CreateRoom (string roomName, bool isVisible, bool isOpen, int maxPlayers)
@@ -69,6 +102,11 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		string[] roomPropsInLobby = { "closeRoom", "bool" };
 
 		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, someCustomPropertiesToSet, roomPropsInLobby);
+		
+		foreach (GameObject menu in menusDissapearWhenLogged)
+		{
+			menu.SetActive (false);
+		}
 	}
 
 	public RoomInfo[] GetRoomList ()

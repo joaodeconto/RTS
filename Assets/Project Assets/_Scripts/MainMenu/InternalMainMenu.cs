@@ -25,8 +25,8 @@ public class InternalMainMenu : MonoBehaviour
 
 		dcb.Init(null, (ht_hud) =>
 							{
-								Hashtable roomProperties = new Hashtable() { { "closeRoom", false } };
-								PhotonNetwork.JoinRandomRoom (roomProperties, 0);
+//								Hashtable roomProperties = new Hashtable() { { "closeRoom", false } };
+//								PhotonNetwork.JoinRandomRoom (roomProperties, 0);
 
 								//TODO fazer timeout de conexão
 							});

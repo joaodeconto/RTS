@@ -14,20 +14,22 @@ public class ActiveGames : MonoBehaviour
 	public GameObject pref_Row;
 	public Transform rowsContainer;
 
-	public void OnEnable ()
-	{
-		Open ();
-	}
-
-	public void OnDisable ()
-	{
-		Close ();
-	}
-
 	public void Open ()
 	{
 		messageActiveGame.enabled = false;
-
+		
+		GameObject leaveRoom = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
+		
+		DefaultCallbackButton dcb = leaveRoom.AddComponent<DefaultCallbackButton> ();
+		
+		dcb.Init (null, (ht) =>  
+						{
+							if (ComponentGetter.Get<PhotonWrapper> ().LeaveRoom ())
+								Close ();
+						});
+		
+		leaveRoom.SetActive (false);
+		
 		InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
 	}
 
@@ -35,6 +37,11 @@ public class ActiveGames : MonoBehaviour
 	{
 		CancelInvoke ("Refresh");
 		ClearRows ();
+		
+		messageActiveGame.enabled = errorMessage.enabled = false;
+		
+		GameObject leaveRoom = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
+		leaveRoom.SetActive (false);
 	}
 
 	private void ClearRows ()
@@ -103,9 +110,14 @@ public class ActiveGames : MonoBehaviour
 												pw.SetPropertyOnPlayer ("ready", false);
 	
 												ClearRows ();
+												
 	
 												messageActiveGame.enabled = true;
 												messageActiveGame.text = "Waiting For Other Players...";
+							
+												GameObject cancel = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
+							
+												cancel.SetActive (true);
 	
 												CancelInvoke ("Refresh");
 	
