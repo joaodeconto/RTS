@@ -28,7 +28,7 @@ public class MessageInfoManager : MonoBehaviour
 	}
 
 	public GameObject pref_button;
-	public Transform transformPanelMenu;
+	public Transform trnsPanelMessageQueues;
 
 	public MessageQueueAttributes[] messageQueuesAttributes;
 
@@ -51,7 +51,7 @@ public class MessageInfoManager : MonoBehaviour
 
 			if(!messageQueuesAttributes[i].IsTemporizedQueue)
 			{
-				messageQueues[i] = transformPanelMenu.gameObject.AddComponent<DefaultMessageQueue>();
+				messageQueues[i] = trnsPanelMessageQueues.gameObject.AddComponent<DefaultMessageQueue>();
 				DefaultMessageQueue dmq = (DefaultMessageQueue)(messageQueues[i]);
 
 				dmq.Init(pref_button, uiGrid,
@@ -67,7 +67,7 @@ public class MessageInfoManager : MonoBehaviour
 			}
 			else
 			{
-				messageQueues[i] = transformPanelMenu.gameObject.AddComponent<TemporizedMessageQueue>();
+				messageQueues[i] = trnsPanelMessageQueues.gameObject.AddComponent<TemporizedMessageQueue>();
 				TemporizedMessageQueue tmq = (TemporizedMessageQueue)(messageQueues[i]);
 				tmq.Init(pref_button, uiGrid,
 						 messageQueuesAttributes[i].queueName,
@@ -124,15 +124,15 @@ public class MessageInfoManager : MonoBehaviour
 
 	private UIGrid GetQueueGrid(string queueName, Vector3 rootPosition)
 	{
-		Transform trnsQueue = transformPanelMenu.FindChild(queueName);
+		Transform trnsQueue = trnsPanelMessageQueues.FindChild(queueName);
 		GameObject queue = null;
 
 		if(trnsQueue == null)
 		{
 			queue = new GameObject();
 
-			queue.layer            = transformPanelMenu.gameObject.layer;
-			queue.transform.parent = transformPanelMenu.transform;
+			queue.layer            = trnsPanelMessageQueues.gameObject.layer;
+			queue.transform.parent = trnsPanelMessageQueues.transform;
 
 			queue.name = queueName;
 			queue.AddComponent<UIGrid>();

@@ -85,10 +85,10 @@ public abstract class MessageQueue : MonoBehaviour
 
 		++nQueueItems;
 
-		//GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-												//Pref_button);
+		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
+												Pref_button);
 
-		GameObject button = prefabCache.Get(uiGrid.transform, "Button");
+		//GameObject button = prefabCache.Get(uiGrid.transform, "Button");
 
 		button.name  = buttonName;
 		button.layer = gameObject.layer;
