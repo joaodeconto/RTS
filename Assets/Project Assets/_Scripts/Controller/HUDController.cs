@@ -128,7 +128,7 @@ public class HUDController : MonoBehaviour
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
 		touchController    = ComponentGetter.Get<TouchController>();
-		prefabCache        = ComponentGetter.Get<PrefabCache>();
+		//prefabCache        = ComponentGetter.Get<PrefabCache>();
 
 		stackButtonToCreate = new Stack<ButtonStatus>();
 
@@ -177,7 +177,7 @@ public class HUDController : MonoBehaviour
 		refTransform.offsetPosition += Vector3.up * 0.1f;
 
 		selectObj.renderer.material.SetColor ("_TintColor", color);
-		
+
 		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
 
@@ -302,9 +302,9 @@ public class HUDController : MonoBehaviour
 		if (trns != null)
 			button = trns.gameObject;
 		else
-			button = prefabCache.Get(trnsOptionsMenu, "Button");
-			//button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
-										//pref_button);
+			//button = prefabCache.Get(trnsOptionsMenu, "Button");
+			button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
+										pref_button);
 
 		button.name = buttonName;
 		button.transform.localPosition = bs.position;
@@ -351,7 +351,7 @@ public class HUDController : MonoBehaviour
 		CreateFeedback (feedback, transform.position, size, color);
 		oldFeedback.transform.parent = transform;
 	}
-	
+
 	public void CreateFeedback (Feedbacks feedback, Vector3 position, float size, Color color)
 	{
 		if (oldFeedback != null) Destroy (oldFeedback);
@@ -373,9 +373,9 @@ public class HUDController : MonoBehaviour
 		newFeedback.name = "Feedback";
 		newFeedback.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
 		newFeedback.renderer.material.SetColor ("_TintColor", color);
-		
+
 		float duration = 0;
-		
+
 		foreach (ParticleSystem ps in newFeedback.GetComponentsInChildren<ParticleSystem>())
 		{
 			ps.startSize = size * 2f;
@@ -383,7 +383,7 @@ public class HUDController : MonoBehaviour
 			ps.startColor = color;
 			if (ps.duration > duration) duration = ps.duration;
 		}
-		
+
 		oldFeedback = newFeedback;
 
 		Destroy (newFeedback, duration);
