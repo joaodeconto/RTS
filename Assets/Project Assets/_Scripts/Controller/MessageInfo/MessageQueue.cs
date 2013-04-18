@@ -80,8 +80,8 @@ public abstract class MessageQueue : MonoBehaviour
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
 
-		if (prefabCache == null)
-			prefabCache = ComponentGetter.Get<PrefabCache>();
+//		if (prefabCache == null)
+//			prefabCache = ComponentGetter.Get<PrefabCache>();
 
 		++nQueueItems;
 

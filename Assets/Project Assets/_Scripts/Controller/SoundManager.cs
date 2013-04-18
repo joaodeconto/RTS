@@ -31,7 +31,7 @@ public class SoundManager : MonoBehaviour
 		
 		public void Play (AudioSource source, int index)
 		{
-			if (!soundOn) return;
+//			if (!soundOn) return;
 			
 			if (index < soundsClip.Count)
 			{

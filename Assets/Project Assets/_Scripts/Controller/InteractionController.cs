@@ -81,15 +81,30 @@ public class InteractionController : MonoBehaviour
 		{
 			if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
 			{
-				troopController.AttackTroop (hit.transform.gameObject);
+				if (hit.GetComponent<FactoryBase> ().IsVisible)
+				{
+					troopController.AttackTroop (hit.transform.gameObject);
+					return;
+				}
 			}
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 			else
 			{
 				troopController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
+				return;
 			}
 #endif
-			return;
+		}
+		else if (hit.CompareTag ("Unit"))
+		{
+			if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
+			{
+				if (hit.GetComponent<Unit> ().IsVisible)
+				{
+					troopController.AttackTroop (hit.gameObject);
+					return;
+				}
+			}
 		}
 		else if (hit.GetComponent<Resource> () != null)
 		{
@@ -145,15 +160,6 @@ public class InteractionController : MonoBehaviour
 					}
 				}
 			}
-		}
-
-		if (hit.CompareTag ("Unit"))
-		{
-			if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
-			{
-				troopController.AttackTroop (hit.gameObject);
-			}
-			return;
 		}
 		
 		troopController.MoveTroop (touchController.GetFinalPoint);

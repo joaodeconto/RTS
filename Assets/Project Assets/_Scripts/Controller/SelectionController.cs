@@ -205,7 +205,11 @@ public class SelectionController : MonoBehaviour
 						troopController.SelectSoldier (soldier, false);
 				}
 
-				if (troopController.selectedSoldiers.Count != 0) return true;
+				if (troopController.selectedSoldiers.Count != 0)
+				{
+					troopController.PlaySelectSound ();
+					return true;
+				}
 			}
 			else
 			{
@@ -222,6 +226,7 @@ public class SelectionController : MonoBehaviour
 							factoryController.DeselectFactory ();
 							troopController.DeselectAllSoldiers ();
 							troopController.SelectSoldier (selectedUnit, true);
+							troopController.PlaySelectSound ();
 							return true;
 						}
 					}

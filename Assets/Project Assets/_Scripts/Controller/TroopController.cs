@@ -39,7 +39,7 @@ public class TroopController : MonoBehaviour
 		keepFormation = false;
 
 		InvokeRepeating("CheckWorkersInIdle",1.0f,1.0f);
-		InvokeRepeating("OrganizeUnits",1.0f,1.0f);
+//		InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
 
 	public void MoveTroop (Vector3 destination)
@@ -102,7 +102,7 @@ public class TroopController : MonoBehaviour
 	public void AttackTroop (GameObject enemy)
 	{
 		if (enemy == null) return;
-
+		
 		hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform,
 									  enemy.GetComponent<IStats> ().sizeOfSelected, gameplayManager.GetColorTeam(enemy.GetComponent<IStats> ().team));
 
