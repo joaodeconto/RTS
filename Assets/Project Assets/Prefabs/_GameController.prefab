@@ -204,6 +204,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400024}
   - 114: {fileID: 11400016}
+  - 114: {fileID: 11400034}
   m_Layer: 0
   m_Name: TouchController
   m_TagString: Untagged
@@ -758,14 +759,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 463cf097268fe2b43ac9c5a497c9765c, type: 3}
   m_Name: 
   sounds:
-  - name: SoldierSelected
+  - name: Worker
     soundsClip:
-    - {fileID: 8300000, guid: c0d09dda0459f9b4caccf593fcdf92e8, type: 3}
-    - {fileID: 8300000, guid: 1a194737cb3d71a4297fcb218ef47562, type: 3}
-    - {fileID: 8300000, guid: 7fb7d653a9be67b48a1fb0de1547053a, type: 3}
+    - {fileID: 8300000, guid: e49f334396a591c4db0cbc56adb84cfc, type: 3}
+  - name: Neanderthal
+    soundsClip:
+    - {fileID: 8300000, guid: a016e1c7582b3b24a8cc4bf6e1d7141b, type: 3}
+  - name: Raptor
+    soundsClip:
+    - {fileID: 8300000, guid: 3a620befb956c494b9dd63d38d77a762, type: 3}
+  - name: Triceratops
+    soundsClip:
+    - {fileID: 8300000, guid: 323c4d3ca0b0c464bbcba3119a281552, type: 3}
+  - name: Rex
+    soundsClip:
+    - {fileID: 8300000, guid: 8241da6e12637ef4985de4f9fccc329d, type: 3}
   - name: TroopSelected
     soundsClip:
-    - {fileID: 8300000, guid: fea3b621cd7de9e48873a617748ef725, type: 3}
+    - {fileID: 8300000, guid: c7ac946ca172d4d4499d904f48503f2f, type: 3}
+  - name: BuildingSelected
+    soundsClip:
+    - {fileID: 8300000, guid: 6f6ad43210456ca43b4f9e04e12fed1c, type: 3}
 --- !u!114 &11400030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -810,6 +824,20 @@ MonoBehaviour:
     minimumCacheRemaining: 10
     prefab: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
   fakePanel: {fileID: 0}
+--- !u!114 &11400034
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba13a7c7f20708b40a1eb94f6329f6e9, type: 3}
+  m_Name: 
+  sounds:
+  - name: Click
+    soundsClip:
+    - {fileID: 8300000, guid: 7bb4933e9760faf47a89560d2394dded, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

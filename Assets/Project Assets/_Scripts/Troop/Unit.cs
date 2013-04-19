@@ -61,7 +61,6 @@ public class Unit : IStats
 	public bool IsDead { get; protected set; }
 
 	public Animation ControllerAnimation;
-	public int TypeSoundId { get; protected set; }
 	public SoundManager CharSound { get; protected set; }
 
 	private bool canHit;
