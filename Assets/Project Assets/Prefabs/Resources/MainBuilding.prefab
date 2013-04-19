@@ -161,6 +161,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400058}
+  - 111: {fileID: 11100000}
+  - 114: {fileID: 11400010}
   m_Layer: 0
   m_Name: Tent
   m_TagString: Untagged
@@ -239,7 +241,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100032}
   m_LocalRotation: {x: 0, y: -.318752199, z: 0, w: .947838128}
-  m_LocalPosition: {x: 100.073494, y: 10.0012207, z: 63.3740845}
+  m_LocalPosition: {x: 137.303589, y: 10.0012207, z: 136.632675}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400056}
@@ -684,6 +686,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!111 &11100000
+Animation:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100058}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
+  m_UserAABB:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -710,8 +730,8 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 0
         gridYIndex: 0
-  pref_Blood: {fileID: 0}
-  transformBloodReference: {fileID: 0}
+  pref_ParticleDamage: {fileID: 0}
+  transformParticleDamageReference: {fileID: 0}
   playerUnit: 0
   model: {fileID: 100058}
   unitsToCreate:
@@ -790,6 +810,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 851e0f380856f1f4bb96182a9b35fd50, type: 3}
   m_Name: 
   lineTexture: {fileID: 2800000, guid: 7e2a41a51a4383e4bb2c307cb3530064, type: 3}
+--- !u!114 &11400010
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
+  m_Name: 
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1

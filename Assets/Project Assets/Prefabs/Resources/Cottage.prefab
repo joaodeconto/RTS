@@ -94,6 +94,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400010}
+  - 111: {fileID: 11100000}
+  - 114: {fileID: 11400006}
   m_Layer: 0
   m_Name: Cottage
   m_TagString: Untagged
@@ -119,7 +121,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: .32904768, z: 0, w: .944313347}
-  m_LocalPosition: {x: 223.114365, y: 10.0012207, z: 186.574677}
+  m_LocalPosition: {x: 122.991898, y: 10.0012207, z: 126.275887}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400010}
@@ -250,6 +252,24 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_Mesh: {fileID: 4300000, guid: 920b7749fa3dd4647b4a28e96ff8391a, type: 3}
+--- !u!111 &11100000
+Animation:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
+  m_UserAABB:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -298,8 +318,8 @@ MonoBehaviour:
   - materialToApplyColor: {fileID: 2100000, guid: b7996bb7383fc3041997c2fbd4985248,
       type: 2}
   movementActions: []
-  pref_Blood: {fileID: 0}
-  transformBloodReference: {fileID: 0}
+  pref_ParticleDamage: {fileID: 0}
+  transformParticleDamageReference: {fileID: 0}
   playerUnit: 0
   model: {fileID: 100010}
   unitsToCreate: []
@@ -314,6 +334,16 @@ MonoBehaviour:
   guiTextureName: cottage
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
+--- !u!114 &11400006
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
+  m_Name: 
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1

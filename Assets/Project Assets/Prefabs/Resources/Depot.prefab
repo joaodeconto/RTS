@@ -40,6 +40,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400004}
+  - 114: {fileID: 11400006}
+  - 111: {fileID: 11100000}
   m_Layer: 0
   m_Name: Depot
   m_TagString: Untagged
@@ -118,8 +120,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_LocalRotation: {x: -.707106829, y: 0, z: 0, w: .707106829}
-  m_LocalPosition: {x: -1.91830444, y: 0, z: 0}
+  m_LocalRotation: {x: -.571284235, y: -.416694552, z: -.416694582, w: .571284235}
+  m_LocalPosition: {x: -.428848267, y: 0, z: -1.56747437}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -129,7 +131,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: 0, y: -.529359996, z: 0, w: .848397374}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -143,8 +145,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
-  m_LocalRotation: {x: -.707106829, y: 0, z: 0, w: .707106829}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -.571284235, y: -.416694552, z: -.416694582, w: .571284235}
+  m_LocalPosition: {x: .157058716, y: 0, z: .259117126}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -154,8 +156,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
-  m_LocalRotation: {x: -.612260699, y: -.530748606, z: -.351020157, w: .469284236}
-  m_LocalPosition: {x: -2.96478653, y: -.434249878, z: 0}
+  m_LocalRotation: {x: -.287801772, y: -.705348194, z: -.644397795, w: .0663754866}
+  m_LocalPosition: {x: -.748535156, y: -.434249878, z: -2.56394958}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -250,6 +252,24 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_Mesh: {fileID: 4300006, guid: 87e89f77007b9a44798c967b12091f45, type: 3}
+--- !u!111 &11100000
+Animation:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
+  m_UserAABB:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -298,8 +318,8 @@ MonoBehaviour:
   - materialToApplyColor: {fileID: 2100000, guid: b7996bb7383fc3041997c2fbd4985248,
       type: 2}
   movementActions: []
-  pref_Blood: {fileID: 0}
-  transformBloodReference: {fileID: 0}
+  pref_ParticleDamage: {fileID: 0}
+  transformParticleDamageReference: {fileID: 0}
   playerUnit: 0
   model: {fileID: 100004}
   unitsToCreate: []
@@ -314,6 +334,16 @@ MonoBehaviour:
   guiTextureName: depot
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
+--- !u!114 &11400006
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
+  m_Name: 
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
