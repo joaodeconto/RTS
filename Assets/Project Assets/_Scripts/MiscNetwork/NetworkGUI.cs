@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections;
 using System.Linq;
 
+using Visiorama.Audio;
+
 public class NetworkGUI : Photon.MonoBehaviour {
 
 	public string playerName = "";
@@ -124,7 +126,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 		GUILayout.Space (10f);
 
-		SoundManager.Sound.soundOn = GUILayout.Toggle (SoundManager.Sound.soundOn, "Sound:");
+		Sound.soundOn = GUILayout.Toggle (Sound.soundOn, "Sound:");
 
 		GUILayout.Space (10f);
 

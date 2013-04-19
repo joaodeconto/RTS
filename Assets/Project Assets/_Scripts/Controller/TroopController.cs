@@ -314,12 +314,12 @@ public class TroopController : MonoBehaviour
 	{
 		if (selectedSoldiers.Count == 1)
 		{
-			soundManager.PlayRandom ("SoldierSelected");
+			Unit unitSelected = selectedSoldiers[0];
+			soundManager.PlayRandom (unitSelected.category.ToString ());
 		}
 		else
 		{
-			soundManager.Play ("TroopSelected");
-			soundManager.Play ("StructureSelected");
+			soundManager.PlayRandom ("TroopSelected");
 		}
 	}
 

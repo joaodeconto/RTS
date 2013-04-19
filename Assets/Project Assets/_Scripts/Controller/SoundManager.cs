@@ -1,51 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using Visiorama.Audio;
+
 public class SoundManager : MonoBehaviour
 {
-	
-	[System.Serializable]
-	public class Sound
-	{
-		public static bool soundOn = true;
-		
-		public string name;
-		public List<AudioClip> soundsClip;
-		
-		public Sound ()
-		{
-			name = "";
-			soundsClip = new List<AudioClip>();
-			soundsClip.Add (null);
-		}
-		
-		public void Play (AudioSource source)
-		{
-			Play (source, 0);
-		}
-		
-		public void PlayRandom (AudioSource source)
-		{
-			Play (source, Random.Range (0, soundsClip.Count));
-		}
-		
-		public void Play (AudioSource source, int index)
-		{
-//			if (!soundOn) return;
-			
-			if (index < soundsClip.Count)
-			{
-				if (source.isPlaying) source.Stop ();
-				source.clip = soundsClip[index];
-				source.Play ();
-			}
-			else	
-			{
-				Debug.LogError ("Null reference index soundsClip. Index: " + index 
-								+ " - Number of soundsClip: " + soundsClip.Count);
-			}
-		}
-	}
 	
 	public List<Sound> sounds = new List<Sound> ();
 	

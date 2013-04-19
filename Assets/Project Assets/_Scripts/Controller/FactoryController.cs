@@ -10,9 +10,12 @@ public class FactoryController : MonoBehaviour
 	public List<FactoryBase> factorys = new List<FactoryBase> ();
 	[System.NonSerialized]
 	public FactoryBase selectedFactory;
-
+	
+	protected SoundManager soundManager;
+	
 	public void Init ()
 	{
+		soundManager = ComponentGetter.Get<SoundManager> ();
 	}
 
 	public void AddFactory (FactoryBase factory)
@@ -35,6 +38,8 @@ public class FactoryController : MonoBehaviour
 			return;
 
 		selectedFactory = factory;
+		
+		PlaySelectSound ();
 
 		factory.Select ();
 	}
@@ -59,6 +64,11 @@ public class FactoryController : MonoBehaviour
 		}
 
 		return null;
+	}
+	
+	public void PlaySelectSound ()
+	{
+		soundManager.PlayRandom ("BuildingSelected");
 	}
 
 	public void ChangeVisibility (FactoryBase factory, bool visibility)

@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
+using Visiorama.Audio;
+
 [CustomEditor(typeof(SoundManager))]
 public class SoundManagerInspector : Editor
 {
@@ -21,7 +23,7 @@ public class SoundManagerInspector : Editor
 		if (GUILayout.Button (new GUIContent("Add Sound", 
 			"Create a new Sound to you set.")))
 		{
-			soundManager.sounds.Add (new SoundManager.Sound());
+			soundManager.sounds.Add (new Sound());
 		}
 		
 		if (soundManager.sounds.Count == 0)
