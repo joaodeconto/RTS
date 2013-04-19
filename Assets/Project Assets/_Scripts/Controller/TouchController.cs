@@ -109,9 +109,16 @@ public class TouchController : MonoBehaviour
 
 			if (!DisableDragOn)
 			{
-				if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 1f)
+				if (!DragOn)
 				{
-					DragOn = true;
+#if UNITY_ANDROID
+					if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 3f)
+#else
+					if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 1f)
+#endif
+					{
+						DragOn = true;
+					}
 				}
 			}
 

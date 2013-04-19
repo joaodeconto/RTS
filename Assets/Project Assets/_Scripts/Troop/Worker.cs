@@ -112,7 +112,6 @@ public class Worker : Unit
 					resourceId = -1;
 					lastResource.RemoveWorker (this);
 					workerState = WorkerState.None;
-					unitState = Unit.UnitState.Idle;
 					return;
 				}
 				else
@@ -311,60 +310,48 @@ public class Worker : Unit
 
 	public override void SyncAnimation ()
 	{
-		switch (workerState)
+		if (IsVisible || true)
 		{
-			case WorkerState.Carrying:
-				if (IsVisible)
-				{
+			switch (workerState)
+			{
+				case WorkerState.Carrying:
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
 					}
-				}
-				break;
-
-			case WorkerState.CarryingIdle:
-				if (IsVisible)
-				{
+					break;
+	
+				case WorkerState.CarryingIdle:
 					if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
 					{
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
 					}
-				}
-				break;
-
-			case WorkerState.Extracting:
-				if (IsVisible)
-				{
+					break;
+	
+				case WorkerState.Extracting:
 					if (resourceWorker[resourceId].workerAnimation.Extracting)
 					{
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting);
 						resourceWorker[resourceId].extractingObject.SetActive (true);
 						resourceWorker[resourceId].carryingObject.SetActive (false);
 					}
-				}
-				break;
-
-			case WorkerState.Building:
-			case WorkerState.Repairing:
-				if (IsVisible)
-				{
+					break;
+	
+				case WorkerState.Building:
+				case WorkerState.Repairing:
 					if (resourceWorker[0].workerAnimation.Extracting)
 					{
 						ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting);
 						resourceWorker[0].extractingObject.SetActive (true);
 						if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
 					}
-				}
-				break;
-
-			case WorkerState.None:
-				if (IsVisible)
-				{
+					break;
+	
+				case WorkerState.None:
 					if (unitState == Unit.UnitState.Attack)
 					{
 						resourceWorker[0].extractingObject.SetActive (true);
@@ -373,12 +360,12 @@ public class Worker : Unit
 					{
 						resourceWorker[0].extractingObject.SetActive (false);
 					}
-
+	
 					if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
-				}
-
-				base.SyncAnimation ();
-				break;
+	
+					base.SyncAnimation ();
+					break;
+			}
 		}
 	}
 

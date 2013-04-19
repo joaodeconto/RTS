@@ -24,12 +24,12 @@ public class InternalMainMenu : MonoBehaviour
 		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 
 		dcb.Init(null, (ht_hud) =>
-							{
-//								Hashtable roomProperties = new Hashtable() { { "closeRoom", false } };
-//								PhotonNetwork.JoinRandomRoom (roomProperties, 0);
+		{
+//			Hashtable roomProperties = new Hashtable() { { "closeRoom", false } };
+//			PhotonNetwork.JoinRandomRoom (roomProperties, 0);
 
-								//TODO fazer timeout de conexão
-							});
+			//TODO fazer timeout de conexão
+		});
 
 		listChildOptions = new List<Transform>();
 		foreach (Transform child in options)
@@ -45,9 +45,17 @@ public class InternalMainMenu : MonoBehaviour
 
 				dcb = button.gameObject.AddComponent<DefaultCallbackButton>();
 				dcb.Init (ht, (ht_hud) =>
-								{
-									ShowMenu ((string)ht_hud["optionName"]);
-								});
+				{
+					ShowMenu ((string)ht_hud["optionName"]);
+				});
+			}
+			
+			if (child.name == "Quit")
+			{
+				dcb.ChangeParams (null, (ht) => 
+				{
+					 Application.Quit ();
+				});
 			}
 		}
 	}

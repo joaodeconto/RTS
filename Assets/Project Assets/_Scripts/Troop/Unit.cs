@@ -111,6 +111,8 @@ public class Unit : IStats
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
+		if (ControllerAnimation != null) 
+			if (gameplayManager.IsSameTeam (team)) ControllerAnimation.cullingType = AnimationCullingType.AlwaysAnimate;
 
 //		if (ControllerAnimation != null)
 //		{
