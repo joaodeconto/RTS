@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Visiorama.Utils;
 
 using Visiorama;
@@ -134,6 +135,19 @@ public class TroopController : MonoBehaviour
 		soldiers.Remove (soldier);
 
 		gameplayManager.DecrementUnit (soldier.team, soldier.numberOfUnits);
+	}
+	
+	public void DestroySoldiersTeam (int teamID)
+	{
+		Unit[] units = (from soldier in soldiers
+	        where teamID == soldier.team
+	        select soldier).ToArray ();
+		
+		foreach (Unit unit in units)
+		{
+			gameplayManager.RemoveStatTeamID (teamID);
+			StartCoroutine (unit.OnDie ());
+		}
 	}
 
 	public void SoldierToogleSelection (Unit soldier)

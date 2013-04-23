@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Visiorama;
+using Visiorama.Extension;
 
 public class FactoryBase : IStats
 {
@@ -188,7 +189,7 @@ public class FactoryBase : IStats
 	public virtual void SyncAnimation ()
 	{
 		if (!IsVisible) return;
-
+		
 		buildingObjects.baseObject.SetActive (buildingState == BuildingState.Base);
 		buildingObjects.unfinishedObject.SetActive (buildingState == BuildingState.Unfinished);
 		buildingObjects.finishedObject.SetActive (buildingState == BuildingState.Finished);
@@ -246,12 +247,17 @@ public class FactoryBase : IStats
 		}
 	}
 
-	public virtual void OnDie ()
+	public virtual IEnumerator OnDie ()
 	{
 		factoryController.RemoveFactory (this);
 
+		model.animation.Play ();
+		
 		if (Selected) Deselect ();
+		
+//		yield return StartCoroutine (model.animation.WaitForAnimation (model.animation.clip));
 
+		yield return new WaitForSeconds (4f);
 		if (IsNetworkInstantiate)
 		{
 			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
@@ -359,6 +365,8 @@ public class FactoryBase : IStats
 
 	public void Select ()
 	{
+		if (IsRemoved) return;
+		
 		if (!Selected) Selected = true;
 		else return;
 
@@ -538,5 +546,18 @@ public class FactoryBase : IStats
 		{
 			return model.transform.parent != null;
 		}
+	}
+	
+	// RPCs
+	[RPC]
+	public override void InstantiatParticleDamage ()
+	{
+		base.InstantiatParticleDamage ();
+	}
+	
+	[RPC]
+	public override void SendRemove ()
+	{
+		base.SendRemove ();
 	}
 }

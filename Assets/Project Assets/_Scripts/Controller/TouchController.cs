@@ -140,8 +140,6 @@ public class TouchController : MonoBehaviour
 				ignoreTouch = false;
 				return;
 			}
-			else
-			if (NGUIUtils.ClickedInGUI (camerasUI, "GUI")) return;
 
 			if (!DragOn) soundSource.Play ("Click");
 			

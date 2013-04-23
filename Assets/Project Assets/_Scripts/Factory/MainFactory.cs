@@ -3,6 +3,16 @@ using System.Collections;
 
 public class MainFactory : FactoryBase
 {
+	public override void Init ()
+	{
+		base.Init ();
+		
+		if (photonView.isMine)
+		{
+			gameplayManager.IncrementMainBase (team);
+		}
+	}
+	
 	void ConstructFinished ()
 	{
 		if (gameplayManager.ReachedMaxPopulation)
@@ -11,10 +21,31 @@ public class MainFactory : FactoryBase
 			gameplayManager.IncrementMaxOfUnits (8);
 	}
 	
-	public override void OnDie ()
+	public override IEnumerator OnDie ()
 	{
-		if (wasBuilt) gameplayManager.DecrementMaxOfUnits (8);
+		if (photonView.isMine)
+		{
+			if (wasBuilt)
+			{
+				gameplayManager.DecrementMaxOfUnits (8);
+			}
+			
+			gameplayManager.DecrementMainBase (team);
+		}
 		
-		base.OnDie ();
+		return base.OnDie ();
+	}
+	
+	// RPCs
+	[RPC]
+	public override void InstantiatParticleDamage ()
+	{
+		base.InstantiatParticleDamage ();
+	}
+	
+	[RPC]
+	public override void SendRemove ()
+	{
+		base.SendRemove ();
 	}
 }

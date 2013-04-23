@@ -62,10 +62,10 @@ public class Worker : Unit
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
 	public bool hasResource {get; protected set;}
+	protected int lastResourceId;
 	protected Resource lastResource;
 	protected bool settingWorkerNull;
-
-
+	
 	protected FactoryBase factoryChoose, lastFactory;
 	protected EventManager eventManager;
 	protected bool movingToFactory;
@@ -310,7 +310,7 @@ public class Worker : Unit
 
 	public override void SyncAnimation ()
 	{
-		if (IsVisible || true)
+		if (IsVisible)
 		{
 			switch (workerState)
 			{
@@ -320,6 +320,7 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
+						lastResourceId = resourceId;
 					}
 					break;
 	
@@ -329,6 +330,7 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
+						lastResourceId = resourceId;
 					}
 					break;
 	
@@ -338,6 +340,7 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting);
 						resourceWorker[resourceId].extractingObject.SetActive (true);
 						resourceWorker[resourceId].carryingObject.SetActive (false);
+						lastResourceId = resourceId;
 					}
 					break;
 	
@@ -347,7 +350,11 @@ public class Worker : Unit
 					{
 						ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting);
 						resourceWorker[0].extractingObject.SetActive (true);
-						if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
+						if (lastResourceId != -1)
+						{
+							resourceWorker[lastResourceId].carryingObject.SetActive (false);
+							lastResourceId = resourceId;
+						}
 					}
 					break;
 	
@@ -361,7 +368,11 @@ public class Worker : Unit
 						resourceWorker[0].extractingObject.SetActive (false);
 					}
 	
-					if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
+					if (lastResourceId != -1)
+					{
+						resourceWorker[lastResourceId].carryingObject.SetActive (false);
+						lastResourceId = resourceId;
+					}
 	
 					base.SyncAnimation ();
 					break;
@@ -646,5 +657,11 @@ public class Worker : Unit
 	public override void InstantiatParticleDamage ()
 	{
 		base.InstantiatParticleDamage ();
+	}
+	
+	[RPC]
+	public override void SendRemove ()
+	{
+		base.SendRemove ();
 	}
 }

@@ -179,12 +179,10 @@ public abstract class IStats : Photon.MonoBehaviour
 			}
 		}
 
-		if (Health == 0)
+		if (Health == 0 && !IsRemoved)
 		{
-			gameplayManager.RemoveStatTeamID (team);
-			IsRemoved = true;
-
-			SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
+			SendRemove ();
+			photonView.RPC ("SendRemove", PhotonTargets.Others);
 		}
 	}
 
@@ -201,6 +199,15 @@ public abstract class IStats : Photon.MonoBehaviour
 		{
 			newParticleDamage = Instantiate (pref_ParticleDamage, transform.position, Quaternion.Euler (transform.forward)) as GameObject;
 		}
+	}
+	
+	[RPC]
+	public virtual void SendRemove ()
+	{
+		gameplayManager.RemoveStatTeamID (team);
+		IsRemoved = true;
+		
+		SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
 	}
 
 	public GameObject model;

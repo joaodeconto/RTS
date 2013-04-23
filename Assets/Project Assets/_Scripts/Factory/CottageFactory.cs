@@ -11,10 +11,26 @@ public class CottageFactory : FactoryBase
 			gameplayManager.IncrementMaxOfUnits (5);
 	}
 	
-	public override void OnDie ()
+	public override IEnumerator OnDie ()
 	{
-		if (wasBuilt) gameplayManager.DecrementMaxOfUnits (5);
+		if (wasBuilt)
+		{
+			if (photonView.isMine) gameplayManager.DecrementMaxOfUnits (5);
+		}
 		
-		base.OnDie ();
+		return base.OnDie ();
+	}
+	
+	// RPC
+	[RPC]
+	public override void InstantiatParticleDamage ()
+	{
+		base.InstantiatParticleDamage ();
+	}
+	
+	[RPC]
+	public override void SendRemove ()
+	{
+		base.SendRemove ();
 	}
 }

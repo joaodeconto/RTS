@@ -230,7 +230,16 @@ public class Unit : IStats
 			case UnitState.Attack:
 
 				followingTarget = true;
-
+			
+				if (targetAttack != null)
+				{
+					if (targetAttack.GetComponent<IStats>().IsRemoved)
+					{
+						TargetingEnemy (null);
+						IsAttacking = false;
+					}
+				}
+			
 				if (IsAttacking) return;
 
 				Stop ();
@@ -258,31 +267,34 @@ public class Unit : IStats
 
 	public virtual void SyncAnimation ()
 	{
-		switch (unitState)
+		if (IsVisible)
 		{
-		case UnitState.Idle:
-			if (unitAnimation.Idle)
-				ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
-
-			break;
-		case UnitState.Walk:
-			if (unitAnimation.Walk)
+			switch (unitState)
 			{
-				ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed;
-				ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
+			case UnitState.Idle:
+				if (unitAnimation.Idle)
+					ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
+	
+				break;
+			case UnitState.Walk:
+				if (unitAnimation.Walk)
+				{
+					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed;
+					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
+				}
+	
+				break;
+			case UnitState.Attack:
+				if (unitAnimation.Attack)
+					ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
+	
+				break;
+			case UnitState.Die:
+				if (unitAnimation.DieAnimation)
+					ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
+	
+				break;
 			}
-
-			break;
-		case UnitState.Attack:
-			if (unitAnimation.Attack)
-				ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-
-			break;
-		case UnitState.Die:
-			if (unitAnimation.DieAnimation)
-				ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
-
-			break;
 		}
 	}
 
@@ -488,32 +500,20 @@ public class Unit : IStats
 //				else if (targetAttack.GetComponent<FactoryBase>())
 //					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
 //			}
-
+			
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-
+			
 			IsAttacking = true;
-
-			if (targetAttack == null) return true;
 			
-			if (targetAttack.GetComponent<IStats>().IsRemoved)
-			{
-				TargetingEnemy (null);
-				return true;
-			}
-			
-			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
-
-			IsAttacking = false;
-
 			if (!PhotonNetwork.offlineMode)
 			{
-				if (targetAttack.GetComponent<Unit>())
+				if (targetAttack.GetComponent<Unit>() != null)
 				{
 					photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 //					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 //					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 				}
-				else if (targetAttack.GetComponent<FactoryBase>())
+				else if (targetAttack.GetComponent<FactoryBase>() != null)
 				{
 					photonView.RPC ("AttackFactory", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 				}
@@ -523,6 +523,10 @@ public class Unit : IStats
 				if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
 				else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
 			}
+			
+			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
+			
+			IsAttacking = false;
 		}
 		else
 		{
@@ -539,13 +543,13 @@ public class Unit : IStats
 				}
 				else
 				{
-					if (targetAttack.GetComponent<Unit>())
+					if (targetAttack.GetComponent<Unit>() != null)
 					{
 						photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 	//					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 	//					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 					}
-					else if (targetAttack.GetComponent<FactoryBase>())
+					else if (targetAttack.GetComponent<FactoryBase>() != null)
 					{
 						photonView.RPC ("AttackFactory", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 					}
@@ -665,6 +669,8 @@ public class Unit : IStats
 	        where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
 	        select pps).ToArray ();
 			playerTargetAttack = pp[0];
+			
+			followingTarget = true;
 		}
 		else playerTargetAttack = null;
 		
@@ -757,46 +763,37 @@ public class Unit : IStats
 
 		if (nearbyUnits.Length == 0) return;
 
-		GameObject unitSelected = null;
+		GameObject enemyFound = null;
         for (int i = 0; i != nearbyUnits.Length; i++)
 		{
-			if (nearbyUnits[i].GetComponent<Unit> ())
+			if (nearbyUnits[i].GetComponent<IStats> ())
 			{
-				if (nearbyUnits[i].GetComponent<Unit> ().team != team)
+				if (nearbyUnits[i].GetComponent<IStats> ().team != team)
 				{
-					if (unitSelected == null) unitSelected = nearbyUnits[i].gameObject;
-					else
+					if (enemyFound == null)
 					{
-						if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
-							Vector3.Distance (transform.position, unitSelected.transform.position))
-						{
-							unitSelected = nearbyUnits[i].gameObject;
-						}
+						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
+							enemyFound = nearbyUnits[i].gameObject;
 					}
-				}
-			}
-			else
-			{
-				if (nearbyUnits[i].GetComponent<FactoryBase> ().team != team)
-				{
-					if (unitSelected == null) unitSelected = nearbyUnits[i].gameObject;
 					else
 					{
-						if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
-							Vector3.Distance (transform.position, unitSelected.transform.position))
+						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
 						{
-							unitSelected = nearbyUnits[i].gameObject;
+							if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
+								Vector3.Distance (transform.position, enemyFound.transform.position))
+							{
+								enemyFound = nearbyUnits[i].gameObject;
+							}
 						}
 					}
 				}
 			}
         }
 
-		if (unitSelected == null) return;
+		if (enemyFound == null) return;
 		else
 		{
-			TargetingEnemy (unitSelected);
-			followingTarget = true;
+			TargetingEnemy (enemyFound);
 		}
 	}
 
@@ -882,5 +879,11 @@ public class Unit : IStats
 	public override void InstantiatParticleDamage ()
 	{
 		base.InstantiatParticleDamage ();
+	}
+	
+	[RPC]
+	public override void SendRemove ()
+	{
+		base.SendRemove ();
 	}
 }

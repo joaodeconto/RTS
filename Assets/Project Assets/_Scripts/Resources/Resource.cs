@@ -51,14 +51,12 @@ public class Resource : Photon.MonoBehaviour
 	public int resistance = 5;
 	public int limitWorkers = 20;
 	
-//	public Worker worker {get; protected set;}
 	// Passa o Worker, sendo o int a Resistência Atual
 	public Dictionary<Worker, int> WorkersResistance {get; protected set;}
 	
 	public bool IsLimitWorkers {
 		get
 		{
-//			return worker != null;
 			return WorkersResistance.Count >= limitWorkers;
 		}
 	}

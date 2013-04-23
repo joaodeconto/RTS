@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using Visiorama;
 
@@ -11,10 +12,12 @@ public class FactoryController : MonoBehaviour
 	[System.NonSerialized]
 	public FactoryBase selectedFactory;
 	
+	protected GameplayManager gameplayManager;
 	protected SoundManager soundManager;
 	
 	public void Init ()
 	{
+		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		soundManager = ComponentGetter.Get<SoundManager> ();
 	}
 
@@ -51,6 +54,20 @@ public class FactoryController : MonoBehaviour
 			if (selectedFactory.Deselect (false))
 				selectedFactory = null;
 		}
+	}
+	
+	public void DestroyFactorysTeam (int teamID)
+	{
+		FactoryBase[] fcs = (from factory in factorys
+	        where teamID == factory.team
+	        select factory).ToArray ();
+		
+		foreach (FactoryBase fc in fcs)
+		{
+			gameplayManager.RemoveStatTeamID (teamID);
+			StartCoroutine (fc.OnDie ());
+		}
+
 	}
 
 	public FactoryBase FindFactory (string name)
