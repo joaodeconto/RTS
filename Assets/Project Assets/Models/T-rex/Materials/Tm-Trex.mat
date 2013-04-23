@@ -8,7 +8,6 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Tm-Trex
   m_Shader: {fileID: 2, guid: 0000000000000000e000000000000000, type: 0}
-  m_ShaderKeywords: []
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -26,9 +25,17 @@ Material:
           m_Texture: {fileID: 2800000, guid: 92e21ba104068614b9026d7c5fc257c1, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-    m_Floats: {}
+    m_Floats:
+      data:
+        first:
+          name: _Shininess
+        second: 1
     m_Colors:
       data:
         first:
           name: _Color
         second: {r: .800000012, g: .800000012, b: .800000012, a: 1}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: 1, g: 1, b: 1, a: 1}
