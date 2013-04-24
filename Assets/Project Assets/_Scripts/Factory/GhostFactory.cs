@@ -24,7 +24,7 @@ public class GhostFactory : MonoBehaviour
 		this.factoryConstruction = factoryConstruction;
 
 		thisFactory = GetComponent<FactoryBase>();
-		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.AllBuffered, worker.team);
+		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team);
 		
 		correctName = thisFactory.name;
 		thisFactory.name = "GhostFactory";
@@ -134,7 +134,7 @@ public class GhostFactory : MonoBehaviour
 			
 			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
 
-			thisFactory.photonView.RPC ("Instance", PhotonTargets.AllBuffered);
+			thisFactory.photonView.RPC ("Instance", PhotonTargets.All);
 
 			worker.SetMoveToFactory (thisFactory);
 			TroopController troopController = ComponentGetter.Get<TroopController> ();

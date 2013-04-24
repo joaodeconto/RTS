@@ -193,7 +193,10 @@ public class HUDController : MonoBehaviour
 
 		foreach (Transform child in HUDRoot.go.transform)
 		{
-			Destroy (child.gameObject);
+			if (child.GetComponent<HealthBar>().target == target.GetComponent<IStats> ())
+			{
+				Destroy (child.gameObject);
+			}
 		}
 	}
 
@@ -220,7 +223,7 @@ public class HUDController : MonoBehaviour
 	public void RemoveEnqueuedButtonInInspector(string buttonName, string queueName)
 	{
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-
+	
 		mq.RemoveMessageInfo(buttonName);
 	}
 
@@ -234,7 +237,7 @@ public class HUDController : MonoBehaviour
 	public bool CheckQueuedButtonIsFirst(string buttonName, string queueName)
 	{
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-
+		
 		return mq.CheckQueuedButtonIsFirst(buttonName);
 	}
 
@@ -333,7 +336,7 @@ public class HUDController : MonoBehaviour
 		}
 	}
 
-	public void DestroyInspector ()
+	public void DestroyInspector (string type)
 	{
 		IsDestroying = true;
 		foreach (Transform child in trnsOptionsMenu)
@@ -341,9 +344,11 @@ public class HUDController : MonoBehaviour
 			if (!child.gameObject.name.Contains(PERSIST_STRING))
 				Destroy (child.gameObject);
 		}
-
-		messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
-		messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
+		
+		if (type.ToLower ().Equals ("factory"))
+			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
+		else if (type.ToLower ().Equals ("unit"))
+			messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
 	}
 
 	public void CreateFeedback (Feedbacks feedback, Transform transform, float size, Color color)

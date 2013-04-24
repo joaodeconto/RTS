@@ -21,6 +21,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		public UILabel labelUnits;
 		public GameObject uiVictoryObject;
 		public GameObject uiDefeatObject;
+		public UILabel labelTime;
+		public GameObject uiLostMainBaseObject;
 	}
 	
 	public const int MAX_POPULATION_ALLOWED = 200;
@@ -36,6 +38,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	protected int loserTeams;
 	protected bool loseGame = false;
 	protected bool winGame = false;
+	protected float currentTime;
 
 	public int MyTeam {get; protected set;}
 
@@ -68,6 +71,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		
 		hud.uiDefeatObject.SetActive (false);
 		hud.uiVictoryObject.SetActive (false);
+		hud.uiLostMainBaseObject.SetActive (false);
 		
 		excessHousesIncrements = 0;
 	}
@@ -120,7 +124,9 @@ public class GameplayManager : Photon.MonoBehaviour
 		if (IsSameTeam (teamID))
 		{
 			mainBasesIncrements++;
+			hud.uiLostMainBaseObject.SetActive (false);
 			CancelInvoke ("NoMainBase");
+			CancelInvoke ("DecrementTime");
 		}
 	}
 	
@@ -131,7 +137,11 @@ public class GameplayManager : Photon.MonoBehaviour
 			mainBasesIncrements--;
 			if (mainBasesIncrements == 0)
 			{
-				Invoke ("NoMainBase", 15f);
+				hud.uiLostMainBaseObject.SetActive (true);
+				currentTime = 40f;
+				hud.labelTime.text = currentTime.ToString () + "s";
+				Invoke ("NoMainBase", currentTime);
+				InvokeRepeating ("DecrementTime", 1f, 1f);
 			}
 		}
 	}
@@ -240,8 +250,16 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		if (mainBasesIncrements == 0)
 		{
+			hud.uiLostMainBaseObject.SetActive (false);
+			CancelInvoke ("DecrementTime");
 			photonView.RPC ("NewLoser", PhotonTargets.All, MyTeam);
 		}
+	}
+	
+	void DecrementTime ()
+	{
+		currentTime -= 1f;
+		hud.labelTime.text = currentTime.ToString () + "s";
 	}
 	
 	[RPC]

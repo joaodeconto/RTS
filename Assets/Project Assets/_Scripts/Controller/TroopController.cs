@@ -170,6 +170,9 @@ public class TroopController : MonoBehaviour
 		else
 		{
 			selectedSoldiers.Remove (soldier);
+			
+			hudController.RemoveEnqueuedButtonInInspector(this.name, Unit.UnitGroupQueueName);
+			
 			soldier.Deselect ();
 		}
 	}
@@ -182,9 +185,11 @@ public class TroopController : MonoBehaviour
 		{
 			if (soldier != null)
 			{
-				soldier.Deselect (true);
+				soldier.Deselect ();
 			}
 		}
+
+		hudController.DestroyInspector ("unit");
 
 		selectedSoldiers.Clear ();
 	}

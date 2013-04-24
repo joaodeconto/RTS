@@ -149,6 +149,8 @@ public class FactoryBase : IStats
 			unitToCreate = listedToCreate[0];
 			timeToCreate = unitToCreate.timeToCreate;
 			inUpgrade = true;
+			
+			if (Selected) buildingSlider.gameObject.SetActive(true);
 		}
 		else
 		{
@@ -253,7 +255,12 @@ public class FactoryBase : IStats
 
 		model.animation.Play ();
 		
-		if (Selected) Deselect ();
+		if (Selected)
+		{
+			hudController.DestroyInspector ("factory");
+			
+			Deselect ();
+		}
 		
 //		yield return StartCoroutine (model.animation.WaitForAnimation (model.animation.clip));
 
@@ -401,8 +408,6 @@ public class FactoryBase : IStats
 															FactoryBase factory     = this;
 															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
 
-															buildingSlider.gameObject.SetActiveRecursively(true);
-
 															if (!factory.OverLimitCreateUnit)
 																factory.EnqueueUnitToCreate (unitFactory.unit);
 															else
@@ -410,7 +415,7 @@ public class FactoryBase : IStats
 														});
 			}
 
-			for(int i = listedToCreate.Count - 1; i != -1; --i)
+			for(int i = 0; i != listedToCreate.Count; ++i)
 			{
 				UnitFactory unitFactory = listedToCreate[i];
 
@@ -450,7 +455,7 @@ public class FactoryBase : IStats
 
 			if(!isGroupDelesection)
 			{
-				hudController.DestroyInspector ();
+				hudController.DestroyInspector ("factory");
 			}
 		}
 

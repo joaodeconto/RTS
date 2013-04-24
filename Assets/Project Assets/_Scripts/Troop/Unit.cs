@@ -162,8 +162,13 @@ public class Unit : IStats
 
 	void OnDestroy ()
 	{
-		if (Selected && !playerUnit) Deselect ();
-		if (!IsRemoved && !playerUnit) troopController.soldiers.Remove (this);
+		if (Selected && !playerUnit)
+		{
+			hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
+			
+			Deselect ();
+		}
+		if (!IsRemoved && !playerUnit) troopController.RemoveSoldier (this);
 	}
 
 	public virtual void IAStep ()
@@ -618,20 +623,10 @@ public class Unit : IStats
 		}
 	}
 
-	public void Deselect (bool isGroupDelesection = false)
+	public void Deselect ()
 	{
-		Debug.Log ("isGroupDelesection: ");
 		Selected = false;
 		hudController.DestroySelected (transform);
-
-		if(isGroupDelesection)
-		{
-			hudController.DestroyInspector ();
-		}
-		else
-		{
-			hudController.RemoveEnqueuedButtonInInspector(this.name, Unit.UnitGroupQueueName);
-		}
 	}
 
 	public bool IsRangeAttack (GameObject soldier)
@@ -807,7 +802,12 @@ public class Unit : IStats
 
 		troopController.RemoveSoldier(this);
 		
-		if (Selected) Deselect ();
+		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
+		
+		if (Selected)
+		{
+			Deselect ();
+		}
 
 		if (unitAnimation.DieAnimation)
 		{

@@ -511,6 +511,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b897794dc18157244b70c2e6fce62e77, type: 3}
   m_Name: 
+  uiExitGameObject: {fileID: 0}
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -588,6 +589,8 @@ MonoBehaviour:
     labelUnits: {fileID: 0}
     uiVictoryObject: {fileID: 0}
     uiDefeatObject: {fileID: 0}
+    labelTime: {fileID: 0}
+    uiLostMainBaseObject: {fileID: 0}
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -694,35 +697,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8230260338ccb4bbc5b02ba6115664, type: 3}
   m_Name: 
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
-  trnsPanelMessageQueues: {fileID: 0}
   messageQueuesAttributes:
   - queueName: Unit Group
-    rootPosition: {x: 450, y: 100}
+    panel: {fileID: 0}
+    rootPosition: {x: -175, y: 90}
     cellSize: {x: 50, y: 50}
     padding: {x: 10, y: 10}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 10
-    GroupIfReachMaxMessages: 1
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Factory
-    rootPosition: {x: 450, y: 100}
+    panel: {fileID: 0}
+    rootPosition: {x: -175, y: 90}
     cellSize: {x: 50, y: 50}
     padding: {x: 10, y: 10}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 5
-    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Events
+    panel: {fileID: 0}
     rootPosition: {x: 25, y: 600}
     cellSize: {x: 40, y: 40}
     padding: {x: 5, y: 5}
@@ -730,12 +733,12 @@ MonoBehaviour:
     IsVerticalQueue: 1
     maxPerLine: 10
     maxItems: 10
-    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
       timeToFadeout: 3
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Chat
+    panel: {fileID: 0}
     rootPosition: {x: -800, y: 110}
     cellSize: {x: 0, y: 0}
     padding: {x: 0, y: 0}
@@ -743,7 +746,6 @@ MonoBehaviour:
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 10
-    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
