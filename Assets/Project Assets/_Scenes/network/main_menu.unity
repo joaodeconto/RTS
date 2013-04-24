@@ -6884,6 +6884,33 @@ Transform:
   - {fileID: 92110823}
   - {fileID: 1370486021}
   m_Father: {fileID: 123357796}
+--- !u!1 &887915661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 887915662}
+  m_Layer: 0
+  m_Name: Components
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &887915662
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 887915661}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1063312048}
+  m_Father: {fileID: 0}
 --- !u!1 &924988293
 GameObject:
   m_ObjectHideFlags: 0
@@ -7266,6 +7293,54 @@ MonoBehaviour:
   mEffectDistance: {x: 1, y: 1}
   mLineWidth: 0
   mMultiline: 1
+--- !u!1 &1063312047
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1063312048}
+  - 114: {fileID: 1063312049}
+  m_Layer: 0
+  m_Name: MiniMapController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1063312048
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1063312047}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 887915662}
+--- !u!114 &1063312049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1063312047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9352519d91eb83649ae7eb6fb1a4d82a, type: 3}
+  m_Name: 
+  pref_UnitMiniMap: {fileID: 0}
+  pref_StructureMiniMap: {fileID: 0}
+  miniMapPanel: {fileID: 0}
+  MiniMapRoot: {fileID: 0}
+  CamPositionMiniMap: {fileID: 0}
+  CamPositionTexture: {fileID: 0}
+  mapTransform: {fileID: 0}
+  fogMiniMap: {fileID: 0}
+  visualizationSize: {x: 0, y: 0, z: 0}
+  visualizationPosition: {x: 0, y: 0, z: 0}
+  MiniMapRefreshInterval: .400000006
 --- !u!1 &1065853505
 GameObject:
   m_ObjectHideFlags: 0
