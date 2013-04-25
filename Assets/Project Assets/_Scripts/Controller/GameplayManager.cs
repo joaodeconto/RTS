@@ -33,6 +33,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public int maxOfUnits { get; protected set; }
 	protected int mainBasesIncrements;
 	protected int excessHousesIncrements;
+	protected int numberOfHousesMore;
 	
 	protected Dictionary<int, int> teamNumberOfStats = new Dictionary<int, int>();
 	protected int loserTeams;
@@ -73,7 +74,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiVictoryObject.SetActive (false);
 		hud.uiLostMainBaseObject.SetActive (false);
 		
-		excessHousesIncrements = 0;
+		numberOfHousesMore = excessHousesIncrements = 0;
 	}
 	
 	/// <summary>
@@ -158,13 +159,25 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public void IncrementMaxOfUnits (int numberOfIncrementUnits)
 	{
-		if (!ReachedMaxPopulation) maxOfUnits += numberOfIncrementUnits;
+		if (!ReachedMaxPopulation)
+		{
+			maxOfUnits += numberOfIncrementUnits;
+			if (maxOfUnits >= MAX_POPULATION_ALLOWED)
+			{
+				numberOfHousesMore = maxOfUnits - MAX_POPULATION_ALLOWED;
+				maxOfUnits -= numberOfHousesMore;
+			}
+		}
 		else ++excessHousesIncrements;
 	}
 
 	public void DecrementMaxOfUnits (int numberOfDecrementUnits)
 	{
-		if (excessHousesIncrements == 0) maxOfUnits -= numberOfDecrementUnits;
+		if (excessHousesIncrements == 0)
+		{
+			maxOfUnits -= numberOfDecrementUnits;
+			if (numberOfHousesMore != 0) maxOfUnits += numberOfHousesMore; 
+		}
 		else --excessHousesIncrements;
 	}
 	

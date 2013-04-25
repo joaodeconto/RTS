@@ -3,19 +3,21 @@ using System.Collections;
 
 public class CottageFactory : FactoryBase
 {
+	public const int numberOfIncementUnits = 7;
+	
 	void ConstructFinished ()
 	{
 		if (gameplayManager.ReachedMaxPopulation)
 			eventManager.AddEvent("reach max population");
 		else
-			gameplayManager.IncrementMaxOfUnits (5);
+			gameplayManager.IncrementMaxOfUnits (numberOfIncementUnits);
 	}
 	
 	public override IEnumerator OnDie ()
 	{
 		if (wasBuilt)
 		{
-			if (photonView.isMine) gameplayManager.DecrementMaxOfUnits (5);
+			if (photonView.isMine) gameplayManager.DecrementMaxOfUnits (numberOfIncementUnits);
 		}
 		
 		return base.OnDie ();

@@ -14,6 +14,7 @@ public class GhostFactory : MonoBehaviour
 	protected FactoryBase thisFactory;
 	protected GameObject overdrawModel;
 	protected int numberOfCollisions = 0;
+	protected float realRadius;
 
 	public void Init (Worker worker, Worker.FactoryConstruction factoryConstruction)
 	{
@@ -38,11 +39,11 @@ public class GhostFactory : MonoBehaviour
 		touchController.DisableDragOn = true;
 
 		collider.isTrigger = true;
-
+		realRadius = GetComponent<CapsuleCollider> ().radius;
+		GetComponent<CapsuleCollider> ().radius += 3f;
+		
 		gameObject.AddComponent<Rigidbody>();
 		rigidbody.isKinematic = true;
-
-		if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = false;
 
 		SetOverdraw (worker.team);
 	}
@@ -125,6 +126,8 @@ public class GhostFactory : MonoBehaviour
 
 		if (canBuy)
 		{
+			GetComponent<CapsuleCollider> ().radius = realRadius;
+			
 			transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 
 			collider.isTrigger = false;
@@ -135,6 +138,7 @@ public class GhostFactory : MonoBehaviour
 			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
 
 			thisFactory.photonView.RPC ("Instance", PhotonTargets.All);
+			gameObject.SendMessage ("OnInstance", SendMessageOptions.DontRequireReceiver);
 
 			worker.SetMoveToFactory (thisFactory);
 			TroopController troopController = ComponentGetter.Get<TroopController> ();
