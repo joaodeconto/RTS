@@ -3,6 +3,8 @@ using System.Collections;
 
 public class MainFactory : FactoryBase
 {
+	public const int numberOfIncementUnits = 10;
+	
 	void OnInstance ()
 	{
 		if (photonView.isMine)
@@ -16,7 +18,7 @@ public class MainFactory : FactoryBase
 		if (gameplayManager.ReachedMaxPopulation)
 			eventManager.AddEvent("reach max population");
 		else
-			gameplayManager.IncrementMaxOfUnits (15);
+			gameplayManager.IncrementMaxOfUnits (numberOfIncementUnits);
 	}
 	
 	public override IEnumerator OnDie ()
@@ -25,7 +27,7 @@ public class MainFactory : FactoryBase
 		{
 			if (wasBuilt)
 			{
-				gameplayManager.DecrementMaxOfUnits (15);
+				gameplayManager.DecrementMaxOfUnits (numberOfIncementUnits);
 			}
 			
 			gameplayManager.DecrementMainBase (team);
