@@ -31,9 +31,9 @@ public class ResourcesManager
 		return true;
 	}
 	
-	public void ReturnResources (ResourcesManager resourceCost)
+	public void ReturnResources (ResourcesManager resourceCost, float percent = 1f)
 	{
-		NumberOfRocks += resourceCost.NumberOfRocks;
+		NumberOfRocks += Mathf.FloorToInt((float)resourceCost.NumberOfRocks * percent);
 	}
 }
 

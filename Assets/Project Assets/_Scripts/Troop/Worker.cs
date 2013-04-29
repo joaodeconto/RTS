@@ -95,7 +95,7 @@ public class Worker : Unit
 		switch (workerState)
 		{
 			case WorkerState.Extracting:
-				if (factoryChoose != null)
+				if (HasFactory ())
 				{
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
@@ -133,13 +133,13 @@ public class Worker : Unit
 				{
 					if (!isMovingToFactory)
 					{
-						if (factoryChoose == null)
+						if (!HasFactory ())
 						{
 							SetMoveToFactory (resource.type);
 							SetMoveToFactory (typeof(MainFactory));
 						}
 					
-						if (factoryChoose == null)
+						if (!HasFactory ())
 						{
 							isMovingToFactory = true;
 							Move (transform.position);
@@ -150,7 +150,7 @@ public class Worker : Unit
 			
 				if (isMovingToFactory)
 				{
-					if (factoryChoose == null)
+					if (!HasFactory ())
 					{
 						isMovingToFactory = false;
 						Move (transform.position);
@@ -175,7 +175,7 @@ public class Worker : Unit
 					workerState = WorkerState.CarryingIdle;
 				}
 			
-				if (factoryChoose == null) return;
+				if (!HasFactory ()) return;
 
 				if (!factoryChoose.wasBuilt)
 				{
@@ -192,7 +192,6 @@ public class Worker : Unit
 
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 				{
-				
 					gameplayManager.resources.Set (resourceType, currentNumberOfResources);
 
 					if (resource != null) Move (resource.transform.position);
@@ -219,7 +218,7 @@ public class Worker : Unit
 				break;
 			case WorkerState.Building:
 			case WorkerState.Repairing:
-				if (factoryChoose == null ||
+				if (!HasFactory () ||
 					factoryChoose != lastFactory)
 				{
 					// Patch para tirar travada ¬¬
@@ -469,7 +468,7 @@ public class Worker : Unit
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
 
-		if (factoryChoose != null && !factoryChoose.Construct (this))
+		if (HasFactory () && !factoryChoose.Construct (this))
 		{
 			factoryChoose = null;
 		}
@@ -484,7 +483,7 @@ public class Worker : Unit
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
 
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			if (!factoryChoose.Repair (this))
 			{
@@ -540,7 +539,7 @@ public class Worker : Unit
 	{
 		factoryChoose = factory;
 
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			Move (factoryChoose.transform.position);
 			isMovingToFactory = true;
@@ -555,7 +554,7 @@ public class Worker : Unit
 	{
 		SearchFactory (resourceType);
 
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			Move (factoryChoose.transform.position);
 			isMovingToFactory = true;
@@ -566,7 +565,7 @@ public class Worker : Unit
 	{
 		SearchFactory (type);
 
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			Move (factoryChoose.transform.position);
 			isMovingToFactory = true;
@@ -612,7 +611,7 @@ public class Worker : Unit
 	/// </param>
 	void CheckFactory (FactoryBase factory)
 	{
-		if (factoryChoose == null)
+		if (!HasFactory ())
 		{
 			if (factory.wasBuilt) factoryChoose = factory;
 		}
@@ -630,7 +629,7 @@ public class Worker : Unit
 
 	void CheckConstructFactory ()
 	{
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 			{
@@ -663,6 +662,26 @@ public class Worker : Unit
 				}
 			}
 		}
+		else if (factoryChoose.IsRemoved)
+		{
+			factoryChoose = null;
+			
+			pathfind.Stop ();
+			unitState = Unit.UnitState.Idle;
+			factoryChoose = null;
+			isMovingToFactory = false;
+		}
+	}
+	
+	public bool HasFactory ()
+	{
+		if (factoryChoose == null)
+			return false;
+		
+		if (factoryChoose.IsRemoved)
+			return false;
+		
+		return true;
 	}
 
 	// GIZMOS

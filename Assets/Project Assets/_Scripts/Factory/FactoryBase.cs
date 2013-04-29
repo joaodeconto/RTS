@@ -66,9 +66,13 @@ public class FactoryBase : IStats
 	protected HUDController hudController;
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;
-
+	
+	[HideInInspector]
 	public bool wasVisible = false;
+	[HideInInspector]
 	public bool alreadyCheckedMaxPopulation = false;
+	[HideInInspector]
+	public ResourcesManager costOfResources;
 
 	protected float realRangeView;
 
@@ -302,7 +306,7 @@ public class FactoryBase : IStats
 		{
 			obj.SetActive (true);
 		}
-
+		
 		buildingState = BuildingState.Base;
 
 		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
@@ -382,8 +386,10 @@ public class FactoryBase : IStats
 		healthBar.SetTarget (this);
 
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
-
-		if (playerUnit && wasBuilt)
+		
+		if (!playerUnit) return;
+		
+		if (wasBuilt)
 		{
 			if (!hasWaypoint) return;
 
@@ -427,12 +433,28 @@ public class FactoryBase : IStats
 																listedToCreate[i].unit.guiTextureName,
 																(hud_ht) =>
 																{
-																	//TODO Fazer recuperação do dinheiro quando desistir da
-																	//construção de alguma unidade
-
 																	DequeueUnit(hud_ht);
 																});
 			}
+		}
+		else
+		{
+			IStats.GridItemAttributes gia = new GridItemAttributes();
+			gia.gridXIndex = 0;
+			gia.gridYIndex = 0;
+			
+			Hashtable ht = new Hashtable();
+			ht["actionType"] = "cancel";
+			
+			hudController.CreateButtonInInspector ( "cancel",
+													gia.Position,
+													ht,
+													"cross-option",
+													(ht_hud) =>
+													{
+														gameplayManager.resources.ReturnResources (costOfResources, 0.75f);
+														photonView.RPC ("SendRemove", PhotonTargets.All);
+													});
 		}
 	}
 

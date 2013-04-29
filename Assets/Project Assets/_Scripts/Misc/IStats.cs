@@ -198,6 +198,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	[RPC]
 	public virtual void SendRemove ()
 	{
+		Health = 0;
 		gameplayManager.RemoveStatTeamID (team);
 		IsRemoved = true;
 		
