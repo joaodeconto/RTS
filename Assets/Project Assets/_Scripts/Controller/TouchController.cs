@@ -1,9 +1,18 @@
 using UnityEngine;
 using System.Collections;
 using Visiorama;
+using Visiorama.Utils;
 
 public class TouchController : MonoBehaviour
 {
+	[System.Serializable]
+	public class ZoomSettings
+	{
+		public Camera[] cameras;
+		public float zoomSpeed;
+		public MinMaxFloat zoom;
+	}
+	
 	public enum TouchType
 	{
 		First,
@@ -13,7 +22,7 @@ public class TouchController : MonoBehaviour
 		Ended,
 		None
 	}
-
+	
 	public enum IdTouch
 	{
 		Id0,
@@ -23,6 +32,7 @@ public class TouchController : MonoBehaviour
 
 	public Camera mainCamera;
 	public string[] layersToIgnore;
+	public ZoomSettings zoomSettings;
 
 	protected Camera[] camerasUI;
 

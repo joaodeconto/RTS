@@ -41,6 +41,8 @@ public class GameplayManager : Photon.MonoBehaviour
 	protected bool winGame = false;
 	protected float currentTime;
 
+	protected bool beingAttacked = false;
+	
 	public int MyTeam {get; protected set;}
 
 	// Resources
@@ -118,6 +120,35 @@ public class GameplayManager : Photon.MonoBehaviour
 	public bool IsSameTeam (IStats stats)
 	{
 		return stats.team == MyTeam;
+	}
+	
+	public bool IsBeingAttacked (IStats target)
+	{
+		if (!beingAttacked)
+		{
+			if (IsSameTeam (target))
+			{
+				Vector3 pos = Camera.mainCamera.WorldToViewportPoint (target.transform.position);
+				
+				bool isInCamera = (pos.z > 0f && pos.x > 0f && pos.x < 1f && pos.y > 0f && pos.y < 1f);
+				
+				if (!isInCamera)
+				{
+					beingAttacked = true;
+					Invoke ("BeingAttackedToFalse", 10f);
+					GetComponent<SoundSource> ().Play ("BeingAttacked");
+					
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	void BeingAttackedToFalse ()
+	{
+		beingAttacked = false;
 	}
 	
 	public void IncrementMainBase (int teamID)

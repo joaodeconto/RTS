@@ -67,7 +67,6 @@ public class Worker : Unit
 	protected bool isSettingWorkerNull;
 	
 	protected FactoryBase factoryChoose, lastFactory;
-	protected EventManager eventManager;
 	protected bool isMovingToFactory;
 	protected bool isCheckedSendResourceToFactory;
 
@@ -82,8 +81,6 @@ public class Worker : Unit
 			rw.carryingObject.SetActive (false);
 			rw.extractingObject.SetActive (false);
 		}
-
-		eventManager = ComponentGetter.Get<EventManager> ();
 
 		hasResource = isSettingWorkerNull = false;
 

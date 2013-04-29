@@ -64,7 +64,6 @@ public class FactoryBase : IStats
 
 	protected FactoryController factoryController;
 	protected HUDController hudController;
-	protected EventManager eventManager;
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;
 
@@ -96,7 +95,6 @@ public class FactoryBase : IStats
 		timer = 0;
 
 		hudController     = ComponentGetter.Get<HUDController> ();
-		eventManager      = ComponentGetter.Get<EventManager> ();
 		factoryController = ComponentGetter.Get<FactoryController> ();
 		buildingSlider    = hudController.GetSlider("Building Unit");
 		buildingSlider.gameObject.SetActive(false);

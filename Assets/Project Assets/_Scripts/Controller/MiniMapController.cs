@@ -18,6 +18,8 @@ public class MiniMapController : MonoBehaviour
 	public Transform mapTransform;
 
 	public GameObject fogMiniMap;
+	
+	public GameObject beingAttackedMiniMap;
 
 	public Vector3 visualizationSize;
 	public Vector3 visualizationPosition;
@@ -93,7 +95,7 @@ public class MiniMapController : MonoBehaviour
 		{
 			ut = NGUITools.AddWidget<UITexture> (fogMiniMap);
 			ut.pivot = UIWidget.Pivot.BottomLeft;
-			ut.transform.localPosition    = Vector3.forward * 10;
+			ut.transform.localPosition    = -Vector3.forward * 0;
 			ut.transform.localScale       = Vector3.one;
 			ut.transform.localEulerAngles = Vector3.forward * 90f;
 			ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
@@ -183,21 +185,21 @@ public class MiniMapController : MonoBehaviour
 
 		CamPositionMiniMap.transform.localPosition = new Vector3((mapTransform.localPosition.x + (miniMapSize.x * percentPos.x)),
 																 (mapTransform.localPosition.y + (miniMapSize.y * percentPos.y)),
-																 (-50));
+																 (-18));
 	}
 
 	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns)
 	{
 		Vector3 percentPos = new Vector3(referenceTrns.position.x / mapSize.x,
 										 referenceTrns.position.z / mapSize.z,
-										 -5);
+										 -11);
 
 		//Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
 		//Debug.Log("miniMapSize: " + miniMapSize);
 
 		miniMapObject.transform.localPosition = new Vector3((mapTransform.localPosition.x + (miniMapSize.x * percentPos.x)),
 															(mapTransform.localPosition.y + (miniMapSize.y * percentPos.y)),
-															(-5));
+															(-18));
 	}
 
 	public void UpdateCameraPosition()
@@ -232,6 +234,20 @@ public class MiniMapController : MonoBehaviour
 
 		Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
 	}
+	
+	public void InstantiatePositionBeingAttacked (Transform target)
+	{
+		GameObject miniMapObject = Instantiate (beingAttackedMiniMap) as GameObject;
+		
+		miniMapObject.transform.parent     = miniMapPanel.transform;
+		miniMapObject.transform.localScale = beingAttackedMiniMap.transform.localScale;
+		
+		miniMapObject.GetComponent<TweenScale> ().Play (true);
+		
+		miniMapObject.GetComponent<UISprite> ().depth = 4;
+		
+		UpdatePosition (miniMapObject, target);
+	}
 
 #region Add and Remove Structures/Units
 	GameObject InstantiateMiniMapObject(GameObject pref_go, Transform trns, int teamId)
@@ -245,6 +261,8 @@ public class MiniMapController : MonoBehaviour
 
 		_go.GetComponent<UISlicedSprite>().color = teamColor;
 
+		_go.GetComponent<UISprite> ().depth = 4;
+		
 		UpdatePosition(_go, trns);
 
 		return _go;
