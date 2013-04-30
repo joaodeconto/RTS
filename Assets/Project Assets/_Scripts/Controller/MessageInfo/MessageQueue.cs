@@ -65,6 +65,9 @@ public abstract class MessageQueue : MonoBehaviour
 										Hashtable ht,
 										DefaultCallbackButton.OnClickDelegate onClick = null,
 										DefaultCallbackButton.OnPressDelegate onPress = null,
+										DefaultCallbackButton.OnSliderChangeDelegate onSliderChange = null,
+										DefaultCallbackButton.OnActivateDelegate onActivate = null,
+										DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick = null,
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
@@ -83,7 +86,7 @@ public abstract class MessageQueue : MonoBehaviour
 
 		PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
 
-		pcb.Init(ht, onClick, onPress, onDrag, onDrop);
+		pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 
 		Invoke("RepositionGrid", 0.1f);
 	}

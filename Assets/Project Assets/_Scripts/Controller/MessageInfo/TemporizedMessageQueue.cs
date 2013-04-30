@@ -46,6 +46,9 @@ public class TemporizedMessageQueue : MessageQueue
 										Hashtable ht,
 										DefaultCallbackButton.OnClickDelegate onClick = null,
 										DefaultCallbackButton.OnPressDelegate onPress = null,
+										DefaultCallbackButton.OnSliderChangeDelegate onSliderChange = null,
+										DefaultCallbackButton.OnActivateDelegate onActivate = null,
+										DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick = null,
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
@@ -54,7 +57,7 @@ public class TemporizedMessageQueue : MessageQueue
 			Invoke ("CleanFirstMessage", timeToFadeout);
 		}
 
-		base.AddMessageInfo (buttonName, ht, onClick, onPress, onDrag, onDrop);
+		base.AddMessageInfo (buttonName, ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 	}
 
 	private void CleanFirstMessage()
