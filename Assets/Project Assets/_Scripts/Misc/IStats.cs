@@ -114,6 +114,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	internal int Group = -1;
 
 	protected GameplayManager gameplayManager;
+	protected EventManager eventManager;
 
 	void Awake ()
 	{
@@ -125,6 +126,7 @@ public abstract class IStats : Photon.MonoBehaviour
 		Health = MaxHealth;
 
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
+		eventManager    = ComponentGetter.Get<EventManager> ();
 
 		if (IsNetworkInstantiate)
 		{
@@ -132,21 +134,6 @@ public abstract class IStats : Photon.MonoBehaviour
 		}
 		else
 		{
-//			if (team < 0)
-//			{
-//				if (!PhotonNetwork.offlineMode)
-//				{
-//					SetTeamInNetwork ();
-//				}
-//				else
-//				{
-//					team = (playerUnit) ? 0 : 1;
-//				}
-//			}
-//			else
-//			{
-//				playerUnit = gameplayManager.IsSameTeam (team);
-//			}
 			if (!PhotonNetwork.offlineMode)
 			{
 				SetTeamInNetwork ();
@@ -177,6 +164,13 @@ public abstract class IStats : Photon.MonoBehaviour
 			{
 				photonView.RPC ("InstantiatParticleDamage", PhotonTargets.All);
 			}
+			
+			if (gameplayManager.IsBeingAttacked (this))
+			{
+				eventManager.AddEvent("being attacked");
+						
+				Visiorama.ComponentGetter.Get<MiniMapController> ().InstantiatePositionBeingAttacked (transform);
+			}
 		}
 
 		if (Health == 0 && !IsRemoved)
@@ -204,6 +198,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	[RPC]
 	public virtual void SendRemove ()
 	{
+		Health = 0;
 		gameplayManager.RemoveStatTeamID (team);
 		IsRemoved = true;
 		

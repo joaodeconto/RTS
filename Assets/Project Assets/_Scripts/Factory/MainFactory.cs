@@ -5,8 +5,10 @@ public class MainFactory : FactoryBase
 {
 	public const int numberOfIncementUnits = 10;
 	
-	void OnInstance ()
+	void Init ()
 	{
+		base.Init ();
+		
 		if (photonView.isMine)
 		{
 			gameplayManager.IncrementMainBase (team);

@@ -139,6 +139,8 @@ public class GhostFactory : MonoBehaviour
 
 			thisFactory.photonView.RPC ("Instance", PhotonTargets.All);
 			gameObject.SendMessage ("OnInstance", SendMessageOptions.DontRequireReceiver);
+			
+			thisFactory.costOfResources = factoryConstruction.costOfResources;
 
 			worker.SetMoveToFactory (thisFactory);
 			TroopController troopController = ComponentGetter.Get<TroopController> ();
