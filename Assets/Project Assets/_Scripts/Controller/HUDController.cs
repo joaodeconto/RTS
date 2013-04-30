@@ -44,6 +44,9 @@ public class HUDController : MonoBehaviour
 		public string textureName;
 		public DefaultCallbackButton.OnClickDelegate onClick;
 		public DefaultCallbackButton.OnPressDelegate onPress;
+		public DefaultCallbackButton.OnSliderChangeDelegate onSliderChange;
+		public DefaultCallbackButton.OnActivateDelegate onActivate;
+		public DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick;
 		public DefaultCallbackButton.OnDragDelegate onDrag;
 		public DefaultCallbackButton.OnDropDelegate onDrop;
 		public bool persistent;
@@ -206,6 +209,9 @@ public class HUDController : MonoBehaviour
 												string textureName = "",
 												DefaultCallbackButton.OnClickDelegate onClick = null,
 												DefaultCallbackButton.OnPressDelegate onPress = null,
+												DefaultCallbackButton.OnSliderChangeDelegate onSliderChange = null,
+												DefaultCallbackButton.OnActivateDelegate onActivate = null,
+												DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick = null,
 												DefaultCallbackButton.OnDragDelegate onDrag = null,
 												DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
@@ -217,7 +223,7 @@ public class HUDController : MonoBehaviour
 
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 		mq.AddMessageInfo ( buttonName, ht,
-							onClick, onPress, onDrag, onDrop);
+							onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 	}
 
 	public void RemoveEnqueuedButtonInInspector(string buttonName, string queueName)
@@ -317,10 +323,10 @@ public class HUDController : MonoBehaviour
 		if ( pcb == null )
 		{
 			pcb = button.AddComponent<PersonalizedCallbackButton>();
-			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
+			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
 		}
 		else
-			pcb.ChangeParams(bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
+			pcb.ChangeParams(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
 	}
 
 	public void RemoveButtonInInspector(string buttonName)

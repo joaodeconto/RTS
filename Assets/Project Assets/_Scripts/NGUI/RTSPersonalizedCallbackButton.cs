@@ -1,25 +1,31 @@
 using UnityEngine;
 using System.Collections;
 
-public class PersonalizedCallbackButton : DefaultCallbackButton
+public class RTSPersonalizedCallbackButton : DefaultCallbackButton
 {
 	public void Init(Hashtable ht,
 					 OnClickDelegate onClick = null,
 					 OnPressDelegate onPress = null,
+					 OnSliderChangeDelegate onSliderChangeDelegate = null,
+					 OnActivateDelegate onActivateDelegate = null,
+					 OnRepeatClickDelegate onRepeatClickDelegate = null,
 					 OnDragDelegate onDrag = null,
 					 OnDropDelegate onDrop = null)
 	{
-		base.Init(ht, onClick, onPress, onDrag, onDrop);
-		ChangeParams(ht, onClick, onPress, onDrag, onDrop);
+		base.Init(ht, onClick, onPress, onSliderChangeDelegate, onActivateDelegate, onRepeatClickDelegate, onDrag, onDrop);
+		ChangeParams(ht, onClick, onPress, onSliderChangeDelegate, onActivateDelegate, onRepeatClickDelegate, onDrag, onDrop);
 	}
 
 	public void ChangeParams(Hashtable ht,
 							 OnClickDelegate onClick = null,
 							 OnPressDelegate onPress = null,
+							 OnSliderChangeDelegate onSliderChangeDelegate = null,
+							 OnActivateDelegate onActivateDelegate = null,
+							 OnRepeatClickDelegate onRepeatClickDelegate = null,
 							 OnDragDelegate onDrag = null,
 							 OnDropDelegate onDrop = null)
 	{
-		base.ChangeParams(ht, onClick, onPress, onDrag, onDrop);
+		base.ChangeParams(ht, onClick, onPress, onSliderChangeDelegate, onActivateDelegate, onRepeatClickDelegate, onDrag, onDrop);
 
 		Transform trnsLabel = transform.FindChild("Label");
 		UILabel l = trnsLabel.GetComponent<UILabel>();

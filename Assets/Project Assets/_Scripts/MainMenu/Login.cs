@@ -43,7 +43,7 @@ public class Login : MonoBehaviour
 							pw.SetPlayer (username.text, true);
 	
 							mainMenu.SetActive (true);
-							mainMenu.GetComponent<InternalMainMenu> ().Init ();
+							mainMenu.GetComponent<InternalMainMenu> ().Init (username.text);
 	
 							this.gameObject.SetActive (false);
 						}
