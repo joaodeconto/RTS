@@ -127,7 +127,7 @@ public class Network : Photon.MonoBehaviour
 
 		GUILayout.Space (10f);
 
-		Sound.soundOn = GUILayout.Toggle (Sound.soundOn, "Sound:");
+//		Sound.soundOn = GUILayout.Toggle (Sound.soundOn, "Sound:");
 
 		GUILayout.Space (10f);
 

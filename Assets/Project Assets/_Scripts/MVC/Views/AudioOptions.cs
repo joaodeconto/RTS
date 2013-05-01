@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections;
+using Visiorama;
 
 public class AudioOptions : MonoBehaviour
 {
 	private bool wasInitialized = false;
-
+	
 	public void OnEnable ()
 	{
 		Open ();
@@ -22,6 +23,8 @@ public class AudioOptions : MonoBehaviour
 
 		wasInitialized = true;
 
+		VolumeController volumeController = ComponentGetter.Get<VolumeController>();
+		
 		DefaultCallbackButton dcb;
 		
 		Transform slider;
@@ -30,22 +33,92 @@ public class AudioOptions : MonoBehaviour
 		Transform music = this.transform.FindChild ("Menu").FindChild ("Music");
 		
 		slider = music.FindChild ("Slider");
+		
+		slider.GetComponent<UISlider> ().sliderValue = VolumeController.musicVolume;
+		
+		dcb = slider.gameObject.AddComponent<DefaultCallbackButton> ();
+		dcb.Init(null, null, null,
+		(ht_dcb, sliderValue) => 
+		{
+			VolumeController.musicVolume = sliderValue;
+			volumeController.SetAllAudios ();
+		});
+		
+		checkbox = music.FindChild ("Checkbox");
+
+		checkbox.GetComponent<UICheckbox> ().isChecked = VolumeController.musicOn;
+		
+		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
+		dcb.Init(null, null, null, null,
+		(ht_dcb, checkedValue) => 
+		{
+			VolumeController.musicOn = checkedValue;
+			volumeController.SetAllAudios ();
+		});
+		
+		Transform sound = this.transform.FindChild ("Menu").FindChild ("Sound");
+		
+		slider = sound.FindChild ("Slider");
+		
+		slider.GetComponent<UISlider> ().sliderValue = VolumeController.soundVolume;
 
 		dcb = slider.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null,
 		(ht_dcb, sliderValue) => 
 		{
-			
+			VolumeController.soundVolume = sliderValue;
+			volumeController.SetAllAudios ();
 		});
 		
-		checkbox = music.FindChild ("Checkbox");
+		checkbox = sound.FindChild ("Checkbox");
 
+		checkbox.GetComponent<UICheckbox> ().isChecked = VolumeController.soundOn;
+		
 		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null, null,
 		(ht_dcb, checkedValue) => 
 		{
+			VolumeController.soundOn = checkedValue;
+			volumeController.SetAllAudios ();
 		});
+		
+		Transform voice = this.transform.FindChild ("Menu").FindChild ("Voice");
+		
+		slider = voice.FindChild ("Slider");
+		
+		slider.GetComponent<UISlider> ().sliderValue = VolumeController.voiceVolume;
 
+		dcb = slider.gameObject.AddComponent<DefaultCallbackButton> ();
+		dcb.Init(null, null, null,
+		(ht_dcb, sliderValue) => 
+		{
+			VolumeController.voiceVolume = sliderValue;
+			volumeController.SetAllAudios ();
+		});
+		
+		checkbox = voice.FindChild ("Checkbox");
+
+		checkbox.GetComponent<UICheckbox> ().isChecked = VolumeController.voiceOn;
+		
+		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
+		dcb.Init(null, null, null, null,
+		(ht_dcb, checkedValue) => 
+		{
+			VolumeController.voiceOn = checkedValue;
+			volumeController.SetAllAudios ();
+		});
+		
+		Transform close = this.transform.FindChild ("Menu").FindChild ("Close");
+		
+		if (close != null)
+		{
+			dcb = close.gameObject.AddComponent<DefaultCallbackButton> ();
+			dcb.Init(null,
+			(ht_dcb) => 
+			{
+				gameObject.SetActive (false);
+			});
+		}
 	}
 
 	public void Close ()

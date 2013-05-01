@@ -20,6 +20,8 @@ public class SoundManagerInspector : Editor
 	{
 		EditorGUILayout.LabelField ("Sound Settings:");
 		
+		soundManager.soundType = (SoundType)EditorGUILayout.EnumPopup (soundManager.soundType);
+		
 		if (GUILayout.Button (new GUIContent("Add Sound", 
 			"Create a new Sound to you set.")))
 		{

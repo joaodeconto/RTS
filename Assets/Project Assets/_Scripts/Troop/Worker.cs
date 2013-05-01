@@ -662,14 +662,17 @@ public class Worker : Unit
 				}
 			}
 		}
-		else if (factoryChoose.IsRemoved)
+		else if (factoryChoose != null)
 		{
-			factoryChoose = null;
-			
-			pathfind.Stop ();
-			unitState = Unit.UnitState.Idle;
-			factoryChoose = null;
-			isMovingToFactory = false;
+			if (factoryChoose.IsRemoved)
+			{
+				factoryChoose = null;
+				
+				pathfind.Stop ();
+				unitState = Unit.UnitState.Idle;
+				factoryChoose = null;
+				isMovingToFactory = false;
+			}
 		}
 	}
 	
