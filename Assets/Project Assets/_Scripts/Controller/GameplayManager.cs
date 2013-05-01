@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Visiorama;
 
 [System.Serializable]
 public class Team
@@ -11,16 +12,17 @@ public class Team
 	public Transform initialPosition;
 }
 
-public class GameplayManager : MonoBehaviour
+public class GameplayManager : Photon.MonoBehaviour
 {
 	[System.Serializable]
 	public class HUD
 	{
 		public UILabel labelResources;
 		public UILabel labelUnits;
-		public GameObject endGameScreen;
-		public UILabel labelWin;
-		public UILabel labelDefeat;
+		public GameObject uiVictoryObject;
+		public GameObject uiDefeatObject;
+		public UILabel labelTime;
+		public GameObject uiLostMainBaseObject;
 	}
 	
 	public const int MAX_POPULATION_ALLOWED = 200;
@@ -29,25 +31,33 @@ public class GameplayManager : MonoBehaviour
 	
 	public int numberOfUnits { get; protected set; }
 	public int maxOfUnits { get; protected set; }
+	protected int mainBasesIncrements;
 	protected int excessHousesIncrements;
+	protected int numberOfHousesMore;
 	
 	protected Dictionary<int, int> teamNumberOfStats = new Dictionary<int, int>();
 	protected int loserTeams;
 	protected bool loseGame = false;
 	protected bool winGame = false;
+	protected float currentTime;
 
+	protected bool beingAttacked = false;
+	
 	public int MyTeam {get; protected set;}
 
 	// Resources
 	public ResourcesManager resources;
 
 	public HUD hud;
-
+	
+	protected NetworkManager network; 
+	
 	public void Init ()
 	{
 		if (!PhotonNetwork.offlineMode)
 		{
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
+			network = ComponentGetter.Get<NetworkManager>();
 		}
 		else
 		{
@@ -62,9 +72,11 @@ public class GameplayManager : MonoBehaviour
 			}
 		}
 		
-		hud.endGameScreen.SetActive (false);
+		hud.uiDefeatObject.SetActive (false);
+		hud.uiVictoryObject.SetActive (false);
+		hud.uiLostMainBaseObject.SetActive (false);
 		
-		excessHousesIncrements = 0;
+		numberOfHousesMore = excessHousesIncrements = 0;
 	}
 	
 	/// <summary>
@@ -110,6 +122,62 @@ public class GameplayManager : MonoBehaviour
 		return stats.team == MyTeam;
 	}
 	
+	public bool IsBeingAttacked (IStats target)
+	{
+		if (!beingAttacked)
+		{
+			if (IsSameTeam (target))
+			{
+				Vector3 pos = Camera.mainCamera.WorldToViewportPoint (target.transform.position);
+				
+				bool isInCamera = (pos.z > 0f && pos.x > 0f && pos.x < 1f && pos.y > 0f && pos.y < 1f);
+				
+				if (!isInCamera)
+				{
+					beingAttacked = true;
+					Invoke ("BeingAttackedToFalse", 10f);
+					GetComponent<SoundSource> ().Play ("BeingAttacked");
+					
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	void BeingAttackedToFalse ()
+	{
+		beingAttacked = false;
+	}
+	
+	public void IncrementMainBase (int teamID)
+	{
+		if (IsSameTeam (teamID))
+		{
+			mainBasesIncrements++;
+			hud.uiLostMainBaseObject.SetActive (false);
+			CancelInvoke ("NoMainBase");
+			CancelInvoke ("DecrementTime");
+		}
+	}
+	
+	public void DecrementMainBase (int teamID)
+	{
+		if (IsSameTeam (teamID))
+		{
+			mainBasesIncrements--;
+			if (mainBasesIncrements == 0)
+			{
+				hud.uiLostMainBaseObject.SetActive (true);
+				currentTime = 40f;
+				hud.labelTime.text = currentTime.ToString () + "s";
+				Invoke ("NoMainBase", currentTime);
+				InvokeRepeating ("DecrementTime", 1f, 1f);
+			}
+		}
+	}
+	
 	public void IncrementUnit (int teamID, int numberOfUnits)
 	{
 		if (IsSameTeam (teamID)) this.numberOfUnits += numberOfUnits;
@@ -122,13 +190,25 @@ public class GameplayManager : MonoBehaviour
 
 	public void IncrementMaxOfUnits (int numberOfIncrementUnits)
 	{
-		if (!ReachedMaxPopulation) maxOfUnits += numberOfIncrementUnits;
+		if (!ReachedMaxPopulation)
+		{
+			maxOfUnits += numberOfIncrementUnits;
+			if (maxOfUnits >= MAX_POPULATION_ALLOWED)
+			{
+				numberOfHousesMore = maxOfUnits - MAX_POPULATION_ALLOWED;
+				maxOfUnits -= numberOfHousesMore;
+			}
+		}
 		else ++excessHousesIncrements;
 	}
 
 	public void DecrementMaxOfUnits (int numberOfDecrementUnits)
 	{
-		if (excessHousesIncrements == 0) maxOfUnits -= numberOfDecrementUnits;
+		if (excessHousesIncrements == 0)
+		{
+			maxOfUnits -= numberOfDecrementUnits;
+			if (numberOfHousesMore != 0) maxOfUnits += numberOfHousesMore; 
+		}
 		else --excessHousesIncrements;
 	}
 	
@@ -208,7 +288,30 @@ public class GameplayManager : MonoBehaviour
 		{
 			winGame = true;
 		}
-
+	}
+	
+	void NoMainBase ()
+	{
+		if (mainBasesIncrements == 0)
+		{
+			hud.uiLostMainBaseObject.SetActive (false);
+			CancelInvoke ("DecrementTime");
+			photonView.RPC ("NewLoser", PhotonTargets.All, MyTeam);
+		}
+	}
+	
+	void DecrementTime ()
+	{
+		currentTime -= 1f;
+		hud.labelTime.text = currentTime.ToString () + "s";
+	}
+	
+	[RPC]
+	void NewLoser (int teamID)
+	{
+		ComponentGetter.Get<TroopController> ().DestroySoldiersTeam (teamID);
+		ComponentGetter.Get<FactoryController> ().DestroyFactorysTeam (teamID);
+		CheckCondition (teamID);
 	}
 
 	// TODO: Mostrando só os valores na tela
@@ -219,23 +322,22 @@ public class GameplayManager : MonoBehaviour
 
 		if (loseGame || winGame)
 		{
-			hud.endGameScreen.SetActive (true);
 			if (winGame)
 			{
-				hud.labelWin.gameObject.SetActive (true);
-				hud.labelDefeat.gameObject.SetActive (false);
+				hud.uiVictoryObject.SetActive (true);
+				hud.uiDefeatObject.SetActive (false);
 			}
 			else
 			{
-				hud.labelWin.gameObject.SetActive (false);
-				hud.labelDefeat.gameObject.SetActive (true);
+				hud.uiVictoryObject.SetActive (false);
+				hud.uiDefeatObject.SetActive (true);
 			}
-			enabled = false;
+//			enabled = false;
 		}
 	}
 
 	void EndGame ()
 	{
-		Visiorama.ComponentGetter.Get<NetworkManager>().photonView.RPC ("ChangeLevel", PhotonTargets.All, 0);
+//		network.photonView.RPC ("ChangeLevel", PhotonTargets.All, 0);
 	}
 }

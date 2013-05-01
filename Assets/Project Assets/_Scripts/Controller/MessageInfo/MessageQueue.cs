@@ -1,14 +1,8 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-
-using Visiorama;
 
 public abstract class MessageQueue : MonoBehaviour
 {
-	private const string ITEM_TOKEN  = "(Clone)";
-	private const string GROUP_TOKEN = "(Group)";
-
 	public string QueueName { get; protected set; }
 	public Vector2 RootPosition { get; protected set; }
 
@@ -62,33 +56,25 @@ public abstract class MessageQueue : MonoBehaviour
 
 	public float LabelSize { get; protected set; }
 
-	public bool GroupIfReachMaxMessages { get; protected set; }
-
 	protected GameObject Pref_button;
 	protected UIGrid uiGrid;
 
-	private PrefabCache prefabCache;
-
 	protected float nQueueItems;
-	protected bool IsGrouped;
 
 	public virtual void AddMessageInfo( string buttonName,
 										Hashtable ht,
 										DefaultCallbackButton.OnClickDelegate onClick = null,
 										DefaultCallbackButton.OnPressDelegate onPress = null,
+										DefaultCallbackButton.OnSliderChangeDelegate onSliderChange = null,
+										DefaultCallbackButton.OnActivateDelegate onActivate = null,
+										DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick = null,
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-
-//		if (prefabCache == null)
-//			prefabCache = ComponentGetter.Get<PrefabCache>();
-
 		++nQueueItems;
 
 		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
 												Pref_button);
-
-		//GameObject button = prefabCache.Get(uiGrid.transform, "Button");
 
 		button.name  = buttonName;
 		button.layer = gameObject.layer;
@@ -98,28 +84,11 @@ public abstract class MessageQueue : MonoBehaviour
 
 		//button.transform.localPosition = Vector3.zero;
 
-		if (!Mathf.Approximately (LabelSize, 0.0f))
-			ht["LabelSize"] = LabelSize;
-
 		PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
 
-		pcb.Init(ht, onClick, onPress, onDrag, onDrop);
+		pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 
-		if (nQueueItems > MaxItems)
-		{
-			if (!GroupIfReachMaxMessages)
-			{
-				while (nQueueItems > MaxItems)
-				{
-					Debug.Log ("nQueueItems: " + nQueueItems + " : MaxItems: " + MaxItems);
-					DequeueMessageInfo ();
-				}
-			}
-			else
-				GroupButtons ();
-		}
-
-		//Invoke("RepositionGrid", 0.1f);
+		Invoke("RepositionGrid", 0.1f);
 	}
 
 	public void DequeueMessageInfo()
@@ -161,97 +130,6 @@ public abstract class MessageQueue : MonoBehaviour
 		}
 	}
 
-	private void GroupButtons ()
-	{
-		Debug.Log ("Chegou GroupButtons");
-
-		int i = 0;
-
-		if (IsGrouped)
-		{
-
-		}
-		else
-		{
-			int indexToken   = 0;
-			string tmpString = "";
-
-			//Qtd de cada nome
-			Dictionary<string, int> dic = new Dictionary<string, int>();
-			foreach (Transform child in uiGrid.transform)
-			{
-				indexToken = child.name.IndexOf (ITEM_TOKEN);
-				tmpString  = child.name.Substring (0, indexToken - 1);
-
-				if (!dic.ContainsKey (tmpString))
-					dic.Add (tmpString, 1);
-				else
-					dic[tmpString]++;
-
-				++i;
-			}
-
-			//Escolhendo um botão de cada tipo de unidade e setando quantidade
-			bool foundButton;
-			List<Unit> units;
-			PersonalizedCallbackButton pcb = null;
-			UILabel counterLabel;
-			Hashtable ht = new Hashtable ();
-
-			foreach (KeyValuePair<string, int> de in dic)
-			{
-				foundButton = false;
-				units       = new List<Unit>();
-
-				foreach (Transform child in uiGrid.transform)
-				{
-					indexToken = child.name.IndexOf (ITEM_TOKEN);
-					tmpString  = child.name.Substring (0, indexToken - 1);
-
-					if (de.Key.Equals (tmpString))
-					{
-						if (!foundButton)
-						{
-							foundButton  = true;
-							pcb          = child.GetComponent<PersonalizedCallbackButton>();
-							Unit unit = (Unit)pcb.hashtable["unit"];
-							units.Add (unit);
-						}
-						else
-						{
-							Unit unit = (Unit)child.GetComponent<PersonalizedCallbackButton>().hashtable["unit"];
-							units.Add (unit);
-
-							Destroy (child.gameObject);
-						}
-					}
-				}
-
-				ht = pcb.hashtable;
-				ht["units"]   = units;
-				ht["counter"] = units.Count;
-
-				pcb.ChangeParams (ht,
-									(ht_btn) =>
-									{
-										List<Unit> units_btn = (List<Unit>)ht_btn["units"];
-
-										TroopController troopController = ComponentGetter.Get<TroopController> ();
-
-										troopController.DeselectAllSoldiers ();
-
-										foreach (Unit u in units_btn)
-										{
-											troopController.SelectSoldier (u, true);
-										}
-									});
-			}
-			pcb.transform.localPosition = Vector3.zero;
-		}
-
-		//Invoke("RepositionGrid", 0.2f);
-	}
-
 	public bool IsEmpty()
 	{
 		return (nQueueItems == 0);
@@ -283,8 +161,8 @@ public abstract class MessageQueue : MonoBehaviour
 
 	protected void RepositionGrid()
 	{
-		//if(uiGrid.name == "Unit Group")
-			//Debug.Log("uiGrid.transform.childCount: " + uiGrid.transform.childCount);
+		if(uiGrid.name == "Unit Group")
+			Debug.Log("uiGrid.transform.childCount: " + uiGrid.transform.childCount);
 
 		if(uiGrid.transform.childCount != nQueueItems)
 			Invoke("RepositionGrid", 0.1f);

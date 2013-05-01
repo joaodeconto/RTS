@@ -15,6 +15,7 @@ public class MessageInfoManager : MonoBehaviour
 	public class MessageQueueAttributes
 	{
 		public string queueName;
+		public Transform panel;
 		public Vector2 rootPosition;
 		public Vector2 cellSize;
 		public Vector2 padding;
@@ -22,13 +23,11 @@ public class MessageInfoManager : MonoBehaviour
 		public bool IsVerticalQueue;
 		public int maxPerLine;
 		public int maxItems;
-		public bool GroupIfReachMaxMessages;
 		public bool IsTemporizedQueue;
 		public TemporizedMessageQueueAttributes temporizedQueueAttributes;
 	}
 
 	public GameObject pref_button;
-	public Transform trnsPanelMessageQueues;
 
 	public MessageQueueAttributes[] messageQueuesAttributes;
 
@@ -51,7 +50,7 @@ public class MessageInfoManager : MonoBehaviour
 
 			if(!messageQueuesAttributes[i].IsTemporizedQueue)
 			{
-				messageQueues[i] = trnsPanelMessageQueues.gameObject.AddComponent<DefaultMessageQueue>();
+				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<DefaultMessageQueue>();
 				DefaultMessageQueue dmq = (DefaultMessageQueue)(messageQueues[i]);
 
 				dmq.Init(pref_button, uiGrid,
@@ -62,12 +61,11 @@ public class MessageInfoManager : MonoBehaviour
 						 messageQueuesAttributes[i].labelSize,
 						 messageQueuesAttributes[i].IsVerticalQueue,
 						 messageQueuesAttributes[i].maxPerLine,
-						 messageQueuesAttributes[i].maxItems,
-						 messageQueuesAttributes[i].GroupIfReachMaxMessages);
+						 messageQueuesAttributes[i].maxItems);
 			}
 			else
 			{
-				messageQueues[i] = trnsPanelMessageQueues.gameObject.AddComponent<TemporizedMessageQueue>();
+				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<TemporizedMessageQueue>();
 				TemporizedMessageQueue tmq = (TemporizedMessageQueue)(messageQueues[i]);
 				tmq.Init(pref_button, uiGrid,
 						 messageQueuesAttributes[i].queueName,
@@ -79,8 +77,7 @@ public class MessageInfoManager : MonoBehaviour
 						 messageQueuesAttributes[i].temporizedQueueAttributes.timeToFadeout,
 						 messageQueuesAttributes[i].temporizedQueueAttributes.fadeColor,
 						 messageQueuesAttributes[i].maxPerLine,
-						 messageQueuesAttributes[i].maxItems,
-						 messageQueuesAttributes[i].GroupIfReachMaxMessages);
+						 messageQueuesAttributes[i].maxItems);
 			}
 		}
 
@@ -124,15 +121,16 @@ public class MessageInfoManager : MonoBehaviour
 
 	private UIGrid GetQueueGrid(string queueName, Vector3 rootPosition)
 	{
-		Transform trnsQueue = trnsPanelMessageQueues.FindChild(queueName);
+		MessageQueueAttributes messageQueueAttributes = GetQueueAttribute (queueName);
+		Transform trnsQueue = messageQueueAttributes.panel.FindChild (queueName);
 		GameObject queue = null;
 
 		if(trnsQueue == null)
 		{
 			queue = new GameObject();
 
-			queue.layer            = trnsPanelMessageQueues.gameObject.layer;
-			queue.transform.parent = trnsPanelMessageQueues.transform;
+			queue.layer            = messageQueueAttributes.panel.gameObject.layer;
+			queue.transform.parent = messageQueueAttributes.panel.transform;
 
 			queue.name = queueName;
 			queue.AddComponent<UIGrid>();
@@ -149,5 +147,27 @@ public class MessageInfoManager : MonoBehaviour
 			queue.transform.localPosition = rootPosition;
 
 		return queue.GetComponent<UIGrid>();
+	}
+	
+	private MessageQueueAttributes GetQueueAttribute (string queueName)
+	{
+		MessageQueueAttributes messageQueueAttribute = null;
+
+		foreach(MessageQueueAttributes mq in messageQueuesAttributes)
+		{
+			if(mq.queueName.Equals(queueName))
+			{
+				messageQueueAttribute = mq;
+				break;
+			}
+		}
+
+		if(messageQueueAttribute == null)
+		{
+			Debug.Log("nao existe essa message queue: " + queueName);
+			Debug.Break();
+		}
+
+		return messageQueueAttribute;
 	}
 }

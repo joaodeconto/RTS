@@ -7,7 +7,9 @@ using Visiorama;
 public class InteractionController : MonoBehaviour
 {
 	public delegate void InteractionCallback(Vector3 position);
-
+	
+	public GameObject uiExitGameObject;
+	
 	protected TouchController touchController;
 	protected TroopController troopController;
 	protected GameplayManager gameplayManager;
@@ -40,8 +42,10 @@ public class InteractionController : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Escape))
 		{
-			PhotonNetwork.LeaveRoom ();
-			Application.LoadLevel (0);
+			if (uiExitGameObject != null)
+			{
+				uiExitGameObject.SetActive (true);
+			}
 		}
 		
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR

@@ -19,6 +19,8 @@ public class Login : MonoBehaviour
 	private bool wasInitialized = false;
 	public void Init ()
 	{
+		PhotonNetwork.networkingPeer.DisconnectTimeout = 30000;
+		
 		if (wasInitialized) return;
 
 		wasInitialized = true;
@@ -36,13 +38,12 @@ public class Login : MonoBehaviour
 						//TODO lógica de login do jogo
 						if (!string.IsNullOrEmpty(username.text))
 						{
-				
 							PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-	
+				
 							pw.SetPlayer (username.text, true);
 	
 							mainMenu.SetActive (true);
-							mainMenu.GetComponent<InternalMainMenu> ().Init ();
+							mainMenu.GetComponent<InternalMainMenu> ().Init (username.text);
 	
 							this.gameObject.SetActive (false);
 						}

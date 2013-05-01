@@ -45,10 +45,6 @@ public class Unit : IStats
     public float turnSpeedAvoidance = 50f; // how fast to turn
 	public int numberOfUnits = 1;
 
-    public Transform probePoint; // forward probe point
-    public Transform leftReference; // left probe point
-    public Transform rightReference; // right probe point
-
 	public string guiTextureName;
 
 	public UnitAnimation unitAnimation;
@@ -106,19 +102,14 @@ public class Unit : IStats
 	{
 		base.Init();
 
-		//CharSound = GetComponent<CharacterSound> ();
-
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
-		if (ControllerAnimation != null) 
+		if (ControllerAnimation != null)
+		{
 			if (gameplayManager.IsSameTeam (team)) ControllerAnimation.cullingType = AnimationCullingType.AlwaysAnimate;
-
-//		if (ControllerAnimation != null)
-//		{
-//			ControllerAnimation.SetLayer (animation.Idle, 0);
-//			ControllerAnimation.SetLayer (animation.Walk, 0);
-//			ControllerAnimation.SetLayer (animation.Attack, 0);
-//		}
+			else ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
+		}
+			
 
 		factoryController     = ComponentGetter.Get<FactoryController> ();
 		troopController       = ComponentGetter.Get<TroopController> ();
@@ -138,20 +129,6 @@ public class Unit : IStats
 
 		if (!enabled) enabled = playerUnit;
 
-		if (probePoint == null) probePoint = transform;
-
-		if(leftReference == null)
-		{
-		    leftReference = transform;
-			leftReference.position -= transform.right * collider.bounds.size.x;
-		}
-
-		if(rightReference == null)
-		{
-		    rightReference = transform;
-			rightReference.position += transform.right * collider.bounds.size.x;
-		}
-
 		troopController.AddSoldier (this);
 	}
 
@@ -162,15 +139,20 @@ public class Unit : IStats
 
 	void OnDestroy ()
 	{
-		if (Selected && !playerUnit) Deselect ();
-		if (!IsRemoved && !playerUnit) troopController.soldiers.Remove (this);
+		if (Selected && !playerUnit)
+		{
+			hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
+			
+			Deselect ();
+		}
+		if (!IsRemoved && !playerUnit) troopController.RemoveSoldier (this);
 	}
 
 	public virtual void IAStep ()
 	{
 		if (!playerUnit) return;
 
-		//MoveAvoidance (pathfindTarget);
+//		MoveAvoidance ();
 
 		switch (unitState)
 		{
@@ -203,7 +185,6 @@ public class Unit : IStats
 //					else if (InDistanceView (targetAttack.transform.position))
 					else if (targetAttack.GetComponent<IStats> ().IsVisible)
 					{
-						//MoveAvoidance (targetAttack.transform);
 						Move (targetAttack.transform.position);
 					}
 					else
@@ -230,7 +211,16 @@ public class Unit : IStats
 			case UnitState.Attack:
 
 				followingTarget = true;
-
+			
+				if (targetAttack != null)
+				{
+					if (targetAttack.GetComponent<IStats>().IsRemoved)
+					{
+						TargetingEnemy (null);
+						IsAttacking = false;
+					}
+				}
+			
 				if (IsAttacking) return;
 
 				Stop ();
@@ -258,31 +248,34 @@ public class Unit : IStats
 
 	public virtual void SyncAnimation ()
 	{
-		switch (unitState)
+		if (IsVisible)
 		{
-		case UnitState.Idle:
-			if (unitAnimation.Idle)
-				ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
-
-			break;
-		case UnitState.Walk:
-			if (unitAnimation.Walk)
+			switch (unitState)
 			{
-				ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed;
-				ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
+			case UnitState.Idle:
+				if (unitAnimation.Idle)
+					ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
+	
+				break;
+			case UnitState.Walk:
+				if (unitAnimation.Walk)
+				{
+					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed;
+					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
+				}
+	
+				break;
+			case UnitState.Attack:
+				if (unitAnimation.Attack)
+					ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
+	
+				break;
+			case UnitState.Die:
+				if (unitAnimation.DieAnimation)
+					ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
+	
+				break;
 			}
-
-			break;
-		case UnitState.Attack:
-			if (unitAnimation.Attack)
-				ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-
-			break;
-		case UnitState.Die:
-			if (unitAnimation.DieAnimation)
-				ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
-
-			break;
 		}
 	}
 
@@ -297,71 +290,144 @@ public class Unit : IStats
 		unitState = UnitState.Walk;
 	}
 
-	void MoveAvoidance (Transform target)
+	void MoveAvoidance ()
 	{
+		if (unitState != UnitState.Walk) return;
+		
         RaycastHit hit;
-        Vector3 dir = (target.position - transform.position).normalized;
+        Vector3 dir = (pathfindTarget - transform.position).normalized;
 
         bool previousCastMissed = true;
-
-        if(Physics.Raycast(probePoint.position, transform.forward, out hit, probeRange))
+		
+		Vector3 probePoint = transform.position;
+		probePoint.y += 0.1f;
+		
+        if(Physics.Raycast(probePoint, transform.forward, out hit, probeRange))
 		{
-            if(obstacleInPath != target.transform)
-			{ // ignore our target
+			if (targetAttack != null)
+			{
+	            if(obstacleInPath != targetAttack)
+				{
+					// ignore our target
+	                Debug.Log("Found an object in path! - " + gameObject.name);
+	                Debug.DrawLine(transform.position, hit.point, Color.green);
+	                previousCastMissed = false;
+	                obstacleAvoid = true;
+	                pathfind.Stop(true);
+	                pathfind.ResetPath();
+	                if(hit.transform != transform)
+					{
+	                    obstacleInPath = hit.transform;
+	                    Debug.Log("I hit: " + hit.transform.gameObject.name);
+	                    dir += hit.normal * turnSpeedAvoidance;
+	                    Debug.Log("moving around an object - " + gameObject.name);
+	                }
+	            }
+			}
+			else
+			{
+				// ignore our target
                 Debug.Log("Found an object in path! - " + gameObject.name);
                 Debug.DrawLine(transform.position, hit.point, Color.green);
                 previousCastMissed = false;
                 obstacleAvoid = true;
                 pathfind.Stop(true);
                 pathfind.ResetPath();
-                if(hit.transform != transform) {
+                if(hit.transform != transform)
+				{
                     obstacleInPath = hit.transform;
                     Debug.Log("I hit: " + hit.transform.gameObject.name);
                     dir += hit.normal * turnSpeedAvoidance;
                     Debug.Log("moving around an object - " + gameObject.name);
                 }
-            }
+			}
         }
 
-        if(obstacleAvoid && previousCastMissed && Physics.Raycast(leftReference.position, transform.forward,out hit, probeRange))
+		Vector3 leftReference = probePoint;
+		leftReference.x -= (pathfind.radius);
+		
+        if (obstacleAvoid && 
+			previousCastMissed && 
+			Physics.Raycast(leftReference, transform.forward, out hit, probeRange))
 		{
-            if(obstacleInPath != target.transform)
-			{ // ignore our target
-                Debug.DrawLine(leftReference.position, hit.point, Color.red);
+			if (targetAttack != null)
+			{
+	            if(obstacleInPath != targetAttack)
+				{
+					// ignore our target
+	                Debug.DrawLine(leftReference, hit.point, Color.red);
+	                obstacleAvoid = true;
+	                pathfind.Stop();
+	                if(hit.transform != transform) {
+	                    obstacleInPath = hit.transform;
+	                    previousCastMissed = false;
+	                    Debug.Log("moving around an object");
+	                    dir += hit.normal * turnSpeedAvoidance;
+	                }
+	            }
+			}
+			else
+			{
+				// ignore our target
+                Debug.DrawLine(leftReference, hit.point, Color.red);
                 obstacleAvoid = true;
                 pathfind.Stop();
                 if(hit.transform != transform) {
                     obstacleInPath = hit.transform;
                     previousCastMissed = false;
-                    //Debug.Log("moving around an object");
+                    Debug.Log("moving around an object");
                     dir += hit.normal * turnSpeedAvoidance;
                 }
-            }
+			}
         }
 
+		Vector3 rightReference = probePoint;
+		rightReference.x += (pathfind.radius);
+		
         // check the other side :)
-        if(obstacleAvoid && previousCastMissed && Physics.Raycast(rightReference.position, transform.forward,out hit, probeRange)) {
-            if(obstacleInPath != target.transform) { // ignore our target
-                Debug.DrawLine(rightReference.position, hit.point, Color.green);
+        if (obstacleAvoid && 
+			previousCastMissed && 
+			Physics.Raycast(rightReference, transform.forward, out hit, probeRange))
+		{
+			if (targetAttack != null)
+			{
+	            if (obstacleInPath != targetAttack)
+				{
+					// ignore our target
+	                Debug.DrawLine(rightReference, hit.point, Color.green);
+	                obstacleAvoid = true;
+	                pathfind.Stop();
+	                if(hit.transform != transform) {
+	                    obstacleInPath = hit.transform;
+	                    dir += hit.normal * turnSpeedAvoidance;
+	                }
+	            }
+			}
+			else
+			{
+				// ignore our target
+                Debug.DrawLine(rightReference, hit.point, Color.green);
                 obstacleAvoid = true;
                 pathfind.Stop();
                 if(hit.transform != transform) {
                     obstacleInPath = hit.transform;
                     dir += hit.normal * turnSpeedAvoidance;
                 }
-            }
+			}
         }
 
 		// turn Nav back on when obstacle is behind the character!!
-		if (obstacleInPath != null) {
+		if (obstacleInPath != null)
+		{
 			Vector3 forward = transform.TransformDirection(Vector3.forward);
 			Vector3 toOther = obstacleInPath.position - transform.position;
-			if (Vector3.Dot(forward, toOther) < 0) {
+			if (Vector3.Dot(forward, toOther) < 0)
+			{
 			    Debug.Log("Back on Navigation! unit - " + gameObject.name);
 			    obstacleAvoid = false; // don't let Unity nav and our avoidance nav fight, character does odd things
 			    obstacleInPath = null; // Hakuna Matata
 			    pathfind.ResetPath();
-			    pathfind.SetDestination(target.position);
+			    pathfind.SetDestination(pathfindTarget);
 			    pathfind.Resume(); // Unity nav can resume movement control
 			}
 		}
@@ -373,98 +439,7 @@ public class Unit : IStats
             transform.position += transform.forward * pathfind.speed * Time.deltaTime;
         }
     }
-
-	void MoveAvoidance (Vector3 destination)
-	{
-        RaycastHit hit;
-        Vector3 dir = (destination - transform.position).normalized;
-        bool previousCastMissed = true; // no need to keep testing if something already hit
-
-        // this is the main forward raycast
-        if(Physics.Raycast(probePoint.position, transform.forward, out hit, probeRange))
-		{
-            Debug.DrawLine(transform.position, hit.point, Color.green);
-
-            previousCastMissed = false;
-
-            obstacleAvoid = true;
-
-            pathfind.Stop(true);
-
-            pathfind.ResetPath();
-
-            if(hit.transform != transform)
-			{
-                obstacleInPath = hit.transform;
-
-                dir += hit.normal * turnSpeedAvoidance;
-            }
-        }
-
-        // if we did see something before, but now the forward raycast is turned out of range, check the sides
-        // without this, the character bumps into the object and sort of bounces (usually) until it gets
-        // past.  This is a better approach :)
-        if(obstacleAvoid && previousCastMissed && Physics.Raycast(leftReference.position, transform.forward, out hit, probeRange))
-		{
-            if(obstacleInPath != transform)
-			{
-                Debug.DrawLine(leftReference.position, hit.point, Color.red);
-                obstacleAvoid = true;
-                pathfind.Stop();
-                if(hit.transform != transform) {
-
-                    obstacleInPath = hit.transform;
-
-                    previousCastMissed = false;
-
-                    dir += hit.normal * turnSpeedAvoidance;
-                }
-            }
-        }
-
-        // check the other side :)
-        if(obstacleAvoid && previousCastMissed && Physics.Raycast(rightReference.position, transform.forward,out hit, probeRange))
-		{
-            Debug.DrawLine(rightReference.position, hit.point, Color.green);
-            obstacleAvoid = true;
-            pathfind.Stop();
-            if(hit.transform != transform) {
-                obstacleInPath = hit.transform;
-                dir += hit.normal * turnSpeedAvoidance;
-            }
-        }
-
-        // turn Nav back on when obstacle is behind the character!!
-		if (obstacleInPath != null)
-		{
-            Vector3 forward = transform.TransformDirection(Vector3.forward);
-            Vector3 toOther = obstacleInPath.position - transform.position;
-
-            if (Vector3.Dot(forward, toOther) < 0)
-			{
-                Debug.Log("Back on Navigation! unit - " + gameObject.name);
-
-                obstacleAvoid = false; // don't let Unity nav and our avoidance nav fight, character does odd things
-                obstacleInPath = null;
-                pathfind.ResetPath();
-                pathfind.SetDestination(destination);
-                pathfind.Resume(); // Unity nav can resume movement control
-
-				unitState = UnitState.Walk;
-            }
-        }
-
-        // this is what actually moves the character when under avoidance control
-        if(obstacleAvoid)
-		{
-            Quaternion rot = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime);
-            transform.position += transform.forward * pathfind.speed * Time.deltaTime;
-
-			unitState = UnitState.Walk;
-        }
-    }
-
+	
 	private void Stop ()
 	{
 		pathfind.Stop ();
@@ -488,32 +463,20 @@ public class Unit : IStats
 //				else if (targetAttack.GetComponent<FactoryBase>())
 //					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
 //			}
-
+			
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-
+			
 			IsAttacking = true;
-
-			if (targetAttack == null) return true;
 			
-			if (targetAttack.GetComponent<IStats>().IsRemoved)
-			{
-				TargetingEnemy (null);
-				return true;
-			}
-			
-			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
-
-			IsAttacking = false;
-
 			if (!PhotonNetwork.offlineMode)
 			{
-				if (targetAttack.GetComponent<Unit>())
+				if (targetAttack.GetComponent<Unit>() != null)
 				{
 					photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 //					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 //					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 				}
-				else if (targetAttack.GetComponent<FactoryBase>())
+				else if (targetAttack.GetComponent<FactoryBase>() != null)
 				{
 					photonView.RPC ("AttackFactory", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 				}
@@ -523,6 +486,10 @@ public class Unit : IStats
 				if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
 				else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
 			}
+			
+			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
+			
+			IsAttacking = false;
 		}
 		else
 		{
@@ -539,13 +506,13 @@ public class Unit : IStats
 				}
 				else
 				{
-					if (targetAttack.GetComponent<Unit>())
+					if (targetAttack.GetComponent<Unit>() != null)
 					{
 						photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 	//					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 	//					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 					}
-					else if (targetAttack.GetComponent<FactoryBase>())
+					else if (targetAttack.GetComponent<FactoryBase>() != null)
 					{
 						photonView.RPC ("AttackFactory", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 					}
@@ -614,20 +581,10 @@ public class Unit : IStats
 		}
 	}
 
-	public void Deselect (bool isGroupDelesection = false)
+	public void Deselect ()
 	{
-		Debug.Log ("isGroupDelesection: ");
 		Selected = false;
 		hudController.DestroySelected (transform);
-
-		if(isGroupDelesection)
-		{
-			hudController.DestroyInspector ();
-		}
-		else
-		{
-			hudController.RemoveEnqueuedButtonInInspector(this.name, Unit.UnitGroupQueueName);
-		}
 	}
 
 	public bool IsRangeAttack (GameObject soldier)
@@ -665,6 +622,8 @@ public class Unit : IStats
 	        where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
 	        select pps).ToArray ();
 			playerTargetAttack = pp[0];
+			
+			followingTarget = true;
 		}
 		else playerTargetAttack = null;
 		
@@ -757,46 +716,37 @@ public class Unit : IStats
 
 		if (nearbyUnits.Length == 0) return;
 
-		GameObject unitSelected = null;
+		GameObject enemyFound = null;
         for (int i = 0; i != nearbyUnits.Length; i++)
 		{
-			if (nearbyUnits[i].GetComponent<Unit> ())
+			if (nearbyUnits[i].GetComponent<IStats> ())
 			{
-				if (nearbyUnits[i].GetComponent<Unit> ().team != team)
+				if (nearbyUnits[i].GetComponent<IStats> ().team != team)
 				{
-					if (unitSelected == null) unitSelected = nearbyUnits[i].gameObject;
-					else
+					if (enemyFound == null)
 					{
-						if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
-							Vector3.Distance (transform.position, unitSelected.transform.position))
-						{
-							unitSelected = nearbyUnits[i].gameObject;
-						}
+						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
+							enemyFound = nearbyUnits[i].gameObject;
 					}
-				}
-			}
-			else
-			{
-				if (nearbyUnits[i].GetComponent<FactoryBase> ().team != team)
-				{
-					if (unitSelected == null) unitSelected = nearbyUnits[i].gameObject;
 					else
 					{
-						if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
-							Vector3.Distance (transform.position, unitSelected.transform.position))
+						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
 						{
-							unitSelected = nearbyUnits[i].gameObject;
+							if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
+								Vector3.Distance (transform.position, enemyFound.transform.position))
+							{
+								enemyFound = nearbyUnits[i].gameObject;
+							}
 						}
 					}
 				}
 			}
         }
 
-		if (unitSelected == null) return;
+		if (enemyFound == null) return;
 		else
 		{
-			TargetingEnemy (unitSelected);
-			followingTarget = true;
+			TargetingEnemy (enemyFound);
 		}
 	}
 
@@ -810,7 +760,12 @@ public class Unit : IStats
 
 		troopController.RemoveSoldier(this);
 		
-		if (Selected) Deselect ();
+		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
+		
+		if (Selected)
+		{
+			Deselect ();
+		}
 
 		if (unitAnimation.DieAnimation)
 		{
@@ -882,5 +837,11 @@ public class Unit : IStats
 	public override void InstantiatParticleDamage ()
 	{
 		base.InstantiatParticleDamage ();
+	}
+	
+	[RPC]
+	public override void SendRemove ()
+	{
+		base.SendRemove ();
 	}
 }

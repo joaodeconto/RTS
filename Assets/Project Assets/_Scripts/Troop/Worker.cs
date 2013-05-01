@@ -62,13 +62,13 @@ public class Worker : Unit
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
 	public bool hasResource {get; protected set;}
+	protected int lastResourceId;
 	protected Resource lastResource;
-	protected bool settingWorkerNull;
-
-
+	protected bool isSettingWorkerNull;
+	
 	protected FactoryBase factoryChoose, lastFactory;
-	protected EventManager eventManager;
-	protected bool movingToFactory;
+	protected bool isMovingToFactory;
+	protected bool isCheckedSendResourceToFactory;
 
 	public override void Init ()
 	{
@@ -82,9 +82,7 @@ public class Worker : Unit
 			rw.extractingObject.SetActive (false);
 		}
 
-		eventManager = ComponentGetter.Get<EventManager> ();
-
-		hasResource = settingWorkerNull = false;
+		hasResource = isSettingWorkerNull = false;
 
 		workerState = WorkerState.None;
 	}
@@ -97,7 +95,7 @@ public class Worker : Unit
 		switch (workerState)
 		{
 			case WorkerState.Extracting:
-				if (factoryChoose != null)
+				if (HasFactory ())
 				{
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
@@ -125,23 +123,41 @@ public class Worker : Unit
 
 			case WorkerState.Carrying:
 			case WorkerState.CarryingIdle:
-				if (resource != null &&
-					!settingWorkerNull)
+//				if (resource != null &&
+//					!settingWorkerNull)
+//				{
+//					settingWorkerNull = true;
+//					resource.RemoveWorker (this);
+//				}
+			    if (!isCheckedSendResourceToFactory)
 				{
-					settingWorkerNull = true;
-					resource.RemoveWorker (this);
-				}
-
-				if (!movingToFactory)
-				{
-					if (factoryChoose == null)
+					if (!isMovingToFactory)
 					{
-						SetMoveToFactory (resource.type);
-						SetMoveToFactory (typeof(MainFactory));
+						if (!HasFactory ())
+						{
+							SetMoveToFactory (resource.type);
+							SetMoveToFactory (typeof(MainFactory));
+						}
+					
+						if (!HasFactory ())
+						{
+							isMovingToFactory = true;
+							Move (transform.position);
+						}
+					}
+					isCheckedSendResourceToFactory = true;
+				}
+			
+				if (isMovingToFactory)
+				{
+					if (!HasFactory ())
+					{
+						isMovingToFactory = false;
+						Move (transform.position);
 					}
 				}
 
-				if (!MoveComplete())
+				if (!MoveComplete ())
 				{
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
@@ -158,8 +174,8 @@ public class Worker : Unit
 
 					workerState = WorkerState.CarryingIdle;
 				}
-
-				if (factoryChoose == null) return;
+			
+				if (!HasFactory ()) return;
 
 				if (!factoryChoose.wasBuilt)
 				{
@@ -171,6 +187,8 @@ public class Worker : Unit
 
 					return;
 				}
+			
+//				Debug.Log (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius);
 
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 				{
@@ -189,7 +207,7 @@ public class Worker : Unit
 
 					workerState = WorkerState.None;
 
-					movingToFactory = hasResource = settingWorkerNull = false;
+					isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;
 
 					resourceWorker[resourceId].carryingObject.SetActive (false);
 
@@ -200,7 +218,7 @@ public class Worker : Unit
 				break;
 			case WorkerState.Building:
 			case WorkerState.Repairing:
-				if (factoryChoose == null ||
+				if (!HasFactory () ||
 					factoryChoose != lastFactory)
 				{
 					// Patch para tirar travada ¬¬
@@ -208,7 +226,7 @@ public class Worker : Unit
 
 					resourceWorker[0].extractingObject.SetActive (false);
 
-					movingToFactory = false;
+					isMovingToFactory = false;
 
 					if (hasResource)
 					{
@@ -310,7 +328,7 @@ public class Worker : Unit
 
 	public override void SyncAnimation ()
 	{
-		if (IsVisible || true)
+		if (IsVisible)
 		{
 			switch (workerState)
 			{
@@ -320,6 +338,7 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
+						lastResourceId = resourceId;
 					}
 					break;
 	
@@ -329,6 +348,7 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
+						lastResourceId = resourceId;
 					}
 					break;
 	
@@ -338,6 +358,7 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting);
 						resourceWorker[resourceId].extractingObject.SetActive (true);
 						resourceWorker[resourceId].carryingObject.SetActive (false);
+						lastResourceId = resourceId;
 					}
 					break;
 	
@@ -347,7 +368,11 @@ public class Worker : Unit
 					{
 						ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting);
 						resourceWorker[0].extractingObject.SetActive (true);
-						if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
+						if (lastResourceId != -1)
+						{
+							resourceWorker[lastResourceId].carryingObject.SetActive (false);
+							lastResourceId = resourceId;
+						}
 					}
 					break;
 	
@@ -361,7 +386,11 @@ public class Worker : Unit
 						resourceWorker[0].extractingObject.SetActive (false);
 					}
 	
-					if (resourceId != -1) resourceWorker[resourceId].carryingObject.SetActive (false);
+					if (lastResourceId != -1)
+					{
+						resourceWorker[lastResourceId].carryingObject.SetActive (false);
+						lastResourceId = resourceId;
+					}
 	
 					base.SyncAnimation ();
 					break;
@@ -439,7 +468,7 @@ public class Worker : Unit
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
 
-		if (factoryChoose != null && !factoryChoose.Construct (this))
+		if (HasFactory () && !factoryChoose.Construct (this))
 		{
 			factoryChoose = null;
 		}
@@ -454,7 +483,7 @@ public class Worker : Unit
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
 
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			if (!factoryChoose.Repair (this))
 			{
@@ -495,7 +524,12 @@ public class Worker : Unit
 		pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
-
+		
+		if (resource != null)
+		{
+			resource.RemoveWorker (this);
+		}
+		
 		workerState = WorkerState.Carrying;
 	}
 #endregion
@@ -505,14 +539,14 @@ public class Worker : Unit
 	{
 		factoryChoose = factory;
 
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			Move (factoryChoose.transform.position);
-			movingToFactory = true;
+			isMovingToFactory = true;
 		}
 		else
 		{
-			movingToFactory = false;
+			isMovingToFactory = false;
 		}
 	}
 
@@ -520,10 +554,10 @@ public class Worker : Unit
 	{
 		SearchFactory (resourceType);
 
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			Move (factoryChoose.transform.position);
-			movingToFactory = true;
+			isMovingToFactory = true;
 		}
 	}
 
@@ -531,10 +565,10 @@ public class Worker : Unit
 	{
 		SearchFactory (type);
 
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			Move (factoryChoose.transform.position);
-			movingToFactory = true;
+			isMovingToFactory = true;
 		}
 	}
 #endregion
@@ -577,7 +611,7 @@ public class Worker : Unit
 	/// </param>
 	void CheckFactory (FactoryBase factory)
 	{
-		if (factoryChoose == null)
+		if (!HasFactory ())
 		{
 			if (factory.wasBuilt) factoryChoose = factory;
 		}
@@ -595,7 +629,7 @@ public class Worker : Unit
 
 	void CheckConstructFactory ()
 	{
-		if (factoryChoose != null)
+		if (HasFactory ())
 		{
 			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
 			{
@@ -614,9 +648,40 @@ public class Worker : Unit
 			}
 			else
 			{
-				Move (factoryChoose.transform.position);
+				if (!factoryChoose.wasBuilt ||
+					factoryChoose.IsNeededRepair)
+				{
+					Move (factoryChoose.transform.position);
+				}
+				else
+				{
+					pathfind.Stop ();
+					unitState = Unit.UnitState.Idle;
+					factoryChoose = null;
+					isMovingToFactory = false;
+				}
 			}
 		}
+		else if (factoryChoose.IsRemoved)
+		{
+			factoryChoose = null;
+			
+			pathfind.Stop ();
+			unitState = Unit.UnitState.Idle;
+			factoryChoose = null;
+			isMovingToFactory = false;
+		}
+	}
+	
+	public bool HasFactory ()
+	{
+		if (factoryChoose == null)
+			return false;
+		
+		if (factoryChoose.IsRemoved)
+			return false;
+		
+		return true;
 	}
 
 	// GIZMOS
@@ -646,5 +711,11 @@ public class Worker : Unit
 	public override void InstantiatParticleDamage ()
 	{
 		base.InstantiatParticleDamage ();
+	}
+	
+	[RPC]
+	public override void SendRemove ()
+	{
+		base.SendRemove ();
 	}
 }

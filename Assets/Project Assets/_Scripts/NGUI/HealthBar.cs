@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections;
 
 public class HealthBar : MonoBehaviour {
-
-	private IStats target;
+	
+	[System.NonSerialized]
+	public IStats target;
 
 	protected UISlider slider;
 
@@ -26,7 +27,6 @@ public class HealthBar : MonoBehaviour {
 		updateHealthMethod = null;
 	}
 
-	// Update is called once per frame
 	void Update ()
 	{
 		if (updateHealthMethod != null) updateHealthMethod ();

@@ -121,6 +121,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 400014}
   - 114: {fileID: 11400014}
+  - 114: {fileID: 11400036}
+  - 114: {fileID: 11400038}
   m_Layer: 0
   m_Name: GameplayManager
   m_TagString: Untagged
@@ -510,6 +512,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b897794dc18157244b70c2e6fce62e77, type: 3}
   m_Name: 
+  uiExitGameObject: {fileID: 0}
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -565,19 +568,19 @@ MonoBehaviour:
   m_Name: 
   teams:
   - name: Time lol
-    color: {r: .072176449, g: .113122597, b: .604477644, a: 1}
+    color: {r: .164903104, g: .18838352, b: .470149279, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: Time legalzinho
-    color: {r: .470149279, g: .0526286624, b: .0526286624, a: 1}
+    color: {r: .455223858, g: .118901767, b: .118901767, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: time mais massa
-    color: {r: 1, g: .650349617, b: 0, a: 1}
+    color: {r: .589552283, g: .376154155, b: .1407886, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: super time
-    color: {r: .32680428, g: .0527957194, b: .589552283, a: 1}
+    color: {r: .302183867, g: .150367573, b: .447761178, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   resources:
@@ -585,9 +588,10 @@ MonoBehaviour:
   hud:
     labelResources: {fileID: 0}
     labelUnits: {fileID: 0}
-    endGameScreen: {fileID: 0}
-    labelWin: {fileID: 0}
-    labelDefeat: {fileID: 0}
+    uiVictoryObject: {fileID: 0}
+    uiDefeatObject: {fileID: 0}
+    labelTime: {fileID: 0}
+    uiLostMainBaseObject: {fileID: 0}
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -601,6 +605,15 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   layersToIgnore:
   - GUI
+  zoomSettings:
+    cameras:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    zoomSpeed: 0
+    zoom:
+      min: 5
+      max: 18
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -618,7 +631,7 @@ MonoBehaviour:
   trnsOptionsMenu: {fileID: 0}
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
   offesetFeedback: {x: 0, y: .100000001, z: 0}
-  pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
+  pref_moveFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   pref_selfFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   pref_attackFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   sliders:
@@ -649,6 +662,7 @@ MonoBehaviour:
   CamPositionTexture: {fileID: 2800000, guid: f92f0095c09765246a81892919654288, type: 3}
   mapTransform: {fileID: 0}
   fogMiniMap: {fileID: 0}
+  beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
   visualizationSize: {x: 85, y: 60, z: 0}
   visualizationPosition: {x: 20, y: 0, z: 30}
   MiniMapRefreshInterval: .200000003
@@ -694,35 +708,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8230260338ccb4bbc5b02ba6115664, type: 3}
   m_Name: 
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
-  trnsPanelMessageQueues: {fileID: 0}
   messageQueuesAttributes:
   - queueName: Unit Group
-    rootPosition: {x: 450, y: 100}
+    panel: {fileID: 0}
+    rootPosition: {x: -175, y: 90}
     cellSize: {x: 50, y: 50}
     padding: {x: 10, y: 10}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 10
-    GroupIfReachMaxMessages: 1
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Factory
-    rootPosition: {x: 450, y: 100}
+    panel: {fileID: 0}
+    rootPosition: {x: -175, y: 90}
     cellSize: {x: 50, y: 50}
     padding: {x: 10, y: 10}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 5
-    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Events
+    panel: {fileID: 0}
     rootPosition: {x: 25, y: 600}
     cellSize: {x: 40, y: 40}
     padding: {x: 5, y: 5}
@@ -730,12 +744,12 @@ MonoBehaviour:
     IsVerticalQueue: 1
     maxPerLine: 10
     maxItems: 10
-    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
       timeToFadeout: 3
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Chat
+    panel: {fileID: 0}
     rootPosition: {x: -800, y: 110}
     cellSize: {x: 0, y: 0}
     padding: {x: 0, y: 0}
@@ -743,7 +757,6 @@ MonoBehaviour:
     IsVerticalQueue: 0
     maxPerLine: 5
     maxItems: 10
-    GroupIfReachMaxMessages: 0
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
@@ -809,6 +822,9 @@ MonoBehaviour:
   - Name: create unit
     Message: '{0} trained'
     spriteName: 
+  - Name: being attacked
+    Message: You are being attacked
+    spriteName: 
 --- !u!114 &11400032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -838,6 +854,39 @@ MonoBehaviour:
   - name: Click
     soundsClip:
     - {fileID: 8300000, guid: 7bb4933e9760faf47a89560d2394dded, type: 3}
+--- !u!114 &11400036
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  subId: 0
+  ownerId: 0
+  group: 0
+  prefixBackup: -1
+  observed: {fileID: 0}
+  synchronization: 0
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  instantiationId: 0
+--- !u!114 &11400038
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba13a7c7f20708b40a1eb94f6329f6e9, type: 3}
+  m_Name: 
+  sounds:
+  - name: BeingAttacked
+    soundsClip:
+    - {fileID: 8300000, guid: 764db8f6e7d4a284a924513dce0794de, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

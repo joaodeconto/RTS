@@ -44,6 +44,9 @@ public class HUDController : MonoBehaviour
 		public string textureName;
 		public DefaultCallbackButton.OnClickDelegate onClick;
 		public DefaultCallbackButton.OnPressDelegate onPress;
+		public DefaultCallbackButton.OnSliderChangeDelegate onSliderChange;
+		public DefaultCallbackButton.OnActivateDelegate onActivate;
+		public DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick;
 		public DefaultCallbackButton.OnDragDelegate onDrag;
 		public DefaultCallbackButton.OnDropDelegate onDrop;
 		public bool persistent;
@@ -193,7 +196,10 @@ public class HUDController : MonoBehaviour
 
 		foreach (Transform child in HUDRoot.go.transform)
 		{
-			Destroy (child.gameObject);
+			if (child.GetComponent<HealthBar>().target == target.GetComponent<IStats> ())
+			{
+				Destroy (child.gameObject);
+			}
 		}
 	}
 
@@ -203,6 +209,9 @@ public class HUDController : MonoBehaviour
 												string textureName = "",
 												DefaultCallbackButton.OnClickDelegate onClick = null,
 												DefaultCallbackButton.OnPressDelegate onPress = null,
+												DefaultCallbackButton.OnSliderChangeDelegate onSliderChange = null,
+												DefaultCallbackButton.OnActivateDelegate onActivate = null,
+												DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick = null,
 												DefaultCallbackButton.OnDragDelegate onDrag = null,
 												DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
@@ -214,13 +223,13 @@ public class HUDController : MonoBehaviour
 
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 		mq.AddMessageInfo ( buttonName, ht,
-							onClick, onPress, onDrag, onDrop);
+							onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 	}
 
 	public void RemoveEnqueuedButtonInInspector(string buttonName, string queueName)
 	{
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-
+	
 		mq.RemoveMessageInfo(buttonName);
 	}
 
@@ -234,7 +243,7 @@ public class HUDController : MonoBehaviour
 	public bool CheckQueuedButtonIsFirst(string buttonName, string queueName)
 	{
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-
+		
 		return mq.CheckQueuedButtonIsFirst(buttonName);
 	}
 
@@ -314,10 +323,10 @@ public class HUDController : MonoBehaviour
 		if ( pcb == null )
 		{
 			pcb = button.AddComponent<PersonalizedCallbackButton>();
-			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
+			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
 		}
 		else
-			pcb.ChangeParams(bs.ht, bs.onClick, bs.onPress, bs.onDrag, bs.onDrop);
+			pcb.ChangeParams(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
 	}
 
 	public void RemoveButtonInInspector(string buttonName)
@@ -333,7 +342,7 @@ public class HUDController : MonoBehaviour
 		}
 	}
 
-	public void DestroyInspector ()
+	public void DestroyInspector (string type)
 	{
 		IsDestroying = true;
 		foreach (Transform child in trnsOptionsMenu)
@@ -341,9 +350,11 @@ public class HUDController : MonoBehaviour
 			if (!child.gameObject.name.Contains(PERSIST_STRING))
 				Destroy (child.gameObject);
 		}
-
-		messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
-		messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
+		
+		if (type.ToLower ().Equals ("factory"))
+			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
+		else if (type.ToLower ().Equals ("unit"))
+			messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
 	}
 
 	public void CreateFeedback (Feedbacks feedback, Transform transform, float size, Color color)

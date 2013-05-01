@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Visiorama;
+using Visiorama.Extension;
 
 public class FactoryBase : IStats
 {
@@ -63,12 +64,15 @@ public class FactoryBase : IStats
 
 	protected FactoryController factoryController;
 	protected HUDController hudController;
-	protected EventManager eventManager;
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;
-
+	
+	[HideInInspector]
 	public bool wasVisible = false;
+	[HideInInspector]
 	public bool alreadyCheckedMaxPopulation = false;
+	[HideInInspector]
+	public ResourcesManager costOfResources;
 
 	protected float realRangeView;
 
@@ -95,7 +99,6 @@ public class FactoryBase : IStats
 		timer = 0;
 
 		hudController     = ComponentGetter.Get<HUDController> ();
-		eventManager      = ComponentGetter.Get<EventManager> ();
 		factoryController = ComponentGetter.Get<FactoryController> ();
 		buildingSlider    = hudController.GetSlider("Building Unit");
 		buildingSlider.gameObject.SetActive(false);
@@ -148,6 +151,8 @@ public class FactoryBase : IStats
 			unitToCreate = listedToCreate[0];
 			timeToCreate = unitToCreate.timeToCreate;
 			inUpgrade = true;
+			
+			if (Selected) buildingSlider.gameObject.SetActive(true);
 		}
 		else
 		{
@@ -188,7 +193,7 @@ public class FactoryBase : IStats
 	public virtual void SyncAnimation ()
 	{
 		if (!IsVisible) return;
-
+		
 		buildingObjects.baseObject.SetActive (buildingState == BuildingState.Base);
 		buildingObjects.unfinishedObject.SetActive (buildingState == BuildingState.Unfinished);
 		buildingObjects.finishedObject.SetActive (buildingState == BuildingState.Finished);
@@ -246,12 +251,22 @@ public class FactoryBase : IStats
 		}
 	}
 
-	public virtual void OnDie ()
+	public virtual IEnumerator OnDie ()
 	{
 		factoryController.RemoveFactory (this);
 
-		if (Selected) Deselect ();
+		model.animation.Play ();
+		
+		if (Selected)
+		{
+			hudController.DestroyInspector ("factory");
+			
+			Deselect ();
+		}
+		
+//		yield return StartCoroutine (model.animation.WaitForAnimation (model.animation.clip));
 
+		yield return new WaitForSeconds (4f);
 		if (IsNetworkInstantiate)
 		{
 			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
@@ -291,7 +306,7 @@ public class FactoryBase : IStats
 		{
 			obj.SetActive (true);
 		}
-
+		
 		buildingState = BuildingState.Base;
 
 		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
@@ -359,6 +374,8 @@ public class FactoryBase : IStats
 
 	public void Select ()
 	{
+		if (IsRemoved) return;
+		
 		if (!Selected) Selected = true;
 		else return;
 
@@ -369,8 +386,10 @@ public class FactoryBase : IStats
 		healthBar.SetTarget (this);
 
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
-
-		if (playerUnit && wasBuilt)
+		
+		if (!playerUnit) return;
+		
+		if (wasBuilt)
 		{
 			if (!hasWaypoint) return;
 
@@ -393,8 +412,6 @@ public class FactoryBase : IStats
 															FactoryBase factory     = this;
 															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
 
-															buildingSlider.gameObject.SetActiveRecursively(true);
-
 															if (!factory.OverLimitCreateUnit)
 																factory.EnqueueUnitToCreate (unitFactory.unit);
 															else
@@ -402,7 +419,7 @@ public class FactoryBase : IStats
 														});
 			}
 
-			for(int i = listedToCreate.Count - 1; i != -1; --i)
+			for(int i = 0; i != listedToCreate.Count; ++i)
 			{
 				UnitFactory unitFactory = listedToCreate[i];
 
@@ -416,12 +433,28 @@ public class FactoryBase : IStats
 																listedToCreate[i].unit.guiTextureName,
 																(hud_ht) =>
 																{
-																	//TODO Fazer recuperação do dinheiro quando desistir da
-																	//construção de alguma unidade
-
 																	DequeueUnit(hud_ht);
 																});
 			}
+		}
+		else
+		{
+			IStats.GridItemAttributes gia = new GridItemAttributes();
+			gia.gridXIndex = 0;
+			gia.gridYIndex = 0;
+			
+			Hashtable ht = new Hashtable();
+			ht["actionType"] = "cancel";
+			
+			hudController.CreateButtonInInspector ( "cancel",
+													gia.Position,
+													ht,
+													"cross-option",
+													(ht_hud) =>
+													{
+														gameplayManager.resources.ReturnResources (costOfResources, 0.75f);
+														photonView.RPC ("SendRemove", PhotonTargets.All);
+													});
 		}
 	}
 
@@ -442,7 +475,7 @@ public class FactoryBase : IStats
 
 			if(!isGroupDelesection)
 			{
-				hudController.DestroyInspector ();
+				hudController.DestroyInspector ("factory");
 			}
 		}
 
@@ -538,5 +571,18 @@ public class FactoryBase : IStats
 		{
 			return model.transform.parent != null;
 		}
+	}
+	
+	// RPCs
+	[RPC]
+	public override void InstantiatParticleDamage ()
+	{
+		base.InstantiatParticleDamage ();
+	}
+	
+	[RPC]
+	public override void SendRemove ()
+	{
+		base.SendRemove ();
 	}
 }
