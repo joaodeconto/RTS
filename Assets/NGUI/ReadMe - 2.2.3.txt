@@ -1,7 +1,7 @@
 ----------------------------------------------
             NGUI: Next-Gen UI kit
- Copyright © 2011-2012 Tasharen Entertainment
-                Version 2.2.7c
+ Copyright Â© 2011-2012 Tasharen Entertainment
+                Version 2.5.1
     http://www.tasharen.com/?page_id=197
             support@tasharen.com
 ----------------------------------------------
@@ -34,6 +34,87 @@ Using NGUI with JavaScript (UnityScript)? Read this first: http://www.tasharen.c
 -----------------
  Version History
 -----------------
+
+2.5.1
+- NEW: Added a "shrink to fit" option for labels that will scale down the text if it doesn't fit.
+- FIX: Re-added the "import font" field in the font inspector.
+
+2.5.0
+- DEL: Deprecated Unity 3.5.4 and earlier support. If you are using 3.5.4 or earlier, DO NOT UPDATE!
+- OLD: Sliced, tiled, and filled sprites have been deprecated.
+- NEW: Regular sprite now has options for how the sprite is drawn.
+- NEW: NGUI widgets now have visual placement handles.
+- NEW: Adding a widget now automatically creates a UI hierarchy if one is not present.
+- NEW: NGUI menu has been redesigned with new options and shortcut keys.
+- FIX: Widget selection box now takes padding into account properly.
+- FIX: Changing the pivot no longer moves the widget visually.
+- FIX: Font symbols now use padding instead of inner rect for offset.
+- FIX: Font symbols no longer need to be used in the editor before they are usable in-game.
+- FIX: More fixes to how tweens get initialized/started.
+- FIX: Re-added UISlider.fullSize property for better backwards compatibility.
+- FIX: Unity 4.1-related fixes.
+- FIX: Variety of other minor tweaks and changes.
+
+2.3.6
+- NEW: Added a much easier way to add symbols and emoticons (select the font, you will see it).
+- NEW: Added a couple of conditional warnings to the UIPanel warning of common mistakes.
+- NEW: Various improvements to widget and sprite inspectors.
+- FIX: There is no need to display the "symbols" option on the labels if the font doesn't have any.
+- FIX: Removed the hard-coded screen height-based touch threshold on the UICamera.
+- FIX: Removed the need for sliders to have a "full size" property.
+
+2.3.5:
+- NEW: Font symbols can now have an offset for easier positioning.
+- FIX: UISlider will now set the 'current' property before calling the delegate.
+- FIX: Fixed the checkbox animation issue that was brought to light as a result of 2.3.4.
+- FIX: Minor other tweaks, nothing important.
+
+2.3.4:
+- NEW: Added the ability to easily copy/paste widget colors in the inspector.
+- FIX: Random fixes for minor issues noted on the forums.
+- FIX: Minor performance improvements.
+
+2.3.3
+- NEW: UIPanels now have alpha for easy fading, and TweenAlpha can now tween panels.
+- NEW: Added UICamera.debug mode for when you want to know what the mouse is hovering over.
+- NEW: Added AnimatedColor and AnimatedAlpha scripts in case you want to animate widget color or alpha via Unity's animations.
+- NEW: Android devices should now be able to support a keyboard and a controller (OUYA).
+- NEW: Added UIFont.pixelSize, making it possible to have HD/UD fonts that are not a part of an atlas.
+- FIX: Unity 4.1 optimization fix.
+- FIX: Label shadow should now be affected by alpha using PMA shaders.
+- FIX: UICheckbox.current will now work correctly for checkbox event receivers.
+- FIX: UIButton series of scripts should now initialize themselves on start, not when they are used.
+- FIX: TweenOrthoSize should now tween the size instead of FOV (o_O).
+- FIX: Sprite selection window will now show sprites properly when the atlas is not square.
+- FIX: UIAnchor should now always maintain the same Z-depth, and once again works in 3D UIs.
+
+2.3.1
+- NEW: Added UICamera.touchCount.
+- NEW: Added an option on the UIInput to turn on auto-correction on mobiles.
+- FIX: Fixed compilation on Unity 3.
+- FIX: Font inspector will now display the font in a preview window.
+
+2.3.0:
+- NEW: Added Premultiplied Alpha support to NGUI along with the appropriate shaders.
+- NEW: Added UIButtonKeyBinding script that makes it easy to do button key bindings.
+- NEW: Transform inspector now supports multi-object editing (contribution by Bardelot 'Cripple' Alexandre)
+- NEW: UIRoot's 'automatic' flag is now gone, replaced by a more intuitive drop-down list.
+- NEW: It's now possible to make UIRoot fixed size on mobiles, but pixel-perfect on desktops (it's an option).
+- NEW: You can now specify an animation curve on all tweens.
+- NEW: Localization will now attempt to load the starting language automatically.
+- NEW: Added UICamera.onCustomInput callback making it possible to add input form custom devices.
+- NEW: Support for optimizations in Unity 4.1.
+- FIX: Tweaks to Localization to make it easier to use. You can now just do Localization.Localize everywhere.
+- FIX: UILocalize attached to a label used by input will now localize its default value instead.
+- FIX: Kerning should now get saved properly. You will need to re-import your fonts.
+- FIX: UICamera with multi-touch turned off should now work properly when returning from sleep.
+- FIX: ActiveAnimation's onFinished callback will no longer wait for all animation states to finish (only the playing one).
+- FIX: UICamera's touch detection should now work properly when returning from sleep.
+- FIX: Changed the way MakePixelPerfect works a bit, hopefully fixing an issue with sprites moving by a pixel.
+- FIX: UIPanel should now display the clipped rectangle correctly.
+- FIX: UIInputSaved will now save on submit.
+- DEL: Removed UIAnchor.depthOffset seeing as it caused more confusion than anything else. Just use an offset child GameObject.
+- DEL: Deprecated hard clipping, seeing as it causes issues on too many devices.
 
 2.2.7:
 - NEW: Added UICamera.stickyPress option that makes it possible for multiple objects to receive OnPress notifications from a single touch.

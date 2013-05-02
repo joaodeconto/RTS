@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -148,10 +148,10 @@ public class UICheckbox : MonoBehaviour
 			// Tween the color of the checkmark
 			if (checkSprite != null)
 			{
-				Color c = checkSprite.color;
-				c.a = mChecked ? 1f : 0f;
-				TweenColor.Begin(checkSprite.gameObject, 0.2f, c);
+				TweenAlpha.Begin(checkSprite.gameObject, 0.15f, mChecked ? 1f : 0f);
 			}
+
+			current = this;
 
 			// Notify the delegate
 			if (onStateChange != null) onStateChange(mChecked);
@@ -159,9 +159,9 @@ public class UICheckbox : MonoBehaviour
 			// Send out the event notification
 			if (eventReceiver != null && !string.IsNullOrEmpty(functionName))
 			{
-				current = this;
 				eventReceiver.SendMessage(functionName, mChecked, SendMessageOptions.DontRequireReceiver);
 			}
+			current = null;
 
 			// Play the checkmark animation
 			if (checkAnimation != null)

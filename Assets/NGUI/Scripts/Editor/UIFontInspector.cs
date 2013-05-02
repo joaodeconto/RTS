@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -27,12 +27,17 @@ public class UIFontInspector : Editor
 		Reference,
 	}
 
-	static View mView = View.Atlas;
+	static View mView = View.Font;
 	static bool mUseShader = false;
 	
 	UIFont mFont;
 	FontType mType = FontType.Normal;
 	UIFont mReplacement = null;
+	string mSymbolSequence = "";
+	string mSymbolSprite = "";
+	BMSymbol mSelectedSymbol = null;
+
+	public override bool HasPreviewGUI () { return mView != View.Nothing; }
 
 	void OnSelectFont (MonoBehaviour obj)
 	{
@@ -125,12 +130,6 @@ public class UIFontInspector : Editor
 
 		if (mFont.atlas != null)
 		{
-			if (mFont.bmFont.LegacyCheck())
-			{
-				Debug.Log(mFont.name + " uses a legacy font data structure. Upgrading, please save.");
-				EditorUtility.SetDirty(mFont);
-			}
-
 			if (mFont.bmFont.isValid)
 			{
 				NGUIEditorTools.AdvancedSpriteField(mFont.atlas, mFont.spriteName, SelectSprite, false);
@@ -148,11 +147,15 @@ public class UIFontInspector : Editor
 			}
 		}
 
+		// For updating the font's data when importing from an external source, such as the texture packer
 		bool resetWidthHeight = false;
 
 		if (mFont.atlas != null || mFont.material != null)
 		{
-			TextAsset data = EditorGUILayout.ObjectField("Import Font", null, typeof(TextAsset), false) as TextAsset;
+			GUILayout.BeginHorizontal();
+			TextAsset data = EditorGUILayout.ObjectField("Import Data", null, typeof(TextAsset), false) as TextAsset;
+			GUILayout.Space(44f);
+			GUILayout.EndHorizontal();
 
 			if (data != null)
 			{
@@ -228,6 +231,7 @@ public class UIFontInspector : Editor
 					int x = EditorGUILayout.IntField(mFont.horizontalSpacing);
 					GUILayout.Label("Y", GUILayout.Width(12f));
 					int y = EditorGUILayout.IntField(mFont.verticalSpacing);
+					GUILayout.Space(62f);
 					EditorGUIUtility.LookLikeControls(80f);
 
 					if (mFont.horizontalSpacing != x || mFont.verticalSpacing != y)
@@ -239,38 +243,162 @@ public class UIFontInspector : Editor
 				}
 				GUILayout.EndHorizontal();
 
-				EditorGUILayout.Separator();
-
-				GUILayout.BeginHorizontal();
+				if (mFont.atlas == null)
 				{
-					mView = (View)EditorGUILayout.EnumPopup("Show", mView);
-					GUILayout.Label("Shader", GUILayout.Width(45f));
+					mView = View.Font;
+					mUseShader = false;
 
-					if (mUseShader != EditorGUILayout.Toggle(mUseShader, GUILayout.Width(20f)))
+					float pixelSize = EditorGUILayout.FloatField("Pixel Size", mFont.pixelSize, GUILayout.Width(120f));
+
+					if (pixelSize != mFont.pixelSize)
 					{
-						mUseShader = !mUseShader;
-
-						if (mUseShader && mView == View.Font)
-						{
-							// TODO: Remove this when Unity fixes the bug with DrawPreviewTexture not being affected by BeginGroup
-							Debug.LogWarning("There is a bug in Unity that prevents the texture from getting clipped properly.\n" +
-								"Until it's fixed by Unity, your texture may spill onto the rest of the Unity's GUI while using this mode.");
-						}
+						NGUIEditorTools.RegisterUndo("Font Change", mFont);
+						mFont.pixelSize = pixelSize;
 					}
 				}
+				else
+				{
+					GUILayout.Space(4f);
+					GUILayout.BeginHorizontal();
+					{
+						mView = (View)EditorGUILayout.EnumPopup("Preview", mView);
+						GUILayout.Label("Shader", GUILayout.Width(45f));
+						mUseShader = EditorGUILayout.Toggle(mUseShader, GUILayout.Width(20f));
+					}
+					GUILayout.EndHorizontal();
+				}
+			}
+
+			if (mFont.atlas != null)
+			{
+				NGUIEditorTools.DrawHeader("Symbols and Emoticons");
+
+				List<BMSymbol> symbols = mFont.symbols;
+				
+				for (int i = 0; i < symbols.Count; )
+				{
+					BMSymbol sym = symbols[i];
+
+					GUILayout.BeginHorizontal();
+					GUILayout.Label(sym.sequence, GUILayout.Width(40f));
+					if (NGUIEditorTools.SimpleSpriteField(mFont.atlas, sym.spriteName, ChangeSymbolSprite))
+						mSelectedSymbol = sym;
+
+					if (GUILayout.Button("Edit", GUILayout.Width(40f)))
+					{
+						if (mFont.atlas != null)
+						{
+							EditorPrefs.SetString("NGUI Selected Sprite", sym.spriteName);
+							NGUIEditorTools.Select(mFont.atlas.gameObject);
+						}
+					}
+
+					GUI.backgroundColor = Color.red;
+
+					if (GUILayout.Button("X", GUILayout.Width(22f)))
+					{
+						NGUIEditorTools.RegisterUndo("Remove symbol", mFont);
+						mSymbolSequence = sym.sequence;
+						mSymbolSprite = sym.spriteName;
+						symbols.Remove(sym);
+						mFont.MarkAsDirty();
+					}
+					GUI.backgroundColor = Color.white;
+					GUILayout.EndHorizontal();
+					GUILayout.Space(4f);
+					++i;
+				}
+
+				if (symbols.Count > 0)
+				{
+					NGUIEditorTools.DrawSeparator();
+				}
+
+				GUILayout.BeginHorizontal();
+				mSymbolSequence = EditorGUILayout.TextField(mSymbolSequence, GUILayout.Width(40f));
+				NGUIEditorTools.SimpleSpriteField(mFont.atlas, mSymbolSprite, SelectSymbolSprite);
+
+				bool isValid = !string.IsNullOrEmpty(mSymbolSequence) && !string.IsNullOrEmpty(mSymbolSprite);
+				GUI.backgroundColor = isValid ? Color.green : Color.grey;
+				
+				if (GUILayout.Button("Add", GUILayout.Width(40f)) && isValid)
+				{
+					NGUIEditorTools.RegisterUndo("Add symbol", mFont);
+					mFont.AddSymbol(mSymbolSequence, mSymbolSprite);
+					mFont.MarkAsDirty();
+					mSymbolSequence = "";
+					mSymbolSprite = "";
+				}
+				GUI.backgroundColor = Color.white;
 				GUILayout.EndHorizontal();
 
-				if (mView != View.Nothing)
+				if (symbols.Count == 0)
 				{
-					// Draw the atlas
-					EditorGUILayout.Separator();
-					Material m = mUseShader ? mFont.material : null;
-					Rect rect = (mView == View.Atlas) ? NGUIEditorTools.DrawAtlas(tex, m) : NGUIEditorTools.DrawSprite(tex, mFont.uvRect, m);
-					NGUIEditorTools.DrawOutline(rect, mFont.uvRect, green);
-
-					rect = GUILayoutUtility.GetRect(Screen.width, 18f);
-					EditorGUI.DropShadowLabel(rect, "Font Size: " + mFont.size);
+					EditorGUILayout.HelpBox("Want to add an emoticon to your font? In the field above type ':)', choose a sprite, then hit the Add button.", MessageType.Info);
 				}
+				else GUILayout.Space(4f);
+			}
+		}
+	}
+
+	/// <summary>
+	/// "New Sprite" selection.
+	/// </summary>
+
+	void SelectSymbolSprite (string spriteName)
+	{
+		mSymbolSprite = spriteName;
+		Repaint();
+	}
+
+	/// <summary>
+	/// Existing sprite selection.
+	/// </summary>
+
+	void ChangeSymbolSprite (string spriteName)
+	{
+		if (mSelectedSymbol != null && mFont != null)
+		{
+			NGUIEditorTools.RegisterUndo("Change symbol", mFont);
+			mSelectedSymbol.spriteName = spriteName;
+			Repaint();
+			mFont.MarkAsDirty();
+		}
+	}
+
+	/// <summary>
+	/// Draw the font preview window.
+	/// </summary>
+
+	public override void OnPreviewGUI (Rect rect, GUIStyle background)
+	{
+		mFont = target as UIFont;
+		if (mFont == null) return;
+		Texture2D tex = mFont.texture;
+
+		if (mView != View.Nothing && tex != null)
+		{
+			Material m = (mUseShader ? mFont.material : null);
+
+			if (mView == View.Font)
+			{
+				Rect outer = new Rect(mFont.uvRect);
+				Rect uv = outer;
+
+				outer = NGUIMath.ConvertToPixels(outer, tex.width, tex.height, true);
+
+				NGUIEditorTools.DrawSprite(tex, rect, outer, outer, uv, Color.white, m);
+			}
+			else
+			{
+				Rect outer = new Rect(0f, 0f, 1f, 1f);
+				Rect inner = new Rect(mFont.uvRect);
+				Rect uv = outer;
+
+				outer = NGUIMath.ConvertToPixels(outer, tex.width, tex.height, true);
+				inner = NGUIMath.ConvertToPixels(inner, tex.width, tex.height, true);
+
+				NGUIEditorTools.DrawSprite(tex, rect, outer, inner, uv, Color.white, m);
 			}
 		}
 	}

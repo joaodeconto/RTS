@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright Â© 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -191,11 +191,13 @@ static public class NGUITools
 		return NGUIMath.DecimalToHex(i);
 	}
 
+	static Color mInvisible = new Color(0f, 0f, 0f, 0f);
+
 	/// <summary>
 	/// Parse an embedded symbol, such as [FFAA00] (set color) or [-] (undo color change)
 	/// </summary>
 
-	static public int ParseSymbol (string text, int index, List<Color> colors)
+	static public int ParseSymbol (string text, int index, List<Color> colors, bool premultiply)
 	{
 		int length = text.Length;
 
@@ -221,6 +223,9 @@ static public class NGUITools
 							return 0;
 
 						c.a = colors[colors.Count - 1].a;
+						if (premultiply && c.a != 1f)
+							c = Color.Lerp(mInvisible, c, c.a);
+
 						colors.Add(c);
 					}
 					return 8;
@@ -246,7 +251,7 @@ static public class NGUITools
 
 				if (c == '[')
 				{
-					int retVal = ParseSymbol(text, i, null);
+					int retVal = ParseSymbol(text, i, null, false);
 
 					if (retVal > 0)
 					{
@@ -422,16 +427,34 @@ static public class NGUITools
 
 	/// <summary>
 	/// Add a sprite appropriate for the specified atlas sprite.
-	/// It will be a UISlicedSprite if the sprite has an inner rect, and a regular sprite otherwise.
+	/// It will be sliced if the sprite has an inner rect, and a regular sprite otherwise.
 	/// </summary>
 
 	static public UISprite AddSprite (GameObject go, UIAtlas atlas, string spriteName)
 	{
 		UIAtlas.Sprite sp = (atlas != null) ? atlas.GetSprite(spriteName) : null;
-		UISprite sprite = (sp == null || sp.inner == sp.outer) ? AddWidget<UISprite>(go) : (UISprite)AddWidget<UISlicedSprite>(go);
+		UISprite sprite = AddWidget<UISprite>(go);
+		sprite.type = (sp == null || sp.inner == sp.outer) ? UISprite.Type.Simple : UISprite.Type.Sliced;
 		sprite.atlas = atlas;
 		sprite.spriteName = spriteName;
 		return sprite;
+	}
+
+	/// <summary>
+	/// Get the rootmost object of the specified game object.
+	/// </summary>
+
+	static public GameObject GetRoot (GameObject go)
+	{
+		Transform t = go.transform;
+
+		for (; ; )
+		{
+			Transform parent = t.parent;
+			if (parent == null) break;
+			t = parent;
+		}
+		return t.gameObject;
 	}
 
 	/// <summary>
@@ -754,5 +777,31 @@ static public class NGUITools
 		}
 		return null;
 #endif
+	}
+
+	/// <summary>
+	/// Pre-multiply shaders result in a black outline if this operation is done in the shader. It's better to do it outside.
+	/// </summary>
+
+	static public Color ApplyPMA (Color c)
+	{
+		if (c.a != 1f)
+		{
+			c.r *= c.a;
+			c.g *= c.a;
+			c.b *= c.a;
+		}
+		return c;
+	}
+
+	/// <summary>
+	/// Inform all widgets underneath the specified object that the parent has changed.
+	/// </summary>
+
+	static public void MarkParentAsChanged (GameObject go)
+	{
+		UIWidget[] widgets = go.GetComponentsInChildren<UIWidget>();
+		for (int i = 0, imax = widgets.Length; i < imax; ++i)
+			widgets[i].ParentHasChanged();
 	}
 }

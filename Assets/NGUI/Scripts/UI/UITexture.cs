@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -22,6 +22,7 @@ public class UITexture : UIWidget
 
 	Material mDynamicMat;
 	bool mCreatingMat = false;
+	int mPMA = -1;
 
 	/// <summary>
 	/// UV rectangle used by the texture.
@@ -66,6 +67,7 @@ public class UITexture : UIWidget
 				mShader = value;
 				Material mat = material;
 				if (mat != null) mat.shader = value;
+				mPMA = -1;
 			}
 		}
 	}
@@ -101,6 +103,7 @@ public class UITexture : UIWidget
 					mDynamicMat.hideFlags = HideFlags.DontSave;
 					mDynamicMat.mainTexture = mainTexture;
 					base.material = mDynamicMat;
+					mPMA = 0;
 				}
 				mCreatingMat = false;
 			}
@@ -114,6 +117,24 @@ public class UITexture : UIWidget
 				mDynamicMat = null;
 			}
 			base.material = value;
+			mPMA = -1;
+		}
+	}
+
+	/// <summary>
+	/// Whether the texture is using a premultiplied alpha material.
+	/// </summary>
+
+	public bool premultipliedAlpha
+	{
+		get
+		{
+			if (mPMA == -1)
+			{
+				Material mat = material;
+				mPMA = (mat != null && mat.shader != null && mat.shader.name.Contains("Premultiplied")) ? 1 : 0;
+			}
+			return (mPMA == 1);
 		}
 	}
 
@@ -176,12 +197,12 @@ public class UITexture : UIWidget
 	/// Virtual function called by the UIScreen that fills the buffers.
 	/// </summary>
 
-#if UNITY_3_5_4
-	public override void OnFill (BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color> cols)
-#else
 	public override void OnFill (BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
-#endif
 	{
+		Color colF = color;
+		colF.a *= mPanel.alpha;
+		Color32 col = premultipliedAlpha ? NGUITools.ApplyPMA(colF) : colF;
+	
 		verts.Add(new Vector3(1f,  0f, 0f));
 		verts.Add(new Vector3(1f, -1f, 0f));
 		verts.Add(new Vector3(0f, -1f, 0f));
@@ -192,9 +213,9 @@ public class UITexture : UIWidget
 		uvs.Add(new Vector2(mRect.xMin, mRect.yMin));
 		uvs.Add(new Vector2(mRect.xMin, mRect.yMax));
 
-		cols.Add(color);
-		cols.Add(color);
-		cols.Add(color);
-		cols.Add(color);
+		cols.Add(col);
+		cols.Add(col);
+		cols.Add(col);
+		cols.Add(col);
 	}
 }

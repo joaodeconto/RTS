@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -36,13 +36,19 @@ public class UIFont : MonoBehaviour
 	[HideInInspector][SerializeField] int mSpacingY = 0;
 	[HideInInspector][SerializeField] UIAtlas mAtlas;
 	[HideInInspector][SerializeField] UIFont mReplacement;
+	[HideInInspector][SerializeField] float mPixelSize = 1f;
+
+	// List of symbols, such as emoticons like ":)", ":(", etc
+	[HideInInspector][SerializeField] List<BMSymbol> mSymbols = new List<BMSymbol>();
 
 	// Cached value
 	UIAtlas.Sprite mSprite = null;
+	int mPMA = -1;
 
 	// BUG: There is a bug in Unity 3.4.2 and all the way up to 3.5 b7 -- when instantiating from prefabs,
 	// for some strange reason classes get initialized with default values. So for example, 'mSprite' above
 	// gets initialized as if it was created with 'new UIAtlas.Sprite()' instead of 'null'. Fun, huh?
+	// EDIT: It seems this value is SAVED as well. Dafuq...
 
 	bool mSpriteSet = false;
 
@@ -68,6 +74,18 @@ public class UIFont : MonoBehaviour
 	public int texHeight { get { return (mReplacement != null) ? mReplacement.texHeight : ((mFont != null) ? mFont.texHeight : 1); } }
 
 	/// <summary>
+	/// Whether the font has any symbols defined.
+	/// </summary>
+
+	public bool hasSymbols { get { return (mReplacement != null) ? mReplacement.hasSymbols : mSymbols.Count != 0; } }
+
+	/// <summary>
+	/// List of symbols within the font.
+	/// </summary>
+
+	public List<BMSymbol> symbols { get { return (mReplacement != null) ? mReplacement.symbols : mSymbols; } }
+
+	/// <summary>
 	/// Atlas used by the font, if any.
 	/// </summary>
 
@@ -91,6 +109,7 @@ public class UIFont : MonoBehaviour
 					if (sprite != null) mUVRect = uvRect;
 				}
 
+				mPMA = -1;
 				mAtlas = value;
 				MarkAsDirty();
 			}
@@ -116,9 +135,68 @@ public class UIFont : MonoBehaviour
 			}
 			else if (mAtlas == null && mMat != value)
 			{
+				mPMA = -1;
 				mMat = value;
 				MarkAsDirty();
 			}
+		}
+	}
+
+	/// <summary>
+	/// Pixel size is a multiplier applied to label dimensions when performing MakePixelPerfect() pixel correction.
+	/// Most obvious use would be on retina screen displays. The resolution doubles, but with UIRoot staying the same
+	/// for layout purposes, you can still get extra sharpness by switching to an HD font that has pixel size set to 0.5.
+	/// </summary>
+
+	public float pixelSize
+	{
+		get
+		{
+			if (mReplacement != null) return mReplacement.pixelSize;
+			if (mAtlas != null) return mAtlas.pixelSize;
+			return mPixelSize;
+		}
+		set
+		{
+			if (mReplacement != null)
+			{
+				mReplacement.pixelSize = value;
+			}
+			else if (mAtlas != null)
+			{
+				mAtlas.pixelSize = value;
+			}
+			else
+			{
+				float val = Mathf.Clamp(value, 0.25f, 4f);
+
+				if (mPixelSize != val)
+				{
+					mPixelSize = val;
+					MarkAsDirty();
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Whether the font is using a premultiplied alpha material.
+	/// </summary>
+
+	public bool premultipliedAlpha
+	{
+		get
+		{
+			if (mReplacement != null) return mReplacement.premultipliedAlpha;
+
+			if (mAtlas != null) return mAtlas.premultipliedAlpha;
+
+			if (mPMA == -1)
+			{
+				Material mat = material;
+				mPMA = (mat != null && mat.shader != null && mat.shader.name.Contains("Premultiplied")) ? 1 : 0;
+			}
+			return (mPMA == 1);
 		}
 	}
 
@@ -294,12 +372,21 @@ public class UIFont : MonoBehaviour
 
 			if (!mSpriteSet) mSprite = null;
 
-			if (mSprite == null && mAtlas != null && !string.IsNullOrEmpty(mFont.spriteName))
+			if (mSprite == null)
 			{
-				mSprite = mAtlas.GetSprite(mFont.spriteName);
-				if (mSprite == null) mSprite = mAtlas.GetSprite(name);
-				mSpriteSet = true;
-				if (mSprite == null) mFont.spriteName = null;
+				if (mAtlas != null && !string.IsNullOrEmpty(mFont.spriteName))
+				{
+					mSprite = mAtlas.GetSprite(mFont.spriteName);
+
+					if (mSprite == null) mSprite = mAtlas.GetSprite(name);
+
+					mSpriteSet = true;
+
+					if (mSprite == null) mFont.spriteName = null;
+				}
+
+				for (int i = 0, imax = mSymbols.Count; i < imax; ++i)
+					symbols[i].MarkAsDirty();
 			}
 			return mSprite;
 		}
@@ -401,6 +488,10 @@ public class UIFont : MonoBehaviour
 				lbl.font = fnt;
 			}
 		}
+
+		// Clear all symbols
+		for (int i = 0, imax = mSymbols.Count; i < imax; ++i)
+			symbols[i].MarkAsDirty();
 	}
 
 	/// <summary>
@@ -423,6 +514,7 @@ public class UIFont : MonoBehaviour
 			int y = 0;
 			int prev = 0;
 			int lineHeight = (mFont.charSize + mSpacingY);
+			bool useSymbols = encoding && symbolStyle != SymbolStyle.None && hasSymbols;
 
 			for (int i = 0; i < length; ++i)
 			{
@@ -442,7 +534,7 @@ public class UIFont : MonoBehaviour
 				if (c < ' ') { prev = 0; continue; }
 
 				// See if there is a symbol matching this text
-				BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, i, length) : null;
+				BMSymbol symbol = useSymbols ? MatchSymbol(text, i, length) : null;
 
 				if (symbol == null)
 				{
@@ -458,7 +550,7 @@ public class UIFont : MonoBehaviour
 				else
 				{
 					// Symbol found -- use it
-					x += mSpacingX + symbol.width;
+					x += mSpacingX + symbol.advance;
 					i += symbol.length - 1;
 					prev = 0;
 				}
@@ -499,33 +591,37 @@ public class UIFont : MonoBehaviour
 		int remainingWidth = lineWidth;
 		BMGlyph followingGlyph = null;
 		int currentCharacterIndex = textLength;
+		bool useSymbols = encoding && symbolStyle != SymbolStyle.None && hasSymbols;
 
 		while (currentCharacterIndex > 0 && remainingWidth > 0)
 		{
 			char currentCharacter = text[--currentCharacterIndex];
 
 			// See if there is a symbol matching this text
-			BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, currentCharacterIndex, textLength) : null;
-
-			// Find the glyph for this character
-			BMGlyph glyph = (symbol == null) ? mFont.GetGlyph(currentCharacter) : null;
+			BMSymbol symbol = useSymbols ? MatchSymbol(text, currentCharacterIndex, textLength) : null;
 
 			// Calculate how wide this symbol or character is going to be
 			int glyphWidth = mSpacingX;
 
 			if (symbol != null)
 			{
-				glyphWidth += symbol.width;
-			}
-			else if (glyph != null)
-			{
-				glyphWidth += glyph.advance + ((followingGlyph == null) ? 0 : followingGlyph.GetKerning(currentCharacter));
-				followingGlyph = glyph;
+				glyphWidth += symbol.advance;
 			}
 			else
 			{
-				followingGlyph = null;
-				continue;
+				// Find the glyph for this character
+				BMGlyph glyph = mFont.GetGlyph(currentCharacter);
+
+				if (glyph != null)
+				{
+					glyphWidth += glyph.advance + ((followingGlyph == null) ? 0 : followingGlyph.GetKerning(currentCharacter));
+					followingGlyph = glyph;
+				}
+				else
+				{
+					followingGlyph = null;
+					continue;
+				}
 			}
 
 			// Remaining width after this glyph gets printed
@@ -557,6 +653,7 @@ public class UIFont : MonoBehaviour
 		bool lineIsEmpty = true;
 		bool multiline = (maxLineCount != 1);
 		int lineCount = 1;
+		bool useSymbols = encoding && symbolStyle != SymbolStyle.None && hasSymbols;
 
 		// Run through all characters
 		for (; offset < textLength; ++offset)
@@ -611,23 +708,26 @@ public class UIFont : MonoBehaviour
 			}
 
 			// See if there is a symbol matching this text
-			BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, offset, textLength) : null;
-
-			// Find the glyph for this character
-			BMGlyph glyph = (symbol == null) ? mFont.GetGlyph(ch) : null;
+			BMSymbol symbol = useSymbols ? MatchSymbol(text, offset, textLength) : null;
 
 			// Calculate how wide this symbol or character is going to be
 			int glyphWidth = mSpacingX;
 
 			if (symbol != null)
 			{
-				glyphWidth += symbol.width;
+				glyphWidth += symbol.advance;
 			}
-			else if (glyph != null)
+			else
 			{
-				glyphWidth += (previousChar != 0) ? glyph.advance + glyph.GetKerning(previousChar) : glyph.advance;
+				// Find the glyph for this character
+				BMGlyph glyph = (symbol == null) ? mFont.GetGlyph(ch) : null;
+
+				if (glyph != null)
+				{
+					glyphWidth += (previousChar != 0) ? glyph.advance + glyph.GetKerning(previousChar) : glyph.advance;
+				}
+				else continue;
 			}
-			else continue;
 
 			// Remaining width after this glyph gets printed
 			remainingWidth -= glyphWidth;
@@ -734,17 +834,12 @@ public class UIFont : MonoBehaviour
 	/// Note: 'lineWidth' parameter should be in pixels.
 	/// </summary>
 
-#if UNITY_3_5_4
-	public void Print (string text, Color color, BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color> cols,
-		bool encoding, SymbolStyle symbolStyle, Alignment alignment, int lineWidth)
-#else
 	public void Print (string text, Color32 color, BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols,
-		bool encoding, SymbolStyle symbolStyle, Alignment alignment, int lineWidth)
-#endif
+		bool encoding, SymbolStyle symbolStyle, Alignment alignment, int lineWidth, bool premultiply)
 	{
 		if (mReplacement != null)
 		{
-			mReplacement.Print(text, color, verts, uvs, cols, encoding, symbolStyle, alignment, lineWidth);
+			mReplacement.Print(text, color, verts, uvs, cols, encoding, symbolStyle, alignment, lineWidth, premultiply);
 		}
 		else if (mFont != null && text != null)
 		{
@@ -770,6 +865,7 @@ public class UIFont : MonoBehaviour
 			float invX = uvRect.width / mFont.texWidth;
 			float invY = mUVRect.height / mFont.texHeight;
 			int textLength = text.Length;
+			bool useSymbols = encoding && symbolStyle != SymbolStyle.None && hasSymbols && sprite != null;
 
 			for (int i = 0; i < textLength; ++i)
 			{
@@ -799,7 +895,7 @@ public class UIFont : MonoBehaviour
 
 				if (encoding && c == '[')
 				{
-					int retVal = NGUITools.ParseSymbol(text, i, mColors);
+					int retVal = NGUITools.ParseSymbol(text, i, mColors, premultiply);
 
 					if (retVal > 0)
 					{
@@ -810,7 +906,7 @@ public class UIFont : MonoBehaviour
 				}
 
 				// See if there is a symbol matching this text
-				BMSymbol symbol = (encoding && symbolStyle != SymbolStyle.None) ? mFont.MatchSymbol(text, i, textLength) : null;
+				BMSymbol symbol = useSymbols ? MatchSymbol(text, i, textLength) : null;
 
 				if (symbol == null)
 				{
@@ -872,19 +968,20 @@ public class UIFont : MonoBehaviour
 				}
 				else
 				{
-					v0.x =  scale.x * x;
-					v0.y = -scale.y * y;
+					v0.x =  scale.x * (x + symbol.offsetX);
+					v0.y = -scale.y * (y + symbol.offsetY);
 
 					v1.x = v0.x + scale.x * symbol.width;
 					v1.y = v0.y - scale.y * symbol.height;
 
-					u0.x = mUVRect.xMin + invX * symbol.x;
-					u0.y = mUVRect.yMax - invY * symbol.y;
+					Rect uv = symbol.uvRect;
 
-					u1.x = u0.x + invX * symbol.width;
-					u1.y = u0.y - invY * symbol.height;
+					u0.x = uv.xMin;
+					u0.y = uv.yMax;
+					u1.x = uv.xMax;
+					u1.y = uv.yMin;
 
-					x += mSpacingX + symbol.width;
+					x += mSpacingX + symbol.advance;
 					i += symbol.length - 1;
 					prev = 0;
 
@@ -917,5 +1014,119 @@ public class UIFont : MonoBehaviour
 				indexOffset = verts.size;
 			}
 		}
+	}
+
+	/// <summary>
+	/// Retrieve the specified symbol, optionally creating it if it's missing.
+	/// </summary>
+
+	BMSymbol GetSymbol (string sequence, bool createIfMissing)
+	{
+		for (int i = 0, imax = mSymbols.Count; i < imax; ++i)
+		{
+			BMSymbol sym = mSymbols[i];
+			if (sym.sequence == sequence) return sym;
+		}
+
+		if (createIfMissing)
+		{
+			BMSymbol sym = new BMSymbol();
+			sym.sequence = sequence;
+			mSymbols.Add(sym);
+			return sym;
+		}
+		return null;
+	}
+
+	/// <summary>
+	/// Retrieve the symbol at the beginning of the specified sequence, if a match is found.
+	/// </summary>
+
+	BMSymbol MatchSymbol (string text, int offset, int textLength)
+	{
+		// No symbols present
+		int count = mSymbols.Count;
+		if (count == 0) return null;
+		textLength -= offset;
+
+		// Run through all symbols
+		for (int i = 0; i < count; ++i)
+		{
+			BMSymbol sym = mSymbols[i];
+
+			// If the symbol's length is longer, move on
+			int symbolLength = sym.length;
+			if (symbolLength == 0 || textLength < symbolLength) continue;
+
+			bool match = true;
+
+			// Match the characters
+			for (int c = 0; c < symbolLength; ++c)
+			{
+				if (text[offset + c] != sym.sequence[c])
+				{
+					match = false;
+					break;
+				}
+			}
+
+			// Match found
+			if (match && sym.Validate(atlas)) return sym;
+		}
+		return null;
+	}
+
+	/// <summary>
+	/// Add a new symbol to the font.
+	/// </summary>
+
+	public void AddSymbol (string sequence, string spriteName)
+	{
+		BMSymbol symbol = GetSymbol(sequence, true);
+		symbol.spriteName = spriteName;
+		MarkAsDirty();
+	}
+
+	/// <summary>
+	/// Remove the specified symbol from the font.
+	/// </summary>
+
+	public void RemoveSymbol (string sequence)
+	{
+		BMSymbol symbol = GetSymbol(sequence, false);
+		if (symbol != null) symbols.Remove(symbol);
+		MarkAsDirty();
+	}
+
+	/// <summary>
+	/// Change an existing symbol's sequence to the specified value.
+	/// </summary>
+
+	public void RenameSymbol (string before, string after)
+	{
+		BMSymbol symbol = GetSymbol(before, false);
+		if (symbol != null) symbol.sequence = after;
+		MarkAsDirty();
+	}
+
+	/// <summary>
+	/// Whether the specified sprite is being used by the font.
+	/// </summary>
+
+	public bool UsesSprite (string s)
+	{
+		if (!string.IsNullOrEmpty(s))
+		{
+			if (s.Equals(spriteName))
+				return true;
+
+			for (int i = 0, imax = symbols.Count; i < imax; ++i)
+			{
+				BMSymbol sym = symbols[i];
+				if (s.Equals(sym.spriteName))
+					return true;
+			}
+		}
+		return false;
 	}
 }

@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -17,7 +17,7 @@ public class UIDrawCall : MonoBehaviour
 	public enum Clipping
 	{
 		None,
-		HardClip,	// Uses the hardware clip() function -- may be slow on some mobile devices
+		HardClip,	// Obsolete. Used to use clip() but it's not supported by some devices.
 		AlphaClip,	// Adjust the alpha, compatible with all devices
 		SoftClip,	// Alpha-based clipping with a softened edge
 	}
@@ -31,7 +31,7 @@ public class UIDrawCall : MonoBehaviour
 	Clipping		mClipping;		// Clipping mode
 	Vector4			mClipRange;		// Clipping, if used
 	Vector2			mClipSoft;		// Clipping softness
-	Material		mClippedMat;	// Instantiated material, if necessary
+	Material		mClippedMat;	// Instantiated clipped material, if necessary
 	Material		mDepthMat;		// Depth-writing material, created if necessary
 	int[]			mIndices;		// Cached indices
 
@@ -71,6 +71,12 @@ public class UIDrawCall : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Whether the draw call is currently using a clipped shader.
+	/// </summary>
+
+	public bool isClipped { get { return mClippedMat != null; } }
+
+	/// <summary>
 	/// Clipping used by the draw call
 	/// </summary>
 
@@ -104,6 +110,9 @@ public class UIDrawCall : MonoBehaviour
 				mMesh0 = new Mesh();
 				mMesh0.hideFlags = HideFlags.DontSave;
 				mMesh0.name = "Mesh0 for " + mSharedMat.name;
+#if !UNITY_3_5
+				mMesh0.MarkDynamic();
+#endif
 				rebuildIndices = true;
 			}
 			else if (rebuildIndices || mMesh0.vertexCount != vertexCount)
@@ -118,6 +127,9 @@ public class UIDrawCall : MonoBehaviour
 			mMesh1 = new Mesh();
 			mMesh1.hideFlags = HideFlags.DontSave;
 			mMesh1.name = "Mesh1 for " + mSharedMat.name;
+#if !UNITY_3_5
+			mMesh1.MarkDynamic();
+#endif
 			rebuildIndices = true;
 		}
 		else if (rebuildIndices || mMesh1.vertexCount != vertexCount)
@@ -143,19 +155,17 @@ public class UIDrawCall : MonoBehaviour
 
 			if (mClipping != Clipping.None)
 			{
-				const string hard	= " (HardClip)";
 				const string alpha	= " (AlphaClip)";
 				const string soft	= " (SoftClip)";
 
 				// Figure out the normal shader's name
 				string shaderName = mSharedMat.shader.name;
-				shaderName = shaderName.Replace(hard, "");
 				shaderName = shaderName.Replace(alpha, "");
 				shaderName = shaderName.Replace(soft, "");
 
 				// Try to find the new shader
-				if (mClipping == Clipping.HardClip) shader = Shader.Find(shaderName + hard);
-				else if (mClipping == Clipping.AlphaClip) shader = Shader.Find(shaderName + alpha);
+				if (mClipping == Clipping.HardClip ||
+					mClipping == Clipping.AlphaClip) shader = Shader.Find(shaderName + alpha);
 				else if (mClipping == Clipping.SoftClip) shader = Shader.Find(shaderName + soft);
 
 				// If there is a valid shader, assign it to the custom material
@@ -223,11 +233,7 @@ public class UIDrawCall : MonoBehaviour
 	/// Set the draw call's geometry.
 	/// </summary>
 
-#if UNITY_3_5_4
-	public void Set (BetterList<Vector3> verts, BetterList<Vector3> norms, BetterList<Vector4> tans, BetterList<Vector2> uvs, BetterList<Color> cols)
-#else
 	public void Set (BetterList<Vector3> verts, BetterList<Vector3> norms, BetterList<Vector4> tans, BetterList<Vector2> uvs, BetterList<Color32> cols)
-#endif
 	{
 		int count = verts.size;
 
@@ -279,11 +285,7 @@ public class UIDrawCall : MonoBehaviour
 				if (norms != null) mesh.normals = norms.ToArray();
 				if (tans != null) mesh.tangents = tans.ToArray();
 				mesh.uv = uvs.ToArray();
-#if UNITY_3_5_4
-				mesh.colors = cols.ToArray();
-#else
 				mesh.colors32 = cols.ToArray();
-#endif
 				if (rebuildIndices) mesh.triangles = mIndices;
 				mesh.RecalculateBounds();
 				mFilter.mesh = mesh;

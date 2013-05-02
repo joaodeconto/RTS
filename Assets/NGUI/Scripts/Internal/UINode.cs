@@ -1,7 +1,11 @@
-﻿//----------------------------------------------
-//            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
 //----------------------------------------------
+//            NGUI: Next-Gen UI kit
+// Copyright © 2011-2013 Tasharen Entertainment
+//----------------------------------------------
+
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0
+#define OLD_UNITY
+#endif
 
 using UnityEngine;
 using System.Collections.Generic;
@@ -16,17 +20,19 @@ public class UINode
 {
 	int mVisibleFlag = -1;
 
-	public Transform trans;			// Managed transform
-	public UIWidget widget;			// Widget on this transform, if any
-
-	public bool lastActive = false;	// Last active state
-	public Vector3 lastPos;			// Last local position, used to see if it has changed
-	public Quaternion lastRot;		// Last local rotation
-	public Vector3 lastScale;		// Last local scale
-
-	public int changeFlag = -1;		// -1 = not checked, 0 = not changed, 1 = changed
+	public Transform trans;		// Managed transform
+	public UIWidget widget;		// Widget on this transform, if any
+	
+	bool mLastActive = false;	// Last active state
+	Vector3 mLastPos;			// Last local position, used to see if it has changed
+	Quaternion mLastRot;		// Last local rotation
+	Vector3 mLastScale;			// Last local scale
 
 	GameObject mGo;
+#if !OLD_UNITY
+	float mLastAlpha = 0f;
+#endif
+	public int changeFlag = -1;		// -1 = not checked, 0 = not changed, 1 = changed
 
 	/// <summary>
 	/// -1 = not initialized, 0 = not visible, 1 = visible.
@@ -52,9 +58,9 @@ public class UINode
 	public UINode (Transform t)
 	{
 		trans = t;
-		lastPos = trans.localPosition;
-		lastRot = trans.localRotation;
-		lastScale = trans.localScale;
+		mLastPos = trans.localPosition;
+		mLastRot = trans.localRotation;
+		mLastScale = trans.localScale;
 		mGo = t.gameObject;
 	}
 
@@ -64,19 +70,36 @@ public class UINode
 
 	public bool HasChanged ()
 	{
-		bool isActive = NGUITools.GetActive(mGo) && (widget == null || (widget.enabled && widget.color.a > 0.001f));
+		bool isActive = NGUITools.GetActive(mGo) && (widget == null || (widget.enabled && widget.isVisible));
+		bool changed = (mLastActive != isActive);
 
-		if (lastActive != isActive || (isActive &&
-			(lastPos != trans.localPosition ||
-			 lastRot != trans.localRotation ||
-			 lastScale != trans.localScale)))
+#if !OLD_UNITY
+		if (widget != null)
 		{
-			lastActive = isActive;
-			lastPos = trans.localPosition;
-			lastRot = trans.localRotation;
-			lastScale = trans.localScale;
+			float alpha = widget.finalAlpha;
+
+			if (alpha != mLastAlpha)
+			{
+				mLastAlpha = alpha;
+				changed = true;
+			}
+		}
+		
+		// If the transform says it hasn't changed, there is really no point in going further
+		if (!changed && !trans.hasChanged) return false;
+		trans.hasChanged = false;
+#endif
+		if (changed || (isActive &&
+			(mLastPos != trans.localPosition ||
+			 mLastRot != trans.localRotation ||
+			 mLastScale != trans.localScale)))
+		{
+			mLastActive = isActive;
+			mLastPos = trans.localPosition;
+			mLastRot = trans.localRotation;
+			mLastScale = trans.localScale;
 			return true;
 		}
-		return false;
+		return changed;
 	}
 }

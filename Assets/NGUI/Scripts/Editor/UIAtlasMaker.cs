@@ -1,6 +1,6 @@
 ﻿//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -824,6 +824,14 @@ public class UIAtlasMaker : EditorWindow
 			NGUISettings.unityPacking = EditorGUILayout.Toggle("Unity Packer", NGUISettings.unityPacking, GUILayout.Width(100f));
 			GUILayout.Label("if off, use a custom packer");
 			GUILayout.EndHorizontal();
+			
+			if (!NGUISettings.unityPacking)
+			{
+				GUILayout.BeginHorizontal();
+				NGUISettings.forceSquareAtlas = EditorGUILayout.Toggle("Force Square", NGUISettings.forceSquareAtlas, GUILayout.Width(100f));
+				GUILayout.Label("if on, forces a square atlas texture");
+				GUILayout.EndHorizontal();
+			}
 
 			if (textures.Count > 0)
 			{

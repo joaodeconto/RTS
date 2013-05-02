@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -26,6 +26,9 @@ public class NGUISettings
 	static int mAtlasPadding = 1;
 	static public bool mAtlasTrimming = true;
 	static bool mUnityPacking = true;
+	static bool mForceSquare = true;
+	static Color mColor = Color.white;
+	static int mLayer = 0;
 
 	static Object GetObject (string name)
 	{
@@ -35,6 +38,9 @@ public class NGUISettings
 
 	static void Load ()
 	{
+		int l = LayerMask.NameToLayer("UI");
+		if (l == -1) l = LayerMask.NameToLayer("GUI");
+
 		mLoaded			= true;
 		mPartial		= EditorPrefs.GetString("NGUI Partial");
 		mFontName		= EditorPrefs.GetString("NGUI Font Name");
@@ -46,7 +52,11 @@ public class NGUISettings
 		mAtlasPadding	= EditorPrefs.GetInt("NGUI Atlas Padding", 1);
 		mAtlasTrimming	= EditorPrefs.GetBool("NGUI Atlas Trimming", true);
 		mUnityPacking	= EditorPrefs.GetBool("NGUI Unity Packing", true);
+		mForceSquare	= EditorPrefs.GetBool("NGUI Force Square Atlas", true);
 		mPivot			= (UIWidget.Pivot)EditorPrefs.GetInt("NGUI Pivot", (int)mPivot);
+		mLayer			= EditorPrefs.GetInt("NGUI Layer", l);
+
+		LoadColor();
 	}
 
 	static void Save ()
@@ -61,7 +71,54 @@ public class NGUISettings
 		EditorPrefs.SetInt("NGUI Atlas Padding", mAtlasPadding);
 		EditorPrefs.SetBool("NGUI Atlas Trimming", mAtlasTrimming);
 		EditorPrefs.SetBool("NGUI Unity Packing", mUnityPacking);
+		EditorPrefs.SetBool("NGUI Force Square Atlas", mForceSquare);
 		EditorPrefs.SetInt("NGUI Pivot", (int)mPivot);
+		EditorPrefs.SetInt("NGUI Layer", mLayer);
+		SaveColor();
+	}
+
+	static void LoadColor ()
+	{
+		string sc = EditorPrefs.GetString("NGUI Color");
+
+		if (!string.IsNullOrEmpty(sc))
+		{
+			string[] colors = sc.Split(' ');
+
+			if (colors.Length == 4)
+			{
+				float.TryParse(colors[0], out mColor.r);
+				float.TryParse(colors[1], out mColor.g);
+				float.TryParse(colors[2], out mColor.b);
+				float.TryParse(colors[3], out mColor.a);
+			}
+		}
+	}
+
+	static void SaveColor ()
+	{
+		EditorPrefs.SetString("NGUI Color", mColor.r + " " + mColor.g + " " + mColor.b + " " + mColor.a);
+	}
+
+	/// <summary>
+	/// Color is used to easily copy/paste the widget's color value.
+	/// </summary>
+
+	static public Color color
+	{
+		get
+		{
+			if (!mLoaded) Load();
+			return mColor;
+		}
+		set
+		{
+			if (mColor != value)
+			{
+				mColor = value;
+				SaveColor();
+			}
+		}
 	}
 
 	/// <summary>
@@ -130,6 +187,27 @@ public class NGUISettings
 	}
 
 	/// <summary>
+	/// Default layer used by the UI.
+	/// </summary>
+
+	static public int layer
+	{
+		get
+		{
+			if (!mLoaded) Load();
+			return mLayer;
+		}
+		set
+		{
+			if (mLayer != value)
+			{
+				mLayer = value;
+				Save();
+			}
+		}
+	}
+
+	/// <summary>
 	/// Name of the font, used by the Font Maker.
 	/// </summary>
 
@@ -191,4 +269,10 @@ public class NGUISettings
 	/// </summary>
 
 	static public bool unityPacking { get { if (!mLoaded) Load(); return mUnityPacking; } set { if (mUnityPacking != value) { mUnityPacking = value; Save(); } } }
+	
+	/// <summary>
+	/// Whether the Atlas Maker will force a square atlas texture when creating an atlas
+	/// </summary>
+	
+	static public bool forceSquareAtlas { get { if (!mLoaded) Load(); return mForceSquare; } set { if (mForceSquare != value) { mForceSquare = value; Save(); } } }
 }
