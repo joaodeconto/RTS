@@ -1,6 +1,6 @@
 ﻿//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -16,7 +16,7 @@ public class UITextureInspector : UIWidgetInspector
 {
 	UITexture mTex;
 
-	override protected bool OnDrawProperties ()
+	override protected bool DrawProperties ()
 	{
 		mTex = mWidget as UITexture;
 

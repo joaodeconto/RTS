@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright Â© 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -9,7 +9,6 @@ using UnityEngine;
 /// Simple slider functionality.
 /// </summary>
 
-[ExecuteInEditMode]
 [AddComponentMenu("NGUI/Interaction/Slider")]
 public class UISlider : IgnoreTimeScale
 {
@@ -46,12 +45,6 @@ public class UISlider : IgnoreTimeScale
 	public Direction direction = Direction.Horizontal;
 
 	/// <summary>
-	/// When at 100%, this will be the size of the foreground object.
-	/// </summary>
-
-	public Vector2 fullSize = Vector2.zero;
-
-	/// <summary>
 	/// Event receiver that will be notified of the value changes.
 	/// </summary>
 
@@ -78,19 +71,37 @@ public class UISlider : IgnoreTimeScale
 	// Used to be public prior to 1.87
 	[HideInInspector][SerializeField] float rawValue = 1f;
 
-	float mStepValue = 1f;
 	BoxCollider mCol;
 	Transform mTrans;
 	Transform mFGTrans;
 	UIWidget mFGWidget;
-	UIFilledSprite mFGFilled;
+	UISprite mFGFilled;
 	bool mInitDone = false;
+	Vector2 mSize = Vector2.zero;
 
 	/// <summary>
 	/// Value of the slider.
 	/// </summary>
 
-	public float sliderValue { get { return mStepValue; } set { Set(value, false); } }
+	public float sliderValue
+	{
+		get
+		{
+			float val = rawValue;
+			if (numberOfSteps > 1) val = Mathf.Round(val * (numberOfSteps - 1)) / (numberOfSteps - 1);
+			return val;
+		}
+		set
+		{
+			Set(value, false);
+		}
+	}
+
+	/// <summary>
+	/// Change the full size of the slider, in case you need to.
+	/// </summary>
+
+	public Vector2 fullSize { get { return mSize; } set { if (mSize != value) { mSize = value; ForceUpdate(); } } }
 
 	/// <summary>
 	/// Initialize the cached values.
@@ -103,13 +114,13 @@ public class UISlider : IgnoreTimeScale
 		if (foreground != null)
 		{
 			mFGWidget = foreground.GetComponent<UIWidget>();
-			mFGFilled = (mFGWidget != null) ? mFGWidget as UIFilledSprite : null;
+			mFGFilled = (mFGWidget != null) ? mFGWidget as UISprite : null;
 			mFGTrans = foreground.transform;
-			if (fullSize == Vector2.zero) fullSize = foreground.localScale;
+			if (mSize == Vector2.zero) mSize = foreground.localScale;
 		}
 		else if (mCol != null)
 		{
-			if (fullSize == Vector2.zero) fullSize = mCol.size;
+			if (mSize == Vector2.zero) mSize = mCol.size;
 		}
 		else
 		{
@@ -232,39 +243,53 @@ public class UISlider : IgnoreTimeScale
 		float val = Mathf.Clamp01(input);
 		if (val < 0.001f) val = 0f;
 
+		float prevStep = sliderValue;
+
 		// Save the raw value
 		rawValue = val;
 
-		// Take steps into consideration
-		if (numberOfSteps > 1) val = Mathf.Round(val * (numberOfSteps - 1)) / (numberOfSteps - 1);
+		// Take steps into account
+		float stepValue = sliderValue;
 
 		// If the stepped value doesn't match the last one, it's time to update
-		if (force || mStepValue != val)
+		if (force || prevStep != stepValue)
 		{
-			mStepValue = val;
-			Vector3 scale = fullSize;
+			Vector3 scale = mSize;
 
-			if (direction == Direction.Horizontal) scale.x *= mStepValue;
-			else scale.y *= mStepValue;
-
-			if (mFGFilled != null)
+#if UNITY_EDITOR
+			if (Application.isPlaying)
 			{
-				mFGFilled.fillAmount = mStepValue;
+				if (direction == Direction.Horizontal) scale.x *= stepValue;
+				else scale.y *= stepValue;
 			}
-			else if (foreground != null)
+#else
+			if (direction == Direction.Horizontal) scale.x *= stepValue;
+			else scale.y *= stepValue;
+#endif
+
+#if UNITY_EDITOR
+			if (Application.isPlaying)
+#endif
 			{
-				mFGTrans.localScale = scale;
-				
-				if (mFGWidget != null)
+				if (mFGFilled != null && mFGFilled.type == UISprite.Type.Filled)
 				{
-					if (val > 0.001f)
+					mFGFilled.fillAmount = stepValue;
+				}
+				else if (foreground != null)
+				{
+					mFGTrans.localScale = scale;
+
+					if (mFGWidget != null)
 					{
-						mFGWidget.enabled = true;
-						mFGWidget.MarkAsChanged();
-					}
-					else
-					{
-						mFGWidget.enabled = false;
+						if (val > 0.001f)
+						{
+							mFGWidget.enabled = true;
+							mFGWidget.MarkAsChanged();
+						}
+						else
+						{
+							mFGWidget.enabled = false;
+						}
 					}
 				}
 			}
@@ -273,15 +298,15 @@ public class UISlider : IgnoreTimeScale
 			{
 				Vector3 pos = thumb.localPosition;
 
-				if (mFGFilled != null)
+				if (mFGFilled != null && mFGFilled.type == UISprite.Type.Filled)
 				{
-					if (mFGFilled.fillDirection == UIFilledSprite.FillDirection.Horizontal)
+					if (mFGFilled.fillDirection == UISprite.FillDirection.Horizontal)
 					{
-						pos.x = mFGFilled.invert ? fullSize.x - scale.x : scale.x;
+						pos.x = mFGFilled.invert ? mSize.x - scale.x : scale.x;
 					}
-					else if (mFGFilled.fillDirection == UIFilledSprite.FillDirection.Vertical)
+					else if (mFGFilled.fillDirection == UISprite.FillDirection.Vertical)
 					{
-						pos.y = mFGFilled.invert ? fullSize.y - scale.y : scale.y;
+						pos.y = mFGFilled.invert ? mSize.y - scale.y : scale.y;
 					}
 					else
 					{
@@ -299,13 +324,14 @@ public class UISlider : IgnoreTimeScale
 				thumb.localPosition = pos;
 			}
 
+			current = this;
+
 			if (eventReceiver != null && !string.IsNullOrEmpty(functionName) && Application.isPlaying)
 			{
-				current = this;
-				eventReceiver.SendMessage(functionName, mStepValue, SendMessageOptions.DontRequireReceiver);
-				current = null;
+				eventReceiver.SendMessage(functionName, stepValue, SendMessageOptions.DontRequireReceiver);
 			}
-			if (onValueChange != null) onValueChange(mStepValue);
+			if (onValueChange != null) onValueChange(stepValue);
+			current = null;
 		}
 	}
 

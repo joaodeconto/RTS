@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -28,8 +28,8 @@ public class UIButton : UIButtonColor
 		else UpdateColor(false, true);
 	}
 
-	protected override void OnHover (bool isOver) { if (isEnabled) base.OnHover(isOver); }
-	protected override void OnPress (bool isPressed) { if (isEnabled) base.OnPress(isPressed); }
+	public override void OnHover (bool isOver) { if (isEnabled) base.OnHover(isOver); }
+	public override void OnPress (bool isPressed) { if (isEnabled) base.OnPress(isPressed); }
 
 	/// <summary>
 	/// Whether the button should be enabled.
@@ -63,6 +63,12 @@ public class UIButton : UIButtonColor
 	{
 		if (tweenTarget)
 		{
+			if (!mStarted)
+			{
+				mStarted = true;
+				Init();
+			}
+
 			Color c = shouldBeEnabled ? defaultColor : disabledColor;
 			TweenColor tc = TweenColor.Begin(tweenTarget, 0.15f, c);
 

@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -71,6 +71,12 @@ public class UIInput : MonoBehaviour
 	public bool isPassword = false;
 
 	/// <summary>
+	/// Whether to use auto-correction on mobile devices.
+	/// </summary>
+
+	public bool autoCorrect = false;
+
+	/// <summary>
 	/// Whether the label's text value will be used as the input's text value on start.
 	/// By default the label is just a tooltip of sorts, letting you choose helpful
 	/// half-transparent text such as "Press Enter to start typing", while the actual
@@ -123,7 +129,7 @@ public class UIInput : MonoBehaviour
 	/// Input field's current text value.
 	/// </summary>
 
-	public string text
+	public virtual string text
 	{
 		get
 		{
@@ -165,6 +171,23 @@ public class UIInput : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Set the default text of an input.
+	/// </summary>
+
+	public string defaultText
+	{
+		get
+		{
+			return mDefaultText;
+		}
+		set
+		{
+			if (label.text == mDefaultText) label.text = value;
+			mDefaultText = value;
+		}
+	}
+
+	/// <summary>
 	/// Labels used for input shouldn't support color encoding.
 	/// </summary>
 
@@ -181,6 +204,7 @@ public class UIInput : MonoBehaviour
 				mDefaultText = label.text;
 				mDefaultColor = label.color;
 				label.supportEncoding = false;
+				label.password = isPassword;
 				mPivot = label.pivot;
 				mPosition = label.cachedTransform.localPosition.x;
 			}
@@ -223,7 +247,7 @@ public class UIInput : MonoBehaviour
 					Application.platform == RuntimePlatform.Android)
 				{
 #if UNITY_3_4
-					mKeyboard = iPhoneKeyboard.Open(mText, (iPhoneKeyboardType)((int)type));
+					mKeyboard = iPhoneKeyboard.Open(mText, (iPhoneKeyboardType)((int)type), autoCorrect);
 #else
 					if (isPassword)
 					{
@@ -231,7 +255,7 @@ public class UIInput : MonoBehaviour
 					}
 					else
 					{
-						mKeyboard = TouchScreenKeyboard.Open(mText, (TouchScreenKeyboardType)((int)type));
+						mKeyboard = TouchScreenKeyboard.Open(mText, (TouchScreenKeyboardType)((int)type), autoCorrect);
 					}
 #endif
 				}
@@ -411,7 +435,15 @@ public class UIInput : MonoBehaviour
 		if (label.font != null)
 		{
 			// Start with the text and append the IME composition and carat chars
-			string processed = selected ? (mText + Input.compositionString + caratChar) : mText;
+			string processed;
+
+			if (isPassword && selected)
+			{
+				processed = "";
+				for (int i = 0, imax = mText.Length; i < imax; ++i) processed += "*";
+				processed += Input.compositionString + caratChar;
+			}
+			else processed = selected ? (mText + Input.compositionString + caratChar) : mText;
 
 			// Now wrap this text using the specified line width
 			label.supportEncoding = false;
@@ -429,11 +461,12 @@ public class UIInput : MonoBehaviour
 					processed = fit;
 					Vector3 pos = label.cachedTransform.localPosition;
 					pos.x = mPosition + label.lineWidth;
-					label.cachedTransform.localPosition = pos;
 
 					if (mPivot == UIWidget.Pivot.Left) label.pivot = UIWidget.Pivot.Right;
 					else if (mPivot == UIWidget.Pivot.TopLeft) label.pivot = UIWidget.Pivot.TopRight;
-					else if (mPivot == UIWidget.Pivot.BottomLeft) label.pivot = UIWidget.Pivot.BottomLeft;
+					else if (mPivot == UIWidget.Pivot.BottomLeft) label.pivot = UIWidget.Pivot.BottomRight;
+
+					label.cachedTransform.localPosition = pos;
 				}
 				else RestoreLabel();
 			}

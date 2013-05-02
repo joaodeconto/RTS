@@ -1,6 +1,6 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -18,17 +18,24 @@ public class UIButtonOffset : MonoBehaviour
 	public float duration = 0.2f;
 
 	Vector3 mPos;
-	bool mInitDone = false;
 	bool mStarted = false;
 	bool mHighlighted = false;
 
-	void Start () { mStarted = true; }
+	void Start ()
+	{
+		if (!mStarted)
+		{
+			mStarted = true;
+			if (tweenTarget == null) tweenTarget = transform;
+			mPos = tweenTarget.localPosition;
+		}
+	}
 
 	void OnEnable () { if (mStarted && mHighlighted) OnHover(UICamera.IsHighlighted(gameObject)); }
 
 	void OnDisable ()
 	{
-		if (tweenTarget != null)
+		if (mStarted && tweenTarget != null)
 		{
 			TweenPosition tc = tweenTarget.GetComponent<TweenPosition>();
 
@@ -40,18 +47,11 @@ public class UIButtonOffset : MonoBehaviour
 		}
 	}
 
-	void Init ()
-	{
-		mInitDone = true;
-		if (tweenTarget == null) tweenTarget = transform;
-		mPos = tweenTarget.localPosition;
-	}
-
 	void OnPress (bool isPressed)
 	{
 		if (enabled)
 		{
-			if (!mInitDone) Init();
+			if (!mStarted) Start();
 			TweenPosition.Begin(tweenTarget.gameObject, duration, isPressed ? mPos + pressed :
 				(UICamera.IsHighlighted(gameObject) ? mPos + hover : mPos)).method = UITweener.Method.EaseInOut;
 		}
@@ -61,7 +61,7 @@ public class UIButtonOffset : MonoBehaviour
 	{
 		if (enabled)
 		{
-			if (!mInitDone) Init();
+			if (!mStarted) Start();
 			TweenPosition.Begin(tweenTarget.gameObject, duration, isOver ? mPos + hover : mPos).method = UITweener.Method.EaseInOut;
 			mHighlighted = isOver;
 		}

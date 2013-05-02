@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright Â© 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -156,20 +156,6 @@ public static class BMFontReader
 						font.spriteName = GetString(split[2]).Replace("\"", "");
 						font.spriteName = font.spriteName.Replace(".png", "");
 						font.spriteName = font.spriteName.Replace(".tga", "");
-					}
-				}
-				else if (split[0] == "symbol")
-				{
-					// Expected data style:
-					// symbol sequence=(A) x=172 y=140 width=20 height=20
-
-					if (len > 5)
-					{
-						BMSymbol symbol = font.GetSymbol(GetString(split[1]), true);
-						symbol.x		= GetInt(split[2]);
-						symbol.y		= GetInt(split[3]);
-						symbol.width	= GetInt(split[4]);
-						symbol.height	= GetInt(split[5]);
 					}
 				}
 			}
