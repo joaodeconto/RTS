@@ -114,22 +114,19 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
-
-//		if (PhotonNetwork.player.customProperties.ContainsKey (key))
-//			PhotonNetwork.player.customProperties [key] = value;
-//		else
-			PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
+		
+		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
 	}
-
-	public void SetPropertyOnPlayer (PhotonPlayer player, string key, object value)
+	
+	[RPC]
+	public void SetAllyOnPlayerRPC (string key, int value)
 	{
+		GameplayManager.mode = GameplayManager.Mode.Allies;
+		
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
-
-//		if (player.customProperties.ContainsKey (key))
-//			player.customProperties [key] = value;
-//		else
-			player.SetCustomProperties (someCustomPropertiesToSet);
+		
+		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
 	}
 
 	public string CheckingStatus ()
@@ -259,7 +256,33 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			{
 				Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
 				room.SetCustomProperties(roomProperty);
+				
+				if (GameplayManager.mode == GameplayManager.Mode.Allies)
+				{
+					int maxNumberOfAllies = room.maxPlayers / 2;
+					
+					int numberAllies0 = 0;
+					int numberAllies1 = numberAllies0;
+					
+					foreach (PhotonPlayer pp in PhotonNetwork.playerList)
+					{
+						int numberRaffled = Random.Range(0, 1);
+						
+						if (numberAllies0 == maxNumberOfAllies)
+							numberRaffled = 1;
+						else if (numberAllies1 == maxNumberOfAllies)
+							numberRaffled = 0;
+						
+						if (numberRaffled == 0)
+							numberAllies0++;
+						else
+							numberAllies1++;
+						
+						photonView.RPC ("SetAllyOnPlayerRPC", pp, "allies", numberRaffled);
+					}
+				}
 			}
+			StopTryingEnterGame ();
 			StartCoroutine (StartGame ());
 		}
 	}
@@ -270,16 +293,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
         {
             yield return 0;
         }
-
-//		if (PhotonNetwork.isMasterClient)
-//		{
-//			int t = 0;
-//			foreach (PhotonPlayer p in PhotonNetwork.playerList)
-//			{
-//				SetPropertyOnPlayer (p, "team", (t++));
-//			}
-//		}
-
+		
+		yield return new WaitForSeconds (2f);
+		
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;
 		Application.LoadLevel(1);

@@ -19,7 +19,7 @@ public class TroopController : MonoBehaviour
 
 	internal Dictionary<int, List<Unit>> troopGroups = new Dictionary<int, List<Unit>>();
 
-	protected bool enemySelected = false;
+	protected bool otherSelected = false;
 	protected Vector3 centerOfTroop;
 
 	protected GameplayManager gameplayManager;
@@ -45,7 +45,7 @@ public class TroopController : MonoBehaviour
 
 	public void MoveTroop (Vector3 destination)
 	{
-		if (enemySelected) return;
+		if (otherSelected) return;
 
 		hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f, gameplayManager.GetColorTeam ());
 
@@ -162,7 +162,7 @@ public class TroopController : MonoBehaviour
 
 		if (select)
 		{
-			enemySelected = !gameplayManager.IsSameTeam (soldier);
+			otherSelected = !gameplayManager.IsSameTeam (soldier);
 			selectedSoldiers.Add (soldier);
 
 			soldier.Select ();

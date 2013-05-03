@@ -25,6 +25,14 @@ public class GameplayManager : Photon.MonoBehaviour
 		public GameObject uiLostMainBaseObject;
 	}
 	
+	public enum Mode
+	{
+		Normal,
+		Allies
+	}
+	
+	public static Mode mode;
+	
 	public const int MAX_POPULATION_ALLOWED = 200;
 	
 	public Team[] teams;
@@ -36,6 +44,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	protected int numberOfHousesMore;
 	
 	protected Dictionary<int, int> teamNumberOfStats = new Dictionary<int, int>();
+	protected int[][] alliesNumberOfStats;
 	protected int loserTeams;
 	protected bool loseGame = false;
 	protected bool winGame = false;
@@ -44,6 +53,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	protected bool beingAttacked = false;
 	
 	public int MyTeam {get; protected set;}
+	public int Allies {get; protected set;}
 
 	// Resources
 	public ResourcesManager resources;
@@ -57,11 +67,14 @@ public class GameplayManager : Photon.MonoBehaviour
 		if (!PhotonNetwork.offlineMode)
 		{
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
+			Allies = (int)PhotonNetwork.player.customProperties["allies"];
+			
 			network = ComponentGetter.Get<NetworkManager>();
 		}
 		else
 		{
 			MyTeam = 0;
+			Allies = 0;
 		}
 
 		for (int i = 0; i != teams.Length; i++)
@@ -70,6 +83,20 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
 			}
+		}
+		
+		if (mode == Mode.Allies)
+		{
+//			alliesNumberOfStats = new int[2][];
+//			
+//			for (int i = alliesNumberOfStats.Length - 1; i != -1; --i)
+//			{
+//				alliesNumberOfStats[i] = PhotonNetwork.playerList.Length / 2;
+//				foreach (PhotonPlayer pp in PhotonNetwork.playerList)
+//				{
+//					alliesNumberOfStats[pp.customProperties["allies"]][pp.customProperties["team"]] = 0;
+//				}
+//			}
 		}
 		
 		hud.uiDefeatObject.SetActive (false);
@@ -120,6 +147,21 @@ public class GameplayManager : Photon.MonoBehaviour
 	public bool IsSameTeam (IStats stats)
 	{
 		return stats.team == MyTeam;
+	}
+	
+	public bool IsBoot (int team)
+	{
+		return team == 8;
+	}
+	
+	public bool IsAlly (int allyNumber)
+	{
+		return allyNumber == Allies;
+	}
+	
+	public bool IsAlly (IStats stats)
+	{
+		return stats.ally == Allies;
 	}
 	
 	public bool IsBeingAttacked (IStats target)
@@ -232,6 +274,11 @@ public class GameplayManager : Photon.MonoBehaviour
 		else
 			teamNumberOfStats.Add (teamID, 1);
 	}
+	
+	public void AddStatTeamID (int ally, int teamID)
+	{
+		alliesNumberOfStats[ally][teamID] += 1;
+	}
 
 	public void RemoveStatTeamID (int teamID)
 	{
@@ -241,6 +288,11 @@ public class GameplayManager : Photon.MonoBehaviour
 			return;
 
 		CheckCondition (teamID);
+	}
+	
+	public void RemoveStatTeamID (int ally, int teamID)
+	{
+		alliesNumberOfStats[ally][teamID] -= 1;
 	}
 
 	public void RemoveAllStats (int teamID)
@@ -260,6 +312,11 @@ public class GameplayManager : Photon.MonoBehaviour
 			return;
 
 		CheckCondition (teamID);
+	}
+	
+	public void RemoveAllStats (int ally, int teamID)
+	{
+		alliesNumberOfStats[ally][teamID] = 0;
 	}
 
 	public void CheckCondition (int teamID)
@@ -290,14 +347,34 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 	}
 	
+	public void CheckCondition (int ally, int teamID)
+	{
+		if (alliesNumberOfStats[ally][teamID] == 0)
+		{
+			alliesNumberOfStats[ally][0] -= 1;
+		}
+		
+		if (alliesNumberOfStats[ally][0] == 0)
+		{
+			if (ally == Allies)
+			{
+				winGame = false;
+				loseGame = true;
+			}
+			else
+			{
+				winGame = true;
+				loseGame = false;
+			}
+		}
+	}
+	
 	void NoMainBase ()
 	{
-		if (mainBasesIncrements == 0)
-		{
-			hud.uiLostMainBaseObject.SetActive (false);
-			CancelInvoke ("DecrementTime");
-			photonView.RPC ("NewLoser", PhotonTargets.All, MyTeam);
-		}
+		hud.uiLostMainBaseObject.SetActive (false);
+		
+		CancelInvoke ("DecrementTime");
+		photonView.RPC ("NewLoser", PhotonTargets.All, MyTeam);
 	}
 	
 	void DecrementTime ()

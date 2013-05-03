@@ -231,16 +231,32 @@ public class FogOfWar : MonoBehaviour
 	{
 		if(!UseFog)
 			return null;
-
-		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.team))
+		
+		if(GameplayManager.mode == GameplayManager.Mode.Allies)
 		{
-			allies.Add(trnsEntity);
-			entityAllies.Add(entity);
+			if(ComponentGetter.Get<GameplayManager>().IsAlly(entity.ally))
+			{
+				allies.Add(trnsEntity);
+				entityAllies.Add(entity);
+			}
+			else
+			{
+				enemies.Add(trnsEntity);
+				entityEnemies.Add(entity);
+			}
 		}
 		else
 		{
-			enemies.Add(trnsEntity);
-			entityEnemies.Add(entity);
+			if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.team))
+			{
+				allies.Add(trnsEntity);
+				entityAllies.Add(entity);
+			}
+			else
+			{
+				enemies.Add(trnsEntity);
+				entityEnemies.Add(entity);
+			}
 		}
 
 		return this;
@@ -250,24 +266,49 @@ public class FogOfWar : MonoBehaviour
 	{
 		if(!UseFog || trnsEntity == null)
 			return null;
-
-		if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.team))
+		
+		if(GameplayManager.mode == GameplayManager.Mode.Allies)
 		{
-			int index = allies.IndexOf(trnsEntity) != null ? allies.IndexOf(trnsEntity) : -1;
-
-			if (index == -1) return null;
-
-				  allies.RemoveAt(index);
-			entityAllies.RemoveAt(index);
+			if(ComponentGetter.Get<GameplayManager>().IsAlly(entity.ally))
+			{
+				int index = allies.IndexOf(trnsEntity) != null ? allies.IndexOf(trnsEntity) : -1;
+	
+				if (index == -1) return null;
+	
+					  allies.RemoveAt(index);
+				entityAllies.RemoveAt(index);
+			}
+			else
+			{
+				int index = enemies.IndexOf(trnsEntity) != null ? enemies.IndexOf(trnsEntity) : -1;
+	
+				if (index == -1) return null;
+	
+					  enemies.RemoveAt(index);
+				entityEnemies.RemoveAt(index);
+			}
 		}
 		else
 		{
-			int index = enemies.IndexOf(trnsEntity) != null ? enemies.IndexOf(trnsEntity) : -1;
+			if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.team))
+			{
+				int index = allies.IndexOf(trnsEntity) != null ? allies.IndexOf(trnsEntity) : -1;
+			
+				if (index == -1) return null;
+			
+					  allies.RemoveAt(index);
+				entityAllies.RemoveAt(index);
+			}
+			else
+			{
+				int index = enemies.IndexOf(trnsEntity) != null ? enemies.IndexOf(trnsEntity) : -1;
+			
+				if (index == -1) return null;
+			
+					  enemies.RemoveAt(index);
+				entityEnemies.RemoveAt(index);
+			}
 
-			if (index == -1) return null;
-
-				  enemies.RemoveAt(index);
-			entityEnemies.RemoveAt(index);
 		}
 
 		return this;

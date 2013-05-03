@@ -95,6 +95,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	public int Defense;
 
 	public int team;
+	public int ally;
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;
 
@@ -127,28 +128,31 @@ public abstract class IStats : Photon.MonoBehaviour
 
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		eventManager    = ComponentGetter.Get<EventManager> ();
-
-		if (IsNetworkInstantiate)
+		
+		if (!gameplayManager.IsBoot (team))
 		{
-			SetTeamInNetwork ();
-		}
-		else
-		{
-			if (!PhotonNetwork.offlineMode)
+			if (IsNetworkInstantiate)
 			{
 				SetTeamInNetwork ();
 			}
 			else
 			{
-				team = (playerUnit) ? 0 : 1;
+				if (!PhotonNetwork.offlineMode)
+				{
+					SetTeamInNetwork ();
+				}
+				else
+				{
+					team = (playerUnit) ? 0 : 1;
+				}
+	
 			}
 
+			gameplayManager.AddStatTeamID (team);
 		}
 
 		SetColorTeam ();
-
-		gameplayManager.AddStatTeamID (team);
-
+		
 		IsRemoved = false;
 	}
 
@@ -225,11 +229,13 @@ public abstract class IStats : Photon.MonoBehaviour
 		if (playerUnit)
 		{
 			team = (int)PhotonNetwork.player.customProperties["team"];
+			ally = (int)PhotonNetwork.player.customProperties["allies"];
 		}
 		else
 		{
 			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
 			team = (int)other.customProperties["team"];
+			ally = (int)other.customProperties["allies"];
 		}
 	}
 
