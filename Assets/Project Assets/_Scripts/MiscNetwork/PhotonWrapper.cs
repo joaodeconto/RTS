@@ -114,16 +114,8 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
-<<<<<<< HEAD
 		
 		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
-=======
-
-//		if (PhotonNetwork.player.customProperties.ContainsKey (key))
-//			PhotonNetwork.player.customProperties [key] = value;
-//		else
-			PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
->>>>>>> f3bae1278d63b7fc4318050f6fa3f9954ffa706e
 	}
 	
 	[RPC]
@@ -133,16 +125,8 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
-<<<<<<< HEAD
 		
 		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
-=======
-
-//		if (player.customProperties.ContainsKey (key))
-//			player.customProperties [key] = value;
-//		else
-			player.SetCustomProperties (someCustomPropertiesToSet);
->>>>>>> f3bae1278d63b7fc4318050f6fa3f9954ffa706e
 	}
 
 	public string CheckingStatus ()
@@ -309,22 +293,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
         {
             yield return 0;
         }
-<<<<<<< HEAD
 		
 		yield return new WaitForSeconds (2f);
 		
-=======
-
-//		if (PhotonNetwork.isMasterClient)
-//		{
-//			int t = 0;
-//			foreach (PhotonPlayer p in PhotonNetwork.playerList)
-//			{
-//				SetPropertyOnPlayer (p, "team", (t++));
-//			}
-//		}
-
->>>>>>> f3bae1278d63b7fc4318050f6fa3f9954ffa706e
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;
 		Application.LoadLevel(1);
