@@ -40,11 +40,8 @@ public class NewAccount : IView
 
 				Hashtable ht = new Hashtable ();
 				ht["username"]              = username.text;
-				ht["email"]                 = email.text;
 				ht["password"]              = password.text;
-				ht["password_confirmation"] = password_confirmation.text;
-				ht["AcceptedTerms"]     = AcceptedTerms.isChecked;
-				ht["ReceiveNewsletter"] = ReceiveNewsletter.isChecked;
+				ht["email"]                 = email.text;
 
 				controller.SendMessage ("DoNewAccount", ht, SendMessageOptions.DontRequireReceiver );
 			});

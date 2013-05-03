@@ -9,8 +9,11 @@ public class Player
 {
     [JsonProperty(PropertyName = "id_player",Required=Required.Default)]
 	public int idPlayer;
+    [JsonProperty(PropertyName = "sz_email",Required=Required.Default)]
+	public string szEmail;
     [JsonProperty(PropertyName = "sz_name",Required=Required.Default)]
 	public string szName;
+
     [JsonProperty(PropertyName = "id_facebook_account",Required=Required.Default)]
 	public string idFacebookAccount;
     [JsonProperty(PropertyName = "sz_password",Required=Required.Default)]

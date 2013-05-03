@@ -117,8 +117,6 @@ public class Database : MonoBehaviour
 			form.AddField (de.Key, de.Value);
 		}
 
-		parameters.Clear ();
-
 		WWW www = new WWW(wrapperURL, form);
 
 		yield return www;
@@ -149,5 +147,6 @@ public class Database : MonoBehaviour
 		}
 
 		cdc = null;
+		parameters.Clear ();
 	}
 }

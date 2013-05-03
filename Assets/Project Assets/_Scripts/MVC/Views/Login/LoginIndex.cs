@@ -10,6 +10,8 @@ public class LoginIndex : IView
 	public UILabel errorMessage;
 	public GameObject submitButton;
 
+	public GameObject NewAccountButton;
+
 	// Use this for initialization
 	public void Init ()
 	{
@@ -30,6 +32,14 @@ public class LoginIndex : IView
 				ht["password"] = password.text;
 
 				controller.SendMessage ("DoLogin", ht, SendMessageOptions.DontRequireReceiver );
+			});
+
+		NewAccountButton
+			.AddComponent<DefaultCallbackButton>()
+			.Init (null,
+			(ht_hud) =>
+			{
+				controller.SendMessage ("NewAccount", SendMessageOptions.DontRequireReceiver );
 			});
 	}
 

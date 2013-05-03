@@ -73,6 +73,30 @@ public class Login : IController
 
 	public void DoNewAccount (Hashtable ht)
 	{
+		Debug.Log("DoNewAccount");
 
+		string username = (string)ht["username"];
+		string password = (string)ht["password"];
+		string email    = (string)ht["email"];
+
+		Database db        = ComponentGetter.Get<Database>();
+		DB.Player dbPlayer = new DB.Player () { szName     = username,
+												szPassword = password,
+												szEmail    = email};
+		db.Create (dbPlayer,
+		(response) =>
+		{
+			dbPlayer = response as DB.Player;
+			if (dbPlayer == null)
+			{
+				Debug.Log ("Probrema na criação do prayer");
+			}
+			else
+			{
+				Debug.Log ("Novo Player");
+
+				Index ();
+			}
+		});
 	}
 }
