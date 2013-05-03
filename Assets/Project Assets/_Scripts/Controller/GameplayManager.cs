@@ -318,7 +318,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	void Update ()
 	{
 		hud.labelResources.text = resources.NumberOfRocks.ToString ();
-		hud.labelUnits.text = "Units: " + numberOfUnits.ToString () + "/" + maxOfUnits.ToString ();
+		hud.labelUnits.text = numberOfUnits.ToString () + "/" + maxOfUnits.ToString ();
 
 		if (loseGame || winGame)
 		{

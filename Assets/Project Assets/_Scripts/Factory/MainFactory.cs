@@ -25,15 +25,12 @@ public class MainFactory : FactoryBase
 
 	public override IEnumerator OnDie ()
 	{
-		if (photonView.isMine)
+		if (wasBuilt)
 		{
-			if (wasBuilt)
-			{
-				gameplayManager.DecrementMaxOfUnits (numberOfIncementUnits);
-			}
-
-			gameplayManager.DecrementMainBase (team);
+			gameplayManager.DecrementMaxOfUnits (numberOfIncementUnits);
 		}
+
+		gameplayManager.DecrementMainBase (team);
 
 		return base.OnDie ();
 	}
