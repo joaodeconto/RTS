@@ -3,7 +3,7 @@ using System.Collections;
 
 public class RTSPersonalizedCallbackButton : DefaultCallbackButton
 {
-	public void Init(Hashtable ht,
+	public override void Init(Hashtable ht,
 					 OnClickDelegate onClick = null,
 					 OnPressDelegate onPress = null,
 					 OnSliderChangeDelegate onSliderChangeDelegate = null,
@@ -16,7 +16,7 @@ public class RTSPersonalizedCallbackButton : DefaultCallbackButton
 		ChangeParams(ht, onClick, onPress, onSliderChangeDelegate, onActivateDelegate, onRepeatClickDelegate, onDrag, onDrop);
 	}
 
-	public void ChangeParams(Hashtable ht,
+	public override void ChangeParams(Hashtable ht,
 							 OnClickDelegate onClick = null,
 							 OnPressDelegate onPress = null,
 							 OnSliderChangeDelegate onSliderChangeDelegate = null,

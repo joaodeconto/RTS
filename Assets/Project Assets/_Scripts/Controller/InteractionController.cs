@@ -7,9 +7,9 @@ using Visiorama;
 public class InteractionController : MonoBehaviour
 {
 	public delegate void InteractionCallback(Vector3 position);
-	
+
 	public GameObject uiExitGameObject;
-	
+
 	protected TouchController touchController;
 	protected TroopController troopController;
 	protected GameplayManager gameplayManager;
@@ -23,7 +23,7 @@ public class InteractionController : MonoBehaviour
 		troopController = ComponentGetter.Get<TroopController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
-		
+
 		stackInteractionCallbacks = new Stack<InteractionCallback>();
 	}
 
@@ -47,7 +47,7 @@ public class InteractionController : MonoBehaviour
 				uiExitGameObject.SetActive (true);
 			}
 		}
-		
+
 #if UNITY_EDITOR
 		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
 		{
@@ -150,31 +150,31 @@ public class InteractionController : MonoBehaviour
 		else if (hit.GetComponent<Resource> () != null)
 		{
 			bool feedback = false;
-			
+
 			foreach (Unit unit in troopController.selectedSoldiers)
 			{
 				if (unit.GetType() == typeof(Worker))
 				{
 					Worker worker = unit as Worker;
-					
+
 					if (worker.IsRepairing ||
 						worker.IsBuilding)
 					{
 						worker.SetMoveToFactory (null);
 					}
-					
+
 					worker.Move (touchController.GetFinalPoint);
 					worker.SetResource(hit.GetComponent<Resource> ());
-					
+
 					feedback = true;
 				}
 			}
-			
+
 			if (feedback)
 			{
-				hudController.CreateFeedback (HUDController.Feedbacks.Self, 
+				hudController.CreateFeedback (HUDController.Feedbacks.Self,
 											  hit.position,
-											  hit.GetComponent<Resource>().collider.radius * hit.localScale.x * 2f, 
+											  hit.GetComponent<Resource>().capsuleCollider.radius * hit.localScale.x * 2f,
 											  gameplayManager.GetColorTeam ());
 			}
 			return;
@@ -201,7 +201,7 @@ public class InteractionController : MonoBehaviour
 				}
 			}
 		}
-		
+
 		troopController.MoveTroop (touchController.GetFinalPoint);
 	}
 }

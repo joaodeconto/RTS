@@ -65,7 +65,7 @@ public class Worker : Unit
 	protected int lastResourceId;
 	protected Resource lastResource;
 	protected bool isSettingWorkerNull;
-	
+
 	protected FactoryBase factoryChoose, lastFactory;
 	protected bool isMovingToFactory;
 	protected bool isCheckedSendResourceToFactory;
@@ -138,7 +138,7 @@ public class Worker : Unit
 							SetMoveToFactory (resource.type);
 							SetMoveToFactory (typeof(MainFactory));
 						}
-					
+
 						if (!HasFactory ())
 						{
 							isMovingToFactory = true;
@@ -147,7 +147,7 @@ public class Worker : Unit
 					}
 					isCheckedSendResourceToFactory = true;
 				}
-			
+
 				if (isMovingToFactory)
 				{
 					if (!HasFactory ())
@@ -174,7 +174,7 @@ public class Worker : Unit
 
 					workerState = WorkerState.CarryingIdle;
 				}
-			
+
 				if (!HasFactory ()) return;
 
 				if (!factoryChoose.wasBuilt)
@@ -187,7 +187,7 @@ public class Worker : Unit
 
 					return;
 				}
-			
+
 //				Debug.Log (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius);
 
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
@@ -254,7 +254,7 @@ public class Worker : Unit
 
 				if (resource != null)
 				{
-					if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.collider.radius)
+					if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.capsuleCollider.radius)
 					{
 						pathfind.Stop ();
 
@@ -341,7 +341,7 @@ public class Worker : Unit
 						lastResourceId = resourceId;
 					}
 					break;
-	
+
 				case WorkerState.CarryingIdle:
 					if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
 					{
@@ -351,7 +351,7 @@ public class Worker : Unit
 						lastResourceId = resourceId;
 					}
 					break;
-	
+
 				case WorkerState.Extracting:
 					if (resourceWorker[resourceId].workerAnimation.Extracting)
 					{
@@ -361,7 +361,7 @@ public class Worker : Unit
 						lastResourceId = resourceId;
 					}
 					break;
-	
+
 				case WorkerState.Building:
 				case WorkerState.Repairing:
 					if (resourceWorker[0].workerAnimation.Extracting)
@@ -375,7 +375,7 @@ public class Worker : Unit
 						}
 					}
 					break;
-	
+
 				case WorkerState.None:
 					if (unitState == Unit.UnitState.Attack)
 					{
@@ -385,13 +385,13 @@ public class Worker : Unit
 					{
 						resourceWorker[0].extractingObject.SetActive (false);
 					}
-	
+
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
 						lastResourceId = resourceId;
 					}
-	
+
 					base.SyncAnimation ();
 					break;
 			}
@@ -524,12 +524,12 @@ public class Worker : Unit
 		pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
-		
+
 		if (resource != null)
 		{
 			resource.RemoveWorker (this);
 		}
-		
+
 		workerState = WorkerState.Carrying;
 	}
 #endregion
@@ -667,7 +667,7 @@ public class Worker : Unit
 			if (factoryChoose.IsRemoved)
 			{
 				factoryChoose = null;
-				
+
 				pathfind.Stop ();
 				unitState = Unit.UnitState.Idle;
 				factoryChoose = null;
@@ -675,15 +675,15 @@ public class Worker : Unit
 			}
 		}
 	}
-	
+
 	public bool HasFactory ()
 	{
 		if (factoryChoose == null)
 			return false;
-		
+
 		if (factoryChoose.IsRemoved)
 			return false;
-		
+
 		return true;
 	}
 
@@ -715,7 +715,7 @@ public class Worker : Unit
 	{
 		base.InstantiatParticleDamage ();
 	}
-	
+
 	[RPC]
 	public override void SendRemove ()
 	{

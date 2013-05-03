@@ -10,8 +10,9 @@ public class InternalMainMenu : MonoBehaviour
 		public string name;
 		public GameObject goMenu;
 	}
-	
-	public Transform playerStatus;
+
+	public GameObject goMainMenu;
+	public UILabel PlayerLabel;
 	public Transform options;
 	public Transform menus;
 
@@ -19,8 +20,6 @@ public class InternalMainMenu : MonoBehaviour
 
 	public void Init (string playerName)
 	{
-		DefaultCallbackButton dcb;
-
 //		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 //
 //		dcb.Init(null, (ht_hud) =>
@@ -30,9 +29,10 @@ public class InternalMainMenu : MonoBehaviour
 //
 			//TODO fazer timeout de conexão
 //		});
-		
-		UILabel playerLabel = playerStatus.FindChild ("PlayerLabel").GetComponent<UILabel> ();
-		playerLabel.text = playerName;
+
+		goMainMenu.SetActive (true);
+
+		PlayerLabel.text = playerName;
 
 		listChildOptions = new List<Transform>();
 		foreach (Transform child in options)
@@ -46,20 +46,24 @@ public class InternalMainMenu : MonoBehaviour
 				Hashtable ht = new Hashtable ();
 				ht["optionName"] = child.name;
 
-				dcb = button.gameObject.AddComponent<DefaultCallbackButton>();
-				dcb.Init (ht, (ht_hud) =>
-				{
-					ShowMenu ((string)ht_hud["optionName"]);
-				});
+				button
+					.gameObject
+					.AddComponent<DefaultCallbackButton>()
+					.Init (ht, (ht_hud) =>
+					{
+						ShowMenu ((string)ht_hud["optionName"]);
+					});
 			}
-			
+
 			if (child.name == "Quit")
 			{
-				dcb = button.gameObject.AddComponent<DefaultCallbackButton>();
-				dcb.ChangeParams (null, (ht_dcb) => 
-				{
-					 Application.Quit ();
-				});
+				button
+					.gameObject
+					.AddComponent<DefaultCallbackButton>()
+					.ChangeParams (null, (ht_dcb) =>
+					{
+						 Application.Quit ();
+					});
 			}
 		}
 	}

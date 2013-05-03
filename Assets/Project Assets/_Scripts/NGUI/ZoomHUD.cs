@@ -9,15 +9,17 @@ public class ZoomHUD : MonoBehaviour
 	
 	void Awake ()
 	{
-#if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR		
 		TouchController touchController = Visiorama.ComponentGetter.Get<TouchController> ();
 		
 		DefaultCallbackButton dcb;
 		
 		if (zoomInButton != null)
 		{
+			Hashtable ht = new Hashtable();
+			ht.Add ("repeat-interval", 0.01f);
+			
 			dcb = zoomInButton.AddComponent<DefaultCallbackButton> ();
-			dcb.Init (null, null, null, null, null,
+			dcb.Init (ht, null, null, null, null,
 			(ht_dcb) => 
 			{
 				float size = touchController.zoomSettings.cameras[0].orthographicSize;
@@ -33,8 +35,11 @@ public class ZoomHUD : MonoBehaviour
 		
 		if (zoomOutButton != null)
 		{
-			dcb = zoomOutButton.AddComponent<DefaultCallbackButton> ();
-			dcb.Init (null, null, null, null, null,
+			Hashtable ht = new Hashtable();
+			ht.Add ("repeat-interval", 0.01f);
+			
+			dcb = zoomInButton.AddComponent<DefaultCallbackButton> ();
+			dcb.Init (ht, null, null, null, null,
 			(ht_dcb) => 
 			{
 				float size = touchController.zoomSettings.cameras[0].orthographicSize;
@@ -47,9 +52,5 @@ public class ZoomHUD : MonoBehaviour
 				}
 			});
 		}
-#else
-		zoomInButton.SetActive (false);
-		zoomOutButton.SetActive (false);
-#endif
 	}
 }

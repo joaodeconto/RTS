@@ -8,7 +8,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	public delegate void PlayerReadyCallback (int nPlayersReady, int nPlayers);
 
 	public float RefreshingInterval = 0.2f;
-	
+
 	public GameObject[] menusDissapearWhenLogged;
 
 	protected bool checkingStatus = false;
@@ -26,15 +26,12 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 		wasInitialized = true;
 
-		if (!PhotonNetwork.connected)
-			 PhotonNetwork.ConnectUsingSettings (ConfigurationData.VERSION);
-
-		Application.runInBackground = true;
-	}
-
-	void Awake ()
-	{
-		Init ();
+		//if (!PhotonNetwork.connected)
+		{
+			Application.runInBackground = true;
+			PhotonNetwork.networkingPeer.DisconnectTimeout = 30000;
+			PhotonNetwork.ConnectUsingSettings (ConfigurationData.VERSION);
+		}
 	}
 
 	public void SetPlayer (string playerName, bool isReady)
@@ -52,7 +49,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Hashtable expectedCustomRoomProperties = new Hashtable() { { "closeRoom", false } };
 		PhotonNetwork.JoinRandomRoom (expectedCustomRoomProperties, 0);
-		
+
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (false);
@@ -62,32 +59,32 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	public void JoinRoom (string roomName)
 	{
 		PhotonNetwork.JoinRoom (roomName);
-		
+
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (false);
 		}
 	}
-	
+
 	public bool LeaveRoom ()
 	{
 		if (PhotonNetwork.room == null)
 			return false;
-		
+
 		PhotonNetwork.LeaveRoom ();
-		
+
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (true);
 		}
-		
+
 		return true;
 	}
 
 	public void CreateTestRoom ()
 	{
 		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1) + (Random.value * 10000), true, true, 1);
-		
+
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (false);
@@ -101,7 +98,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		string[] roomPropsInLobby = { "closeRoom", "bool" };
 
 		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, someCustomPropertiesToSet, roomPropsInLobby);
-		
+
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (false);
@@ -117,8 +114,16 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
+<<<<<<< HEAD
 		
 		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
+=======
+
+//		if (PhotonNetwork.player.customProperties.ContainsKey (key))
+//			PhotonNetwork.player.customProperties [key] = value;
+//		else
+			PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
+>>>>>>> f3bae1278d63b7fc4318050f6fa3f9954ffa706e
 	}
 	
 	[RPC]
@@ -128,8 +133,16 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
+<<<<<<< HEAD
 		
 		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
+=======
+
+//		if (player.customProperties.ContainsKey (key))
+//			player.customProperties [key] = value;
+//		else
+			player.SetCustomProperties (someCustomPropertiesToSet);
+>>>>>>> f3bae1278d63b7fc4318050f6fa3f9954ffa706e
 	}
 
 	public string CheckingStatus ()
@@ -204,7 +217,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	private void OnDisconnectedFromPhoton()
 	{
-		
+
 	}
 
 	private void OnFailedToConnectToPhoton(object parameters)
@@ -247,7 +260,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 				numberOfReady++;
 			}
 		}
-		
+
 		if (prc != null)
 		{
 			prc (numberOfReady, room.maxPlayers);
@@ -296,9 +309,22 @@ public class PhotonWrapper : Photon.MonoBehaviour
         {
             yield return 0;
         }
+<<<<<<< HEAD
 		
 		yield return new WaitForSeconds (2f);
 		
+=======
+
+//		if (PhotonNetwork.isMasterClient)
+//		{
+//			int t = 0;
+//			foreach (PhotonPlayer p in PhotonNetwork.playerList)
+//			{
+//				SetPropertyOnPlayer (p, "team", (t++));
+//			}
+//		}
+
+>>>>>>> f3bae1278d63b7fc4318050f6fa3f9954ffa706e
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;
 		Application.LoadLevel(1);
