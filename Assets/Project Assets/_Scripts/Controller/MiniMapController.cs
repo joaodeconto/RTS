@@ -95,7 +95,7 @@ public class MiniMapController : MonoBehaviour
 		{
 			ut = NGUITools.AddWidget<UITexture> (fogMiniMap);
 			ut.pivot = UIWidget.Pivot.BottomLeft;
-			ut.transform.localPosition    = -Vector3.forward * 0;
+			ut.transform.localPosition    = -Vector3.forward * 5;
 			ut.transform.localScale       = Vector3.one;
 			ut.transform.localEulerAngles = Vector3.forward * 90f;
 			ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
@@ -188,18 +188,18 @@ public class MiniMapController : MonoBehaviour
 																 (-18));
 	}
 
-	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns)
+	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns, float transformZ = 20f)
 	{
 		Vector3 percentPos = new Vector3(referenceTrns.position.x / mapSize.x,
 										 referenceTrns.position.z / mapSize.z,
-										 -11);
+										 -transformZ);
 
 		//Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
 		//Debug.Log("miniMapSize: " + miniMapSize);
 
 		miniMapObject.transform.localPosition = new Vector3((mapTransform.localPosition.x + (miniMapSize.x * percentPos.x)),
 															(mapTransform.localPosition.y + (miniMapSize.y * percentPos.y)),
-															(-18));
+															(-transformZ));
 	}
 
 	public void UpdateCameraPosition()
@@ -244,7 +244,7 @@ public class MiniMapController : MonoBehaviour
 		
 		miniMapObject.GetComponent<TweenScale> ().Play (true);
 		
-		miniMapObject.GetComponent<UISprite> ().depth = 4;
+		miniMapObject.GetComponent<UISprite> ().depth = 10;
 		
 		UpdatePosition (miniMapObject, target);
 	}
