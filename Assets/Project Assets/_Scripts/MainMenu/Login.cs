@@ -3,61 +3,100 @@ using System.Collections;
 
 using Visiorama;
 
-public class Login : MonoBehaviour
+public class Login : IController
 {
-	public UIInput username;
-	public UIInput password;
-	public UILabel errorMessage;
-	public GameObject submitButton;
-	public GameObject mainMenu;
-
 	public void Start ()
 	{
 		Init ();
 	}
 
-	private bool wasInitialized = false;
 	public void Init ()
 	{
-		PhotonNetwork.networkingPeer.DisconnectTimeout = 30000;
-		
-		if (wasInitialized) return;
+		ComponentGetter.Get<PhotonWrapper> ().Init ();
 
-		wasInitialized = true;
+		CheckAllViews ();
 
-		Application.runInBackground = true;
-		
-		errorMessage.enabled = false;
-		
-		DefaultCallbackButton dcb = submitButton.AddComponent<DefaultCallbackButton>();
-
-		Hashtable ht = new Hashtable();
-		dcb.Init (null,
-					(ht_hud) =>
-					{
-						//TODO lógica de login do jogo
-						if (!string.IsNullOrEmpty(username.text))
-						{
-							PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-				
-							pw.SetPlayer (username.text, true);
-	
-							mainMenu.SetActive (true);
-							mainMenu.GetComponent<InternalMainMenu> ().Init (username.text);
-	
-							this.gameObject.SetActive (false);
-						}
-						else
-						{
-							errorMessage.enabled = true;
-
-							Invoke ("CloseErrorMessage", 5.0f);
-						}
-					});
+		Index ();
 	}
-	
-	private void CloseErrorMessage ()
+
+	public void Index ()
 	{
-		errorMessage.enabled = false;
+		HideAllViews ();
+
+		LoginIndex index = GetView <LoginIndex> ("Index");
+		index.SetActive (true);
+		index.Init ();
+	}
+
+	public void NewAccount ()
+	{
+		HideAllViews ();
+
+		NewAccount newAccount = GetView <NewAccount> ("NewAccount");
+		newAccount.SetActive (true);
+		newAccount.Init ();
+	}
+
+	public void DoLogin (Hashtable ht)
+	{
+		string username = (string)ht["username"];
+		string password = (string)ht["password"];
+
+		Database db        = ComponentGetter.Get<Database>();
+		DB.Player dbPlayer = new DB.Player () { szName = username,
+												szPassword = password };
+
+		db.Read (dbPlayer,
+		(response) =>
+		{
+			dbPlayer = response as DB.Player;
+
+			if (dbPlayer == null ||
+				string.IsNullOrEmpty(dbPlayer.szName) ||
+				string.IsNullOrEmpty(dbPlayer.szPassword))
+			{
+				LoginIndex index = GetView <LoginIndex> ("Index");
+				index.ShowErrorMessage ();
+			}
+			else
+			{
+				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+				pw.SetPlayer (username, true);
+
+				HideAllViews ();
+
+				InternalMainMenu imm = ComponentGetter.Get <InternalMainMenu> ();
+				imm.Init (username);
+			}
+		});
+	}
+
+	public void DoNewAccount (Hashtable ht)
+	{
+		Debug.Log("DoNewAccount");
+
+		string username = (string)ht["username"];
+		string password = (string)ht["password"];
+		string email    = (string)ht["email"];
+
+		Database db        = ComponentGetter.Get<Database>();
+		DB.Player dbPlayer = new DB.Player () { szName     = username,
+												szPassword = password,
+												szEmail    = email};
+		db.Create (dbPlayer,
+		(response) =>
+		{
+			dbPlayer = response as DB.Player;
+			if (dbPlayer == null)
+			{
+				Debug.Log ("Probrema na criação do prayer");
+			}
+			else
+			{
+				Debug.Log ("Novo Player");
+
+				Index ();
+			}
+		});
 	}
 }
