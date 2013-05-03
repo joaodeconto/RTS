@@ -310,6 +310,7 @@ public class FactoryBase : IStats
 		buildingState = BuildingState.Base;
 
 		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
+		else SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 	}
 
 	public bool Construct (Worker worker)

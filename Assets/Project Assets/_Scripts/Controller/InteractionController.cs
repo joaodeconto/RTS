@@ -48,12 +48,14 @@ public class InteractionController : MonoBehaviour
 			}
 		}
 		
-#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+#if UNITY_EDITOR
 		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
 		{
 			gameplayManager.resources.NumberOfRocks += 100;
 		}
+#endif
 		
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 		if (touchController.touchType != TouchController.TouchType.Ended)
 			return;
 
@@ -83,30 +85,65 @@ public class InteractionController : MonoBehaviour
 
 		if (hit.CompareTag ("Factory"))
 		{
-			if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
+			if(GameplayManager.mode == GameplayManager.Mode.Allies)
 			{
-				if (hit.GetComponent<FactoryBase> ().IsVisible)
+				if (!gameplayManager.IsAlly (hit.GetComponent<FactoryBase> ()))
 				{
-					troopController.AttackTroop (hit.transform.gameObject);
+					if (hit.GetComponent<FactoryBase> ().IsVisible)
+					{
+						troopController.AttackTroop (hit.transform.gameObject);
+						return;
+					}
+				}
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+				else
+				{
+					troopController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
 					return;
 				}
+#endif
 			}
-#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 			else
 			{
-				troopController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
-				return;
-			}
+				if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
+				{
+					if (hit.GetComponent<FactoryBase> ().IsVisible)
+					{
+						troopController.AttackTroop (hit.transform.gameObject);
+						return;
+					}
+				}
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+				else
+				{
+					troopController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
+					return;
+				}
 #endif
+			}
 		}
 		else if (hit.CompareTag ("Unit"))
 		{
-			if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
+			if(GameplayManager.mode == GameplayManager.Mode.Allies)
 			{
-				if (hit.GetComponent<Unit> ().IsVisible)
+				if (!gameplayManager.IsAlly (hit.GetComponent<Unit> ()))
 				{
-					troopController.AttackTroop (hit.gameObject);
-					return;
+					if (hit.GetComponent<Unit> ().IsVisible)
+					{
+						troopController.AttackTroop (hit.gameObject);
+						return;
+					}
+				}
+			}
+			else
+			{
+				if (!gameplayManager.IsAlly (hit.GetComponent<Unit> ()))
+				{
+					if (hit.GetComponent<Unit> ().IsVisible)
+					{
+						troopController.AttackTroop (hit.gameObject);
+						return;
+					}
 				}
 			}
 		}
@@ -139,7 +176,6 @@ public class InteractionController : MonoBehaviour
 											  hit.position,
 											  hit.GetComponent<Resource>().collider.radius * hit.localScale.x * 2f, 
 											  gameplayManager.GetColorTeam ());
-				
 			}
 			return;
 		}

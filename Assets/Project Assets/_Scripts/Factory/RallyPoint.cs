@@ -13,6 +13,7 @@ public class RallyPoint : MonoBehaviour {
 	void Awake ()
 	{
 		touchController = ComponentGetter.Get<TouchController> ();
+		
 		lineRenderer = gameObject.AddComponent<LineRenderer>();
 		lineRenderer.SetColors (Color.black, Color.black);
 		lineRenderer.material = new Material(Shader.Find("Transparent/Diffuse"));

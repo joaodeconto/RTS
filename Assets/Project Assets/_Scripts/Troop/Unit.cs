@@ -453,17 +453,6 @@ public class Unit : IStats
 
 		if (unitAnimation.Attack)
 		{
-//			if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
-//			else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
-//
-//			if (!PhotonNetwork.offlineMode)
-//			{
-//				if (targetAttack.GetComponent<Unit>())
-//					photonView.RPC ("AttackUnit", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
-//				else if (targetAttack.GetComponent<FactoryBase>())
-//					photonView.RPC ("AttackFactory", PhotonTargets.OthersBuffered, targetAttack.name, force + AdditionalForce);
-//			}
-			
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 			
 			IsAttacking = true;
@@ -473,8 +462,6 @@ public class Unit : IStats
 				if (targetAttack.GetComponent<Unit>() != null)
 				{
 					photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
-//					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
-//					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 				}
 				else if (targetAttack.GetComponent<FactoryBase>() != null)
 				{
@@ -618,10 +605,17 @@ public class Unit : IStats
 	{
 		if (enemy != null)
 		{
-			PhotonPlayer[] pp = (from pps in PhotonNetwork.playerList
-	        where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
-	        select pps).ToArray ();
-			playerTargetAttack = pp[0];
+			if (!gameplayManager.IsBoot (enemy.GetComponent<IStats>().team))
+			{
+				PhotonPlayer[] pp = (from pps in PhotonNetwork.playerList
+		        where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
+		        select pps).ToArray ();
+				playerTargetAttack = pp[0];
+			}
+			else
+			{
+				playerTargetAttack = PhotonNetwork.player;
+			}
 			
 			followingTarget = true;
 		}
@@ -721,7 +715,7 @@ public class Unit : IStats
 		{
 			if (nearbyUnits[i].GetComponent<IStats> ())
 			{
-				if (nearbyUnits[i].GetComponent<IStats> ().team != team)
+				if (nearbyUnits[i].GetComponent<IStats> ().ally != ally)
 				{
 					if (enemyFound == null)
 					{

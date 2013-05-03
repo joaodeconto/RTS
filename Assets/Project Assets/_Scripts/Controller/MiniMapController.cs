@@ -81,12 +81,6 @@ public class MiniMapController : MonoBehaviour
 
 		mapSize = ComponentGetter.Get<Terrain>("Terrain").terrainData.size;
 
-		//CameraBounds cb = ComponentGetter.Get<CameraBounds>("Main Camera");
-
-		//mapSize = new Vector3 ( cb.scenario.x.max - cb.scenario.x.min,
-								//0,
-								//cb.scenario.z.max - cb.scenario.z.min);
-		
 		FogOfWar fogOfWar = ComponentGetter.Get<FogOfWar>();
 		
 		UITexture ut;
@@ -289,7 +283,7 @@ public class MiniMapController : MonoBehaviour
 	public void AddUnit (Transform trns, int teamId)
 	{
 #if UNITY_EDITOR
-		if(unitList.Length <= teamId)
+ 		if(unitList.Length <= teamId)
 		{
 			Debug.Log("O numero de times eh menor do que o id enviado");
 			Debug.Log("teamId: " + teamId);

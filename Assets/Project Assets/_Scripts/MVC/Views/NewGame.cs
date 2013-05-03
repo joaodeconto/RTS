@@ -37,27 +37,36 @@ public class NewGame : MonoBehaviour
 								//TODO fazer timeout de conexão
 							});
 
-		GameObject match1x1 = buttons.FindChild ("Match 1x1").gameObject;
+		GameObject match2p = buttons.FindChild ("Match 2P").gameObject;
 
-		dcb = match1x1.AddComponent<DefaultCallbackButton> ();
+		dcb = match2p.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
 								CreateRoom (2);
 							});
 
-		GameObject match2x2 = buttons.FindChild ("Match 2x2").gameObject;
+		GameObject match3p = buttons.FindChild ("Match 3P").gameObject;
 
-		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
+		dcb = match3p.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
 								CreateRoom (3);
 							});
 
-		GameObject matchTxT = buttons.FindChild ("Match TxT").gameObject;
+		GameObject match4p = buttons.FindChild ("Match 4P").gameObject;
 
-		dcb = matchTxT.AddComponent<DefaultCallbackButton> ();
+		dcb = match4p.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
+								CreateRoom (4);
+							});
+		
+		GameObject match2x2 = buttons.FindChild ("Match 2x2").gameObject;
+
+		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
+		dcb.Init(null, (ht_hud) =>
+							{
+								GameplayManager.mode = GameplayManager.Mode.Allies;
 								CreateRoom (4);
 							});
 		
@@ -113,15 +122,15 @@ public class NewGame : MonoBehaviour
 		
 		pw.TryToEnterGame (10000.0f, (message) =>
 									{
-										Debug.Log("message: " + message);
-
-										messageActiveGame.enabled = false;
-
-										buttons.gameObject.SetActive (true);
-
-										errorMessage.enabled = true;
-
-										Invoke ("CloseErrorMessage", 5.0f);
+//										Debug.Log("message: " + message);
+//
+//										messageActiveGame.enabled = false;
+//
+//										buttons.gameObject.SetActive (true);
+//
+//										errorMessage.enabled = true;
+//
+//										Invoke ("CloseErrorMessage", 5.0f);
 									},
 									(playersReady, nMaxPlayers) =>
 									{
