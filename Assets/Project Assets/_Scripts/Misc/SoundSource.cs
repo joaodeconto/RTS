@@ -44,10 +44,10 @@ public class SoundSource : MonoBehaviour
 		ComponentGetter.Get<VolumeController> ().AddSoundSource (this);
 	}
 	
-	void OnDestroy ()
-	{
-		ComponentGetter.Get<VolumeController> ().RemoveSoundSource (this);
-	}
+//	void OnDestroy ()
+//	{
+//		ComponentGetter.Get<VolumeController> ().RemoveSoundSource (this);
+//	}
 	
 	public void Play (string name)
 	{
