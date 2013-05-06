@@ -5,6 +5,8 @@ using Visiorama;
 
 public class Login : IController
 {
+	public bool UseRealLogin = true;
+	
 	public void Start ()
 	{
 		Init ();
@@ -42,6 +44,12 @@ public class Login : IController
 		string username = (string)ht["username"];
 		string password = (string)ht["password"];
 
+		if (!UseRealLogin)
+		{
+			EnterInternalMainMenu (username);
+			return;
+		}
+
 		Database db        = ComponentGetter.Get<Database>();
 		DB.Player dbPlayer = new DB.Player () { szName = username,
 												szPassword = password };
@@ -63,14 +71,19 @@ public class Login : IController
 				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 				pw.SetPlayer (username, true);
 
-				HideAllViews ();
-
-				InternalMainMenu imm = ComponentGetter.Get <InternalMainMenu> ();
-				imm.Init (username);
+				EnterInternalMainMenu (username);
 			}
 		});
 	}
+	
+	public void EnterInternalMainMenu (string username)
+	{
+		HideAllViews ();
 
+		InternalMainMenu imm = ComponentGetter.Get <InternalMainMenu> ();
+		imm.Init (username);
+	}
+	
 	public void DoNewAccount (Hashtable ht)
 	{
 		Debug.Log("DoNewAccount");
