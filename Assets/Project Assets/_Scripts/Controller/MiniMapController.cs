@@ -354,8 +354,9 @@ public class MiniMapController : MonoBehaviour
 	public void SetVisibilityUnit(Transform trns, int teamId, bool visibility)
 	{
 		int index = unitList[teamId].IndexOf(trns);
-
-		UnitMiniMapList[teamId][index].SetActive(visibility);
+		
+		if (index != -1)
+			UnitMiniMapList[teamId][index].SetActive(visibility);
 	}
 #endregion
 }

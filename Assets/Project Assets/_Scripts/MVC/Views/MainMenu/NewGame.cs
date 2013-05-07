@@ -28,15 +28,6 @@ public class NewGame : MonoBehaviour
 
 		buttons = this.transform.FindChild ("Menu").FindChild ("Buttons");
 
-		GameObject quickMatch = buttons.FindChild ("Quick Match").gameObject;
-
-		dcb = quickMatch.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
-							{
-								//pw.JoinQuickMatch ();
-								//TODO fazer timeout de conexão
-							});
-
 		GameObject match2p = buttons.FindChild ("Match 2P").gameObject;
 
 		dcb = match2p.AddComponent<DefaultCallbackButton> ();
@@ -66,8 +57,7 @@ public class NewGame : MonoBehaviour
 		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								GameplayManager.mode = GameplayManager.Mode.Allies;
-								CreateRoom (4);
+								CreateRoom (4, GameplayManager.Mode.Allies);
 							});
 		
 		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
@@ -99,8 +89,10 @@ public class NewGame : MonoBehaviour
 		leaveRoom.SetActive (false);
 	}
 
-	private void CreateRoom (int maxPlayers)
+	private void CreateRoom (int maxPlayers, GameplayManager.Mode mode = GameplayManager.Mode.Normal)
 	{
+		GameplayManager.mode = mode;
+		
 		string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + System.DateTime.Now.ToString ("mm-ss");
 		bool isVisible = true, isOpen = true;
 

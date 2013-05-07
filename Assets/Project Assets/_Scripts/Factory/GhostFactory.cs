@@ -143,8 +143,8 @@ public class GhostFactory : MonoBehaviour
 			thisFactory.costOfResources = factoryConstruction.costOfResources;
 
 			worker.SetMoveToFactory (thisFactory);
-			TroopController troopController = ComponentGetter.Get<TroopController> ();
-			foreach (Unit unit in troopController.selectedSoldiers)
+			StatsController troopController = ComponentGetter.Get<StatsController> ();
+			foreach (Unit unit in troopController.selectedStats)
 			{
 				if (unit.GetType() == typeof(Worker))
 				{

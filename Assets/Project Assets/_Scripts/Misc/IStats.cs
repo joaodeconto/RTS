@@ -113,7 +113,8 @@ public abstract class IStats : Photon.MonoBehaviour
 	public bool IsRemoved { get; protected set; }
 
 	internal int Group = -1;
-
+	
+	protected StatsController statsController;
 	protected GameplayManager gameplayManager;
 	protected EventManager eventManager;
 
@@ -125,7 +126,8 @@ public abstract class IStats : Photon.MonoBehaviour
 	public virtual void Init ()
 	{
 		Health = MaxHealth;
-
+		
+		statsController = ComponentGetter.Get<StatsController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		eventManager    = ComponentGetter.Get<EventManager> ();
 		
@@ -145,15 +147,28 @@ public abstract class IStats : Photon.MonoBehaviour
 				{
 					team = (playerUnit) ? 0 : 1;
 				}
-	
 			}
-
-			gameplayManager.AddStatTeamID (team);
 		}
 
 		SetColorTeam ();
 		
 		IsRemoved = false;
+		
+		statsController.AddStats (this);
+	}
+	
+	public virtual void Select ()
+	{
+		if (IsRemoved) return;
+		
+		if (!Selected) Selected = true;
+		else return;
+	}
+	
+	public virtual void Deselect ()
+	{
+		if (Selected) Selected = false;
+		else return;
 	}
 
 	public void ReceiveAttack (int Damage)
@@ -203,7 +218,6 @@ public abstract class IStats : Photon.MonoBehaviour
 	public virtual void SendRemove ()
 	{
 		Health = 0;
-		gameplayManager.RemoveStatTeamID (team);
 		IsRemoved = true;
 		
 		SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
@@ -229,13 +243,16 @@ public abstract class IStats : Photon.MonoBehaviour
 		if (playerUnit)
 		{
 			team = (int)PhotonNetwork.player.customProperties["team"];
-			ally = (int)PhotonNetwork.player.customProperties["allies"];
+			if (GameplayManager.mode == GameplayManager.Mode.Allies)
+				ally = (int)PhotonNetwork.player.customProperties["allies"];
 		}
 		else
 		{
 			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
+			
 			team = (int)other.customProperties["team"];
-			ally = (int)other.customProperties["allies"];
+			if (GameplayManager.mode == GameplayManager.Mode.Allies)
+				ally = (int)other.customProperties["allies"];
 		}
 	}
 

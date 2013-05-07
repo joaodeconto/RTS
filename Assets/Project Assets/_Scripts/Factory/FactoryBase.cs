@@ -61,8 +61,7 @@ public class FactoryBase : IStats
 	public Animation ControllerAnimation { get; private set; }
 
 	public bool wasBuilt { get; private set; }
-
-	protected FactoryController factoryController;
+	
 	protected HUDController hudController;
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;
@@ -99,7 +98,6 @@ public class FactoryBase : IStats
 		timer = 0;
 
 		hudController     = ComponentGetter.Get<HUDController> ();
-		factoryController = ComponentGetter.Get<FactoryController> ();
 		buildingSlider    = hudController.GetSlider("Building Unit");
 		buildingSlider.gameObject.SetActive(false);
 
@@ -117,14 +115,20 @@ public class FactoryBase : IStats
 		this.gameObject.tag   = "Factory";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
-		factoryController.AddFactory (this);
-
 		inUpgrade = false;
 		wasBuilt  = true;
 
 		buildingState = BuildingState.Finished;
 
 		enabled = playerUnit;
+		
+		Invoke ("SendMessageInstance", 0.3f);
+	}
+	
+	void SendMessageInstance ()
+	{
+		if (GetComponent<GhostFactory> () == null)
+			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 	}
 
 	void Update ()
@@ -174,8 +178,7 @@ public class FactoryBase : IStats
 
 	void OnDestroy ()
 	{
-		if (Selected && !playerUnit) Deselect ();
-		if (!IsRemoved && !playerUnit) factoryController.factorys.Remove (this);
+		if (!IsRemoved && !playerUnit) statsController.RemoveStats (this);
 	}
 
 	//void OnGUI ()
@@ -253,7 +256,7 @@ public class FactoryBase : IStats
 
 	public virtual IEnumerator OnDie ()
 	{
-		factoryController.RemoveFactory (this);
+		statsController.RemoveStats (this);
 
 		model.animation.Play ();
 		
@@ -280,7 +283,7 @@ public class FactoryBase : IStats
 		levelConstruct = Health = 1;
 		wasBuilt = false;
 		team = teamID;
-		factoryController.RemoveFactory (GetComponent<FactoryBase> ());
+		statsController.RemoveStats (GetComponent<FactoryBase> ());
 
 		GetComponent<NavMeshObstacle> ().enabled = false;
 
@@ -301,7 +304,7 @@ public class FactoryBase : IStats
 
 		GetComponent<NavMeshObstacle> ().enabled = true;
 
-		factoryController.AddFactory (this);
+		statsController.AddStats (this);
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);
@@ -309,8 +312,9 @@ public class FactoryBase : IStats
 		
 		buildingState = BuildingState.Base;
 
+		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
+		
 		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
-		else SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 	}
 
 	public bool Construct (Worker worker)
@@ -372,14 +376,11 @@ public class FactoryBase : IStats
 			return false;
 		}
 	}
-
-	public void Select ()
+	
+	public override void Select ()
 	{
-		if (IsRemoved) return;
+		base.Select ();
 		
-		if (!Selected) Selected = true;
-		else return;
-
 		if(unitToCreate != null)
 			buildingSlider.gameObject.SetActiveRecursively(true);
 
@@ -459,28 +460,22 @@ public class FactoryBase : IStats
 		}
 	}
 
-	public bool Deselect (bool isGroupDelesection = false)
+	public override void Deselect ()
 	{
+		base.Deselect ();
+		
 		buildingSlider.gameObject.SetActive(false);
-
-		if (Selected) Selected = false;
-		else return false;
 
 		hudController.DestroySelected (transform);
 
 		if (playerUnit && wasBuilt)
 		{
-			if (!hasWaypoint) return true;
+			if (!hasWaypoint) return;
 
 			waypoint.gameObject.SetActive (false);
 
-			if(!isGroupDelesection)
-			{
-				hudController.DestroyInspector ("factory");
-			}
+			hudController.DestroyInspector ("factory");
 		}
-
-		return true;
 	}
 
 	public void EnqueueUnitToCreate (Unit unit)
@@ -545,7 +540,7 @@ public class FactoryBase : IStats
 
 	public override void SetVisible(bool isVisible)
 	{
-		ComponentGetter.Get<FactoryController> ().ChangeVisibility (this, isVisible);
+		statsController.ChangeVisibility (this, isVisible);
 
 		if(isVisible)
 		{

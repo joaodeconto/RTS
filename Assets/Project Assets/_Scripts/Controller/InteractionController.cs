@@ -11,7 +11,7 @@ public class InteractionController : MonoBehaviour
 	public GameObject uiExitGameObject;
 
 	protected TouchController touchController;
-	protected TroopController troopController;
+	protected StatsController statsController;
 	protected GameplayManager gameplayManager;
 	protected HUDController hudController;
 
@@ -20,7 +20,7 @@ public class InteractionController : MonoBehaviour
 	public void Init ()
 	{
 		touchController = ComponentGetter.Get<TouchController> ();
-		troopController = ComponentGetter.Get<TroopController> ();
+		statsController = ComponentGetter.Get<StatsController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 
@@ -81,7 +81,7 @@ public class InteractionController : MonoBehaviour
 
 	public void Interaction (Transform hit)
 	{
-		if (troopController.selectedSoldiers.Count == 0) return;
+		if (statsController.selectedStats.Count == 0) return;
 
 		if (hit.CompareTag ("Factory"))
 		{
@@ -91,14 +91,14 @@ public class InteractionController : MonoBehaviour
 				{
 					if (hit.GetComponent<FactoryBase> ().IsVisible)
 					{
-						troopController.AttackTroop (hit.transform.gameObject);
+						statsController.AttackTroop (hit.transform.gameObject);
 						return;
 					}
 				}
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 				else
 				{
-					troopController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
+					statsController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
 					return;
 				}
 #endif
@@ -109,14 +109,14 @@ public class InteractionController : MonoBehaviour
 				{
 					if (hit.GetComponent<FactoryBase> ().IsVisible)
 					{
-						troopController.AttackTroop (hit.transform.gameObject);
+						statsController.AttackTroop (hit.transform.gameObject);
 						return;
 					}
 				}
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 				else
 				{
-					troopController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
+					statsController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
 					return;
 				}
 #endif
@@ -130,18 +130,18 @@ public class InteractionController : MonoBehaviour
 				{
 					if (hit.GetComponent<Unit> ().IsVisible)
 					{
-						troopController.AttackTroop (hit.gameObject);
+						statsController.AttackTroop (hit.gameObject);
 						return;
 					}
 				}
 			}
 			else
 			{
-				if (!gameplayManager.IsAlly (hit.GetComponent<Unit> ()))
+				if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
 				{
 					if (hit.GetComponent<Unit> ().IsVisible)
 					{
-						troopController.AttackTroop (hit.gameObject);
+						statsController.AttackTroop (hit.gameObject);
 						return;
 					}
 				}
@@ -151,23 +151,22 @@ public class InteractionController : MonoBehaviour
 		{
 			bool feedback = false;
 
-			foreach (Unit unit in troopController.selectedSoldiers)
+			foreach (IStats stat in statsController.selectedStats)
 			{
-				if (unit.GetType() == typeof(Worker))
+				Worker worker = stat as Worker;
+				
+				if (worker == null) continue;
+
+				if (worker.IsRepairing ||
+					worker.IsBuilding)
 				{
-					Worker worker = unit as Worker;
-
-					if (worker.IsRepairing ||
-						worker.IsBuilding)
-					{
-						worker.SetMoveToFactory (null);
-					}
-
-					worker.Move (touchController.GetFinalPoint);
-					worker.SetResource(hit.GetComponent<Resource> ());
-
-					feedback = true;
+					worker.SetMoveToFactory (null);
 				}
+
+				worker.Move (touchController.GetFinalPoint);
+				worker.SetResource(hit.GetComponent<Resource> ());
+
+				feedback = true;
 			}
 
 			if (feedback)
@@ -181,27 +180,27 @@ public class InteractionController : MonoBehaviour
 		}
 		else
 		{
-			foreach (Unit unit in troopController.selectedSoldiers)
+			foreach (IStats stat in statsController.selectedStats)
 			{
-				if (unit.GetType() == typeof(Worker))
+				Worker worker = stat as Worker;
+				
+				if (worker == null) continue;
+				
+				if (!worker.hasResource)
 				{
-					Worker worker = unit as Worker;
-					if (!worker.hasResource)
+					if (worker.resource != null)
 					{
-						if (worker.resource != null)
-						{
-							worker.SetResource (null);
-						}
+						worker.SetResource (null);
 					}
-					if (worker.IsRepairing ||
-						worker.IsBuilding)
-					{
-						worker.SetMoveToFactory (null);
-					}
+				}
+				if (worker.IsRepairing ||
+					worker.IsBuilding)
+				{
+					worker.SetMoveToFactory (null);
 				}
 			}
 		}
-
-		troopController.MoveTroop (touchController.GetFinalPoint);
+		
+		statsController.MoveTroop (touchController.GetFinalPoint);
 	}
 }

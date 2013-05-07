@@ -22,11 +22,11 @@ public class ZoomHUD : MonoBehaviour
 			dcb.Init (ht, null, null, null, null,
 			(ht_dcb) => 
 			{
-				float size = touchController.zoomSettings.cameras[0].orthographicSize;
+				float size = touchController.zoomSettings.cameras[0].fieldOfView;
 				size -= zoomSpeed;
 				for (int i = 0; i != touchController.zoomSettings.cameras.Length; i++)
 				{
-					touchController.zoomSettings.cameras[i].orthographicSize = Mathf.Clamp (size, 
+					touchController.zoomSettings.cameras[i].fieldOfView = Mathf.Clamp (size, 
 																							touchController.zoomSettings.zoom.min,
 																							touchController.zoomSettings.zoom.max);
 				}
@@ -42,11 +42,11 @@ public class ZoomHUD : MonoBehaviour
 			dcb.Init (ht, null, null, null, null,
 			(ht_dcb) => 
 			{
-				float size = touchController.zoomSettings.cameras[0].orthographicSize;
+				float size = touchController.zoomSettings.cameras[0].fieldOfView;
 				size += zoomSpeed;
 				for (int i = 0; i != touchController.zoomSettings.cameras.Length; i++)
 				{
-					touchController.zoomSettings.cameras[i].orthographicSize = Mathf.Clamp (size, 
+					touchController.zoomSettings.cameras[i].fieldOfView = Mathf.Clamp (size, 
 																							touchController.zoomSettings.zoom.min,
 																							touchController.zoomSettings.zoom.max);
 				}

@@ -576,8 +576,12 @@ public class Worker : Unit
 #region Procura resource por resourceType ou System.Type
 	void SearchFactory (Resource.Type resourceType)
 	{
-		foreach (FactoryBase fb in factoryController.factorys)
+		foreach (IStats stat in statsController.myStats)
 		{
+			FactoryBase fb = stat as FactoryBase;
+			
+			if (fb == null) continue;
+			
 			if (gameplayManager.IsSameTeam (fb))
 			{
 				if (fb.receiveResource == resourceType)
@@ -590,8 +594,12 @@ public class Worker : Unit
 
 	void SearchFactory (System.Type type)
 	{
-		foreach (FactoryBase fb in factoryController.factorys)
+		foreach (IStats stat in statsController.myStats)
 		{
+			FactoryBase fb = stat as FactoryBase;
+			
+			if (fb == null) continue;
+			
 			if (gameplayManager.IsSameTeam (fb))
 			{
 				if (fb.GetType () == type)
@@ -699,15 +707,9 @@ public class Worker : Unit
 
 	// RPC
 	[RPC]
-	public override void AttackUnit (string nameUnit, int force)
+	public override void AttackStat (string name, int force)
 	{
-		base.AttackUnit (nameUnit, force);
-	}
-
-	[RPC]
-	public override void AttackFactory (string nameFactory, int force)
-	{
-		base.AttackFactory (nameFactory, force);
+		base.AttackStat (name, force);
 	}
 
 	[RPC]

@@ -23,7 +23,7 @@ public class CameraMovement : MonoBehaviour {
 		
 		foreach (Camera camera in touchController.zoomSettings.cameras)
 		{
-			camera.orthographicSize = thisCamera.orthographicSize;
+			camera.fieldOfView = thisCamera.fieldOfView;
 		}
 	}
 
@@ -44,12 +44,12 @@ public class CameraMovement : MonoBehaviour {
 		
 		if (Input.GetAxis ("Mouse ScrollWheel") != 0)
 		{
-			float size = thisCamera.orthographicSize;
+			float size = thisCamera.fieldOfView;
 			size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
-			thisCamera.orthographicSize = Mathf.Clamp (size, zoom.min, zoom.max);
+			thisCamera.fieldOfView = Mathf.Clamp (size, zoom.min, zoom.max);
 			foreach (Camera camera in touchController.zoomSettings.cameras)
 			{
-				camera.orthographicSize = thisCamera.orthographicSize;
+				camera.fieldOfView = thisCamera.fieldOfView;
 			}
 		}
 
@@ -65,7 +65,6 @@ public class CameraMovement : MonoBehaviour {
 	}
 
 	// Add Códigos na Framework
-
 	public void PanCamera (float dForward, float dRight)
     {
       Transform transform = Camera.main.transform;

@@ -117,17 +117,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		
 		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
 	}
-	
-	[RPC]
-	public void SetAllyOnPlayerRPC (string key, int value)
-	{
-		GameplayManager.mode = GameplayManager.Mode.Allies;
-		
-		Hashtable someCustomPropertiesToSet = new Hashtable();
-		someCustomPropertiesToSet.Add (key, value);
-		
-		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
-	}
 
 	public string CheckingStatus ()
 	{
@@ -280,6 +269,12 @@ public class PhotonWrapper : Photon.MonoBehaviour
 						
 						photonView.RPC ("SetAllyOnPlayerRPC", pp, "allies", numberRaffled);
 					}
+					
+					photonView.RPC ("SetGameplayMode", PhotonTargets.Others, 1);
+				}
+				else
+				{
+					photonView.RPC ("SetGameplayMode", PhotonTargets.Others, 0);
 				}
 			}
 			StopTryingEnterGame ();
@@ -294,10 +289,38 @@ public class PhotonWrapper : Photon.MonoBehaviour
             yield return 0;
         }
 		
-		yield return new WaitForSeconds (2f);
+		yield return new WaitForSeconds (3f);
 		
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;
 		Application.LoadLevel(1);
     }
+	
+	// RPCS
+	
+	[RPC]
+	public void SetAllyOnPlayerRPC (string key, int value)
+	{
+		Hashtable someCustomPropertiesToSet = new Hashtable();
+		someCustomPropertiesToSet.Add (key, value);
+		
+		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
+	}
+	
+	[RPC]
+	public void SetGameplayMode (int mode)
+	{
+		switch (mode)
+		{
+		case 0:
+			GameplayManager.mode = GameplayManager.Mode.Normal;
+			break;
+		case 1:
+			GameplayManager.mode = GameplayManager.Mode.Allies;
+			break;
+		default:
+			// do nothing
+			break;
+		}
+	}
 }

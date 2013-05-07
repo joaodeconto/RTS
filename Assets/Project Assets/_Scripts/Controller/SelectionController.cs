@@ -6,16 +6,14 @@ using Visiorama.Utils;
 public class SelectionController : MonoBehaviour
 {
 	protected TouchController touchController;
-	protected TroopController troopController;
-	protected FactoryController factoryController;
+	protected StatsController statsController;
 	protected GameplayManager gameplayManager;
 	protected InteractionController interactionController;
 
 	public void Init ()
 	{
 		touchController       = ComponentGetter.Get<TouchController>();
-		troopController       = ComponentGetter.Get<TroopController>();
-		factoryController     = ComponentGetter.Get<FactoryController>();
+		statsController       = ComponentGetter.Get<StatsController>();
 		gameplayManager       = ComponentGetter.Get<GameplayManager>();
 		interactionController = ComponentGetter.Get<InteractionController>();
 	}
@@ -27,73 +25,64 @@ public class SelectionController : MonoBehaviour
 			  (touchController.idTouch != TouchController.IdTouch.Id0))
 			return true;
 
-		factoryController.DeselectFactory ();
-		
 		if (touchController.DragOn)
 		{
-			troopController.DeselectAllSoldiers ();
+			
+			statsController.DeselectAllStats ();
 
 			Bounds b = touchController.GetTouchBounds();
 
 			//VDebug.DrawCube (b, Color.green);
 
-			//Verificando seleção de unidades
-			Unit enemySoldier = null;
-
-			troopController.DeselectAllSoldiers ();
-			
-			foreach (Unit soldier in troopController.soldiers)
+			foreach (IStats stat in statsController.myStats)
 			{
-				if (!gameplayManager.IsSameTeam (soldier))
-				{
-					if (troopController.selectedSoldiers.Count != 0 || enemySoldier != null)
-						continue;
-				}
-
-				if (soldier.collider == null)
+				Unit unit = stat as Unit;
+				
+				if (unit == null) continue;
+				
+				if (unit.collider == null)
 				{
 					Debug.Log("soldado sem colisor!");
 					Debug.Break();
 				}
 
-				if (b.Intersects (soldier.collider.bounds))
+				if (b.Intersects (unit.collider.bounds))
 				{
-					if (!gameplayManager.IsSameTeam (soldier))
-						enemySoldier = soldier;
-					else
-					{
-						troopController.SelectSoldier (soldier, true);
-					}
+					statsController.SelectStat (unit, true);
 				}
-//				else
-//					troopController.SelectSoldier (soldier, false);
 			}
 			
 			//Verificando se foram selecionadas unidades
-			if (troopController.selectedSoldiers.Count != 0)
+			if (statsController.selectedStats.Count != 0)
 			{
-				troopController.PlaySelectSound ();
+				statsController.PlaySelectSound ();
 				return true;
 			}
 
-			if (enemySoldier != null)
+			foreach (IStats stat in statsController.myStats)
 			{
-				troopController.SelectSoldier (enemySoldier, true);
-				return true;
-			}
-
-			foreach (FactoryBase factory in factoryController.factorys)
-			{
+				FactoryBase factory = stat as FactoryBase;
+				
+				if (factory == null) continue;
+				
 				if (factory.collider == null)
 				{
 					Debug.Log("estrutura sem colisor!");
 					Debug.Break();
 				}
 
-//				if (b.Intersects (factory.collider.bounds))
-				if (touchController.GetDragRect ().Contains (factory.transform.position))
+//				if (touchController.GetDragRect ().Contains (factory.transform.position))
+				if (b.Intersects (factory.collider.bounds))
 				{
-					factoryController.SelectFactory (factory);
+					statsController.SelectStat (factory, true);
+				}
+			}
+			
+			foreach (IStats stat in statsController.otherStats)
+			{
+				if (b.Intersects (stat.collider.bounds))
+				{
+					statsController.SelectStat (stat, true);
 					break;
 				}
 			}
@@ -112,25 +101,25 @@ public class SelectionController : MonoBehaviour
 				Unit selectedUnit = hit.transform.GetComponent<Unit> ();
 				if (!gameplayManager.IsSameTeam (selectedUnit)) //return true
 				{
-					troopController.DeselectAllSoldiers ();
-					troopController.SelectSoldier (selectedUnit, true);
+					statsController.DeselectAllStats ();
+					statsController.SelectStat (selectedUnit, true);
 					return true;
 				}
 				else //return true
 				{
 					if (Input.GetKey (KeyCode.LeftControl)) //return true
 					{
-						troopController.DeselectAllSoldiers ();
+						statsController.DeselectAllStats ();
 
 						Unit.UnitType category = selectedUnit.category;
-						foreach (Unit soldier in troopController.soldiers)
+						foreach (Unit soldier in statsController.myStats)
 						{
 							if (gameplayManager.IsSameTeam (soldier.team))
 							{
 								//TODO pegar somente da mesma categoria dentro da tela
 								if (soldier.category == category)
 								{
-									troopController.SelectSoldier (soldier, true);
+									statsController.SelectStat (soldier, true);
 								}
 							}
 						}
@@ -139,24 +128,24 @@ public class SelectionController : MonoBehaviour
 
 					if (Input.GetKey (KeyCode.LeftShift))
 					{
-						troopController.SoldierToogleSelection (selectedUnit);
+						statsController.ToogleSelection (selectedUnit);
 					}
 					else
 					{
-						troopController.DeselectAllSoldiers ();
-						troopController.SelectSoldier (selectedUnit, true);
-						troopController.PlaySelectSound ();
+						statsController.DeselectAllStats ();
+						statsController.SelectStat (selectedUnit, true);
+						statsController.PlaySelectSound ();
 					}
 				}
 				return true;
 			}
 
 			if(!interactionController.HaveCallbacksForTouchId(TouchController.IdTouch.Id0))
-				troopController.DeselectAllSoldiers ();
-
+				statsController.DeselectAllStats ();
+			
 			if (hit.transform.CompareTag ("Factory"))
 			{
-				factoryController.SelectFactory (hit.transform.GetComponent<FactoryBase>());
+				statsController.SelectStat (hit.transform.GetComponent<FactoryBase>(), true);
 				return true;
 			}
 		}
@@ -170,45 +159,51 @@ public class SelectionController : MonoBehaviour
 
 		if (!touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id1) //return
 		{
-			factoryController.DeselectFactory ();
-			troopController.DeselectAllSoldiers ();
+			statsController.DeselectAllStats ();
 			return true;
 		}
 		if (touchController.idTouch == TouchController.IdTouch.Id0) //return
 		{
 			if (touchController.DragOn)
 			{
-				factoryController.DeselectFactory ();
-				troopController.DeselectAllSoldiers ();
+				statsController.DeselectAllStats ();
 
 				Bounds b = touchController.GetTouchBounds();
-				Unit enemySoldier = null;
 
-				foreach (Unit soldier in troopController.soldiers)
+				foreach (IStats stat in statsController.myStats)
 				{
-					if (!gameplayManager.IsSameTeam (soldier))
+					Unit unit = stat as Unit;
+					
+					if (unit == null)
 					{
 						continue;
 					}
 
-					if (soldier.collider == null)
+					if (unit.collider == null)
 					{
 						Debug.Log("soldado sem colisor!");
 						Debug.Break();
 					}
 
-					if (b.Intersects (soldier.collider.bounds))
+					if (b.Intersects (unit.collider.bounds))
 					{
-						troopController.SelectSoldier (soldier, true);
+						statsController.SelectStat (unit, true);
 					}
-					else
-						troopController.SelectSoldier (soldier, false);
 				}
 
-				if (troopController.selectedSoldiers.Count != 0)
+				if (statsController.selectedStats.Count != 0)
 				{
-					troopController.PlaySelectSound ();
+					statsController.PlaySelectSound ();
 					return true;
+				}
+				
+				foreach (IStats stat in statsController.otherStats)
+				{
+					if (b.Intersects (stat.collider.bounds))
+					{
+						statsController.SelectStat (stat, true);
+						break;
+					}
 				}
 			}
 			else
@@ -223,10 +218,9 @@ public class SelectionController : MonoBehaviour
 						
 						if (gameplayManager.IsSameTeam (selectedUnit))
 						{
-							factoryController.DeselectFactory ();
-							troopController.DeselectAllSoldiers ();
-							troopController.SelectSoldier (selectedUnit, true);
-							troopController.PlaySelectSound ();
+							statsController.DeselectAllStats ();
+							statsController.SelectStat (selectedUnit, true);
+							statsController.PlaySelectSound ();
 							return true;
 						}
 					}
@@ -236,26 +230,24 @@ public class SelectionController : MonoBehaviour
 					
 					if (hit.transform.CompareTag ("Factory"))
 					{
-						factoryController.DeselectFactory ();
 						FactoryBase factory = hit.transform.GetComponent<FactoryBase>();
 						
 						if (gameplayManager.IsSameTeam (factory))
 						{
-							if (!troopController.WorkerCheckFactory (factory))
+							if (!statsController.WorkerCheckFactory (factory))
 							{
-								troopController.DeselectAllSoldiers ();
-								factoryController.SelectFactory (factory);
+								statsController.DeselectAllStats ();
+								statsController.SelectStat (factory, true);
 							}
 							else
-								troopController.DeselectAllSoldiers ();
+								statsController.DeselectAllStats ();
 							
 							return true;
 						}
 					}
 				}
 				
-				if (factoryController.selectedFactory == null)
-					interactionController.Interaction (touchController.GetFinalRaycastHit.transform);
+				interactionController.Interaction (touchController.GetFinalRaycastHit.transform);
 			}
 		}
 		
@@ -273,43 +265,43 @@ public class SelectionController : MonoBehaviour
 #if UNITY_EDITOR
 		if (Input.GetKeyDown (KeyCode.Keypad0))
 		{
-			troopController.CreateGroup (0);
+			statsController.CreateGroup (0);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad1))
 		{
-			troopController.CreateGroup (1);
+			statsController.CreateGroup (1);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad2))
 		{
-			troopController.CreateGroup (2);
+			statsController.CreateGroup (2);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad3))
 		{
-			troopController.CreateGroup (3);
+			statsController.CreateGroup (3);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad4))
 		{
-			troopController.CreateGroup (4);
+			statsController.CreateGroup (4);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad5))
 		{
-			troopController.CreateGroup (5);
+			statsController.CreateGroup (5);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad6))
 		{
-			troopController.CreateGroup (6);
+			statsController.CreateGroup (6);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad7))
 		{
-			troopController.CreateGroup (7);
+			statsController.CreateGroup (7);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad8))
 		{
-			troopController.CreateGroup (8);
+			statsController.CreateGroup (8);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad9))
 		{
-			troopController.CreateGroup (9);
+			statsController.CreateGroup (9);
 		}
 #endif
 #if !UNITY_IPHONE && !UNITY_ANDROID
@@ -319,43 +311,43 @@ public class SelectionController : MonoBehaviour
 		{
 			if (Input.GetKeyDown (KeyCode.Alpha0))
 			{
-				troopController.CreateGroup (0);
+				statsController.CreateGroup (0);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha1))
 			{
-				troopController.CreateGroup (1);
+				statsController.CreateGroup (1);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha2))
 			{
-				troopController.CreateGroup (2);
+				statsController.CreateGroup (2);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha3))
 			{
-				troopController.CreateGroup (3);
+				statsController.CreateGroup (3);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha4))
 			{
-				troopController.CreateGroup (4);
+				statsController.CreateGroup (4);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha5))
 			{
-				troopController.CreateGroup (5);
+				statsController.CreateGroup (5);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha6))
 			{
-				troopController.CreateGroup (6);
+				statsController.CreateGroup (6);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha7))
 			{
-				troopController.CreateGroup (7);
+				statsController.CreateGroup (7);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha8))
 			{
-				troopController.CreateGroup (8);
+				statsController.CreateGroup (8);
 			}
 			if (Input.GetKeyDown (KeyCode.Alpha9))
 			{
-				troopController.CreateGroup (9);
+				statsController.CreateGroup (9);
 			}
 		}
 		else
@@ -408,11 +400,9 @@ public class SelectionController : MonoBehaviour
 	
 	void SelectGroup (int numberOfGroup)
 	{
-		bool hasGroup = troopController.SelectGroup (numberOfGroup);
+		bool hasGroup = statsController.SelectGroup (numberOfGroup);
 
 		if (!hasGroup) return;
-		
-		factoryController.DeselectFactory ();		
 		
 //		if (Time.time - tempTime < 1f)
 //		{

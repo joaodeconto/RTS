@@ -355,6 +355,11 @@ public class HUDController : MonoBehaviour
 			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
 		else if (type.ToLower ().Equals ("unit"))
 			messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
+		else
+		{
+			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
+			messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
+		}
 	}
 
 	public void CreateFeedback (Feedbacks feedback, Transform transform, float size, Color color)

@@ -46,11 +46,22 @@ public class NetworkManager : Photon.MonoBehaviour {
 		
         if (PhotonNetwork.connected)
         {
-            photonView.RPC("SendChatMessage", PhotonTargets.All, "Player Disconnected: " + player.name);
+            photonView.RPC("SendChatMessage", PhotonNetwork.player, "Player Disconnected: " + player.name);
         }
 		
 		GameplayManager gameplayManager = Visiorama.ComponentGetter.Get<GameplayManager> ();
-		gameplayManager.RemoveAllStats ((int)player.customProperties["team"]);
+		if (GameplayManager.mode == GameplayManager.Mode.Allies)
+		{
+			gameplayManager.photonView.RPC ("Defeat", PhotonNetwork.player,
+				player.customProperties["team"], 
+				player.customProperties["allies"]);
+		}
+		else
+		{
+			gameplayManager.photonView.RPC ("Defeat", PhotonNetwork.player,
+				player.customProperties["team"], 
+				0);
+		}
     }
 
     public void OnReceivedRoomList ()

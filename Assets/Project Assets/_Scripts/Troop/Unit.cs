@@ -87,8 +87,6 @@ public class Unit : IStats
 	[System.NonSerializedAttribute]
 	public Vector3 pathfindTarget;
 
-	protected FactoryController factoryController;
-	protected TroopController troopController;
 	protected HUDController hudController;
 	protected InteractionController interactionController;
 
@@ -109,10 +107,8 @@ public class Unit : IStats
 			if (gameplayManager.IsSameTeam (team)) ControllerAnimation.cullingType = AnimationCullingType.AlwaysAnimate;
 			else ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
 		}
-			
 
-		factoryController     = ComponentGetter.Get<FactoryController> ();
-		troopController       = ComponentGetter.Get<TroopController> ();
+		statsController       = ComponentGetter.Get<StatsController> ();
 		hudController         = ComponentGetter.Get<HUDController> ();
 		interactionController = ComponentGetter.Get<InteractionController>();
 
@@ -128,8 +124,6 @@ public class Unit : IStats
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
 		if (!enabled) enabled = playerUnit;
-
-		troopController.AddSoldier (this);
 	}
 
 	void Update ()
@@ -145,7 +139,7 @@ public class Unit : IStats
 			
 			Deselect ();
 		}
-		if (!IsRemoved && !playerUnit) troopController.RemoveSoldier (this);
+		if (!IsRemoved && !playerUnit) statsController.RemoveStats (this);
 	}
 
 	public virtual void IAStep ()
@@ -459,19 +453,11 @@ public class Unit : IStats
 			
 			if (!PhotonNetwork.offlineMode)
 			{
-				if (targetAttack.GetComponent<Unit>() != null)
-				{
-					photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
-				}
-				else if (targetAttack.GetComponent<FactoryBase>() != null)
-				{
-					photonView.RPC ("AttackFactory", playerTargetAttack, targetAttack.name, force + AdditionalForce);
-				}
+				photonView.RPC ("AttackStat", playerTargetAttack, targetAttack.name, force + AdditionalForce);
 			}
 			else
 			{
-				if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
-				else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
+				targetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
 			}
 			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
@@ -488,21 +474,13 @@ public class Unit : IStats
 			{
 				if (PhotonNetwork.offlineMode)
 				{
-					if (targetAttack.GetComponent<Unit>()) targetAttack.GetComponent<Unit>().ReceiveAttack(force + AdditionalForce);
-					else if (targetAttack.GetComponent<FactoryBase>()) targetAttack.GetComponent<FactoryBase>().ReceiveAttack(force + AdditionalForce);
+					targetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
 				}
 				else
 				{
-					if (targetAttack.GetComponent<Unit>() != null)
-					{
-						photonView.RPC ("AttackUnit", playerTargetAttack, targetAttack.name, force + AdditionalForce);
-	//					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
-	//					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
-					}
-					else if (targetAttack.GetComponent<FactoryBase>() != null)
-					{
-						photonView.RPC ("AttackFactory", playerTargetAttack, targetAttack.name, force + AdditionalForce);
-					}
+					photonView.RPC ("AttackStat", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+//					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
+//					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 				}
 
 				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -514,9 +492,10 @@ public class Unit : IStats
 		}
 	}
 
-	public virtual void Select ()
+	public override void Select ()
 	{
-		Selected = true;
+		base.Select ();
+		
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
 
@@ -527,8 +506,8 @@ public class Unit : IStats
 														this.guiTextureName,
 														(hud_ht) =>
 														{
-															troopController.DeselectAllSoldiers();
-															troopController.SelectSoldier(this, true);
+															statsController.DeselectAllStats();
+															statsController.SelectStat(this, true);
 														});
 
 		Hashtable ht;
@@ -549,7 +528,7 @@ public class Unit : IStats
 															interactionController.AddCallback(TouchController.IdTouch.Id0,
 																								(position) =>
 																								{
-																									troopController.MoveTroop(position);
+																									statsController.MoveTroop(position);
 																								});
 															break;
 														case MovementAction.ActionType.Patrol:
@@ -568,9 +547,10 @@ public class Unit : IStats
 		}
 	}
 
-	public void Deselect ()
+	public override void Deselect ()
 	{
-		Selected = false;
+		base.Deselect ();
+		
 		hudController.DestroySelected (transform);
 	}
 
@@ -715,7 +695,8 @@ public class Unit : IStats
 		{
 			if (nearbyUnits[i].GetComponent<IStats> ())
 			{
-				if (nearbyUnits[i].GetComponent<IStats> ().ally != ally)
+				if (!gameplayManager.SameEntity (nearbyUnits[i].GetComponent<IStats> ().team,
+												 nearbyUnits[i].GetComponent<IStats> ().ally))
 				{
 					if (enemyFound == null)
 					{
@@ -752,7 +733,7 @@ public class Unit : IStats
 
 		unitState = UnitState.Die;
 
-		troopController.RemoveSoldier(this);
+		statsController.RemoveStats(this);
 		
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
 		
@@ -795,7 +776,7 @@ public class Unit : IStats
 	public override void SetVisible(bool isVisible)
 	{
 		ComponentGetter
-			.Get<TroopController>()
+			.Get<StatsController>()
 				.ChangeVisibility (this, isVisible);
 
 		model.SetActive(isVisible);
@@ -811,22 +792,15 @@ public class Unit : IStats
 	
 	// RPC
 	[RPC]
-	public virtual void AttackUnit (string nameUnit, int force)
+	public virtual void AttackStat (string name, int force)
 	{
-		Unit unit = troopController.FindUnit (nameUnit);
-		if (unit != null)
+		IStats stat = statsController.FindMyStat (name);
+		if (stat != null)
 		{
-			unit.ReceiveAttack (force);
+			stat.ReceiveAttack (force);
 		}
 	}
 
-	[RPC]
-	public virtual void AttackFactory (string nameFactory, int force)
-	{
-		FactoryBase factory = factoryController.FindFactory (nameFactory);
-		if (factory != null) factory.ReceiveAttack (force);
-	}
-	
 	[RPC]
 	public override void InstantiatParticleDamage ()
 	{
