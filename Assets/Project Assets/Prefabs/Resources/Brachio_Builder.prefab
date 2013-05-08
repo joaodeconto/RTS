@@ -1012,13 +1012,15 @@ MonoBehaviour:
   MaxHealth: 120
   Defense: 0
   team: 0
+  ally: 0
   fieldOfView: 0
   sizeOfSelected: 2
   rendererTeamColor: []
   movementActions: []
-  pref_Blood: {fileID: 0}
-  transformBloodReference: {fileID: 0}
+  pref_ParticleDamage: {fileID: 0}
+  transformParticleDamageReference: {fileID: 0}
   playerUnit: 1
+  category: 100
   model: {fileID: 100070}
   force: 0
   distanceView: 20
@@ -1027,9 +1029,6 @@ MonoBehaviour:
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 1
-  probePoint: {fileID: 0}
-  leftReference: {fileID: 0}
-  rightReference: {fileID: 0}
   guiTextureName: brontosaur-icon
   unitAnimation:
     Idle: {fileID: 7400010, guid: 5c5d8774ceb606f48807df12df3a96bb, type: 3}
@@ -1038,7 +1037,6 @@ MonoBehaviour:
     Attack: {fileID: 7400006, guid: 88823732f3cfd57498a7ab5aa775d416, type: 3}
     DieAnimation: {fileID: 0}
     SpecialAttack: []
-  category: 5
   ControllerAnimation: {fileID: 11100000}
 --- !u!136 &13600000
 CapsuleCollider:

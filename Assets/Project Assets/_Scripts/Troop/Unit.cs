@@ -27,16 +27,6 @@ public class Unit : IStats
 		Die    = 3
 	}
 
-	public enum UnitType
-	{
-		Worker      = 0,
-		Neanderthal = 1,
-		Raptor      = 2,
-		Triceratops = 3,
-		Rex         = 4,
-		Other       = 5
-	}
-
 	public int force;
 	public float distanceView       = 15f;
 	public float attackRange        = 5f;
@@ -48,8 +38,6 @@ public class Unit : IStats
 	public string guiTextureName;
 
 	public UnitAnimation unitAnimation;
-
-	public UnitType category;
 
 	public int AdditionalForce { get; set; }
 

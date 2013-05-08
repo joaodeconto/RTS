@@ -713,7 +713,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100022}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 87.2869415, y: 10.0012207, z: 74.7265091}
+  m_LocalPosition: {x: 84.3943787, y: 10.0012207, z: 76.9847946}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400076}
@@ -1066,6 +1066,7 @@ MonoBehaviour:
   MaxHealth: 50
   Defense: 0
   team: 0
+  ally: 0
   fieldOfView: 25
   sizeOfSelected: 2
   rendererTeamColor:
@@ -1096,6 +1097,7 @@ MonoBehaviour:
   pref_ParticleDamage: {fileID: 100000, guid: 462f032b6d15d904bb7fbeb2ee3e1e81, type: 2}
   transformParticleDamageReference: {fileID: 400042}
   playerUnit: 1
+  category: 5
   model: {fileID: 100072}
   force: 6
   distanceView: 10
@@ -1104,9 +1106,6 @@ MonoBehaviour:
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
-  probePoint: {fileID: 0}
-  leftReference: {fileID: 0}
-  rightReference: {fileID: 0}
   guiTextureName: raptor
   unitAnimation:
     Idle: {fileID: 7400006, guid: 24bb15a912cada543b679561269e4f71, type: 3}
@@ -1115,7 +1114,6 @@ MonoBehaviour:
     Attack: {fileID: 7400002, guid: 24bb15a912cada543b679561269e4f71, type: 3}
     DieAnimation: {fileID: 7400004, guid: 24bb15a912cada543b679561269e4f71, type: 3}
     SpecialAttack: []
-  category: 2
   ControllerAnimation: {fileID: 11100000}
 --- !u!114 &11400002
 MonoBehaviour:

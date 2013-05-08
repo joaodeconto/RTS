@@ -9,8 +9,6 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
-using ExitGames.Client.Photon;
-
 using UnityEngine;
 using System.Collections;
 
@@ -196,8 +194,11 @@ public class PhotonPlayer
 
         // send (sync) these new values
         Hashtable customProps = propertiesToSet.StripToStringKeys() as Hashtable;
-        PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(this.actorID, customProps, true, 0);
-		NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, this);
+        if (this.actorID > 0)
+        {
+            PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(this.actorID, customProps, true, 0);
+        }
+        NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, this);
     }
 
     /// <summary>
@@ -207,10 +208,13 @@ public class PhotonPlayer
     /// <returns>The player with matching actorID or null, if the actorID is not in use.</returns>
     public static PhotonPlayer Find(int ID)
     {
-        foreach (PhotonPlayer player in PhotonNetwork.playerList)
+        for (int index = 0; index < PhotonNetwork.playerList.Length; index++)
         {
+            PhotonPlayer player = PhotonNetwork.playerList[index];
             if (player.ID == ID)
+            {
                 return player;
+            }
         }
         return null;
     }

@@ -38,6 +38,8 @@ public class TouchController : MonoBehaviour
 
 	public bool DragOn {get; private set;}
 	public bool DisableDragOn {get; set;}
+	
+	public bool DoubleClick {get; private set;}
 
 	public Vector2 RelativePosition {get; private set;}
 
@@ -165,10 +167,12 @@ public class TouchController : MonoBehaviour
 				GetFinalRaycastHit = hit;
 				GetFinalPoint = hit.point;
 			}
+			
+			VerifyTouchID ();
+			
+			DoubleClick = GetDoubleClick (0.3f);
 
 			touchType = TouchType.Ended;
-
-			VerifyTouchID ();
 		}
 		else
 		{
@@ -184,7 +188,7 @@ public class TouchController : MonoBehaviour
 			DragOn = false;
 		}
 	}
-
+	
 	public Vector3 RelativeTwoFingersPosition
 	{
 		get
@@ -196,6 +200,44 @@ public class TouchController : MonoBehaviour
 		}
 	}
 	
+	protected float   lastTimeDoubleClick = 0f;
+	protected int 	  countClick = 0;
+	protected IdTouch lastTouch;
+	
+	protected bool GetDoubleClick (float maxTimeToReclick)
+	{
+		if (idTouch != lastTouch)
+		{
+			countClick = 0;
+			
+			lastTouch = idTouch;
+		}
+		
+		if (countClick == 0)
+		{
+			countClick++;
+			lastTimeDoubleClick = Time.time;
+		}
+		else
+		{
+			countClick = 0;
+			
+			if (Time.time - lastTimeDoubleClick < maxTimeToReclick)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public bool IsInCamera (Vector3 position)
+	{
+		Vector3 pos = mainCamera.WorldToViewportPoint (position);
+		
+		return (pos.z > 0f && pos.x > 0f && pos.x < 1f && pos.y > 0f && pos.y < 1f);
+	}
+
 	public Rect GetDragInvertedRect ()
 	{
 		return new Rect(Mathf.Min(FirstPosition.x, CurrentPosition.x),  Screen.height - Mathf.Min(FirstPosition.y, CurrentPosition.y),

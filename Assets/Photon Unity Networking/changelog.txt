@@ -1,3 +1,34 @@
+v1.20 (19 April 2013)
+Added: Features "Find Friends" and "Custom Authentication" plus (simple) demo.
+Added: PhotonNetwork.FindFriends(string[] friendsToFind) to be used with (external) friends lists. If all users set their names before connecting, they could be found using this method and it's possible to join their games/rooms.
+Added: OnUpdatedFriendList() can be implememented by your game to get a call when FindFriends() finished. Also see PhotonNetworkingMessage.OnUpdatedFriendList for info.
+Added: PhotonNetwork.Friends property which will provide the result of a FindFriends call (takes a roundtrip to the server).
+Added: FriendInfo class for the friends list (filled with names when FindFriends is called and getting updated with online status and room names when result was received).
+Internal: Authenticate now sends the playername if not null or empty. This allows tracking of players and in which room they are.
+Added: PhotonNetwork.ConnectToBestCloudServer() to connect to the region with the lowest averaged ping. PingCloudRegions MonoBehaviour is used to actually do the pinging.
+Internal: Converted all visible text to string variables in PUN Wizard class. To be translated.
+Fixed: Converter for Network.GetLastPing(player) and Network.CloseConnection(player,bool). They now get converted into their closest variants in PUN (which doesn't sync each player's ping)
+Internal: The Extension class now explicitly uses SupportClass == ExitGames.Client.Photon.SupportClass, avoiding some name clash with other libs. At the same time, that class is now the only place where the SupportClass is used.
+Internal: Renamed "utility" component DontDestroyOnLoad to TestDontDestroyOnLoad. Now filename and classname are identical again and this avoids another name clash with other projects.
+Internal: Player properties are no longer sent if the actorNumber is < 1. While in room, the actorNumber is always > 0.
+Updated: Reference doc (the PDF in this package).
+Added: PhotonNetwork.FetchServerTimestamp to have that method available
+Added: PhotonNetwork.ServerAddress to access this directly (but only as getter)
+Changed: The ServerSettings field is now public (to be able to read and show settings)
+Internal: ServerSettings file now has an enum CloudServerRegion. Used as names-list and in a few methods
+Added: PhotonNetwork.ConnectToBestCloudServer(gameVersion) to connect the region with best ping. The PingCloudRegions script automatically pings available regions once, then saves the results in the PlayerPrefs. Currently this is enabled by default.
+
+
+v1.19.3 (12. April 2013)
+Fixed: DemoSynchronization was missing a script on the CubeInterpo (game object)
+Fixed: OfflineMode for all overrides of CreateRoom() will now call both OnCreatedRoom() and OnJoinedRoom().
+Fixed: Inspector for PhotonViews now makes the Editor save every change in the component. Before, prefabs were overriding (linked) objects in the hierarchy/scene.
+Changed: PhotonViewInspector now shows if the (local) client is controlling a GameObject (via PhotonView).
+
+
+v1.19.1 (14. March 2013)
+Fixed: Calls to OnMasterClientSwitched are now re-enabled. They went missing in 1.18, it seems. If a proper player was master before, then OnMasterClientSwitched is called when a new master was picked.
+
 v1.19 (14. March 2013)
 Updated: PUN Wizard for setup and help.
 Added: Editor key shortcuts. For PUN Wizard: ALT+P. To add PhotonView: ALT+V.

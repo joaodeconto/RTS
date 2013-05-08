@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 public class PhotonConverter : Photon.MonoBehaviour
 {
     public static void RunConversion()
-    {
+    {		
         //Ask if user has made a backup.
         int option = EditorUtility.DisplayDialogComplex("Conversion", "Attempt automatic conversion from Unity Networking to Photon Unity Networking \"PUN\"?", "Yes", "No!", "Pick Script Folder");
         switch (option)
@@ -291,6 +291,14 @@ public class PhotonConverter : Photon.MonoBehaviour
 
             //Overall
             text = PregReplace(text, NOT_VAR_WITH_DOT + "Network" + NOT_VAR_WITH_DOT, "$1PhotonNetwork$2");
+			
+		
+		//Changed methods
+			 string ignoreMe = @"([A-Za-z0-9_\[\]\(\) ]+)";
+
+		 text = PregReplace(text, NOT_VAR_WITH_DOT + "PhotonNetwork.GetPing\\(" + ignoreMe+"\\);", "$1PhotonNetwork.GetPing();");
+		text = PregReplace(text, NOT_VAR_WITH_DOT + "PhotonNetwork.CloseConnection\\(" + ignoreMe+","+ignoreMe+"\\);", "$1PhotonNetwork.CloseConnection($2);");
+			
         }
 
         //General

@@ -281,7 +281,25 @@ public enum PhotonNetworkingMessage
     /// <remarks>
     /// Example: void OnPhotonPlayerPropertiesChanged(PhotonPlayer player){ ... }
     /// </remarks>
-	OnPhotonPlayerPropertiesChanged
+	OnPhotonPlayerPropertiesChanged,
+
+    /// <summary>
+    /// Called when the server sent the response to a FindFriends request and updated PhotonNetwork.Friends.
+    /// </summary>
+    /// <remarks>
+    /// Example: void OnUpdatedFriendList(){ ... }
+    /// </remarks>
+    OnUpdatedFriendList,
+    
+    /// <summary>
+    /// Called when the custom authentication failed (due to user-input, bad tokens/secrets or wrong configuration). Followed by disconnect!
+    /// Example: void OnCustomAuthenticationFailed(string debugMessage){ ... }
+    /// </summary>
+    /// <remarks>
+    /// Unless you setup a custom authentication service for your app (in the Dashboard), this won't be called!
+    /// If authentication is successful, this method is also not called but OnJoinedLobby, OnConnectedToMaster will be called (just as usual).
+    /// </remarks>
+    OnCustomAuthenticationFailed,
 }
 
 /// <summary>

@@ -6,17 +6,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-
 using ExitGames.Client.Photon;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
 
 /// <summary>
 /// The main class to use the PhotonNetwork plugin.
@@ -26,7 +23,7 @@ using Object = UnityEngine.Object;
 public static class PhotonNetwork
 {
     /// <summary>Version number of PUN. Also used in GameVersion to separate client version from each other.</summary>
-    public const string versionPUN = "1.19";
+    public const string versionPUN = "1.20";
 
     /// <summary>
     /// This Monobehaviour allows Photon to run an Update loop.
@@ -43,15 +40,20 @@ public static class PhotonNetwork
     /// The maximum amount of assigned PhotonViews PER player (or scene). See the documentation on how to raise this limitation
     /// </summary>
     public static readonly int MAX_VIEW_IDS = 1000; // VIEW & PLAYER LIMIT CAN BE EASILY CHANGED, SEE DOCS
+    
 
+    /// <summary>Name of the PhotonServerSettings file (used to load and by PhotonEditor to save new files).</summary>
     public const string serverSettingsAssetFile = "PhotonServerSettings";
 
-    /// <summary>Path to the PhotonServerSettings file.</summary>
+    /// <summary>Path to the PhotonServerSettings file (used by PhotonEditor).</summary>
     public const string serverSettingsAssetPath = "Assets/Photon Unity Networking/Resources/" + PhotonNetwork.serverSettingsAssetFile + ".asset";
 
 
     /// <summary>Serialized server settings, written by the Setup Wizard for use in ConnectUsingSettings.</summary>
-    internal static ServerSettings PhotonServerSettings = (ServerSettings)Resources.Load(PhotonNetwork.serverSettingsAssetFile, typeof(ServerSettings));
+    public static ServerSettings PhotonServerSettings = (ServerSettings)Resources.Load(PhotonNetwork.serverSettingsAssetFile, typeof(ServerSettings));
+
+    /// <summary>Currently used server address (no matter if master or game server).</summary>
+    public static string ServerAddress { get { return (networkingPeer != null) ? networkingPeer.ServerAddress : "<not connected>"; } }
 
     /// <summary>
     /// The minimum difference that a Vector2 or Vector3(e.g. a transforms rotation) needs to change before we send it via a PhotonView's OnSerialize/ObservingComponent
@@ -142,6 +144,20 @@ public static class PhotonNetwork
 
             return networkingPeer.State;
         }
+    }
+
+    /// <summary>
+    /// A user's authentication values used during connect for Custom Authentication with Photon (and a custom service/community). 
+    /// Set these before calling Connect if you want custom authentication.
+    /// </summary>
+    /// <remarks>
+    /// If authentication fails for any values, PUN will call your implementation of OnCustomAuthenticationFailed(string debugMsg).
+    /// See: PhotonNetworkingMessage.OnCustomAuthenticationFailed
+    /// </remarks>
+    public static AuthenticationValues AuthValues
+    {
+        get { return (networkingPeer != null) ? networkingPeer.AuthValues : null; } 
+        set { if (networkingPeer != null) networkingPeer.AuthValues = value; }
     }
 
     /// <summary>
@@ -251,6 +267,28 @@ public static class PhotonNetwork
 
             return networkingPeer.mOtherPlayerListCopy;
         }
+    }
+
+    /// <summary>
+    /// Read-only list of friends, their online status and the room they are in. Null until initialized by a FindFriends call.
+    /// </summary>
+    /// <remarks>
+    /// Do not modify this list!
+    /// It's internally handles by FindFriends and only useful to read the values.
+    /// The value of FriendsListAge tells you how old the data is in milliseconds.
+    /// 
+    /// Don't get this list more often than useful (> 10 seconds). In best case, keep the list you fetch really short. 
+    /// You could (e.g.) get the full list only once, then request a few updates only for friends who are online. 
+    /// After a while (e.g. 1 minute), you can get the full list again (to update online states).
+    /// </remarks>
+    public static List<FriendInfo> Friends { get; set; }
+
+    /// <summary>
+    /// Age of friend list info (in milliseconds). It's 0 until a friend list is fetched.
+    /// </summary>
+    public static int FriendsListAge
+    {
+        get { return (networkingPeer != null) ? networkingPeer.FriendsListAge : 0; }
     }
 
     /// <summary>
@@ -735,6 +773,7 @@ public static class PhotonNetwork
         // Set up a MonoBehaviour to run Photon, and hide it
         GameObject photonGO = new GameObject();
         photonMono = (PhotonHandler)photonGO.AddComponent<PhotonHandler>();
+        photonGO.AddComponent<PingCloudRegions>();
         photonGO.name = "PhotonMono";
         photonGO.hideFlags = HideFlags.HideInHierarchy;
 
@@ -769,7 +808,7 @@ public static class PhotonNetwork
             }
         }
     }
-    
+
     // FUNCTIONS
 
     /// <summary>
@@ -799,6 +838,7 @@ public static class PhotonNetwork
             Debug.LogError("Can't connect: Loading settings failed. ServerSettings asset must be in any 'Resources' folder as: " + PhotonNetwork.serverSettingsAssetFile);
             return;
         }
+
         if (PhotonServerSettings.HostType == ServerSettings.HostingOption.OfflineMode)
         {
             offlineMode = true;
@@ -820,6 +860,67 @@ public static class PhotonNetwork
     public static void Connect(string serverAddress, int port, string uniqueGameID)
     {
         Connect(serverAddress, port, uniqueGameID, "1.0");
+    }
+
+
+    /// <summary>
+    /// Connect to the PUN cloud server with the lowest ping.
+    /// Will save the result of pinging all cloud servers in PlayerPrefs. Calling this the first time can take +-2 seconds.
+    /// The ping result can be overridden via PhotonNetwork.OverrideBestCloudServer(..)
+    /// </summary>
+    /// <remarks>
+    /// This call can take up to 2 seconds if it is the first time you are using this, all Cloud servers will be pinged to check for the best region.
+    /// 
+    /// The PUN Setup Wizard stores your appID in a settings file and applies a server address/port.
+    /// This is used for Connect(string serverAddress, int port, string appID, string gameVersion).
+    /// 
+    /// To connect to the Photon Cloud, a valid AppId must be in the settings file (shown in the Photon Cloud Dashboard).
+    /// https://cloud.exitgames.com/dashboard
+    /// 
+    /// Connecting to the Photon Cloud might fail due to:
+    /// - Network issues (calls: OnFailedToConnectToPhoton())
+    /// - Invalid region (calls: OnConnectionFail() with DisconnectCause.InvalidRegion)
+    /// - Subscription CCU limit reached (calls: OnConnectionFail() with DisconnectCause.MaxCcuReached. also calls: OnPhotonMaxCccuReached())
+    /// 
+    /// More about the connection limitations:
+    /// http://doc.exitgames.com/photon-cloud
+    /// </remarks>
+    /// <param name="gameVersion">This client's version number. Users are separated from each other by gameversion (which allows you to make breaking changes).</param>
+    public static void ConnectToBestCloudServer(string gameVersion)
+    {
+        if (PhotonServerSettings == null)
+        {
+            Debug.LogError("Can't connect: Loading settings failed. ServerSettings asset must be in any 'Resources' folder as: " + PhotonNetwork.serverSettingsAssetFile);
+            return;
+        }
+
+        if (PhotonServerSettings.HostType == ServerSettings.HostingOption.OfflineMode)
+        {
+            offlineMode = true;
+            return;//
+        }
+        else
+        {
+            PingCloudRegions.ConnectToBestRegion(gameVersion);
+        }
+    }
+
+    /// <summary>
+    /// Overwrites the region that is used for  ConnectToBestCloudServer(string gameVersion)
+    /// This will overwrite the result that was gotten by pinging all cloud servers. 
+    /// </summary>
+    /// <remarks>
+    /// Use this to allow your users to specify their region manually.
+    /// </remarks>	
+    public static void OverrideBestCloudServer(CloudServerRegion region)
+    {
+        PingCloudRegions.OverrideRegion(region);
+    }
+
+    /// <summary>Pings all cloud servers again to find the one with best ping (currently).</summary>
+    public static void RefreshCloudServerRating()
+    {
+        PingCloudRegions.RefreshCloudServerRating();
     }
 
     /// <summary>
@@ -844,11 +945,12 @@ public static class PhotonNetwork
     /// <param name="gameVersion">This client's version number. Users are separated from each other by gameversion (which allows you to make breaking changes).</param>
     public static void Connect(string serverAddress, int port, string appID, string gameVersion)
     {
-        if (port <= 0)
-        {
-            Debug.LogError("Aborted Connect: invalid port: " + port);
-            return;
-        }
+        // the following check is not needed. bad port leads to exception which is handled and turned into a state callback
+        //if (port <= 0)
+        //{
+        //    Debug.LogError("Aborted Connect: invalid port: " + port);
+        //    return;
+        //}
 
         if (serverAddress.Length <= 2)
         {
@@ -919,6 +1021,38 @@ public static class PhotonNetwork
     }
 
     /// <summary>
+    /// Request the rooms and online status for a list of friends. All client must set a unique username via PlayerName property. The result is available in this.Friends.
+    /// </summary>
+    /// <remarks>
+    /// Used on Master Server to find the rooms played by a selected list of users.
+    /// The result will be mapped to LoadBalancingClient.Friends when available. 
+    /// The list is initialized by OpFindFriends on first use (before that, it is null).
+    /// 
+    /// Users identify themselves by setting a PlayerName in the LoadBalancingClient instance.
+    /// This in turn will send the name in OpAuthenticate after each connect (to master and game servers).
+    /// Note: Changing a player's name doesn't make sense when using a friend list.
+    ///  
+    /// The list of usernames must be fetched from some other source (not provided by Photon).
+    /// 
+    /// 
+    /// Internal:
+    /// The server response includes 2 arrays of info (each index matching a friend from the request):
+    /// ParameterCode.FindFriendsResponseOnlineList = bool[] of online states
+    /// ParameterCode.FindFriendsResponseRoomIdList = string[] of room names (empty string if not in a room)
+    /// </remarks>
+    /// <param name="friendsToFind">Array of friend's names (make sure they are unique).</param>
+    /// <returns>If the operation could be sent (requires connection, only one request is allowed at any time). Always false in offline mode.</returns>
+    public static bool FindFriends(string[] friendsToFind)
+    {
+        if (networkingPeer == null || isOfflineMode)
+        {
+            return false;
+        }
+
+        return networkingPeer.OpFindFriends(friendsToFind);
+    }
+
+    /// <summary>
     /// Creates a room with given name but fails if this room is existing already.
     /// </summary>
     /// <remarks>
@@ -932,28 +1066,7 @@ public static class PhotonNetwork
     /// <param name="roomName">Unique name of the room to create.</param>
     public static void CreateRoom(string roomName)
     {
-        Debug.Log("this custom props " + player.customProperties.ToStringFull());
-        if (connectionStateDetailed == PeerState.ConnectedToGameserver || connectionStateDetailed == PeerState.Joining || connectionStateDetailed == PeerState.Joined)
-        {
-            Debug.LogError("CreateRoom aborted: You are already connecting to a room!");
-        }
-        else if (room != null)
-        {
-            Debug.LogError("CreateRoom aborted: You are already in a room!");
-        }
-        else
-        {
-            if (offlineMode)
-            {
-                offlineMode_inRoom = true;
-                NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnCreatedRoom);
-                NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnJoinedRoom);
-            }
-            else
-            {
-                networkingPeer.OpCreateGame(roomName, true, true, 0, autoCleanUpPlayerObjects, null, null);
-            }
-        }
+        CreateRoom(roomName, true, true, 0, null, null);
     }
 
     /// <summary>
@@ -1007,6 +1120,7 @@ public static class PhotonNetwork
             {
                 offlineMode_inRoom = true;
                 NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnCreatedRoom);
+                NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnJoinedRoom);
             }
             else
             {
@@ -1456,6 +1570,16 @@ public static class PhotonNetwork
     public static int GetPing()
     {
         return networkingPeer.RoundTripTime;
+    }
+
+    /// <summary>Refreshes the server timestamp (async operation, takes a roundtrip).</summary>
+    /// <remarks>Can be useful if a bad connection made the timestamp unusable or imprecise.</remarks>
+    public static void FetchServerTimestamp()
+    {
+        if (networkingPeer != null)
+        {
+            networkingPeer.FetchServerTimestamp();
+        }
     }
 
     /// <summary>

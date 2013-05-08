@@ -111,7 +111,8 @@ public abstract class IStats : Photon.MonoBehaviour
 	public bool Selected { get; protected set; }
 	public bool IsNetworkInstantiate { get; protected set; }
 	public bool IsRemoved { get; protected set; }
-
+	
+	public int category;
 	internal int Group = -1;
 	
 	protected StatsController statsController;
@@ -120,7 +121,7 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	void Awake ()
 	{
-		Init();
+		Init ();
 	}
 
 	public virtual void Init ()

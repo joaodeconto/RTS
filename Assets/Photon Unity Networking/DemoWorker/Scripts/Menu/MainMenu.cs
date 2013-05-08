@@ -40,7 +40,7 @@ public class MainMenu : MonoBehaviour
         {
             if (PhotonNetwork.connectionState == ConnectionState.Connecting)
             {
-                GUILayout.Label("Connecting " + PhotonNetwork.networkingPeer.ServerAddress);
+                GUILayout.Label("Connecting " + PhotonNetwork.PhotonServerSettings.ServerAddress);
                 GUILayout.Label(Time.time.ToString());
             }
             else

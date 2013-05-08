@@ -296,8 +296,8 @@ public abstract class UIWidget : MonoBehaviour
 	{
 		if (mPanel != null && mPanel.gameObject.layer != gameObject.layer)
 		{
-			Debug.LogWarning("You can't place widgets on a layer different than the UIPanel that manages them.\n" +
-				"If you want to move widgets to a different layer, parent them to a new panel instead.", this);
+//			Debug.LogWarning("You can't place widgets on a layer different than the UIPanel that manages them.\n" +
+//				"If you want to move widgets to a different layer, parent them to a new panel instead.", this);
 			gameObject.layer = mPanel.gameObject.layer;
 		}
 	}

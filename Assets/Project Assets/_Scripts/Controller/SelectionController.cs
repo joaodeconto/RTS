@@ -9,6 +9,8 @@ public class SelectionController : MonoBehaviour
 	protected StatsController statsController;
 	protected GameplayManager gameplayManager;
 	protected InteractionController interactionController;
+	
+	protected IStats lastStatClick;
 
 	public void Init ()
 	{
@@ -24,7 +26,10 @@ public class SelectionController : MonoBehaviour
 		if ((touchController.touchType != TouchController.TouchType.Ended) ||
 			  (touchController.idTouch != TouchController.IdTouch.Id0))
 			return true;
-
+		
+		bool leftShift = Input.GetKey (KeyCode.LeftShift);
+		bool leftCtrl = Input.GetKey (KeyCode.LeftControl);
+		
 		if (touchController.DragOn)
 		{
 			
@@ -75,7 +80,14 @@ public class SelectionController : MonoBehaviour
 				if (b.Intersects (factory.collider.bounds))
 				{
 					statsController.SelectStat (factory, true);
+					break;
 				}
+			}
+			
+			if (statsController.selectedStats.Count != 0)
+			{
+				statsController.PlaySelectSound ();
+				return true;
 			}
 			
 			foreach (IStats stat in statsController.otherStats)
@@ -96,10 +108,10 @@ public class SelectionController : MonoBehaviour
 				return true;
 			}
 
-			if (hit.transform.CompareTag ("Unit")) //return true
+			if (hit.transform.CompareTag ("Unit")) // return true
 			{
 				Unit selectedUnit = hit.transform.GetComponent<Unit> ();
-				if (!gameplayManager.IsSameTeam (selectedUnit)) //return true
+				if (!gameplayManager.IsSameTeam (selectedUnit)) // return true
 				{
 					statsController.DeselectAllStats ();
 					statsController.SelectStat (selectedUnit, true);
@@ -107,45 +119,131 @@ public class SelectionController : MonoBehaviour
 				}
 				else //return true
 				{
-					if (Input.GetKey (KeyCode.LeftControl)) //return true
+					if (leftCtrl) //return true
 					{
-						statsController.DeselectAllStats ();
-
-						Unit.UnitType category = selectedUnit.category;
-						foreach (Unit soldier in statsController.myStats)
+						if (!leftShift) statsController.DeselectAllStats ();
+						
+						int category = selectedUnit.category;
+						foreach (IStats stat in statsController.myStats)
 						{
-							if (gameplayManager.IsSameTeam (soldier.team))
+							//TODO pegar somente da mesma categoria dentro da tela
+							if (stat.category == category &&
+								touchController.IsInCamera (stat.transform.position))
 							{
-								//TODO pegar somente da mesma categoria dentro da tela
-								if (soldier.category == category)
-								{
-									statsController.SelectStat (soldier, true);
-								}
+								statsController.SelectStat (stat, true);
 							}
 						}
-						return true; //selecionou unidades da mesma categoria da unidade selecionada
+						return true; // selecionou unidades da mesma categoria da unidade selecionada
 					}
 
-					if (Input.GetKey (KeyCode.LeftShift))
+					if (leftShift)
 					{
+						if (statsController.statsTypeSelected != StatsController.StatsTypeSelected.Unit)
+							statsController.DeselectAllStats ();
 						statsController.ToogleSelection (selectedUnit);
 					}
 					else
 					{
-						statsController.DeselectAllStats ();
-						statsController.SelectStat (selectedUnit, true);
-						statsController.PlaySelectSound ();
+						if (touchController.DoubleClick &&
+							selectedUnit == lastStatClick)
+						{
+							if (!leftShift) statsController.DeselectAllStats ();
+						
+							int category = selectedUnit.category;
+							foreach (IStats stat in statsController.myStats)
+							{
+								//TODO pegar somente da mesma categoria dentro da tela
+								if (stat.category == category &&
+									touchController.IsInCamera (stat.transform.position))
+								{
+									statsController.SelectStat (stat, true);
+								}
+							}
+						}
+						else
+						{
+							statsController.DeselectAllStats ();
+							statsController.SelectStat (selectedUnit, true);
+							statsController.PlaySelectSound ();
+							
+							lastStatClick = selectedUnit;
+						}
 					}
+					return true;
 				}
-				return true;
 			}
 
 			if(!interactionController.HaveCallbacksForTouchId(TouchController.IdTouch.Id0))
-				statsController.DeselectAllStats ();
+			{
+				if (!leftShift) statsController.DeselectAllStats ();
+			}
 			
 			if (hit.transform.CompareTag ("Factory"))
 			{
-				statsController.SelectStat (hit.transform.GetComponent<FactoryBase>(), true);
+				FactoryBase factorySelected = hit.transform.GetComponent<FactoryBase>();
+				if (!gameplayManager.IsSameTeam (factorySelected)) 
+				{
+					statsController.SelectStat (factorySelected, true);
+					return true;
+				}
+				else
+				{
+					if (leftCtrl) //return true
+					{
+						if (factorySelected.wasBuilt)
+						{
+							statsController.DeselectAllStats ();
+							
+							int category = factorySelected.category;
+							foreach (IStats stat in statsController.myStats)
+							{
+								FactoryBase currentFactory = stat as FactoryBase;
+								
+								if (currentFactory == null) continue;
+								
+								//TODO pegar somente da mesma categoria dentro da tela
+								if (stat.category == category &&
+									currentFactory.wasBuilt &&
+									touchController.IsInCamera (currentFactory.transform.position))
+								{
+									statsController.SelectStat (stat, true);
+								}
+							}
+							return true;
+						}
+					}
+					
+					if (touchController.DoubleClick &&
+						factorySelected == lastStatClick)
+					{
+						statsController.DeselectAllStats ();
+							
+						int category = factorySelected.category;
+						foreach (IStats stat in statsController.myStats)
+						{
+							FactoryBase currentFactory = stat as FactoryBase;
+							
+							if (currentFactory == null) continue;
+							
+							//TODO pegar somente da mesma categoria dentro da tela
+							if (stat.category == category &&
+								currentFactory.wasBuilt &&
+								touchController.IsInCamera (currentFactory.transform.position))
+							{
+								statsController.SelectStat (stat, true);
+							}
+						}
+					}
+					else
+					{
+						statsController.DeselectAllStats ();
+						statsController.SelectStat (factorySelected, true);
+						statsController.PlaySelectSound ();
+						
+						lastStatClick = factorySelected;
+					}
+					return true;
+				}
 				return true;
 			}
 		}

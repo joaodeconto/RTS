@@ -12,8 +12,6 @@
 using System;
 using System.Collections;
 
-using ExitGames.Client.Photon;
-
 /// <summary>
 /// A simplified room with just the info required to list and join, used for the room listing in the lobby.
 /// The properties are not settable (open, maxPlayers, etc).
@@ -162,7 +160,7 @@ public class RoomInfo
     /// <returns>String showing the RoomInfo.</returns>
     public override string ToString()
     {
-        return string.Format("Room: '{0}' visible: {1} open: {2} max: {3} count: {4}\ncustomProps: {5}", this.nameField, this.visibleField, this.openField, this.maxPlayersField, this.playerCount, SupportClass.DictionaryToString(this.customPropertiesField));
+        return string.Format("Room: '{0}' visible: {1} open: {2} max: {3} count: {4}\ncustomProps: {5}", this.nameField, this.visibleField, this.openField, this.maxPlayersField, this.playerCount, this.customPropertiesField.ToStringFull());
     }
 
     /// <summary>Copies "well known" properties to fields (isVisible, etc) and caches the custom properties (string-keys only) in a local hashtable.</summary>

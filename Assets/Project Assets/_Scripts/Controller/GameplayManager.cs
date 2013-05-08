@@ -205,9 +205,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			if (IsSameTeam (target))
 			{
-				Vector3 pos = Camera.mainCamera.WorldToViewportPoint (target.transform.position);
 				
-				bool isInCamera = (pos.z > 0f && pos.x > 0f && pos.x < 1f && pos.y > 0f && pos.y < 1f);
+				bool isInCamera = ComponentGetter.Get<TouchController> ().IsInCamera (target.transform.position);
 				
 				if (!isInCamera)
 				{

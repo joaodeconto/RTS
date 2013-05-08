@@ -10,12 +10,22 @@ public class StatsController : MonoBehaviour
 {
 	public const int MAX_NUMBER_OF_GROUPS = 9;
 	public const string buttonIdleWorkersName = "IdleWorkers";
+	
+	public enum StatsTypeSelected
+	{
+		None,
+		Unit,
+		Factory
+	}
 
+	public StatsTypeSelected statsTypeSelected {get; protected set;}
+	
 	public bool keepFormation {get; set;}
 
 	public Vector3 idleButtonPosition;
 	public List<IStats> myStats = new List<IStats> ();
 	public List<IStats> otherStats = new List<IStats> ();
+	
 	internal List<IStats> selectedStats;
 
 	internal Dictionary<int, List<IStats>> statsGroups = new Dictionary<int, List<IStats>>();
@@ -39,6 +49,8 @@ public class StatsController : MonoBehaviour
 		idleWorkers     = new List<Worker>();
 
 		keepFormation = false;
+		
+		statsTypeSelected = StatsTypeSelected.None;
 
 		InvokeRepeating("CheckWorkersInIdle",1.0f,1.0f);
 //		InvokeRepeating("OrganizeUnits",1.0f,1.0f);
@@ -143,7 +155,6 @@ public class StatsController : MonoBehaviour
 		
 		if (unit != null)
 		{
-			Debug.Log ("Unit: " + unit.name);
 			ComponentGetter.Get<MiniMapController> ().AddUnit (stat.transform, stat.team);
 			gameplayManager.IncrementUnit (stat.team, unit.numberOfUnits);
 		}
@@ -223,25 +234,46 @@ public class StatsController : MonoBehaviour
 
 		if (select)
 		{
+			if (stat.Selected) return;
+			
 			otherSelected = !gameplayManager.IsSameTeam (stat);
 			selectedStats.Add (stat);
-
+			
+			if (selectedStats.Count == 1 &&
+				!otherSelected)
+			{
+				Unit unit = stat as Unit;
+				
+				if (unit != null)
+				{
+					statsTypeSelected = StatsTypeSelected.Unit;
+				}
+				else
+				{
+					statsTypeSelected = StatsTypeSelected.Factory;
+				}
+			}
+			
 			stat.Select ();
 		}
 		else
 		{
+			if (!stat.Selected) return;
+			
 			selectedStats.Remove (stat);
 			
 			hudController.RemoveEnqueuedButtonInInspector(this.name, Unit.UnitGroupQueueName);
 			
 			stat.Deselect ();
+			
+			if (selectedStats.Count == 0) statsTypeSelected = StatsTypeSelected.None;
 		}
 	}
 
 	public void DeselectAllStats ()
 	{
 		if (selectedStats.Count == 0) return;
-
+		
 		foreach (IStats stat in selectedStats)
 		{
 			if (stat != null)
@@ -249,10 +281,12 @@ public class StatsController : MonoBehaviour
 				stat.Deselect ();
 			}
 		}
-
+		
 		hudController.DestroyInspector ("all");
 
 		selectedStats.Clear ();
+		
+		statsTypeSelected = StatsTypeSelected.None;
 	}
 
 	public void CreateGroup (int numberGroup)
@@ -265,9 +299,9 @@ public class StatsController : MonoBehaviour
 				{
 					if (group.Key == numberGroup)
 					{
-						foreach (Unit soldier in group.Value)
+						foreach (IStats stat in group.Value)
 						{
-							soldier.Group = -1;
+							stat.Group = -1;
 						}
 						group.Value.Clear ();
 						break;
@@ -280,24 +314,24 @@ public class StatsController : MonoBehaviour
 				statsGroups.Add (numberGroup, new List<IStats>());
 			}
 
-			foreach (Unit soldier in selectedStats)
+			foreach (IStats stat in selectedStats)
 			{
-				if (soldier.Group == numberGroup)
+				if (stat.Group == numberGroup)
 					continue;
 
-				if (soldier.Group != -1)
+				if (stat.Group != -1)
 				{
 					foreach (int key in statsGroups.Keys)
 					{
-						if (key == soldier.Group)
+						if (key == stat.Group)
 						{
-							statsGroups[key].Remove (soldier);
+							statsGroups[key].Remove (stat);
 						}
 						break;
 					}
 				}
-				soldier.Group = numberGroup;
-				statsGroups[numberGroup].Add (soldier);
+				stat.Group = numberGroup;
+				statsGroups[numberGroup].Add (stat);
 			}
 		}
 		else VDebug.LogError ("Hasn't unit selected.");
@@ -313,9 +347,9 @@ public class StatsController : MonoBehaviour
 			{
 				DeselectAllStats ();
 
-				foreach (Unit soldier in group.Value)
+				foreach (IStats stat in group.Value)
 				{
-					SelectStat (soldier, true);
+					SelectStat (stat, true);
 				}
 				return true;
 				break;
@@ -347,11 +381,11 @@ public class StatsController : MonoBehaviour
 	{
 		bool feedback = false;
 
-		foreach (Unit unit in selectedStats)
+		foreach (IStats stat in selectedStats)
 		{
-			if (unit.GetType() == typeof(Worker))
+			if (stat.GetType() == typeof(Worker))
 			{
-				Worker w = unit as Worker;
+				Worker w = stat as Worker;
 
 				if (!factory.wasBuilt)
 				{

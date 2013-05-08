@@ -9,7 +9,7 @@ public class PunStartup : MonoBehaviour
     private static bool runOnce;
 
     // paths to demo scenes, to be included in a build. relative to "Assets/Photon Unity Networking/"
-    private static string[] demoPaths = { "DemoHub/DemoHub-Scene.unity", "DemoBoxes/DemoBoxes-Scene.unity", "DemoWorker/DemoWorker-Scene.unity", "MarcoPolo-Tutorial/MarcoPolo-Scene.unity", "DemoSynchronization/DemoSynchronization-Scene.unity" };
+    private static string[] demoPaths = { "DemoHub/DemoHub-Scene.unity", "DemoBoxes/DemoBoxes-Scene.unity", "DemoWorker/DemoWorker-Scene.unity", "MarcoPolo-Tutorial/MarcoPolo-Scene.unity", "DemoSynchronization/DemoSynchronization-Scene.unity", "DemoFriendsAndCustomAuth/DemoFriends-Scene.unity" };
 
     static PunStartup()
     {

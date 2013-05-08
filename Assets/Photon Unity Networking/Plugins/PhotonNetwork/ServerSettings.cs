@@ -2,6 +2,12 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+
+/// <summary>Currently available cloud regions as enum.</summary>
+/// <remarks>Must match order in CloudServerRegionNames and CloudServerRegionPrefixes.</remarks>
+public enum CloudServerRegion { EU, US, Asia, Japan };
+
+
 /// <summary>
 /// Collection of connection-relevant settings, used internally by PhotonNetwork.ConnectUsingSettings.
 /// </summary>
@@ -11,8 +17,8 @@ public class ServerSettings : ScriptableObject
     public static string DefaultCloudServerUrl = "app-eu.exitgamescloud.com";
     
     // per region name and server-prefix
-    public static string[] CloudServerRegionNames = new string[] { "EU", "US", "Asia", "Japan" };
-    public static string[] CloudServerRegionPrefixes = new string[] {"app-eu", "app-us", "app-asia", "app-jp"};
+    // must match order in CloudServerRegion enum!
+    public static readonly string[] CloudServerRegionPrefixes = new string[] {"app-eu", "app-us", "app-asia", "app-jp"};
 
     public static string DefaultServerAddress = "127.0.0.1";
     public static int DefaultMasterPort = 5055;  // default port for master server
@@ -47,6 +53,11 @@ public class ServerSettings : ScriptableObject
     public static string FindServerAddressForRegion(int regionIndex)
     {
         return ServerSettings.DefaultCloudServerUrl.Replace("app-eu", ServerSettings.CloudServerRegionPrefixes[regionIndex]);
+    }
+
+    public static string FindServerAddressForRegion(CloudServerRegion regionIndex)
+    {
+        return ServerSettings.DefaultCloudServerUrl.Replace("app-eu", ServerSettings.CloudServerRegionPrefixes[(int)regionIndex]);
     }
 
     public void UseCloud(string cloudAppid, int regionIndex)

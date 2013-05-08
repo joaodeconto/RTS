@@ -520,7 +520,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: -.00517586619, y: .00699627539, z: .00066018186, w: .999961972}
-  m_LocalPosition: {x: 67.2269058, y: 10.0012207, z: 71.9656219}
+  m_LocalPosition: {x: 85.9398499, y: 10.0012207, z: 78.4298401}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400066}
@@ -934,6 +934,7 @@ MonoBehaviour:
   MaxHealth: 100
   Defense: 0
   team: 0
+  ally: 0
   fieldOfView: 15
   sizeOfSelected: 3
   rendererTeamColor:
@@ -964,6 +965,7 @@ MonoBehaviour:
   pref_ParticleDamage: {fileID: 100000, guid: 462f032b6d15d904bb7fbeb2ee3e1e81, type: 2}
   transformParticleDamageReference: {fileID: 400000}
   playerUnit: 1
+  category: 8
   model: {fileID: 100062}
   force: 8
   distanceView: 10
@@ -972,9 +974,6 @@ MonoBehaviour:
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 3
-  probePoint: {fileID: 0}
-  leftReference: {fileID: 0}
-  rightReference: {fileID: 0}
   guiTextureName: triceratops
   unitAnimation:
     Idle: {fileID: 7400008, guid: c8626672facb11c43b2b5a4ee1a4c476, type: 3}
@@ -983,7 +982,6 @@ MonoBehaviour:
     Attack: {fileID: 7400004, guid: c8626672facb11c43b2b5a4ee1a4c476, type: 3}
     DieAnimation: {fileID: 7400006, guid: c8626672facb11c43b2b5a4ee1a4c476, type: 3}
     SpecialAttack: []
-  category: 3
   ControllerAnimation: {fileID: 11100000}
 --- !u!114 &11400002
 MonoBehaviour:
@@ -1040,7 +1038,7 @@ SkinnedMeshRenderer:
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
   - {fileID: 2100000, guid: 04ea912f1f4cb3d4bbc81bbd2b7cea1a, type: 2}
-  - {fileID: 2100000, guid: 5d1240fddbf83fa45b6e63214f06bf92, type: 2}
+  - {fileID: 2100000, guid: b9efa37318ca13d429bcaef734aac560, type: 2}
   - {fileID: 2100000, guid: c8e46a484e9c03e428af9380cba09424, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}

@@ -122,7 +122,7 @@ public class FactoryBase : IStats
 
 		enabled = playerUnit;
 		
-		Invoke ("SendMessageInstance", 0.3f);
+		Invoke ("SendMessageInstance", 0.1f);
 	}
 	
 	void SendMessageInstance ()
@@ -411,13 +411,48 @@ public class FactoryBase : IStats
 														uf.unit.guiTextureName,
 														(ht_hud) =>
 														{
-															FactoryBase factory     = this;
+															List<FactoryBase> factorys = new List<FactoryBase> ();
 															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
-
-															if (!factory.OverLimitCreateUnit)
-																factory.EnqueueUnitToCreate (unitFactory.unit);
+															
+															foreach (IStats stat in statsController.selectedStats)
+															{
+																FactoryBase factory = stat as FactoryBase;
+																
+																if (factory == null) continue;
+																
+																factorys.Add (factory);
+															}
+					
+															int i = 0, factoryChoose = 0, numberToCreate = -1;
+															
+															foreach (FactoryBase factory in factorys)
+															{
+																if (numberToCreate == -1)
+																{
+																	numberToCreate = factory.listedToCreate.Count;
+																	factoryChoose = i;
+																}
+																else if (numberToCreate > factory.listedToCreate.Count)
+																{
+																	numberToCreate = factory.listedToCreate.Count;
+																	factoryChoose = i;
+																}
+																i++;
+															}
+					
+															if (!factorys[factoryChoose].OverLimitCreateUnit)
+																factorys[factoryChoose].EnqueueUnitToCreate (unitFactory.unit);
 															else
 																eventManager.AddEvent("reach enqueued units");
+					
+															
+//															FactoryBase factory     = this;
+//															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
+//
+//															if (!factory.OverLimitCreateUnit)
+//																factory.EnqueueUnitToCreate (unitFactory.unit);
+//															else
+//																eventManager.AddEvent("reach enqueued units");
 														});
 			}
 
@@ -425,7 +460,7 @@ public class FactoryBase : IStats
 			{
 				UnitFactory unitFactory = listedToCreate[i];
 
-				Hashtable ht = new Hashtable();
+				Hashtable ht = new Hashtable ();
 				ht["unitFactory"] = unitFactory;
 				ht["name"] = "button-" + Time.time;
 

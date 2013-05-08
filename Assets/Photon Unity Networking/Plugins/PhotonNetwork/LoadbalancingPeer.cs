@@ -80,14 +80,19 @@ internal class LoadbalancingPeer : PhotonPeer
 
         Dictionary<byte, object> op = new Dictionary<byte, object>();
         op[ParameterCode.GameProperties] = gameProperties;
-        op[ParameterCode.PlayerProperties] = customPlayerProperties;
         op[ParameterCode.Broadcast] = true;
+
+        if (customPlayerProperties != null)
+        {
+            op[ParameterCode.PlayerProperties] = customPlayerProperties;
+        }
 
         if (!string.IsNullOrEmpty(gameID))
         {
             op[ParameterCode.RoomName] = gameID;
         }
 
+        // server's default is 'false', so we actually only need to send this when 'true'
         if (autoCleanUp)
         {
             op[ParameterCode.CleanupCacheOnLeave] = autoCleanUp;
@@ -171,6 +176,31 @@ internal class LoadbalancingPeer : PhotonPeer
         return this.OpCustom(OperationCode.JoinRandomGame, opParameters, true);
     }
 
+    /// <summary>
+    /// Request the rooms and online status for a list of friends (each client must set a unique username via OpAuthenticate).
+    /// </summary>
+    /// <remarks>
+    /// Used on Master Server to find the rooms played by a selected list of users.
+    /// Users identify themselves by using OpAuthenticate with a unique username.
+    /// The list of usernames must be fetched from some other source (not provided by Photon).
+    /// 
+    /// The server response includes 2 arrays of info (each index matching a friend from the request):
+    /// ParameterCode.FindFriendsResponseOnlineList = bool[] of online states
+    /// ParameterCode.FindFriendsResponseRoomIdList = string[] of room names (empty string if not in a room)
+    /// </remarks>
+    /// <param name="friendsToFind">Array of friend's names (make sure they are unique).</param>
+    /// <returns>If the operation could be sent (requires connection).</returns>
+    public virtual bool OpFindFriends(string[] friendsToFind)
+    {
+        Dictionary<byte, object> opParameters = new Dictionary<byte, object>();
+        if (friendsToFind != null && friendsToFind.Length > 0)
+        {
+            opParameters[ParameterCode.FindFriendsRequestList] = friendsToFind;
+        }
+
+        return this.OpCustom(OperationCode.FindFriends, opParameters, true);
+    }
+
     public bool OpSetCustomPropertiesOfActor(int actorNr, Hashtable actorProperties, bool broadcast, byte channelId)
     {
         return this.OpSetPropertiesOfActor(actorNr, actorProperties.StripToStringKeys(), broadcast, channelId);
@@ -181,6 +211,15 @@ internal class LoadbalancingPeer : PhotonPeer
         if (this.DebugOut >= DebugLevel.INFO)
         {
             this.Listener.DebugReturn(DebugLevel.INFO, "OpSetPropertiesOfActor()");
+        }
+
+        if (actorNr <= 0 || actorProperties == null)
+        {
+            if (this.DebugOut >= DebugLevel.INFO)
+            {
+                this.Listener.DebugReturn(DebugLevel.INFO, "OpSetPropertiesOfActor not sent. ActorNr must be > 0 and actorProperties != null.");
+            }
+            return false;
         }
             
         Dictionary<byte, object> opParameters = new Dictionary<byte, object>();
@@ -225,15 +264,57 @@ internal class LoadbalancingPeer : PhotonPeer
 
     /// <summary>
     /// Sends this app's appId and appVersion to identify this application server side.
+    /// This is an async request which triggers a OnOperationResponse() call.
     /// </summary>
     /// <remarks>
-    /// This operation makes use of encryption, if it's established beforehand.
+    /// This operation makes use of encryption, if that is established before.
     /// See: EstablishEncryption(). Check encryption with IsEncryptionAvailable.
+    /// This operation is allowed only once per connection (multiple calls will have ErrorCode != Ok).
     /// </remarks>
-    /// <param name="appId"></param>
-    /// <param name="appVersion"></param>
+    /// <param name="appId">Your application's name or ID to authenticate. This is assigned by Photon Cloud (webpage).</param>
+    /// <param name="appVersion">The client's version (clients with differing client appVersions are separated and players don't meet).</param>
     /// <returns>If the operation could be sent (has to be connected).</returns>
+    [Obsolete("Use the other overload now.")]
     public virtual bool OpAuthenticate(string appId, string appVersion)
+    {
+        return OpAuthenticate(appId, appVersion, null, null);
+    }
+
+    /// <summary>
+    /// Sends this app's appId and appVersion to identify this application server side.
+    /// This is an async request which triggers a OnOperationResponse() call.
+    /// </summary>
+    /// <remarks>
+    /// This operation makes use of encryption, if that is established before.
+    /// See: EstablishEncryption(). Check encryption with IsEncryptionAvailable.
+    /// This operation is allowed only once per connection (multiple calls will have ErrorCode != Ok).
+    /// </remarks>
+    /// <param name="appId">Your application's name or ID to authenticate. This is assigned by Photon Cloud (webpage).</param>
+    /// <param name="appVersion">The client's version (clients with differing client appVersions are separated and players don't meet).</param>
+    /// <param name="userId"></param>
+    /// <returns>If the operation could be sent (has to be connected).</returns>
+    [Obsolete("Use the other overload now.")]
+    public virtual bool OpAuthenticate(string appId, string appVersion, string userId)
+    { 
+        return this.OpAuthenticate(appId, appVersion, userId, null);
+    }
+
+
+    /// <summary>
+    /// Sends this app's appId and appVersion to identify this application server side.
+    /// This is an async request which triggers a OnOperationResponse() call.
+    /// </summary>
+    /// <remarks>
+    /// This operation makes use of encryption, if that is established before.
+    /// See: EstablishEncryption(). Check encryption with IsEncryptionAvailable.
+    /// This operation is allowed only once per connection (multiple calls will have ErrorCode != Ok).
+    /// </remarks>
+    /// <param name="appId">Your application's name or ID to authenticate. This is assigned by Photon Cloud (webpage).</param>
+    /// <param name="appVersion">The client's version (clients with differing client appVersions are separated and players don't meet).</param>
+    /// <param name="userId"></param>
+    /// <param name="authValues"></param>
+    /// <returns>If the operation could be sent (has to be connected).</returns>
+    public virtual bool OpAuthenticate(string appId, string appVersion, string userId, AuthenticationValues authValues)
     {
         if (this.DebugOut >= DebugLevel.INFO)
         {
@@ -244,8 +325,33 @@ internal class LoadbalancingPeer : PhotonPeer
         opParameters[ParameterCode.AppVersion] = appVersion;
         opParameters[ParameterCode.ApplicationId] = appId;
 
+        if (!string.IsNullOrEmpty(userId))
+        {
+            opParameters[ParameterCode.UserId] = userId;
+        }
+
+        if (authValues != null && authValues.AuthType != CustomAuthenticationType.None)
+        {
+            if (!this.IsEncryptionAvailable)
+            {
+                this.Listener.DebugReturn(DebugLevel.ERROR, "OpAuthenticate() failed. When you want Custom Authentication encryption is mandatory.");
+                return false;
+            }
+
+            opParameters[ParameterCode.ClientAuthenticationType] = (byte)authValues.AuthType;
+            if (!string.IsNullOrEmpty(authValues.Secret))
+            {
+                opParameters[ParameterCode.Secret] = authValues.Secret;
+            }
+            else
+            {
+                opParameters[ParameterCode.ClientAuthenticationParams] = authValues.AuthParameters;
+            }
+        }
+
         return this.OpCustom(OperationCode.Authenticate, opParameters, true, (byte)0, this.IsEncryptionAvailable);
     }
+
 
     /// <summary>
     /// Operation to handle this client's interest groups (for events in room).
@@ -297,7 +403,10 @@ internal class LoadbalancingPeer : PhotonPeer
         Dictionary<byte, object> opParameters = new Dictionary<byte, object>();
         opParameters[(byte)LiteOpKey.Data] = customEventContent;
         opParameters[(byte)LiteOpKey.Code] = (byte)eventCode;
-        if(interestGroup != (byte)0) opParameters[(byte)LiteOpKey.Group] = (byte)interestGroup;
+        if (interestGroup != (byte)0)
+        {
+            opParameters[(byte)LiteOpKey.Group] = (byte)interestGroup;
+        }
 
         return this.OpCustom((byte)LiteOpCode.RaiseEvent, opParameters, sendReliable, channelId);
     }
@@ -482,6 +591,11 @@ public class ErrorCode
     /// Self-hosted Photon servers with a CCU limited license won't let a client connect at all.
     /// </remarks>
     public const int InvalidRegion = 0x7FFF - 11;
+
+    /// <summary>
+    /// (32755) Custom Authentication of the user failed due to setup reasons (see Cloud Dashboard) or the provided user data (like username or token). Check error message for details.
+    /// </summary>
+    public const int CustomAuthenticationFailed = 0x7FFF - 12;
 }
 
 
@@ -581,12 +695,8 @@ public class ParameterCode
     public const byte Secret = 221;
     /// <summary>(220) Version of your application</summary>
     public const byte AppVersion = 220;
-    /// <summary>(210) Internally used in case of hosting by Azure</summary>
-    public const byte AzureNodeInfo = 210;	// only used within events, so use: EventCode.AzureNodeInfo
-    /// <summary>(209) Internally used in case of hosting by Azure</summary>
-    public const byte AzureLocalNodeId = 209;
-    /// <summary>(208) Internally used in case of hosting by Azure</summary>
-    public const byte AzureMasterNodeId = 208;
+
+    // Codes for Azure / TCP Proxy are removed
 
     /// <summary>(255) Code for the gameId/roomName (a unique name per room). Used in OpJoin and similar.</summary>
     public const byte RoomName = (byte)LiteOpKey.GameId;
@@ -627,6 +737,21 @@ public class ParameterCode
     public const byte Remove = LiteOpKey.Remove;
     /// <summary>(238) The "Add" operation-parameter can be used to add something to some list or set. E.g. add groups to player's interest groups.</summary>
     public const byte Add = LiteOpKey.Add;
+
+    /// <summary>(217) This key's (byte) value defines the target custom authentication type/service the client connects with. Used in OpAuthenticate</summary>
+    public const byte ClientAuthenticationType = 217;
+
+    /// <summary>(216) This key's (string) value provides parameters sent to the custom authentication type/service the client connects with. Used in OpAuthenticate</summary>
+    public const byte ClientAuthenticationParams = 216;
+
+    /// <summary>(1) Used in Op FindFriends request. Value must be string[] of friends to look up.</summary>
+    public const byte FindFriendsRequestList = (byte)1;
+
+    /// <summary>(1) Used in Op FindFriends response. Contains bool[] list of online states (false if not online).</summary>
+    public const byte FindFriendsResponseOnlineList = (byte)1;
+
+    /// <summary>(2) Used in Op FindFriends response. Contains string[] of room names ("" where not known or no room joined).</summary>
+    public const byte FindFriendsResponseRoomIdList = (byte)2;
 }
 
 /// <summary>
@@ -661,6 +786,9 @@ public class OperationCode
 
     /// <summary>(248) Operation code to change interest groups in Rooms (Lite application and extending ones).</summary>
     public const byte ChangeGroups = (byte)LiteOpCode.ChangeGroups;
+
+    /// <summary>(222) Request the rooms and online status for a list of friends (by name, which should be unique).</summary>
+    public const byte FindFriends = 222;
 }
 
 /// <summary>
@@ -675,4 +803,48 @@ public enum MatchmakingMode : byte
     SerialMatching = 1,
     /// <summary>Joins a (fully) random room. Expected properties must match but aside from this, any available room might be selected.</summary>
     RandomMatching = 2
+}
+
+/// <summary>
+/// Options for optional "Custom Authentication" services used with Photon. Used by OpAuthenticate after connecting to Photon.
+/// </summary>
+public enum CustomAuthenticationType : byte
+{
+    /// <summary>Use a custom authentification service. Currently the only implemented option.</summary>
+    Custom = 0,
+
+    /// <summary>Disables custom authentification. Same as not providing any AuthenticationValues for connect (more precisely for: OpAuthenticate).</summary>
+    None = byte.MaxValue
+}
+
+/// <summary>
+/// Container for "Custom Authentication" values in Photon (default: user and token). Set AuthParameters before connecting - all else is handled.
+/// </summary>
+/// <remarks>
+/// Custom Authentication lets you verify end-users by some kind of login or token. It sends those
+/// values to Photon which will verify them before granting access or disconnecting the client.
+/// 
+/// The Photon Cloud Dashboard will let you enable this feature and set important server values for it.
+/// https://cloud.exitgames.com/dashboard
+/// </remarks>
+public class AuthenticationValues
+{
+    /// <summary>The type of custom authentication provider that should be used. Currently only "Custom" or "None" (turns this off).</summary>
+    public CustomAuthenticationType AuthType = CustomAuthenticationType.Custom;
+
+    /// <summary>This string must contain any (http get) parameters expected by the used authentication service. By default, username and token.</summary>
+    /// <remarks>Standard http get parameters are used here and passed on to the service that's defined in the server (Photon Cloud Dashboard).</remarks>
+    public string AuthParameters;
+
+    /// <summary>After initial authentication, Photon provides a secret for this client / user, which is subsequently used as (cached) validation.</summary>
+    public string Secret;
+
+    /// <summary>Creates the default parameter string from a user and token value, escaping both. Alternatively set AuthParameters yourself.</summary>
+    /// <remarks>The default parameter string is: "username={user}&token={token}"</remarks>
+    /// <param name="user">Name or other end-user ID used in custom authentication service.</param>
+    /// <param name="token">Token provided by authentication service to be used on initial "login" to Photon.</param>
+    public virtual void SetAuthParameters(string user, string token)
+    {
+        this.AuthParameters = "username=" + System.Uri.EscapeDataString(user) + "&token=" + System.Uri.EscapeDataString(token);
+    }
 }
