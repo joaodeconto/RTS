@@ -293,7 +293,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;
-		if (GameplayManager.mode = GameplayManager.Mode.Normal)
+		if (GameplayManager.mode == GameplayManager.Mode.Normal)
 			Application.LoadLevel(1);
 		else
 			Application.LoadLevel(2);
