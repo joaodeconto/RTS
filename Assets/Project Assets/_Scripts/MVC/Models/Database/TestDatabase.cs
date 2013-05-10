@@ -15,14 +15,14 @@ public class TestDatabase : MonoBehaviour
 		public bool TestUpdate;
 		public bool TestDelete;
 
-		public int idPlayer;
-		public string szName;
-		public string idFacebookAccount;
-		public string szPassword;
-		public string tmTimePlayed;
-		public DateTime dtAccountCreated;
-		public DateTime dtAccountUpdated;
-		public int idCountry;
+		public int IdPlayer;
+		public string SzName;
+		public string IdFacebookAccount;
+		public string SzPassword;
+		public string TmTimePlayed;
+		public DateTime DtAccountCreated;
+		public DateTime DtAccountUpdated;
+		public int IdCountry;
 	}
 
 	public TestPlayer testPlayer;
@@ -35,14 +35,14 @@ public class TestDatabase : MonoBehaviour
 		Database db = ComponentGetter.Get <Database> ();
 		dbPlayer = new DB.Player ();
 
-		dbPlayer.idPlayer          = testPlayer.idPlayer.ToString ();
-		dbPlayer.szName            = testPlayer.szName;
-		dbPlayer.idFacebookAccount = testPlayer.idFacebookAccount;
-		dbPlayer.szPassword        = testPlayer.szPassword;
-		dbPlayer.tmTimePlayed      = testPlayer.tmTimePlayed;
-		dbPlayer.dtAccountCreated  = System.DateTime.Now.ToString ("yyyy-MM-dd HH-mm-ss");//0000-00-00 00:00:00
-		dbPlayer.dtAccountUpdated  = System.DateTime.Now.ToString ("yyyy-MM-dd HH-mm-ss");
-		dbPlayer.idCountry         = testPlayer.idCountry.ToString ();
+		dbPlayer.IdPlayer          = testPlayer.IdPlayer.ToString ();
+		dbPlayer.SzName            = testPlayer.SzName;
+		dbPlayer.IdFacebookAccount = testPlayer.IdFacebookAccount;
+		dbPlayer.SzPassword        = testPlayer.SzPassword;
+		dbPlayer.TmTimePlayed      = testPlayer.TmTimePlayed;
+		dbPlayer.DtAccountCreated  = System.DateTime.Now.ToString ("yyyy-MM-dd HH-mm-ss");//0000-00-00 00:00:00
+		dbPlayer.DtAccountUpdated  = System.DateTime.Now.ToString ("yyyy-MM-dd HH-mm-ss");
+		dbPlayer.IdCountry         = testPlayer.IdCountry.ToString ();
 
 		if (testPlayer.TestCreate)
 			db.Create (dbPlayer, CheckPlayer);
@@ -69,11 +69,11 @@ public class TestDatabase : MonoBehaviour
 		}
 		else
 		{
-			testPlayer.idPlayer		      = dbPlayer.idPlayer != "null" ? int.Parse (dbPlayer.idPlayer) : 0;
-			testPlayer.szName             = dbPlayer.szName;
-			testPlayer.idFacebookAccount  = dbPlayer.idFacebookAccount;
-			testPlayer.szPassword         = dbPlayer.szPassword;
-			testPlayer.tmTimePlayed       = dbPlayer.tmTimePlayed;
+			testPlayer.IdPlayer		      = dbPlayer.IdPlayer != "null" ? int.Parse (dbPlayer.IdPlayer) : 0;
+			testPlayer.SzName             = dbPlayer.SzName;
+			testPlayer.IdFacebookAccount  = dbPlayer.IdFacebookAccount;
+			testPlayer.SzPassword         = dbPlayer.SzPassword;
+			testPlayer.TmTimePlayed       = dbPlayer.TmTimePlayed;
 			//testPlayer.dtAccountCreated = dbPlayer.dtAccountCreated;
 			//testPlayer.dtAccountUpdated = dbPlayer.dtAccountUpdated;
 			//testPlayer.idCountry		  = (dbPlayer.idCountry != "null") ? int.Parse(dbPlayer.idCountry) : 0;

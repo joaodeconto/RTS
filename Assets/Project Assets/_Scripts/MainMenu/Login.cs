@@ -6,7 +6,8 @@ using Visiorama;
 public class Login : IController
 {
 	public bool UseRealLogin = true;
-	
+	public Player player;
+
 	public void Start ()
 	{
 		Init ();
@@ -43,6 +44,7 @@ public class Login : IController
 	{
 		string username = (string)ht["username"];
 		string password = (string)ht["password"];
+		string idFacebook = "";
 
 		if (!UseRealLogin)
 		{
@@ -50,18 +52,12 @@ public class Login : IController
 			return;
 		}
 
-		Database db        = ComponentGetter.Get<Database>();
-		DB.Player dbPlayer = new DB.Player () { szName = username,
-												szPassword = password };
-
-		db.Read (dbPlayer,
-		(response) =>
+		ComponentGetter.Get<DAOPlayer>().GetPlayer (username, password, idFacebook,
+		(player, message) =>
 		{
-			dbPlayer = response as DB.Player;
+			this.player = player;
 
-			if (dbPlayer == null ||
-				string.IsNullOrEmpty(dbPlayer.szName) ||
-				string.IsNullOrEmpty(dbPlayer.szPassword))
+			if (player == null)
 			{
 				LoginIndex index = GetView <LoginIndex> ("Index");
 				index.ShowErrorMessage ();
@@ -75,7 +71,7 @@ public class Login : IController
 			}
 		});
 	}
-	
+
 	public void EnterInternalMainMenu (string username)
 	{
 		HideAllViews ();
@@ -83,30 +79,26 @@ public class Login : IController
 		InternalMainMenu imm = ComponentGetter.Get <InternalMainMenu> ();
 		imm.Init (username);
 	}
-	
+
 	public void DoNewAccount (Hashtable ht)
 	{
 		Debug.Log("DoNewAccount");
 
 		string username = (string)ht["username"];
 		string password = (string)ht["password"];
+		string idFacebook = "";
 		string email    = (string)ht["email"];
 
-		Database db        = ComponentGetter.Get<Database>();
-		DB.Player dbPlayer = new DB.Player () { szName     = username,
-												szPassword = password,
-												szEmail    = email};
-		db.Create (dbPlayer,
-		(response) =>
+		ComponentGetter.Get<DAOPlayer>().CreatePlayer (username, password, idFacebook, email,
+		(player, message) =>
 		{
-			dbPlayer = response as DB.Player;
-			if (dbPlayer == null)
+			if (player == null)
 			{
-				Debug.Log ("Probrema na criação do prayer");
+				Debug.Log ("Problema na criação do player");
 			}
 			else
 			{
-				Debug.Log ("Novo Player");
+				Debug.Log ("Novo DB.Player");
 
 				Index ();
 			}

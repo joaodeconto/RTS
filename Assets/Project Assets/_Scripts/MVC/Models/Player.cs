@@ -7,28 +7,18 @@ using Newtonsoft.Json;
 
 public class Player
 {
-    [JsonProperty(PropertyName = "id_player",Required=Required.Default)]
-	public int idPlayer;
-    [JsonProperty(PropertyName = "sz_email",Required=Required.Default)]
-	public string szEmail;
-    [JsonProperty(PropertyName = "sz_name",Required=Required.Default)]
-	public string szName;
+	public int IdPlayer;
+	public string SzEmail;
+	public string SzName;
 
-    [JsonProperty(PropertyName = "id_facebook_account",Required=Required.Default)]
-	public string idFacebookAccount;
-    [JsonProperty(PropertyName = "sz_password",Required=Required.Default)]
-	public string szPassword;
-    [JsonProperty(PropertyName = "tm_time_played",Required=Required.Default)]
-	public string tmTimePlayed;
-	[JsonProperty(PropertyName = "dt_account_created",Required=Required.Default)]
-	public DateTime dtAccountCreated;
-    [JsonProperty(PropertyName = "dt_account_updated",Required=Required.Default)]
-	public DateTime dtAccountUpdated;
-    [JsonProperty(PropertyName = "id_country",Required=Required.Default)]
-	public int idCountry;
+	public string IdFacebookAccount;
+	public string SzPassword;
+	public string TmTimePlayed;
+	public DateTime DtAccountCreated;
+	public DateTime DtAccountUpdated;
+	public int IdCountry;
 
 	public Player ()
 	{
-
 	}
 }

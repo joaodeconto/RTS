@@ -8,25 +8,25 @@ using Newtonsoft.Json;
 namespace DB {
 	public class Player
 	{
-		[JsonProperty(PropertyName = "id_player",Required=Required.Default)]
-		public string idPlayer;
-		[JsonProperty(PropertyName = "sz_name",Required=Required.Default)]
-		public string szName;
-		[JsonProperty(PropertyName = "sz_email",Required=Required.Default)]
-		public string szEmail;
+		[JsonProperty(PropertyName = "IdPlayer",Required=Required.Default)]
+		public string IdPlayer;
+		[JsonProperty(PropertyName = "SzEmail",Required=Required.Default)]
+		public string SzEmail;
+		[JsonProperty(PropertyName = "SzName",Required=Required.Default)]
+		public string SzName;
 
-		[JsonProperty(PropertyName = "id_facebook_account",Required=Required.Default)]
-		public string idFacebookAccount;
-		[JsonProperty(PropertyName = "sz_password",Required=Required.Default)]
-		public string szPassword;
-		[JsonProperty(PropertyName = "tm_time_played",Required=Required.Default)]
-		public string tmTimePlayed;
-		[JsonProperty(PropertyName = "dt_account_created",Required=Required.Default)]
-		public string dtAccountCreated;
-		[JsonProperty(PropertyName = "dt_account_updated",Required=Required.Default)]
-		public string dtAccountUpdated;
-		[JsonProperty(PropertyName = "id_country",Required=Required.Default)]
-		public string idCountry;
+		[JsonProperty(PropertyName = "IdFacebookAccount",Required=Required.Default)]
+		public string IdFacebookAccount;
+		[JsonProperty(PropertyName = "SzPassword",Required=Required.Default)]
+		public string SzPassword;
+		[JsonProperty(PropertyName = "TmTimePlayed",Required=Required.Default)]
+		public string TmTimePlayed;
+		[JsonProperty(PropertyName = "DtAccountCreated",Required=Required.Default)]
+		public string DtAccountCreated;
+		[JsonProperty(PropertyName = "DtAccountUpdated",Required=Required.Default)]
+		public string DtAccountUpdated;
+		[JsonProperty(PropertyName = "IdCountry",Required=Required.Default)]
+		public string IdCountry;
 
 		public Player ()
 		{
