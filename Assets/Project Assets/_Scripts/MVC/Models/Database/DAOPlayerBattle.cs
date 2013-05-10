@@ -64,56 +64,56 @@ public class DAOPlayerBattle : MonoBehaviour
 		});
 	}
 
-	private void GetBattle (int idPlayer, DateTime DtDateBattle, int nPlayers, BattleType DAOBattleTypeDelegate callback)
+	private void GetBattle (int idPlayer, DateTime dtDateBattle, int nPlayers, DAOBattleTypeDelegate callback)
 	{
-		Database db = ComponentGetter.Get<Database>();
-		DB.Battle dbBattle = new DB.Battle () { nrPlayers = nPlayers, blWin = win };
+   /*     Database db = ComponentGetter.Get<Database>();*/
+		//DB.Battle dbBattle = new DB.Battle () { nrPlayers = nPlayers, blWin = win };
 
-		db.Read (dbBattleType,
-		(response) =>
-		{
-			BattleType battleType = null;
-			if ((response as DB.BattleType) != null)
-			{
-				dbBattleType = response as DB.BattleType;
-				callback (ConvertBattleType (dbBattleType));
-			}
-			else
-			{
-				db.Create (dbBattleType,
-				(read_response) =>
-				{
-					dbBattleType = read_response as DB.BattleType;
-					callback (ConvertBattleType (dbBattleType));
-				});
-			}
-		});
+		//db.Read (dbBattleType,
+		//(response) =>
+		//{
+			//BattleType battleType = null;
+			//if ((response as DB.BattleType) != null)
+			//{
+				//dbBattleType = response as DB.BattleType;
+				//callback (ConvertBattleType (dbBattleType));
+			//}
+			//else
+			//{
+				//db.Create (dbBattleType,
+				//(read_response) =>
+				//{
+					//dbBattleType = read_response as DB.BattleType;
+					//callback (ConvertBattleType (dbBattleType));
+				//});
+			//}
+		/*});*/
 	}
 
 	public void CreatePlayerBattle (int idPlayer, int nPlayers, bool win, string battleTypeName, DAOPlayerBattleDelegate callback)
 	{
-		Database db = ComponentGetter.Get <Database> ();
+   /*     Database db = ComponentGetter.Get <Database> ();*/
 
-		DB.BattleType bt = ConvertBattleType (battleType);
+		//DB.BattleType bt = ConvertBattleType (battleType);
 
-		DB.PlayerBattle dbPlayerBattle = new DB.PlayerBattle () { };
+		//DB.PlayerBattle dbPlayerBattle = new DB.PlayerBattle () { };
 
-		db.Create (dbPlayerBattle,
-		(response) =>
-		{
-			PlayerBattle battle = null;
-			dbPlayerBattle = response as DB.PlayerBattle;
+		//db.Create (dbPlayerBattle,
+		//(response) =>
+		//{
+			//PlayerBattle battle = null;
+			//dbPlayerBattle = response as DB.PlayerBattle;
 
-			if (dbPlayerBattle == null)
-			{
-				callback (null, "User already exists");
-			}
-			else
-			{
-				battle = ConvertPlayerBattle (dbPlayerBattle);
-				callback (battle, "New account created!");
-			}
-		});
+			//if (dbPlayerBattle == null)
+			//{
+				//callback (null, "User already exists");
+			//}
+			//else
+			//{
+				//battle = ConvertPlayerBattle (dbPlayerBattle);
+				//callback (battle, "New account created!");
+			//}
+		/*});*/
 	}
 
 	public void SavePlayerBattle (PlayerBattle battle)
