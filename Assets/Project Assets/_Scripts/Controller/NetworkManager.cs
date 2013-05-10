@@ -23,7 +23,7 @@ public class NetworkManager : Photon.MonoBehaviour {
         if (PhotonNetwork.connected)
         {
             photonView.RPC("SendChatMessage", PhotonNetwork.masterClient, "Hi master! Welcome (:");
-            photonView.RPC("SendChatMessage", PhotonTargets.All, "WE GOT A NEW MASTER: " + PhotonNetwork.masterClient);
+            photonView.RPC("SendChatMessage", PhotonNetwork.player, "WE GOT A NEW MASTER: " + PhotonNetwork.masterClient);
         }
     }
 
