@@ -10,6 +10,8 @@ public class Team
 	public Color color = Color.white;
 	public Texture2D colorTexture;
 	public Transform initialPosition;
+	
+	public bool lose { get; set; }
 }
 
 public class GameplayManager : Photon.MonoBehaviour
@@ -123,7 +125,6 @@ public class GameplayManager : Photon.MonoBehaviour
 		else
 		{
 			loserTeams = 0;
-			
 		}
 		
 		hud.uiDefeatObject.SetActive (false);
@@ -303,6 +304,8 @@ public class GameplayManager : Photon.MonoBehaviour
 	
 	public void CheckCondition (int teamID, int ally)
 	{
+		teams[teamID].lose = true;
+		
 		switch (GameplayManager.mode)
 		{
 		case Mode.Allies:
@@ -327,7 +330,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			break;
 			
 		case Mode.Normal:
-			
 			loserTeams++;
 			
 			if (MyTeam == teamID)
@@ -341,6 +343,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				winGame = true;
 			}
 			break;
+			
 		default:
 			break;
 		}
@@ -363,6 +366,8 @@ public class GameplayManager : Photon.MonoBehaviour
 	[RPC]
 	void Defeat (int teamID, int ally)
 	{
+		if (teams[teamID].lose) return;
+		
 		ComponentGetter.Get<StatsController> ().DestroyAllStatsTeam (teamID);
 		CheckCondition (teamID, ally);
 	}

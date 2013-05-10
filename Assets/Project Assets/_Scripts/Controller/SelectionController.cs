@@ -24,7 +24,7 @@ public class SelectionController : MonoBehaviour
 	{
 		//EDITOR ou PC
 		if ((touchController.touchType != TouchController.TouchType.Ended) ||
-			  (touchController.idTouch != TouchController.IdTouch.Id0))
+			(touchController.idTouch != TouchController.IdTouch.Id0))
 			return true;
 		
 		bool leftShift = Input.GetKey (KeyCode.LeftShift);
@@ -32,7 +32,6 @@ public class SelectionController : MonoBehaviour
 		
 		if (touchController.DragOn)
 		{
-			
 			statsController.DeselectAllStats ();
 
 			Bounds b = touchController.GetTouchBounds();
