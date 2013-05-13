@@ -404,6 +404,11 @@ public class StatsController : MonoBehaviour
 						w.SetMoveToFactory(factory);
 						feedback = true;
 					}
+					else if (factory.IsNeededRepair)
+					{
+						w.SetMoveToFactory(factory);
+						feedback = true;
+					}
 				}
 				else if (factory.IsNeededRepair)
 				{
@@ -428,12 +433,12 @@ public class StatsController : MonoBehaviour
 	{
 		if (selectedStats.Count == 1)
 		{
-//			Unit unitSelected = selectedMyStats[0];
-//			soundManager.PlayRandom (unitSelected.category.ToString ());
+			IStats statSelected = selectedStats[0];
+			soundManager.PlayRandom (statSelected.category);
 		}
 		else
 		{
-//			soundManager.PlayRandom ("TroopSelected");
+			soundManager.PlayRandom ("TroopSelected");
 		}
 	}
 

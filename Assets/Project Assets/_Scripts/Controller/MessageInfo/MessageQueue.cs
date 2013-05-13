@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 public abstract class MessageQueue : MonoBehaviour
 {
@@ -70,25 +71,53 @@ public abstract class MessageQueue : MonoBehaviour
 										DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick = null,
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
+//										DefaultCallbackButton.OnClickDelegate onGroupClick = null)
 	{
 		++nQueueItems;
-
-		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-												Pref_button);
-
-		button.name  = buttonName;
-		button.layer = gameObject.layer;
-		button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-		button.transform.FindChild("Background").localScale = new Vector3(CellSize.x, CellSize.y, 1);
-		button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
-
-		//button.transform.localPosition = Vector3.zero;
-
-		PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
-
-		pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
-
-		Invoke("RepositionGrid", 0.1f);
+		
+//		if (nQueueItems > MaxItems)
+//		{
+//			// Refazendo o calculo
+//			if (nQueueItems-1 == MaxItems) ChangeToGroupMessageInfo ();
+//			
+//			buttonName = RegexClone (buttonName);
+//			
+//			if (CheckExistMessageInfo (buttonName)) return;
+//			
+//			GameObject button = NGUITools.AddChild (uiGrid.gameObject,
+//													Pref_button);
+//			
+//			button.name  = buttonName;
+//			button.layer = gameObject.layer;
+//			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
+//			button.transform.FindChild("Background").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+//			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+//			
+//			PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
+//	
+//			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
+//			
+//			Invoke("RepositionGrid", 0.1f);
+//		}
+//		else
+//		{
+			GameObject button = NGUITools.AddChild (uiGrid.gameObject,
+													Pref_button);
+			
+			button.name  = buttonName;
+			button.layer = gameObject.layer;
+			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
+			button.transform.FindChild("Background").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+	
+			//button.transform.localPosition = Vector3.zero;
+	
+			PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
+	
+			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
+			
+			Invoke("RepositionGrid", 0.1f);
+//		}
 	}
 
 	public void DequeueMessageInfo()
@@ -134,7 +163,7 @@ public abstract class MessageQueue : MonoBehaviour
 	{
 		return (nQueueItems == 0);
 	}
-
+	
 	public void Clear()
 	{
 		nQueueItems = 0;
@@ -168,5 +197,44 @@ public abstract class MessageQueue : MonoBehaviour
 			uiGrid.repositionNow = true;
 			uiGrid.Reposition();
 		}
+	}
+	
+	protected void ChangeToGroupMessageInfo ()
+	{
+		for (int i = 0; i != uiGrid.transform.GetChildCount (); ++i)
+		{
+			uiGrid.transform.GetChild (i).name = RegexClone (uiGrid.transform.GetChild (i).name);
+			for (int k = 0; k != i; ++k)
+			{
+				if (uiGrid.transform.GetChild (k).name.Equals (uiGrid.transform.GetChild (i).name))
+				{
+					--nQueueItems;
+					Destroy (uiGrid.transform.GetChild (i));
+					
+					--i;
+					break;
+				}
+			}
+		}
+	}
+	
+	protected bool CheckExistMessageInfo (string name)
+	{
+		for (int i = 0; i != uiGrid.transform.GetChildCount (); ++i)
+		{
+			if (uiGrid.transform.GetChild (i).name.Equals (name))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	protected string RegexClone (string name)
+	{
+		name = Regex.Split (name, "(Clone)")[0];
+		name = name.Split ('(')[0];
+		return name;
 	}
 }

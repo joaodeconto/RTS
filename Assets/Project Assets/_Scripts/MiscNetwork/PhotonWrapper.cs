@@ -255,7 +255,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
 					
 					foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 					{
-						int numberRaffled = Random.Range(0, 1);
+						int numberRaffled = Random.Range(0, 2);
+						
+						if (numberRaffled == 2) numberRaffled = 1;
 						
 						if (numberAllies0 == maxNumberOfAllies)
 							numberRaffled = 1;
