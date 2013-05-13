@@ -161,9 +161,6 @@ public abstract class MessageQueue : MonoBehaviour
 
 	protected void RepositionGrid()
 	{
-		if(uiGrid.name == "Unit Group")
-			Debug.Log("uiGrid.transform.childCount: " + uiGrid.transform.childCount);
-
 		if(uiGrid.transform.childCount != nQueueItems)
 			Invoke("RepositionGrid", 0.1f);
 		else
