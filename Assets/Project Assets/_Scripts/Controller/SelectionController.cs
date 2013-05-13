@@ -30,6 +30,8 @@ public class SelectionController : MonoBehaviour
 		bool leftShift = Input.GetKey (KeyCode.LeftShift);
 		bool leftCtrl = Input.GetKey (KeyCode.LeftControl);
 		
+		ComponentGetter.Get<HUDController> ().CloseInfoBox ();
+		
 		if (touchController.DragOn)
 		{
 			statsController.DeselectAllStats ();
@@ -60,6 +62,10 @@ public class SelectionController : MonoBehaviour
 			if (statsController.selectedStats.Count != 0)
 			{
 				statsController.PlaySelectSound ();
+				if (statsController.selectedStats.Count == 1)
+				{
+					ComponentGetter.Get<HUDController> ().OpenInfoBox (statsController.selectedStats[0]);
+				}
 				return true;
 			}
 
@@ -122,7 +128,7 @@ public class SelectionController : MonoBehaviour
 					{
 						if (!leftShift) statsController.DeselectAllStats ();
 						
-						int category = selectedUnit.category;
+						string category = selectedUnit.category;
 						foreach (IStats stat in statsController.myStats)
 						{
 							//TODO pegar somente da mesma categoria dentro da tela
@@ -148,7 +154,7 @@ public class SelectionController : MonoBehaviour
 						{
 							if (!leftShift) statsController.DeselectAllStats ();
 						
-							int category = selectedUnit.category;
+							string category = selectedUnit.category;
 							foreach (IStats stat in statsController.myStats)
 							{
 								//TODO pegar somente da mesma categoria dentro da tela
@@ -166,6 +172,9 @@ public class SelectionController : MonoBehaviour
 							statsController.PlaySelectSound ();
 							
 							lastStatClick = selectedUnit;
+							
+							ComponentGetter.Get<HUDController> ().OpenInfoBox (selectedUnit);
+
 						}
 					}
 					return true;
@@ -193,7 +202,7 @@ public class SelectionController : MonoBehaviour
 						{
 							statsController.DeselectAllStats ();
 							
-							int category = factorySelected.category;
+							string category = factorySelected.category;
 							foreach (IStats stat in statsController.myStats)
 							{
 								FactoryBase currentFactory = stat as FactoryBase;
@@ -217,7 +226,7 @@ public class SelectionController : MonoBehaviour
 					{
 						statsController.DeselectAllStats ();
 							
-						int category = factorySelected.category;
+						string category = factorySelected.category;
 						foreach (IStats stat in statsController.myStats)
 						{
 							FactoryBase currentFactory = stat as FactoryBase;

@@ -112,7 +112,7 @@ public abstract class IStats : Photon.MonoBehaviour
 	public bool IsNetworkInstantiate { get; protected set; }
 	public bool IsRemoved { get; protected set; }
 	
-	public int category;
+	public string category;
 	internal int Group = -1;
 	
 	protected StatsController statsController;

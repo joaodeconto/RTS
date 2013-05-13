@@ -58,6 +58,7 @@ public class HUDController : MonoBehaviour
 	public UIRoot uiRoot;
 	public Transform mainTranformSelectedObjects;
 	public Transform trnsOptionsMenu;
+	public Transform trnsPanelInfoBox;
 
 	public GameObject pref_button;
 	public Vector3 offesetFeedback;
@@ -405,5 +406,49 @@ public class HUDController : MonoBehaviour
 		oldFeedback = newFeedback;
 
 		Destroy (newFeedback, duration);
+	}
+	
+	public void OpenInfoBox (IStats stat)
+	{
+		RemoveEnqueuedButtonInInspector (stat.name, Unit.UnitGroupQueueName);
+		
+		trnsPanelInfoBox.gameObject.SetActive (true);
+		
+		Unit unit = stat as Unit;
+		
+		Transform nameLabel = trnsPanelInfoBox.FindChild ("name-label");
+		nameLabel.GetComponent<UILabel> ().text = stat.category;
+		
+		Transform spriteUnit = trnsPanelInfoBox.FindChild ("sprite-unit");
+		Debug.Log (unit.guiTextureName);
+		spriteUnit.GetComponent<UISprite> ().spriteName = unit.guiTextureName;
+		
+		// Info
+		Transform info = trnsPanelInfoBox.FindChild ("info");
+		
+		Transform attackLabel = info.FindChild ("attack-label");
+		attackLabel.GetComponent<UILabel> ().text = unit.AdditionalForce != 0 ?
+			unit.force + "(+" + unit.AdditionalForce + ")" :
+			unit.force.ToString ();
+		
+		Transform hpLabel = info.FindChild ("hp-label");
+		hpLabel.GetComponent<UILabel> ().text = stat.Health.ToString ();
+		
+		Transform speedLabel = info.FindChild ("speed-label");
+		speedLabel.GetComponent<UILabel> ().text = ((int)unit.pathfind.speed).ToString ();
+		
+		Transform unitsLabel = info.FindChild ("units-label");
+		unitsLabel.GetComponent<UILabel> ().text = unit.numberOfUnits.ToString ();
+		
+//		Transform attackLabel = info.FindChild ("time-label");
+//		attackLabel.GetComponent<UILabel> ();
+//		
+//		Transform attackLabel = info.FindChild ("gold-label");
+//		attackLabel.GetComponent<UILabel> ();
+	}
+	
+	public void CloseInfoBox ()
+	{
+		trnsPanelInfoBox.gameObject.SetActive (false);
 	}
 }

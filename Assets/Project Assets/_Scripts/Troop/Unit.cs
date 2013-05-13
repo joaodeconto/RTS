@@ -31,7 +31,7 @@ public class Unit : IStats
 	public float distanceView       = 15f;
 	public float attackRange        = 5f;
 	public float attackDuration     = 1f;
-	public float probeRange         = 1.0f; // how far the character can "see"
+	public float probeRange         = 1f; // how far the character can "see"
     public float turnSpeedAvoidance = 50f; // how fast to turn
 	public int numberOfUnits = 1;
 
@@ -486,11 +486,15 @@ public class Unit : IStats
 		
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
+		
+		Hashtable ht = new Hashtable();
+		
+		ht["item"] = this;
 
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		hudController.CreateEnqueuedButtonInInspector ( this.name,
 														Unit.UnitGroupQueueName,
-														null,
+														ht,
 														this.guiTextureName,
 														(hud_ht) =>
 														{
@@ -498,7 +502,6 @@ public class Unit : IStats
 															statsController.SelectStat(this, true);
 														});
 
-		Hashtable ht;
 		foreach (MovementAction ma in movementActions)
 		{
 			ht = new Hashtable();
