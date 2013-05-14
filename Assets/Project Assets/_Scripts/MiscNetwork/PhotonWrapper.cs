@@ -4,6 +4,7 @@ using System.Linq;
 
 public class PhotonWrapper : Photon.MonoBehaviour
 {
+	public delegate void StartGameCallback ();
 	public delegate void ConnectionCallback (string message);
 	public delegate void PlayerReadyCallback (int nPlayersReady, int nPlayers);
 
@@ -17,6 +18,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	private bool isTryingToEnterGame;
 	private ConnectionCallback cb;
 	private PlayerReadyCallback prc;
+	private StartGameCallback sgc;
 
 	private bool wasInitialized = false;
 	public void Init ()
@@ -197,6 +199,11 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Debug.LogWarning ("OnFailedToConnectToPhoton. StatusCode: " + parameters);
 	}
+	
+	public void SetStartGame (StartGameCallback sgc)
+	{
+		this.sgc = sgc;
+	}
 
 	public void TryToEnterGame (float maxTimeToWait, ConnectionCallback cb, PlayerReadyCallback prc = null)
 	{
@@ -280,11 +287,16 @@ public class PhotonWrapper : Photon.MonoBehaviour
 				}
 			}
 			StopTryingEnterGame ();
-			StartCoroutine (StartGame ());
+			sgc ();
 		}
 	}
+	
+	public void StartGame ()
+	{
+		StartCoroutine (YieldStartGame ());
+	}
 
-	private IEnumerator StartGame ()
+	private IEnumerator YieldStartGame ()
     {
         while (PhotonNetwork.room == null)
         {
