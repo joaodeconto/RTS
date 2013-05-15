@@ -48,6 +48,9 @@ public class Login : IController
 
 		if (!UseRealLogin)
 		{
+			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+			pw.SetPlayer (username, true);
+			
 			EnterInternalMainMenu (username);
 			return;
 		}
@@ -82,8 +85,6 @@ public class Login : IController
 
 	public void DoNewAccount (Hashtable ht)
 	{
-		Debug.Log("DoNewAccount");
-
 		string username = (string)ht["username"];
 		string password = (string)ht["password"];
 		string idFacebook = "";
