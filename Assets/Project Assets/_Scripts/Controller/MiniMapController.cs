@@ -18,7 +18,7 @@ public class MiniMapController : MonoBehaviour
 	public Transform mapTransform;
 
 	public GameObject fogMiniMap;
-	
+
 	public GameObject beingAttackedMiniMap;
 
 	public Vector3 visualizationSize;
@@ -82,9 +82,9 @@ public class MiniMapController : MonoBehaviour
 		mapSize = ComponentGetter.Get<Terrain>("Terrain").terrainData.size;
 
 		FogOfWar fogOfWar = ComponentGetter.Get<FogOfWar>();
-		
+
 		UITexture ut;
-		
+
 		if (fogOfWar.UseFog)
 		{
 			ut = NGUITools.AddWidget<UITexture> (fogMiniMap);
@@ -142,7 +142,6 @@ public class MiniMapController : MonoBehaviour
 				{
 					structureList[i].RemoveAt(j);
 					StructureMiniMapList[i].RemoveAt(j);
-					++j;
 				}
 				else
 				{
@@ -157,7 +156,6 @@ public class MiniMapController : MonoBehaviour
 				{
 					unitList[i].RemoveAt(j);
 					UnitMiniMapList[i].RemoveAt(j);
-					++j;
 				}
 				else
 				{
@@ -228,18 +226,18 @@ public class MiniMapController : MonoBehaviour
 
 		Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
 	}
-	
+
 	public void InstantiatePositionBeingAttacked (Transform target)
 	{
 		GameObject miniMapObject = Instantiate (beingAttackedMiniMap) as GameObject;
-		
+
 		miniMapObject.transform.parent     = miniMapPanel.transform;
 		miniMapObject.transform.localScale = beingAttackedMiniMap.transform.localScale;
-		
+
 		miniMapObject.GetComponent<TweenScale> ().Play (true);
-		
+
 		miniMapObject.GetComponent<UISprite> ().depth = 10;
-		
+
 		UpdatePosition (miniMapObject, target);
 	}
 
@@ -256,7 +254,7 @@ public class MiniMapController : MonoBehaviour
 		_go.GetComponent<UISlicedSprite>().color = teamColor;
 
 		_go.GetComponent<UISprite> ().depth = 4;
-		
+
 		UpdatePosition(_go, trns);
 
 		return _go;
@@ -354,7 +352,7 @@ public class MiniMapController : MonoBehaviour
 	public void SetVisibilityUnit(Transform trns, int teamId, bool visibility)
 	{
 		int index = unitList[teamId].IndexOf(trns);
-		
+
 		if (index != -1)
 			UnitMiniMapList[teamId][index].SetActive(visibility);
 	}
