@@ -262,9 +262,10 @@ public class PhotonWrapper : Photon.MonoBehaviour
 					
 					foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 					{
-						int numberRaffled = Random.Range(0, 2);
+						int numberRaffled = 0;
+//						int numberRaffled = Random.Range(0, 2);
 						
-						if (numberRaffled == 2) numberRaffled = 1;
+//						if (numberRaffled == 2) numberRaffled = 1;
 						
 						if (numberAllies0 == maxNumberOfAllies)
 							numberRaffled = 1;
@@ -287,8 +288,13 @@ public class PhotonWrapper : Photon.MonoBehaviour
 				}
 			}
 			StopTryingEnterGame ();
-			sgc ();
+			Invoke ("CallStartGameCallback", 1f);
 		}
+	}
+	
+	void CallStartGameCallback ()
+	{
+		sgc ();
 	}
 	
 	public void StartGame ()
@@ -302,8 +308,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
         {
             yield return 0;
         }
-		
-		yield return new WaitForSeconds (3f);
 		
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;
