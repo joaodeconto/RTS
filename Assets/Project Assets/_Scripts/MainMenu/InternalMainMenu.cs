@@ -16,10 +16,12 @@ public class InternalMainMenu : MonoBehaviour
 	public Transform options;
 	public Transform menus;
 
+	public Model.Player player { get; private set; }
 	private List<Transform> listChildOptions;
 
-	public void Init (string playerName)
+	public void Init (Model.Player player)
 	{
+		this.player = player;
 //		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 //
 //		dcb.Init(null, (ht_hud) =>
@@ -32,7 +34,7 @@ public class InternalMainMenu : MonoBehaviour
 
 		goMainMenu.SetActive (true);
 
-		PlayerLabel.text = playerName;
+		PlayerLabel.text = player.SzName;
 
 		listChildOptions = new List<Transform>();
 		foreach (Transform child in options)

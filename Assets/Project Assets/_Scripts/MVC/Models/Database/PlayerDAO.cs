@@ -5,11 +5,11 @@ using System.Collections;
 
 using Visiorama;
 
-public class DAOPlayer : MonoBehaviour
+public class PlayerDAO : MonoBehaviour
 {
-	public delegate void DAOPlayerDelegate (Player player, string message);
+	public delegate void PlayerDAODelegate (Model.Player player, string message);
 
-	public void GetPlayer (string username, string password, string idFacebook, DAOPlayerDelegate callback)
+	public void GetPlayer (string username, string password, string idFacebook, PlayerDAODelegate callback)
 	{
 		//TODO usar facebook no futuro
 		Database db        = ComponentGetter.Get<Database>();
@@ -19,7 +19,6 @@ public class DAOPlayer : MonoBehaviour
 		db.Read (dbPlayer,
 		(response) =>
 		{
-			Player player = null;
 			dbPlayer = response as DB.Player;
 
 			if (dbPlayer == null ||
@@ -30,13 +29,13 @@ public class DAOPlayer : MonoBehaviour
 			}
 			else
 			{
-				player = ConvertPlayer (dbPlayer);
+				Model.Player player = dbPlayer.ToModel ();
 				callback (player, "User and passwords matches!");
 			}
 		});
 	}
 
-	public void CreatePlayer (string username, string password, string idFacebook, string email, DAOPlayerDelegate callback)
+	public void CreatePlayer (string username, string password, string idFacebook, string email, PlayerDAODelegate callback)
 	{
 		Database db        = ComponentGetter.Get<Database>();
 		DB.Player dbPlayer = new DB.Player () { SzName     = username,
@@ -45,7 +44,7 @@ public class DAOPlayer : MonoBehaviour
 		db.Create (dbPlayer,
 		(response) =>
 		{
-			Player player = null;
+			Model.Player player = null;
 			dbPlayer = response as DB.Player;
 
 			if (dbPlayer == null)
@@ -54,32 +53,14 @@ public class DAOPlayer : MonoBehaviour
 			}
 			else
 			{
-				player = ConvertPlayer (dbPlayer);
+				player = dbPlayer.ToModel ();
 				callback (player, "New account created!");
 			}
 		});
 	}
 
-	public void SavePlayer (Player player)
+	public void SavePlayer (Model.Player player)
 	{
 		throw new NotImplementedException ();
-	}
-
-	private Player ConvertPlayer (DB.Player p)
-	{
-		Player player = new Player ();
-
-		player.IdPlayer = int.Parse(p.IdPlayer);
-		player.SzEmail  = p.SzEmail;
-		player.SzName   = p.SzName;
-
-		player.IdFacebookAccount = p.IdFacebookAccount;
-		player.SzPassword        = p.SzPassword;
-		player.TmTimePlayed      = p.TmTimePlayed;
-		player.DtAccountCreated  = DateTime.Parse (p.DtAccountCreated);
-		player.DtAccountUpdated  = DateTime.Parse (p.DtAccountUpdated);
-		player.IdCountry         = int.Parse(p.IdCountry);
-
-		return player;
 	}
 }

@@ -91,13 +91,15 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		}
 	}
 
-	public void CreateRoom (string roomName, bool isVisible, bool isOpen, int maxPlayers)
+	public void CreateRoom (string roomName, bool isVisible, bool isOpen, int maxPlayers, Hashtable customProperties = null)
 	{
-		Hashtable someCustomPropertiesToSet = new Hashtable();
-		someCustomPropertiesToSet.Add ("closeRoom", false);
+		if (customProperties == null)
+			customProperties = new Hashtable ();
+
+		customProperties.Add ("closeRoom", false);
 		string[] roomPropsInLobby = { "closeRoom", "bool" };
 
-		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, someCustomPropertiesToSet, roomPropsInLobby);
+		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, customProperties, roomPropsInLobby);
 
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
@@ -110,12 +112,30 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		return PhotonNetwork.GetRoomList ();
 	}
 
+	public object GetPropertyOnPlayer (string key)
+	{
+		return PhotonNetwork.player.customProperties[key];
+	}
+
 	public void SetPropertyOnPlayer (string key, object value)
 	{
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
-		
+
 		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
+	}
+
+	public object GetPropertyOnRoom (string key)
+	{
+		return PhotonNetwork.room.customProperties[key];
+	}
+
+	public void SetPropertyOnRoom (string key, object value)
+	{
+		Hashtable someCustomPropertiesToSet = new Hashtable();
+		someCustomPropertiesToSet.Add (key, value);
+
+		PhotonNetwork.room.SetCustomProperties (someCustomPropertiesToSet);
 	}
 
 	public string CheckingStatus ()
@@ -245,31 +265,31 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			{
 				Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
 				room.SetCustomProperties(roomProperty);
-				
+
 				if (GameplayManager.mode == GameplayManager.Mode.Allies)
 				{
 					int maxNumberOfAllies = room.maxPlayers / 2;
-					
+
 					int numberAllies0 = 0;
 					int numberAllies1 = numberAllies0;
-					
+
 					foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 					{
 						int numberRaffled = Random.Range(0, 1);
-						
+
 						if (numberAllies0 == maxNumberOfAllies)
 							numberRaffled = 1;
 						else if (numberAllies1 == maxNumberOfAllies)
 							numberRaffled = 0;
-						
+
 						if (numberRaffled == 0)
 							numberAllies0++;
 						else
 							numberAllies1++;
-						
+
 						photonView.RPC ("SetAllyOnPlayerRPC", pp, "allies", numberRaffled);
 					}
-					
+
 					photonView.RPC ("SetGameplayMode", PhotonTargets.Others, 1);
 				}
 				else
@@ -288,9 +308,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
         {
             yield return 0;
         }
-		
+
 		yield return new WaitForSeconds (3f);
-		
+
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;
 		if (GameplayManager.mode == GameplayManager.Mode.Normal)
@@ -298,18 +318,18 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		else
 			Application.LoadLevel(2);
     }
-	
+
 	// RPCS
-	
+
 	[RPC]
 	public void SetAllyOnPlayerRPC (string key, int value)
 	{
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
-		
+
 		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
 	}
-	
+
 	[RPC]
 	public void SetGameplayMode (int mode)
 	{

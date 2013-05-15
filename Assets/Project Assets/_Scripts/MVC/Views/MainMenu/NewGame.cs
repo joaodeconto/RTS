@@ -16,9 +16,10 @@ public class NewGame : MonoBehaviour
 
 	public void Open ()
 	{
+		Debug.Log ("player na segunda cena: " + ComponentGetter.Get<PhotonWrapper> ().GetPropertyOnPlayer ("player"));
 //		if (wasInitialized)
 //			return;
-//
+
 //		wasInitialized = true;
 		messageActiveGame.enabled = false;
 
@@ -33,7 +34,7 @@ public class NewGame : MonoBehaviour
 		dcb = match2p.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								CreateRoom (2);
+								CreateRoom (2, "2P");
 							});
 
 		GameObject match3p = buttons.FindChild ("Match 3P").gameObject;
@@ -41,7 +42,7 @@ public class NewGame : MonoBehaviour
 		dcb = match3p.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								CreateRoom (3);
+								CreateRoom (3, "3P");
 							});
 
 		GameObject match4p = buttons.FindChild ("Match 4P").gameObject;
@@ -49,86 +50,102 @@ public class NewGame : MonoBehaviour
 		dcb = match4p.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								CreateRoom (4);
+								CreateRoom (4, "4P");
 							});
-		
+
 		GameObject match2x2 = buttons.FindChild ("Match 2x2").gameObject;
 
 		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								CreateRoom (4, GameplayManager.Mode.Allies);
+								CreateRoom (4, "2x2", GameplayManager.Mode.Allies);
 							});
-		
+
 		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
-		
+
 		dcb = leaveRoom.AddComponent<DefaultCallbackButton> ();
-		dcb.Init (null, (ht) => 
+		dcb.Init (null, (ht) =>
 							{
 								if (pw.LeaveRoom ())
 									Close ();
 							});
-		
+
 		leaveRoom.SetActive (false);
 	}
 
 	public void Close ()
 	{
 		CancelInvoke ("TryToEnterGame");
-		
+
 		if (buttons == null) return;
-		
+
 		foreach (Transform button in buttons)
 		{
 			button.gameObject.SetActive (true);
 		}
 
 		messageActiveGame.enabled = false;
-		
+
 		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
 		leaveRoom.SetActive (false);
 	}
 
-	private void CreateRoom (int maxPlayers, GameplayManager.Mode mode = GameplayManager.Mode.Normal)
+	private void CreateRoom (int maxPlayers, string battleTypeName, GameplayManager.Mode mode = GameplayManager.Mode.Normal)
 	{
-		GameplayManager.mode = mode;
-		
-		string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + System.DateTime.Now.ToString ("mm-ss");
-		bool isVisible = true, isOpen = true;
+		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
+		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
+		PlayerDAO playerDao = ComponentGetter.Get <PlayerDAO> ();
 
-		pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers);
-
-		pw.SetPropertyOnPlayer ("team", 0);
-		pw.SetPropertyOnPlayer ("ready", true);
-
-		messageActiveGame.enabled = true;
-		messageActiveGame.text = "Waiting For Other Players...";
-		
-		foreach (Transform button in buttons)
+		playerBattleDao.CreatePlayerBattle (player, maxPlayers, battleTypeName,
+		(playerBattle, message) =>
 		{
-			button.gameObject.SetActive (false);
-		}
+			//Debug.Log ("message: " + message);
+			//Debug.Log ("playerBattle: " + playerBattle);
 
-		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
-		leaveRoom.SetActive (true);
-		
-		pw.TryToEnterGame (10000.0f, (message) =>
-									{
-//										Debug.Log("message: " + message);
-//
-//										messageActiveGame.enabled = false;
-//
-//										buttons.gameObject.SetActive (true);
-//
-//										errorMessage.enabled = true;
-//
-//										Invoke ("CloseErrorMessage", 5.0f);
-									},
-									(playersReady, nMaxPlayers) =>
-									{
-										messageActiveGame.text = "Wating For Other Players - "
-																	+ playersReady + "/" + nMaxPlayers;
-									});
+			string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + System.DateTime.Now.ToString ("mm-ss");
+			bool isVisible = true, isOpen = true;
+
+			Hashtable properties = new Hashtable ();
+			properties.Add ("battle", playerBattle.battle.ToString ());
+			pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers, properties);
+
+			pw.SetPropertyOnPlayer ("team", 0);
+			pw.SetPropertyOnPlayer ("ready", true);
+
+			Debug.Log (pw.GetPropertyOnPlayer ("player"));
+
+			GameplayManager.mode = mode;
+
+			messageActiveGame.enabled = true;
+			messageActiveGame.text = "Waiting For Other Players...";
+
+			foreach (Transform button in buttons)
+			{
+				button.gameObject.SetActive (false);
+			}
+
+			GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
+			leaveRoom.SetActive (true);
+
+			pw.TryToEnterGame (10000.0f,
+			(other_message) =>
+			{
+				//Debug.Log("message: " + message);
+
+				//messageActiveGame.enabled = false;
+
+				//buttons.gameObject.SetActive (true);
+
+				//errorMessage.enabled = true;
+
+				//Invoke ("CloseErrorMessage", 5.0f);
+			},
+			(playersReady, nMaxPlayers) =>
+			{
+				messageActiveGame.text = "Wating For Other Players - "
+											+ playersReady + "/" + nMaxPlayers;
+			});
+		});
 	}
 
 	private void CloseErrorMessage ()

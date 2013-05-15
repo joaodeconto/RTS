@@ -6,7 +6,7 @@ using Visiorama;
 public class Login : IController
 {
 	public bool UseRealLogin = true;
-	public Player player;
+	public Model.Player player;
 
 	public void Start ()
 	{
@@ -52,7 +52,7 @@ public class Login : IController
 			return;
 		}
 
-		ComponentGetter.Get<DAOPlayer>().GetPlayer (username, password, idFacebook,
+		ComponentGetter.Get<PlayerDAO>().GetPlayer (username, password, idFacebook,
 		(player, message) =>
 		{
 			this.player = player;
@@ -66,6 +66,7 @@ public class Login : IController
 			{
 				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 				pw.SetPlayer (username, true);
+				pw.SetPropertyOnPlayer ("player", player.ToString ());
 
 				EnterInternalMainMenu (username);
 			}
@@ -77,7 +78,7 @@ public class Login : IController
 		HideAllViews ();
 
 		InternalMainMenu imm = ComponentGetter.Get <InternalMainMenu> ();
-		imm.Init (username);
+		imm.Init (player);
 	}
 
 	public void DoNewAccount (Hashtable ht)
@@ -89,7 +90,7 @@ public class Login : IController
 		string idFacebook = "";
 		string email    = (string)ht["email"];
 
-		ComponentGetter.Get<DAOPlayer>().CreatePlayer (username, password, idFacebook, email,
+		ComponentGetter.Get<PlayerDAO>().CreatePlayer (username, password, idFacebook, email,
 		(player, message) =>
 		{
 			if (player == null)

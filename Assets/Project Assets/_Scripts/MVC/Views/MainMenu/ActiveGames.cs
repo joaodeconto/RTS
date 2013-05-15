@@ -17,19 +17,19 @@ public class ActiveGames : MonoBehaviour
 	public void Open ()
 	{
 		messageActiveGame.enabled = false;
-		
+
 		GameObject leaveRoom = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
-		
+
 		DefaultCallbackButton dcb = leaveRoom.AddComponent<DefaultCallbackButton> ();
-		
-		dcb.Init (null, (ht) =>  
+
+		dcb.Init (null, (ht) =>
 						{
 							if (ComponentGetter.Get<PhotonWrapper> ().LeaveRoom ())
 								Close ();
 						});
-		
+
 		leaveRoom.SetActive (false);
-		
+
 		InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
 	}
 
@@ -37,9 +37,9 @@ public class ActiveGames : MonoBehaviour
 	{
 		CancelInvoke ("Refresh");
 		ClearRows ();
-		
+
 		messageActiveGame.enabled = errorMessage.enabled = false;
-		
+
 		GameObject leaveRoom = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
 		leaveRoom.SetActive (false);
 	}
@@ -99,37 +99,42 @@ public class ActiveGames : MonoBehaviour
 					Hashtable ht = new Hashtable ();
 
 					ht["room.name"] = room.name;
-					
+
 					if (join.GetComponent<DefaultCallbackButton> () == null)
 					{
 						DefaultCallbackButton dcb = join.AddComponent<DefaultCallbackButton> ();
 						dcb.Init (ht, (ht_hud) =>
 											{
 												pw.JoinRoom ((string)ht_hud["room.name"]);
-	
-												pw.SetPropertyOnPlayer ("ready", false);
-	
+
+												pw.SetPropertyOnPlayer ("ready", true);
+
 												ClearRows ();
-												
-	
+
 												messageActiveGame.enabled = true;
 												messageActiveGame.text = "Waiting For Other Players...";
-							
+
 												GameObject cancel = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
-							
+
 												cancel.SetActive (true);
-	
+												cancel.AddComponent<DefaultCallbackButton>().Init (null,
+													(_ht) =>
+													{
+														pw.LeaveRoom ();
+														InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
+													});
+
 												CancelInvoke ("Refresh");
-	
+
 												pw.TryToEnterGame ( 100000.0f,
 																	(message) =>
 																	{
 																		Debug.Log("message: " + message);
-	
+
 																		messageActiveGame.enabled = true;
-	
+
 																		errorMessage.enabled = true;
-	
+
 																		Invoke ("CloseErrorMessage", 5.0f);
 																		InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
 																	},
@@ -137,7 +142,7 @@ public class ActiveGames : MonoBehaviour
 																	{
 																		messageActiveGame.text = "Wating For Other Players - "
 																									+ playersReady + "/" + maxPlayers;
-	
+
 																	});
 											});
 					}

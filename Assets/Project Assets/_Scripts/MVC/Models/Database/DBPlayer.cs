@@ -30,7 +30,29 @@ namespace DB {
 
 		public Player ()
 		{
+		}
 
+		public Model.Player ToModel ()
+		{
+			Model.Player player = new Model.Player ();
+
+			player.IdPlayer = int.Parse(this.IdPlayer);
+			player.SzEmail  = this.SzEmail;
+			player.SzName   = this.SzName;
+
+			player.IdFacebookAccount = this.IdFacebookAccount;
+			player.SzPassword        = this.SzPassword;
+			//player.TmTimePlayed      = TimeSpan.FromSeconds(long.Parse(this.TmTimePlayed));
+			player.DtAccountCreated  = DateTime.Parse (this.DtAccountCreated);
+			player.DtAccountUpdated  = DateTime.Parse (this.DtAccountUpdated);
+			player.IdCountry         = !string.IsNullOrEmpty(this.IdCountry) ? int.Parse(this.IdCountry) : 0;
+
+			return player;
+		}
+
+		public override string ToString ()
+		{
+			return JsonConvert.SerializeObject (this);
 		}
 	}
 }
