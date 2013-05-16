@@ -13,17 +13,23 @@ public class VersusScreen : MonoBehaviour
 	}
 	
 	public GameObject goVersusScreen;
+	public UILabel timeLabel;
 	
 	public GameObject prefabPlayerVersus;
-	
-	public float timeToWait;
+		
+	public int timeToWait;
 	
 	public ConfigurationOfScreen[] configurationOfScreen;
+	
+	protected int timeCount;
 	
 	protected PhotonWrapper pw;
 	
 	void Awake ()
 	{
+		timeCount = timeToWait;
+		timeLabel.text = timeCount.ToString ();
+		
 		pw = ComponentGetter.Get<PhotonWrapper> ();
 		
 		pw.SetStartGame (() => Init ());
@@ -59,14 +65,26 @@ public class VersusScreen : MonoBehaviour
 		{
 			int ally = (int)PhotonNetwork.player.customProperties["allies"];
 			
-			i = 0;			
+			int k = totalPlayers / 2;
+			
+			i = 0;
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
 				if ((int)pp.customProperties["allies"] == ally)
 				{
-					SetPlayer (goPlayers, configurationOfScreen[configurationOfScreenSelected].positions[i], pp);
+					SetPlayer (goPlayers,
+						configurationOfScreen[configurationOfScreenSelected].positions[i],
+						pp);
 					
 					i++;
+				}
+				else
+				{
+					SetPlayer (goPlayers,
+						configurationOfScreen[configurationOfScreenSelected].positions[k],
+						pp);
+					
+					k++;
 				}
 			}
 		}
@@ -75,13 +93,22 @@ public class VersusScreen : MonoBehaviour
 			i = 0;
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
-				SetPlayer (goPlayers, configurationOfScreen[configurationOfScreenSelected].positions[i], pp);
+				SetPlayer (goPlayers,
+					configurationOfScreen[configurationOfScreenSelected].positions[i],
+					pp);
 				
 				i++;
 			}
 		}
 		
-		Invoke ("InstanceGame", timeToWait);
+		Invoke ("InstanceGame", timeToWait+1);
+		InvokeRepeating ("DescountTime", 1f, 1f);
+	}
+	
+	void DescountTime ()
+	{
+		--timeCount;
+		timeLabel.text = timeCount.ToString();
 	}
 	
 	void SetPlayer (GameObject goPlayers, Vector3 position, PhotonPlayer pp)
@@ -94,6 +121,8 @@ public class VersusScreen : MonoBehaviour
 	
 	void InstanceGame ()
 	{
+		CancelInvoke ("DescountTime");
+		
 		pw.StartGame ();
 	}
 }
