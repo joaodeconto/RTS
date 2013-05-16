@@ -1,7 +1,7 @@
 ----------------------------------------------
             NGUI: Next-Gen UI kit
  Copyright © 2011-2012 Tasharen Entertainment
-                Version 2.5.1
+                Version 2.6.1e
     http://www.tasharen.com/?page_id=197
             support@tasharen.com
 ----------------------------------------------
@@ -34,6 +34,29 @@ Using NGUI with JavaScript (UnityScript)? Read this first: http://www.tasharen.c
 -----------------
  Version History
 -----------------
+
+2.6.1:
+- FIX: Dynamic font-related fixes.
+- FIX: Depth pass will now be force-disabled when the panel is clipped.
+- FIX: Sticky press option on the UICamera no longer breaks OnDrop events.
+- FIX: UIInput's useLabelTextAtStart should now work again.
+- FIX: UICamera.touchCount should now be accurate.
+- FIX: Fixed a typo in the image button inspector.
+- FIX: UIWidget.UpdateGeometry will now check for object's disabled state prior to filling the geometry.
+
+2.6.0
+- NEW: Added dynamic font support for Unity 4.0.
+- NEW: Handles can now be toggled on/off from the NGUI menu.
+- NEW: Atlas maker will now be limited by max texture size, and will no longer make it possible to corrupt an atlas.
+- NEW: Warning will be shown on the panel if clipping is not possible (GLES 1.1).
+- NEW: Checkbox can now have fade in the checkmark instantly.
+- NEW: You can now leave C++ style comments (//) in the localization files.
+- NEW: You can now paste into input fields in stand-alone builds.
+- NEW: Added disabled state to UIImageButton (Nicki)
+- FIX: UISlider will now use the sprite size rather than collider size to determine the touch effect area.
+- FIX: Resetting the tween will now mark it as not started.
+- FIX: Blank labels will no longer be localized.
+- FIX: Resetting the sprite animation will also reset the sprite back to 0.
 
 2.5.1
 - NEW: Added a "shrink to fit" option for labels that will scale down the text if it doesn't fit.

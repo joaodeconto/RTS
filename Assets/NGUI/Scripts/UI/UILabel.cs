@@ -448,6 +448,18 @@ public class UILabel : UIWidget
 		mPremultiply = (font != null && font.material != null && font.material.shader.name.Contains("Premultiplied"));
 	}
 
+#if UNITY_EDITOR
+	public override bool OnUpdate ()
+	{
+		if (mFont.isDynamic && !Application.isPlaying && mFont.RecalculateDynamicOffset())
+		{
+			mFont.MarkAsDirty();
+			return true;
+		}
+		return false;
+	}
+#endif
+
 	/// <summary>
 	/// UILabel needs additional processing when something changes.
 	/// </summary>
@@ -467,7 +479,7 @@ public class UILabel : UIWidget
 		mChanged = true;
 		hasChanged = false;
 		mLastText = mText;
-		mProcessedText = mText.Replace("\\n", "\n");
+		mProcessedText = mText;
 
 		if (mPassword)
 		{

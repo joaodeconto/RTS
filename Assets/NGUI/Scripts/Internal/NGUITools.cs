@@ -93,7 +93,7 @@ static public class NGUITools
 				}
 			}
 
-			if (mListener != null)
+			if (mListener != null && mListener.enabled && NGUITools.GetActive(mListener.gameObject))
 			{
 				AudioSource source = mListener.audio;
 				if (source == null) source = mListener.gameObject.AddComponent<AudioSource>();
@@ -243,8 +243,6 @@ static public class NGUITools
 	{
 		if (text != null)
 		{
-			text = text.Replace("\\n", "\n");
-
 			for (int i = 0, imax = text.Length; i < imax; )
 			{
 				char c = text[i];
@@ -272,7 +270,11 @@ static public class NGUITools
 
 	static public T[] FindActive<T> () where T : Component
 	{
+#if UNITY_3_5 || UNITY_4_0
 		return GameObject.FindSceneObjectsOfType(typeof(T)) as T[];
+#else
+		return GameObject.FindObjectsOfType(typeof(T)) as T[];
+#endif
 	}
 
 	/// <summary>
@@ -568,14 +570,14 @@ static public class NGUITools
 		}
 #else
 		// If there is even a single enabled child, then we're using a Unity 4.0-based nested active state scheme.
-		for (int i = 0, imax = t.GetChildCount(); i < imax; ++i)
+		for (int i = 0, imax = t.childCount; i < imax; ++i)
 		{
 			Transform child = t.GetChild(i);
 			if (child.gameObject.activeSelf) return;
 		}
 
 		// If this point is reached, then all the children are disabled, so we must be using a Unity 3.5-based active state scheme.
-		for (int i = 0, imax = t.GetChildCount(); i < imax; ++i)
+		for (int i = 0, imax = t.childCount; i < imax; ++i)
 		{
 			Transform child = t.GetChild(i);
 			Activate(child);
@@ -626,7 +628,7 @@ static public class NGUITools
 
 		if (state)
 		{
-			for (int i = 0, imax = t.GetChildCount(); i < imax; ++i)
+			for (int i = 0, imax = t.childCount; i < imax; ++i)
 			{
 				Transform child = t.GetChild(i);
 				Activate(child);
@@ -634,7 +636,7 @@ static public class NGUITools
 		}
 		else
 		{
-			for (int i = 0, imax = t.GetChildCount(); i < imax; ++i)
+			for (int i = 0, imax = t.childCount; i < imax; ++i)
 			{
 				Transform child = t.GetChild(i);
 				Deactivate(child);
@@ -678,7 +680,7 @@ static public class NGUITools
 
 		Transform t = go.transform;
 		
-		for (int i = 0, imax = t.GetChildCount(); i < imax; ++i)
+		for (int i = 0, imax = t.childCount; i < imax; ++i)
 		{
 			Transform child = t.GetChild(i);
 			SetLayer(child.gameObject, layer);
@@ -727,7 +729,7 @@ static public class NGUITools
 
 	static public bool Save (string fileName, byte[] bytes)
 	{
-#if UNITY_WEBPLAYER || UNITY_FLASH
+#if UNITY_WEBPLAYER || UNITY_FLASH || UNITY_METRO
 		return false;
 #else
 		if (!NGUITools.fileAccess) return false;
@@ -764,7 +766,7 @@ static public class NGUITools
 
 	static public byte[] Load (string fileName)
 	{
-#if UNITY_WEBPLAYER || UNITY_FLASH
+#if UNITY_WEBPLAYER || UNITY_FLASH || UNITY_METRO
 		return null;
 #else
 		if (!NGUITools.fileAccess) return null;
@@ -803,5 +805,44 @@ static public class NGUITools
 		UIWidget[] widgets = go.GetComponentsInChildren<UIWidget>();
 		for (int i = 0, imax = widgets.Length; i < imax; ++i)
 			widgets[i].ParentHasChanged();
+	}
+
+	/// <summary>
+	/// Clipboard access via reflection.
+	/// http://answers.unity3d.com/questions/266244/how-can-i-add-copypaste-clipboard-support-to-my-ga.html
+	/// </summary>
+
+	static PropertyInfo mSystemCopyBuffer = null;
+	static PropertyInfo GetSystemCopyBufferProperty ()
+	{
+#if UNITY_WEBPLAYER || UNITY_FLASH || UNITY_METRO
+		return null;
+#else
+
+		if (mSystemCopyBuffer == null)
+		{
+			Type gui = typeof(GUIUtility);
+			mSystemCopyBuffer = gui.GetProperty("systemCopyBuffer", BindingFlags.Static | BindingFlags.NonPublic);
+		}
+		return mSystemCopyBuffer;
+#endif
+	}
+
+	/// <summary>
+	/// Access to the clipboard via a hacky method of accessing Unity's internals. Won't work in the web player.
+	/// </summary>
+
+	public static string clipboard
+	{
+		get
+		{
+			PropertyInfo copyBuffer = GetSystemCopyBufferProperty();
+			return (copyBuffer != null) ? (string)copyBuffer.GetValue(null, null) : null;
+		}
+		set
+		{
+			PropertyInfo copyBuffer = GetSystemCopyBufferProperty();
+			if (copyBuffer != null) copyBuffer.SetValue(null, value, null);
+		}
 	}
 }
