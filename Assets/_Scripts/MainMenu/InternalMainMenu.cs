@@ -21,6 +21,9 @@ public class InternalMainMenu : MonoBehaviour
 
 	public void Init (Model.Player player)
 	{
+		Debug.Log ("Chegou!");
+		Invoke ("InitScore", Random.value * 2.0f);
+
 		this.player = player;
 //		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 //
@@ -68,6 +71,11 @@ public class InternalMainMenu : MonoBehaviour
 					});
 			}
 		}
+	}
+
+	void InitScore ()
+	{
+		Score.LoadScore ();
 	}
 
 	private void ShowMenu (string optionName)
