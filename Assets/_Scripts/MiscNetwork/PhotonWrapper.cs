@@ -119,7 +119,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		customProperties.Add ("closeRoom", false);
 		string[] roomPropsInLobby = { "closeRoom", "bool" };
 
-		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, someCustomPropertiesToSet, roomPropsInLobby);
+		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, customProperties, roomPropsInLobby);
 		
 		roomNameTemp = roomName;
 		
