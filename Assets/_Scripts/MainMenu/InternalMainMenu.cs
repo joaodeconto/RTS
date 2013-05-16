@@ -21,7 +21,6 @@ public class InternalMainMenu : MonoBehaviour
 
 	public void Init (Model.Player player)
 	{
-		Debug.Log ("Chegou!");
 		Invoke ("InitScore", Random.value * 2.0f);
 
 		this.player = player;
