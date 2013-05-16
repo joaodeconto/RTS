@@ -37,6 +37,7 @@ public abstract class UIWidget : MonoBehaviour
 	protected bool mChanged = true;
 	protected bool mPlayMode = true;
 
+	GameObject mGo;
 	Vector3 mDiffPos;
 	Quaternion mDiffRot;
 	Vector3 mDiffScale;
@@ -92,6 +93,7 @@ public abstract class UIWidget : MonoBehaviour
 
 				Transform t = cachedTransform;
 				Vector3 pos = t.position;
+				float z = t.localPosition.z;
 				pos.x += (before.x - after.x);
 				pos.y += (before.y - after.y);
 				cachedTransform.position = pos;
@@ -99,6 +101,7 @@ public abstract class UIWidget : MonoBehaviour
 				pos = cachedTransform.localPosition;
 				pos.x = Mathf.Round(pos.x);
 				pos.y = Mathf.Round(pos.y);
+				pos.z = z;
 				cachedTransform.localPosition = pos;
 			}
 		}
@@ -296,8 +299,8 @@ public abstract class UIWidget : MonoBehaviour
 	{
 		if (mPanel != null && mPanel.gameObject.layer != gameObject.layer)
 		{
-//			Debug.LogWarning("You can't place widgets on a layer different than the UIPanel that manages them.\n" +
-//				"If you want to move widgets to a different layer, parent them to a new panel instead.", this);
+			Debug.LogWarning("You can't place widgets on a layer different than the UIPanel that manages them.\n" +
+				"If you want to move widgets to a different layer, parent them to a new panel instead.", this);
 			gameObject.layer = mPanel.gameObject.layer;
 		}
 	}
@@ -343,7 +346,7 @@ public abstract class UIWidget : MonoBehaviour
 	/// Remember whether we're in play mode.
 	/// </summary>
 
-	protected virtual void Awake() { mPlayMode = Application.isPlaying; }
+	protected virtual void Awake () { mGo = gameObject; mPlayMode = Application.isPlaying; }
 
 	/// <summary>
 	/// Mark the widget and the panel as having been changed.
@@ -445,8 +448,11 @@ public abstract class UIWidget : MonoBehaviour
 
 	void OnDrawGizmos ()
 	{
-		if (mVisibleFlag != 0 && mPanel != null && mPanel.debugInfo == UIPanel.DebugInfo.Gizmos && UnityEditor.Selection.activeGameObject != gameObject)
+		if (mVisibleFlag != 0 && mPanel != null && mPanel.debugInfo == UIPanel.DebugInfo.Gizmos)
 		{
+			if (UnityEditor.Selection.activeGameObject == gameObject && UnityEditor.Tools.current == UnityEditor.Tool.View &&
+				UnityEditor.EditorPrefs.GetBool("New GUI", true)) return;
+
 			Color outline = new Color(1f, 1f, 1f, 0.2f);
 
 			// Position should be offset by depth so that the selection works properly
@@ -471,9 +477,9 @@ public abstract class UIWidget : MonoBehaviour
 
 			// Draw the gizmo
 			Gizmos.matrix = cachedTransform.localToWorldMatrix;
-			Gizmos.color = (UnityEditor.Selection.activeGameObject == gameObject) ? new Color(0f, 0.75f, 1f) : outline;
+			Gizmos.color = (UnityEditor.Selection.activeGameObject == gameObject) ? Color.green : outline;
 			Gizmos.DrawWireCube(pos, size);
-			
+
 			// Make the widget selectable
 			size.z = 0.01f;
 			Gizmos.color = Color.clear;
@@ -486,28 +492,39 @@ public abstract class UIWidget : MonoBehaviour
 	/// Update the widget and fill its geometry if necessary. Returns whether something was changed.
 	/// </summary>
 
-	public bool UpdateGeometry (ref Matrix4x4 worldToPanel, bool parentMoved, bool generateNormals)
+	public bool UpdateGeometry (UIPanel p, ref Matrix4x4 worldToPanel, bool parentMoved, bool generateNormals)
 	{
 		if (material == null) return false;
 
 		if (OnUpdate() || mChanged)
 		{
 			mChanged = false;
-			mGeom.Clear();
-			OnFill(mGeom.verts, mGeom.uvs, mGeom.cols);
 
-			if (mGeom.hasVertices)
+			if (NGUITools.GetActive(mGo))
 			{
-				Vector3 offset = pivotOffset;
-				Vector2 scale = relativeSize;
+				mPanel = p;
+				mGeom.Clear();
+				OnFill(mGeom.verts, mGeom.uvs, mGeom.cols);
 
-				offset.x *= scale.x;
-				offset.y *= scale.y;
+				if (mGeom.hasVertices)
+				{
+					Vector3 offset = pivotOffset;
+					Vector2 scale = relativeSize;
 
-				mGeom.ApplyOffset(offset);
-				mGeom.ApplyTransform(worldToPanel * cachedTransform.localToWorldMatrix, generateNormals);
+					offset.x *= scale.x;
+					offset.y *= scale.y;
+
+					mGeom.ApplyOffset(offset);
+					mGeom.ApplyTransform(worldToPanel * cachedTransform.localToWorldMatrix, generateNormals);
+				}
+				return true;
 			}
-			return true;
+			else if (mGeom.hasVertices)
+			{
+				mGeom.Clear();
+				return true;
+			}
+			return false;
 		}
 		else if (mGeom.hasVertices && parentMoved)
 		{

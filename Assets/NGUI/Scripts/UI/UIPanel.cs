@@ -845,7 +845,7 @@ public class UIPanel : MonoBehaviour
 			UIWidget w = pc.widget;
 
 			// If the widget is visible, update it
-			if (pc.visibleFlag == 1 && w != null && w.UpdateGeometry(ref mWorldToLocal, (pc.changeFlag == 1), generateNormals))
+			if (pc.visibleFlag == 1 && w != null && w.UpdateGeometry(this, ref mWorldToLocal, (pc.changeFlag == 1), generateNormals))
 			{
 				// We will need to refill this buffer
 				if (!mChanged.Contains(w.material))
@@ -892,7 +892,7 @@ public class UIPanel : MonoBehaviour
 			dc.clipping = mClipping;
 			dc.clipRange = range;
 			dc.clipSoftness = mClipSoftness;
-			dc.depthPass = depthPass;
+			dc.depthPass = depthPass && mClipping == UIDrawCall.Clipping.None;
 
 			// Set the draw call's transform to match the panel's.
 			// Note that parenting directly to the panel causes unity to crash as soon as you hit Play.
@@ -937,7 +937,7 @@ public class UIPanel : MonoBehaviour
 		{
 			// Rebuild the draw call's mesh
 			UIDrawCall dc = GetDrawCall(mat, true);
-			dc.depthPass = depthPass;
+			dc.depthPass = depthPass && mClipping == UIDrawCall.Clipping.None;
 			dc.Set(mVerts, generateNormals ? mNorms : null, generateNormals ? mTans : null, mUvs, mCols);
 		}
 		else
