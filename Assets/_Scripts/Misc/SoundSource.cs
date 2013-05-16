@@ -22,18 +22,18 @@ public class SoundSource : MonoBehaviour
 					audioSource = gameObject.AddComponent<AudioSource>();
 			}
 			
-			switch (soundType)
-			{
-			case SoundType.Music:
-				audioSource.volume = VolumeController.musicVolume;
-				break;
-			case SoundType.Sound:
-				audioSource.volume = VolumeController.soundVolume;
-				break;
-			case SoundType.Voice:
-				audioSource.volume = VolumeController.voiceVolume;
-				break;
-			}
+//			switch (soundType)
+//			{
+//			case SoundType.Music:
+//				audioSource.volume = VolumeController.musicVolume;
+//				break;
+//			case SoundType.Sound:
+//				audioSource.volume = VolumeController.soundVolume;
+//				break;
+//			case SoundType.Voice:
+//				audioSource.volume = VolumeController.voiceVolume;
+//				break;
+//			}
 			
 			return audioSource;
 		}

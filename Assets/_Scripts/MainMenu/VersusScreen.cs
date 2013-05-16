@@ -109,6 +109,8 @@ public class VersusScreen : MonoBehaviour
 	{
 		--timeCount;
 		timeLabel.text = timeCount.ToString();
+		
+		if (timeCount == 0) CancelInvoke ("DescountTime");
 	}
 	
 	void SetPlayer (GameObject goPlayers, Vector3 position, PhotonPlayer pp)
@@ -121,8 +123,6 @@ public class VersusScreen : MonoBehaviour
 	
 	void InstanceGame ()
 	{
-		CancelInvoke ("DescountTime");
-		
 		pw.StartGame ();
 	}
 }
