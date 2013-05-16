@@ -46,12 +46,17 @@ public class Login : IController
 		string password = (string)ht["password"];
 		string idFacebook = "";
 
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+
 		if (!UseRealLogin)
 		{
-			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 			pw.SetPlayer (username, true);
-			
+			pw.SetPropertyOnPlayer ("player", (new Model.Player (){ SzName			  = username,
+																	SzPassword		  = password,
+																	IdFacebookAccount = idFacebook }).ToString ());
+
 			EnterInternalMainMenu (username);
+
 			return;
 		}
 
@@ -67,7 +72,6 @@ public class Login : IController
 			}
 			else
 			{
-				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 				pw.SetPlayer (username, true);
 				pw.SetPropertyOnPlayer ("player", player.ToString ());
 
