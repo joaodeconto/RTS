@@ -411,12 +411,12 @@ AudioSource:
   m_Pitch: 1
   Loop: 0
   Mute: 0
-  Priority: 128
+  Priority: 255
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   rolloffCustomCurve:
     serializedVersion: 2
@@ -495,7 +495,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 111e42a9f574af1478996c9a5ee4404e, type: 3}
   m_Name: 
-  idleButtonPosition: {x: 0, y: 0, z: 0}
+  idleButtonPosition: {x: -38, y: 36, z: 0}
   myStats: []
   otherStats: []
 --- !u!114 &11400010
@@ -576,7 +576,7 @@ MonoBehaviour:
     zoomSpeed: .200000003
     zoom:
       min: 20
-      max: 40
+      max: 60
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -592,6 +592,7 @@ MonoBehaviour:
   uiRoot: {fileID: 0}
   mainTranformSelectedObjects: {fileID: 0}
   trnsOptionsMenu: {fileID: 0}
+  trnsPanelInfoBox: {fileID: 0}
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
   offesetFeedback: {x: 0, y: .100000001, z: 0}
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
