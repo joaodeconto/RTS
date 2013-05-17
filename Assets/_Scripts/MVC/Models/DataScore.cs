@@ -2,11 +2,11 @@ using UnityEngine;
 using System.Collections;
 
 namespace Model {
-	public class DataScore : MonoBehaviour
+	public class DataScore
 	{
 		public int IdScore;
 		public int IdPlayer;
-		public int IdPlayerBattle;
+		public int IdBattle;
 		public int NrPoints;
 		public string SzScoreName;
 		public string SzDetailedInformation;
@@ -25,7 +25,7 @@ namespace Model {
 			DB.DataScore ds = new DB.DataScore ();
 			ds.IdScore               = this.IdScore.ToString ();
 			ds.IdPlayer              = this.IdPlayer.ToString ();
-			ds.IdPlayerBattle        = this.IdPlayerBattle.ToString ();
+			ds.IdBattle              = this.IdBattle.ToString ();
 			ds.NrPoints              = this.NrPoints.ToString ();
 			ds.SzScoreName           = this.SzScoreName;
 			ds.SzDetailedInformation = this.SzDetailedInformation;

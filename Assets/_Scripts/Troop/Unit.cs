@@ -124,7 +124,7 @@ public class Unit : IStats
 		if (Selected && !playerUnit)
 		{
 			hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
-			
+
 			Deselect ();
 		}
 		if (!IsRemoved && !playerUnit) statsController.RemoveStats (this);
@@ -193,7 +193,7 @@ public class Unit : IStats
 			case UnitState.Attack:
 
 				followingTarget = true;
-			
+
 				if (targetAttack != null)
 				{
 					if (targetAttack.GetComponent<IStats>().IsRemoved)
@@ -202,7 +202,7 @@ public class Unit : IStats
 						IsAttacking = false;
 					}
 				}
-			
+
 				if (IsAttacking) return;
 
 				Stop ();
@@ -237,7 +237,7 @@ public class Unit : IStats
 			case UnitState.Idle:
 				if (unitAnimation.Idle)
 					ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
-	
+
 				break;
 			case UnitState.Walk:
 				if (unitAnimation.Walk)
@@ -245,17 +245,17 @@ public class Unit : IStats
 					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed;
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
-	
+
 				break;
 			case UnitState.Attack:
 				if (unitAnimation.Attack)
 					ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-	
+
 				break;
 			case UnitState.Die:
 				if (unitAnimation.DieAnimation)
 					ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
-	
+
 				break;
 			}
 		}
@@ -275,15 +275,15 @@ public class Unit : IStats
 	void MoveAvoidance ()
 	{
 		if (unitState != UnitState.Walk) return;
-		
+
         RaycastHit hit;
         Vector3 dir = (pathfindTarget - transform.position).normalized;
 
         bool previousCastMissed = true;
-		
+
 		Vector3 probePoint = transform.position;
 		probePoint.y += 0.1f;
-		
+
         if(Physics.Raycast(probePoint, transform.forward, out hit, probeRange))
 		{
 			if (targetAttack != null)
@@ -327,9 +327,9 @@ public class Unit : IStats
 
 		Vector3 leftReference = probePoint;
 		leftReference.x -= (pathfind.radius);
-		
-        if (obstacleAvoid && 
-			previousCastMissed && 
+
+        if (obstacleAvoid &&
+			previousCastMissed &&
 			Physics.Raycast(leftReference, transform.forward, out hit, probeRange))
 		{
 			if (targetAttack != null)
@@ -365,10 +365,10 @@ public class Unit : IStats
 
 		Vector3 rightReference = probePoint;
 		rightReference.x += (pathfind.radius);
-		
+
         // check the other side :)
-        if (obstacleAvoid && 
-			previousCastMissed && 
+        if (obstacleAvoid &&
+			previousCastMissed &&
 			Physics.Raycast(rightReference, transform.forward, out hit, probeRange))
 		{
 			if (targetAttack != null)
@@ -421,7 +421,7 @@ public class Unit : IStats
             transform.position += transform.forward * pathfind.speed * Time.deltaTime;
         }
     }
-	
+
 	private void Stop ()
 	{
 		pathfind.Stop ();
@@ -436,9 +436,9 @@ public class Unit : IStats
 		if (unitAnimation.Attack)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-			
+
 			IsAttacking = true;
-			
+
 			if (!PhotonNetwork.offlineMode)
 			{
 				photonView.RPC ("AttackStat", playerTargetAttack, targetAttack.name, force + AdditionalForce);
@@ -447,9 +447,9 @@ public class Unit : IStats
 			{
 				targetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
 			}
-			
+
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
-			
+
 			IsAttacking = false;
 		}
 		else
@@ -483,12 +483,12 @@ public class Unit : IStats
 	public override void Select ()
 	{
 		base.Select ();
-		
+
 		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
 		healthBar.SetTarget (this);
-		
+
 		Hashtable ht = new Hashtable();
-		
+
 		ht["item"] = this;
 
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
@@ -541,7 +541,7 @@ public class Unit : IStats
 	public override void Deselect ()
 	{
 		base.Deselect ();
-		
+
 		hudController.DestroySelected (transform);
 	}
 
@@ -587,11 +587,11 @@ public class Unit : IStats
 			{
 				playerTargetAttack = PhotonNetwork.player;
 			}
-			
+
 			followingTarget = true;
 		}
 		else playerTargetAttack = null;
-		
+
 		targetAttack = enemy;
 	}
 
@@ -719,15 +719,15 @@ public class Unit : IStats
 	public virtual IEnumerator OnDie ()
 	{
 		IsDead = true;
-		
+
 		pathfind.Stop ();
 
 		unitState = UnitState.Die;
 
 		statsController.RemoveStats(this);
-		
+
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
-		
+
 		if (Selected)
 		{
 			Deselect ();
@@ -756,7 +756,7 @@ public class Unit : IStats
 	public override void DrawGizmosSelected ()
 	{
 		base.DrawGizmosSelected ();
-		
+
 		Gizmos.color = Color.cyan;
 		Gizmos.DrawWireSphere (this.transform.position, distanceView);
 
@@ -780,7 +780,7 @@ public class Unit : IStats
 			return model.activeSelf;
 		}
 	}
-	
+
 	// RPC
 	[RPC]
 	public virtual void AttackStat (string name, int force)
@@ -797,7 +797,7 @@ public class Unit : IStats
 	{
 		base.InstantiatParticleDamage ();
 	}
-	
+
 	[RPC]
 	public override void SendRemove ()
 	{

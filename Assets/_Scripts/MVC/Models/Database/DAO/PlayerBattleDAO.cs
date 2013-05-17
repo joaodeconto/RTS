@@ -70,30 +70,36 @@ public class PlayerBattleDAO : MonoBehaviour
 		});
 	}
 
-	private void CreateBattle (Model.Player player, Model.BattleType battleType, DateTime battleTime, int nrPlayers, BattleDAODelegate callback)
+	public void CreateBattle (string battleTypeName,
+							  DateTime dateBattle,
+							  int nrPlayers,
+							  BattleDAODelegate callback)
 	{
-		Model.Battle battle = new Model.Battle () { IdBattleType = battleType.IdBattleType,
-										battleType	 = battleType,
-										DtDateBattle = battleTime,
-										NrPlayers	 = nrPlayers };
-
-		DB.Battle dbBattle = battle.ToDatabaseModel ();
-
-		db.Create (dbBattle,
-		(response) =>
+		GetBattleType (battleTypeName,
+		(battleType) =>
 		{
-			if ((response as DB.Battle) != null)
-			{
-				dbBattle = response as DB.Battle;
-				dbBattle.battleType = battleType.ToDatabaseModel ();
-				callback (dbBattle.ToModel ());
-			}
-			else
-			{
-				//ahn?
-			}
-		});
+			Debug.Log ("Criou battle type");
+			DB.Battle dbBattle = (new Model.Battle () { IdBattleType = battleType.IdBattleType,
+														battleType   = battleType,
+														DtDateBattle = dateBattle,
+														NrPlayers    = nrPlayers
+													}).ToDatabaseModel ();
 
+			db.Create (dbBattle,
+			(response) =>
+			{
+				if ((response as DB.Battle) != null)
+				{
+					dbBattle = response as DB.Battle;
+					dbBattle.battleType = battleType.ToDatabaseModel ();
+					callback (dbBattle.ToModel ());
+				}
+				else
+				{
+					//ahn?
+				}
+			});
+		});
 	}
 
 	private void GetBattle (Model.Player player, DateTime dtDateBattle, int nrPlayers, BattleTypeDAODelegate callback)
@@ -123,30 +129,13 @@ public class PlayerBattleDAO : MonoBehaviour
 		//});
 	}
 
-	public void CreatePlayerBattle (Model.Player player, int nrPlayers, string battleTypeName, PlayerBattleDAODelegate callback)
-	{
-		GetBattleType (battleTypeName,
-		(battleType) =>
-		{
-			Debug.Log ("Criou battle type");
-			CreateBattle (player, battleType, DateTime.Now, nrPlayers,
-			(battle) =>
-			{
-				Debug.Log ("Criou battle");
-				CreatePlayerBattle (player, battle,
-				(playerBattle, message) =>
-				{
-					callback (playerBattle, message);
-				});
-			});
-		});
-	}
-
 	public void CreatePlayerBattle (Model.Player player, Model.Battle battle, PlayerBattleDAODelegate callback)
 	{
-		DB.PlayerBattle dbPlayerBattle = (new Model.PlayerBattle () { IdPlayer = player.IdPlayer,
-																					IdBattle = battle.IdBattle,
-																					battle   = battle}).ToDatabaseModel ();
+		Debug.Log ("player: " + player.ToString ());
+
+		DB.PlayerBattle dbPlayerBattle = (new Model.PlayerBattle (){IdPlayer = player.IdPlayer,
+																	IdBattle = battle.IdBattle,
+																	battle   = battle}).ToDatabaseModel ();
 		Debug.Log ("dbPlayerBattle: " + dbPlayerBattle);
 		db.Create (dbPlayerBattle,
 		(response) =>

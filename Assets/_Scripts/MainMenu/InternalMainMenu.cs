@@ -74,7 +74,7 @@ public class InternalMainMenu : MonoBehaviour
 
 	void InitScore ()
 	{
-		Score.LoadScore ();
+		Score.Load ();
 	}
 
 	private void ShowMenu (string optionName)

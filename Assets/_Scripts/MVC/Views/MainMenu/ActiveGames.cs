@@ -104,47 +104,46 @@ public class ActiveGames : MonoBehaviour
 					{
 						DefaultCallbackButton dcb = join.AddComponent<DefaultCallbackButton> ();
 						dcb.Init (ht, (ht_hud) =>
-											{
-												pw.JoinRoom ((string)ht_hud["room.name"]);
+						{
+							pw.JoinRoom ((string)ht_hud["room.name"]);
+							pw.SetPropertyOnPlayer ("ready", true);
 
-												pw.SetPropertyOnPlayer ("ready", true);
+							ClearRows ();
 
-												ClearRows ();
+							messageActiveGame.enabled = true;
+							messageActiveGame.text = "Waiting For Other Players...";
 
-												messageActiveGame.enabled = true;
-												messageActiveGame.text = "Waiting For Other Players...";
+							GameObject cancel = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
 
-												GameObject cancel = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
+							cancel.SetActive (true);
+							cancel.AddComponent<DefaultCallbackButton>().Init (null,
+								(_ht) =>
+								{
+									pw.LeaveRoom ();
+									InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
+								});
 
-												cancel.SetActive (true);
-												cancel.AddComponent<DefaultCallbackButton>().Init (null,
-													(_ht) =>
-													{
-														pw.LeaveRoom ();
-														InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
-													});
+							CancelInvoke ("Refresh");
 
-												CancelInvoke ("Refresh");
+							pw.TryToEnterGame ( 100000.0f,
+												(message) =>
+												{
+													Debug.Log("message: " + message);
 
-												pw.TryToEnterGame ( 100000.0f,
-																	(message) =>
-																	{
-																		Debug.Log("message: " + message);
+													messageActiveGame.enabled = true;
 
-																		messageActiveGame.enabled = true;
+													errorMessage.enabled = true;
 
-																		errorMessage.enabled = true;
+													Invoke ("CloseErrorMessage", 5.0f);
+													InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
+												},
+												(playersReady, maxPlayers) =>
+												{
+													messageActiveGame.text = "Wating For Other Players - "
+																				+ playersReady + "/" + maxPlayers;
 
-																		Invoke ("CloseErrorMessage", 5.0f);
-																		InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
-																	},
-																	(playersReady, maxPlayers) =>
-																	{
-																		messageActiveGame.text = "Wating For Other Players - "
-																									+ playersReady + "/" + maxPlayers;
-
-																	});
-											});
+												});
+						});
 					}
 				}
 			}

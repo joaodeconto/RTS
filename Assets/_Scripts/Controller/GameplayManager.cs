@@ -398,34 +398,31 @@ public class GameplayManager : Photon.MonoBehaviour
 				hud.uiDefeatObject.SetActive (true);
 			}
 
+			//TODO CRISTIAN BOTAR ISSO NO MÉTODO ENDIGUEIME @_@
+			Score.Save ();
+
 			PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 
-			//TODO CRISTIAN BOTAR ISSO NO MÉTODO ENDIGUEIME @_@
 			Model.Battle battle = new Model.Battle ((string)pw.GetPropertyOnRoom ("battle"));
-			Model.Player player = new Model.Player ((string)pw.GetPropertyOnPlayer ("player"));
+			Model.Player player = new Model.Player((string)pw.GetPropertyOnPlayer ("player"));
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
 
 			pbDAO.CreatePlayerBattle (player, battle,
-			(dbPlayerBattle, response) =>
+			(playerBattle, message) =>
 			{
-				dbPlayerBattle.BlWin = winGame ? 1 : 0;
+				playerBattle.BlWin = winGame;
 
-				pbDAO.UpdatePlayerBattle (dbPlayerBattle,
-				(dbPlayerBattle_updated, message) =>
+				pbDAO.UpdatePlayerBattle (playerBattle,
+				(playerBattle_update, message_update) =>
 				{
-					if (dbPlayerBattle_updated != null)
-					{
+					if (playerBattle_update != null)
 						Debug.Log ("message: " + message);
-					}
 					else
-					{
 						Debug.Log ("salvou playerBattle");
-					}
 				});
 			});
-
-//			enabled = false;
+			//TODO fim do que tem que colocar no ENDIGUEIME :D
 		}
 	}
 

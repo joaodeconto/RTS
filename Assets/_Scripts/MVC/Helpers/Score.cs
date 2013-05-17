@@ -11,53 +11,75 @@ public class Score : MonoBehaviour
 	private Model.Player player;
 	private DataScoreDAO dataScoreDAO;
 
-	void Start ()
+	Score Init ()
 	{
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 		player = new Model.Player ((string)pw.GetPropertyOnPlayer ("player"));
 
 		dataScoreDAO = ComponentGetter.Get <DataScoreDAO> ();
+		dicDataScore = new Dictionary <string, Model.DataScore> ();
 
-		dataScoreDAO.LoadScoresFromPlayer (player.ToDatabaseModel (),
-									(scores) =>
-									{
-										Debug.Log ("Llego!");
-										dicDataScore = scores;
-									});
+		return this;
 	}
 
-	public void _AddScorePoints (string ScoreName, int points)
+	void CreateDataScore (string ScoreName, int points, int battleId)
 	{
-		if(!dicDataScore.ContainsKey (ScoreName))
-			dicDataScore.Add (ScoreName, new Model.DataScore (player.IdPlayer, ScoreName, points));
-		else
-			dicDataScore[ScoreName].NrPoints += points;
+		Model.DataScore ds = new Model.DataScore (player.IdPlayer, ScoreName, points);
+
+		if (battleId != -1) ds.IdBattle = battleId;
+
+		dicDataScore.Add (ScoreName, ds);
 	}
 
-	public void _SubtractScorePoints (string ScoreName, int points)
+	private string GetScoreKey (string ScoreName, int battleId)
 	{
-		if(!dicDataScore.ContainsKey (ScoreName))
-			dicDataScore.Add (ScoreName, new Model.DataScore (player.IdPlayer, ScoreName, points));
-		else
-			dicDataScore[ScoreName].NrPoints -= points;
+		return ScoreName + " - " + battleId;
 	}
 
-	public void _SetScorePoints (string ScoreName, int points)
+	public void _AddScorePoints (string ScoreName, int points, int battleId = -1)
 	{
-		if(!dicDataScore.ContainsKey (ScoreName))
-			dicDataScore.Add (ScoreName, new Model.DataScore (player.IdPlayer, ScoreName, points));
+		string scoreKey = GetScoreKey (ScoreName, battleId);
+
+		if(!dicDataScore.ContainsKey (scoreKey))
+			CreateDataScore (ScoreName, points, battleId);
 		else
-			dicDataScore[ScoreName].NrPoints = points;
+			dicDataScore[scoreKey].NrPoints += points;
+	}
+
+	public void _SubtractScorePoints (string ScoreName, int points, int battleId = -1)
+	{
+		string scoreKey = GetScoreKey (ScoreName, battleId);
+
+		if(!dicDataScore.ContainsKey (scoreKey))
+			CreateDataScore (ScoreName, points, battleId);
+		else
+			dicDataScore[scoreKey].NrPoints -= points;
+	}
+
+	public void _SetScorePoints (string ScoreName, int points, int battleId = -1)
+	{
+		string scoreKey = GetScoreKey (ScoreName, battleId);
+
+		if(!dicDataScore.ContainsKey (scoreKey))
+			CreateDataScore (ScoreName, points, battleId);
+		else
+			dicDataScore[scoreKey].NrPoints = points;
 	}
 
 	public void _LoadScore ()
 	{
-
+		//TODO ler apenas scores totais, ou seja, sem que tenham IdBattle's
+		dataScoreDAO.LoadAllPlayerScores (player.ToDatabaseModel (),
+											(scores) =>
+											{
+												Debug.Log ("Llego!");
+												dicDataScore = scores;
+											});
 	}
 
 	public void _SaveScore ()
 	{
-		//dataScoreDAO.Save ();
+		dataScoreDAO.SaveScores (dicDataScore);
 	}
 
 	/* Static */
@@ -66,35 +88,36 @@ public class Score : MonoBehaviour
 	{
 		get
 		{
-			if (instance == null) {
-				instance = ComponentGetter.Get <Score> ();
+			if (instance == null)
+			{
+				instance = ComponentGetter.Get <Score> ().Init ();
 			}
 
 			return instance;
 		}
 	}
 
-	public static void AddScorePoints (string ScoreName, int points)
+	public static void AddScorePoints (string ScoreName, int points, int battleId = -1)
 	{
-		Instance._AddScorePoints (ScoreName, points);
+		Instance._AddScorePoints (ScoreName, points, battleId);
 	}
 
-	public static void SubtractScorePoints (string ScoreName, int points)
+	public static void SubtractScorePoints (string ScoreName, int points, int battleId = -1)
 	{
-		Instance._SubtractScorePoints (ScoreName, points);
+		Instance._SubtractScorePoints (ScoreName, points, battleId);
 	}
 
-	public static void SetScorePoints (string ScoreName, int points)
+	public static void SetScorePoints (string ScoreName, int points, int battleId = -1)
 	{
-		Instance._SetScorePoints (ScoreName, points);
+		Instance._SetScorePoints (ScoreName, points, battleId);
 	}
 
-	public static void LoadScore ()
+	public static void Load ()
 	{
 		Instance._LoadScore ();
 	}
 
-	public static void SaveScore ()
+	public static void Save ()
 	{
 		Instance._SaveScore ();
 	}
