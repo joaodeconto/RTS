@@ -358,6 +358,13 @@ public class StatsController : MonoBehaviour
 
 		return false;
 	}
+	
+	public bool IsUnit (IStats stat)
+	{
+		Unit unit = stat as Unit;
+		
+		return unit != null;
+	}
 
 	public IStats FindMyStat (string name)
 	{
@@ -428,13 +435,21 @@ public class StatsController : MonoBehaviour
 	{
 		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (stat.transform, stat.team, visibility);
 	}
-
+	
 	public void PlaySelectSound ()
 	{
 		if (selectedStats.Count == 1)
 		{
 			IStats statSelected = selectedStats[0];
-			soundManager.PlayRandom (statSelected.category);
+			
+			if (IsUnit (statSelected))
+			{
+				soundManager.PlayRandom (statSelected.category);
+			}
+			else
+			{
+				soundManager.PlayRandom ("BuildingSelected");
+			}
 		}
 		else
 		{
@@ -488,30 +503,22 @@ public class StatsController : MonoBehaviour
 
 			ht["currentIdleWorker"] = 0;
 			ht["counter"] = idleWorkers.Count;
+			ht["time"] = 0f;
 
 			hud.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
 												idleButtonPosition,
 												ht,
 												idleWorkers[0].guiTextureName,
-												(hud_ht) =>
+												(ht_dcb) =>
 												{
-													int currentIdleWorker = (int)hud_ht["currentIdleWorker"];
+													int currentIdleWorker = (int)ht_dcb["currentIdleWorker"];
 
 													if(currentIdleWorker < idleWorkers.Count)
 													{
 														Vector3 idlePos = idleWorkers[currentIdleWorker].transform.position;
-														Vector3 pos = idlePos;
-														pos.y = 0.0f;
+														idlePos.y = 0.0f;
 
-														Transform trnsCamera = Camera.main.transform;
-
-														if(!Mathf.Approximately(trnsCamera.localEulerAngles.x, 45))
-															Debug.Log("Centralizacao da camera so funciona com a camera em 45 graus");
-														trnsCamera.position += pos - (Vector3.right * trnsCamera.position.x)
-																				   - (Vector3.forward * trnsCamera.position.z)
-																				   - (Vector3.forward
-																						* (trnsCamera.position.y - idlePos.y)
-																						* Mathf.Tan(trnsCamera.localEulerAngles.x * Mathf.Deg2Rad));
+														Math.CenterCameraInObject (Camera.main, idlePos);
 
 														//Deselect anything was selected
 														DeselectAllStats();
@@ -524,9 +531,35 @@ public class StatsController : MonoBehaviour
 													if((++currentIdleWorker) >= idleWorkers.Count)
 														currentIdleWorker = 0;
 
-													hud_ht["currentIdleWorker"] = currentIdleWorker;
+													ht_dcb["currentIdleWorker"] = currentIdleWorker;
 												},
-												null,
+												(ht_dcb, isDown) => 
+												{
+													if (isDown)
+													{
+														ht["time"] = Time.time;
+													}
+													else
+													{
+														if (Time.time - (float)ht["time"] > 2f)
+														{
+															Vector3 pos = Math.CenterOfObjects (idleWorkers.ToArray ());
+															
+															Math.CenterCameraInObject (Camera.main, pos);
+															
+															//Deselect anything was selected
+															DeselectAllStats();
+															
+															foreach (Worker iw in idleWorkers)
+															{
+																SelectStat (iw, true);
+															}
+										
+															idleWorkers.Clear ();
+														}
+													}
+												}
+												,
 												null,
 												null,
 												true);

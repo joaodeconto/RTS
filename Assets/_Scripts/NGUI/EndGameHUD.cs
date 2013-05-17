@@ -14,6 +14,7 @@ public class EndGameHUD : MonoBehaviour {
 		defaultCallbackButton.Init (null,
 		(ht_dcb) =>
 		{
+			if (!PhotonNetwork.offlineMode) PhotonNetwork.LeaveRoom ();
 			Application.LoadLevel (0);
 		});
 		
@@ -24,6 +25,7 @@ public class EndGameHUD : MonoBehaviour {
 		defaultCallbackButton.Init (null,
 		(ht_dcb) =>
 		{
+			if (!PhotonNetwork.offlineMode) PhotonNetwork.LeaveRoom ();
 			Application.LoadLevel (0);
 		});
 		
