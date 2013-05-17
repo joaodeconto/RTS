@@ -50,34 +50,36 @@ public class Login : IController
 
 		if (!UseRealLogin)
 		{
-			pw.SetPlayer (username, true);
-			pw.SetPropertyOnPlayer ("player", (new Model.Player (){ SzName			  = username,
-																	SzPassword		  = password,
-																	IdFacebookAccount = idFacebook }).ToString ());
+			this.player = new Model.Player () { SzName			  = username,
+												SzPassword		  = password,
+												IdFacebookAccount = idFacebook };
 
+			pw.SetPlayer (username, true);
+			pw.SetPropertyOnPlayer ("player", player.ToString ());
 			EnterInternalMainMenu (username);
 
-			return;
 		}
-
-		ComponentGetter.Get<PlayerDAO>().GetPlayer (username, password, idFacebook,
-		(player, message) =>
+		else
 		{
-			this.player = player;
-
-			if (player == null)
+			ComponentGetter.Get<PlayerDAO>().GetPlayer (username, password, idFacebook,
+			(player, message) =>
 			{
-				LoginIndex index = GetView <LoginIndex> ("Index");
-				index.ShowErrorMessage ();
-			}
-			else
-			{
-				pw.SetPlayer (username, true);
-				pw.SetPropertyOnPlayer ("player", player.ToString ());
+				this.player = player;
 
-				EnterInternalMainMenu (username);
-			}
-		});
+				if (player == null)
+				{
+					LoginIndex index = GetView <LoginIndex> ("Index");
+					index.ShowErrorMessage ();
+				}
+				else
+				{
+					pw.SetPlayer (username, true);
+					pw.SetPropertyOnPlayer ("player", player.ToString ());
+
+					EnterInternalMainMenu (username);
+				}
+			});
+		}
 	}
 
 	public void EnterInternalMainMenu (string username)

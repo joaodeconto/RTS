@@ -1,6 +1,8 @@
 #define DEBUG_DATABASE_CONNECTION
 
 using UnityEngine;
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -43,25 +45,30 @@ public class Database : MonoBehaviour
 		DatabaseCallStack = new Stack<DatabaseCall> ();
 	}
 
-	public void Create (object obj, CallbackDatabaseCall cdc)
+	public void Create (object sendObj, CallbackDatabaseCall cdc)
 	{
-		Create (obj, null, cdc);
+		Create (sendObj, sendObj.GetType (), null, cdc);
 	}
 
-	public void Create (object obj, string requestName, CallbackDatabaseCall cdc)
+	public void Create (object sendObj, string requestName, CallbackDatabaseCall cdc)
+	{
+		Create (sendObj, sendObj.GetType (), requestName, cdc);
+	}
+
+	public void Create (object sendObj, Type dbType, string requestName, CallbackDatabaseCall cdc)
 	{
 		Init ();
 
 		DatabaseCall dc = new DatabaseCall ().Init ();
 
-		dc.objType = obj.GetType ();
+		dc.objType = dbType;
 		dc.cdc     = cdc;
 
 		if (string.IsNullOrEmpty (requestName))
-			requestName = "create-" + obj.GetType ().Name.ToLower ();
+			requestName = "create-" + dbType.Name.ToLower ();
 
 		dc.parameters.Add ("request", requestName);
-		dc.parameters.Add ("data", JsonConvert.SerializeObject(obj));
+		dc.parameters.Add ("data", JsonConvert.SerializeObject(sendObj));
 
 #if DEBUG_DATABASE_CONNECTION
 		Debug.Log ("parameters[\"request\"]: " + dc.parameters["request"]);
@@ -74,25 +81,30 @@ public class Database : MonoBehaviour
 			StartCoroutine (_SendData ());
 	}
 
-	public void Read (object obj, CallbackDatabaseCall cdc)
+	public void Read (object sendObj, CallbackDatabaseCall cdc)
 	{
-		Read (obj, null, cdc);
+		Read (sendObj, sendObj.GetType (), null, cdc);
 	}
 
-	public void Read (object obj, string requestName, CallbackDatabaseCall cdc)
+	public void Read (object sendObj, string requestName, CallbackDatabaseCall cdc)
+	{
+		Read (sendObj, sendObj.GetType (), requestName, cdc);
+	}
+
+	public void Read (object sendObj, Type dbType, string requestName, CallbackDatabaseCall cdc)
 	{
 		Init ();
 
 		DatabaseCall dc = new DatabaseCall ().Init ();
 
-		dc.objType = obj.GetType ();
+		dc.objType = dbType;
 		dc.cdc     = cdc;
 
 		if (string.IsNullOrEmpty (requestName))
-			requestName = "read-" + obj.GetType ().Name.ToLower ();
+			requestName = "read-" + dbType.Name.ToLower ();
 
 		dc.parameters.Add ("request", requestName);
-		dc.parameters.Add ("data", JsonConvert.SerializeObject(obj));
+		dc.parameters.Add ("data", JsonConvert.SerializeObject(sendObj));
 
 #if DEBUG_DATABASE_CONNECTION
 		Debug.Log ("parameters[\"request\"]: " + dc.parameters["request"]);
@@ -105,25 +117,30 @@ public class Database : MonoBehaviour
 			StartCoroutine (_SendData ());
 	}
 
-	public void Update (object obj, CallbackDatabaseCall cdc)
+	public void Update (object sendObj, CallbackDatabaseCall cdc)
 	{
-		Update (obj, null, cdc);
+		Update (sendObj, sendObj.GetType (), null, cdc);
 	}
 
-	public void Update (object obj, string requestName, CallbackDatabaseCall cdc)
+	public void Update (object sendObj, string requestName, CallbackDatabaseCall cdc)
+	{
+		Update (sendObj, sendObj.GetType (), requestName, cdc);
+	}
+
+	public void Update (object sendObj, Type dbType, string requestName, CallbackDatabaseCall cdc)
 	{
 		Init ();
 
 		DatabaseCall dc = new DatabaseCall ().Init ();
 
-		dc.objType = obj.GetType ();
+		dc.objType = dbType;
 		dc.cdc     = cdc;
 
 		if (string.IsNullOrEmpty (requestName))
-			requestName = "update-" + obj.GetType ().Name.ToLower ();
+			requestName = "update-" + dbType.Name.ToLower ();
 
 		dc.parameters.Add ("request", requestName);
-		dc.parameters.Add ("data", JsonConvert.SerializeObject(obj));
+		dc.parameters.Add ("data", JsonConvert.SerializeObject(sendObj));
 
 #if DEBUG_DATABASE_CONNECTION
 		Debug.Log ("parameters[\"request\"]: " + dc.parameters["request"]);
@@ -136,25 +153,30 @@ public class Database : MonoBehaviour
 			StartCoroutine (_SendData ());
 	}
 
-	public void Delete (object obj, CallbackDatabaseCall cdc)
+	public void Delete (object sendObj, CallbackDatabaseCall cdc)
 	{
-		Delete (obj, null, cdc);
+		Delete (sendObj, sendObj.GetType (), null, cdc);
 	}
 
-	public void Delete (object obj, string requestName, CallbackDatabaseCall cdc)
+	public void Delete (object sendObj, string requestName, CallbackDatabaseCall cdc)
+	{
+		Delete (sendObj, sendObj.GetType (), requestName, cdc);
+	}
+
+	public void Delete (object sendObj, Type dbType, string requestName, CallbackDatabaseCall cdc)
 	{
 		Init ();
 
 		DatabaseCall dc = new DatabaseCall ().Init ();
 
-		dc.objType = obj.GetType ();
+		dc.objType = dbType;
 		dc.cdc     = cdc;
 
 		if (string.IsNullOrEmpty (requestName))
-			requestName = "delete-" + obj.GetType ().Name.ToLower ();
+			requestName = "delete-" + dbType.Name.ToLower ();
 
 		dc.parameters.Add ("request", requestName);
-		dc.parameters.Add ("data", JsonConvert.SerializeObject(obj));
+		dc.parameters.Add ("data", JsonConvert.SerializeObject(sendObj));
 
 #if DEBUG_DATABASE_CONNECTION
 		Debug.Log ("parameters[\"request\"]: " + dc.parameters["request"]);
@@ -210,10 +232,8 @@ public class Database : MonoBehaviour
 				obj = www.text;
 			}
 
-			if (dc.cdc == null)
-			{
-				Debug.Log ("cdc é nulo?");
-			}
+			//if (dc.cdc == null) { Debug.Log ("cdc é nulo?"); }
+
 			dc.cdc (obj);
 		}
 
