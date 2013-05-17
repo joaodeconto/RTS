@@ -1,0 +1,35 @@
+using UnityEngine;
+using System.Collections;
+
+namespace Model {
+	public class DataScore : MonoBehaviour
+	{
+		public int IdScore;
+		public int IdPlayer;
+		public int IdPlayerBattle;
+		public int NrPoints;
+		public string SzScoreName;
+		public string SzDetailedInformation;
+
+		public DataScore () { }
+
+		public DataScore (int IdPlayer, string ScoreName, int points)
+		{
+			this.IdPlayer    = IdPlayer;
+			this.SzScoreName = ScoreName;
+			this.NrPoints    = points;
+		}
+
+		public DB.DataScore ToDatabaseModel ()
+		{
+			DB.DataScore ds = new DB.DataScore ();
+			ds.IdScore               = this.IdScore.ToString ();
+			ds.IdPlayer              = this.IdPlayer.ToString ();
+			ds.IdPlayerBattle        = this.IdPlayerBattle.ToString ();
+			ds.NrPoints              = this.NrPoints.ToString ();
+			ds.SzScoreName           = this.SzScoreName;
+			ds.SzDetailedInformation = this.SzDetailedInformation;
+			return ds;
+		}
+	}
+}
