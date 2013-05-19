@@ -40,6 +40,7 @@ public class AudioOptions : MonoBehaviour
 		dcb.Init(null, null, null,
 		(ht_dcb, sliderValue) => 
 		{
+			Debug.Log ("HERE: Music");
 			VolumeController.musicVolume = sliderValue;
 			volumeController.SetAllAudios ();
 		});
@@ -66,6 +67,7 @@ public class AudioOptions : MonoBehaviour
 		dcb.Init(null, null, null,
 		(ht_dcb, sliderValue) => 
 		{
+			Debug.Log ("HERE: Sound");
 			VolumeController.soundVolume = sliderValue;
 			volumeController.SetAllAudios ();
 		});
@@ -92,6 +94,7 @@ public class AudioOptions : MonoBehaviour
 		dcb.Init(null, null, null,
 		(ht_dcb, sliderValue) => 
 		{
+			Debug.Log ("HERE: Voice");
 			VolumeController.voiceVolume = sliderValue;
 			volumeController.SetAllAudios ();
 		});

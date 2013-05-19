@@ -18,8 +18,12 @@ public class CameraBounds : MonoBehaviour {
 	
 	private Vector3 positionInitial;
 	private bool wasInitialized;
+	private float fieldOfViewInitial;
 	
-	void Start () {
+	void Start ()
+	{
+		fieldOfViewInitial = camera.fieldOfView;
+		
 		// Pegando posição inicial
 		positionInitial = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		
@@ -28,7 +32,7 @@ public class CameraBounds : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		// Cálculo em torno da área que está no cubo ciano
+		// Cálculo em torno da área que está no cubo ciano	
 		transform.position = ClampScenario (transform.position);
 	}
 	
@@ -38,9 +42,9 @@ public class CameraBounds : MonoBehaviour {
 //		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min + (relativeSize/camera.orthographicSize), scenario.x.max + (relativeSize/camera.orthographicSize)), 
 //		                    height, 
 //		                    Mathf.Clamp (position.z, scenario.z.min + (relativeSize/camera.orthographicSize), scenario.z.max + (relativeSize/camera.orthographicSize)));
-		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min, scenario.x.max), 
+		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min, scenario.x.max) * (camera.fieldOfView / fieldOfViewInitial), 
 		                    height, 
-		                    Mathf.Clamp (position.z, scenario.z.min, scenario.z.max));
+		                    Mathf.Clamp (position.z, scenario.z.min, scenario.z.max) * (camera.fieldOfView / fieldOfViewInitial));
 		
 	}
 	
@@ -51,18 +55,35 @@ public class CameraBounds : MonoBehaviour {
 		
 		// Desenhando um WireCube do scenario
 		// (Cubo feito na mão pois o DrawWireCube ele escala só um eixo e não um mínimo e máximo)
-		Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min));
-		Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max));
-		Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max));
-		Gizmos.DrawLine((Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max));
-		Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min));
-		Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
-		Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
-		Gizmos.DrawLine((Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
-		Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max), (Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
-		Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min));
-		Gizmos.DrawLine((Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
-		Gizmos.DrawLine((Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min));
-		
+		if (Application.isPlaying)
+		{
+			Gizmos.DrawLine((Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.min * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max * (camera.fieldOfView / fieldOfViewInitial)));
+			Gizmos.DrawLine((Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)), (Vector3.right * scenario.x.max * (camera.fieldOfView / fieldOfViewInitial)) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min * (camera.fieldOfView / fieldOfViewInitial)));
+		}
+		else
+		{
+			Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max));
+			Gizmos.DrawLine((Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
+			Gizmos.DrawLine((Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max), (Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
+			Gizmos.DrawLine((Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.min) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min));
+			Gizmos.DrawLine((Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.max), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.max));
+			Gizmos.DrawLine((Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.min) + (Vector3.forward * scenario.z.min), (Vector3.right * scenario.x.max) + (Vector3.up * scenario.y.max) + (Vector3.forward * scenario.z.min));
+		}
 	}
 }
