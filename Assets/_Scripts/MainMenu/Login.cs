@@ -61,7 +61,9 @@ public class Login : IController
 		}
 		else
 		{
-			ComponentGetter.Get<PlayerDAO>().GetPlayer (username, password, idFacebook,
+			PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
+
+			playerDao.GetPlayer (username, password, idFacebook,
 			(player, message) =>
 			{
 				this.player = player;
