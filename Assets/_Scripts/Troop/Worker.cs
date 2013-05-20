@@ -223,6 +223,8 @@ public class Worker : Unit
 				{
 					// Patch para tirar travada ¬¬
 					Move (transform.position - transform.forward);
+					
+					Move (pathfindTarget);
 
 					resourceWorker[0].extractingObject.SetActive (false);
 
@@ -250,76 +252,10 @@ public class Worker : Unit
 				}
 				break;
 			case WorkerState.None:
+			
 				CheckConstructFactory ();
 
-				if (resource != null)
-				{
-					if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.capsuleCollider.radius)
-					{
-						pathfind.Stop ();
-
-						if (resource.AddWorker (this))
-						{
-							int i = 0;
-							foreach (ResourceWorker rw in resourceWorker)
-							{
-								if (rw.type == resource.type)
-								{
-									resourceId = i;
-									rw.extractingObject.SetActive (true);
-									resourceType = resource.type;
-								}
-							}
-
-							lastResource = resource;
-
-							workerState = WorkerState.Extracting;
-						}
-						else
-						{
-							if (unitState != Unit.UnitState.Idle)
-							{
-								unitState = Unit.UnitState.Idle;
-
-								Collider[] nearbyResources = Physics.OverlapSphere (transform.position, distanceView);
-
-								if (nearbyResources.Length == 0) return;
-
-								Resource.Type typeResource = resource.type;
-
-								Resource resourceSelected = null;
-								for (int i = 0; i != nearbyResources.Length; i++)
-								{
-									if (nearbyResources[i].GetComponent<Resource> ())
-									{
-										if (nearbyResources[i].GetComponent<Resource> ().type == typeResource)
-										{
-											if (nearbyResources[i].GetComponent<Resource> ().IsLimitWorkers)
-												continue;
-
-											if (resourceSelected == null) resourceSelected = nearbyResources[i].GetComponent<Resource> ();
-											else
-											{
-												if (Vector3.Distance (transform.position, nearbyResources[i].transform.position) <
-														Vector3.Distance (transform.position, resourceSelected.transform.position))
-												{
-													resourceSelected = nearbyResources[i].GetComponent<Resource> ();
-												}
-											}
-										}
-									}
-								}
-
-								if (resourceSelected == null) return;
-								else
-								{
-									resource = resourceSelected;
-									Move (resource.transform.position);
-								}
-							}
-						}
-					}
-				}
+				CheckResource ();
 
 				base.IAStep ();
 				break;
@@ -693,6 +629,78 @@ public class Worker : Unit
 			return false;
 
 		return true;
+	}
+	
+	void CheckResource ()
+	{
+		if (resource != null)
+		{
+			if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.capsuleCollider.radius)
+			{
+				pathfind.Stop ();
+
+				if (resource.AddWorker (this))
+				{
+					int i = 0;
+					foreach (ResourceWorker rw in resourceWorker)
+					{
+						if (rw.type == resource.type)
+						{
+							resourceId = i;
+							rw.extractingObject.SetActive (true);
+							resourceType = resource.type;
+						}
+					}
+
+					lastResource = resource;
+
+					workerState = WorkerState.Extracting;
+				}
+				else
+				{
+					if (unitState != Unit.UnitState.Idle)
+					{
+						unitState = Unit.UnitState.Idle;
+
+						Collider[] nearbyResources = Physics.OverlapSphere (transform.position, distanceView);
+
+						if (nearbyResources.Length == 0) return;
+
+						Resource.Type typeResource = resource.type;
+
+						Resource resourceSelected = null;
+						for (int i = 0; i != nearbyResources.Length; i++)
+						{
+							if (nearbyResources[i].GetComponent<Resource> ())
+							{
+								if (nearbyResources[i].GetComponent<Resource> ().type == typeResource)
+								{
+									if (nearbyResources[i].GetComponent<Resource> ().IsLimitWorkers)
+										continue;
+
+									if (resourceSelected == null) resourceSelected = nearbyResources[i].GetComponent<Resource> ();
+									else
+									{
+										if (Vector3.Distance (transform.position, nearbyResources[i].transform.position) <
+												Vector3.Distance (transform.position, resourceSelected.transform.position))
+										{
+											resourceSelected = nearbyResources[i].GetComponent<Resource> ();
+										}
+									}
+								}
+							}
+						}
+
+						if (resourceSelected == null) return;
+						else
+						{
+							resource = resourceSelected;
+							Move (resource.transform.position);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	// GIZMOS

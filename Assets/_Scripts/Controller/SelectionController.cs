@@ -127,6 +127,11 @@ public class SelectionController : MonoBehaviour
 					if (leftCtrl) //return true
 					{
 						if (!leftShift) statsController.DeselectAllStats ();
+						else
+						{
+							if (statsController.statsTypeSelected != StatsController.StatsTypeSelected.Unit)
+								statsController.DeselectAllStats ();
+						}
 						
 						string category = selectedUnit.category;
 						foreach (IStats stat in statsController.myStats)
@@ -143,8 +148,9 @@ public class SelectionController : MonoBehaviour
 
 					if (leftShift)
 					{
-						if (statsController.statsTypeSelected != StatsController.StatsTypeSelected.Unit)
+//						if (statsController.statsTypeSelected != StatsController.StatsTypeSelected.Unit)
 							statsController.DeselectAllStats ();
+							
 						statsController.ToogleSelection (selectedUnit);
 					}
 					else
@@ -152,7 +158,7 @@ public class SelectionController : MonoBehaviour
 						if (touchController.DoubleClick &&
 							selectedUnit == lastStatClick)
 						{
-							if (!leftShift) statsController.DeselectAllStats ();
+							statsController.DeselectAllStats ();
 						
 							string category = selectedUnit.category;
 							foreach (IStats stat in statsController.myStats)
@@ -200,7 +206,31 @@ public class SelectionController : MonoBehaviour
 					{
 						if (factorySelected.wasBuilt)
 						{
-							statsController.DeselectAllStats ();
+							if (!leftShift)
+							{
+								statsController.DeselectAllStats ();
+							}
+							else
+							{
+								if (statsController.selectedStats.Count != 0)
+								{
+									if (factorySelected.category !=	statsController.selectedStats[0].category ||
+										!factorySelected.wasBuilt)
+									{
+										statsController.DeselectAllStats ();
+									}
+									
+									if (statsController.statsTypeSelected == StatsController.StatsTypeSelected.Factory)
+									{
+										FactoryBase fc = statsController.selectedStats[0] as FactoryBase;
+										
+										if (!fc.wasBuilt)
+										{
+											statsController.DeselectAllStats ();
+										}
+									}
+								}
+							}
 							
 							string category = factorySelected.category;
 							foreach (IStats stat in statsController.myStats)
@@ -224,7 +254,29 @@ public class SelectionController : MonoBehaviour
 					if (touchController.DoubleClick &&
 						factorySelected == lastStatClick)
 					{
-						statsController.DeselectAllStats ();
+						if (!leftShift)
+						{
+							statsController.DeselectAllStats ();
+						}
+						else
+						{
+							if (statsController.selectedStats.Count != 0)
+							{
+								if (factorySelected.category !=	statsController.selectedStats[0].category ||
+									!factorySelected.wasBuilt)
+									statsController.DeselectAllStats ();
+								
+								if (statsController.statsTypeSelected == StatsController.StatsTypeSelected.Factory)
+								{
+									FactoryBase fc = statsController.selectedStats[0] as FactoryBase;
+									
+									if (fc.wasBuilt)
+									{
+										statsController.DeselectAllStats ();
+									}
+								}
+							}
+						}
 							
 						string category = factorySelected.category;
 						foreach (IStats stat in statsController.myStats)
@@ -240,11 +292,40 @@ public class SelectionController : MonoBehaviour
 							{
 								statsController.SelectStat (stat, true);
 							}
+							
+							if (statsController.statsTypeSelected == StatsController.StatsTypeSelected.Factory)
+							{
+								FactoryBase fc = statsController.selectedStats[0] as FactoryBase;
+								
+								if (fc.wasBuilt)
+								{
+									statsController.DeselectAllStats ();
+								}
+							}
 						}
 					}
 					else
 					{
-						statsController.DeselectAllStats ();
+						if (!leftShift) statsController.DeselectAllStats ();
+						else
+						{
+							if (statsController.selectedStats.Count != 0)
+							{
+								if (factorySelected.category !=	statsController.selectedStats[0].category ||
+									!factorySelected.wasBuilt)
+									statsController.DeselectAllStats ();
+
+								if (statsController.statsTypeSelected == StatsController.StatsTypeSelected.Factory)
+								{
+									FactoryBase fc = statsController.selectedStats[0] as FactoryBase;
+									
+									if (fc.wasBuilt)
+									{
+										statsController.DeselectAllStats ();
+									}
+								}
+							}
+						}
 						statsController.SelectStat (factorySelected, true);
 						statsController.PlaySelectSound ();
 						
