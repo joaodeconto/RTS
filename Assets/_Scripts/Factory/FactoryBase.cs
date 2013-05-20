@@ -61,11 +61,11 @@ public class FactoryBase : IStats
 	public Animation ControllerAnimation { get; private set; }
 
 	public bool wasBuilt { get; private set; }
-	
+
 	protected HUDController hudController;
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;
-	
+
 	[HideInInspector]
 	public bool wasVisible = false;
 	[HideInInspector]
@@ -121,10 +121,10 @@ public class FactoryBase : IStats
 		buildingState = BuildingState.Finished;
 
 		enabled = playerUnit;
-		
+
 		Invoke ("SendMessageInstance", 0.1f);
 	}
-	
+
 	void SendMessageInstance ()
 	{
 		if (GetComponent<GhostFactory> () == null)
@@ -155,7 +155,7 @@ public class FactoryBase : IStats
 			unitToCreate = listedToCreate[0];
 			timeToCreate = unitToCreate.timeToCreate;
 			inUpgrade = true;
-			
+
 			if (Selected) buildingSlider.gameObject.SetActive(true);
 		}
 		else
@@ -196,7 +196,7 @@ public class FactoryBase : IStats
 	public virtual void SyncAnimation ()
 	{
 		if (!IsVisible) return;
-		
+
 		buildingObjects.baseObject.SetActive (buildingState == BuildingState.Base);
 		buildingObjects.unfinishedObject.SetActive (buildingState == BuildingState.Unfinished);
 		buildingObjects.finishedObject.SetActive (buildingState == BuildingState.Finished);
@@ -229,6 +229,16 @@ public class FactoryBase : IStats
 
 		eventManager.AddEvent("create unit", unitName, unit.guiTextureName);
 
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+		Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+
+		Debug.Log ("battle: " + battle);
+		//Score
+		Score.AddScorePoints ("Units created", 1);
+		Score.AddScorePoints ("Units created", 1, battle.IdBattle);
+		Score.AddScorePoints (unitName + " created", 1);
+		Score.AddScorePoints (unitName + " created", 1, battle.IdBattle);
+
 		if (!hasWaypoint) return;
 
 		// Look At
@@ -259,14 +269,14 @@ public class FactoryBase : IStats
 		statsController.RemoveStats (this);
 
 		model.animation.Play ();
-		
+
 		if (Selected)
 		{
 			hudController.DestroyInspector ("factory");
-			
+
 			Deselect ();
 		}
-		
+
 //		yield return StartCoroutine (model.animation.WaitForAnimation (model.animation.clip));
 
 		yield return new WaitForSeconds (4f);
@@ -309,11 +319,11 @@ public class FactoryBase : IStats
 		{
 			obj.SetActive (true);
 		}
-		
+
 		buildingState = BuildingState.Base;
 
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
-		
+
 		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
 	}
 
@@ -376,11 +386,11 @@ public class FactoryBase : IStats
 			return false;
 		}
 	}
-	
+
 	public override void Select ()
 	{
 		base.Select ();
-		
+
 		if(unitToCreate != null)
 			buildingSlider.gameObject.SetActiveRecursively(true);
 
@@ -388,9 +398,9 @@ public class FactoryBase : IStats
 		healthBar.SetTarget (this);
 
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
-		
+
 		if (!playerUnit) return;
-		
+
 		if (wasBuilt)
 		{
 			if (!hasWaypoint) return;
@@ -413,18 +423,18 @@ public class FactoryBase : IStats
 														{
 															List<FactoryBase> factorys = new List<FactoryBase> ();
 															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
-															
+
 															foreach (IStats stat in statsController.selectedStats)
 															{
 																FactoryBase factory = stat as FactoryBase;
-																
+
 																if (factory == null) continue;
-																
+
 																factorys.Add (factory);
 															}
-					
+
 															int i = 0, factoryChoose = 0, numberToCreate = -1;
-															
+
 															foreach (FactoryBase factory in factorys)
 															{
 																if (numberToCreate == -1)
@@ -439,13 +449,13 @@ public class FactoryBase : IStats
 																}
 																i++;
 															}
-					
+
 															if (!factorys[factoryChoose].OverLimitCreateUnit)
 																factorys[factoryChoose].EnqueueUnitToCreate (unitFactory.unit);
 															else
 																eventManager.AddEvent("reach enqueued units");
-					
-															
+
+
 //															FactoryBase factory     = this;
 //															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
 //
@@ -479,10 +489,10 @@ public class FactoryBase : IStats
 			IStats.GridItemAttributes gia = new GridItemAttributes();
 			gia.gridXIndex = 0;
 			gia.gridYIndex = 0;
-			
+
 			Hashtable ht = new Hashtable();
 			ht["actionType"] = "cancel";
-			
+
 			hudController.CreateButtonInInspector ( "cancel",
 													gia.Position,
 													ht,
@@ -498,7 +508,7 @@ public class FactoryBase : IStats
 	public override void Deselect ()
 	{
 		base.Deselect ();
-		
+
 		buildingSlider.gameObject.SetActive(false);
 
 		hudController.DestroySelected (transform);
@@ -603,14 +613,14 @@ public class FactoryBase : IStats
 			return model.transform.parent != null;
 		}
 	}
-	
+
 	// RPCs
 	[RPC]
 	public override void InstantiatParticleDamage ()
 	{
 		base.InstantiatParticleDamage ();
 	}
-	
+
 	[RPC]
 	public override void SendRemove ()
 	{

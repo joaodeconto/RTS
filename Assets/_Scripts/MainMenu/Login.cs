@@ -50,14 +50,14 @@ public class Login : IController
 
 		if (!UseRealLogin)
 		{
-			this.player = new Model.Player () { SzName			  = username,
+			this.player = new Model.Player () { IdPlayer		  = 5,
+												SzName			  = username,
 												SzPassword		  = password,
 												IdFacebookAccount = idFacebook };
 
 			pw.SetPlayer (username, true);
 			pw.SetPropertyOnPlayer ("player", player.ToString ());
 			EnterInternalMainMenu (username);
-
 		}
 		else
 		{

@@ -1,4 +1,6 @@
 using UnityEngine;
+
+using System;
 using System.Collections;
 
 using Visiorama;
@@ -96,8 +98,8 @@ public class NewGame : MonoBehaviour
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
 		PlayerDAO playerDao = ComponentGetter.Get <PlayerDAO> ();
 
-		playerBattleDao.CreatePlayerBattle (player, maxPlayers, battleTypeName,
-		(playerBattle, message) =>
+		playerBattleDao.CreateBattle (battleTypeName, DateTime.Now, maxPlayers,
+		(battle) =>
 		{
 			//Debug.Log ("message: " + message);
 			//Debug.Log ("playerBattle: " + playerBattle);
@@ -106,13 +108,13 @@ public class NewGame : MonoBehaviour
 			bool isVisible = true, isOpen = true;
 
 			Hashtable properties = new Hashtable ();
-			properties.Add ("battle", playerBattle.battle.ToString ());
+			properties.Add ("battle", battle.ToString ());
 			pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers, properties);
 
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
 
-			Debug.Log (pw.GetPropertyOnPlayer ("player"));
+			Debug.Log ("battle: " + properties["battle"]);
 
 			GameplayManager.mode = mode;
 
@@ -142,8 +144,7 @@ public class NewGame : MonoBehaviour
 			},
 			(playersReady, nMaxPlayers) =>
 			{
-				messageActiveGame.text = "Wating For Other Players - "
-											+ playersReady + "/" + nMaxPlayers;
+				messageActiveGame.text = "Waiting For Other Players - " + playersReady + "/" + nMaxPlayers;
 			});
 		});
 	}

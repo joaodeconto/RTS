@@ -32,6 +32,11 @@ namespace DB {
 
 			return battle;
 		}
+
+		public override string ToString ()
+		{
+			return JsonConvert.SerializeObject (this);
+		}
 	}
 
 	public class BattleType
@@ -49,6 +54,11 @@ namespace DB {
 			battleType.SzBattleTypeName = this.SzBattleTypeName;
 
 			return battleType;
+		}
+
+		public override string ToString ()
+		{
+			return JsonConvert.SerializeObject (this);
 		}
 	}
 
@@ -78,6 +88,11 @@ namespace DB {
 				playerBattle.battle   = this.battle.ToModel ();
 
 			return playerBattle;
+		}
+
+		public override string ToString ()
+		{
+			return JsonConvert.SerializeObject (this);
 		}
 	}
 }
