@@ -213,6 +213,12 @@ public class Worker : Unit
 
 					resourceId = -1;
 
+					PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+					Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+
+					Score.AddScorePoints ("Resources gathered", numberMaxGetResources);
+					Score.AddScorePoints ("Resources gathered", numberMaxGetResources, battle.IdBattle);
+
 					ResetPathfindValue ();
 				}
 				break;
@@ -223,7 +229,7 @@ public class Worker : Unit
 				{
 					// Patch para tirar travada ¬¬
 					Move (transform.position - transform.forward);
-					
+
 					Move (pathfindTarget);
 
 					resourceWorker[0].extractingObject.SetActive (false);
@@ -252,7 +258,7 @@ public class Worker : Unit
 				}
 				break;
 			case WorkerState.None:
-			
+
 				CheckConstructFactory ();
 
 				CheckResource ();
@@ -515,9 +521,9 @@ public class Worker : Unit
 		foreach (IStats stat in statsController.myStats)
 		{
 			FactoryBase fb = stat as FactoryBase;
-			
+
 			if (fb == null) continue;
-			
+
 			if (gameplayManager.IsSameTeam (fb))
 			{
 				if (fb.receiveResource == resourceType)
@@ -533,9 +539,9 @@ public class Worker : Unit
 		foreach (IStats stat in statsController.myStats)
 		{
 			FactoryBase fb = stat as FactoryBase;
-			
+
 			if (fb == null) continue;
-			
+
 			if (gameplayManager.IsSameTeam (fb))
 			{
 				if (fb.GetType () == type)
@@ -630,7 +636,7 @@ public class Worker : Unit
 
 		return true;
 	}
-	
+
 	void CheckResource ()
 	{
 		if (resource != null)
