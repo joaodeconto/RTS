@@ -253,7 +253,7 @@ public class MiniMapController : MonoBehaviour
 
 		_go.GetComponent<UISlicedSprite>().color = teamColor;
 
-		_go.GetComponent<UISprite> ().depth = 4;
+		_go.GetComponent<UISprite> ().depth = 10;
 
 		UpdatePosition(_go, trns);
 

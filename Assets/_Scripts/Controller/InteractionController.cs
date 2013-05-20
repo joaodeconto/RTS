@@ -193,8 +193,7 @@ public class InteractionController : MonoBehaviour
 						worker.SetResource (null);
 					}
 				}
-				if (worker.IsRepairing ||
-					worker.IsBuilding)
+				if (worker.HasFactory ())
 				{
 					worker.SetMoveToFactory (null);
 				}
