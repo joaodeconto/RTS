@@ -282,7 +282,25 @@ public class FactoryBase : IStats
 		yield return new WaitForSeconds (4f);
 		if (IsNetworkInstantiate)
 		{
-			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
+			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+
+			if (photonView.isMine)
+			{
+				PhotonNetwork.Destroy(gameObject);
+
+				Score.AddScorePoints ("Buildings lost", 1);
+				Score.AddScorePoints ("Buildings lost", 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + " lost", 1);
+				Score.AddScorePoints (this.category + " lost", 1, battle.IdBattle);
+			}
+			else
+			{
+				Score.AddScorePoints ("Destroyed buildings", 1);
+				Score.AddScorePoints ("Destroyed buildings", 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + " destroyed", 1);
+				Score.AddScorePoints (this.category + " destroyed", 1, battle.IdBattle);
+			}
 		}
 		else Destroy (gameObject);
 	}
@@ -360,6 +378,14 @@ public class FactoryBase : IStats
 
 				eventManager.AddEvent("building finish", factoryName, this.guiTextureName);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
+
+				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+				Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+
+				Score.AddScorePoints ("Buildings created", 1);
+				Score.AddScorePoints ("Buildings created", 1, battle.IdBattle);
+				Score.AddScorePoints (factoryName + " created", 1);
+				Score.AddScorePoints (factoryName + " created", 1, battle.IdBattle);
 			}
 			return false;
 		}

@@ -28,7 +28,9 @@ public class Score : MonoBehaviour
 
 		if (battleId != -1) ds.IdBattle = battleId;
 
-		dicDataScore.Add (ScoreName, ds);
+		string scoreKey = GetScoreKey (ScoreName, battleId);
+
+		dicDataScore.Add (scoreKey, ds);
 	}
 
 	private string GetScoreKey (string ScoreName, int battleId)
@@ -36,7 +38,7 @@ public class Score : MonoBehaviour
 		return ScoreName + " - " + battleId;
 	}
 
-	public void _AddScorePoints (string ScoreName, int points, int battleId = -1)
+	public void _AddScorePoints (string ScoreName, int points = 1, int battleId = -1)
 	{
 		string scoreKey = GetScoreKey (ScoreName, battleId);
 

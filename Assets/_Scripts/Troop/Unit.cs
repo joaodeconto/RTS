@@ -741,7 +741,26 @@ public class Unit : IStats
 
 		if (IsNetworkInstantiate)
 		{
-			if (photonView.isMine) PhotonNetwork.Destroy(gameObject);
+			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+
+			if (photonView.isMine)
+			{
+				PhotonNetwork.Destroy(gameObject);
+
+				Score.AddScorePoints ("Units lost", 1);
+				Score.AddScorePoints ("Units lost", 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + " lost", 1);
+				Score.AddScorePoints (this.category + " lost", 1, battle.IdBattle);
+			}
+			else
+			{
+				Score.AddScorePoints ("Units killed", 1);
+				Score.AddScorePoints ("Units killed", 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + " killed", 1);
+				Score.AddScorePoints (this.category + " killed", 1, battle.IdBattle);
+			}
+
 		}
 		else Destroy (gameObject);
 	}
