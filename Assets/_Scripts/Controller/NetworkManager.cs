@@ -50,7 +50,7 @@ public class NetworkManager : Photon.MonoBehaviour {
         }
 		
 		GameplayManager gameplayManager = Visiorama.ComponentGetter.Get<GameplayManager> ();
-		if (GameplayManager.mode == GameplayManager.Mode.Allies)
+		if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 		{
 			gameplayManager.photonView.RPC ("Defeat", PhotonNetwork.player,
 				player.customProperties["team"], 

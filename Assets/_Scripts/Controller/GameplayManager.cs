@@ -41,8 +41,8 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public enum Mode
 	{
-		Normal,
-		Allies
+		Deathmatch,
+		Cooperative
 	}
 
 	public static Mode mode;
@@ -81,7 +81,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		if (!PhotonNetwork.offlineMode)
 		{
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
-			if (mode == Mode.Allies)
+			if (mode == Mode.Cooperative)
 			{
 				Allies = (int)PhotonNetwork.player.customProperties["allies"];
 			}
@@ -106,7 +106,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 		}
 
-		if (mode == Mode.Allies)
+		if (mode == Mode.Cooperative)
 		{
 			alliesNumberOfStats.Add (new AllyClass (0));
 			alliesNumberOfStats.Add (new AllyClass (1));
@@ -194,7 +194,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public bool SameEntity (int teamID, int ally)
 	{
-		if (GameplayManager.mode == Mode.Allies)
+		if (GameplayManager.mode == Mode.Cooperative)
 			return IsAlly (ally);
 		else
 			return IsSameTeam (teamID);
@@ -308,7 +308,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 		switch (GameplayManager.mode)
 		{
-		case Mode.Allies:
+		case Mode.Cooperative:
 			if (alliesNumberOfStats[ally].teams.Contains(teamID))
 			{
 				alliesNumberOfStats[ally].teams.Remove (teamID);
@@ -326,10 +326,12 @@ public class GameplayManager : Photon.MonoBehaviour
 					winGame = true;
 					loseGame = false;
 				}
+				
+				SendMessage ("EndMatch");
 			}
 			break;
 
-		case Mode.Normal:
+		case Mode.Deathmatch:
 			loserTeams++;
 
 			if (MyTeam == teamID)
@@ -341,6 +343,11 @@ public class GameplayManager : Photon.MonoBehaviour
 				&& !loseGame)
 			{
 				winGame = true;
+			}
+			
+			if (loserTeams == numberOfTeams-1)
+			{
+				SendMessage ("EndMatch");
 			}
 			break;
 
@@ -429,8 +436,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 	}
 
-	void EndGame ()
+	void EndMatch ()
 	{
-//		network.photonView.RPC ("ChangeLevel", PhotonTargets.All, 0);
+		
 	}
 }

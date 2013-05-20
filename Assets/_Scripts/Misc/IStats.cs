@@ -244,7 +244,7 @@ public abstract class IStats : Photon.MonoBehaviour
 		if (playerUnit)
 		{
 			team = (int)PhotonNetwork.player.customProperties["team"];
-			if (GameplayManager.mode == GameplayManager.Mode.Allies)
+			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 				ally = (int)PhotonNetwork.player.customProperties["allies"];
 		}
 		else
@@ -252,7 +252,7 @@ public abstract class IStats : Photon.MonoBehaviour
 			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
 			
 			team = (int)other.customProperties["team"];
-			if (GameplayManager.mode == GameplayManager.Mode.Allies)
+			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 				ally = (int)other.customProperties["allies"];
 		}
 	}

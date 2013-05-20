@@ -85,7 +85,7 @@ public class InteractionController : MonoBehaviour
 
 		if (hit.CompareTag ("Factory"))
 		{
-			if(GameplayManager.mode == GameplayManager.Mode.Allies)
+			if(GameplayManager.mode == GameplayManager.Mode.Cooperative)
 			{
 				if (!gameplayManager.IsAlly (hit.GetComponent<FactoryBase> ()))
 				{
@@ -124,7 +124,7 @@ public class InteractionController : MonoBehaviour
 		}
 		else if (hit.CompareTag ("Unit"))
 		{
-			if(GameplayManager.mode == GameplayManager.Mode.Allies)
+			if(GameplayManager.mode == GameplayManager.Mode.Cooperative)
 			{
 				if (!gameplayManager.IsAlly (hit.GetComponent<Unit> ()))
 				{

@@ -61,7 +61,7 @@ public class VersusScreen : MonoBehaviour
 			i++;
 		}
 		
-		if (GameplayManager.mode == GameplayManager.Mode.Allies)
+		if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 		{
 			int ally = (int)PhotonNetwork.player.customProperties["allies"];
 			
