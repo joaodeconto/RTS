@@ -14,7 +14,7 @@ public class DataScoreDAO : MonoBehaviour
 	void Awake () { db = ComponentGetter.Get <Database> (); }
 
 	public delegate void DataScoreDAODelegateList (Dictionary <string, Model.DataScore> scores);
-	public void LoadScoresFromPlayer (DB.Player player, DataScoreDAODelegateList callback)
+	public void LoadAllPlayerScores (DB.Player player, DataScoreDAODelegateList callback)
 	{
 		List <DB.DataScore> lDataScore = new List <DB.DataScore> ();
 		db.Read (player, lDataScore.GetType (), "read-list-datascore",
@@ -33,6 +33,22 @@ public class DataScoreDAO : MonoBehaviour
 			}
 
 			callback (dic);
+		});
+	}
+
+	public void SaveScores (Dictionary <string, Model.DataScore> scores)
+	{
+		List<Model.DataScore> lScores = new List<Model.DataScore> ();
+
+		foreach (KeyValuePair <string, Model.DataScore> de in scores)
+		{
+			lScores.Add (de.Value);
+		}
+
+		db.Update (lScores, "save-list-datascore",
+		(response) =>
+		{
+			Debug.Log ("response save-list-datascore: " + response);
 		});
 	}
 }

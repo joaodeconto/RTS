@@ -19,6 +19,8 @@ namespace Model {
 
 		public Battle (string JSONString)
 		{
+			//Debug.Log ("JSONString: " + JSONString);
+
 			DB.Battle b = (DB.Battle)JsonConvert.DeserializeObject (JSONString, typeof (DB.Battle));
 			Model.Battle bb = b.ToModel ();
 
@@ -47,7 +49,7 @@ namespace Model {
 
 		public override string ToString ()
 		{
-			return JsonConvert.SerializeObject (this.ToDatabaseModel ());
+			return this.ToDatabaseModel ().ToString ();
 		}
 
 		private static Battle b;
@@ -80,7 +82,7 @@ namespace Model {
 
 		public override string ToString ()
 		{
-			return JsonConvert.SerializeObject (this.ToDatabaseModel ());
+			return this.ToDatabaseModel ().ToString ();
 		}
 
 		private static BattleType bt;
@@ -104,7 +106,7 @@ namespace Model {
 		public int IdBattle;
 		public Battle battle;
 
-		public int BlWin;
+		public bool BlWin;
 		//public int NrUnitKillsScore;
 		//public int NrUnitKilledScore;
 		//public int NrUnitCreatedScore;
@@ -114,6 +116,20 @@ namespace Model {
 		//public int NrGatheredResources;
 		//public int NrAverageUnusedResources;
 		//public int NrWorkersCreated;
+
+		public PlayerBattle () {}
+
+		public PlayerBattle (string JSONString)
+		{
+			DB.PlayerBattle b = (DB.PlayerBattle)JsonConvert.DeserializeObject (JSONString, typeof (DB.PlayerBattle));
+			Model.PlayerBattle bb = b.ToModel ();
+
+			this.IdPlayerBattle = bb.IdPlayerBattle;
+			this.IdBattle       = bb.IdBattle;
+			this.BlWin          = bb.BlWin;
+
+			this.battle = bb.battle;
+		}
 
 		public DB.PlayerBattle ToDatabaseModel ()
 		{
@@ -128,7 +144,7 @@ namespace Model {
 
 		public override string ToString ()
 		{
-			return JsonConvert.SerializeObject (this.ToDatabaseModel ());
+			return this.ToDatabaseModel ().ToString ();
 		}
 
 		private static PlayerBattle pb;

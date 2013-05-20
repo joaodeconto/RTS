@@ -21,7 +21,6 @@ public class Database : MonoBehaviour
 		public DatabaseCall Init ()
 		{
 			parameters = new Dictionary<string, string>();
-
 			return this;
 		}
 	}
