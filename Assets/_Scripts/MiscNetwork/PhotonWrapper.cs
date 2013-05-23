@@ -328,7 +328,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
 					room.SetCustomProperties (roomProperty);
 					
-			if (GameplayManager.mode == GameplayManager.Mode.Allies)
+			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 			{
 				int maxNumberOfAllies = room.maxPlayers / 2;
 				
@@ -382,7 +382,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
         // Temporary disable processing of futher network messages
         PhotonNetwork.isMessageQueueRunning = false;
-		if (GameplayManager.mode == GameplayManager.Mode.Normal)
+		if (GameplayManager.mode == GameplayManager.Mode.Deathmatch)
 			Application.LoadLevel(1);
 		else
 			Application.LoadLevel(2);
@@ -405,10 +405,10 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		switch (mode)
 		{
 		case 0:
-			GameplayManager.mode = GameplayManager.Mode.Normal;
+			GameplayManager.mode = GameplayManager.Mode.Deathmatch;
 			break;
 		case 1:
-			GameplayManager.mode = GameplayManager.Mode.Allies;
+			GameplayManager.mode = GameplayManager.Mode.Cooperative;
 			break;
 		default:
 			// do nothing

@@ -232,7 +232,7 @@ public class FogOfWar : MonoBehaviour
 		if(!UseFog)
 			return null;
 		
-		if(GameplayManager.mode == GameplayManager.Mode.Allies)
+		if(GameplayManager.mode == GameplayManager.Mode.Cooperative)
 		{
 			if(ComponentGetter.Get<GameplayManager>().IsAlly(entity.ally))
 			{
@@ -267,7 +267,7 @@ public class FogOfWar : MonoBehaviour
 		if(!UseFog || trnsEntity == null)
 			return null;
 		
-		if(GameplayManager.mode == GameplayManager.Mode.Allies)
+		if(GameplayManager.mode == GameplayManager.Mode.Cooperative)
 		{
 			if(ComponentGetter.Get<GameplayManager>().IsAlly(entity.ally))
 			{

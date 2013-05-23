@@ -60,7 +60,7 @@ public class NewGame : MonoBehaviour
 		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								CreateRoom (4, "2x2", GameplayManager.Mode.Allies);
+								CreateRoom (4, "2x2", GameplayManager.Mode.Cooperative);
 							});
 
 		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
@@ -92,7 +92,7 @@ public class NewGame : MonoBehaviour
 		leaveRoom.SetActive (false);
 	}
 
-	private void CreateRoom (int maxPlayers, string battleTypeName, GameplayManager.Mode mode = GameplayManager.Mode.Normal)
+	private void CreateRoom (int maxPlayers, string battleTypeName, GameplayManager.Mode mode = GameplayManager.Mode.Deathmatch)
 	{
 		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
