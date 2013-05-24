@@ -380,9 +380,17 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 	void SetPlayer ()
 	{
-		PhotonNetwork.playerName = playerName;
+		Model.Player modelPlayer = new Model.Player () { IdPlayer		  = 5,
+														 SzName			  = "123",
+														 SzPassword		  = "123",
+														 IdFacebookAccount = "" };
+
+		
+//		PhotonNetwork.playerName = playerName;
 		PhotonPlayer player = PhotonNetwork.player;
+		
 		Hashtable someCustomPropertiesToSet = new Hashtable();
+		someCustomPropertiesToSet.Add ("player", modelPlayer.ToString ());
 		someCustomPropertiesToSet.Add ("ready", false);
 		player.SetCustomProperties (someCustomPropertiesToSet);
 	}
@@ -518,10 +526,24 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		checkingStatus = false;
 
 		SetPlayer ();
-
+		
+		Room room = PhotonNetwork.room;
+		
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add ("playerLoads", 0);
-		PhotonNetwork.room.SetCustomProperties (someCustomPropertiesToSet);
+		Model.BattleType m = new Model.BattleType ();
+		
+		m.IdBattleType = 0;
+		m.SzBattleTypeName = "Deathmatch";
+		
+		DB.Battle dbBattle = (new Model.Battle () { IdBattleType = m.IdBattleType,
+													battleType   = m,
+													DtDateBattle = System.DateTime.Now,
+													NrPlayers    = 1}).ToDatabaseModel ();
+		
+		Model.Battle battle = dbBattle.ToModel ();
+		someCustomPropertiesToSet.Add ("battle", battle.ToString ());
+		room.SetCustomProperties (someCustomPropertiesToSet);
 
 #if GUI
 		CurrentGUI = ShowRoom;

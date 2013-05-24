@@ -14,8 +14,6 @@ public class FactoryBase : IStats
 	public class UnitFactory
 	{
 		public Unit unit;
-		public ResourcesManager costOfResources;
-		public float timeToCreate = 3f;
 		public string buttonName;
 		public IStats.GridItemAttributes gridItemAttributes;
 	}
@@ -38,8 +36,6 @@ public class FactoryBase : IStats
 
 	public UnitFactory[] unitsToCreate;
 
-	public Transform waypoint;
-
 	public Resource.Type receiveResource;
 
 	public BuildingObjects buildingObjects;
@@ -47,16 +43,18 @@ public class FactoryBase : IStats
 	public string buttonName;
 	public string guiTextureName;
 
+	public bool hasRallypoint { get; protected set; }
+	
+	protected Transform rallypoint;
+	
 	public BuildingState buildingState { get; set; }
 	protected int levelConstruct;
 
-	protected List<UnitFactory> listedToCreate = new List<UnitFactory>();
-	protected UnitFactory unitToCreate;
+	protected List<Unit> listedToCreate = new List<Unit>();
+	protected Unit unitToCreate;
 	protected float timeToCreate;
 	protected float timer;
 	protected bool inUpgrade;
-
-	protected bool hasWaypoint;
 
 	public Animation ControllerAnimation { get; private set; }
 
@@ -104,11 +102,21 @@ public class FactoryBase : IStats
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 
-		if (waypoint == null) waypoint = transform.FindChild("Waypoint");
-
-		hasWaypoint = (waypoint != null);
-
-		if (hasWaypoint) waypoint.gameObject.SetActive (false);
+		if (unitsToCreate.Length != 0)
+		{
+			hasRallypoint = true;
+			
+			GameObject instantiateRallypoint = Resources.Load ("Rallypoint", typeof(GameObject)) as GameObject;
+			
+			GameObject goRallypoint = NGUITools.AddChild (gameObject, instantiateRallypoint);
+			rallypoint = goRallypoint.transform;
+			
+			Vector3 pos = rallypoint.position;
+			pos.z -= transform.collider.bounds.size.z;
+			rallypoint.position = pos;
+			
+			hasRallypoint = (rallypoint != null);
+		}
 
 		playerUnit = gameplayManager.IsSameTeam (this);
 
@@ -138,7 +146,7 @@ public class FactoryBase : IStats
 		if (!wasBuilt || listedToCreate.Count == 0)
 			return;
 
-		if (gameplayManager.NeedMoreHouses (listedToCreate[0].unit.numberOfUnits))
+		if (gameplayManager.NeedMoreHouses (listedToCreate[0].numberOfUnits))
 		{
 			if (!alreadyCheckedMaxPopulation)
 			{
@@ -153,7 +161,7 @@ public class FactoryBase : IStats
 		if (unitToCreate == null)
 		{
 			unitToCreate = listedToCreate[0];
-			timeToCreate = unitToCreate.timeToCreate;
+			timeToCreate = listedToCreate[0].timeToSpawn;
 			inUpgrade = true;
 
 			if (Selected) buildingSlider.gameObject.SetActive(true);
@@ -162,7 +170,7 @@ public class FactoryBase : IStats
 		{
 			if (timer > timeToCreate)
 			{
-				InvokeUnit (unitToCreate.unit);
+				InvokeUnit (unitToCreate);
 
 				timer = 0;
 				unitToCreate = null;
@@ -211,7 +219,7 @@ public class FactoryBase : IStats
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 
 		string unitName = "";
-
+		
 		foreach(UnitFactory uf in unitsToCreate)
 		{
 			if(uf.unit == unit)
@@ -239,10 +247,10 @@ public class FactoryBase : IStats
 		Score.AddScorePoints (unitName + " created", 1);
 		Score.AddScorePoints (unitName + " created", 1, battle.IdBattle);
 
-		if (!hasWaypoint) return;
+		if (!hasRallypoint) return;
 
 		// Look At
-		Vector3 difference = waypoint.position - transform.position;
+		Vector3 difference = rallypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);
 		Vector3 forward = rotation * Vector3.forward;
 
@@ -252,14 +260,14 @@ public class FactoryBase : IStats
 		{
 			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
 //			newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
-			newUnit.Move (waypoint.position);
+			newUnit.Move (rallypoint.position);
 			newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 		}
 		else
 		{
 	        GameObject newUnit = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
 //			newUnit.GetComponent<Unit> ().Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
-			newUnit.GetComponent<Unit> ().Move (waypoint.position);
+			newUnit.GetComponent<Unit> ().Move (rallypoint.position);
 			newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 		}
 	}
@@ -429,17 +437,17 @@ public class FactoryBase : IStats
 
 		if (wasBuilt)
 		{
-			if (!hasWaypoint) return;
+			if (!hasRallypoint) return;
 
-			waypoint.gameObject.SetActive (true);
-			if (!waypoint.gameObject.activeSelf)
-				waypoint.gameObject.SetActive (true);
+			rallypoint.gameObject.SetActive (true);
+			if (!rallypoint.gameObject.activeSelf)
+				rallypoint.gameObject.SetActive (true);
 
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				Hashtable ht = new Hashtable();
 				ht["unitFactory"] = uf;
-				ht["price"]       = uf.costOfResources.NumberOfRocks;
+				ht["price"]       = uf.unit.costOfResources.NumberOfRocks;
 
 				hudController.CreateButtonInInspector ( uf.buttonName,
 														uf.gridItemAttributes.Position,
@@ -494,16 +502,16 @@ public class FactoryBase : IStats
 
 			for(int i = 0; i != listedToCreate.Count; ++i)
 			{
-				UnitFactory unitFactory = listedToCreate[i];
+				Unit unit = listedToCreate[i];
 
 				Hashtable ht = new Hashtable ();
-				ht["unitFactory"] = unitFactory;
+				ht["unit"] = unit;
 				ht["name"] = "button-" + Time.time;
 
 				hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
 																FactoryBase.FactoryQueueName,
 																ht,
-																listedToCreate[i].unit.guiTextureName,
+																listedToCreate[i].guiTextureName,
 																(hud_ht) =>
 																{
 																	DequeueUnit(hud_ht);
@@ -541,9 +549,9 @@ public class FactoryBase : IStats
 
 		if (playerUnit && wasBuilt)
 		{
-			if (!hasWaypoint) return;
+			if (!hasRallypoint) return;
 
-			waypoint.gameObject.SetActive (false);
+			rallypoint.gameObject.SetActive (false);
 
 			hudController.DestroyInspector ("factory");
 		}
@@ -551,30 +559,13 @@ public class FactoryBase : IStats
 
 	public void EnqueueUnitToCreate (Unit unit)
 	{
-		bool canBuy = true;
-		UnitFactory unitFactory = null;
-
-		foreach (UnitFactory uf in unitsToCreate)
-		{
-			if (unit == uf.unit)
-			{
-				canBuy = gameplayManager.resources.CanBuy (uf.costOfResources);
-				unitFactory = uf;
-				break;
-			}
-		}
-
-		if (unitFactory == null)
-		{
-			Debug.LogError ("variable unitFactory is 'null'!");
-			return;
-		}
+		bool canBuy = gameplayManager.resources.CanBuy (unit.costOfResources);
 
 		if (canBuy)
 		{
-			listedToCreate.Add (unitFactory);
+			listedToCreate.Add (unit);
 			Hashtable ht = new Hashtable();
-			ht["unitFactory"] = unitFactory;
+			ht["unit"] = unit;
 			ht["name"] = "button-" + Time.time;
 
 			hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
@@ -594,9 +585,9 @@ public class FactoryBase : IStats
 	private void DequeueUnit(Hashtable ht)
 	{
 		string btnName = (string)ht["name"];
-		UnitFactory unitFactory = (UnitFactory)ht["unitFactory"];
+		Unit unit = 	 (Unit)ht["unit"];
 
-		gameplayManager.resources.ReturnResources (unitFactory.costOfResources);
+		gameplayManager.resources.ReturnResources (unit.costOfResources);
 
 		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
 		{
@@ -606,7 +597,20 @@ public class FactoryBase : IStats
 		}
 
 		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);
-		listedToCreate.Remove (unitFactory);
+		listedToCreate.Remove (unit);
+	}
+	
+	Unit CheckUnit (Unit unit)
+	{
+		foreach (UnitFactory uf in unitsToCreate)
+		{
+			if (unit == uf.unit)
+			{
+				return uf.unit;
+			}
+		}
+		
+		return null;
 	}
 
 	public override void SetVisible(bool isVisible)

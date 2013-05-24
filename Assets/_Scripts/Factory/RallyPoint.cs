@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using Visiorama;
+using System.Collections.Generic;
+using Visiorama.Utils;
 
 public class RallyPoint : MonoBehaviour {
 	
@@ -21,10 +23,8 @@ public class RallyPoint : MonoBehaviour {
 		lineRenderer.material.color = ComponentGetter.Get<GameplayManager>().GetColorTeam ();
 		lineRenderer.SetColors (lineRenderer.material.color, lineRenderer.material.color);
 		transform.GetChild (0).renderer.material.color = lineRenderer.material.color;
-		active = false;
 		
-		lineRenderer.SetPosition (0, transform.position);
-		lineRenderer.SetPosition (1, transform.parent.position);
+		CalculateLine ();
 	}
 	
 	// Update is called once per frame
@@ -77,7 +77,26 @@ public class RallyPoint : MonoBehaviour {
 			transform.position = oldPosition;
 		}
 		
-		lineRenderer.SetPosition (0, transform.position);
-		lineRenderer.SetPosition (1, transform.parent.position);
+		CalculateLine ();
+	}
+	
+	void CalculateLine ()
+	{
+		List<Vector3> nodes = new List<Vector3>();
+		nodes.Add(transform.position);
+		nodes.Add(transform.parent.position);
+		
+		Vector3 center = Math.CenterOfObjects (nodes.ToArray ());
+		nodes.Insert (1, center + (Vector3.up * 5f));
+		
+		IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 10, false);
+		
+		int i = 0;
+		foreach (Vector3 segment in sequence)
+		{
+			lineRenderer.SetVertexCount (i+1);
+			lineRenderer.SetPosition(i, segment);
+			i++;
+		}
 	}
 }

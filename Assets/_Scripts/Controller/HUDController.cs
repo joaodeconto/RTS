@@ -440,11 +440,11 @@ public class HUDController : MonoBehaviour
 		Transform unitsLabel = info.FindChild ("units-label");
 		unitsLabel.GetComponent<UILabel> ().text = unit.numberOfUnits.ToString ();
 		
-//		Transform attackLabel = info.FindChild ("time-label");
-//		attackLabel.GetComponent<UILabel> ();
-//		
-//		Transform attackLabel = info.FindChild ("gold-label");
-//		attackLabel.GetComponent<UILabel> ();
+		Transform timeLabel = info.FindChild ("time-label");
+		timeLabel.GetComponent<UILabel> ().text = unit.timeToSpawn.ToString ();
+		
+		Transform goldLabel = info.FindChild ("gold-label");
+		goldLabel.GetComponent<UILabel> ().text = unit.costOfResources.ToString ();
 	}
 	
 	public void CloseInfoBox ()

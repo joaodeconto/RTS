@@ -38,6 +38,8 @@ public class Unit : IStats
 	public string guiTextureName;
 
 	public UnitAnimation unitAnimation;
+	
+	public float timeToSpawn;
 
 	public int AdditionalForce { get; set; }
 
@@ -45,7 +47,6 @@ public class Unit : IStats
 	public bool IsDead { get; protected set; }
 
 	public Animation ControllerAnimation;
-	public SoundManager CharSound { get; protected set; }
 
 	private bool canHit;
 	public bool CanHit
@@ -186,7 +187,7 @@ public class Unit : IStats
 				}
 				else if (MoveComplete(pathfindTarget))
 				{
-					Stop ();
+					StopMove ();
 					unitState = UnitState.Idle;
 				}
 				break;
@@ -205,7 +206,7 @@ public class Unit : IStats
 
 				if (IsAttacking) return;
 
-				Stop ();
+				StopMove ();
 
 				pathfindTarget = transform.position;
 
@@ -422,7 +423,7 @@ public class Unit : IStats
         }
     }
 
-	private void Stop ()
+	public void StopMove ()
 	{
 		pathfind.Stop ();
 	}
@@ -526,7 +527,7 @@ public class Unit : IStats
 
 															break;
 														case MovementAction.ActionType.CancelMovement:
-															Stop();
+															StopMove();
 															break;
 														case MovementAction.ActionType.Follow: //Rally Point
 
@@ -545,9 +546,9 @@ public class Unit : IStats
 		hudController.DestroySelected (transform);
 	}
 
-	public bool IsRangeAttack (GameObject soldier)
+	public bool IsRangeAttack (GameObject target)
 	{
-		return Vector3.Distance(transform.position, soldier.transform.position) <= (attackRange + soldier.GetComponent<CapsuleCollider>().radius);
+		return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<CapsuleCollider>().radius);
 	}
 
 	public bool InDistanceView (Vector3 position)

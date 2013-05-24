@@ -108,11 +108,14 @@ public abstract class IStats : Photon.MonoBehaviour
 
 	public bool playerUnit;
 
+	public string category;
+	
+	public ResourcesManager costOfResources;
+	
 	public bool Selected { get; protected set; }
 	public bool IsNetworkInstantiate { get; protected set; }
 	public bool IsRemoved { get; protected set; }
 	
-	public string category;
 	internal int Group = -1;
 	
 	protected StatsController statsController;
@@ -146,7 +149,7 @@ public abstract class IStats : Photon.MonoBehaviour
 				}
 				else
 				{
-					team = (playerUnit) ? 0 : 1;
+					team = GameplayManager.BOOT_TEAM;
 				}
 			}
 		}

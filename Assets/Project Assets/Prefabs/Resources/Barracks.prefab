@@ -1,23 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &100000
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400000}
-  - 33: {fileID: 3300000}
-  - 23: {fileID: 2300000}
-  - 114: {fileID: 11400008}
-  m_Layer: 12
-  m_Name: Waypoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,23 +15,6 @@ GameObject:
   - 208: {fileID: 20800000}
   m_Layer: 0
   m_Name: Barracks
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &100004
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400004}
-  - 114: {fileID: 11400006}
-  - 65: {fileID: 6500002}
-  m_Layer: 12
-  m_Name: Waypoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,17 +148,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &400000
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .140000001, y: .140000001, z: .140000001}
-  m_Children: []
-  m_Father: {fileID: 400004}
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -206,20 +160,7 @@ Transform:
   m_Children:
   - {fileID: 400034}
   - {fileID: 400006}
-  - {fileID: 400004}
   m_Father: {fileID: 0}
---- !u!4 &400004
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.87576771, y: 0, z: -11.2583609}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 400000}
-  m_Father: {fileID: 400002}
 --- !u!4 &400006
 Transform:
   m_ObjectHideFlags: 1
@@ -314,24 +255,6 @@ Transform:
   m_Children:
   - {fileID: 400008}
   m_Father: {fileID: 400034}
---- !u!23 &2300000
-Renderer:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 2100000, guid: f022b2ac4171b484385419e4050cfd80, type: 2}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
 --- !u!23 &2300002
 Renderer:
   m_ObjectHideFlags: 1
@@ -394,13 +317,6 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
---- !u!33 &3300000
-MeshFilter:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!33 &3300002
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -422,18 +338,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_Mesh: {fileID: 4300004, guid: d5d57c4c2e7bd9e42bdbdc6b313ea22c, type: 3}
---- !u!65 &6500002
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!111 &11100000
 Animation:
   m_ObjectHideFlags: 1
@@ -502,49 +406,35 @@ MonoBehaviour:
   transformParticleDamageReference: {fileID: 0}
   playerUnit: 0
   category: Barracks
+  costOfResources:
+    NumberOfRocks: 50
   model: {fileID: 100034}
   unitsToCreate:
   - unit: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
-    costOfResources:
-      NumberOfRocks: 100
-    timeToCreate: 10
     buttonName: Raptor
     gridItemAttributes:
       gridXIndex: 0
       gridYIndex: 1
   - unit: {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
-    costOfResources:
-      NumberOfRocks: 150
-    timeToCreate: 15
     buttonName: Triceratops
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 1
   - unit: {fileID: 11400000, guid: 1d3e301ff447d644a90dcabff9dfc493, type: 2}
-    costOfResources:
-      NumberOfRocks: 300
-    timeToCreate: 20
     buttonName: T-Rex
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
   - unit: {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    costOfResources:
-      NumberOfRocks: 200
-    timeToCreate: 15
     buttonName: Neanderthal
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 1
   - unit: {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
-    costOfResources:
-      NumberOfRocks: 200
-    timeToCreate: 10
-    buttonName: Spearman
+    buttonName: Neanderthal
     gridItemAttributes:
       gridXIndex: 4
       gridYIndex: 1
-  waypoint: {fileID: 400004}
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100066}
@@ -567,32 +457,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 905aefc6e5de9e84d87bfba0c27c1a60, type: 3}
   m_Name: 
---- !u!114 &11400006
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 851e0f380856f1f4bb96182a9b35fd50, type: 3}
-  m_Name: 
-  lineTexture: {fileID: 2800000, guid: d3b7d84ffb95cc04aaeb74f19a10f034, type: 3}
---- !u!114 &11400008
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a1fc28458452064ca2d7de47ef78358, type: 3}
-  m_Name: 
-  columns: 4
-  rows: 1
-  framesPerSecond: 15
-  playOnAwake: 1
-  wrapMode: 1
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1

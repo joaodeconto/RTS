@@ -48,6 +48,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public static Mode mode;
 
 	public const int MAX_POPULATION_ALLOWED = 200;
+	public const int BOOT_TEAM = 8;
 
 	public Team[] teams;
 
@@ -179,7 +180,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public bool IsBoot (int team)
 	{
-		return team == 8;
+		return team == BOOT_TEAM;
 	}
 
 	public bool IsAlly (int allyNumber)
@@ -195,9 +196,27 @@ public class GameplayManager : Photon.MonoBehaviour
 	public bool SameEntity (int teamID, int ally)
 	{
 		if (GameplayManager.mode == Mode.Cooperative)
-			return IsAlly (ally);
+		{
+			if (IsBoot (teamID))
+			{
+				return teamID == BOOT_TEAM;
+			}
+			else
+			{
+				return IsAlly (ally);
+			}
+		}
 		else
-			return IsSameTeam (teamID);
+		{
+			if (IsBoot (teamID))
+			{
+				return teamID == BOOT_TEAM;
+			}
+			else
+			{
+				return IsSameTeam (teamID);
+			}
+		}
 	}
 
 	public bool IsBeingAttacked (IStats target)
@@ -206,7 +225,6 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			if (IsSameTeam (target))
 			{
-
 				bool isInCamera = ComponentGetter.Get<TouchController> ().IsInCamera (target.transform.position);
 
 				if (!isInCamera)
@@ -379,21 +397,13 @@ public class GameplayManager : Photon.MonoBehaviour
 		CheckCondition (teamID, ally);
 	}
 
-	//TODO retirar tosqueira cristian! :D
-	bool cabou = false;
-
-	// TODO: Mostrando só os valores na tela
 	void Update ()
 	{
-		if (cabou) return;
-
 		hud.labelResources.text = resources.NumberOfRocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + maxOfUnits.ToString ();
 
 		if (loseGame || winGame)
 		{
-			cabou = true;
-
 			if (winGame)
 			{
 				hud.uiVictoryObject.SetActive (true);
@@ -404,37 +414,33 @@ public class GameplayManager : Photon.MonoBehaviour
 				hud.uiVictoryObject.SetActive (false);
 				hud.uiDefeatObject.SetActive (true);
 			}
-
-			//TODO CRISTIAN BOTAR ISSO NO MÉTODO ENDIGUEIME @_@
-			Score.Save ();
-
-			PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
-
-			Model.Battle battle = new Model.Battle ((string)pw.GetPropertyOnRoom ("battle"));
-			Model.Player player = new Model.Player((string)pw.GetPropertyOnPlayer ("player"));
-
-			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
-
-			pbDAO.CreatePlayerBattle (player, battle,
-			(playerBattle, message) =>
-			{
-				playerBattle.BlWin = winGame;
-
-				pbDAO.UpdatePlayerBattle (playerBattle,
-				(playerBattle_update, message_update) =>
-				{
-					if (playerBattle_update != null)
-						Debug.Log ("message: " + message);
-					else
-						Debug.Log ("salvou playerBattle");
-				});
-			});
-			//TODO fim do que tem que colocar no ENDIGUEIME :D
 		}
 	}
 
 	void EndMatch ()
 	{
-		
+		Score.Save ();
+
+		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
+
+		Model.Battle battle = new Model.Battle ((string)pw.GetPropertyOnRoom ("battle"));
+		Model.Player player = new Model.Player((string)pw.GetPropertyOnPlayer ("player"));
+
+		PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
+
+		pbDAO.CreatePlayerBattle (player, battle,
+		(playerBattle, message) =>
+		{
+			playerBattle.BlWin = winGame;
+
+			pbDAO.UpdatePlayerBattle (playerBattle,
+			(playerBattle_update, message_update) =>
+			{
+				if (playerBattle_update != null)
+					Debug.Log ("message: " + message);
+				else
+					Debug.Log ("salvou playerBattle");
+			});
+		});
 	}
 }

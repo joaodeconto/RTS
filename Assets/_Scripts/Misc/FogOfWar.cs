@@ -53,7 +53,8 @@ public class FogOfWar : MonoBehaviour
 
 		//GameplayManager
 		TerrainData td = ComponentGetter.Get<Terrain>("Terrain").terrainData;
-		mapSize = td.size;
+		float offsetSize = 1.1f;
+		mapSize = new Vector3(td.size.x * offsetSize, td.size.y * offsetSize, td.size.z * offsetSize);
 
 		for (i = 0; i != SIZE_TEXTURE; ++i)
 			for (j = 0; j != SIZE_TEXTURE; ++j)
