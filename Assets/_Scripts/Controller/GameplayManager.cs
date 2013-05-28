@@ -197,25 +197,11 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		if (GameplayManager.mode == Mode.Cooperative)
 		{
-			if (IsBoot (teamID))
-			{
-				return teamID == BOOT_TEAM;
-			}
-			else
-			{
-				return IsAlly (ally);
-			}
+			return IsAlly (ally);
 		}
 		else
 		{
-			if (IsBoot (teamID))
-			{
-				return teamID == BOOT_TEAM;
-			}
-			else
-			{
-				return IsSameTeam (teamID);
-			}
+			return IsSameTeam (teamID);
 		}
 	}
 

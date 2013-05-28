@@ -36,7 +36,7 @@ public class SelectionController : MonoBehaviour
 		{
 			statsController.DeselectAllStats ();
 
-			Bounds b = touchController.GetTouchBounds();
+			Bounds b = touchController.GetTouchBounds ();
 
 			//VDebug.DrawCube (b, Color.green);
 

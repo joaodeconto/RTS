@@ -18,7 +18,7 @@ public class RangeObject : MonoBehaviour {
 	
 	public void Init (GameObject target, float timeToDestroyWhenCollide, RangeHitDelegate rhd, Hashtable ht = null)
 	{
-		enabled = true;
+		enabled = false;
 		
 		rangeHitDelegate = rhd;
 		hashtable = ht;

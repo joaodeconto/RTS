@@ -10,7 +10,7 @@ public class RangeUnit : Unit
 	public float highRangeAttack;
 	public AnimationClip highRangeAnimation;
 	
-	public bool InHighRange { get; set; }
+	public bool inHighRange {get; set;}
 	
 	public override void Init ()
 	{
@@ -24,24 +24,24 @@ public class RangeUnit : Unit
 	{
 		if (targetAttack != null)
 		{
-			if (!InHighRange)
+			if (!inHighRange)
 			{
 				if (IsHighRangeAttack (targetAttack))
-					InHighRange = true;
+					inHighRange = true;
 			}
 			else
 			{
 				if (IsRangeAttack (targetAttack))
-					InHighRange = false;
+					inHighRange = false;
 			}
 		}
 		else
 		{
-			if (InHighRange)
-				InHighRange = false;
+			if (inHighRange)
+				inHighRange = false;
 		}
 		
-		if (InHighRange)
+		if (inHighRange)
 		{
 			followingTarget = true;
 
@@ -96,13 +96,16 @@ public class RangeUnit : Unit
 			pRange.GetComponent<RangeObject> ().Init (targetAttack, 5f,
 			(ht) => 
 			{
-				if (!PhotonNetwork.offlineMode)
+				if (targetAttack != null)
 				{
-					photonView.RPC ("AttackStat", playerTargetAttack, targetAttack.name, force + AdditionalForce);
-				}
-				else
-				{
-					targetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+					if (!PhotonNetwork.offlineMode)
+					{
+						photonView.RPC ("AttackStat", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+					}
+					else
+					{
+						targetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+					}
 				}
 			}
 			);
@@ -115,9 +118,13 @@ public class RangeUnit : Unit
 	
 	public override void SyncAnimation ()
 	{
-		if (InHighRange)
+		if (!IsVisible) return;
+		
+		Debug.Log ("inHightRangeSync: " + inHighRange);
+		
+		if (inHighRange)
 		{
-			ControllerAnimation.PlayCrossFade (highRangeAnimation, WrapMode.Loop);
+			ControllerAnimation.PlayCrossFade (highRangeAnimation, WrapMode.Once);
 		}
 		else
 		{
