@@ -16,6 +16,7 @@ public class FOWEffect : MonoBehaviour
 	/// </summary>
 
 	public Shader shader;
+	public Shader shaderMobile;
 
 	/// <summary>
 	/// Color tint given to unexplored pixels.
@@ -28,16 +29,28 @@ public class FOWEffect : MonoBehaviour
 	/// </summary>
 
 	public Color exploredColor = new Color(0.2f, 0.2f, 0.2f, 1f);
+	
+	public Shader CurrentShader
+	{
+		get
+		{
+#if UNITY_ANDROID || UNITY_IPHONE
+			return shaderMobile;
+#else
+			return shader;
+#endif
+		}
+	}
 
 	FOWSystem mFog;
+#if !UNITY_ANDROID && !UNITY_IPHONE
 	Camera mCam;
 	Matrix4x4 mInverseMVP;
 	Material mMat;
-
+	
 	/// <summary>
 	/// The camera we're working with needs depth.
 	/// </summary>
-
 	void OnEnable ()
 	{
 		mCam = camera;
@@ -48,8 +61,8 @@ public class FOWEffect : MonoBehaviour
 	/// <summary>
 	/// Destroy the material when disabled.
 	/// </summary>
-
 	void OnDisable () { if (mMat) DestroyImmediate(mMat); }
+#endif
 
 	/// <summary>
 	/// Automatically disable the effect if the shaders don't support it.
@@ -57,12 +70,40 @@ public class FOWEffect : MonoBehaviour
 
 	void Start ()
 	{
-		if (!SystemInfo.supportsImageEffects || !shader || !shader.isSupported)
+		if (!SystemInfo.supportsImageEffects || !CurrentShader || !CurrentShader.isSupported)
 		{
 			enabled = false;
 		}
 	}
 
+#if UNITY_ANDROID || UNITY_IPHONE
+//	void OnPreRender()
+//    {
+//        if (mFog == null)
+//        {
+//            mFog = FOWSystem.instance;
+//            if (mFog == null) mFog = FindObjectOfType(typeof(FOWSystem)) as FOWSystem;
+//        }
+//     
+//        if (mFog == null || !mFog.enabled)
+//        {
+//            enabled = false;
+//            return;
+//        }
+//     
+//        float invScale = 1f / mFog.worldSize;
+//        Transform t = mFog.transform;
+//        float x = t.position.x - mFog.worldSize * 0.5f;
+//        float z = t.position.z - mFog.worldSize * 0.5f;
+//        Vector4 p = new Vector4(-x * invScale, -z * invScale, invScale, mFog.blendFactor);
+//     
+//        Shader.SetGlobalColor("_Unexplored", unexploredColor);
+//        Shader.SetGlobalColor("_Explored", exploredColor);
+//        Shader.SetGlobalVector("_Params", p);
+//        Shader.SetGlobalTexture("_FogTex0", mFog.texture0);
+//        Shader.SetGlobalTexture("_FogTex1", mFog.texture1);
+//    }
+#else
 	// Called by camera to apply image effect
 	void OnRenderImage (RenderTexture source, RenderTexture destination)
 	{
@@ -121,4 +162,5 @@ public class FOWEffect : MonoBehaviour
 
 		Graphics.Blit(source, destination, mMat);
 	}
+#endif
 }

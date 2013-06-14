@@ -4,7 +4,7 @@ using System.Collections;
 namespace DB {
 	public class DataScore
 	{
-		public string IdScore;
+		public string IdDataScore;
 		public string IdPlayer;
 		public string IdBattle;
 		public string SzScoreName;
@@ -14,7 +14,7 @@ namespace DB {
 		public Model.DataScore ToModel ()
 		{
 			Model.DataScore ds = new Model.DataScore ();
-			ds.IdScore               = int.Parse(this.IdScore);
+			ds.IdDataScore           = int.Parse(this.IdDataScore);
 			ds.IdPlayer              = int.Parse(this.IdPlayer);
 			ds.IdBattle              = int.Parse(this.IdBattle);
 			ds.NrPoints              = int.Parse(this.NrPoints);

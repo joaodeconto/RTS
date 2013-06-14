@@ -559,7 +559,14 @@ public class Unit : IStats
 
 	public bool IsRangeAttack (GameObject target)
 	{
-		return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<CapsuleCollider>().radius);
+		if (target.GetComponent<FactoryBase> () != null)
+		{
+			return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<FactoryBase> ().helperCollider.radius);
+		}
+		else
+		{
+			return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<CapsuleCollider> ().radius);
+		}
 	}
 
 	public bool InDistanceView (Vector3 position)

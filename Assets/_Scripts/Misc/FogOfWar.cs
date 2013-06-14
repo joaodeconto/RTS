@@ -19,10 +19,12 @@ public class FogOfWar : MonoBehaviour
 		}
 	}
 	
-	public const int SIZE_OF_TEXTURE = 128;
-	
+	private const int SIZE_TEXTURE = 128;
+
 	public bool UseFog  = true;
 	public bool DarkFog = true;
+
+	public GameObject pref_plane;
 
 	public Color visibleAreaColor = new Color(1.0f,1.0f,1.0f,0.0f);
 	public Color knownAreaColor   = new Color(0.5f,0.5f,0.5f,0.5f);
@@ -59,65 +61,106 @@ public class FogOfWar : MonoBehaviour
 		if(!UseFog)
 			return this;
 
-		FogTexture    = new Texture2D (SIZE_OF_TEXTURE, SIZE_OF_TEXTURE, TextureFormat.ARGB32, false);
-		matrixFogFlag = new FogFlag[SIZE_OF_TEXTURE,SIZE_OF_TEXTURE];
-		
+		FogTexture    = new Texture2D (SIZE_TEXTURE, SIZE_TEXTURE, TextureFormat.ARGB32, false);
+		matrixFogFlag = new FogFlag[SIZE_TEXTURE,SIZE_TEXTURE];
+
 		//GameplayManager
 		TerrainData td = ComponentGetter.Get<Terrain>("Terrain").terrainData;
-		float offsetSize = 1.1f;
-		mapSize = new Vector3(td.size.x * offsetSize, td.size.y * offsetSize, td.size.z * offsetSize);
-		
-		for (i = 0; i != SIZE_OF_TEXTURE; ++i)
-			for (j = 0; j != SIZE_OF_TEXTURE; ++j)
+		mapSize = td.size;
+
+		for (i = 0; i != SIZE_TEXTURE; ++i)
+			for (j = 0; j != SIZE_TEXTURE; ++j)
 			{
-//				if(DarkFog)
-					FogTexture.SetPixel(i,j, new Color (0f, 0f, 0f, 0.75f));
-//				else
-//					FogTexture.SetPixel(i,j, knownAreaColor);
+				if(DarkFog)
+					FogTexture.SetPixel(i,j, Color.black);
+				else
+					FogTexture.SetPixel(i,j, knownAreaColor);
 
 				matrixFogFlag[i,j] = FogFlag.NOT_KNOWN_AREA;
 			}
 
 		FogTexture.Apply();
 
-		//posicionando FogOfWar no local correto
+		// posicionando FogOfWar no local correto
 		this.transform.position = new Vector3(mapSize.x * 0.5f , 0, mapSize.z * 0.5f);
+		
+#if UNITY_ANDROID || UNITY_IPHONE
+		GameObject poly = Instantiate(pref_plane, Vector3.zero, Quaternion.identity) as GameObject;
 
-//		GameObject poly = Instantiate(pref_plane, Vector3.zero, Quaternion.identity) as GameObject;
-//
-//		poly.layer = LayerMask.NameToLayer("FogOfWar");
-//
-//		Transform polyTrns = poly.transform;
-//
-//		polyTrns.parent = this.transform;
-//		polyTrns.localPosition    = Vector3.up * fogHeight;
-//		polyTrns.localScale       = new Vector3(mapSize.x, mapSize.z, mapSize.y) * 0.5f;
-//		polyTrns.localEulerAngles = new Vector3 (270,180,0);
-//
-//		poly.renderer.material.mainTexture = FogTexture;
+		poly.layer = LayerMask.NameToLayer("FogOfWar");
+
+		Transform polyTrns = poly.transform;
+
+		polyTrns.parent = this.transform;
+		polyTrns.localPosition    = Vector3.up * fogHeight;
+		polyTrns.localScale       = new Vector3(mapSize.x, mapSize.z, mapSize.y) * 0.5f;
+		polyTrns.localEulerAngles = new Vector3 (270,180,0);
+
+		poly.renderer.material.mainTexture = FogTexture;
+#endif
 
 		allies        = new List<Transform>();
 		entityAllies  = new List<IStats>();
 		enemies       = new List<Transform>();
 		entityEnemies = new List<IStats>();
-
-		InvokeRepeating ("UpdateNow", 0.1f, 1f);
+		
+		InvokeRepeating ("UpdateFog", 0f, 1f);
 		
 		return this;
 	}
 
-	void UpdateNow()
+	void UpdateFog ()
 	{
 		if (!UseFog || allies == null)
 			return;
+		
+#if UNITY_ANDROID || UNITY_IPHONE
+		for (i = (short)(allies.Count - 1); i != -1; --i)
+		{
+			trns = allies[i];
 
-//		UpdateEnemyVisibility();
+			posX = (short)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = (short)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
-		for (i = 0; i != SIZE_OF_TEXTURE; ++i)
-			for (j = 0; j != SIZE_OF_TEXTURE; ++j)
+			range = (short)(SIZE_TEXTURE * (entityAllies[i].fieldOfView / mapSize.x));
+
+			maxY = (short)(Mathf.Clamp(posY + range, 0, SIZE_TEXTURE));
+			minY = (short)(Mathf.Clamp(posY - range, 0, SIZE_TEXTURE));
+
+			for (k = minY; k != maxY; ++k)//, angle += changeAngleRate)
+			{
+				xRange = (short)(Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) ));
+
+				maxX = (short)(Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
+				minX = (short)(Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
+
+				for (j = minX; j != maxX; ++j)
+				{
+					matrixFogFlag [j,k] = FogFlag.VISIBLE;
+				}
+			}
+		}
+
+		UpdateEnemyVisibility();
+
+		for (i = 0; i != SIZE_TEXTURE; ++i)
+			for (j = 0; j != SIZE_TEXTURE; ++j)
+			{
+				if(matrixFogFlag[i,j] == FogFlag.VISIBLE)//== FogFlag.VISIBLE)
+				{
+					FogTexture.SetPixel(i, j, visibleAreaColor);
+
+					//deixar área invisivel para que seja verificada posteriormente se é visivel
+					matrixFogFlag[i,j] = FogFlag.KNOWN_AREA;
+				}
+				else if(matrixFogFlag[i,j] == FogFlag.KNOWN_AREA)//fogNodeVisited[i,j])
+					FogTexture.SetPixel(i, j, knownAreaColor);
+			}
+#else
+		for (i = 0; i != SIZE_TEXTURE; ++i)
+			for (j = 0; j != SIZE_TEXTURE; ++j)
 			{
 				//trocar pela textura do tasharen
-//				if(matrixFogFlag[i,j] == FogFlag.VISIBLE)//== FogFlag.VISIBLE)
 				Color mapColor = FowSystem.texture1.GetPixel (i, j);
 				if (new Color (0f, 0f, 0f, 0f) != mapColor)
 				{
@@ -126,12 +169,8 @@ public class FogOfWar : MonoBehaviour
 					//deixar área invisivel para que seja verificada posteriormente se é visivel
 					matrixFogFlag[i,j] = FogFlag.KNOWN_AREA;
 				}
-//				else
-//				{
-//					FogTexture.SetPixel(i, j, new Color(0.5f, 0.5f, 0.5f, color.a));
-//				}
 			}
-
+#endif
 		FogTexture.Apply();
 	}
 
@@ -149,28 +188,20 @@ public class FogOfWar : MonoBehaviour
 				continue;
 			}
 
-			//posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
-			//posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
-
-			posX = (short)(SIZE_OF_TEXTURE * (trns.position.x / mapSize.x));
-			posY = (short)(SIZE_OF_TEXTURE * (trns.position.z / mapSize.z));
+			posX = (short)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = (short)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
 			bool positionIsVisible = (matrixFogFlag[posX,posY] == FogFlag.VISIBLE);
 
-//			Debug.Log("positionIsVisible: " + positionIsVisible);
 			//Só aplicando se mudar o estado de visibilidade do inimigo
 			if(!entityEnemies[i].IsVisible && positionIsVisible)
 			{
-//				Debug.Log("chegou 1");
 				entityEnemies[i].SetVisible(true);
 			}
 			else if(entityEnemies[i].IsVisible && !positionIsVisible)
 			{
 				entityEnemies[i].SetVisible(false);
 			}
-
-			//Debug.Log("matrixFogFlag[posX,posY]: " + matrixFogFlag[posX,posY]);
-			//Debug.Log("posX: " + posX + " - posY: " + posY);
 		}
 	}
 
@@ -269,11 +300,8 @@ public class FogOfWar : MonoBehaviour
 		if (!DarkFog)
 			return true;
 		
-		//posX = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.x / mapSize.x));
-		//posY = Mathf.RoundToInt(SIZE_TEXTURE * (trns.position.z / mapSize.z));
-
-		posX = (short)(fowSystem.textureSize * (trns.position.x / mapSize.x));
-		posY = (short)(fowSystem.textureSize * (trns.position.z / mapSize.z));
+		posX = (short)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+		posY = (short)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
 		return (matrixFogFlag[posX, posY] == FogFlag.KNOWN_AREA);
 	}

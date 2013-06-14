@@ -188,9 +188,9 @@ public class Worker : Unit
 					return;
 				}
 
-//				Debug.Log (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius);
+//				Debug.Log (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius);
 
-				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
+				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius)
 				{
 					gameplayManager.resources.Set (resourceType, currentNumberOfResources);
 
@@ -581,7 +581,7 @@ public class Worker : Unit
 	{
 		if (HasFactory ())
 		{
-			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.GetComponent<CapsuleCollider>().radius)
+			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius)
 			{
 				if (!factoryChoose.wasBuilt)
 				{

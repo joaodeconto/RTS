@@ -19,18 +19,20 @@ public class ZoomHUD : MonoBehaviour
 			ht.Add ("repeat-interval", 0.01f);
 			
 			dcb = zoomInButton.AddComponent<DefaultCallbackButton> ();
-			dcb.Init (ht, null, null, null, null,
-			(ht_dcb) => 
-			{
-				float size = touchController.zoomSettings.cameras[0].fieldOfView;
-				size -= zoomSpeed;
-				for (int i = 0; i != touchController.zoomSettings.cameras.Length; i++)
+			dcb.Init (
+				ht, null, null, null, null,
+				(ht_dcb) => 
 				{
-					touchController.zoomSettings.cameras[i].fieldOfView = Mathf.Clamp (size, 
-																							touchController.zoomSettings.zoom.min,
-																							touchController.zoomSettings.zoom.max);
+					float size = touchController.zoomSettings.cameras[0].fieldOfView;
+					size -= zoomSpeed;
+					for (int i = 0; i != touchController.zoomSettings.cameras.Length; i++)
+					{
+						touchController.zoomSettings.cameras[i].fieldOfView = Mathf.Clamp (size, 
+																								touchController.zoomSettings.zoom.min,
+																								touchController.zoomSettings.zoom.max);
+					}
 				}
-			});
+			);
 		}
 		
 		if (zoomOutButton != null)
@@ -38,19 +40,21 @@ public class ZoomHUD : MonoBehaviour
 			Hashtable ht = new Hashtable();
 			ht.Add ("repeat-interval", 0.01f);
 			
-			dcb = zoomInButton.AddComponent<DefaultCallbackButton> ();
-			dcb.Init (ht, null, null, null, null,
-			(ht_dcb) => 
-			{
-				float size = touchController.zoomSettings.cameras[0].fieldOfView;
-				size += zoomSpeed;
-				for (int i = 0; i != touchController.zoomSettings.cameras.Length; i++)
+			dcb = zoomOutButton.AddComponent<DefaultCallbackButton> ();
+			dcb.Init (
+				ht, null, null, null, null,
+				(ht_dcb) => 
 				{
-					touchController.zoomSettings.cameras[i].fieldOfView = Mathf.Clamp (size, 
-																							touchController.zoomSettings.zoom.min,
-																							touchController.zoomSettings.zoom.max);
+					float size = touchController.zoomSettings.cameras[0].fieldOfView;
+					size += zoomSpeed;
+					for (int i = 0; i != touchController.zoomSettings.cameras.Length; i++)
+					{
+						touchController.zoomSettings.cameras[i].fieldOfView = Mathf.Clamp (size, 
+																								touchController.zoomSettings.zoom.min,
+																								touchController.zoomSettings.zoom.max);
+					}
 				}
-			});
+			);
 		}
 	}
 }

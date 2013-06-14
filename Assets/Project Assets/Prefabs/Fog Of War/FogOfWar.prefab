@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400002}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
   m_Layer: 13
   m_Name: FogOfWar
   m_TagString: Untagged
@@ -38,11 +39,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5199a5a76aa1992479c7401ba1bb3cad, type: 3}
   m_Name: 
   UseFog: 1
-  DarkFog: 0
+  DarkFog: 1
   pref_plane: {fileID: 100000, guid: e110e4594c30be740861d48334d615be, type: 2}
   visibleAreaColor: {r: 1, g: 1, b: 1, a: 0}
   knownAreaColor: {r: .25373137, g: .25373137, b: .25373137, a: .501960814}
-  fogHeight: 15.5
+  fogHeight: 8
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff305e18ad52574498a55f1e786a069c, type: 3}
+  m_Name: 
+  worldSize: 300
+  textureSize: 128
+  updateFrequency: .100000001
+  textureBlendTime: .5
+  blurIterations: 2
+  heightRange: {x: 0, y: 30}
+  raycastMask:
+    serializedVersion: 2
+    m_Bits: 8192
+  raycastRadius: 0
+  margin: .400000006
+  debug: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

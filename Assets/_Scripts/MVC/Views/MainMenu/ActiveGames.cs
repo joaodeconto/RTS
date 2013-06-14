@@ -107,7 +107,7 @@ public class ActiveGames : MonoBehaviour
 						{
 							pw.JoinRoom ((string)ht_hud["room.name"]);
 							pw.SetPropertyOnPlayer ("ready", true);
-
+							
 							ClearRows ();
 
 							messageActiveGame.enabled = true;
