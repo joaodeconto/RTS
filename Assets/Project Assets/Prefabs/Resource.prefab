@@ -17,7 +17,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: -1203168336, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &100002
 GameObject:
@@ -34,7 +34,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &400000
 Transform:
@@ -42,9 +42,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: -.0142542897, z: 0, w: .999898434}
-  m_LocalPosition: {x: 109.75296, y: 10.4200001, z: 105.49498}
-  m_LocalScale: {x: 2.4339807, y: 2.43398094, z: 2.4339807}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: -1}
+  m_LocalPosition: {x: 15.0865278, y: 0, z: 42.3809433}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
   m_Father: {fileID: 0}
@@ -55,8 +55,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.053575024, y: .00473947963, z: .18818298}
-  m_LocalScale: {x: .164614141, y: .164614141, z: .164614141}
+  m_LocalPosition: {x: -.418692827, y: .00139867782, z: .316997737}
+  m_LocalScale: {x: .300000012, y: .300000012, z: .300000012}
   m_Children: []
   m_Father: {fileID: 400000}
 --- !u!23 &2300000
@@ -68,8 +68,8 @@ Renderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_LightmapIndex: 0
+  m_LightmapTilingOffset: {x: .373046875, y: .373046875, z: -.00145721436, w: -.00145721436}
   m_Materials:
   - {fileID: 2100000, guid: aa7b19ce47312ad438912026176d571c, type: 2}
   m_SubsetIndices: 
@@ -94,6 +94,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c66778b0e1eb214092be5283b2d61e7, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   type: 1
   numberOfResources: 6000
   resistance: 6
@@ -108,6 +109,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   subId: 0
   ownerId: 0
   group: 0
@@ -126,7 +128,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1.67999995
+  m_Radius: 3.61999989
   m_Height: 1.64999998
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -137,7 +139,7 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
-  m_Radius: 1.40999997
+  m_Radius: 2.79999995
   m_Height: 1.48000002
 --- !u!1001 &100100000
 Prefab:

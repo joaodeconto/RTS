@@ -750,7 +750,7 @@ public class FOWSystem : MonoBehaviour
 			}
 		}
 	}
-
+	
 	/// <summary>
 	/// Update the specified texture with the new color buffer.
 	/// </summary>

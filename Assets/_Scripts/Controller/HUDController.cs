@@ -151,8 +151,8 @@ public class HUDController : MonoBehaviour
 		if (child.GetComponent<HealthBar> () == null) child.AddComponent <HealthBar> ();
 		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
 
-		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth,
-			10f), "Background");
+		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth*1.2f,
+		10f), "Background");
 
 		child.AddComponent<UIFollowTarget>().target      = target.FindChild (referenceChild).transform;
 		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;

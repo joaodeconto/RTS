@@ -418,6 +418,8 @@ AudioSource:
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -463,6 +465,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   autoload: 1
 --- !u!114 &11400002
 MonoBehaviour:
@@ -474,6 +477,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d62791e632805b4ca9182894b3f5c41, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -484,6 +488,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b897794dc18157244b70c2e6fce62e77, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   uiExitGameObject: {fileID: 0}
 --- !u!114 &11400006
 MonoBehaviour:
@@ -495,6 +500,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 111e42a9f574af1478996c9a5ee4404e, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   idleButtonPosition: {x: -38, y: 36, z: 0}
   myStats: []
   otherStats: []
@@ -508,6 +514,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc2c23cce6f520d45994a435e2a82774, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11400012
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -518,6 +525,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7018cb370f31fc8438abf2be7601ebd7, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   offlineMode: 0
 --- !u!114 &11400014
 MonoBehaviour:
@@ -529,6 +537,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c6a830f3446549408e3bc23cf6bc4be, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   teams:
   - name: Time lol
     color: {r: .164903104, g: .18838352, b: .470149279, a: 1}
@@ -563,7 +572,7 @@ MonoBehaviour:
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: selvagens
-    color: {r: 1, g: 1, b: 1, a: 1}
+    color: {r: 0, g: 0, b: 0, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   resources:
@@ -585,18 +594,17 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9402db579a1b63245b45afbbee1cf7c0, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
   layersToIgnore:
   - GUI
   zoomSettings:
     cameras:
     - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
     zoomSpeed: .200000003
     zoom:
-      min: 20
-      max: 60
+      min: 10
+      max: 40
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -607,6 +615,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae9a1ea39c32d1a40b25ef9ceb4ae14c, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   pref_healthBar: {fileID: 100004, guid: 7124a57782363ec4cb6632edc61ab84a, type: 2}
   pref_selectedObject: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   uiRoot: {fileID: 0}
@@ -637,6 +646,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9352519d91eb83649ae7eb6fb1a4d82a, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   pref_UnitMiniMap: {fileID: 100000, guid: 57bcf09d099bf8e4cad8e67ae4dc3415, type: 2}
   pref_StructureMiniMap: {fileID: 100000, guid: 7e6ea74c8c3179a4a889b3b6b1b0a076,
     type: 2}
@@ -660,6 +670,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d552abfbb976b5e4487636c9ac882597, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   teamIdMessage: 
   messages: []
 --- !u!114 &11400024
@@ -672,12 +683,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   subId: 0
   ownerId: 0
   group: 0
   prefixBackup: -1
   observed: {fileID: 0}
-  synchronization: 0
+  synchronization: 2
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   instantiationId: 0
@@ -691,6 +703,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d8230260338ccb4bbc5b02ba6115664, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
   messageQueuesAttributes:
   - queueName: Unit Group
@@ -755,6 +768,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 463cf097268fe2b43ac9c5a497c9765c, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   sounds:
   - name: Worker
     soundsClip:
@@ -788,11 +802,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aeacf3f39fe51bf418444dc35a79112b, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   events:
   - Name: building finish
     Message: '{0} construction complete'
     spriteName: 
-  - Name: out of founds
+  - Name: out of funds
     Message: Insufficient resources
     spriteName: 
   - Name: reach enqueued units
@@ -820,6 +835,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b338df8c8d57a53489899e21f89e0172, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   Prefabs:
   - Name: Button
     minimumCacheRemaining: 10
@@ -835,6 +851,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba13a7c7f20708b40a1eb94f6329f6e9, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   sounds:
   - name: Click
     soundsClip:
@@ -850,12 +867,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   subId: 0
   ownerId: 0
   group: 0
   prefixBackup: -1
   observed: {fileID: 0}
-  synchronization: 0
+  synchronization: 2
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   instantiationId: 0
@@ -869,6 +887,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba13a7c7f20708b40a1eb94f6329f6e9, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   sounds:
   - name: BeingAttacked
     soundsClip:

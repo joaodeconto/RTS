@@ -29,6 +29,8 @@ GameObject:
   - 124: {fileID: 12400000}
   - 114: {fileID: 11400000}
   - 114: {fileID: 11400002}
+  - 114: {fileID: 11400006}
+  - 114: {fileID: 11400008}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -95,13 +97,14 @@ GameObject:
   m_Component:
   - 4: {fileID: 400012}
   - 20: {fileID: 2000006}
+  - 114: {fileID: 11400004}
   m_Layer: 13
   m_Name: Camera Fog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -119,8 +122,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: .382683486, y: 0, z: 0, w: .923879564}
-  m_LocalPosition: {x: 63.764595, y: 84.9436035, z: -52.6746445}
+  m_LocalRotation: {x: .4226183, y: 0, z: 0, w: .906307817}
+  m_LocalPosition: {x: 122.483612, y: 84.9436035, z: 10.6222763}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400012}
@@ -250,7 +253,7 @@ Camera:
   field of view: 30
   orthographic: 0
   orthographic size: 15
-  m_Depth: 1
+  m_Depth: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 8192
@@ -269,7 +272,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -287,7 +290,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -331,13 +334,14 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af1728c8e9abf7240b0febe279f60bee, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   speedMobile: .800000012
-  speed: 1
+  speed: 2
   minimum: {x: .00999999978, y: .00999999978}
   maximum: {x: .99000001, y: .99000001}
-  zoomSpeed: 5
+  zoomSpeed: 20
   zoom:
-    min: 20
+    min: 5
     max: 45
 --- !u!114 &11400002
 MonoBehaviour:
@@ -349,18 +353,87 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 984d1c3dfa28446498a72320ac11e164, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   scenario:
     x:
-      min: 45
-      max: 255
+      min: 56
+      max: 300
     y:
       min: 0
       max: 30
     z:
       min: 0
-      max: 225
+      max: 279
   height: 40
   relativeSize: 15
+--- !u!114 &11400004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100012}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c0d02b39c7ba8449a6d3fc9e2d72c8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: e2d2b5a643c600d49b42ee8d15a57e5a, type: 3}
+  unexploredColor: {r: .200000003, g: .200000003, b: .200000003, a: 1}
+  exploredColor: {r: .254901975, g: .254901975, b: .254901975, a: .501960814}
+--- !u!114 &11400006
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c0d02b39c7ba8449a6d3fc9e2d72c8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: e2d2b5a643c600d49b42ee8d15a57e5a, type: 3}
+  unexploredColor: {r: .254901975, g: .254901975, b: .254901975, a: .270588249}
+  exploredColor: {r: .254901975, g: .254901975, b: .254901975, a: .258823544}
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4c0bae5e17e146e8abab519aabce38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: 12ce9fda0b79a484a83b34b5b2916b21, type: 3}
+  occluderShader: {fileID: 4800000, guid: 436abcc3eb32c41c1abde613b1f19adf, type: 3}
+  color: {r: 0, g: .0482757092, b: 1, a: 1}
+  glowStrength: .162
+  patternTexture: {fileID: 2800000, guid: cf99d9bbf078b9740a88a7583e1be6e4, type: 3}
+  patternScale: 3.01999998
+  patternWeight: 2.67000008
+  occluderLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  wallVisionLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  visibilityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  rampTexture: {fileID: 0}
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1

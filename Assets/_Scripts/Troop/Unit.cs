@@ -122,6 +122,8 @@ public class Unit : IStats
 
 	void OnDestroy ()
 	{
+		if (gameplayManager.IsBoot (team)) return;
+		
 		if (Selected && !playerUnit)
 		{
 			hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
@@ -133,7 +135,16 @@ public class Unit : IStats
 
 	public virtual void IAStep ()
 	{
-		if (!playerUnit) return;
+		if (gameplayManager.IsBoot (team))
+		{
+			if (!PhotonNetwork.isMasterClient)
+				return;
+		}
+		else
+		{
+			if (!playerUnit)
+				return;
+		}
 
 //		MoveAvoidance ();
 
@@ -586,7 +597,7 @@ public class Unit : IStats
 			}
 			else
 			{
-				playerTargetAttack = PhotonNetwork.player;
+				playerTargetAttack = PhotonNetwork.masterClient;
 			}
 
 			followingTarget = true;
@@ -677,7 +688,7 @@ public class Unit : IStats
 			unitState = UnitState.Walk;
 		}
 		*/
-
+		
 		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1<<LayerMask.NameToLayer ("Unit"));
 
 		if (nearbyUnits.Length == 0) return;
@@ -687,9 +698,34 @@ public class Unit : IStats
 		{
 			if (nearbyUnits[i].GetComponent<IStats> ())
 			{
-				if (!gameplayManager.SameEntity (nearbyUnits[i].GetComponent<IStats> ().team,
-												 nearbyUnits[i].GetComponent<IStats> ().ally))
+				if (gameplayManager.IsBoot (team))
 				{
+					if (gameplayManager.IsBoot (nearbyUnits[i].GetComponent<IStats> ().team))
+						continue;
+					
+					if (enemyFound == null)
+					{
+						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
+							enemyFound = nearbyUnits[i].gameObject;
+					}
+					else
+					{
+						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
+						{
+							if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
+								Vector3.Distance (transform.position, enemyFound.transform.position))
+							{
+								enemyFound = nearbyUnits[i].gameObject;
+							}
+						}
+					}
+				}
+				else
+				{
+					if (gameplayManager.SameEntity (nearbyUnits[i].GetComponent<IStats> ().team,
+													nearbyUnits[i].GetComponent<IStats> ().ally))
+						continue;
+					
 					if (enemyFound == null)
 					{
 						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)

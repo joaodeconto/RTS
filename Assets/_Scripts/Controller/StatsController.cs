@@ -372,13 +372,33 @@ public class StatsController : MonoBehaviour
 		foreach (IStats stat in myStats)
 		{
 			if (stat == null)
+			{
 				myStats.RemoveAt (i);
+				continue;
+			}
 
 			if (stat.name.Equals(name))
 			{
 				return stat;
 			}
 			i++;
+		}
+		
+		i = 0;
+		foreach (IStats stat in otherStats)
+		{
+			if (stat == null)
+			{
+				otherStats.RemoveAt (i);
+				continue;
+			}
+
+			if (stat.name.Equals(name))
+			{
+				return stat;
+			}
+			i++;
+
 		}
 
 		return null;

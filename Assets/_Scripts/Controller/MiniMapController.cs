@@ -41,6 +41,10 @@ public class MiniMapController : MonoBehaviour
 	private GameObject mainCameraGO;
 
 	private bool WasInitialized;
+	
+	private FogOfWar fogOfWar;
+	
+	private UITexture textureFogOfWar;
 
 	public MiniMapController Init()
 	{
@@ -49,7 +53,7 @@ public class MiniMapController : MonoBehaviour
 			Debug.LogError("Classe ja inicializada!");
 			return this;
 		}
-
+		
 		WasInitialized = true;
 
 		GameplayManager gm = ComponentGetter.Get<GameplayManager>();
@@ -79,22 +83,27 @@ public class MiniMapController : MonoBehaviour
 						MiniMapRefreshInterval,
 						MiniMapRefreshInterval);
 
-		mapSize = ComponentGetter.Get<Terrain>("Terrain").terrainData.size;
+		mapSize = ComponentGetter.Get<FogOfWar>().mapTerrain.terrainData.size;
 
-		FogOfWar fogOfWar = ComponentGetter.Get<FogOfWar>();
+//		FogOfWar fogOfWar = ComponentGetter.Get<FogOfWar>();
 
 		UITexture ut;
+		
+		fogOfWar = ComponentGetter.Get<FogOfWar>();
 
-		if (fogOfWar.UseFog)
-		{
-			ut = NGUITools.AddWidget<UITexture> (fogMiniMap);
-			ut.pivot = UIWidget.Pivot.BottomLeft;
-			ut.transform.localPosition    = -Vector3.forward * 5;
-			ut.transform.localScale       = Vector3.one;
-			ut.transform.localEulerAngles = Vector3.forward * 90f;
-			ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
-			ut.material.mainTexture = ComponentGetter.Get<FogOfWar>().FogTexture;
-		}
+//		if (fogOfWar.UseFog)
+//		{
+			textureFogOfWar = NGUITools.AddWidget<UITexture> (fogMiniMap);
+			textureFogOfWar.pivot = UIWidget.Pivot.BottomLeft;
+			textureFogOfWar.transform.localPosition    = -Vector3.forward * 5;
+			textureFogOfWar.transform.localScale       = Vector3.one;
+			textureFogOfWar.transform.localEulerAngles = Vector3.forward * 90f;
+			textureFogOfWar.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
+			textureFogOfWar.material.mainTexture = fogOfWar.FogTexture;
+//			Texture t = FOWSystem.instance.texture0;
+//			Debug.Log ("Texture: " + (t != null));
+//			ut.material.mainTexture = t;
+//		}
 
 		ut = NGUITools.AddWidget<UITexture> (CamPositionMiniMap);
 		ut.transform.localPosition    = Vector3.forward * -1;
@@ -103,7 +112,7 @@ public class MiniMapController : MonoBehaviour
 		ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
 		ut.material.mainTexture = CamPositionTexture;
 
-		mainCameraGO = GameObject.Find("Main Camera");
+		mainCameraGO = Camera.main.gameObject;
 
 		RefreshMiniMapSize();
 
@@ -129,6 +138,8 @@ public class MiniMapController : MonoBehaviour
 #if UNITY_EDITOR
 		RefreshMiniMapSize();
 #endif
+//		Debug.Log(FOWSystem.instance.texture1.width);
+		
 		//Update camera mini map position
 		UpdateMiniMapCameraPosition();
 
@@ -313,7 +324,7 @@ public class MiniMapController : MonoBehaviour
 	public void RemoveUnit (Transform trns, int teamId)
 	{
 		if (trns == null) return;
-
+		
 		int index = unitList[teamId].IndexOf(trns) != null ? unitList[teamId].IndexOf(trns) : -1;
 
 		if (index == -1) return;

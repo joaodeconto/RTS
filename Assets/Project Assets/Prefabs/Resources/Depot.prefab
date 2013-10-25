@@ -8,7 +8,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400000}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Health Reference
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ GameObject:
   - 4: {fileID: 400002}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Depot1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - 4: {fileID: 400004}
   - 114: {fileID: 11400006}
   - 111: {fileID: 11100000}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Depot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   - 4: {fileID: 400006}
   - 33: {fileID: 3300002}
   - 23: {fileID: 2300002}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Depot3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ GameObject:
   - 4: {fileID: 400008}
   - 33: {fileID: 3300004}
   - 23: {fileID: 2300004}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Depot2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400000}
   - 208: {fileID: 20800000}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Depot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,6 +280,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 905aefc6e5de9e84d87bfba0c27c1a60, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -290,6 +291,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   subId: 0
   ownerId: 0
   group: 0
@@ -309,6 +311,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e43cb1f64fb49314c9a9e25a01920f29, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   MaxHealth: 175
   Defense: 0
   team: 0
@@ -323,9 +326,10 @@ MonoBehaviour:
   transformParticleDamageReference: {fileID: 0}
   playerUnit: 0
   category: Depot
+  costOfResources:
+    NumberOfRocks: 50
   model: {fileID: 100004}
   unitsToCreate: []
-  waypoint: {fileID: 0}
   receiveResource: 1
   buildingObjects:
     baseObject: {fileID: 100002}
@@ -348,6 +352,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1

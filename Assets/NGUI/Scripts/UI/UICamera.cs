@@ -342,7 +342,7 @@ public class UICamera : MonoBehaviour
 				if (mSel != null)
 				{
 					UICamera uicam = FindCameraForLayer(mSel.layer);
-					
+
 					if (uicam != null)
 					{
 						current = uicam;
@@ -367,6 +367,7 @@ public class UICamera : MonoBehaviour
 						Notify(mSel, "OnSelect", true);
 						current = null;
 					}
+					else Debug.Log("The fuck? " + mList.Count);
 				}
 			}
 		}
@@ -380,13 +381,44 @@ public class UICamera : MonoBehaviour
 	{
 		get
 		{
-			int count = mTouches.Count;
+			int count = 0;
+
+			for (int i = 0; i < mTouches.Count; ++i)
+				if (mTouches[i].pressed != null)
+					++count;
 
 			for (int i = 0; i < mMouse.Length; ++i)
 				if (mMouse[i].pressed != null)
 					++count;
 
 			if (mController.pressed != null)
+				++count;
+
+			return count;
+		}
+	}
+
+	/// <summary>
+	/// Number of active drag events from all sources.
+	/// </summary>
+
+	static public int dragCount
+	{
+		get
+		{
+			int count = 0;
+
+			for (int i = 0; i < mTouches.Count; ++i)
+			{
+				if (mTouches[i].dragged != null)
+					++count;
+			}
+
+			for (int i = 0; i < mMouse.Length; ++i)
+				if (mMouse[i].dragged != null)
+					++count;
+
+			if (mController.dragged != null)
 				++count;
 
 			return count;
@@ -682,7 +714,9 @@ public class UICamera : MonoBehaviour
 
 	void Awake ()
 	{
-#if !UNITY_3_4 && !UNITY_3_5 && !UNITY_4_0
+		mList.Add(this);
+
+#if !UNITY_3_5 && !UNITY_4_0
 		// We don't want the camera to send out any kind of mouse events
 		cachedCamera.eventMask = 0;
 #endif
@@ -718,10 +752,6 @@ public class UICamera : MonoBehaviour
 		mMouse[0].pos.y = Input.mousePosition.y;
 		lastTouchPosition = mMouse[0].pos;
 
-		// Add this camera to the list
-		mList.Add(this);
-		mList.Sort(CompareFunc);
-
 		// If no event receiver mask was specified, use the camera's mask
 		if (eventReceiverMask == -1) eventReceiverMask = cachedCamera.cullingMask;
 	}
@@ -730,10 +760,13 @@ public class UICamera : MonoBehaviour
 	/// Remove this camera from the list.
 	/// </summary>
 
-	void OnDestroy ()
-	{
-		mList.Remove(this);
-	}
+	void OnDestroy () { mList.Remove(this); }
+
+	/// <summary>
+	/// Sort the list when enabled.
+	/// </summary>
+
+	void OnEnable () { mList.Sort(CompareFunc); }
 
 	/// <summary>
 	/// Update the object under the mouse if we're not using touch-based input.
@@ -1036,7 +1069,7 @@ public class UICamera : MonoBehaviour
 	public void ProcessTouch (bool pressed, bool unpressed)
 	{
 		// Whether we're using the mouse
-		bool isMouse = (currentTouch == mMouse[0]);
+		bool isMouse = (currentTouch == mMouse[0] || currentTouch == mMouse[1] || currentTouch == mMouse[2]);
 		float drag   = isMouse ? mouseDragThreshold : touchDragThreshold;
 		float click  = isMouse ? mouseClickThreshold : touchClickThreshold;
 
@@ -1044,12 +1077,12 @@ public class UICamera : MonoBehaviour
 		if (pressed)
 		{
 			if (mTooltip != null) ShowTooltip(false);
-			
+
 			currentTouch.pressStarted = true;
 			Notify(currentTouch.pressed, "OnPress", false);
 			currentTouch.pressed = currentTouch.current;
 			currentTouch.dragged = currentTouch.current;
-			currentTouch.clickNotification = ClickNotification.Always;
+			currentTouch.clickNotification = isMouse ? ClickNotification.BasedOnDelta : ClickNotification.Always;
 			currentTouch.totalDelta = Vector2.zero;
 			currentTouch.dragStarted = false;
 			Notify(currentTouch.pressed, "OnPress", true);

@@ -812,20 +812,26 @@ static public class NGUITools
 	/// http://answers.unity3d.com/questions/266244/how-can-i-add-copypaste-clipboard-support-to-my-ga.html
 	/// </summary>
 
+#if UNITY_WEBPLAYER || UNITY_FLASH || UNITY_METRO
+	/// <summary>
+	/// Access to the clipboard is not supported on this platform.
+	/// </summary>
+
+	public static string clipboard
+	{
+		get { return null; }
+		set { }
+	}
+#else
 	static PropertyInfo mSystemCopyBuffer = null;
 	static PropertyInfo GetSystemCopyBufferProperty ()
 	{
-#if UNITY_WEBPLAYER || UNITY_FLASH || UNITY_METRO
-		return null;
-#else
-
 		if (mSystemCopyBuffer == null)
 		{
 			Type gui = typeof(GUIUtility);
 			mSystemCopyBuffer = gui.GetProperty("systemCopyBuffer", BindingFlags.Static | BindingFlags.NonPublic);
 		}
 		return mSystemCopyBuffer;
-#endif
 	}
 
 	/// <summary>
@@ -845,4 +851,5 @@ static public class NGUITools
 			if (copyBuffer != null) copyBuffer.SetValue(null, value, null);
 		}
 	}
+#endif
 }

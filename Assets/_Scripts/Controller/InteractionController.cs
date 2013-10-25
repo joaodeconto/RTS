@@ -85,38 +85,39 @@ public class InteractionController : MonoBehaviour
 
 		if (hit.CompareTag ("Factory"))
 		{
+			FactoryBase factory = hit.GetComponent<FactoryBase> ();
 			if(GameplayManager.mode == GameplayManager.Mode.Cooperative)
 			{
-				if (!gameplayManager.IsAlly (hit.GetComponent<FactoryBase> ()))
+				if (!gameplayManager.IsAlly (factory))
 				{
-					if (hit.GetComponent<FactoryBase> ().IsVisible)
+					if (factory.IsVisible)
 					{
-						statsController.AttackTroop (hit.transform.gameObject);
+						statsController.AttackTroop (factory.gameObject);
 						return;
 					}
 				}
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 				else
 				{
-					statsController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
+					statsController.WorkerCheckFactory (factory);
 					return;
 				}
 #endif
 			}
 			else
 			{
-				if (!gameplayManager.IsSameTeam (hit.GetComponent<FactoryBase> ()))
+				if (!gameplayManager.IsSameTeam (factory))
 				{
-					if (hit.GetComponent<FactoryBase> ().IsVisible)
+					if (factory.IsVisible)
 					{
-						statsController.AttackTroop (hit.transform.gameObject);
+						statsController.AttackTroop (factory.gameObject);
 						return;
 					}
 				}
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 				else
 				{
-					statsController.WorkerCheckFactory (hit.GetComponent<FactoryBase>());
+					statsController.WorkerCheckFactory (factory);
 					return;
 				}
 #endif
