@@ -215,6 +215,8 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 		SetPlayer ( playerName, true );
 		SetPropertyOnPlayer ("team", PhotonNetwork.playerList.Length - 1);
+		
+		ConfigurationData.battle = new Model.Battle ((string)PhotonNetwork.room.customProperties["battle"]);
 	}
 
 	private void OnCreatedRoom()
@@ -362,6 +364,8 @@ public class PhotonWrapper : Photon.MonoBehaviour
 				photonView.RPC ("SetGameplayMode", PhotonTargets.Others, 0);
 			}
 		}
+		
+		ConfigurationData.InGame = true;
 		
 		yield return new WaitForSeconds (2f);
 		

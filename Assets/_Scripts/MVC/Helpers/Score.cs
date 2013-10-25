@@ -8,8 +8,12 @@ using Visiorama;
 public class Score : MonoBehaviour
 {
 	private Dictionary <string, Model.DataScore> dicDataScore;
+	private List <Model.DataScore> dicCurrentBattleScore;
 	private Model.Player player;
 	private DataScoreDAO dataScoreDAO;
+	
+	public delegate void A (List <Model.DataScore> dicScore);
+	public A b;
 
 	Score Init ()
 	{
@@ -18,6 +22,7 @@ public class Score : MonoBehaviour
 
 		dataScoreDAO = ComponentGetter.Get <DataScoreDAO> ();
 		dicDataScore = new Dictionary <string, Model.DataScore> ();
+		dicCurrentBattleScore = new List<Model.DataScore> ();
 
 		return this;
 	}
@@ -67,7 +72,7 @@ public class Score : MonoBehaviour
 		else
 			dicDataScore[scoreKey].NrPoints = points;
 	}
-
+	
 	public void _LoadScore ()
 	{
 		//TODO ler apenas scores totais, ou seja, sem que tenham IdBattle's
@@ -78,10 +83,27 @@ public class Score : MonoBehaviour
 												dicDataScore = scores;
 											});
 	}
+	
+	public void _LoadBattleScore (A b)
+	{
+		dataScoreDAO.LoadAllBattleScores (ConfigurationData.battle.ToDatabaseModel (),
+											(scores) =>
+											{
+												dicCurrentBattleScore = scores;
+			
+												b (dicCurrentBattleScore);
+											});
+	}
+
 
 	public void _SaveScore ()
 	{
 		dataScoreDAO.SaveScores (dicDataScore);
+	}
+	
+	public List<Model.DataScore> CurrentBattle ()
+	{
+		return dicCurrentBattleScore;
 	}
 
 	/* Static */
@@ -117,6 +139,11 @@ public class Score : MonoBehaviour
 	public static void Load ()
 	{
 		Instance._LoadScore ();
+	}
+	
+	public static void LoadBattle (A b)
+	{
+		Instance._LoadBattleScore (b);
 	}
 
 	public static void Save ()

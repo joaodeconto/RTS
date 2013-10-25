@@ -106,7 +106,9 @@ public class NewGame : MonoBehaviour
 
 			string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + System.DateTime.Now.ToString ("mm-ss");
 			bool isVisible = true, isOpen = true;
-
+			
+			ConfigurationData.battle = battle;
+			
 			Hashtable properties = new Hashtable ();
 			properties.Add ("battle", battle.ToString ());
 			pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers, properties);
@@ -114,7 +116,7 @@ public class NewGame : MonoBehaviour
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
 
-			Debug.Log ("battle: " + properties["battle"]);
+			VDebug.Log ("battle: " + properties["battle"]);
 
 			GameplayManager.mode = mode;
 

@@ -15,6 +15,8 @@ public class GhostFactory : MonoBehaviour
 	protected GameObject overdrawModel;
 	protected int numberOfCollisions = 0;
 	protected float realRadius;
+	
+	private bool isCapsuleCollider;
 
 	public void Init (Worker worker, Worker.FactoryConstruction factoryConstruction)
 	{
@@ -37,14 +39,53 @@ public class GhostFactory : MonoBehaviour
 		touchController = ComponentGetter.Get<TouchController> ();
 
 		touchController.DisableDragOn = true;
-
-		collider.isTrigger = true;
-		realRadius = GetComponent<CapsuleCollider> ().radius;
-		GetComponent<CapsuleCollider> ().radius += 3f;
 		
-		gameObject.AddComponent<Rigidbody>();
-		rigidbody.isKinematic = true;
-
+		isCapsuleCollider = true;
+		
+		GameObject helperColliderGameObject;
+		
+		if (gameObject.GetComponent<CapsuleCollider> () == null)
+		{
+			isCapsuleCollider = false;
+			
+//			CapsuleCollider capCollider = gameObject.GetComponent<CapsuleCollider> ();
+//			capCollider.radius = thisFactory.helperCollider.radius;
+//			capCollider.center = thisFactory.helperCollider.center;
+//			capCollider.height = thisFactory.helperCollider.height;
+			
+			thisFactory.helperCollider.isTrigger = true;
+			realRadius = thisFactory.helperCollider.radius;
+			thisFactory.helperCollider.radius += 3f;
+			
+			helperColliderGameObject = thisFactory.helperCollider.gameObject;
+			
+			numberOfCollisions--;
+		}
+		else
+		{
+			GetComponent<CapsuleCollider> ().isTrigger = true;
+			realRadius = GetComponent<CapsuleCollider> ().radius;
+			GetComponent<CapsuleCollider> ().radius += 3f;
+			
+			helperColliderGameObject = gameObject;
+		}
+		
+		helperColliderGameObject.AddComponent<Rigidbody> ();
+		helperColliderGameObject.rigidbody.isKinematic = true;
+		
+		HelperColliderDetect hcd = helperColliderGameObject.AddComponent<HelperColliderDetect> ();
+		hcd.Init
+		(
+			(other) =>
+			{
+				OnCollider (other);
+			},
+			(other) => 
+			{
+				OffCollider (other);
+			}
+		);
+		
 		SetOverdraw (worker.team);
 	}
 
@@ -59,8 +100,10 @@ public class GhostFactory : MonoBehaviour
 
 		// Patch transform com hit.point
 		transform.position = Vector3.zero;
-
-		if (Physics.Raycast (ray, out hit))
+		
+		Debug.Log (1 << LayerMask.NameToLayer ("Terrain"));
+		
+		if (Physics.Raycast (ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer ("Terrain")))
 		{
 			transform.position = hit.point;
 		}
@@ -90,33 +133,37 @@ public class GhostFactory : MonoBehaviour
 			}
 		}
 	}
-
-	void OnTriggerEnter (Collider other)
+	
+	void OnCollider (Collider other)
 	{
 		if (!other.name.Equals ("Terrain"))
 		{
 			numberOfCollisions++;
 		}
 
-		if (numberOfCollisions == 1)
+		Debug.Log ("ENTER: " + numberOfCollisions);
+		
+		if (numberOfCollisions != 0)
 		{
 			SetColorOverdraw (new Color (0.75f, 0.25f, 0.25f));
 		}
 	}
-
-	void OnTriggerExit (Collider other)
+	
+	void OffCollider (Collider other)
 	{
 		if (!other.name.Equals ("Terrain"))
 		{
 			numberOfCollisions--;
 		}
 
+		Debug.Log ("EXIT: " + numberOfCollisions);
+		
 		if (numberOfCollisions == 0)
 		{
 			SetColorOverdraw (new Color (0.25f, 0.75f, 0.25f));
 		}
 	}
-
+	
 	void Apply ()
 	{
 		ComponentGetter.Get<SelectionController> ().enabled = true;
@@ -126,7 +173,24 @@ public class GhostFactory : MonoBehaviour
 
 		if (canBuy)
 		{
-			GetComponent<CapsuleCollider> ().radius = realRadius;
+			GameObject helperColliderGameObject;
+			
+			if (isCapsuleCollider)
+			{
+				GetComponent<CapsuleCollider> ().radius = realRadius;
+				
+				helperColliderGameObject = gameObject;
+			}
+			else
+			{
+				thisFactory.helperCollider.radius = realRadius;
+				
+				helperColliderGameObject = thisFactory.helperCollider.gameObject;
+			}
+			
+			Destroy (helperColliderGameObject.rigidbody);
+			Destroy (helperColliderGameObject
+					.GetComponent<HelperColliderDetect> ());
 			
 			transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 
@@ -155,7 +219,6 @@ public class GhostFactory : MonoBehaviour
 
 			DestroyOverdrawModel ();
 
-			Destroy(rigidbody);
 			Destroy(this);
 		}
 		else
@@ -174,7 +237,9 @@ public class GhostFactory : MonoBehaviour
 		{
 			foreach (Material m in r.materials)
 			{
-//				m.shader = Shader.Find ("Overdraw");
+#if UNITY_ANDROID || UNITY_IPHONE
+				m.shader = Shader.Find ("Diffuse");
+#endif
 				m.color = new Color (0.25f, 0.75f, 0.25f);
 			}
 		}

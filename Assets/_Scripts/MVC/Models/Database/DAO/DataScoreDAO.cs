@@ -13,8 +13,8 @@ public class DataScoreDAO : MonoBehaviour
 
 	void Awake () { db = ComponentGetter.Get <Database> (); }
 
-	public delegate void DataScoreDAODelegateList (Dictionary <string, Model.DataScore> scores);
-	public void LoadAllPlayerScores (DB.Player player, DataScoreDAODelegateList callback)
+	public delegate void DataScoreDAODelegateDictionary (Dictionary <string, Model.DataScore> scores);
+	public void LoadAllPlayerScores (DB.Player player, DataScoreDAODelegateDictionary callback)
 	{
 		List <DB.DataScore> lDataScore = new List <DB.DataScore> ();
 		db.Read (player, lDataScore.GetType (), "read-list-datascore",
@@ -29,10 +29,33 @@ public class DataScoreDAO : MonoBehaviour
 
 			for (int i = lDataScore.Count - 1; i != -1; --i)
 			{
-				dic.Add (lDataScore[i].SzScoreName, lDataScore[i].ToModel ());
+				dic.Add (lDataScore[i].SzScoreName + " - " + lDataScore[i].IdBattle, lDataScore[i].ToModel ());
 			}
 
 			callback (dic);
+		});
+	}
+	
+	public delegate void DataScoreDAODelegateList (List<Model.DataScore> scores);
+	public void LoadAllBattleScores (DB.Battle battle, DataScoreDAODelegateList callback)
+	{
+		List <DB.DataScore> lDataScore = new List <DB.DataScore> ();
+		db.Read (battle, lDataScore.GetType (), "read-battle-datascore",
+		(response) =>
+		{
+			List<Model.DataScore> list = new List<Model.DataScore> ();
+
+			if ((response as List <DB.DataScore>) != null)
+			{
+				lDataScore = (response as List <DB.DataScore>);
+			}
+
+			for (int i = lDataScore.Count - 1; i != -1; --i)
+			{
+				list.Add (lDataScore[i].ToModel ());
+			}
+
+			callback (list);
 		});
 	}
 

@@ -12,6 +12,15 @@ public class Team
 	public Transform initialPosition;
 
 	public bool lose { get; set; }
+	
+	public void CreateColorTexture ()
+	{
+		colorTexture = new Texture2D(1, 1);
+		
+		colorTexture.SetPixel (0, 0, Color.blue);
+		
+		colorTexture.Apply ();
+	}
 }
 
 public class GameplayManager : Photon.MonoBehaviour
@@ -105,6 +114,8 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
 			}
+			
+			teams[i].CreateColorTexture ();
 		}
 
 		if (mode == Mode.Cooperative)
@@ -133,14 +144,51 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiLostMainBaseObject.SetActive (false);
 
 		numberOfHousesMore = excessHousesIncrements = 0;
+		
+		InvokeRepeating ("EndMatch", 10f, 10f);
 	}
-
+	
+	/// <summary>
+	/// Gets the texture color of my team.
+	/// </summary>
+	/// <returns>
+	/// The of my texture color team.
+	/// </returns>
+	/// 
+	public Texture2D GetColorTextureTeam ()
+	{
+		return GetColorTextureTeam (MyTeam);
+	}
+	
+	/// <summary>
+	/// Gets the texture color team.
+	/// </summary>
+	/// <returns>
+	/// The texture color team.
+	/// </returns>
+	/// <param name='teamID'>
+	/// Team ID.
+	/// </param>
+	public Texture2D GetColorTextureTeam (int teamID)
+	{
+		if (teamID >= 0 && teamID < teams.Length)
+		{
+			return teams[teamID].colorTexture;
+		}
+		else
+		{
+			Debug.LogError ("Team ID not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
+			return null;
+		}
+	}
+	
 	/// <summary>
 	/// Gets the color of my team.
 	/// </summary>
 	/// <returns>
 	/// The of my color team.
 	/// </returns>
+	/// 
 	public Color GetColorTeam ()
 	{
 		return GetColorTeam (MyTeam);

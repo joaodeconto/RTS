@@ -19,11 +19,11 @@ public class InternalMainMenu : MonoBehaviour
 	public Model.Player player { get; private set; }
 	private List<Transform> listChildOptions;
 
-	public void Init (Model.Player player)
+	public void Init ()
 	{
 		Invoke ("InitScore", Random.value * 2.0f);
 
-		this.player = player;
+		this.player = ConfigurationData.player;
 //		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 //
 //		dcb.Init(null, (ht_hud) =>

@@ -42,8 +42,10 @@ public class FactoryBase : IStats
 
 	public string buttonName;
 	public string guiTextureName;
+	
+	public CapsuleCollider helperCollider { get; private set; }
 
-	public bool hasRallypoint { get; protected set; }
+	public bool hasRallypoint { get; private set; }
 	
 	protected Transform rallypoint;
 	
@@ -68,8 +70,8 @@ public class FactoryBase : IStats
 	public bool wasVisible = false;
 	[HideInInspector]
 	public bool alreadyCheckedMaxPopulation = false;
-	[HideInInspector]
-	public ResourcesManager costOfResources;
+//	[HideInInspector]
+//	public ResourcesManager costOfResources;
 
 	protected float realRangeView;
 
@@ -101,6 +103,8 @@ public class FactoryBase : IStats
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
+		
+		helperCollider = GetComponentInChildren<CapsuleCollider> ();
 
 		if (unitsToCreate.Length != 0)
 		{
@@ -254,7 +258,7 @@ public class FactoryBase : IStats
 		Quaternion rotation = Quaternion.LookRotation (difference);
 		Vector3 forward = rotation * Vector3.forward;
 
-		Vector3 unitSpawnPosition = transform.position + (forward * GetComponent<CapsuleCollider>().radius);
+		Vector3 unitSpawnPosition = transform.position + (forward * helperCollider.radius);
 
 		if (PhotonNetwork.offlineMode)
 		{
@@ -330,13 +334,23 @@ public class FactoryBase : IStats
 
 		if (!photonView.isMine) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;
+		
+		if (gameplayManager.SameEntity (team, ally))
+		{
+			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
+			fowr.range = new Vector2(0, 0);
+		}
 	}
 
 	[RPC]
 	public void Instance ()
 	{
 		realRangeView  = this.fieldOfView;
-		this.fieldOfView = 0.0f;
+		if (gameplayManager.SameEntity (team, ally))
+		{
+			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
+			fowr.range = new Vector2(0, helperCollider.radius);
+		}
 
 		GetComponent<NavMeshObstacle> ().enabled = true;
 
