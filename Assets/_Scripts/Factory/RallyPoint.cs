@@ -17,7 +17,7 @@ public class RallyPoint : MonoBehaviour {
 		touchController = ComponentGetter.Get<TouchController> ();
 		
 		lineRenderer = gameObject.AddComponent<LineRenderer>();
-//		lineRenderer.SetColors (Color.white, Color.black);
+		lineRenderer.SetColors (Color.white, Color.black);
 		lineRenderer.material = new Material(Shader.Find("Transparent/Diffuse"));
 		lineRenderer.material.mainTexture = lineTexture;
 		lineRenderer.material.color = ComponentGetter.Get<GameplayManager>().GetColorTeam ();
@@ -86,9 +86,9 @@ public class RallyPoint : MonoBehaviour {
 		nodes.Add(transform.position);
 		nodes.Add(transform.parent.position);
 		
-	//	Vector3 center = Math.CenterOfObjects (nodes.ToArray ());
-	//	nodes.Insert (1, center + (Vector3.up * 1f));
-		
+		Vector3 center = Math.CenterOfObjects (nodes.ToArray ());
+		nodes.Insert (1, center + (Vector3.up * 1f));
+	
      	IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 10, false);
 		
 		int i = 0;

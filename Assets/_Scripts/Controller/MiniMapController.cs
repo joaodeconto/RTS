@@ -83,7 +83,7 @@ public class MiniMapController : MonoBehaviour
 						MiniMapRefreshInterval,
 						MiniMapRefreshInterval);
 
-		mapSize = ComponentGetter.Get<FogOfWar>().mapTerrain.terrainData.size;
+		mapSize = ComponentGetter.Get<FogOfWar>().terrain.terrainData.size;
 
 //		FogOfWar fogOfWar = ComponentGetter.Get<FogOfWar>();
 
@@ -122,14 +122,15 @@ public class MiniMapController : MonoBehaviour
 	void RefreshMiniMapSize()
 	{
 		miniMapSize = mapTransform.localScale;//miniMapCollider.bounds.max - miniMapCollider.bounds.min;//.size;//(miniMapMaxPoint - miniMapMinPoint);
+				
 		Vector3 newScale = new Vector3( visualizationSize.x / mapSize.x,
 										visualizationSize.y / mapSize.z,
 										1f);
-
+		
 		newScale.x *= mapTransform.localScale.x;
 		newScale.y *= mapTransform.localScale.y;
 		newScale.z *= mapTransform.localScale.z;
-
+		
 		CamPositionMiniMap.transform.localScale = newScale;
 	}
 

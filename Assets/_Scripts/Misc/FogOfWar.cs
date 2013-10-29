@@ -25,6 +25,8 @@ public class FogOfWar : MonoBehaviour
 	public bool DarkFog = true;
 
 	public GameObject pref_plane;
+	
+	public Terrain terrain;
 
 	public Color visibleAreaColor = new Color(1.0f,1.0f,1.0f,0.0f);
 	public Color knownAreaColor   = new Color(0.5f,0.5f,0.5f,0.5f);
@@ -65,7 +67,8 @@ public class FogOfWar : MonoBehaviour
 		matrixFogFlag = new FogFlag[SIZE_TEXTURE,SIZE_TEXTURE];
 
 		//GameplayManager
-		TerrainData td = ComponentGetter.Get<Terrain>("Terrain").terrainData;
+		TerrainData td = terrain.terrainData;
+
 		mapSize = td.size;
 
 		for (i = 0; i != SIZE_TEXTURE; ++i)

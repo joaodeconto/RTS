@@ -114,6 +114,7 @@ public class FactoryBase : IStats
 			
 			GameObject goRallypoint = NGUITools.AddChild (gameObject, instantiateRallypoint);
 			rallypoint = goRallypoint.transform;
+			rallypoint.parent = this.transform;
 			
 			Vector3 pos = rallypoint.position;
 			pos.z -= transform.collider.bounds.size.z;
