@@ -480,7 +480,7 @@ GameObject:
   - 4: {fileID: 400062}
   - 137: {fileID: 13700000}
   m_Layer: 10
-  m_Name: Neanderthal
+  m_Name: Neanderthal_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -526,6 +526,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400068}
   - 111: {fileID: 11100000}
+  - 205: {fileID: 20500000}
   m_Layer: 10
   m_Name: Nean
   m_TagString: Untagged
@@ -548,6 +549,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100072
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400072}
+  - 137: {fileID: 13700004}
+  m_Layer: 10
+  m_Name: Neanderthal_LOD0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -555,7 +572,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 88.8113632, y: 10.0012207, z: 79.9795609}
+  m_LocalPosition: {x: 17.5230923, y: 0, z: 49.2558174}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400070}
@@ -926,8 +943,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100062}
-  m_LocalRotation: {x: .707106888, y: 0, z: 0, w: .707106709}
-  m_LocalPosition: {x: -0, y: -1e-15, z: -.917739987}
+  m_LocalRotation: {x: .707106829, y: 0, z: 0, w: .707106829}
+  m_LocalPosition: {x: 0, y: 0, z: -.917739868}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400068}
@@ -966,6 +983,7 @@ Transform:
   m_Children:
   - {fileID: 400066}
   - {fileID: 400064}
+  - {fileID: 400072}
   - {fileID: 400062}
   m_Father: {fileID: 400000}
 --- !u!4 &400070
@@ -975,10 +993,21 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100070}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
+--- !u!4 &400072
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100072}
+  m_LocalRotation: {x: .707106888, y: 0, z: 0, w: .707106709}
+  m_LocalPosition: {x: -0, y: -1e-15, z: -.917739987}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400068}
 --- !u!111 &11100000
 Animation:
   m_ObjectHideFlags: 1
@@ -1030,7 +1059,7 @@ MonoBehaviour:
   synchronization: 1
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
-  instantiationId: 0
+  instantiationId: -1
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1046,7 +1075,7 @@ MonoBehaviour:
   Defense: 0
   team: 0
   ally: 0
-  fieldOfView: 15
+  fieldOfView: 10
   sizeOfSelected: 1.29999995
   rendererTeamColor: []
   movementActions:
@@ -1120,7 +1149,7 @@ SkinnedMeshRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: b9efa37318ca13d429bcaef734aac560, type: 2}
+  - {fileID: 485726153, guid: 6bb38750ca74ee04f8d0d22167e3f686, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -1129,7 +1158,7 @@ SkinnedMeshRenderer:
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
-  m_Mesh: {fileID: 4300000, guid: c7d02d7adbbf9bd488b8959df1038af7, type: 3}
+  m_Mesh: {fileID: 4300000, guid: cb0d174ec7b2825459c3ef34ef4c897a, type: 2}
   m_Bones:
   - {fileID: 400058}
   - {fileID: 400054}
@@ -1220,6 +1249,62 @@ SkinnedMeshRenderer:
     m_Center: {x: -.574870169, y: .234240741, z: -.593003273}
     m_Extent: {x: .600169957, y: .841377735, z: .892379045}
   m_DirtyAABB: 0
+--- !u!137 &13700004
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100072}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 485726153, guid: 6bb38750ca74ee04f8d0d22167e3f686, type: 3}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_Mesh: {fileID: 4300000, guid: dc46df6c69037c0409d07dea36aa07f3, type: 2}
+  m_Bones:
+  - {fileID: 400058}
+  - {fileID: 400054}
+  - {fileID: 400050}
+  - {fileID: 400048}
+  - {fileID: 400052}
+  - {fileID: 400046}
+  - {fileID: 400044}
+  - {fileID: 400056}
+  - {fileID: 400042}
+  - {fileID: 400040}
+  - {fileID: 400038}
+  - {fileID: 400032}
+  - {fileID: 400030}
+  - {fileID: 400028}
+  - {fileID: 400026}
+  - {fileID: 400022}
+  - {fileID: 400024}
+  - {fileID: 400020}
+  - {fileID: 400036}
+  - {fileID: 400018}
+  - {fileID: 400016}
+  - {fileID: 400014}
+  - {fileID: 400012}
+  - {fileID: 400008}
+  - {fileID: 400010}
+  - {fileID: 400006}
+  - {fileID: 400034}
+  - {fileID: 400004}
+  m_RootBone: {fileID: 400056}
+  m_AABB:
+    m_Center: {x: .0758014619, y: -.000126123428, z: -.134459376}
+    m_Extent: {x: 1.0023011, y: .940138221, z: .76812762}
+  m_DirtyAABB: 0
 --- !u!195 &19500000
 NavMeshAgent:
   m_ObjectHideFlags: 1
@@ -1235,11 +1320,28 @@ NavMeshAgent:
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
-  m_AutoRepath: 0
+  m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!205 &20500000
+LODGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100068}
+  m_LocalReferencePoint: {x: .000126242638, y: .97997117, z: .0887861252}
+  m_Size: 2.00461435
+  m_ScreenRelativeTransitionHeight: 0
+  m_LODs:
+  - screenRelativeHeight: .317024857
+    renderers:
+    - renderer: {fileID: 13700004}
+  - screenRelativeHeight: 0
+    renderers:
+    - renderer: {fileID: 13700000}
+  m_Enabled: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

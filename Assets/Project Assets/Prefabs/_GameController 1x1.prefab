@@ -97,7 +97,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &100012
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,7 +476,7 @@ MonoBehaviour:
   offesetFeedback: {x: 0, y: .100000001, z: 0}
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   pref_selfFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
-  pref_attackFeedback: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
+  pref_attackFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   sliders:
   - {fileID: 0}
   grids:
@@ -501,22 +501,22 @@ MonoBehaviour:
   messageQueuesAttributes:
   - queueName: Unit Group
     panel: {fileID: 0}
-    rootPosition: {x: -175, y: 83}
-    cellSize: {x: 50, y: 50}
-    padding: {x: 10, y: 10}
+    rootPosition: {x: -340, y: 90}
+    cellSize: {x: 32, y: 32}
+    padding: {x: 4, y: 10}
     labelSize: 0
     IsVerticalQueue: 0
-    maxPerLine: 5
-    maxItems: 10
+    maxPerLine: 18
+    maxItems: 36
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Factory
     panel: {fileID: 0}
-    rootPosition: {x: -175, y: 83}
-    cellSize: {x: 50, y: 50}
-    padding: {x: 10, y: 10}
+    rootPosition: {x: -300, y: 63}
+    cellSize: {x: 84, y: 84}
+    padding: {x: 30, y: 20}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
@@ -644,8 +644,8 @@ MonoBehaviour:
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
   visualizationSize: {x: 85, y: 60, z: 0}
-  visualizationPosition: {x: 20, y: 0, z: 30}
-  MiniMapRefreshInterval: .200000003
+  visualizationPosition: {x: 0, y: 0, z: 0}
+  MiniMapRefreshInterval: .300000012
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -714,8 +714,8 @@ MonoBehaviour:
     - {fileID: 0}
     zoomSpeed: .200000003
     zoom:
-      min: 10
-      max: 40
+      min: 15
+      max: 20
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -801,19 +801,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teams:
   - name: Time lol
-    color: {r: .164903104, g: .18838352, b: .470149279, a: 1}
+    color: {r: .294387996, g: .294387996, b: .889705896, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: Time legalzinho
-    color: {r: .455223858, g: .118901767, b: .118901767, a: 1}
+    color: {r: 1, g: .316176474, b: .316176474, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: time mais massa
-    color: {r: .589552283, g: .376154155, b: .1407886, a: 1}
+    color: {r: 1, g: .636363626, b: .235294104, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: super time
-    color: {r: .302183867, g: .150367573, b: .447761178, a: 1}
+    color: {r: .668860495, g: .323529422, b: 1, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: super time
@@ -833,11 +833,11 @@ MonoBehaviour:
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: selvagens
-    color: {r: 0, g: 0, b: 0, a: 1}
+    color: {r: .852941155, g: .538130164, b: .22577855, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   resources:
-    NumberOfRocks: 400
+    NumberOfRocks: 9999
   hud:
     labelResources: {fileID: 0}
     labelUnits: {fileID: 0}
@@ -892,7 +892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 1
+  autoload: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

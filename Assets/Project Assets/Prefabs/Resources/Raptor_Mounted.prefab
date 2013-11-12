@@ -525,7 +525,7 @@ GameObject:
   - 4: {fileID: 400068}
   - 137: {fileID: 13700000}
   m_Layer: 10
-  m_Name: Raptor
+  m_Name: Raptor_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -555,8 +555,25 @@ GameObject:
   m_Component:
   - 4: {fileID: 400072}
   - 111: {fileID: 11100000}
+  - 205: {fileID: 20500000}
   m_Layer: 10
   m_Name: Raptor_MountedcomSela
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100074
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400074}
+  - 137: {fileID: 13700002}
+  m_Layer: 10
+  m_Name: Raptor_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -713,7 +730,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100022}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 84.3943787, y: 10.0012207, z: 76.9847946}
+  m_LocalPosition: {x: 31.1614666, y: 0, z: 29.9633121}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400076}
@@ -991,8 +1008,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100068}
-  m_LocalRotation: {x: 3.05432616e-16, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 9.99999982e-15, z: -10.8988762}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10.8988762}
   m_LocalScale: {x: 16.4302197, y: 16.4302197, z: 16.4302197}
   m_Children: []
   m_Father: {fileID: 400072}
@@ -1019,8 +1036,20 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400070}
+  - {fileID: 400074}
   - {fileID: 400068}
   m_Father: {fileID: 400022}
+--- !u!4 &400074
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100074}
+  m_LocalRotation: {x: 3.05432616e-16, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 9.99999982e-15, z: -10.8988762}
+  m_LocalScale: {x: 16.4302197, y: 16.4302197, z: 16.4302197}
+  m_Children: []
+  m_Father: {fileID: 400072}
 --- !u!4 &400076
 Transform:
   m_ObjectHideFlags: 1
@@ -1028,7 +1057,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100076}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: 4.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400022}
@@ -1068,7 +1097,7 @@ MonoBehaviour:
   Defense: 0
   team: 0
   ally: 0
-  fieldOfView: 25
+  fieldOfView: 15
   sizeOfSelected: 2
   rendererTeamColor:
   - materialToApplyColor: {fileID: 2100000, guid: b1fe9757787c46a4e997b969a1d0242c,
@@ -1186,7 +1215,68 @@ SkinnedMeshRenderer:
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
-  m_Mesh: {fileID: 4300000, guid: 24bb15a912cada543b679561269e4f71, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 9b92c5779e4501949af1171ff30e7f71, type: 2}
+  m_Bones:
+  - {fileID: 400062}
+  - {fileID: 400050}
+  - {fileID: 400048}
+  - {fileID: 400046}
+  - {fileID: 400044}
+  - {fileID: 400060}
+  - {fileID: 400040}
+  - {fileID: 400038}
+  - {fileID: 400036}
+  - {fileID: 400034}
+  - {fileID: 400064}
+  - {fileID: 400056}
+  - {fileID: 400054}
+  - {fileID: 400052}
+  - {fileID: 400058}
+  - {fileID: 400032}
+  - {fileID: 400026}
+  - {fileID: 400006}
+  - {fileID: 400004}
+  - {fileID: 400002}
+  - {fileID: 400000}
+  - {fileID: 400030}
+  - {fileID: 400024}
+  - {fileID: 400020}
+  - {fileID: 400018}
+  - {fileID: 400016}
+  - {fileID: 400028}
+  - {fileID: 400014}
+  - {fileID: 400012}
+  - {fileID: 400010}
+  - {fileID: 400008}
+  m_RootBone: {fileID: 400058}
+  m_AABB:
+    m_Center: {x: 8.75455856, y: .447272301, z: 2.9893856}
+    m_Extent: {x: 36.4244499, y: 18.7730598, z: 23.080719}
+  m_DirtyAABB: 0
+--- !u!137 &13700002
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100074}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: b1fe9757787c46a4e997b969a1d0242c, type: 2}
+  - {fileID: 2100000, guid: 8dd0081ccad25284ab804cd0cad7f1f4, type: 2}
+  - {fileID: 2100000, guid: 596fae2bdce70a34cb08025ce74d566c, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_Mesh: {fileID: 4300000, guid: 149cbee788dd59d4395d69066c0d9d14, type: 2}
   m_Bones:
   - {fileID: 400062}
   - {fileID: 400050}
@@ -1232,18 +1322,35 @@ NavMeshAgent:
   m_GameObject: {fileID: 100022}
   m_Enabled: 1
   m_Radius: 1
-  m_Speed: 7
+  m_Speed: 6
   m_Acceleration: 20
   avoidancePriority: 10
   m_AngularSpeed: 360
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!205 &20500000
+LODGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100072}
+  m_LocalReferencePoint: {x: -.0272228718, y: 1.29143941, z: -.548350096}
+  m_Size: 4.69245625
+  m_ScreenRelativeTransitionHeight: 0
+  m_LODs:
+  - screenRelativeHeight: .512573183
+    renderers:
+    - renderer: {fileID: 13700000}
+  - screenRelativeHeight: 0
+    renderers:
+    - renderer: {fileID: 13700002}
+  m_Enabled: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

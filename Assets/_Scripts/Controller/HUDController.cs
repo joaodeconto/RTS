@@ -151,8 +151,7 @@ public class HUDController : MonoBehaviour
 		if (child.GetComponent<HealthBar> () == null) child.AddComponent <HealthBar> ();
 		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
 
-		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth*1.2f,
-		10f), "Background");
+		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth*1f,10), "Background");				
 
 		child.AddComponent<UIFollowTarget>().target      = target.FindChild (referenceChild).transform;
 		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
@@ -164,7 +163,8 @@ public class HUDController : MonoBehaviour
 	public void CreateSelected (Transform target, float size, Color color)
 	{
 		GameObject selectObj = Instantiate (pref_selectedObject, target.position, Quaternion.identity) as GameObject;
-		selectObj.transform.localScale = new Vector3(size * 0.1f, 0.1f, size * 0.1f);
+		selectObj.transform.localScale = new Vector3(size * 1f, 1f, size * 1f);
+		
 		foreach (ParticleSystem ps in selectObj.GetComponentsInChildren<ParticleSystem>())
 		{
 			ps.startSize = size * 2f;
