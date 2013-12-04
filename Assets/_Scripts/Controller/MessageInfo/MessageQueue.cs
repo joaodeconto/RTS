@@ -75,6 +75,9 @@ public abstract class MessageQueue : MonoBehaviour
 	{
 		++nQueueItems;
 		
+		Debug.Log ("Sem botoes");
+		return;
+		
 //		if (nQueueItems > MaxItems)
 //		{
 //			// Refazendo o calculo

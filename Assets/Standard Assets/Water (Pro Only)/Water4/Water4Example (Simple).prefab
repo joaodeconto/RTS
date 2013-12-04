@@ -116,9 +116,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
-  m_LocalRotation: {x: 0, y: .299669236, z: 0, w: .95404321}
-  m_LocalPosition: {x: 52.5813904, y: 8.82925415, z: 14.1179457}
-  m_LocalScale: {x: 1.70772707, y: 1.70772707, z: .664408207}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400004}
   - {fileID: 400012}
@@ -159,6 +159,9 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
 --- !u!1002 &2300001
 EditorExtensionImpl:
   serializedVersion: 6
@@ -180,6 +183,9 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
 --- !u!1002 &2300005
 EditorExtensionImpl:
   serializedVersion: 6
@@ -213,6 +219,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42e7f46d0e5a84171a3909479c1646ba, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1002 &11400001
 EditorExtensionImpl:
   serializedVersion: 6
@@ -226,6 +233,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de2ab2b9ac93bb544b9552e49030371b, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   specularLight: {fileID: 400012}
 --- !u!1002 &11400003
 EditorExtensionImpl:
@@ -240,10 +248,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4185bc77c7194462ca3b1097ef4a5de0, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   reflectionMask:
     serializedVersion: 2
-    m_Bits: 0
-  reflectSkybox: 0
+    m_Bits: 4294967295
+  reflectSkybox: 1
   clearColor: {r: 1, g: 1, b: 1, a: 1}
   reflectionSampler: _ReflectionTex
   clipPlaneOffset: .0700000003
@@ -260,9 +269,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1da353243062479a9b31c85074a796b, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   sharedMaterial: {fileID: 2100000, guid: 656fde119942645aa8e062e04c119aa1, type: 2}
-  waterQuality: 0
-  edgeBlend: 0
+  waterQuality: 2
+  edgeBlend: 1
 --- !u!1002 &11400009
 EditorExtensionImpl:
   serializedVersion: 6
@@ -276,6 +286,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a91e8dd37cdd41efb4859b65aced7a2, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   reflection: {fileID: 11400004}
   waterBase: {fileID: 11400008}
 --- !u!1002 &11400011
@@ -291,6 +302,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a91e8dd37cdd41efb4859b65aced7a2, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   reflection: {fileID: 11400004}
   waterBase: {fileID: 11400008}
 --- !u!1002 &11400015

@@ -22,11 +22,6 @@ public class WaterBase : MonoBehaviour
 		else 
 			sharedMaterial.shader.maximumLOD = 201;	
 		
-		// If the system does not support depth textures (ie. NaCl), turn off edge bleeding, 
-		// as the shader will render everything as transparent if the depth texture is not valid.
-		if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.Depth))
-			edgeBlend = false;
-
 		if(edgeBlend) 
 		{
 			Shader.EnableKeyword("WATER_EDGEBLEND_ON");

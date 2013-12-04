@@ -1057,7 +1057,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100076}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.5, z: 0}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400022}
@@ -1079,9 +1079,6 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 1
-  m_UserAABB:
-    m_Center: {x: .0272275209, y: 1.22389698, z: -.476314545}
-    m_Extent: {x: 1.58641803, y: 1.41119003, z: 2.29871297}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1098,7 +1095,7 @@ MonoBehaviour:
   team: 0
   ally: 0
   fieldOfView: 15
-  sizeOfSelected: 2
+  sizeOfSelected: 1.5
   rendererTeamColor:
   - materialToApplyColor: {fileID: 2100000, guid: b1fe9757787c46a4e997b969a1d0242c,
       type: 2}
@@ -1212,6 +1209,9 @@ SkinnedMeshRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -1248,6 +1248,7 @@ SkinnedMeshRenderer:
   - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400008}
+  m_BlendShapeWeights: []
   m_RootBone: {fileID: 400058}
   m_AABB:
     m_Center: {x: 8.75455856, y: .447272301, z: 2.9893856}
@@ -1273,6 +1274,9 @@ SkinnedMeshRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -1309,6 +1313,7 @@ SkinnedMeshRenderer:
   - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400008}
+  m_BlendShapeWeights: []
   m_RootBone: {fileID: 400058}
   m_AABB:
     m_Center: {x: 8.75455856, y: .447272301, z: 2.9893856}
@@ -1324,8 +1329,8 @@ NavMeshAgent:
   m_Radius: 1
   m_Speed: 6
   m_Acceleration: 20
-  avoidancePriority: 10
-  m_AngularSpeed: 360
+  avoidancePriority: 0
+  m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1

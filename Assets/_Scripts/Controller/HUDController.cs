@@ -151,7 +151,7 @@ public class HUDController : MonoBehaviour
 		if (child.GetComponent<HealthBar> () == null) child.AddComponent <HealthBar> ();
 		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
 
-		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(maxHealth*1f,10), "Background");				
+		NGUIUtils.AdjustSlider (child.GetComponent<UISlider> (), new Vector2(Mathf.CeilToInt (maxHealth * 0.6f), 10f), "Background");				
 
 		child.AddComponent<UIFollowTarget>().target      = target.FindChild (referenceChild).transform;
 		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
@@ -163,8 +163,9 @@ public class HUDController : MonoBehaviour
 	public void CreateSelected (Transform target, float size, Color color)
 	{
 		GameObject selectObj = Instantiate (pref_selectedObject, target.position, Quaternion.identity) as GameObject;
-		selectObj.transform.localScale = new Vector3(size * 1f, 1f, size * 1f);
-		
+		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
+		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
+			
 		foreach (ParticleSystem ps in selectObj.GetComponentsInChildren<ParticleSystem>())
 		{
 			ps.startSize = size * 2f;
@@ -377,20 +378,25 @@ public class HUDController : MonoBehaviour
 		if (feedback == Feedbacks.Move)
 		{
 			newFeedback = Instantiate (pref_moveFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
+
+
 		}
 		else if (feedback == Feedbacks.Self)
 		{
 			newFeedback = Instantiate (pref_selfFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
+
 		}
 		else
 		{
 			newFeedback = Instantiate (pref_attackFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
+
 		}
 
 		newFeedback.name = "Feedback";
 		newFeedback.transform.localScale = new Vector3(size * newFeedback.transform.localScale.x, 
-													   newFeedback.transform.localScale.y,
+													   size * newFeedback.transform.localScale.y,
 													   size * newFeedback.transform.localScale.x);
+		newFeedback.transform.eulerAngles = new Vector3 (90,0,0);
 		newFeedback.renderer.material.SetColor ("_TintColor", color);
 
 		float duration = 0;

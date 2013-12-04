@@ -6,10 +6,14 @@ public class GameController : MonoBehaviour
 {
 	public bool autoload = false;
 
+	public int targetFPS = 30;
+
 	static bool wasInitialized = false;
 
 	void Awake ()
 	{
+		Application.targetFrameRate = targetFPS;
+
 		if (autoload && !wasInitialized)
 		{
 			wasInitialized = true;

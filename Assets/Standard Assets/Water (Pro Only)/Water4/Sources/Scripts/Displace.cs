@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class Displace : MonoBehaviour 
 {		
-	public void Awake() 
+	private WaterBase waterBase = null;
+		
+	public void Start() 
 	{
-		if (enabled)
-			OnEnable();
-		else
-			OnDisable();
+		if(!waterBase)
+			waterBase = (WaterBase) gameObject.GetComponent(typeof(WaterBase));
 	}
 	
 	public void OnEnable() 

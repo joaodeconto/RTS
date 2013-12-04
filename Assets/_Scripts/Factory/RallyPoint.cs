@@ -82,6 +82,8 @@ public class RallyPoint : MonoBehaviour {
 	
 	void CalculateLine ()
 	{
+		Debug.Log ("transform.parent:" + transform.parent);
+		
 		List<Vector3> nodes = new List<Vector3>();
 		nodes.Add(transform.position);
 		nodes.Add(transform.parent.position);

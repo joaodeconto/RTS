@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400002}
   - 20: {fileID: 2000002}
   - 114: {fileID: 11400000}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: Camera Fog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,6 @@ GameObject:
   - 124: {fileID: 12400000}
   - 114: {fileID: 11400006}
   - 114: {fileID: 11400008}
-  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: Main Camera 200
   m_TagString: MainCamera
@@ -166,7 +165,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
   m_LocalRotation: {x: .46174863, y: 0, z: 0, w: .887010872}
-  m_LocalPosition: {x: 17.9469414, y: 60, z: 19.6210556}
+  m_LocalPosition: {x: 30.3931427, y: 60, z: 2.37085724}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
@@ -191,18 +190,19 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: .300000012
-  far clip plane: 1000
-  field of view: 30
+  near clip plane: .00999999978
+  far clip plane: 150
+  field of view: 23
   orthographic: 0
   orthographic size: 15
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4096
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_HDR: 0
+  m_OcclusionCulling: 0
 --- !u!20 &2000002
 Camera:
   m_ObjectHideFlags: 1
@@ -212,25 +212,26 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 3
-  m_BackGroundColor: {r: .192156866, g: .301960796, b: .474509805, a: .0196078438}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
     height: 1
-  near clip plane: .300000012
-  far clip plane: 1000
-  field of view: 30
+  near clip plane: 10
+  far clip plane: 150
+  field of view: 26
   orthographic: 0
   orthographic size: 15
-  m_Depth: 2
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 8192
-  m_RenderingPath: -1
+    m_Bits: 16384
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_HDR: 0
+  m_OcclusionCulling: 0
 --- !u!20 &2000004
 Camera:
   m_ObjectHideFlags: 1
@@ -247,9 +248,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 10
+  near clip plane: .00999999978
   far clip plane: 150
-  field of view: 20
+  field of view: 23
   orthographic: 0
   orthographic size: 15
   m_Depth: 0
@@ -259,6 +260,7 @@ Camera:
   m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_HDR: 0
+  m_OcclusionCulling: 0
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -277,6 +279,9 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
 --- !u!23 &2300002
 Renderer:
   m_ObjectHideFlags: 1
@@ -295,6 +300,9 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
 --- !u!33 &3300000
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -338,45 +346,6 @@ MonoBehaviour:
   shaderMobile: {fileID: 0}
   unexploredColor: {r: .200000003, g: .200000003, b: .200000003, a: 1}
   exploredColor: {r: .254901975, g: .254901975, b: .254901975, a: .501960814}
---- !u!114 &11400002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100010}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a773099f140e846f7835d27351846623, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tweakMode: 0
-  screenBlendMode: 1
-  hdr: 2
-  sepBlurSpread: 2.5
-  quality: 0
-  bloomIntensity: .100000001
-  bloomThreshhold: .5
-  bloomThreshholdColor: {r: 1, g: 1, b: 1, a: 1}
-  bloomBlurIterations: 2
-  hollywoodFlareBlurIterations: 2
-  flareRotation: 0
-  lensflareMode: 0
-  hollyStretchWidth: 2.5
-  lensflareIntensity: 0
-  lensflareThreshhold: .300000012
-  lensFlareSaturation: .75
-  flareColorA: {r: .400000006, g: .400000006, b: .800000012, a: .75}
-  flareColorB: {r: .400000006, g: .800000012, b: .800000012, a: .75}
-  flareColorC: {r: .800000012, g: .400000006, b: .800000012, a: .75}
-  flareColorD: {r: .800000012, g: .400000006, b: 0, a: .75}
-  blurWidth: 1
-  lensFlareVignetteMask: {fileID: 2800000, guid: 95ef4804fe0be4c999ddaa383536cde8,
-    type: 3}
-  lensFlareShader: {fileID: 4800000, guid: 459fe69d2f6d74ddb92f04dbf45a866b, type: 3}
-  screenBlendShader: {fileID: 4800000, guid: 7856cbff0a0ca45c787d5431eb805bb0, type: 3}
-  blurAndFlaresShader: {fileID: 4800000, guid: be6e39cf196f146d5be72fbefb18ed75, type: 3}
-  brightPassFilterShader: {fileID: 4800000, guid: 0aeaa4cb29f5d4e9c8455f04c8575c8c,
-    type: 3}
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -388,14 +357,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af1728c8e9abf7240b0febe279f60bee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedMobile: .200000003
+  speedMobile: .899999976
   speed: 1
   minimum: {x: .00999999978, y: .00999999978}
   maximum: {x: .99000001, y: .99000001}
   zoomSpeed: 20
   zoom:
     min: 14
-    max: 26
+    max: 23
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1

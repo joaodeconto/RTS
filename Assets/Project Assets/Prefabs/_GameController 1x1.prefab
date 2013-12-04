@@ -476,7 +476,7 @@ MonoBehaviour:
   offesetFeedback: {x: 0, y: .100000001, z: 0}
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   pref_selfFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
-  pref_attackFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
+  pref_attackFeedback: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
   sliders:
   - {fileID: 0}
   grids:
@@ -643,9 +643,9 @@ MonoBehaviour:
   mapTransform: {fileID: 0}
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
-  visualizationSize: {x: 85, y: 60, z: 0}
+  visualizationSize: {x: 16, y: 10, z: 0}
   visualizationPosition: {x: 0, y: 0, z: 0}
-  MiniMapRefreshInterval: .300000012
+  MiniMapRefreshInterval: .5
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -892,7 +892,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 0
+  autoload: 1
+  targetFPS: 60
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

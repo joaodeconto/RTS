@@ -19,7 +19,7 @@ public class FogOfWar : MonoBehaviour
 		}
 	}
 	
-	private const int SIZE_TEXTURE = 128;
+	public int SIZE_TEXTURE = 128;
 
 	public bool UseFog  = true;
 	public bool DarkFog = true;
@@ -27,11 +27,12 @@ public class FogOfWar : MonoBehaviour
 	public GameObject pref_plane;
 	
 	public Terrain terrain;
+	public Vector3 mapSize;
 
 	public Color visibleAreaColor = new Color(1.0f,1.0f,1.0f,0.0f);
 	public Color knownAreaColor   = new Color(0.5f,0.5f,0.5f,0.5f);
 
-	public float fogHeight = 8.0f;
+	public float fogHeight = 0.0f;	
 
 	public Texture2D FogTexture { get; private set; }
 
@@ -39,8 +40,6 @@ public class FogOfWar : MonoBehaviour
 	private List<Transform> enemies;
 	private List<IStats> entityAllies;
 	private List<IStats> entityEnemies;
-
-	private Vector3 mapSize;
 
 	private enum FogFlag
 	{
@@ -69,8 +68,6 @@ public class FogOfWar : MonoBehaviour
 		//GameplayManager
 		TerrainData td = terrain.terrainData;
 
-		mapSize = td.size;
-
 		for (i = 0; i != SIZE_TEXTURE; ++i)
 			for (j = 0; j != SIZE_TEXTURE; ++j)
 			{
@@ -85,7 +82,7 @@ public class FogOfWar : MonoBehaviour
 		FogTexture.Apply();
 
 		// posicionando FogOfWar no local correto
-		this.transform.position = new Vector3(mapSize.x * 0.5f , 0, mapSize.z * 0.5f);
+//		this.transform.position = new Vector3(mapSize.x * 0.5f , 0, mapSize.z * 0.5f);
 		
 #if UNITY_ANDROID || UNITY_IPHONE
 		GameObject poly = Instantiate(pref_plane, Vector3.zero, Quaternion.identity) as GameObject;

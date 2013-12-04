@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -.418692827, y: .00139867782, z: .316997737}
-  m_LocalScale: {x: .300000012, y: .300000012, z: .300000012}
+  m_LocalScale: {x: .200000003, y: .200000003, z: .200000003}
   m_Children: []
   m_Father: {fileID: 400000}
 --- !u!23 &2300000
@@ -68,8 +68,8 @@ Renderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_LightmapIndex: 0
+  m_LightmapTilingOffset: {x: .0439453125, y: .0439453125, z: .396312714, w: .0388908386}
   m_Materials:
   - {fileID: 2100000, guid: aa7b19ce47312ad438912026176d571c, type: 2}
   m_SubsetIndices: 
@@ -77,6 +77,9 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
 --- !u!33 &3300000
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -128,7 +131,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 3.61999989
+  m_Radius: 2.16000009
   m_Height: 1.64999998
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -139,8 +142,10 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
-  m_Radius: 2.79999995
-  m_Height: 1.48000002
+  m_Radius: 1.32000005
+  m_Height: .829999983
+  m_MoveThreshold: 0
+  m_Carve: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

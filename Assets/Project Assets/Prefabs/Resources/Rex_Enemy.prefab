@@ -1074,7 +1074,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100076}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 6.80000019, z: 0}
+  m_LocalPosition: {x: 0, y: 6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400072}
@@ -1107,9 +1107,6 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 1
-  m_UserAABB:
-    m_Center: {x: -.168042302, y: 1.88511705, z: -.35580945}
-    m_Extent: {x: 1.88173091, y: 2.19781065, z: 3.3637588}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1126,7 +1123,7 @@ MonoBehaviour:
   team: 0
   ally: 0
   fieldOfView: 15
-  sizeOfSelected: 3
+  sizeOfSelected: 2.5
   rendererTeamColor:
   - materialToApplyColor: {fileID: 2100000, guid: 04ea912f1f4cb3d4bbc81bbd2b7cea1a,
       type: 2}
@@ -1241,6 +1238,9 @@ SkinnedMeshRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -1277,6 +1277,7 @@ SkinnedMeshRenderer:
   - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400064}
+  m_BlendShapeWeights: []
   m_RootBone: {fileID: 400054}
   m_AABB:
     m_Center: {x: 4.84425259, y: -.408726692, z: -1.73097038}
@@ -1303,6 +1304,9 @@ SkinnedMeshRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -1339,6 +1343,7 @@ SkinnedMeshRenderer:
   - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400064}
+  m_BlendShapeWeights: []
   m_RootBone: {fileID: 400054}
   m_AABB:
     m_Center: {x: 4.84425259, y: -.408726692, z: -1.73097038}
@@ -1365,6 +1370,9 @@ SkinnedMeshRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -1401,6 +1409,7 @@ SkinnedMeshRenderer:
   - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400064}
+  m_BlendShapeWeights: []
   m_RootBone: {fileID: 400054}
   m_AABB:
     m_Center: {x: 4.84425259, y: -.408726692, z: -1.73097038}
@@ -1416,16 +1425,16 @@ NavMeshAgent:
   m_Radius: 1.75
   m_Speed: 5
   m_Acceleration: 5
-  avoidancePriority: 10
+  avoidancePriority: 0
   m_AngularSpeed: 360
   m_StoppingDistance: 1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
+  m_AutoTraverseOffMeshLink: 0
+  m_AutoBraking: 0
+  m_AutoRepath: 0
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!205 &20500000
 LODGroup:
   m_ObjectHideFlags: 1
