@@ -164,8 +164,9 @@ public class Unit : IStats
 				{
 					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
-				}
-
+					
+			}
+				
 				CancelCheckEnemy ();
 
 				if (targetAttack != null)
