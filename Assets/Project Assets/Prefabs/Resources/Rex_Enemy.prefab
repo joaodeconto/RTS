@@ -1,21 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &100000
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400000}
-  - 137: {fileID: 13700000}
-  m_Layer: 10
-  m_Name: Trex_LOD2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 1
@@ -610,17 +594,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &400000
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: .720952034, y: 0, z: 0, w: .692985058}
-  m_LocalPosition: {x: 0, y: -7.22968102, z: 4.80764008}
-  m_LocalScale: {x: 9.20790768, y: 9.2079134, z: 9.20791245}
-  m_Children: []
-  m_Father: {fileID: 400068}
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -1029,7 +1002,6 @@ Transform:
   - {fileID: 400066}
   - {fileID: 400080}
   - {fileID: 400074}
-  - {fileID: 400000}
   m_Father: {fileID: 400072}
 --- !u!4 &400070
 Transform:
@@ -1049,7 +1021,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100072}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 41.2132797, y: 0, z: 30.3903942}
+  m_LocalPosition: {x: 94.6013184, y: 9.31322575e-10, z: 65.8358002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400076}
@@ -1217,72 +1189,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!137 &13700000
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 2100000, guid: 22a9a792f4d234f48a74e150c3f89dda, type: 2}
-  - {fileID: 2100000, guid: 22a9a792f4d234f48a74e150c3f89dda, type: 2}
-  - {fileID: 2100000, guid: 04ea912f1f4cb3d4bbc81bbd2b7cea1a, type: 2}
-  - {fileID: 485726153, guid: 6bb38750ca74ee04f8d0d22167e3f686, type: 3}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortingLayerID: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_Mesh: {fileID: 4300000, guid: 879ba3faa370f79409ef130258053ca9, type: 2}
-  m_Bones:
-  - {fileID: 400058}
-  - {fileID: 400046}
-  - {fileID: 400044}
-  - {fileID: 400042}
-  - {fileID: 400040}
-  - {fileID: 400056}
-  - {fileID: 400038}
-  - {fileID: 400036}
-  - {fileID: 400034}
-  - {fileID: 400032}
-  - {fileID: 400060}
-  - {fileID: 400052}
-  - {fileID: 400050}
-  - {fileID: 400048}
-  - {fileID: 400054}
-  - {fileID: 400026}
-  - {fileID: 400008}
-  - {fileID: 400006}
-  - {fileID: 400004}
-  - {fileID: 400002}
-  - {fileID: 400030}
-  - {fileID: 400024}
-  - {fileID: 400022}
-  - {fileID: 400020}
-  - {fileID: 400018}
-  - {fileID: 400028}
-  - {fileID: 400016}
-  - {fileID: 400014}
-  - {fileID: 400012}
-  - {fileID: 400010}
-  - {fileID: 400064}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 400054}
-  m_AABB:
-    m_Center: {x: 4.84425259, y: -.408726692, z: -1.73097038}
-    m_Extent: {x: 29.5670815, y: 12.517251, z: 18.725235}
-  m_DirtyAABB: 0
 --- !u!137 &13700002
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -1301,7 +1207,7 @@ SkinnedMeshRenderer:
   - {fileID: 485726153, guid: 6bb38750ca74ee04f8d0d22167e3f686, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
+  m_UseLightProbes: 1
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_SortingLayer: 0
@@ -1367,7 +1273,7 @@ SkinnedMeshRenderer:
   - {fileID: 485726153, guid: 6bb38750ca74ee04f8d0d22167e3f686, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
+  m_UseLightProbes: 1
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_SortingLayer: 0
