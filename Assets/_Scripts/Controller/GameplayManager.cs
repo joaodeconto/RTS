@@ -264,7 +264,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				if (!isInCamera)
 				{
 					beingAttacked = true;
-					Invoke ("BeingAttackedToFalse", 10f);
+					Invoke ("BeingAttackedToFalse", 5f);
 					GetComponent<SoundSource> ().Play ("BeingAttacked");
 
 					return true;

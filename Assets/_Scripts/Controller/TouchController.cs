@@ -59,7 +59,7 @@ public class TouchController : MonoBehaviour
 	public TouchType touchType {get; private set;}
 	public IdTouch idTouch {get; private set;}
 	
-	protected SoundSource soundSource;
+//	protected SoundSource soundSource;
 	
 	protected Vector3 windowSize = Vector3.zero;
 
@@ -79,7 +79,7 @@ public class TouchController : MonoBehaviour
 		{
 			camerasUI[i] = NGUITools.FindCameraForLayer(LayerMask.NameToLayer (layersToIgnore[i]));
 		}
-		soundSource = GetComponent<SoundSource> ();
+//		soundSource = GetComponent<SoundSource> ();
 	}
 
 	void Update ()
@@ -153,7 +153,7 @@ public class TouchController : MonoBehaviour
 				return;
 			}
 
-			if (!DragOn) soundSource.Play ("Click");
+	//		if (!DragOn) soundSource.Play ("Click");
 			
 			FinalPosition = new Vector3(Input.mousePosition.x,
 										Screen.height - Input.mousePosition.y,

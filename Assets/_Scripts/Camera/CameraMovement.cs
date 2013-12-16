@@ -11,7 +11,7 @@ public class CameraMovement : MonoBehaviour {
 	
 	public float zoomSpeed;
 	public MinMaxFloat zoom;
-	
+		
 	protected Camera thisCamera;
 	
 	protected TouchController touchController;

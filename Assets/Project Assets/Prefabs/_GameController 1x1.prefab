@@ -643,9 +643,9 @@ MonoBehaviour:
   mapTransform: {fileID: 0}
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
-  visualizationSize: {x: 16, y: 10, z: 0}
-  visualizationPosition: {x: 0, y: 0, z: 0}
-  MiniMapRefreshInterval: .5
+  visualizationSize: {x: 48, y: 24, z: 0}
+  visualizationPosition: {x: 0, y: 0, z: 40}
+  MiniMapRefreshInterval: .400000006
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -715,7 +715,7 @@ MonoBehaviour:
     zoomSpeed: .200000003
     zoom:
       min: 15
-      max: 20
+      max: 23
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -787,6 +787,19 @@ MonoBehaviour:
   - name: BuildingSelected
     soundsClip:
     - {fileID: 8300000, guid: 6f6ad43210456ca43b4f9e04e12fed1c, type: 3}
+  - name: ConfirmAtk
+    soundsClip:
+    - {fileID: 8300000, guid: 77f32f4466e3e7f4b90691d51e114969, type: 3}
+    - {fileID: 8300000, guid: 4ad7633f7befb9d4b81c2123c39c2dae, type: 3}
+  - name: ConfirmMov
+    soundsClip:
+    - {fileID: 8300000, guid: 7d93183d7fa55d34fa5e60699b70656f, type: 3}
+  - name: Mining
+    soundsClip:
+    - {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
+  - name: BattleSounds
+    soundsClip:
+    - {fileID: 8300000, guid: 665df2da9644a8e4bb5b413df8bfeae0, type: 3}
   soundType: 2
 --- !u!114 &11400030
 MonoBehaviour:
@@ -801,7 +814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teams:
   - name: Time lol
-    color: {r: .294387996, g: .294387996, b: .889705896, a: 1}
+    color: {r: .448529422, g: 0, b: 0, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: Time legalzinho
@@ -892,7 +905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 1
+  autoload: 0
   targetFPS: 30
 --- !u!1001 &100100000
 Prefab:

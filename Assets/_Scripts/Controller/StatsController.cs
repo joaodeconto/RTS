@@ -114,7 +114,10 @@ public class StatsController : MonoBehaviour
 		}
 		
 		if (feedback)
+		
+
 			hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f, gameplayManager.GetColorTeam ());
+			soundManager.PlayRandom ("ConfirmMov");
 	}
 
 	public void AttackTroop (GameObject enemy)
@@ -136,6 +139,7 @@ public class StatsController : MonoBehaviour
 		}
 		
 		if (feedback)
+			soundManager.PlayRandom ("Confirm");
 			hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform,
 										  enemy.GetComponent<IStats> ().sizeOfSelected, gameplayManager.GetColorTeam(enemy.GetComponent<IStats> ().team));
 	}

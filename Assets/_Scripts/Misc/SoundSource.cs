@@ -11,6 +11,9 @@ public class SoundSource : MonoBehaviour
 	public SoundType soundType;
 	
 	private AudioSource audioSource;
+
+
+
 	public AudioSource GetAudioSource
 	{
 		get
@@ -38,10 +41,18 @@ public class SoundSource : MonoBehaviour
 			return audioSource;
 		}
 	}
+
+	public enum AudioRolloffMode
+	{
+		Logarithmic,
+		Linear,
+		Custom
+	}
 	
 	void Awake ()
 	{
 		ComponentGetter.Get<VolumeController> ().AddSoundSource (this);
+
 	}
 	
 //	void OnDestroy ()

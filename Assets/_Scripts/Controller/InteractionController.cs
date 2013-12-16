@@ -10,10 +10,12 @@ public class InteractionController : MonoBehaviour
 
 	public GameObject uiExitGameObject;
 
+
 	protected TouchController touchController;
 	protected StatsController statsController;
 	protected GameplayManager gameplayManager;
 	protected HUDController hudController;
+	protected SoundManager soundManager;
 
 	private Stack<InteractionCallback> stackInteractionCallbacks;
 
@@ -23,6 +25,7 @@ public class InteractionController : MonoBehaviour
 		statsController = ComponentGetter.Get<StatsController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
+		soundManager    = ComponentGetter.Get<SoundManager> ();
 
 		stackInteractionCallbacks = new Stack<InteractionCallback>();
 	}
@@ -163,7 +166,7 @@ public class InteractionController : MonoBehaviour
 				{
 					worker.SetMoveToFactory (null);
 				}
-
+				
 				worker.Move (touchController.GetFinalPoint);
 				worker.SetResource(hit.GetComponent<Resource> ());
 
@@ -176,6 +179,8 @@ public class InteractionController : MonoBehaviour
 											  hit.position,
 											  hit.GetComponent<Resource>().capsuleCollider.radius * hit.localScale.x * 2f,
 											  gameplayManager.GetColorTeam ());
+
+
 			}
 			return;
 		}

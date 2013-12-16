@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 using Visiorama;
@@ -7,7 +8,9 @@ using Visiorama.Utils;
 public class RallyPoint : MonoBehaviour {
 	
 	public Texture2D lineTexture;
-	
+	public float start = 1.0f; 
+	public float end = 1.0f;
+
 	protected TouchController touchController;
 	protected LineRenderer lineRenderer;
 	
@@ -17,11 +20,12 @@ public class RallyPoint : MonoBehaviour {
 		touchController = ComponentGetter.Get<TouchController> ();
 		
 		lineRenderer = gameObject.AddComponent<LineRenderer>();
-		lineRenderer.SetColors (Color.white, Color.black);
+		lineRenderer.SetColors (Color.black, Color.black);
 		lineRenderer.material = new Material(Shader.Find("Transparent/Diffuse"));
 		lineRenderer.material.mainTexture = lineTexture;
 		lineRenderer.material.color = ComponentGetter.Get<GameplayManager>().GetColorTeam ();
 		lineRenderer.SetColors (lineRenderer.material.color, lineRenderer.material.color);
+		lineRenderer.SetWidth (start, end);
 		transform.GetChild (0).renderer.material.color = lineRenderer.material.color;
 		
 		CalculateLine ();
@@ -32,7 +36,7 @@ public class RallyPoint : MonoBehaviour {
 	{
 		lineRenderer.enabled = enabled;
 		
-#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+		#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 		if (touchController.touchType == TouchController.TouchType.First)
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id1)
@@ -40,7 +44,7 @@ public class RallyPoint : MonoBehaviour {
 				UpdateRallyPoint ();
 			}
 		}
-#else
+		#else
 		if (touchController.touchType == TouchController.TouchType.Ended)
 		{
 			if (!touchController.DragOn)
@@ -51,7 +55,7 @@ public class RallyPoint : MonoBehaviour {
 				}
 			}
 		}
-#endif
+		#endif
 	}
 	
 	public void UpdateRallyPoint ()
@@ -82,16 +86,14 @@ public class RallyPoint : MonoBehaviour {
 	
 	void CalculateLine ()
 	{
-		Debug.Log ("transform.parent:" + transform.parent);
-		
 		List<Vector3> nodes = new List<Vector3>();
 		nodes.Add(transform.position);
 		nodes.Add(transform.parent.position);
 		
 		Vector3 center = Math.CenterOfObjects (nodes.ToArray ());
-		nodes.Insert (1, center + (Vector3.up * 1f));
-	
-     	IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 10, false);
+		nodes.Insert (1, center + (Vector3.up * 5f));
+		
+		IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 10, false);
 		
 		int i = 0;
 		foreach (Vector3 segment in sequence)
