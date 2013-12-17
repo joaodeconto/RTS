@@ -8,8 +8,8 @@ public class NewAccount : IView
 	public UIInput email;
 	public UIInput password;
 	public UIInput password_confirmation;
-	public UICheckbox AcceptedTerms;
-	public UICheckbox ReceiveNewsletter;
+	public UIToggle AcceptedTerms;
+	public UIToggle ReceiveNewsletter;
 
 	public GameObject VerifyAccountNameButton;
 	public GameObject CreateAccountButton;

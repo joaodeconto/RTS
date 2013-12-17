@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2012 Tasharen Entertainment
+// Copyright © 2011-2013 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -66,7 +66,10 @@ public class UICursor : MonoBehaviour
 				// For pixel-perfect results
 				if (uiCamera.isOrthoGraphic)
 				{
-					mTrans.localPosition = NGUIMath.ApplyHalfPixelOffset(mTrans.localPosition, mTrans.localScale);
+					Vector3 lp = mTrans.localPosition;
+					lp.x = Mathf.Round(lp.x);
+					lp.y = Mathf.Round(lp.y);
+					mTrans.localPosition = lp;
 				}
 			}
 			else
@@ -74,7 +77,9 @@ public class UICursor : MonoBehaviour
 				// Simple calculation that assumes that the camera is of fixed size
 				pos.x -= Screen.width * 0.5f;
 				pos.y -= Screen.height * 0.5f;
-				mTrans.localPosition = NGUIMath.ApplyHalfPixelOffset(pos, mTrans.localScale);
+				pos.x = Mathf.Round(pos.x);
+				pos.y = Mathf.Round(pos.y);
+				mTrans.localPosition = pos;
 			}
 		}
 	}

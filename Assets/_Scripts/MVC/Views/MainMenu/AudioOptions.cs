@@ -47,7 +47,7 @@ public class AudioOptions : MonoBehaviour
 		
 		checkbox = music.FindChild ("Checkbox");
 
-		checkbox.GetComponent<UICheckbox> ().isChecked = VolumeController.musicOn;
+		checkbox.GetComponent<UIToggle> ().isChecked = VolumeController.musicOn;
 		
 		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null, null,
@@ -74,7 +74,7 @@ public class AudioOptions : MonoBehaviour
 		
 		checkbox = sound.FindChild ("Checkbox");
 
-		checkbox.GetComponent<UICheckbox> ().isChecked = VolumeController.soundOn;
+		checkbox.GetComponent<UIToggle> ().isChecked = VolumeController.soundOn;
 		
 		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null, null,
@@ -101,7 +101,7 @@ public class AudioOptions : MonoBehaviour
 		
 		checkbox = voice.FindChild ("Checkbox");
 
-		checkbox.GetComponent<UICheckbox> ().isChecked = VolumeController.voiceOn;
+		checkbox.GetComponent<UIToggle> ().isChecked = VolumeController.voiceOn;
 		
 		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null, null,

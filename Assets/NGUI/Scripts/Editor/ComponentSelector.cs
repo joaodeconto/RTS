@@ -14,31 +14,37 @@ using System.Collections.Generic;
 
 public class ComponentSelector : ScriptableWizard
 {
-	public delegate void OnSelectionCallback (MonoBehaviour obj);
+	public delegate void OnSelectionCallback (Object obj);
 
 	System.Type mType;
+	string mTitle;
 	OnSelectionCallback mCallback;
-	MonoBehaviour[] mObjects;
+	Object[] mObjects;
+	bool mSearched = false;
+
+	static string GetName (System.Type t)
+	{
+		string s = t.ToString();
+		s = s.Replace("UnityEngine.", "");
+		if (s.StartsWith("UI")) s = s.Substring(2);
+		return s;
+	}
 
 	/// <summary>
 	/// Draw a button + object selection combo filtering specified types.
 	/// </summary>
 
-	static public void Draw<T> (string buttonName, T obj, OnSelectionCallback cb, params GUILayoutOption[] options) where T : MonoBehaviour
+	static public void Draw<T> (string buttonName, T obj, OnSelectionCallback cb, bool editButton, params GUILayoutOption[] options) where T : Object
 	{
 		GUILayout.BeginHorizontal();
-		bool show = GUILayout.Button(buttonName, "DropDownButton", GUILayout.Width(76f));
-#if !UNITY_3_4
-		GUILayout.BeginVertical();
-		GUILayout.Space(5f);
-#endif
+		bool show = NGUIEditorTools.DrawPrefixButton(buttonName);
 		T o = EditorGUILayout.ObjectField(obj, typeof(T), false, options) as T;
-#if !UNITY_3_4
-		GUILayout.EndVertical();
-#endif
-		if (o != null && Selection.activeObject != o.gameObject && GUILayout.Button("Edit", GUILayout.Width(40f)))
+
+		if (editButton && o != null && o is MonoBehaviour)
 		{
-			Selection.activeObject = o.gameObject;
+			Component mb = o as Component;
+			if (Selection.activeObject != mb.gameObject && GUILayout.Button("Edit", GUILayout.Width(40f)))
+				Selection.activeObject = mb.gameObject;
 		}
 		GUILayout.EndHorizontal();
 		if (show) Show<T>(cb);
@@ -49,22 +55,73 @@ public class ComponentSelector : ScriptableWizard
 	/// Draw a button + object selection combo filtering specified types.
 	/// </summary>
 
-	static public void Draw<T> (T obj, OnSelectionCallback cb, params GUILayoutOption[] options) where T : MonoBehaviour
+	static public void Draw<T> (T obj, OnSelectionCallback cb, bool editButton, params GUILayoutOption[] options) where T : Object
 	{
-		Draw<T>(NGUITools.GetName<T>(), obj, cb, options);
+		Draw<T>(NGUITools.GetTypeName<T>(), obj, cb, editButton, options);
 	}
 
 	/// <summary>
 	/// Show the selection wizard.
 	/// </summary>
 
-	static void Show<T> (OnSelectionCallback cb) where T : MonoBehaviour
+	static public void Show<T> (OnSelectionCallback cb) where T : Object
 	{
 		System.Type type = typeof(T);
-		ComponentSelector comp = ScriptableWizard.DisplayWizard<ComponentSelector>("Select " + type.ToString());
+		string title = (type == typeof(UIAtlas) ? "Select an " : "Select a ") + GetName(type);
+		ComponentSelector comp = ScriptableWizard.DisplayWizard<ComponentSelector>(title);
+		comp.mTitle = title;
 		comp.mType = type;
 		comp.mCallback = cb;
-		comp.mObjects = Resources.FindObjectsOfTypeAll(type) as MonoBehaviour[];
+		comp.mObjects = Resources.FindObjectsOfTypeAll(typeof(T));
+
+		if (comp.mObjects == null || comp.mObjects.Length == 0)
+		{
+			comp.Search();
+		}
+		else
+		{
+			System.Array.Sort(comp.mObjects,
+				delegate(Object a, Object b) { return a.name.CompareTo(b.name); });
+		}
+	}
+
+	/// <summary>
+	/// Search the entire project for required assets.
+	/// </summary>
+
+	void Search ()
+	{
+		mSearched = true;
+		string[] paths = AssetDatabase.GetAllAssetPaths();
+		bool isComponent = mType.IsSubclassOf(typeof(Component));
+		BetterList<Object> list = new BetterList<Object>();
+
+		for (int i = 0; i < paths.Length; ++i)
+		{
+			string path = paths[i];
+
+			if (path.EndsWith(".prefab", System.StringComparison.OrdinalIgnoreCase))
+			{
+				EditorUtility.DisplayProgressBar("Loading", "Searching assets, please wait...", (float)i / paths.Length);
+				Object obj = AssetDatabase.LoadMainAssetAtPath(path);
+				if (obj == null) continue;
+
+				if (!isComponent)
+				{
+					System.Type t = obj.GetType();
+					if (t == mType || t.IsSubclassOf(mType))
+						list.Add(obj);
+				}
+				else if (PrefabUtility.GetPrefabType(obj) == PrefabType.Prefab)
+				{
+					Object t = (obj as GameObject).GetComponent(mType);
+					if (t != null) list.Add(t);
+				}
+			}
+		}
+		list.Sort(delegate(Object a, Object b) { return a.name.CompareTo(b.name); });
+		mObjects = list.ToArray();
+		EditorUtility.ClearProgressBar();
 	}
 
 	/// <summary>
@@ -73,13 +130,13 @@ public class ComponentSelector : ScriptableWizard
 
 	void OnGUI ()
 	{
-		EditorGUIUtility.LookLikeControls(80f);
-		GUILayout.Label("Recently used components", "LODLevelNotifyText");
-		NGUIEditorTools.DrawSeparator();
+		NGUIEditorTools.SetLabelWidth(80f);
+		GUILayout.Label(mTitle, "LODLevelNotifyText");
+		GUILayout.Space(6f);
 
 		if (mObjects.Length == 0)
 		{
-			EditorGUILayout.HelpBox("No recently used " + mType.ToString() + " components found.\nTry drag & dropping one instead, or creating a new one.", MessageType.Info);
+			EditorGUILayout.HelpBox("No " + GetName(mType) + " components found.\nTry creating a new one.", MessageType.Info);
 
 			bool isDone = false;
 
@@ -110,9 +167,9 @@ public class ComponentSelector : ScriptableWizard
 		}
 		else
 		{
-			MonoBehaviour sel = null;
+			Object sel = null;
 
-			foreach (MonoBehaviour o in mObjects)
+			foreach (Object o in mObjects)
 			{
 				if (DrawObject(o))
 				{
@@ -126,32 +183,38 @@ public class ComponentSelector : ScriptableWizard
 				Close();
 			}
 		}
+
+		if (!mSearched)
+		{
+			GUILayout.Space(6f);
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			bool search = GUILayout.Button("Show All", "LargeButton", GUILayout.Width(120f));
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			if (search) Search();
+		}
 	}
 
 	/// <summary>
-	/// Draw details about the specified monobehavior in column format.
+	/// Draw details about the specified object in column format.
 	/// </summary>
 
-	bool DrawObject (MonoBehaviour mb)
+	bool DrawObject (Object obj)
 	{
 		bool retVal = false;
+		Component comp = obj as Component;
 
 		GUILayout.BeginHorizontal();
 		{
-			if (EditorUtility.IsPersistent(mb.gameObject))
-			{
-				GUILayout.Label("Prefab", "AS TextArea", GUILayout.Width(80f), GUILayout.Height(20f));
-			}
-			else
-			{
-				GUI.color = Color.grey;
-				GUILayout.Label("Object", "AS TextArea", GUILayout.Width(80f), GUILayout.Height(20f));
-			}
+			if (comp != null && EditorUtility.IsPersistent(comp.gameObject))
+				GUI.contentColor = new Color(0.6f, 0.8f, 1f);
 
-			GUILayout.Label(NGUITools.GetHierarchy(mb.gameObject), "AS TextArea", GUILayout.Height(20f));
-			GUI.color = Color.white;
+			retVal |= GUILayout.Button(obj.name, "AS TextArea", GUILayout.Width(120f), GUILayout.Height(20f));
+			retVal |= GUILayout.Button(AssetDatabase.GetAssetPath(obj).Replace("Assets/", ""), "AS TextArea", GUILayout.Height(20f));
+			GUI.contentColor = Color.white;
 
-			retVal = GUILayout.Button("Select", "ButtonLeft", GUILayout.Width(60f), GUILayout.Height(16f));
+			retVal |= GUILayout.Button("Select", "ButtonLeft", GUILayout.Width(60f), GUILayout.Height(16f));
 		}
 		GUILayout.EndHorizontal();
 		return retVal;

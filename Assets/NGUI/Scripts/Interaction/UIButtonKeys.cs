@@ -23,19 +23,16 @@ public class UIButtonKeys : MonoBehaviour
 
 	void OnEnable ()
 	{
-		if (startsSelected && UICamera.selectedObject == null)
+		if (startsSelected)
 		{
-			if (!NGUITools.GetActive(UICamera.selectedObject))
+			if (UICamera.selectedObject == null || !NGUITools.GetActive(UICamera.selectedObject))
 			{
+				UICamera.currentScheme = UICamera.ControlScheme.Controller;
 				UICamera.selectedObject = gameObject;
-			}
-			else
-			{
-				UICamera.Notify(gameObject, "OnHover", true);
 			}
 		}
 	}
-	 
+
 	void OnKey (KeyCode key)
 	{
 		if (enabled && NGUITools.GetActive(gameObject))
@@ -77,8 +74,6 @@ public class UIButtonKeys : MonoBehaviour
 	void OnClick ()
 	{
 		if (enabled && selectOnClick != null)
-		{
 			UICamera.selectedObject = selectOnClick.gameObject;
-		}
 	}
 }

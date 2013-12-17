@@ -26,7 +26,8 @@ public class MiniMapController : MonoBehaviour
 
 	public float MiniMapRefreshInterval = 0.4f;
 
-	private Vector3 miniMapSize;
+	private Vector2 miniMapSize;
+
 
 	public Vector3 mapSize { get; private set; }
 
@@ -95,8 +96,10 @@ public class MiniMapController : MonoBehaviour
 //		{
 			textureFogOfWar = NGUITools.AddWidget<UITexture> (fogMiniMap);
 			textureFogOfWar.pivot = UIWidget.Pivot.BottomLeft;
-			textureFogOfWar.transform.localPosition    = -Vector3.forward * 5;
-			textureFogOfWar.transform.localScale       = Vector3.one;
+//			textureFogOfWar.transform.localPosition    = -Vector3.forward * 5;
+			textureFogOfWar.height = 0;
+		    textureFogOfWar.width = 0;
+		    textureFogOfWar.depth = 5;
 			textureFogOfWar.transform.localEulerAngles = Vector3.forward * 90f;
 			textureFogOfWar.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
 			textureFogOfWar.material.mainTexture = fogOfWar.FogTexture;
@@ -107,7 +110,9 @@ public class MiniMapController : MonoBehaviour
 
 		ut = NGUITools.AddWidget<UITexture> (CamPositionMiniMap);
 		ut.transform.localPosition    = Vector3.forward * -1;
-		ut.transform.localScale       = Vector3.one;
+		ut.height                  = 0;
+		ut.width                  = 0;
+		ut.depth                  = 6;
 		ut.transform.localEulerAngles = Vector3.forward * 90f;
 		ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
 		ut.material.mainTexture = CamPositionTexture;
@@ -121,7 +126,7 @@ public class MiniMapController : MonoBehaviour
 
 	void RefreshMiniMapSize()
 	{
-		miniMapSize = mapTransform.localScale;//miniMapCollider.bounds.max - miniMapCollider.bounds.min;//.size;//(miniMapMaxPoint - miniMapMinPoint);
+		miniMapSize = mapTransform.GetComponent<UISprite>().localSize;   //miniMapCollider.bounds.max - miniMapCollider.bounds.min;//.size;//(miniMapMaxPoint - miniMapMinPoint);
 				
 		Vector3 newScale = new Vector3( visualizationSize.x / mapSize.x,
 										visualizationSize.y / mapSize.z,
@@ -244,7 +249,8 @@ public class MiniMapController : MonoBehaviour
 		GameObject miniMapObject = Instantiate (beingAttackedMiniMap) as GameObject;
 
 		miniMapObject.transform.parent     = miniMapPanel.transform;
-		miniMapObject.transform.localScale = beingAttackedMiniMap.transform.localScale;
+		miniMapObject.GetComponent <UITexture>().height = beingAttackedMiniMap.GetComponent <UITexture>().height;
+		miniMapObject.GetComponent <UITexture>().width = beingAttackedMiniMap.GetComponent <UITexture>().width;
 
 		miniMapObject.GetComponent<TweenScale> ().Play (true);
 
@@ -259,13 +265,13 @@ public class MiniMapController : MonoBehaviour
 		GameObject _go = Instantiate(pref_go, Vector3.zero, Quaternion.identity) as GameObject;
 
 		_go.transform.parent     = miniMapPanel.transform;
-		_go.transform.localScale = pref_go.transform.localScale;
+		_go.transform.localScale = pref_go.GetComponent<UISprite> ().localSize;
 
 		Color teamColor = ComponentGetter.Get<GameplayManager>().teams[teamId].color;
 
 		_go.GetComponent<UISlicedSprite>().color = teamColor;
 
-		_go.GetComponent<UISprite> ().depth = 10;
+//		_go.GetComponent<UISprite> ().depth = 10;
 
 		UpdatePosition(_go, trns);
 

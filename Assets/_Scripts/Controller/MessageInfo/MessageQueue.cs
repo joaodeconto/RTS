@@ -75,42 +75,40 @@ public abstract class MessageQueue : MonoBehaviour
 	{
 		++nQueueItems;
 		
-		Debug.Log ("Sem botoes");
-		return;
+//		Debug.Log ("Sem botoes");
+//		return;
 		
-//		if (nQueueItems > MaxItems)
-//		{
-//			// Refazendo o calculo
-//			if (nQueueItems-1 == MaxItems) ChangeToGroupMessageInfo ();
-//			
-//			buttonName = RegexClone (buttonName);
-//			
-//			if (CheckExistMessageInfo (buttonName)) return;
-//			
-//			GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-//													Pref_button);
-//			
-//			button.name  = buttonName;
-//			button.layer = gameObject.layer;
-//			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-//			button.transform.FindChild("Background").localScale = new Vector3(CellSize.x, CellSize.y, 1);
-//			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
-//			
-//			PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
-//	
-//			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
-//			
-//			Invoke("RepositionGrid", 0.1f);
-//		}
-//		else
-//		{
+if (nQueueItems > MaxItems)
+		{
+			// Refazendo o calculo
+			if (nQueueItems-1 == MaxItems) ChangeToGroupMessageInfo ();
+			
+			buttonName = RegexClone (buttonName);
+			
+			if (CheckExistMessageInfo (buttonName)) return;
+			
 			GameObject button = NGUITools.AddChild (uiGrid.gameObject,
 													Pref_button);
 			
 			button.name  = buttonName;
 			button.layer = gameObject.layer;
 			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-			button.transform.FindChild("Background").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+			
+			PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
+	
+			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
+			
+			Invoke("RepositionGrid", 0.1f);
+		}
+		else
+		{
+			GameObject button = NGUITools.AddChild (uiGrid.gameObject,
+													Pref_button);
+			
+			button.name  = buttonName;
+			button.layer = gameObject.layer;
+			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
 			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 	
 			//button.transform.localPosition = Vector3.zero;
@@ -120,7 +118,7 @@ public abstract class MessageQueue : MonoBehaviour
 			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 			
 			Invoke("RepositionGrid", 0.1f);
-//		}
+		}
 	}
 
 	public void DequeueMessageInfo()

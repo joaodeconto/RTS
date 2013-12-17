@@ -15,13 +15,11 @@ using System.Collections.Generic;
 [AddComponentMenu("NGUI/UI/Root")]
 public class UIRoot : MonoBehaviour
 {
-	static List<UIRoot> mRoots = new List<UIRoot>();
+	static public List<UIRoot> list = new List<UIRoot>();
 
 	/// <summary>
 	/// List of all UIRoots present in the scene.
 	/// </summary>
-
-	static public List<UIRoot> list { get { return mRoots; } }
 
 	public enum Scaling
 	{
@@ -34,17 +32,10 @@ public class UIRoot : MonoBehaviour
 	/// Type of scaling used by the UIRoot.
 	/// </summary>
 
-	public Scaling scalingStyle = Scaling.FixedSize;
+	public Scaling scalingStyle = Scaling.PixelPerfect;
 
 	/// <summary>
-	/// Obsolete. Do not use.
-	/// </summary>
-
-	//[System.Obsolete("Use UIRoot's scalingStyle property instead")]
-	[HideInInspector] public bool automatic = false;
-
-	/// <summary>
-	/// Height of the screen when 'automatic' is turned off.
+	/// Height of the screen when the scaling style is set to FixedSize.
 	/// </summary>
 
 	public int manualHeight = 720;
@@ -85,7 +76,7 @@ public class UIRoot : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Pixel size adjustment. Most of the time it's at 1, unless 'automatic' is turned off.
+	/// Pixel size adjustment. Most of the time it's at 1, unless the scaling style is set to FixedSize.
 	/// </summary>
 
 	public float pixelSizeAdjustment { get { return GetPixelSizeAdjustment(Screen.height); } }
@@ -122,22 +113,11 @@ public class UIRoot : MonoBehaviour
 
 	Transform mTrans;
 
-	void Awake ()
-	{
-		mTrans = transform;
-		mRoots.Add(this);
+	protected virtual void Awake () { mTrans = transform; }
+	protected virtual void OnEnable () { list.Add(this); }
+	protected virtual void OnDisable () { list.Remove(this); }
 
-		// Backwards compatibility
-		if (automatic)
-		{
-			scalingStyle = Scaling.PixelPerfect;
-			automatic = false;
-		}
-	}
-
-	void OnDestroy () { mRoots.Remove(this); }
-
-	void Start ()
+	protected virtual void Start ()
 	{
 		UIOrthoCamera oc = GetComponentInChildren<UIOrthoCamera>();
 
@@ -153,6 +133,10 @@ public class UIRoot : MonoBehaviour
 
 	void Update ()
 	{
+#if UNITY_EDITOR
+		if (!Application.isPlaying && gameObject.layer != 0)
+			UnityEditor.EditorPrefs.SetInt("NGUI Layer", gameObject.layer);
+#endif
 		if (mTrans != null)
 		{
 			float calcActiveHeight = activeHeight;
@@ -179,9 +163,9 @@ public class UIRoot : MonoBehaviour
 
 	static public void Broadcast (string funcName)
 	{
-		for (int i = 0, imax = mRoots.Count; i < imax; ++i)
+		for (int i = 0, imax = list.Count; i < imax; ++i)
 		{
-			UIRoot root = mRoots[i];
+			UIRoot root = list[i];
 			if (root != null) root.BroadcastMessage(funcName, SendMessageOptions.DontRequireReceiver);
 		}
 	}
@@ -199,9 +183,9 @@ public class UIRoot : MonoBehaviour
 		}
 		else
 		{
-			for (int i = 0, imax = mRoots.Count; i < imax; ++i)
+			for (int i = 0, imax = list.Count; i < imax; ++i)
 			{
-				UIRoot root = mRoots[i];
+				UIRoot root = list[i];
 				if (root != null) root.BroadcastMessage(funcName, param, SendMessageOptions.DontRequireReceiver);
 			}
 		}

@@ -142,7 +142,7 @@ Transform:
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 487.133331, y: -220.493774, z: 77}
-  m_LocalScale: {x: 203.012817, y: 203.012817, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400004}
   - {fileID: 400014}
@@ -274,11 +274,30 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
-  mMat: {fileID: 2100000, guid: 5d0ca3bc773a78f409d340f7e5ecba0f, type: 2}
-  mTex: {fileID: 2800000, guid: 9c8c1cd1add5d8c4d8ccb34eb836ea85, type: 3}
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
   mColor: {r: .850746274, g: .850746274, b: .850746274, a: 1}
   mPivot: 4
+  mWidth: 203
+  mHeight: 203
   mDepth: 1
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
   mAtlas: {fileID: 11400000, guid: 578a13a4ecca3df45ac2c46f6179c82a, type: 2}
   mSpriteName: RTS logo
   mFillCenter: 1
@@ -1329,6 +1348,7 @@ ParticleSystem:
       m_Bits: 4294967295
     quality: 0
     voxelSize: .5
+    collisionMessages: 0
   SubModule:
     enabled: 0
     subEmitterBirth: {fileID: 0}
@@ -2380,6 +2400,7 @@ ParticleSystem:
       m_Bits: 4294967295
     quality: 0
     voxelSize: .5
+    collisionMessages: 0
   SubModule:
     enabled: 0
     subEmitterBirth: {fileID: 0}
@@ -3361,6 +3382,7 @@ ParticleSystem:
       m_Bits: 4294967295
     quality: 0
     voxelSize: .5
+    collisionMessages: 0
   SubModule:
     enabled: 0
     subEmitterBirth: {fileID: 0}
@@ -4362,6 +4384,7 @@ ParticleSystem:
       m_Bits: 4294967295
     quality: 0
     voxelSize: .5
+    collisionMessages: 0
   SubModule:
     enabled: 0
     subEmitterBirth: {fileID: 0}
@@ -5383,6 +5406,7 @@ ParticleSystem:
       m_Bits: 4294967295
     quality: 0
     voxelSize: .5
+    collisionMessages: 0
   SubModule:
     enabled: 0
     subEmitterBirth: {fileID: 0}
@@ -6384,6 +6408,7 @@ ParticleSystem:
       m_Bits: 4294967295
     quality: 0
     voxelSize: .5
+    collisionMessages: 0
   SubModule:
     enabled: 0
     subEmitterBirth: {fileID: 0}
@@ -6410,6 +6435,9 @@ ParticleSystemRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   m_RenderMode: 0
   m_MaxParticleSize: .5
   m_CameraVelocityScale: 0
@@ -6440,6 +6468,9 @@ ParticleSystemRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   m_RenderMode: 0
   m_MaxParticleSize: .5
   m_CameraVelocityScale: 0
@@ -6470,6 +6501,9 @@ ParticleSystemRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   m_RenderMode: 0
   m_MaxParticleSize: .5
   m_CameraVelocityScale: 0
@@ -6500,6 +6534,9 @@ ParticleSystemRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   m_RenderMode: 1
   m_MaxParticleSize: .5
   m_CameraVelocityScale: 0
@@ -6530,6 +6567,9 @@ ParticleSystemRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   m_RenderMode: 0
   m_MaxParticleSize: .5
   m_CameraVelocityScale: 0
@@ -6560,6 +6600,9 @@ ParticleSystemRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
   m_RenderMode: 0
   m_MaxParticleSize: .5
   m_CameraVelocityScale: 0

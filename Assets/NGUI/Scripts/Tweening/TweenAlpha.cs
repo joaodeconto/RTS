@@ -9,50 +9,36 @@ using UnityEngine;
 /// Tween the object's alpha.
 /// </summary>
 
-[AddComponentMenu("NGUI/Tween/Alpha")]
+[RequireComponent(typeof(UIRect))]
+[AddComponentMenu("NGUI/Tween/Tween Alpha")]
 public class TweenAlpha : UITweener
 {
+#if UNITY_3_5
 	public float from = 1f;
 	public float to = 1f;
+#else
+	[Range(0f, 1f)] public float from = 1f;
+	[Range(0f, 1f)] public float to = 1f;
+#endif
 
-	Transform mTrans;
-	UIWidget mWidget;
-	UIPanel mPanel;
+	UIRect mRect;
 
-	/// <summary>
-	/// Current alpha.
-	/// </summary>
+	public UIRect cachedRect { get { if (mRect == null) mRect = GetComponent<UIRect>(); return mRect; } }
 
-	public float alpha
-	{
-		get
-		{
-			if (mWidget != null) return mWidget.alpha;
-			if (mPanel != null) return mPanel.alpha;
-			return 0f;
-		}
-		set
-		{
-			if (mWidget != null) mWidget.alpha = value;
-			else if (mPanel != null) mPanel.alpha = value;
-		}
-	}
+	[System.Obsolete("Use 'value' instead")]
+	public float alpha { get { return this.value; } set { this.value = value; } }
 
 	/// <summary>
-	/// Find all needed components.
+	/// Tween's current value.
 	/// </summary>
 
-	void Awake ()
-	{
-		mPanel = GetComponent<UIPanel>();
-		if (mPanel == null) mWidget = GetComponentInChildren<UIWidget>();
-	}
+	public float value { get { return cachedRect.alpha; } set { cachedRect.alpha = value; } }
 
 	/// <summary>
-	/// Interpolate and update the alpha.
+	/// Tween the value.
 	/// </summary>
 
-	protected override void OnUpdate (float factor, bool isFinished) { alpha = Mathf.Lerp(from, to, factor); }
+	protected override void OnUpdate (float factor, bool isFinished) { value = Mathf.Lerp(from, to, factor); }
 
 	/// <summary>
 	/// Start the tweening operation.
@@ -61,7 +47,7 @@ public class TweenAlpha : UITweener
 	static public TweenAlpha Begin (GameObject go, float duration, float alpha)
 	{
 		TweenAlpha comp = UITweener.Begin<TweenAlpha>(go, duration);
-		comp.from = comp.alpha;
+		comp.from = comp.value;
 		comp.to = alpha;
 
 		if (duration <= 0f)
@@ -71,4 +57,7 @@ public class TweenAlpha : UITweener
 		}
 		return comp;
 	}
+
+	public override void SetStartToCurrentValue () { from = value; }
+	public override void SetEndToCurrentValue () { to = value; }
 }

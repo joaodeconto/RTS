@@ -11,7 +11,6 @@ GameObject:
   - 65: {fileID: 6500000}
   - 114: {fileID: 11400006}
   - 114: {fileID: 11400010}
-  - 114: {fileID: 11400000}
   m_Layer: 8
   m_Name: Button Team
   m_TagString: Untagged
@@ -28,7 +27,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400004}
   - 114: {fileID: 11400002}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +43,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400006}
   - 114: {fileID: 11400012}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +59,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400008}
   - 114: {fileID: 11400014}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +88,7 @@ Transform:
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: .001953125, y: -6.203125, z: 0}
-  m_LocalScale: {x: 52, y: 90, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
 --- !u!4 &400006
@@ -100,7 +99,7 @@ Transform:
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.02734375, y: 21.65625, z: -1}
-  m_LocalScale: {x: 24, y: 24, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
 --- !u!4 &400008
@@ -111,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -10, z: 0}
-  m_LocalScale: {x: 42, y: 42, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
 --- !u!65 &6500000
@@ -126,42 +125,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 76.003418, y: 90.0054932, z: 0}
   m_Center: {x: .00305175781, y: -7.00579834, z: -.754394531}
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d166255cacf07b4292b8402b3ddefc5, type: 3}
-  m_Name: 
-  method: 0
-  style: 0
-  animationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-    - time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  ignoreTimeScale: 1
-  delay: 0
-  duration: 1
-  steeperCurves: 0
-  tweenGroup: 0
-  eventReceiver: {fileID: 0}
-  callWhenFinished: 
-  from: {x: -325, y: 118, z: 0}
-  to: {x: -325, y: 158, z: 0}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -172,11 +135,30 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
-  mMat: {fileID: 2100000, guid: 7d8e895fe75a183449dfacde05a05437, type: 2}
-  mTex: {fileID: 2800000, guid: df9306fcb42adef479fae7aab123a835, type: 3}
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
   mColor: {r: .141791046, g: .141791046, b: .141791046, a: 1}
   mPivot: 4
+  mWidth: 52
+  mHeight: 90
   mDepth: -8
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
   mAtlas: {fileID: 11400000, guid: f4a23cec399fa7045aa83d1db18e9378, type: 2}
   mSpriteName: Border_Stone
   mFillCenter: 1
@@ -194,6 +176,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c041f61e4a9fbf4e830210f5d933ece, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   tweenTarget: {fileID: 0}
   hover: {x: 1.10000002, y: 1.10000002, z: 1.10000002}
   pressed: {x: 1.04999995, y: 1.04999995, z: 1.04999995}
@@ -208,6 +191,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 7bb4933e9760faf47a89560d2394dded, type: 3}
   trigger: 0
   volume: 1
@@ -222,23 +206,52 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9d0b5f3bbe925a408bd595c79d0bf63, type: 3}
   m_Name: 
-  mMat: {fileID: 2100000, guid: c26d497bb12303043afcbeccab2dc965, type: 2}
-  mTex: {fileID: 0}
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
   mColor: {r: 1, g: .692307711, b: 0, a: 1}
   mPivot: 4
+  mWidth: 100
+  mHeight: 100
   mDepth: 0
-  mFont: {fileID: 11400000, guid: 72ef1138227cff54ea3d0eb83181eeef, type: 2}
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
+  keepCrispWhenShrunk: 1
+  mTrueTypeFont: {fileID: 0}
+  mFont: {fileID: 0}
   mText: 1
-  mMaxLineWidth: 0
+  mFontSize: 16
+  mFontStyle: 0
   mEncoding: 1
   mMaxLineCount: 0
-  mPassword: 0
-  mShowLastChar: 0
   mEffectStyle: 2
   mEffectColor: {r: .276119411, g: .276119411, b: .276119411, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
+  mOverflow: 2
+  mMaterial: {fileID: 0}
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mSpacingX: 0
+  mSpacingY: 0
   mShrinkToFit: 0
+  mMaxLineWidth: 0
+  mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
 --- !u!114 &11400014
@@ -251,11 +264,30 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
-  mMat: {fileID: 2100000, guid: 7d8e895fe75a183449dfacde05a05437, type: 2}
-  mTex: {fileID: 2800000, guid: df9306fcb42adef479fae7aab123a835, type: 3}
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
+  mWidth: 42
+  mHeight: 42
   mDepth: -6
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
   mAtlas: {fileID: 11400000, guid: f4a23cec399fa7045aa83d1db18e9378, type: 2}
   mSpriteName: t-rex
   mFillCenter: 1

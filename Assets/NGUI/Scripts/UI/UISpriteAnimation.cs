@@ -69,7 +69,7 @@ public class UISpriteAnimation : MonoBehaviour
 	{
 		if (mActive && mSpriteNames.Count > 1 && Application.isPlaying && mFPS > 0f)
 		{
-			mDelta += Time.deltaTime;
+			mDelta += RealTime.deltaTime;
 			float rate = 1f / mFPS;
 
 			if (rate < mDelta)
@@ -102,11 +102,11 @@ public class UISpriteAnimation : MonoBehaviour
 
 		if (mSprite != null && mSprite.atlas != null)
 		{
-			List<UIAtlas.Sprite> sprites = mSprite.atlas.spriteList;
+			List<UISpriteData> sprites = mSprite.atlas.spriteList;
 
 			for (int i = 0, imax = sprites.Count; i < imax; ++i)
 			{
-				UIAtlas.Sprite sprite = sprites[i];
+				UISpriteData sprite = sprites[i];
 
 				if (string.IsNullOrEmpty(mPrefix) || sprite.name.StartsWith(mPrefix))
 				{
