@@ -163,24 +163,32 @@ public abstract class IStats : Photon.MonoBehaviour
 		IsRemoved = false;
 		
 		statsController.AddStats (this);
-		
-		if (!gameplayManager.IsBoot (team))
-		{
-			if (gameplayManager.SameEntity (team, ally))
-			{
-				FOWRevealer fowr = gameObject.AddComponent<FOWRevealer>();
-				fowr.range = new Vector2(0, fieldOfView);
-				fowr.lineOfSightCheck = FOWSystem.LOSChecks.EveryUpdate;
-			}
-			else
-			{
-				gameObject.AddComponent<FOWRenderers>();
-			}
-		}
-		else
-		{
-			gameObject.AddComponent<FOWRenderers>();
-		}
+
+
+// =================================================================
+// |                                                               |
+// |      UTILIZANDO COMPONENTE FOW EM TODAS UNIDADES!!!           |
+// |                 DEVE SER ATUALIZADO!!!                        |
+// |                                                               |
+// =================================================================
+//	
+//		if (!gameplayManager.IsBoot (team))
+//		{
+//			if (gameplayManager.SameEntity (team, ally))
+//			{
+//				FOWRevealer fowr = gameObject.AddComponent<FOWRevealer>();
+//				fowr.range = new Vector2(0, fieldOfView);
+//				fowr.lineOfSightCheck = FOWSystem.LOSChecks.EveryUpdate;
+//			}
+//			else
+//			{
+//				gameObject.AddComponent<FOWRenderers>();
+//			}
+//		}
+//		else
+//		{
+//			gameObject.AddComponent<FOWRenderers>();
+//		}
 	}
 	
 	public virtual void Select ()

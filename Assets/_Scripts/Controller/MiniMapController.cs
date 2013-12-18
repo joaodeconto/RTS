@@ -96,9 +96,9 @@ public class MiniMapController : MonoBehaviour
 //		{
 			textureFogOfWar = NGUITools.AddWidget<UITexture> (fogMiniMap);
 			textureFogOfWar.pivot = UIWidget.Pivot.BottomLeft;
-//			textureFogOfWar.transform.localPosition    = -Vector3.forward * 5;
-			textureFogOfWar.height = 0;
-		    textureFogOfWar.width = 0;
+			textureFogOfWar.transform.localPosition    = new Vector2 (0,0);
+		    textureFogOfWar.height = mapTransform.GetComponent<UISprite>().width;
+		    textureFogOfWar.width =  mapTransform.GetComponent<UISprite>().width;
 		    textureFogOfWar.depth = 5;
 			textureFogOfWar.transform.localEulerAngles = Vector3.forward * 90f;
 			textureFogOfWar.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
@@ -110,9 +110,7 @@ public class MiniMapController : MonoBehaviour
 
 		ut = NGUITools.AddWidget<UITexture> (CamPositionMiniMap);
 		ut.transform.localPosition    = Vector3.forward * -1;
-		ut.height                  = 0;
-		ut.width                  = 0;
-		ut.depth                  = 6;
+		ut.transform.localScale   = visualizationSize;
 		ut.transform.localEulerAngles = Vector3.forward * 90f;
 		ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
 		ut.material.mainTexture = CamPositionTexture;

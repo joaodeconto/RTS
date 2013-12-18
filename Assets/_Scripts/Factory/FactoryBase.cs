@@ -335,23 +335,29 @@ public class FactoryBase : IStats
 
 		if (!photonView.isMine) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;
-		
-		if (gameplayManager.SameEntity (team, ally))
-		{
-			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
-			fowr.range = new Vector2(0, 0);
-		}
+
+// =================================================================
+// |                                                               |
+// |      UTILIZANDO COMPONENTE FOW EM TODAS ESTRUTURAS!!!         |
+// |                 DEVE SER ATUALIZADO!!!                        |
+// |                                                               |
+// =================================================================
+//		if (gameplayManager.SameEntity (team, ally))
+//		{
+//			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
+//			fowr.range = new Vector2(0, 0);
+//		}
 	}
 
 	[RPC]
 	public void Instance ()
 	{
 		realRangeView  = this.fieldOfView;
-		if (gameplayManager.SameEntity (team, ally))
-		{
-			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
-			fowr.range = new Vector2(0, helperCollider.radius);
-		}
+//		if (gameplayManager.SameEntity (team, ally))
+//		{
+//			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
+//			fowr.range = new Vector2(0, helperCollider.radius);
+//		}
 
 		GetComponent<NavMeshObstacle> ().enabled = true;
 

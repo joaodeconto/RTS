@@ -169,6 +169,7 @@ public class GhostFactory : MonoBehaviour
 		ComponentGetter.Get<SelectionController> ().enabled = true;
 		ComponentGetter.Get<InteractionController> ().enabled = true;
 
+
 		bool canBuy = worker.CanConstruct (factoryConstruction);
 
 		if (canBuy)
@@ -189,8 +190,7 @@ public class GhostFactory : MonoBehaviour
 			}
 			
 			Destroy (helperColliderGameObject.rigidbody);
-			Destroy (helperColliderGameObject
-					.GetComponent<HelperColliderDetect> ());
+			Destroy (helperColliderGameObject.GetComponent<HelperColliderDetect> ());
 			
 			transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 
@@ -198,6 +198,8 @@ public class GhostFactory : MonoBehaviour
 			thisFactory.enabled = true;
 
 			thisFactory.name = correctName;
+
+			thisFactory.GetComponent<PaintAgent>().Paint ();
 			
 			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
 
