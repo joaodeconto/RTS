@@ -21,9 +21,7 @@ public class TemporizedMessageQueue : MessageQueue
 	{
 		this.Pref_button = pref_button;
 		this.uiGrid = uiGrid;
-
-		this.QueueName   = queueName;
-
+		this.QueueName       = queueName;
 		this.RootPosition    = RootPosition;
 		this.IsVerticalQueue = IsVerticalQueue;
 		this.MaxPerLine      = maxPerLine;
@@ -31,11 +29,9 @@ public class TemporizedMessageQueue : MessageQueue
 		this.CellSize        = cellSize;
 		this.Padding         = padding;
 		this.LabelSize       = labelSize;
-
 		this.uiGrid.maxPerLine = maxPerLine;
 		this.uiGrid.sorted       = true;
 		this.uiGrid.hideInactive = false;
-
 		this.timeToFadeout = timeToFadeout;
 		this.fadeColor     = fadeColor;
 

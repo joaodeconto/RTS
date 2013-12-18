@@ -5,7 +5,7 @@ public class DefaultMessageQueue : MessageQueue
 {
 	public DefaultMessageQueue Init(GameObject pref_button,
 									UIGrid uiGrid,
-									string queueName,
+	                                string queueName,
 									Vector2 rootPosition,
 									Vector2 cellSize,
 									Vector2 padding,
@@ -29,7 +29,7 @@ public class DefaultMessageQueue : MessageQueue
 		this.uiGrid.maxPerLine = maxPerLine;
 		this.uiGrid.sorted       = true;
 		this.uiGrid.hideInactive = false;
-
+	
 		return this;
 	}
 }

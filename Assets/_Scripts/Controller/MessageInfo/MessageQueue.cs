@@ -34,6 +34,7 @@ public abstract class MessageQueue : MonoBehaviour
 		}
 	}
 
+
 	public bool IsVerticalQueue
 	{
 		get
@@ -77,7 +78,7 @@ public abstract class MessageQueue : MonoBehaviour
 		
 //		Debug.Log ("Sem botoes");
 //		return;
-		
+		 
 if (nQueueItems > MaxItems)
 		{
 			// Refazendo o calculo
