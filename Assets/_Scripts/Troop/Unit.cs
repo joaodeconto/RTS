@@ -1,10 +1,13 @@
 using UnityEngine;
+
 using System.Collections;
-using Visiorama.Extension;
-using Visiorama;
+using System.Collections.Generic;
 using System.Linq;
 
-public class Unit : IStats
+using Visiorama.Extension;
+using Visiorama;
+
+public class Unit : IStats, IMovementObservable
 {
 	public const string UnitGroupQueueName = "Unit Group";
 
@@ -85,6 +88,9 @@ public class Unit : IStats
 	protected float normalSpeed;
 	protected float normalAngularSpeed;
 
+	// IMovementObservable
+	List<IMovementObserver> observers = new List<IMovementObserver> ();
+
 	public override void Init ()
 	{
 		base.Init();
@@ -112,6 +118,12 @@ public class Unit : IStats
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
+		GameController gc = ComponentGetter.Get<GameController> ();
+
+		float timeToNotifyMovementObservers = 1.0f / gc.targetFPS;
+
+		InvokeRepeating ("NotifyMovement", timeToNotifyMovementObservers, timeToNotifyMovementObservers);
+
 		if (!enabled) enabled = playerUnit;
 	}
 
@@ -130,7 +142,16 @@ public class Unit : IStats
 
 			Deselect ();
 		}
-		if (!IsRemoved && !playerUnit) statsController.RemoveStats (this);
+		if (!IsRemoved && !playerUnit)
+		{
+			statsController.RemoveStats (this);
+
+			//IMovementObservable
+			foreach (IMovementObserver o in observers)
+			{
+				UnRegisterMovementObserver (o);
+			}
+		}
 	}
 
 	public virtual void IAStep ()
@@ -844,6 +865,28 @@ public class Unit : IStats
 			return model.activeSelf;
 		}
 	}
+
+	#region IMovementObservable implementation
+
+	public void RegisterMovementObserver (IMovementObserver observer)
+	{
+		observers.Add (observer);
+	}
+
+	public void UnRegisterMovementObserver (IMovementObserver observer)
+	{
+		observers.Remove (observer);
+	}
+
+	public void NotifyMovement ()
+	{
+		foreach (IMovementObserver o in observers)
+		{
+			o.UpdatePosition (transform.position);
+		}
+	}
+
+	#endregion
 
 	// RPC
 	[RPC]

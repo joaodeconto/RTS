@@ -47,7 +47,7 @@ public class FactoryBase : IStats
 
 	public bool hasRallypoint { get; private set; }
 	
-	protected Transform rallypoint;
+	private Transform rallypoint;
 	
 	public BuildingState buildingState { get; set; }
 	protected int levelConstruct;
@@ -113,12 +113,15 @@ public class FactoryBase : IStats
 			GameObject instantiateRallypoint = Resources.Load ("Rallypoint", typeof(GameObject)) as GameObject;
 			
 			GameObject goRallypoint = NGUITools.AddChild (gameObject, instantiateRallypoint);
+
 			rallypoint = goRallypoint.transform;
 			rallypoint.parent = this.transform;
-			
+
 			Vector3 pos = rallypoint.position;
 			pos.z -= transform.collider.bounds.size.z;
 			rallypoint.position = pos;
+
+			rallypoint.gameObject.SetActive (false);
 			
 			hasRallypoint = (rallypoint != null);
 		}
