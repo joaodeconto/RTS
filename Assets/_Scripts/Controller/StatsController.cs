@@ -146,6 +146,8 @@ public class StatsController : MonoBehaviour
 
 	public void AddStats (IStats stat)
 	{
+		Debug.Log ("gameplay is null: " + gameplayManager);
+
 		if (gameplayManager.IsSameTeam (stat.team))
 		{
 			myStats.Add (stat);

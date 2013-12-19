@@ -7,9 +7,9 @@
 // </summary>
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
-using System;
-using System.IO;
+
 using ExitGames.Client.Photon;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -23,36 +23,18 @@ internal static class CustomTypes
     {
         PhotonPeer.RegisterType(typeof(Vector2), (byte)'W', SerializeVector2, DeserializeVector2);
         PhotonPeer.RegisterType(typeof(Vector3), (byte)'V', SerializeVector3, DeserializeVector3);
-        PhotonPeer.RegisterType(typeof(Transform), (byte)'T', SerializeTransform, DeserializeTransform);
         PhotonPeer.RegisterType(typeof(Quaternion), (byte)'Q', SerializeQuaternion, DeserializeQuaternion);
         PhotonPeer.RegisterType(typeof(PhotonPlayer), (byte)'P', SerializePhotonPlayer, DeserializePhotonPlayer);
     }
 
     #region Custom De/Serializer Methods
 
-    private static byte[] SerializeTransform(object customobject)
-    {
-        Transform t = (Transform)customobject;
-
-        Vector3[] parts = new Vector3[2];
-        parts[0] = t.position;
-        parts[1] = t.eulerAngles;
-
-        return Protocol.Serialize(parts);
-    }
-
-    private static object DeserializeTransform(byte[] serializedcustomobject)
-    {
-        object x = Protocol.Deserialize(serializedcustomobject);
-        return x;
-    }
-
     private static byte[] SerializeVector3(object customobject)
     {
         Vector3 vo = (Vector3)customobject;
         int index = 0;
 
-        ////TODO: check if the float almost 0 situation is actually happening a lot in games or if this doesn't save a lot
+        ////TODO: check if the "float almost 0 situation is actually happening a lot in games or if this doesn't save a lot
         //byte skipFlags = 0;
         //byte floatsNeeded = 3;
         //if (vo.x < PhotonNetwork.precisionForFloatSynchronization && vo.x > -PhotonNetwork.precisionForFloatSynchronization)
@@ -116,40 +98,44 @@ internal static class CustomTypes
     private static byte[] SerializeVector2(object customobject)
     {
         Vector2 vo = (Vector2)customobject;
-        MemoryStream ms = new MemoryStream(2 * 4);
 
-        ms.Write(BitConverter.GetBytes(vo.x), 0, 4);
-        ms.Write(BitConverter.GetBytes(vo.y), 0, 4);
-        return ms.ToArray();
+        byte[] bytes = new byte[2 * 4];
+        int index = 0;
+        Protocol.Serialize(vo.x, bytes, ref index);
+        Protocol.Serialize(vo.y, bytes, ref index);
+        return bytes;
     }
 
     private static object DeserializeVector2(byte[] bytes)
     {
         Vector2 vo = new Vector2();
-        vo.x = BitConverter.ToSingle(bytes, 0);
-        vo.y = BitConverter.ToSingle(bytes, 4);
+        int index = 0;
+        Protocol.Deserialize(out vo.x, bytes, ref index);
+        Protocol.Deserialize(out vo.y, bytes, ref index);
         return vo;
     }
 
     private static byte[] SerializeQuaternion(object obj)
     {
         Quaternion o = (Quaternion)obj;
-        MemoryStream ms = new MemoryStream(4 * 4);
-
-        ms.Write(BitConverter.GetBytes(o.w), 0, 4);
-        ms.Write(BitConverter.GetBytes(o.x), 0, 4);
-        ms.Write(BitConverter.GetBytes(o.y), 0, 4);
-        ms.Write(BitConverter.GetBytes(o.z), 0, 4);
-        return ms.ToArray();
+        
+        byte[] bytes = new byte[4 * 4];
+        int index = 0;
+        Protocol.Serialize(o.w, bytes, ref index);
+        Protocol.Serialize(o.x, bytes, ref index);
+        Protocol.Serialize(o.y, bytes, ref index);
+        Protocol.Serialize(o.z, bytes, ref index);
+        return bytes;
     }
 
     private static object DeserializeQuaternion(byte[] bytes)
     {
         Quaternion o = new Quaternion();
-        o.w = BitConverter.ToSingle(bytes, 0);
-        o.x = BitConverter.ToSingle(bytes, 4);
-        o.y = BitConverter.ToSingle(bytes, 8);
-        o.z = BitConverter.ToSingle(bytes, 12);
+        int index = 0;
+        Protocol.Deserialize(out o.w, bytes, ref index);
+        Protocol.Deserialize(out o.x, bytes, ref index);
+        Protocol.Deserialize(out o.y, bytes, ref index);
+        Protocol.Deserialize(out o.z, bytes, ref index);
 
         return o;
     }
@@ -157,12 +143,20 @@ internal static class CustomTypes
     private static byte[] SerializePhotonPlayer(object customobject)
     {
         int ID = ((PhotonPlayer)customobject).ID;
-        return BitConverter.GetBytes(ID);
+        
+        byte[] bytes = new byte[4];
+        int off = 0;
+        Protocol.Serialize(ID, bytes, ref off);
+
+        return bytes;
     }
 
     private static object DeserializePhotonPlayer(byte[] bytes)
     {
-        int ID = BitConverter.ToInt32(bytes, 0);
+        int ID;
+        int off = 0;
+        Protocol.Deserialize(out ID, bytes, ref off);
+
         if (PhotonNetwork.networkingPeer.mActors.ContainsKey(ID))
         {
             return PhotonNetwork.networkingPeer.mActors[ID];

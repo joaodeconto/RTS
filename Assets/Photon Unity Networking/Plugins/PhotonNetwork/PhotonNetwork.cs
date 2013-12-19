@@ -3,17 +3,17 @@
 //   Part of: Photon Unity Networking
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using UnityEngine;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 /// <summary>
 /// The main class to use the PhotonNetwork plugin.
@@ -23,7 +23,7 @@ using Debug = UnityEngine.Debug;
 public static class PhotonNetwork
 {
     /// <summary>Version number of PUN. Also used in GameVersion to separate client version from each other.</summary>
-    public const string versionPUN = "1.20";
+    public const string versionPUN = "1.24";
 
     /// <summary>
     /// This Monobehaviour allows Photon to run an Update loop.
@@ -225,6 +225,37 @@ public static class PhotonNetwork
     }
 
     /// <summary>
+    /// Allows the current Master Client to assign someone else as MC - custom selection should pick the same user on any client.
+    /// </summary>
+    /// <remarks>
+    /// The ReceiverGroup.MasterClient (usable in RPCs) is not affected by this (still points to lowest player.ID in room).
+    /// Avoid using this enum value (and send to a specific player instead).
+    /// 
+    /// If the current Master Client leaves, PUN will detect a new one by "lowest player ID". Implement OnMasterClientSwitched
+    /// to get a callback in this case. The PUN-selected Master Client might assign a new one. 
+    /// 
+    /// Make sure you don't create an endless loop of Master-assigning! When selecting a custom Master Client, all clients
+    /// should point to the same player, no matter who actually assigns this player.
+    /// 
+    /// Locally the Master Client is immediately switched, while remote clients get an event. This means the game 
+    /// is tempoarily without Master Client like when a current Master Client leaves.
+    /// 
+    /// When switching the Master Client manually, keep in mind that this user might leave and not do it's work, just like 
+    /// any Master Client.
+    /// </remarks>
+    /// <param name="playerId">The player.ID of the next Master Client.</param>
+    /// <returns>False when this synced action couldn't be done. Must be online and Master Client.</returns>
+    public static bool SetMasterClient(PhotonPlayer player)
+    {
+        if (!VerifyCanUseNetwork() || !isMasterClient)
+        {
+            return false;
+        }
+
+        return networkingPeer.SetMasterClient(player.ID, true);
+    }
+
+    /// <summary>
     /// This local player's name.
     /// </summary>
     /// <remarks>Setting the name will automatically send it, if connected. Setting null, won't change the name.</remarks>
@@ -352,6 +383,25 @@ public static class PhotonNetwork
 
     private static bool isOfflineMode = false;
     private static bool offlineMode_inRoom = false;
+
+    /// <summary>
+    /// If not null, this is the (exclusive) list of GameObjects that get called by PUN SendMonoMessage().
+    /// </summary>
+    /// <remarks>
+    /// For all callbacks defined in PhotonNetworkingMessage, PUN will use SendMonoMessage and
+    /// call FindObjectsOfType() to find all scripts and GameObjects that might want a callback by PUN.
+    /// 
+    /// PUN callbacks are not very frequent (in-game, property updates are most frequent) but 
+    /// FindObjectsOfType is time consuming and with a large number of GameObjects, performance might
+    /// suffer.
+    /// 
+    /// Optionally, SendMonoMessageTargets can be used to supply a list of target GameObjects. This 
+    /// skips the FindObjectsOfType() but any GameObject that needs callbacks will have to Add itself
+    /// to this list.
+    /// 
+    /// If null, the default behaviour is to do a SendMessage on each GameObject with a MonoBehaviour.
+    /// </remarks>
+    public static HashSet<GameObject> SendMonoMessageTargets;
 
     /// <summary>
     /// The maximum number of players for a room. Better: Set it in CreateRoom.
@@ -539,11 +589,16 @@ public static class PhotonNetwork
     private static int sendIntervalOnSerialize = 100; // in miliseconds. I.e. 100 = 100ms which makes 10 times/second
 
     /// <summary>
-    /// Can be used to pause dispatch of incoming evtents (RPCs, Instantiates and anything else incoming).
+    /// Can be used to pause dispatching of incoming evtents (RPCs, Instantiates and anything else incoming).
+    /// </summary>
+    /// <remarks>
+    /// While IsMessageQueueRunning == false, the OnPhotonSerializeView calls are not done and nothing is sent by
+    /// a client. Also, incoming messages will be queued until you re-activate the message queue.
+    /// 
     /// This can be useful if you first want to load a level, then go on receiving data of PhotonViews and RPCs.
     /// The client will go on receiving and sending acknowledgements for incoming packages and your RPCs/Events.
     /// This adds "lag" and can cause issues when the pause is longer, as all incoming messages are just queued.
-    /// </summary>
+    /// </remarks>
     public static bool isMessageQueueRunning
     {
         get
@@ -553,17 +608,9 @@ public static class PhotonNetwork
 
         set
         {
-            if (value == m_isMessageQueueRunning)
-            {
-                return;
-            }
-
+            if (value) PhotonHandler.StartFallbackSendAckThread();
             networkingPeer.IsSendingOnlyAcks = !value;
             m_isMessageQueueRunning = value;
-            if (!value)
-            {
-                PhotonHandler.StartThread(); // Background loading thread: keeps connection alive
-            }
         }
     }
 
@@ -718,6 +765,14 @@ public static class PhotonNetwork
     }
 
     /// <summary>
+    /// Count of commands that got repeated (due to local repeat-timing before an ACK was received).
+    /// </summary>
+    public static int ResentReliableCommands
+    {
+        get { return networkingPeer.ResentReliableCommands; }
+    }
+
+    /// <summary>
     /// Resets the traffic stats and re-enables them.
     /// </summary>
     public static void NetworkStatisticsReset()
@@ -773,12 +828,15 @@ public static class PhotonNetwork
         // Set up a MonoBehaviour to run Photon, and hide it
         GameObject photonGO = new GameObject();
         photonMono = (PhotonHandler)photonGO.AddComponent<PhotonHandler>();
+
+#if !(UNITY_WINRT || UNITY_WP8 || UNITY_PS3 || UNITY_WIIU)
         photonGO.AddComponent<PingCloudRegions>();
+#endif
         photonGO.name = "PhotonMono";
         photonGO.hideFlags = HideFlags.HideInHierarchy;
 
         // Set up the NetworkingPeer
-        networkingPeer = new NetworkingPeer(photonMono, String.Empty, ConnectionProtocol.Udp);
+        networkingPeer = new NetworkingPeer(photonMono, string.Empty, ConnectionProtocol.Udp);
         networkingPeer.LimitOfUnreliableCommands = 40;
 
         // Local player
@@ -850,26 +908,14 @@ public static class PhotonNetwork
         }
     }
 
-    [Obsolete("This method is obsolete; use ConnectUsingSettings with the gameVersion argument instead")]
-    public static void ConnectUsingSettings()
-    {
-        ConnectUsingSettings("1.0");
-    }
-
-    [Obsolete("This method is obsolete; use Connect with the gameVersion argument instead")]
-    public static void Connect(string serverAddress, int port, string uniqueGameID)
-    {
-        Connect(serverAddress, port, uniqueGameID, "1.0");
-    }
-
-
+#if !(UNITY_WINRT || UNITY_WP8 || UNITY_PS3 || UNITY_WIIU)
     /// <summary>
-    /// Connect to the PUN cloud server with the lowest ping.
-    /// Will save the result of pinging all cloud servers in PlayerPrefs. Calling this the first time can take +-2 seconds.
-    /// The ping result can be overridden via PhotonNetwork.OverrideBestCloudServer(..)
+    /// Connect to the Photon Cloud region with the lowest ping (on platforms that support Unity's Ping).
     /// </summary>
     /// <remarks>
-    /// This call can take up to 2 seconds if it is the first time you are using this, all Cloud servers will be pinged to check for the best region.
+    /// Will save the result of pinging all cloud servers in PlayerPrefs. Calling this the first time can take +-2 seconds.
+    /// The ping result can be overridden via PhotonNetwork.OverrideBestCloudServer(..)
+    /// This call can take up to 2 seconds if it is the first time you are using this, all cloud servers will be pinged to check for the best region.
     /// 
     /// The PUN Setup Wizard stores your appID in a settings file and applies a server address/port.
     /// This is used for Connect(string serverAddress, int port, string appID, string gameVersion).
@@ -922,36 +968,30 @@ public static class PhotonNetwork
     {
         PingCloudRegions.RefreshCloudServerRating();
     }
+#endif
 
     /// <summary>
-    /// Connect to the photon server by address, port, appID and game(client) version.
-    /// This method is used by ConnectUsingSettings which applies values from the settings file.
+    /// Connect to the Photon server by address, port, appID and game(client) version.
     /// </summary>
     /// <remarks>
+    /// This method is used by ConnectUsingSettings and ConnectToBestCloudServer.
+    /// 
     /// To connect to the Photon Cloud, a valid AppId must be in the settings file (shown in the Photon Cloud Dashboard).
     /// https://cloud.exitgames.com/dashboard
     /// 
     /// Connecting to the Photon Cloud might fail due to:
     /// - Network issues (calls: OnFailedToConnectToPhoton())
-    /// - Invalid region (calls: OnConnectionFail() with DisconnectCause.InvalidRegion)
     /// - Subscription CCU limit reached (calls: OnConnectionFail() with DisconnectCause.MaxCcuReached. also calls: OnPhotonMaxCccuReached())
     /// 
     /// More about the connection limitations:
     /// http://doc.exitgames.com/photon-cloud/
     /// </remarks>
-    /// <param name="serverAddress">The master server's address (either your own or Photon Cloud address).</param>
-    /// <param name="port">The master server's port to connect to.</param>
+    /// <param name="serverAddress">The server's address (either your own or Photon Cloud address).</param>
+    /// <param name="port">The server's port to connect to.</param>
     /// <param name="appID">Your application ID (Photon Cloud provides you with a GUID for your game).</param>
-    /// <param name="gameVersion">This client's version number. Users are separated from each other by gameversion (which allows you to make breaking changes).</param>
+    /// <param name="gameVersion">This client's version number. Users are separated by gameversion (which allows you to make breaking changes).</param>
     public static void Connect(string serverAddress, int port, string appID, string gameVersion)
     {
-        // the following check is not needed. bad port leads to exception which is handled and turned into a state callback
-        //if (port <= 0)
-        //{
-        //    Debug.LogError("Aborted Connect: invalid port: " + port);
-        //    return;
-        //}
-
         if (serverAddress.Length <= 2)
         {
             Debug.LogError("Aborted Connect: invalid serverAddress: " + serverAddress);
@@ -976,19 +1016,18 @@ public static class PhotonNetwork
             Debug.LogWarning("Forced enabling of isMessageQueueRunning because of a Connect()");
         }
 
-        serverAddress = serverAddress + ":" + port;
+        networkingPeer.mAppVersion = gameVersion + "_" + versionPUN;
+        networkingPeer.MasterServerAddress = serverAddress + ":" + port;
 
-        //Debug.Log("Connecting to: " + serverAddress + " app: " + uniqueGameID);
-        networkingPeer.mAppVersion = gameVersion + versionPUN;
-        networkingPeer.Connect(serverAddress, appID);
+        networkingPeer.Connect(networkingPeer.MasterServerAddress, appID);
     }
 
     /// <summary>
-    /// Makes this client disconnect from the photon server, a process that leaves any room and calls OnDisconnectedFromPhoton on completition.
+    /// Makes this client disconnect from the photon server, a process that leaves any room and calls OnDisconnectedFromPhoton on completion.
     /// </summary>
     /// <remarks>
-    /// When the client is connected, the server is being informed that this client disconnects. 
-    /// This speeds up leave/disconnect messages for players in the same room as you (otherwise the server would timeout this client's connection).
+    /// When you disconnect, the client will send a "disconnecting" message to the server. This speeds up leave/disconnect 
+    /// messages for players in the same room as you (otherwise the server would timeout this client's connection).
     /// When used in offlineMode, the state-change and event-call OnDisconnectedFromPhoton are immediate. 
     /// Offline mode is set to false as well.
     /// Once disconnected, the client can connect again. Use ConnectUsingSettings.
@@ -1135,28 +1174,44 @@ public static class PhotonNetwork
         }
     }
 
-    /// <summary>
-    /// Join room by room.Name.
-    /// This fails if the room is either full or no longer available (might close at the same time).
-    /// </summary>
-    /// <param name="roomName">The room instance to join (only listedRoom.Name is used).</param>
-    public static void JoinRoom(RoomInfo listedRoom)
+    /// <summary>Join room by roomname and on success calls OnJoinedRoom().</summary>
+    /// <remarks>
+    /// On success, the method OnJoinedRoom() is called on any script. You can implement it to react to joining a room.
+    /// 
+    /// JoinRoom fails if the room is either full or no longer available (it might become empty while you attempt to join).
+    /// Implement OnPhotonJoinRoomFailed() to get a callback in error case.
+    /// 
+    /// To join a room from the lobby's listing, use RoomInfo.name as roomName here.</remarks>
+    /// <see cref="PhotonNetworkingMessage.OnPhotonJoinRoomFailed"/>
+    /// <see cref="PhotonNetworkingMessage.OnJoinedRoom"/>
+    /// <param name="roomName">Unique name of the room to join.</param>
+    public static void JoinRoom(string roomName)
     {
-        if (listedRoom == null)
-        {
-            Debug.LogError("JoinRoom aborted: you passed a NULL room");
-            return;
-        }
-
-        JoinRoom(listedRoom.name);
+        JoinRoom(roomName, false);
     }
 
-    /// <summary>
-    /// Join room with given title.
-    /// This fails if the room is either full or no longer available (might close at the same time).
-    /// </summary>
-    /// <param name="roomName">Unique name of the room to create.</param>
-    public static void JoinRoom(string roomName)
+    /// <summary>Join room by roomName with an option to create it on the fly if not existing.</summary>
+    /// <remarks>
+    /// Join will try to enter a room by roomName. If this room is full or closed, this will fail.
+    /// If the room is not existing, JoinRoom will also fail by default.
+    /// 
+    /// You can set createIfNotExists to true to make the server instantly create the room if it doesn't exist.
+    /// This makes it easier to get into the same room when several players exchanged a roomName already: 
+    /// Any player can try to join or create the room in one step - it doesn't matter who's first.
+    /// 
+    /// OnJoinedRoom() gets called if the room existed and was joined, 
+    /// OnCreatedRoom() gets called if the room didn't exist and this client created it.
+    /// OnPhotonJoinRoomFailed() gets called if the room couldn't be joined or created.
+    /// Implement either in any script in the scene to react to joining/creating a room.
+    /// 
+    /// To join a room from the lobby's listing, use RoomInfo.name as roomName here.</remarks>
+    /// 
+    /// <see cref="PhotonNetworkingMessage.OnPhotonJoinRoomFailed"/>
+    /// <see cref="PhotonNetworkingMessage.OnJoinedRoom"/>
+    /// 
+    /// <param name="roomName">Unique name of the room to join (or create if createIfNotExists is true).</param>
+    /// <param name="createIfNotExists">If true, the server will attempt to create a room, making the success callback OnCreatedRoom().</param>
+    public static void JoinRoom(string roomName, bool createIfNotExists)
     {
         if (connectionStateDetailed == PeerState.Joining || connectionStateDetailed == PeerState.Joined || connectionStateDetailed == PeerState.ConnectedToGameserver)
         {
@@ -1166,7 +1221,7 @@ public static class PhotonNetwork
         {
             Debug.LogError("JoinRoom aborted: You are already in a room!");
         }
-        else if (roomName == String.Empty)
+        else if (roomName == string.Empty)
         {
             Debug.LogError("JoinRoom aborted: You must specifiy a room name!");
         }
@@ -1179,7 +1234,7 @@ public static class PhotonNetwork
             }
             else
             {
-                networkingPeer.OpJoin(roomName);
+                networkingPeer.OpJoin(roomName, createIfNotExists);
             }
         }
     }
@@ -1363,7 +1418,7 @@ public static class PhotonNetwork
         }
     }
 
-    // use 0 for scene-view-ids
+    // use 0 for scene-targetPhotonView-ids
     // returns viewID (combined owner and sub id)
     private static int AllocateViewID(int ownerId)
     {
@@ -1390,7 +1445,7 @@ public static class PhotonNetwork
             }
 
             // this is the error case: we didn't find any (!) free subId for this user
-            throw new Exception(String.Format("AllocateViewID() failed. Room (user {0}) is out of subIds, as all room viewIDs are used.", ownerId));
+            throw new Exception(string.Format("AllocateViewID() failed. Room (user {0}) is out of subIds, as all room viewIDs are used.", ownerId));
         }
         else
         {
@@ -1414,7 +1469,7 @@ public static class PhotonNetwork
                 }
             }
 
-            throw new Exception(String.Format("AllocateViewID() failed. User {0} is out of subIds, as all viewIDs are used.", ownerId));
+            throw new Exception(string.Format("AllocateViewID() failed. User {0} is out of subIds, as all viewIDs are used.", ownerId));
         }
     }
 
@@ -1440,7 +1495,7 @@ public static class PhotonNetwork
     /// <returns>The new instance of a GameObject with initialized PhotonView.</returns>
     public static GameObject Instantiate(string prefabName, Vector3 position, Quaternion rotation, int group)
     {
-        return Instantiate(prefabName, position, rotation, @group, null);
+        return Instantiate(prefabName, position, rotation, group, null);
     }
 
     /// <summary>
@@ -1492,7 +1547,7 @@ public static class PhotonNetwork
         }
 
         // Send to others, create info
-        Hashtable instantiateEvent = networkingPeer.SendInstantiate(prefabName, position, rotation, @group, viewIDs, data, false);
+        Hashtable instantiateEvent = networkingPeer.SendInstantiate(prefabName, position, rotation, group, viewIDs, data, false);
 
         // Instantiate the GO locally (but the same way as if it was done via event). This will also cache the instantiationId
         return networkingPeer.DoInstantiate(instantiateEvent, networkingPeer.mLocalActor, prefabGo);
@@ -1557,7 +1612,7 @@ public static class PhotonNetwork
         }
 
         // Send to others, create info
-        Hashtable instantiateEvent = networkingPeer.SendInstantiate(prefabName, position, rotation, @group, viewIDs, data, true);
+        Hashtable instantiateEvent = networkingPeer.SendInstantiate(prefabName, position, rotation, group, viewIDs, data, true);
 
         // Instantiate the GO locally (but the same way as if it was done via event). This will also cache the instantiationId
         return networkingPeer.DoInstantiate(instantiateEvent, networkingPeer.mLocalActor, prefabGo);
@@ -1628,93 +1683,136 @@ public static class PhotonNetwork
         {
             int[] rec = new int[1];
             rec[0] = kickPlayer.ID;
-            networkingPeer.OpRaiseEvent(PhotonNetworkMessages.CloseConnection, null, true, 0, rec);
+            networkingPeer.OpRaiseEvent(PunEvent.CloseConnection, null, true, 0, rec);
         }
     }
 
     /// <summary>
-    /// Destroy supplied PhotonView. This will remove all Buffered RPCs and destroy the GameObject this view is attached to (plus all childs, if any)
-    /// This has the same effect as calling Destroy by passing a GameObject
+    /// Network-Destroy the GameObject associated with the PhotonView, unless the PhotonView is static or not under this client's control.
     /// </summary>
-    /// <param name="view"></param>
-    public static void Destroy(PhotonView view)
+    /// <remarks>
+    /// Destroying a networked GameObject includes:
+    /// - Removal of the Instantiate call from the server's room buffer.
+    /// - Removing RPCs buffered for PhotonViews that got created indirectly with the PhotonNetwork.Instantiate call.
+    /// - Sending a message to other clients to remove the GameObject also (affected by network lag).
+    /// 
+    /// Destroying networked objects works only if they got created with PhotonNetwork.Instantiate().
+    /// Objects loaded with a scene are ignored, no matter if they have PhotonView components.
+    /// 
+    /// The GameObject must be under this client's control:
+    /// - Instantiated and owned by this client.
+    /// - Instantiated objects of players who left the room are controlles by the Master Client.
+    /// - Scene-owned game objects are controlled by the Master Client.
+    /// </remarks>
+    /// <returns>Nothing. Check error debug log for any issues.</returns>
+    public static void Destroy(PhotonView targetView)
     {
-        if (view != null && view.isMine)
+        if (targetView != null)
         {
-            if (view.instantiationId > 0)
-            {
-                networkingPeer.DestroyPhotonView(view, false);
-            }
-            else
-            {
-                Debug.LogError("Use PhotonNetwork.Destroy(view) only on PhotonViews created with PhotonNetwork.Instantiate(). GameObject not destroyed: " + view.gameObject);
-            }
+            networkingPeer.RemoveInstantiatedGO(targetView.gameObject, false);
         }
         else
         {
-            Debug.LogError("Destroy: Could not destroy view ID [" + view + "]. Does not exist, or is not ours!");
+            Debug.LogError("Destroy(targetPhotonView) failed, cause targetPhotonView is null.");
         }
     }
 
     /// <summary>
-    /// Destroys given GameObject. This GameObject must've been instantiated using PhotonNetwork.Instantiate and must have a PhotonView at it's root.
-    /// This has the same effect as calling Destroy by passing an attached PhotonView from this GameObject
+    /// Network-Destroy the GameObject, unless it is static or not under this client's control.
     /// </summary>
-    /// <param name="go"></param>
-    public static void Destroy(GameObject go)
+    /// <remarks>
+    /// Destroying a networked GameObject includes:
+    /// - Removal of the Instantiate call from the server's room buffer.
+    /// - Removing RPCs buffered for PhotonViews that got created indirectly with the PhotonNetwork.Instantiate call.
+    /// - Sending a message to other clients to remove the GameObject also (affected by network lag).
+    /// 
+    /// Destroying networked objects works only if they got created with PhotonNetwork.Instantiate().
+    /// Objects loaded with a scene are ignored, no matter if they have PhotonView components.
+    /// 
+    /// The GameObject must be under this client's control:
+    /// - Instantiated and owned by this client.
+    /// - Instantiated objects of players who left the room are controlles by the Master Client.
+    /// - Scene-owned game objects are controlled by the Master Client.
+    /// </remarks>
+    /// <returns>Nothing. Check error debug log for any issues.</returns>
+    public static void Destroy(GameObject targetGo)
     {
-        PhotonView view = go.GetComponent<PhotonView>();
-        if (view == null)
-        {
-            Debug.LogError("Cannot call Destroy(GameObject go); on the gameobject \"" + go.name + "\" as it has no PhotonView attached.");
-        }
-        else if (view.isMine)
-        {
-            int ID = networkingPeer.GetInstantiatedObjectsId(go);
-            if (ID <= 0)
-            {
-                Debug.LogError("Use PhotonNetwork.Destroy() only on GameObjects created with PhotonNetwork.Instantiate(). GameObject not destroyed: " + go);
-            }
-            else
-            {
-                networkingPeer.RemoveInstantiatedGO(go, false); //Success
-            }
-        }
-        else
-        {
-            Debug.LogError("Cannot call Destroy(GameObject go); on the gameobject \"" + go.name + "\" as we don't control it (Owner: " + view.owner + ").");
-        }
+        networkingPeer.RemoveInstantiatedGO(targetGo, false);
     }
 
+    /// <summary>
+    /// Network-Destroy all GameObjects, PhotonViews and their RPCs of targetPlayer. Can only be called on local player (for "self") or Master Client (for anyone).
+    /// </summary>
+    /// <remarks>
+    /// Destroying a networked GameObject includes:
+    /// - Removal of the Instantiate call from the server's room buffer.
+    /// - Removing RPCs buffered for PhotonViews that got created indirectly with the PhotonNetwork.Instantiate call.
+    /// - Sending a message to other clients to remove the GameObject also (affected by network lag).
+    /// 
+    /// Destroying networked objects works only if they got created with PhotonNetwork.Instantiate().
+    /// Objects loaded with a scene are ignored, no matter if they have PhotonView components.
+    /// </remarks>
+    /// <returns>Nothing. Check error debug log for any issues.</returns>
+    public static void DestroyPlayerObjects(PhotonPlayer targetPlayer)
+    {
+        if (player == null)
+        {
+            Debug.LogError("DestroyPlayerObjects() failed, cause parameter 'targetPlayer' was null.");
+        }
+
+        DestroyPlayerObjects(targetPlayer.ID);
+    }
 
     /// <summary>
-    /// Destroy all GameObjects/PhotonViews of this player. can only be called on the local player. The only exception is the master client which call call this for all players.
+    /// Network-Destroy all GameObjects, PhotonViews and their RPCs of this player (by ID). Can only be called on local player (for "self") or Master Client (for anyone).
     /// </summary>
-    /// <param name="player"></param>
-    public static void DestroyPlayerObjects(PhotonPlayer destroyPlayer)
+    /// <remarks>
+    /// Destroying a networked GameObject includes:
+    /// - Removal of the Instantiate call from the server's room buffer.
+    /// - Removing RPCs buffered for PhotonViews that got created indirectly with the PhotonNetwork.Instantiate call.
+    /// - Sending a message to other clients to remove the GameObject also (affected by network lag).
+    /// 
+    /// Destroying networked objects works only if they got created with PhotonNetwork.Instantiate().
+    /// Objects loaded with a scene are ignored, no matter if they have PhotonView components.
+    /// </remarks>
+    /// <returns>Nothing. Check error debug log for any issues.</returns>
+    public static void DestroyPlayerObjects(int targetPlayerId)
     {
         if (!VerifyCanUseNetwork())
         {
             return;
         }
-        if (player.isMasterClient || destroyPlayer == player)
+        if (player.isMasterClient || targetPlayerId == player.ID)
         {
-            networkingPeer.DestroyPlayerObjects(destroyPlayer, false);
+            networkingPeer.DestroyPlayerObjects(targetPlayerId, false);
         }
         else
         {
-            Debug.LogError("Couldn't destroy objects for player \"" + destroyPlayer + "\" as we are not the masterclient.");
+            Debug.LogError("DestroyPlayerObjects() failed, cause players can only destroy their own GameObjects. A Master Client can destroy anyone's. This is master: " + PhotonNetwork.isMasterClient);
         }
     }
 
     /// <summary>
-    /// MasterClient method only: Destroy ALL instantiated GameObjects
+    /// Network-Destroy all GameObjects, PhotonViews and their RPCs in the room. Removes anything buffered from the server. Can only be called by Master Client (for anyone).
     /// </summary>
-    public static void RemoveAllInstantiatedObjects()
+    /// <remarks>
+    /// Can only be called by Master Client (for anyone).
+    /// Unlike the Destroy methods, this will remove anything from the server's room buffer. If your game
+    /// buffers anything beyond Instantiate and RPC calls, that will be cleaned as well from server.
+    /// 
+    /// Destroying all includes:
+    /// - Remove anything from the server's room buffer (Instantiate, RPCs, anything buffered).
+    /// - Sending a message to other clients to destroy everything locally, too (affected by network lag).
+    /// 
+    /// Destroying networked objects works only if they got created with PhotonNetwork.Instantiate().
+    /// Objects loaded with a scene are ignored, no matter if they have PhotonView components.
+    /// </remarks>
+    /// <returns>Nothing. Check error debug log for any issues.</returns>
+    public static void DestroyAll()
     {
         if (isMasterClient)
         {
-            networkingPeer.RemoveAllInstantiatedObjects();
+            networkingPeer.DestroyAll(false);
         }
         else
         {
@@ -1723,34 +1821,74 @@ public static class PhotonNetwork
     }
 
     /// <summary>
-    /// Destroy ALL PhotonNetwork.Instantiated GameObjects by given player. 
-    /// Can only be called on the local player or MasterClient. The MasterClient can call this for all players.
+    /// Remove all buffered RPCs from server that were sent by targetPlayer. Can only be called on local player (for "self") or Master Client (for anyone).
     /// </summary>
-    /// <param name="player"></param>
-    public static void RemoveAllInstantiatedObjects(PhotonPlayer targetPlayer)
+    /// <remarks>
+    /// This method requires either:
+    /// - This is the targetPlayer's client.
+    /// - This client is the Master Client (can remove any PhotonPlayer's RPCs).
+    /// 
+    /// If the targetPlayer calls RPCs at the same time that this is called, 
+    /// network lag will determine if those get buffered or cleared like the rest.
+    /// </remarks>
+    /// <param name="targetPlayer">This player's buffered RPCs get removed from server buffer.</param>
+    public static void RemoveRPCs(PhotonPlayer targetPlayer)
     {
         if (!VerifyCanUseNetwork())
         {
             return;
         }
 
-        if (player.isMasterClient || targetPlayer == player)
+        if (!targetPlayer.isLocal && !isMasterClient)
         {
-            networkingPeer.RemoveAllInstantiatedObjectsByPlayer(targetPlayer, false);
+            Debug.LogError("Error; Only the MasterClient can call RemoveRPCs for other players.");
+            return;
         }
-        else
+
+        networkingPeer.OpCleanRpcBuffer(targetPlayer.ID);
+    }
+
+    /// <summary>
+    /// Remove all buffered RPCs from server that were sent via targetPhotonView. The Master Client and the owner of the targetPhotonView may call this.
+    /// </summary>
+    /// <remarks>
+    /// This method requires either:
+    /// - The targetPhotonView is owned by this client (Instantiated by it).
+    /// - This client is the Master Client (can remove any PhotonView's RPCs).
+    /// </remarks>
+    /// <param name="targetPhotonView">RPCs buffered for this PhotonView get removed from server buffer.</param>
+    public static void RemoveRPCs(PhotonView targetPhotonView)
+    {
+        if (!VerifyCanUseNetwork())
         {
-            Debug.LogError("Couldn't RemoveAllInstantiatedObjects for player \"" + targetPlayer + "\" as only the master client or the player itself is allowed to call this.");
+            return;
         }
+
+        networkingPeer.CleanRpcBufferIfMine(targetPhotonView);
+    }
+
+    /// <summary>
+    /// Remove all buffered RPCs from server that were sent in the targetGroup, if this is the Master Client or if this controls the individual PhotonView.
+    /// </summary>
+    /// <remarks>
+    /// This method requires either:
+    /// - This client is the Master Client (can remove any RPCs per group).
+    /// - Any other client: each PhotonView is checked if it is under this client's control. Only those RPCs are removed.
+    /// </remarks>
+    /// <param name="targetGroup">Interest group that gets all RPCs removed.</param>
+    public static void RemoveRPCsInGroup(int targetGroup)
+    {
+        if (!VerifyCanUseNetwork())
+        {
+            return;
+        }
+        
+        networkingPeer.RemoveRPCsInGroup(targetGroup);
     }
 
     /// <summary>
     /// Internal to send an RPC on given PhotonView. Do not call this directly but use: PhotonView.RPC!
     /// </summary>
-    /// <param name="view"></param>
-    /// <param name="methodName"></param>
-    /// <param name="target"></param>
-    /// <param name="parameters"></param>
     internal static void RPC(PhotonView view, string methodName, PhotonTargets target, params object[] parameters)
     {
         if (!VerifyCanUseNetwork())
@@ -1777,10 +1915,6 @@ public static class PhotonNetwork
     /// <summary>
     /// Internal to send an RPC on given PhotonView. Do not call this directly but use: PhotonView.RPC!
     /// </summary>
-    /// <param name="view"></param>
-    /// <param name="methodName"></param>
-    /// <param name="targetPlayer"></param>
-    /// <param name="parameters"></param>
     internal static void RPC(PhotonView view, string methodName, PhotonPlayer targetPlayer, params object[] parameters)
     {
         if (!VerifyCanUseNetwork())
@@ -1810,118 +1944,24 @@ public static class PhotonNetwork
     }
 
     /// <summary>
-    /// Remove ALL buffered RPCs of the local player
-    /// </summary>
-    public static void RemoveRPCs()
-    {
-        if (!VerifyCanUseNetwork())
-        {
-            return;
-        }
-
-        RemoveRPCs(player);
-    }
-
-    /// <summary>
-    /// Remove ALL buffered RPCs of a player
-    /// </summary>
-    public static void RemoveRPCs(PhotonPlayer targetPlayer)
-    {
-        if (!VerifyCanUseNetwork())
-        {
-            return;
-        }
-
-        if (!targetPlayer.isLocal && !isMasterClient)
-        {
-            Debug.LogError("Error; Only the MasterClient can call RemoveRPCs for other players.");
-            return;
-        }
-
-        networkingPeer.RemoveRPCs(targetPlayer.ID);
-    }
-
-    /// <summary>
-    /// Remove ALL buffered messages of the local player (RPC's and Instantiation calls)
-    /// Note that this only removed the buffered messages on the server, you will still need to remove the Instantiated GameObjects yourself.
-    /// </summary>
-    public static void RemoveAllBufferedMessages()
-    {
-        if (!VerifyCanUseNetwork())
-        {
-            return;
-        }
-
-        RemoveAllBufferedMessages(player);
-    }
-
-    /// <summary>
-    /// Remove ALL buffered messages of a player (RPC's and Instantiation calls)
-    /// Note that this only removed the buffered messages on the server, you will still need to remove the Instantiated GameObjects yourself.
-    /// </summary>
-    public static void RemoveAllBufferedMessages(PhotonPlayer targetPlayer)
-    {
-        if (!VerifyCanUseNetwork())
-        {
-            return;
-        }
-
-        if (!targetPlayer.isLocal && !isMasterClient)
-        {
-            Debug.LogError("Error; Only the MasterClient can call RemoveAllBufferedMessages for other players.");
-            return;
-        }
-
-        networkingPeer.RemoveCompleteCacheOfPlayer(targetPlayer.ID);
-    }
-
-    /// <summary>
-    /// Remove all buffered RPCs on given PhotonView (if they are owned by this player).
-    /// </summary>
-    /// <param name="view"></param>
-    public static void RemoveRPCs(PhotonView view)
-    {
-        if (!VerifyCanUseNetwork())
-        {
-            return;
-        }
-
-        networkingPeer.RemoveRPCs(view);
-    }
-
-    /// <summary>
-    /// Remove all buffered RPCs with given group
-    /// </summary>
-    /// <param name="group"></param>
-    public static void RemoveRPCsInGroup(int group)
-    {
-        if (!VerifyCanUseNetwork())
-        {
-            return;
-        }
-
-        networkingPeer.RemoveRPCsInGroup(@group);
-    }
-
-    /// <summary>
     /// Enable/disable receiving on given group (applied to PhotonViews)
     /// </summary>
-    /// <param name="group"></param>
-    /// <param name="enabled"></param>
+    /// <param name="group">The interest group to affect.</param>
+    /// <param name="enabled">Sets if receiving from group to enabled (or not).</param>
     public static void SetReceivingEnabled(int group, bool enabled)
     {
         if (!VerifyCanUseNetwork())
         {
             return;
         }
-        networkingPeer.SetReceivingEnabled(@group, enabled);
+        networkingPeer.SetReceivingEnabled(group, enabled);
     }
 
     /// <summary>
     /// Enable/disable sending on given group (applied to PhotonViews)
     /// </summary>
-    /// <param name="group"></param>
-    /// <param name="enabled"></param>
+    /// <param name="group">The interest group to affect.</param>
+    /// <param name="enabled">Sets if sending to group is enabled (or not).</param>
     public static void SetSendingEnabled(int group, bool enabled)
     {
         if (!VerifyCanUseNetwork())
@@ -1929,7 +1969,7 @@ public static class PhotonNetwork
             return;
         }
 
-        networkingPeer.SetSendingEnabled(@group, enabled);
+        networkingPeer.SetSendingEnabled(group, enabled);
     }
 
     /// <summary>

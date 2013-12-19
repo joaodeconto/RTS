@@ -5,6 +5,8 @@ using System.Collections;
 
 using Visiorama;
 
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class NewGame : MonoBehaviour
 {
 	public UILabel messageActiveGame;

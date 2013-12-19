@@ -95,7 +95,7 @@ public class PhotonViewInspector : Editor
         {
             if (mp.observed == null)
             {
-                mp.synchronization = ViewSynchronization.Unreliable;    // if we didn't observe anything before, we could observe unreliably now
+                mp.synchronization = ViewSynchronization.UnreliableOnChange;    // if we didn't observe anything yet. use unreliable on change as default
             }
             if (componenValue == null)
             {

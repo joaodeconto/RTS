@@ -5,6 +5,8 @@ using System.Linq;
 
 using Visiorama.Audio;
 
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class NetworkGUI : Photon.MonoBehaviour {
 
 	public string playerName = "";

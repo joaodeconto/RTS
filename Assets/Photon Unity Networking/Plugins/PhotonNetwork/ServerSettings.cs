@@ -1,5 +1,5 @@
+
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 
@@ -14,19 +14,19 @@ public enum CloudServerRegion { EU, US, Asia, Japan };
 [System.Serializable]
 public class ServerSettings : ScriptableObject
 {
-    public static string DefaultCloudServerUrl = "app-eu.exitgamescloud.com";
+    public const string DefaultCloudServerUrl = "app-eu.exitgamescloud.com";
     
-    // per region name and server-prefix
-    // must match order in CloudServerRegion enum!
-    public static readonly string[] CloudServerRegionPrefixes = new string[] {"app-eu", "app-us", "app-asia", "app-jp"};
+    public const string DefaultServerAddress = "127.0.0.1";
+    public const int DefaultMasterPort = 5055;  // default port for master server
+    public const string DefaultAppID = "Master";
 
-    public static string DefaultServerAddress = "127.0.0.1";
-    public static int DefaultMasterPort = 5055;  // default port for master server
-    public static string DefaultAppID = "Master";
+    // per region name and server-prefix. must match order in CloudServerRegion enum! (see above)
+    public static readonly string[] CloudServerRegionPrefixes = new string[] {"app-eu", "app-us", "app-asia", "app-jp"};
 
     public enum HostingOption { NotSet, PhotonCloud, SelfHosted, OfflineMode }
 
     public HostingOption HostType = HostingOption.NotSet;
+
     public string ServerAddress = DefaultServerAddress;
     public int ServerPort = 5055;
     public string AppID = "";

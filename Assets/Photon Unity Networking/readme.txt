@@ -4,8 +4,13 @@ Photon Unity Networking (PUN)
 	Also included: A setup wizard, demo scenes, documentation and editor extensions.
 
 
-Requirements
-	Unity iOS PRO and Unity Android PRO for exports to these platforms
+PUN & PUN+
+	PUN is the free package of Photon Unity Networking. Export to iOS or Android requires the Unity iOS PRO and Unity Android PRO licenses.
+	PUN+ contains special native plugins that allow export to mobiles from Unity Free.
+
+
+Android and iOS Exports
+	See "PUN & PUN+"
 
 
 Help and Documentation
@@ -25,7 +30,7 @@ Integration
 
 Clean PUN Import (no demos)
 	To import only the scripts of Photon Unity Networking into an existing project: 
-	skip anything except the folders "Plugins" and "Editor".
+	Skip anything except the folders "Plugins" and "Editor".
 
 
 Server
@@ -68,4 +73,5 @@ Important Files
 		Photon Unity Networking\Resources\PhotonServerSettings.asset
 
 	Demos
-		All demos are in separate folders. Each has a Demo<name>-Scene.
+		All demos are in separate folders in Photon Unity Networking\Demos\. Delete this folder in your projects.
+		Each has a Demo<name>-Scene.

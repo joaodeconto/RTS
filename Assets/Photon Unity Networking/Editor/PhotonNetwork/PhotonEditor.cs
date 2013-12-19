@@ -19,87 +19,88 @@ using UnityEngine;
 public class Text
 {
     public string WindowTitle = "PUN Wizard";
-	public string SetupWizardWarningTitle = "Warning";
-	public string SetupWizardWarningMessage = "You have not yet run the Photon setup wizard! Your game won't be able to connect. See Windows -> Photon Unity Networking.";
-	public string MainMenuButton = "Main Menu";
-	public string ConnectButton = "Connect to Photon Cloud";
-	public string UsePhotonLabel = "Using the Photon Cloud is free for development. If you don't have an account yet, enter your email and register.";
-	public string SendButton = "Send";
-	public string EmailLabel = "Email:";
-	public string SignedUpAlreadyLabel = "I am already signed up. Let me enter my AppId.";
-	public string SetupButton = "Setup";
-	public string RegisterByWebsiteLabel = "I want to register by a website.";
-	public string AccountWebsiteButton = "Open account website";
-	public string SelfHostLabel = "I want to host my own server. Let me set it up.";
-	public string SelfHostSettingsButton = "Open self-hosting settings";
-	public string MobileExportNoteLabel = "Note: Export to mobile will require iOS Pro / Android Pro.";
-	public string EmailInUseLabel = "The provided e-mail-address has already been registered.";
-	public string KnownAppIdLabel = "Ah, I know my Application ID. Get me to setup.";
-	public string SeeMyAccountLabel = "Mh, see my account page";
-	public string SelfHostSettingButton = "Open self-hosting settings";
-	public string OopsLabel = "Oops!";
-	public string SeeMyAccountPage = "";
-	public string CancelButton = "Cancel";
-	public string PhotonCloudConnect = "Connect to Photon Cloud";
-	public string SetupOwnHostLabel = "Setup own Photon Host";
-	public string PUNWizardLabel = "Photon Unity Networking (PUN) Wizard";
-	public string SettingsButton = "Settings";
-	public string SetupServerCloudLabel = "Setup wizard for setting up your own server or the cloud.";
-	public string WarningPhotonDisconnect = "";
-	public string ConverterLabel = "Converter";
-	public string StartButton = "Start";
-	public string UNtoPUNLabel = "Converts pure Unity Networking to Photon Unity Networking.";
-	public string SettingsFileLabel = "Settings File";
-	public string LocateSettingsButton = "Locate settings asset";
-	public string SettingsHighlightLabel = "Highlights the used photon settings file in the project.";
-	public string DocumentationLabel = "Documentation";
-	public string OpenPDFText = "Open PDF";
-	public string OpenPDFTooltip = "Opens the local documentation pdf.";
-	public string OpenDevNetText = "Open DevNet";
-	public string OpenDevNetTooltip = "Online documentation for Photon.";
-	public string OpenCloudDashboardText = "Open Cloud Dashboard";
-	public string OpenCloudDashboardTooltip = "Review Cloud App information and statistics.";
-	public string OpenForumText = "Open Forum";
-	public string OpenForumTooltip = "Online support for Photon.";
-	public string QuestionsLabel = "Questions? Need help or want to give us feedback? You are most welcome!";
-	public string SeeForumButton = "See the Photon Forum";
-	public string OpenDashboardButton = "Open Dashboard (web)";
-	public string AppIdLabel = "Your AppId";
-	public string AppIdInfoLabel = "The AppId a Guid that identifies your game in the Photon Cloud. Find it on your dashboard page.";
-	public string CloudRegionLabel = "Cloud Region";
-	public string RegionalServersInfo = "Photon Cloud has regional servers. Picking one near your customers improves ping times. You could use more than one but this setup does not support it.";
-	public string SaveButton = "Save";
-	public string SettingsSavedTitle = "Success";
-	public string SettingsSavedMessage = "Saved your settings.";
-	public string OkButton = "Ok";
-	public string SeeMyAccountPageButton = "Mh, see my account page";
-	public string SetupOwnServerLabel = "Running my app in the cloud was fun but...\nLet me setup my own Photon server.";
-	public string OwnHostCloudCompareLabel = "I am not quite sure how 'my own host' compares to 'cloud'.";
-	public string ComparisonPageButton = "See comparison page";
-	public string YourPhotonServerLabel = "Your Photon Server";
-	public string AddressIPLabel = "Address/ip:";
-	public string PortLabel = "Port:";
-	public string LicensesLabel = "Licenses";
-	public string LicenseDownloadText = "Free License Download";
-	public string LicenseDownloadTooltip = "Get your free license for up to 100 concurrent players.";
-	public string TryPhotonAppLabel = "Running my own server is too much hassle..\nI want to give Photon's free app a try.";
-	public string GetCloudAppButton = "Get the free cloud app";
-	public string ConnectionTitle = "Connecting";
-	public string ConnectionInfo = "Connecting to the account service..";
-	public string ErrorTextTitle = "Error";
-	public string ServerSettingsMissingLabel = "Photon Unity Networking (PUN) is missing the 'ServerSettings' script. Re-import PUN to fix this.";
-	public string MoreThanOneLabel = "There are more than one ";
-	public string FilesInResourceFolderLabel = " files in 'Resources' folder. Check your project to keep only one. Using: ";
-	public string IncorrectRPCListTitle = "Warning: RPC-list becoming incompatible!";
-	public string IncorrectRPCListLabel = "Your project's RPC-list is full, so we can't add some RPCs just compiled.\n\nBy removing outdated RPCs, the list will be long enough but incompatible with older client builds!\n\nMake sure you change the game version where you use PhotonNetwork.ConnectUsingSettings().";
-	public string RemoveOutdatedRPCsLabel = "Remove outdated RPCs";
-	public string FullRPCListTitle = "Warning: RPC-list is full!";
-	public string FullRPCListLabel = "Your project's RPC-list is too long for PUN.\n\nYou can change PUN's source to use short-typed RPC index. Look for comments 'LIMITS RPC COUNT'\n\nAlternatively, remove some RPC methods (use more parameters per RPC maybe).\n\nAfter a RPC-list refresh, make sure you change the game version where you use PhotonNetwork.ConnectUsingSettings().";
-	public string SkipRPCListUpdateLabel = "Skip RPC-list update";
-	public string PUNNameReplaceTitle = "Warning: RPC-list Compatibility";
-	public string PUNNameReplaceLabel = "PUN replaces RPC names with numbers by using the RPC-list. All clients must use the same list for that.\n\nClearing it most likely makes your client incompatible with previous versions! Change your game version or make sure the RPC-list matches other clients.";
-	public string RPCListCleared = "Clear RPC-list";
-	public string ServerSettingsCleanedWarning = "Cleared the PhotonServerSettings.RpcList! This makes new builds incompatible with older ones. Better change game version in PhotonNetwork.ConnectUsingSettings().";
+    public string SetupWizardWarningTitle = "Warning";
+    public string SetupWizardWarningMessage = "You have not yet run the Photon setup wizard! Your game won't be able to connect. See Windows -> Photon Unity Networking.";
+    public string MainMenuButton = "Main Menu";
+    public string ConnectButton = "Connect to Photon Cloud";
+    public string UsePhotonLabel = "Using the Photon Cloud is free for development. If you don't have an account yet, enter your email and register.";
+    public string SendButton = "Send";
+    public string EmailLabel = "Email:";
+    public string SignedUpAlreadyLabel = "I am already signed up. Let me enter my AppId.";
+    public string SetupButton = "Setup";
+    public string RegisterByWebsiteLabel = "I want to register by a website.";
+    public string AccountWebsiteButton = "Open account website";
+    public string SelfHostLabel = "I want to host my own server. Let me set it up.";
+    public string SelfHostSettingsButton = "Open self-hosting settings";
+    public string MobileExportNoteLabel = "Note: Export to mobile will require iOS Pro / Android Pro.";
+    public string MobilePunPlusExportNoteLabel = "PUN+ will use native sockets in iOS/Android exports.";
+    public string EmailInUseLabel = "The provided e-mail-address has already been registered.";
+    public string KnownAppIdLabel = "Ah, I know my Application ID. Get me to setup.";
+    public string SeeMyAccountLabel = "Mh, see my account page";
+    public string SelfHostSettingButton = "Open self-hosting settings";
+    public string OopsLabel = "Oops!";
+    public string SeeMyAccountPage = "";
+    public string CancelButton = "Cancel";
+    public string PhotonCloudConnect = "Connect to Photon Cloud";
+    public string SetupOwnHostLabel = "Setup own Photon Host";
+    public string PUNWizardLabel = "Photon Unity Networking (PUN) Wizard";
+    public string SettingsButton = "Settings";
+    public string SetupServerCloudLabel = "Setup wizard for setting up your own server or the cloud.";
+    public string WarningPhotonDisconnect = "";
+    public string ConverterLabel = "Converter";
+    public string StartButton = "Start";
+    public string UNtoPUNLabel = "Converts pure Unity Networking to Photon Unity Networking.";
+    public string SettingsFileLabel = "Settings File";
+    public string LocateSettingsButton = "Locate settings asset";
+    public string SettingsHighlightLabel = "Highlights the used photon settings file in the project.";
+    public string DocumentationLabel = "Documentation";
+    public string OpenPDFText = "Open PDF";
+    public string OpenPDFTooltip = "Opens the local documentation pdf.";
+    public string OpenDevNetText = "Open DevNet";
+    public string OpenDevNetTooltip = "Online documentation for Photon.";
+    public string OpenCloudDashboardText = "Open Cloud Dashboard";
+    public string OpenCloudDashboardTooltip = "Review Cloud App information and statistics.";
+    public string OpenForumText = "Open Forum";
+    public string OpenForumTooltip = "Online support for Photon.";
+    public string QuestionsLabel = "Questions? Need help or want to give us feedback? You are most welcome!";
+    public string SeeForumButton = "See the Photon Forum";
+    public string OpenDashboardButton = "Open Dashboard (web)";
+    public string AppIdLabel = "Your AppId";
+    public string AppIdInfoLabel = "The AppId a Guid that identifies your game in the Photon Cloud. Find it on your dashboard page.";
+    public string CloudRegionLabel = "Cloud Region";
+    public string RegionalServersInfo = "Photon Cloud has regional servers. Picking one near your customers improves ping times. You could use more than one but this setup does not support it.";
+    public string SaveButton = "Save";
+    public string SettingsSavedTitle = "Success";
+    public string SettingsSavedMessage = "Saved your settings.";
+    public string OkButton = "Ok";
+    public string SeeMyAccountPageButton = "Mh, see my account page";
+    public string SetupOwnServerLabel = "Running my app in the cloud was fun but...\nLet me setup my own Photon server.";
+    public string OwnHostCloudCompareLabel = "I am not quite sure how 'my own host' compares to 'cloud'.";
+    public string ComparisonPageButton = "See comparison page";
+    public string YourPhotonServerLabel = "Your Photon Server";
+    public string AddressIPLabel = "Address/ip:";
+    public string PortLabel = "Port:";
+    public string LicensesLabel = "Licenses";
+    public string LicenseDownloadText = "Free License Download";
+    public string LicenseDownloadTooltip = "Get your free license for up to 100 concurrent players.";
+    public string TryPhotonAppLabel = "Running my own server is too much hassle..\nI want to give Photon's free app a try.";
+    public string GetCloudAppButton = "Get the free cloud app";
+    public string ConnectionTitle = "Connecting";
+    public string ConnectionInfo = "Connecting to the account service..";
+    public string ErrorTextTitle = "Error";
+    public string ServerSettingsMissingLabel = "Photon Unity Networking (PUN) is missing the 'ServerSettings' script. Re-import PUN to fix this.";
+    public string MoreThanOneLabel = "There are more than one ";
+    public string FilesInResourceFolderLabel = " files in 'Resources' folder. Check your project to keep only one. Using: ";
+    public string IncorrectRPCListTitle = "Warning: RPC-list becoming incompatible!";
+    public string IncorrectRPCListLabel = "Your project's RPC-list is full, so we can't add some RPCs just compiled.\n\nBy removing outdated RPCs, the list will be long enough but incompatible with older client builds!\n\nMake sure you change the game version where you use PhotonNetwork.ConnectUsingSettings().";
+    public string RemoveOutdatedRPCsLabel = "Remove outdated RPCs";
+    public string FullRPCListTitle = "Warning: RPC-list is full!";
+    public string FullRPCListLabel = "Your project's RPC-list is too long for PUN.\n\nYou can change PUN's source to use short-typed RPC index. Look for comments 'LIMITS RPC COUNT'\n\nAlternatively, remove some RPC methods (use more parameters per RPC maybe).\n\nAfter a RPC-list refresh, make sure you change the game version where you use PhotonNetwork.ConnectUsingSettings().";
+    public string SkipRPCListUpdateLabel = "Skip RPC-list update";
+    public string PUNNameReplaceTitle = "Warning: RPC-list Compatibility";
+    public string PUNNameReplaceLabel = "PUN replaces RPC names with numbers by using the RPC-list. All clients must use the same list for that.\n\nClearing it most likely makes your client incompatible with previous versions! Change your game version or make sure the RPC-list matches other clients.";
+    public string RPCListCleared = "Clear RPC-list";
+    public string ServerSettingsCleanedWarning = "Cleared the PhotonServerSettings.RpcList! This makes new builds incompatible with older ones. Better change game version in PhotonNetwork.ConnectUsingSettings().";
 }
 
 
@@ -133,20 +134,20 @@ public class PhotonEditor : EditorWindow
 
     private enum GUIState
     {
-        Uninitialized, 
+        Uninitialized,
 
-        Main, 
+        Main,
 
         Setup
     }
 
     private enum PhotonSetupStates
     {
-        RegisterForPhotonCloud, 
+        RegisterForPhotonCloud,
 
-        EmailAlreadyRegistered, 
+        EmailAlreadyRegistered,
 
-        SetupPhotonCloud, 
+        SetupPhotonCloud,
 
         SetupSelfHosted
     }
@@ -155,22 +156,35 @@ public class PhotonEditor : EditorWindow
 
     private bool isSetupWizard = false;
 
+    bool open = false;
+    bool helpRegion = false;
+
     private PhotonSetupStates photonSetupState = PhotonSetupStates.RegisterForPhotonCloud;
-    
+
     private static double lastWarning = 0;
+
+    private static bool postCompileActionsDone;
 
     private string photonAddress = "127.0.0.1";
 
     private int photonPort = ServerSettings.DefaultMasterPort;
-    
+
     private string emailAddress = string.Empty;
 
     private string cloudAppId = string.Empty;
-    
+
     private static bool dontCheckPunSetupField;
 
     private static Texture2D HelpIcon;
     private static Texture2D WizardIcon;
+
+    protected static Type WindowType = typeof(PhotonEditor);
+
+    private static string[] cloudServerRegionNames;
+
+    private static bool isPunPlus;
+    private static bool androidLibExists;
+    private static bool iphoneLibExists;
 
     /// <summary>
     /// Can be used to (temporarily) disable the checks for PUN Setup and scene PhotonViews.
@@ -192,18 +206,13 @@ public class PhotonEditor : EditorWindow
         }
     }
 
-    protected static Type WindowType = typeof(PhotonEditor);
-
-
-    private static string[] cloudServerRegionNames;
-
     static PhotonEditor()
     {
         EditorApplication.projectWindowChanged += EditorUpdate;
         EditorApplication.hierarchyWindowChanged += EditorUpdate;
         EditorApplication.playmodeStateChanged += PlaymodeStateChanged;
         EditorApplication.update += OnUpdate;
-        
+
         HelpIcon = AssetDatabase.LoadAssetAtPath("Assets/Photon Unity Networking/Editor/PhotonNetwork/help.png", typeof(Texture2D)) as Texture2D;
         WizardIcon = AssetDatabase.LoadAssetAtPath("Assets/Photon Unity Networking/photoncloud-icon.png", typeof(Texture2D)) as Texture2D;
 
@@ -214,6 +223,35 @@ public class PhotonEditor : EditorWindow
         {
             cloudServerRegionNames[i] = enumValues.GetValue(i).ToString();
         }
+
+        // detect optional packages
+        PhotonEditor.CheckPunPlus();
+    }
+
+    static void CheckPunPlus()
+    {
+        androidLibExists = File.Exists("Assets/Plugins/Android/libPhotonSocketPlugin.so");
+        iphoneLibExists = File.Exists("Assets/Plugins/IPhone/libPhotonSocketPlugin.so");
+
+        isPunPlus = androidLibExists || iphoneLibExists;
+    }
+
+    private static void ImportWin8Support()
+    {
+        if (EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode)
+        {
+            return; // don't import while compiling
+        }
+
+        #if UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5
+        const string win8Package = "Assets/Plugins/Photon3Unity3D-Win8.unitypackage";
+
+        bool win8LibsExist = File.Exists("Assets/Plugins/WP8/Photon3Unity3D.dll") && File.Exists("Assets/Plugins/Metro/Photon3Unity3D.dll");
+        if (!win8LibsExist && File.Exists(win8Package))
+        {
+            AssetDatabase.ImportPackage(win8Package, false);
+        }
+        #endif
     }
 
     [MenuItem("Window/Photon Unity Networking &p")]
@@ -221,11 +259,10 @@ public class PhotonEditor : EditorWindow
     {
         PhotonEditor win = GetWindow(WindowType, false, CurrentLang.WindowTitle, true) as PhotonEditor;
         win.InitPhotonSetupWindow();
-     
+
         win.isSetupWizard = false;
         win.SwitchMenuState(GUIState.Main);
     }
-
 
     /// <summary>Creates an Editor window, showing the cloud-registration wizard for Photon (entry point to setup PUN).</summary>
     protected static void ShowRegistrationWizard()
@@ -258,16 +295,18 @@ public class PhotonEditor : EditorWindow
         }
     }
 
-    static bool DidRefresh;
-
-    // called 100 times / sec but we only check if isCompiling
+    // called 100 times / sec
     private static void OnUpdate()
     {
-        if (!DidRefresh && !EditorApplication.isCompiling && !EditorApplication.isPlayingOrWillChangePlaymode)
+        // after a compile, check RPCs to create a cache-list
+        if (!postCompileActionsDone && !EditorApplication.isCompiling && !EditorApplication.isPlayingOrWillChangePlaymode)
         {
-            // Debug.Log("Post-compile refresh of RPC index. isPlayingOrWillChangePlaymode: " + EditorApplication.isPlayingOrWillChangePlaymode);
-            DidRefresh = true;
-            UpdateRpcList();
+            postCompileActionsDone = true;  // on compile, this falls back to false (without actively doing anything)
+
+            PhotonEditor.UpdateRpcList();
+            #if UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5
+            PhotonEditor.ImportWin8Support();
+            #endif
         }
     }
 
@@ -327,6 +366,9 @@ public class PhotonEditor : EditorWindow
 
     protected virtual void OnGUI()
     {
+        PhotonSetupStates oldGuiState = this.photonSetupState;  // used to fix an annoying Editor input field issue: wont refresh until focus is changed.
+
+        GUI.SetNextControlName("");
         this.scrollPos = GUILayout.BeginScrollView(this.scrollPos);
 
         if (this.guiState == GUIState.Uninitialized)
@@ -345,6 +387,11 @@ public class PhotonEditor : EditorWindow
         }
 
         GUILayout.EndScrollView();
+
+        if (oldGuiState != this.photonSetupState)
+        {
+            GUI.FocusControl("");
+        }
     }
 
     protected virtual void OnGuiRegisterCloudApp()
@@ -485,7 +532,14 @@ public class PhotonEditor : EditorWindow
         GUILayout.Label(CurrentLang.PUNWizardLabel, EditorStyles.boldLabel);
         if (!InternalEditorUtility.HasAdvancedLicenseOnBuildTarget(BuildTarget.Android) || !InternalEditorUtility.HasAdvancedLicenseOnBuildTarget(BuildTarget.iPhone))
         {
-            GUILayout.Label(CurrentLang.MobileExportNoteLabel);
+            if (isPunPlus)
+            {
+                GUILayout.Label(CurrentLang.MobilePunPlusExportNoteLabel);
+            }
+            else
+            {
+                GUILayout.Label(CurrentLang.MobileExportNoteLabel);
+            }
         }
         EditorGUILayout.Separator();
 
@@ -511,8 +565,9 @@ public class PhotonEditor : EditorWindow
         }
 
         GUILayout.EndHorizontal();
-        GUILayout.FlexibleSpace();
 
+
+        GUILayout.FlexibleSpace();
 
         // converter
         GUILayout.BeginHorizontal();
@@ -551,7 +606,7 @@ public class PhotonEditor : EditorWindow
         }
 
         GUILayout.EndVertical();
-        GUILayout.EndHorizontal();   
+        GUILayout.EndHorizontal();
     }
 
     protected virtual void OnGuiCompareAndHelpOptions()
@@ -573,20 +628,17 @@ public class PhotonEditor : EditorWindow
         }
     }
 
-    bool open = false;
-    bool helpRegion = false;
-
     protected virtual void OnGuiSetupCloudAppId()
     {
         GUILayout.Label(CurrentLang.AppIdLabel);
 
         GUILayout.BeginHorizontal();
         this.cloudAppId = EditorGUILayout.TextField(this.cloudAppId);
-        
+
         open = GUILayout.Toggle(open, HelpIcon, GUIStyle.none, GUILayout.ExpandWidth(false));
-        
+
         GUILayout.EndHorizontal();
-        
+
         if (open) GUILayout.Label(CurrentLang.AppIdInfoLabel);
 
 
@@ -612,7 +664,7 @@ public class PhotonEditor : EditorWindow
         }
 
         EditorGUILayout.Separator();
-        
+
         GUILayout.BeginHorizontal();
         if (GUILayout.Button(CurrentLang.CancelButton))
         {
@@ -620,12 +672,12 @@ public class PhotonEditor : EditorWindow
             this.ReApplySettingsToWindow();
         }
 
-        
+
 
         if (GUILayout.Button(CurrentLang.SaveButton))
         {
             GUIUtility.keyboardControl = 0;
-			this.cloudAppId = this.cloudAppId.Trim();
+            this.cloudAppId = this.cloudAppId.Trim();
             PhotonEditor.Current.UseCloud(this.cloudAppId, selectedRegion);
             PhotonEditor.Save();
 
@@ -635,7 +687,7 @@ public class PhotonEditor : EditorWindow
         GUILayout.EndHorizontal();
 
 
-        
+
         GUILayout.Space(20);
 
         GUILayout.Label(CurrentLang.SetupOwnServerLabel);
@@ -778,7 +830,7 @@ public class PhotonEditor : EditorWindow
                         AssetDatabase.ImportAsset(settingsPath);
                     }
 
-                    currentSettings = (ServerSettings) ScriptableObject.CreateInstance("ServerSettings");
+                    currentSettings = (ServerSettings)ScriptableObject.CreateInstance("ServerSettings");
                     if (currentSettings != null)
                     {
                         AssetDatabase.CreateAsset(currentSettings, PhotonNetwork.serverSettingsAssetPath);
@@ -825,7 +877,7 @@ public class PhotonEditor : EditorWindow
         this.photonAddress = string.IsNullOrEmpty(PhotonEditor.Current.ServerAddress) ? string.Empty : PhotonEditor.Current.ServerAddress;
         this.photonPort = PhotonEditor.Current.ServerPort;
     }
-    
+
     public static void UpdateRpcList()
     {
         HashSet<string> additionalRpcs = new HashSet<string>();

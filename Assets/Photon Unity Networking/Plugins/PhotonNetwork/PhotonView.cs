@@ -8,12 +8,15 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using UnityEngine;
+using System.Reflection;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
 
-public enum ViewSynchronization { Off, ReliableDeltaCompressed, Unreliable }
+
+public enum ViewSynchronization { Off, ReliableDeltaCompressed, Unreliable, UnreliableOnChange }
 public enum OnSerializeTransform { OnlyPosition, OnlyRotation, OnlyScale, PositionAndRotation, All }
 public enum OnSerializeRigidBody { OnlyVelocity, OnlyAngularVelocity, All }
 
@@ -39,6 +42,7 @@ public class PhotonView : Photon.MonoBehaviour
     
     public int group = 0;
 
+    protected internal bool mixedModeIsReliable = false;
 
     // NOTE: this is now an integer because unity won't serialize short (needed for instantiation). we SEND only a short though!
     // NOTE: prefabs have a prefixBackup of -1. this is replaced with any currentLevelPrefix that's used at runtime. instantiated GOs get their prefix set pre-instantiation (so those are not -1 anymore)
@@ -122,6 +126,12 @@ public class PhotonView : Photon.MonoBehaviour
 
     public int instantiationId; // if the view was instantiated with a GO, this GO has a instantiationID (first view's viewID)
 
+    /// <summary>True if the PhotonView was loaded with the scene (game object) or instantiated with InstantiateSceneObject.</summary>
+    /// <remarks>
+    /// Scene objects are not owned by a particular player but belong to the scene. Thus they don't get destroyed when their 
+    /// creator leaves the game and the current Master Client can control them (whoever that is).
+    /// The ownerIs is 0 (player IDs are 1 and up).
+    /// </remarks>
     public bool isSceneView
     {
         get { return this.ownerId == 0; }
@@ -171,7 +181,10 @@ public class PhotonView : Photon.MonoBehaviour
 
     public void OnDestroy()
     {
-        PhotonNetwork.networkingPeer.RemovePhotonView(this);
+        if (!this.destroyedByPhotonNetworkOrQuit)
+        {
+            PhotonNetwork.networkingPeer.LocalCleanPhotonView(this);
+        }
 
         if (!this.destroyedByPhotonNetworkOrQuit && !Application.isLoadingLevel)
         {
@@ -196,13 +209,50 @@ public class PhotonView : Photon.MonoBehaviour
 
         if (PhotonNetwork.networkingPeer.instantiatedObjects.ContainsKey(this.instantiationId))
         {
-            Debug.LogWarning(string.Format("OnDestroy for PhotonView {0} but GO is still in instantiatedObjects. instantiationId: {1}. Use PhotonNetwork.Destroy(). {2}", this, this.instantiationId, Application.isLoadingLevel ? "Loading new scene caused this." : ""));
+            // Unity destroys GOs and PVs at the end of a frame. In worst case, a instantiate created a new view with the same id. Let's compare the associated GameObject.
+            GameObject instGo = PhotonNetwork.networkingPeer.instantiatedObjects[this.instantiationId];
+            bool instanceIsThisOne = (instGo == this.gameObject);
+            if (instanceIsThisOne)
+            {
+                Debug.LogWarning(string.Format("OnDestroy for PhotonView {0} but GO is still in instantiatedObjects. instantiationId: {1}. Use PhotonNetwork.Destroy(). {2} Identical with this: {3} PN.Destroyed called for this PV: {4}", this, this.instantiationId, Application.isLoadingLevel ? "Loading new scene caused this." : "", instanceIsThisOne, destroyedByPhotonNetworkOrQuit));
+            }
         }
+    }
+
+    private MethodInfo OnSerializeMethodInfo;
+
+    private bool failedToFindOnSerialize;
+
+    internal protected void ExecuteOnSerialize(PhotonStream pStream, PhotonMessageInfo info)
+    {
+        if (failedToFindOnSerialize)
+        {
+            return;
+        }
+
+        if (OnSerializeMethodInfo == null)
+        {
+            if (!NetworkingPeer.GetMethod(this.observed as MonoBehaviour, PhotonNetworkingMessage.OnPhotonSerializeView.ToString(), out OnSerializeMethodInfo))
+            {
+                Debug.LogError("The observed monobehaviour (" + this.observed.name + ") of this PhotonView does not implement OnPhotonSerialize()!");
+                failedToFindOnSerialize = true;
+                return;
+            }
+        }
+
+        OnSerializeMethodInfo.Invoke((object)this.observed, new object[] { pStream, info });
     }
 
     public void RPC(string methodName, PhotonTargets target, params object[] parameters)
     {
-        PhotonNetwork.RPC(this, methodName, target, parameters);
+		if(PhotonNetwork.networkingPeer.hasSwitchedMC && target == PhotonTargets.MasterClient)
+        {
+			PhotonNetwork.RPC(this, methodName, PhotonNetwork.masterClient, parameters);
+		}
+        else
+        {
+        	PhotonNetwork.RPC(this, methodName, target, parameters);
+		}
     }
 
     public void RPC(string methodName, PhotonPlayer targetPlayer, params object[] parameters)

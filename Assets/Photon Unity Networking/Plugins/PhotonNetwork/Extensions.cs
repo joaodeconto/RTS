@@ -7,9 +7,12 @@
 // </summary>
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
+
 using System.Collections;
 using UnityEngine;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 using SupportClass = ExitGames.Client.Photon.SupportClass;
+
 
 /// <summary>
 /// This static class defines some useful extension methods for several existing classes (e.g. Vector3, float and others).
@@ -26,16 +29,16 @@ public static class Extensions
         return go.GetComponent<PhotonView>() as PhotonView;
     }
 
-    /// <summary>compares the square magniture of target - second to given float value</summary>
-    public static bool AlmostEquals(this Vector3 target, Vector3 second, float sqrMagniturePrecision)
+    /// <summary>compares the squared magnitude of target - second to given float value</summary>
+    public static bool AlmostEquals(this Vector3 target, Vector3 second, float sqrMagnitudePrecision)
     {
-        return (target - second).sqrMagnitude < sqrMagniturePrecision;
+        return (target - second).sqrMagnitude < sqrMagnitudePrecision;  // TODO: inline vector methods to optimize?
     }
 
-    /// <summary>compares the square magniture of target - second to given float value</summary>
-    public static bool AlmostEquals(this Vector2 target, Vector2 second, float sqrMagniturePrecision)
+    /// <summary>compares the squared magnitude of target - second to given float value</summary>
+    public static bool AlmostEquals(this Vector2 target, Vector2 second, float sqrMagnitudePrecision)
     {
-        return (target - second).sqrMagnitude < sqrMagniturePrecision;
+        return (target - second).sqrMagnitude < sqrMagnitudePrecision;  // TODO: inline vector methods to optimize?
     }
 
     /// <summary>compares the angle between target and second to given float value</summary>
@@ -112,7 +115,7 @@ public static class Extensions
     /// This does not modify the original.
     /// </remarks>
     /// <param name="original">The original IDictonary to get string-typed keys from.</param>
-    /// <returns>New Hashtable containing parts ot fht original.</returns>
+    /// <returns>New Hashtable containing only string-typed keys of the original.</returns>
     public static Hashtable StripToStringKeys(this IDictionary original)
     {
         Hashtable target = new Hashtable();

@@ -7,14 +7,13 @@
 // </summary>
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 /// <summary>Class for constants. Defines photon-event-codes for PUN usage.</summary>
-internal class PhotonNetworkMessages
+internal class PunEvent
 {
     public const byte RPC = 200; 
     public const byte SendSerialize = 201;
@@ -23,6 +22,8 @@ internal class PhotonNetworkMessages
     public const byte Destroy = 204;
     public const byte RemoveCachedRPCs = 205;
     public const byte SendSerializeReliable = 206;  // TS: added this but it's not really needed anymore
+    public const byte DestroyPlayer = 207;  // TS: added to make others remove all GOs of a player
+    public const byte AssignMaster = 208;  // TS: added to assign someone master client (overriding the current)
 }
 
 /// <summary>Enum of "target" options for RPCs. These define which remote clients get your RPC call. </summary>

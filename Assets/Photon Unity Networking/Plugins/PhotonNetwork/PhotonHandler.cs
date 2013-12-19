@@ -4,10 +4,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
 using ExitGames.Client.Photon;
 using UnityEngine;
-using System.Collections;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 
 /// <summary>
 /// Internal Monobehaviour that allows Photon to run an Update loop.
@@ -23,8 +23,10 @@ internal class PhotonHandler : Photon.MonoBehaviour, IPhotonPeerListener
     private int nextSendTickCount = 0;
 
     private int nextSendTickCountOnSerialize = 0;
+    
+    private static bool sendThreadShouldRun;
 
-    private void Awake()
+    protected void Awake()
     {
         if (SP != null && SP != this && SP.gameObject != null)
         {
@@ -36,9 +38,18 @@ internal class PhotonHandler : Photon.MonoBehaviour, IPhotonPeerListener
 
         this.updateInterval = 1000 / PhotonNetwork.sendRate;
         this.updateIntervalOnSerialize = 1000 / PhotonNetwork.sendRateOnSerialize;
+
+        PhotonHandler.StartFallbackSendAckThread();
     }
 
-    private void Update()
+    /// <summary>Called by Unity when the application is closed. Tries to disconnect.</summary>
+    protected void OnApplicationQuit()
+    {
+        PhotonNetwork.Disconnect();
+        PhotonHandler.StopFallbackSendAckThread();
+    }
+
+    protected void Update()
     {
         if (PhotonNetwork.networkingPeer == null)
         {
@@ -46,7 +57,7 @@ internal class PhotonHandler : Photon.MonoBehaviour, IPhotonPeerListener
             return;
         }
 
-        if (PhotonNetwork.connectionStateDetailed == PeerState.PeerCreated || PhotonNetwork.connectionStateDetailed == PeerState.Disconnected)
+        if (PhotonNetwork.connectionStateDetailed == PeerState.PeerCreated || PhotonNetwork.connectionStateDetailed == PeerState.Disconnected || PhotonNetwork.offlineMode)
         {
             return;
         }
@@ -90,12 +101,6 @@ internal class PhotonHandler : Photon.MonoBehaviour, IPhotonPeerListener
         }
     }
 
-    /// <summary>Called by Unity when the application is closed. Tries to disconnect.</summary>
-    protected void OnApplicationQuit()
-    {
-        PhotonNetwork.Disconnect();
-    }
-
     /// <summary>Called by Unity after a new level was loaded.</summary>
     protected void OnLevelWasLoaded(int level)
     {
@@ -130,23 +135,30 @@ internal class PhotonHandler : Photon.MonoBehaviour, IPhotonPeerListener
         }
     }
 
-    public static void StartThread()
+    public static void StartFallbackSendAckThread()
     {
-        System.Threading.Thread sendThread = new System.Threading.Thread(new System.Threading.ThreadStart(MyThread));
-        sendThread.Start();
+        if (sendThreadShouldRun)
+        {
+            return;
+        }
+
+        sendThreadShouldRun = true;
+        SupportClass.CallInBackground(FallbackSendAckThread);   // thread will call this every 100ms until method returns false
     }
 
-    // keeps connection alive while loading
-    public static void MyThread()
+    public static void StopFallbackSendAckThread()
     {
-        while (PhotonNetwork.networkingPeer != null && PhotonNetwork.networkingPeer.IsSendingOnlyAcks)
-        {
-            while (PhotonNetwork.networkingPeer.SendAcksOnly())
-            {
-            }
+        sendThreadShouldRun = false;
+    }
 
-            System.Threading.Thread.Sleep(50);
+    public static bool FallbackSendAckThread()
+    {
+        if (sendThreadShouldRun && PhotonNetwork.networkingPeer != null)
+        {
+            PhotonNetwork.networkingPeer.SendAcksOnly();
         }
+
+        return sendThreadShouldRun;
     }
 
     #region Implementation of IPhotonPeerListener

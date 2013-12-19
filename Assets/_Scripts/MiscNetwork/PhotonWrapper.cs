@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Linq;
 
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class PhotonWrapper : Photon.MonoBehaviour
 {
 	public delegate void StartGameCallback ();

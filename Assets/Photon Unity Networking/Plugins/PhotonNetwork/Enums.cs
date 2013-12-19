@@ -113,7 +113,8 @@ internal enum JoinType
 {
     CreateGame,
     JoinGame,
-    JoinRandomGame
+    JoinRandomGame,
+    JoinOrCreateOnDemand
 }
 
 
@@ -326,14 +327,22 @@ public enum DisconnectCause
 
     /// <summary>Connection timed out.
     /// Possible cause: Remote server not running or required ports blocked (due to router or firewall).</summary>
+    [System.Obsolete("Replaced by clearer: DisconnectByClientTimeout")]
     TimeoutDisconnect = StatusCode.TimeoutDisconnect,
+
+    /// <summary>Timeout disconnect by client (which decided an ACK was missing for too long).</summary>
+    DisconnectByClientTimeout = StatusCode.TimeoutDisconnect,
     
     /// <summary>Exception in the receive-loop.
     /// Possible cause: Socket failure.</summary>
-    InternalReceiveException = StatusCode.InternalReceiveException,
+    InternalReceiveException = StatusCode.ExceptionOnReceive,
 
     /// <summary>Server actively disconnected this client.</summary>
+    [System.Obsolete("Replaced by clearer: DisconnectByServerTimeout")]
     DisconnectByServer = StatusCode.DisconnectByServer,
+
+    /// <summary>Timeout disconnect by server (which decided an ACK was missing for too long).</summary>
+    DisconnectByServerTimeout = StatusCode.DisconnectByServer,
 
     /// <summary>Server actively disconnected this client.
     /// Possible cause: Server's send buffer full (too much data for client).</summary>

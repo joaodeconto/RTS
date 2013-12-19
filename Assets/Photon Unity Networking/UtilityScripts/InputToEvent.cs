@@ -4,16 +4,17 @@ using UnityEngine;
 /// Utility component to forward mouse or touch input to clicked gameobjects.
 /// Calls OnPress, OnClick and OnRelease methods on "first" game object.
 /// </summary>
-public class InputToEvent : MonoBehaviour {
+public class InputToEvent : MonoBehaviour
+{
 
     private GameObject lastGo;
     public static Vector3 inputHitPos;
     public bool DetectPointedAtGameObject;
     public static GameObject goPointedAt { get; private set; }
-	
-	// Update is called once per frame
-	void Update ()
-	{
+
+    // Update is called once per frame
+    void Update()
+    {
         if (DetectPointedAtGameObject)
         {
             goPointedAt = RaycastObject(Input.mousePosition);
@@ -34,16 +35,16 @@ public class InputToEvent : MonoBehaviour {
 
             return;
         }
-        
+
         if (Input.GetMouseButtonDown(0))
-	    {
+        {
             Press(Input.mousePosition);
-	    }
+        }
         if (Input.GetMouseButtonUp(0))
         {
             Release(Input.mousePosition);
         }
-	}
+    }
 
     private void Press(Vector2 screenPos)
     {
@@ -53,6 +54,7 @@ public class InputToEvent : MonoBehaviour {
             lastGo.SendMessage("OnPress", SendMessageOptions.DontRequireReceiver);
         }
     }
+
     private void Release(Vector2 screenPos)
     {
         if (lastGo != null)

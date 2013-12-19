@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class InitInstantiateNetwork : Photon.MonoBehaviour
 {
 	public GameObject prefabInstantiate;

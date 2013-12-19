@@ -1,18 +1,22 @@
+#if !(UNITY_WINRT || UNITY_WP8 || UNITY_PS3 || UNITY_WIIU)
+
 using System;
-using System.Net.Sockets;
-using UnityEngine;
 using System.Collections;
 using System.Net;
+using System.Net.Sockets;
+using UnityEngine;
 
 /// <summary>
-/// This script is automatically added to the PhotonHandler gameobject by PUN
+/// This script is automatically added to the PhotonHandler gameobject by PUN.
 /// It will auto-ping the ExitGames cloud regions via Awake.
 /// This is done only once per client and the result is saved in PlayerPrefs. 
-/// Use PhotonNetwork.ConnectToBestCloudServer(gameVersion) to connect to clour region with best ping.
+/// Use PhotonNetwork.ConnectToBestCloudServer(gameVersion) to connect to cloud region with best ping.
 /// </summary>
 public class PingCloudRegions : MonoBehaviour
 {
-    static CloudServerRegion closestRegion = CloudServerRegion.US;
+
+
+    public static CloudServerRegion closestRegion = CloudServerRegion.US;
     static public PingCloudRegions SP;
 
     private bool isPinging = false;
@@ -74,12 +78,6 @@ public class PingCloudRegions : MonoBehaviour
     
     IEnumerator PingRegion(CloudServerRegion region)
     {
-        // JP can't be pinged at the moment, so we skip it!
-        if (region == CloudServerRegion.Japan)
-        {
-            yield break;
-        }
-
         string hostname = ServerSettings.FindServerAddressForRegion(region);
         string regionIp = ResolveHost(hostname);
 
@@ -121,7 +119,7 @@ public class PingCloudRegions : MonoBehaviour
         }
 
         int regionAverage = averagePing / tries;
-        //Debug.LogWarning (hostname + ": " + average + "ms");
+        //Debug.LogWarning (hostname + ": " + regionAverage + "ms");
 
         if (regionAverage < lowestRegionAverage || lowestRegionAverage == -1)
         {
@@ -182,3 +180,4 @@ public class PingCloudRegions : MonoBehaviour
         return string.Empty;
     }
 }
+#endif
