@@ -6,19 +6,36 @@ public class FirstCellMessageQueue : MessageQueue
 	public Vector2 firstCellrootPosition;
 	public Vector2 firstCellSize;
 	public UIGrid  uiGridFirst;
+	private Vector2 _padding;
 	public Vector2 FirstCellRootPosition { get; protected set; }
 	//	public float   nQueueItemFirst;
 
 	public Vector2 FirstCellSize
 	{
 		get {
-			return new Vector2(uiGridFirst.cellWidth, uiGridFirst.cellHeight);
+			return new Vector2(uiGridFirst.cellWidth - _padding.x, uiGridFirst.cellHeight - _padding.y);
 		}
 		set {
-			uiGridFirst.cellWidth  = value.x;
-			uiGridFirst.cellHeight = value.y;
+			uiGridFirst.cellWidth  = value.x + _padding.x;
+			uiGridFirst.cellHeight = value.y + _padding.y;
 		}
 	}
+
+	public Vector2 Padding
+	{
+		get
+		{
+			return _padding;
+		}
+		protected set
+		{
+			Vector2 oldPadding = _padding;
+			_padding = value;
+			this.uiGridFirst.cellWidth  = this.uiGridFirst.cellWidth  + (_padding.x - oldPadding.x);
+			this.uiGridFirst.cellHeight = this.uiGridFirst.cellHeight + (_padding.y - oldPadding.y);
+		}
+	}
+
 
 
 	public FirstCellMessageQueue Init (  GameObject pref_button,
@@ -68,38 +85,31 @@ public class FirstCellMessageQueue : MessageQueue
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-	//Verificar presença de btns
-    //Sim - adicionar ma uiGrid else uiGridFirst
+	
 	 
 		if (uiGridFirst.transform.childCount == 0)
 		{
 
 				++nQueueItems;
 			
-			//		Debug.Log ("Sem botoes");
-			//		return;
-			
-
+		
 				GameObject button = NGUITools.AddChild (uiGridFirst.gameObject,
 				                                        Pref_button);
-				
 				button.name  = buttonName;
 				button.layer = gameObject.layer;
 				button.transform.localPosition = Vector3.up * 100000;
-			    button.transform.FindChild("Foreground").localScale = new Vector3(firstCellSize.x, firstCellSize.y, 1);
-			   
-	     		
-				//button.transform.localPosition = Vector3.zero;
+			    button.transform.GetComponentInChildren<UISprite>().height = Mathf.CeilToInt(firstCellSize.y);
+		    	button.transform.GetComponentInChildren<UISprite>().width = Mathf.CeilToInt(firstCellSize.x);
+			    //button.transform.localPosition = Vector3.zero;
 				
 				PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
 				
 				pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
-				
 
-
+				Debug.Log("crias :" + uiGridFirst.transform.childCount);
+			    
+		   	
 		}
-
-
 
 		else
 
@@ -111,20 +121,27 @@ public class FirstCellMessageQueue : MessageQueue
 			
 			button.name  = buttonName;
 			button.layer = gameObject.layer;
-			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
-			
+//			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
+			button.transform.GetComponentInChildren<UISprite>().height = Mathf.CeilToInt(CellSize.y);
+			button.transform.GetComponentInChildren<UISprite>().width = Mathf.CeilToInt(CellSize.x);
 			//button.transform.localPosition = Vector3.zero;
 			
 			PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
 			
 			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 
+
+			
+			Debug.Log("crias :" + uiGrid.transform.childCount);
+
 		}
 
-
+		Invoke("RepositionGridFirst", 0.1f);
 		Invoke("RepositionGrid", 0.1f);
 	}	
+
+
+
 
 	public void DequeueMessageInfo()
 	{
@@ -136,6 +153,7 @@ public class FirstCellMessageQueue : MessageQueue
 		int childIndex = uiGridFirst.transform.childCount - 1;
 		
 		Destroy (uiGridFirst.transform.GetChild(childIndex).gameObject);
+		Invoke("RepositionGridFirst", 0.1f);
 		Invoke("RepositionGrid", 0.1f);
 	}
 	
@@ -161,12 +179,39 @@ public class FirstCellMessageQueue : MessageQueue
 			--nQueueItems;
 			
 			Destroy (trnsButton.gameObject);
+			Invoke("RepositionGridFirst", 0.1f);
 			Invoke("RepositionGrid", 0.1f);
+
 		}
 	}
+	
+	public bool IsEmpty()
+	{
+		return (nQueueItems == 0);
+	}
+	
+	public void Clear()
+	{
+		nQueueItems = 0;
+		
+		foreach (Transform child in uiGridFirst.transform)
+		{
+			Destroy (child.gameObject);
+		}
+	}
+	
 
-
-
-
+	
+	protected void RepositionGridFirst()
+	{
+		if(uiGridFirst.transform.childCount != nQueueItems)
+			Invoke("RepositionGridFirst", 0.1f);
+		else
+		{
+			uiGridFirst.repositionNow = true;
+			uiGridFirst.Reposition();
+		}
+	}
+	
 
 }

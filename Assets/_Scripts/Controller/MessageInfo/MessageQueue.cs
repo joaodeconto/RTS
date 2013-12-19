@@ -79,7 +79,7 @@ public abstract class MessageQueue : MonoBehaviour
 //		Debug.Log ("Sem botoes");
 //		return;
 		 
-if (nQueueItems > MaxItems)
+		if (nQueueItems > MaxItems)
 		{
 			// Refazendo o calculo
 			if (nQueueItems-1 == MaxItems) ChangeToGroupMessageInfo ();
@@ -93,8 +93,10 @@ if (nQueueItems > MaxItems)
 			
 			button.name  = buttonName;
 			button.layer = gameObject.layer;
-			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
+			button.transform.localPosition = Vector3.up * 10000;//Coloca em um lugar em distante para somente aparecer no reposition grid
 			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+
+
 			
 			PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
 	
@@ -110,7 +112,7 @@ if (nQueueItems > MaxItems)
 			button.name  = buttonName;
 			button.layer = gameObject.layer;
 			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+//			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 	
 			//button.transform.localPosition = Vector3.zero;
 	
@@ -178,17 +180,19 @@ if (nQueueItems > MaxItems)
 
 	protected void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
 	{
-		if(trnsForeground == null || trnsForeground.GetComponent<UISlicedSprite>() == null)
+		if(trnsForeground == null || trnsForeground.GetComponent<UISprite>() == null)
 		{
 			Debug.LogError("Eh necessario que tenha o objeto \"Foreground\" com um sliced sprite dentro");
 			Debug.Break();
 		}
 
-		UISlicedSprite sprite = trnsForeground.GetComponent<UISlicedSprite>();
+		UISprite sprite = trnsForeground.GetComponent<UISprite>();
 		sprite.spriteName = textureName;
-		sprite.MakePixelPerfect();
-		sprite.transform.localPosition = Vector3.forward * -5;
-	}
+		sprite.height = Mathf.CeilToInt (CellSize.y);
+		sprite.width = Mathf.CeilToInt (CellSize.x);
+//		sprite.MakePixelPerfect();
+
+	} 
 
 	protected void RepositionGrid()
 	{

@@ -30,7 +30,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &100004
 GameObject:
@@ -501,22 +501,27 @@ MonoBehaviour:
   messageQueuesAttributes:
   - queueName: Unit Group
     panel: {fileID: 0}
-    rootPosition: {x: -300, y: 90}
+    hasFirstCell: 0
+    rootPosition: {x: -280, y: 88}
     cellSize: {x: 50, y: 50}
-    padding: {x: 5, y: 10}
+    padding: {x: 12, y: 3}
     labelSize: 0
     IsVerticalQueue: 0
-    maxPerLine: 18
-    maxItems: 36
+    maxPerLine: 10
+    maxItems: 20
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    firstCellQueueAttributes:
+      firstCellRootPosition: {x: 0, y: 0}
+      firstCellSize: {x: 0, y: 0}
   - queueName: Factory
     panel: {fileID: 0}
-    rootPosition: {x: -300, y: 63}
-    cellSize: {x: 84, y: 84}
-    padding: {x: 30, y: 20}
+    hasFirstCell: 1
+    rootPosition: {x: 110, y: 60}
+    cellSize: {x: 50, y: 50}
+    padding: {x: 3, y: 3}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
@@ -525,32 +530,43 @@ MonoBehaviour:
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    firstCellQueueAttributes:
+      firstCellRootPosition: {x: 110, y: 60}
+      firstCellSize: {x: 100, y: 100}
   - queueName: Events
     panel: {fileID: 0}
-    rootPosition: {x: 25, y: 600}
+    hasFirstCell: 0
+    rootPosition: {x: 0, y: 0}
     cellSize: {x: 40, y: 40}
     padding: {x: 5, y: 5}
-    labelSize: 32
+    labelSize: 24
     IsVerticalQueue: 1
     maxPerLine: 10
     maxItems: 10
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 3
-      fadeColor: {r: 0, g: 0, b: 0, a: 0}
+      timeToFadeout: 4
+      fadeColor: {r: 1, g: .724137962, b: 0, a: 0}
+    firstCellQueueAttributes:
+      firstCellRootPosition: {x: 0, y: 0}
+      firstCellSize: {x: 0, y: 0}
   - queueName: Chat
     panel: {fileID: 0}
+    hasFirstCell: 0
     rootPosition: {x: -800, y: 110}
     cellSize: {x: 0, y: 0}
     padding: {x: 0, y: 0}
     labelSize: 0
-    IsVerticalQueue: 0
+    IsVerticalQueue: 1
     maxPerLine: 5
-    maxItems: 10
-    IsTemporizedQueue: 0
+    maxItems: 5
+    IsTemporizedQueue: 1
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    firstCellQueueAttributes:
+      firstCellRootPosition: {x: 0, y: 0}
+      firstCellSize: {x: 0, y: 0}
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -59,26 +59,14 @@ public class MessageInfoManager : MonoBehaviour
 			UIGrid uiGrid = GetQueueGrid(messageQueuesAttributes[i].queueName,
 										 messageQueuesAttributes[i].rootPosition);
 
-			if(!messageQueuesAttributes[i].IsTemporizedQueue)
-			{
-				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<DefaultMessageQueue>();
-				DefaultMessageQueue dmq = (DefaultMessageQueue)(messageQueues[i]);
-
-				dmq.Init(pref_button, uiGrid,
-						 messageQueuesAttributes[i].queueName,
-						 messageQueuesAttributes[i].rootPosition,
-						 messageQueuesAttributes[i].cellSize,
-						 messageQueuesAttributes[i].padding,
-						 messageQueuesAttributes[i].labelSize,
-						 messageQueuesAttributes[i].IsVerticalQueue,
-						 messageQueuesAttributes[i].maxPerLine,
-						 messageQueuesAttributes[i].maxItems);
-			}
+			//nao usar HasfirstCell com Temporized Queue, nunca.
 
 			if(messageQueuesAttributes[i].hasFirstCell)
 			{
 				UIGrid uiGridFirst = GetQueueGrid(messageQueuesAttributes[i].queueName,
 				                                  messageQueuesAttributes[i].firstCellQueueAttributes.firstCellRootPosition);
+
+				Debug.Log("criou gridFirst");
 
 				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<FirstCellMessageQueue>();
 				FirstCellMessageQueue fmq = (FirstCellMessageQueue)(messageQueues[i]);				
@@ -94,12 +82,10 @@ public class MessageInfoManager : MonoBehaviour
 				         messageQueuesAttributes[i].maxItems);
 				    				        
 
-
-
 			}
 
 
-			else
+			if(messageQueuesAttributes[i].IsTemporizedQueue)
 			{
 				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<TemporizedMessageQueue>();
 				TemporizedMessageQueue tmq = (TemporizedMessageQueue)(messageQueues[i]);
@@ -114,6 +100,22 @@ public class MessageInfoManager : MonoBehaviour
 						 messageQueuesAttributes[i].temporizedQueueAttributes.fadeColor,
 						 messageQueuesAttributes[i].maxPerLine,
 						 messageQueuesAttributes[i].maxItems);
+			}
+
+			else
+			{
+				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<DefaultMessageQueue>();
+				DefaultMessageQueue dmq = (DefaultMessageQueue)(messageQueues[i]);
+				
+				dmq.Init(pref_button, uiGrid,
+				         messageQueuesAttributes[i].queueName,
+				         messageQueuesAttributes[i].rootPosition,
+				         messageQueuesAttributes[i].cellSize,
+				         messageQueuesAttributes[i].padding,
+				         messageQueuesAttributes[i].labelSize,
+				         messageQueuesAttributes[i].IsVerticalQueue,
+				         messageQueuesAttributes[i].maxPerLine,
+				         messageQueuesAttributes[i].maxItems);
 			}
 		}
 
