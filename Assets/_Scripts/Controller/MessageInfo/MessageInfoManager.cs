@@ -66,7 +66,7 @@ public class MessageInfoManager : MonoBehaviour
 				UIGrid uiGridFirst = GetQueueGrid(messageQueuesAttributes[i].queueName,
 				                                  messageQueuesAttributes[i].firstCellQueueAttributes.firstCellRootPosition);
 
-				Debug.Log("criou gridFirst");
+
 
 				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<FirstCellMessageQueue>();
 				FirstCellMessageQueue fmq = (FirstCellMessageQueue)(messageQueues[i]);				
@@ -81,7 +81,7 @@ public class MessageInfoManager : MonoBehaviour
 				         messageQueuesAttributes[i].maxPerLine,
 				         messageQueuesAttributes[i].maxItems);
 				    				        
-
+				Debug.Log("criou gridFirst");
 			}
 
 
