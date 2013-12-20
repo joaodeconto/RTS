@@ -9,7 +9,6 @@ public class LoginIndex : IView
 	public UIInput password;
 	public UILabel errorMessage;
 	public GameObject submitButton;
-
 	public GameObject NewAccountButton;
 
 	// Use this for initialization
