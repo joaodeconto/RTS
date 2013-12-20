@@ -281,7 +281,7 @@ public class FactoryBase : IStats
 
 		if (rallypoint.observedUnit != null)
 		{
-			rallypoint.observedUnit.RegisterMovementObserver (newUnit);
+			newUnit.Follow (rallypoint.observedUnit);
 		}
 		
 		newUnit.Move (goRallypoint.position);

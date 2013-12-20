@@ -892,6 +892,14 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	#region IMovementObservable implementation
 
+	/// <summary>
+	/// Registers the movement observer.
+	/// </summary>
+	/// <param name="observer">Observer.</param>
+	/// <description>
+	/// Avoid using this method use the Follow method instead
+	/// </description>
+
 	public void RegisterMovementObserver (IMovementObserver observer)
 	{
 		observers.Add (observer);
@@ -917,10 +925,10 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	#endregion
 
-	public void Follow (Unit unit)
+	public void Follow (IMovementObservable observable)
 	{
-		unit.RegisterMovementObserver (this);
-		followedUnit = unit;
+		observable.RegisterMovementObserver (this);
+		followedUnit = observable;
 	}
 
 	public void UnFollow  ()
