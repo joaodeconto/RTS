@@ -3,36 +3,18 @@ using System.Collections;
 
 public class FirstCellMessageQueue : MessageQueue
 {
-	public Vector2 firstCellrootPosition;
-	public Vector2 firstCellSize;
 	public UIGrid  uiGridFirst;
-	private Vector2 _padding;
 	public Vector2 FirstCellRootPosition { get; protected set; }
 	//	public float   nQueueItemFirst;
 
 	public Vector2 FirstCellSize
 	{
 		get {
-			return new Vector2(uiGridFirst.cellWidth - _padding.x, uiGridFirst.cellHeight - _padding.y);
+			return new Vector2(uiGridFirst.cellWidth, uiGridFirst.cellHeight);
 		}
 		set {
-			uiGridFirst.cellWidth  = value.x + _padding.x;
-			uiGridFirst.cellHeight = value.y + _padding.y;
-		}
-	}
-
-	public Vector2 Padding
-	{
-		get
-		{
-			return _padding;
-		}
-		protected set
-		{
-			Vector2 oldPadding = _padding;
-			_padding = value;
-			this.uiGridFirst.cellWidth  = this.uiGridFirst.cellWidth  + (_padding.x - oldPadding.x);
-			this.uiGridFirst.cellHeight = this.uiGridFirst.cellHeight + (_padding.y - oldPadding.y);
+			uiGridFirst.cellWidth  = value.x ;
+			uiGridFirst.cellHeight = value.y ;
 		}
 	}
 
@@ -98,8 +80,8 @@ public class FirstCellMessageQueue : MessageQueue
 				button.name  = buttonName;
 				button.layer = gameObject.layer;
 				button.transform.localPosition = Vector3.up * 100000;
-			    button.transform.GetComponentInChildren<UISprite>().height = Mathf.CeilToInt(firstCellSize.y);
-		    	button.transform.GetComponentInChildren<UISprite>().width = Mathf.CeilToInt(firstCellSize.x);
+			    button.transform.GetComponentInChildren<UISprite>().height = Mathf.CeilToInt(FirstCellSize.y);
+		    	button.transform.GetComponentInChildren<UISprite>().width = Mathf.CeilToInt(FirstCellSize.x);
 			    //button.transform.localPosition = Vector3.zero;
 				
 				PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
@@ -185,11 +167,7 @@ public class FirstCellMessageQueue : MessageQueue
 		}
 	}
 	
-	public bool IsEmpty()
-	{
-		return (nQueueItems == 0);
-	}
-	
+
 	public void Clear()
 	{
 		nQueueItems = 0;
