@@ -71,11 +71,12 @@ public class StatsController : MonoBehaviour
 			
 			if (unit == null) continue;
 			
+			unit.TargetingEnemy (null);
+			unit.UnFollow ();
+			
 			if (keepFormation)
 			{
 				centerOfTroop = Math.CenterOfObjects (selectedStats.ToArray ());
-					
-				unit.TargetingEnemy (null);
 
 				Vector3 t = centerOfTroop - unit.transform.position;
 				unit.Move (destination - t);
@@ -84,8 +85,6 @@ public class StatsController : MonoBehaviour
 			}
 			else
 			{
-				unit.TargetingEnemy (null);
-
 				//Vector3 newDestination = destination + (Random.insideUnitSphere * soldier.pathfind.radius * selectedSoldiers.Count);
 				Vector3 newDestination = destination;
 				if (i != 0)
@@ -114,16 +113,43 @@ public class StatsController : MonoBehaviour
 		}
 		
 		if (feedback)
-		
-
+		{
 			hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f, gameplayManager.GetColorTeam ());
 			soundManager.PlayRandom ("ConfirmMov");
+		}
+	}
+
+	public void FollowTroop (Unit allyUnit)
+	{
+		if (allyUnit == null || otherSelected) return;
+		
+		bool feedback = false;
+		
+		foreach (IStats stat in selectedStats)
+		{
+			Unit unit = stat as Unit;
+			
+			if (unit == null) continue;
+			
+			unit.Follow (allyUnit);
+			
+			feedback = true;
+		}
+		
+		if (feedback)
+		{
+			soundManager.PlayRandom ("Confirm");
+			
+			hudController.CreateFeedback (HUDController.Feedbacks.Attack,
+			                              allyUnit.transform,
+			                              allyUnit.sizeOfSelected,
+			                              gameplayManager.GetColorTeam(allyUnit.team));
+		}
 	}
 
 	public void AttackTroop (GameObject enemy)
 	{
-		if (enemy == null ||
-			otherSelected) return;
+		if (enemy == null || otherSelected) return;
 		
 		bool feedback = false;
 		
@@ -139,9 +165,16 @@ public class StatsController : MonoBehaviour
 		}
 		
 		if (feedback)
+		{
 			soundManager.PlayRandom ("Confirm");
-			hudController.CreateFeedback (HUDController.Feedbacks.Attack, enemy.transform,
-										  enemy.GetComponent<IStats> ().sizeOfSelected, gameplayManager.GetColorTeam(enemy.GetComponent<IStats> ().team));
+			
+			IStats enemyStats = enemy.GetComponent<IStats> ();
+			
+			hudController.CreateFeedback (HUDController.Feedbacks.Attack,
+			                              enemy.transform,
+			                              enemyStats.sizeOfSelected,
+			                              gameplayManager.GetColorTeam(enemyStats.team));
+		}
 	}
 
 	public void AddStats (IStats stat)

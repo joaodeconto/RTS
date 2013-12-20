@@ -48,7 +48,7 @@ public class SelectionController : MonoBehaviour
 				
 				if (unit.collider == null)
 				{
-					Debug.Log("soldado sem colisor!");
+					Debug.Log("unidade sem colisor!");
 					Debug.Break();
 				}
 

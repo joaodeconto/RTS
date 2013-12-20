@@ -211,7 +211,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 		else
 		{
-			Debug.LogError ("Team ID not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
+			Debug.LogError ("Team ID do not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
 			return Color.black;
 		}
 	}

@@ -111,6 +111,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 	// IMovementObservable
 	List<IMovementObserver> observers = new List<IMovementObserver> ();
 
+	//IMovementObserver
+	IMovementObservable followedUnit = null;
+
 	public override void Init ()
 	{
 		base.Init();
@@ -882,8 +885,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	public override bool IsVisible
 	{
-		get
-		{
+		get {
 			return model.activeSelf;
 		}
 	}
@@ -915,11 +917,28 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	#endregion
 
+	public void Follow (Unit unit)
+	{
+		unit.RegisterMovementObserver (this);
+		followedUnit = unit;
+	}
+
+	public void UnFollow  ()
+	{
+		if (followedUnit == null)
+			return;
+
+		followedUnit.UnRegisterMovementObserver (this);
+		followedUnit = null;
+	}
+
 	#region IMovementObserver implementation
 
 	public void UpdatePosition (Vector3 newPosition)
 	{
-		Move (newPosition);
+		Vector3 forwardVec = (transform.forward.normalized) * this.GetPathFindRadius * 2.0f;
+
+		Move (newPosition - forwardVec);
 	}
 
 	public void OnUnRegisterObserver ()

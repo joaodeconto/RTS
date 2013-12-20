@@ -29,7 +29,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver {
 		touchController = ComponentGetter.Get<TouchController> ();
 		
 		lineRenderer = gameObject.AddComponent<LineRenderer>();
-		lineRenderer.SetColors (Color.black, Color.black);
+		lineRenderer.SetColors (Color.white, Color.white);
 		lineRenderer.material = new Material(Shader.Find("Transparent/Diffuse"));
 		lineRenderer.material.mainTexture = lineTexture;
 		lineRenderer.material.color = ComponentGetter.Get<GameplayManager>().GetColorTeam ();

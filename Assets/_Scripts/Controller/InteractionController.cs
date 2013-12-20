@@ -128,24 +128,36 @@ public class InteractionController : MonoBehaviour
 		}
 		else if (hit.CompareTag ("Unit"))
 		{
+			Unit unit = hit.GetComponent<Unit> ();
+
 			if(GameplayManager.mode == GameplayManager.Mode.Cooperative)
 			{
-				if (!gameplayManager.IsAlly (hit.GetComponent<Unit> ()))
+				if (gameplayManager.IsAlly (unit))
 				{
-					if (hit.GetComponent<Unit> ().IsVisible)
+					statsController.FollowTroop (unit);
+					return;
+				}
+				else
+				{
+					if (unit.IsVisible)
 					{
-						statsController.AttackTroop (hit.gameObject);
+						statsController.AttackTroop (unit.gameObject);
 						return;
 					}
 				}
 			}
 			else
 			{
-				if (!gameplayManager.IsSameTeam (hit.GetComponent<Unit> ()))
+				if (gameplayManager.IsSameTeam (unit))
 				{
-					if (hit.GetComponent<Unit> ().IsVisible)
+					statsController.FollowTroop (unit);
+					return;
+				}
+				else
+				{
+					if (unit.IsVisible)
 					{
-						statsController.AttackTroop (hit.gameObject);
+						statsController.AttackTroop (unit.gameObject);
 						return;
 					}
 				}
