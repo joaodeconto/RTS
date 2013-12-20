@@ -61,9 +61,10 @@ public class GUICustomAuth : MonoBehaviour
         {
             GUILayout.Label("Custom Authentication");
             GUILayout.Label("Photon Cloud can be setup to use an external service to verify players.");
-            GUILayout.Label("By default (without setup) credentials are ignored. Any client may connect to your game.");
+            GUILayout.Label("By default, Photon Cloud allows anonymous connects. In the Dashboard, Custom Authentication can be made mandatory.");
             GUILayout.Label("Set PhotonNetwork.AuthValues before you call PhotonNetwork.ConnectUsingSetting().");
             GUILayout.Label("The demo service logs you in for: name == token.");
+            GUILayout.Label("The script GUIFriendFinding will set a random username (independent from Custom Authentication).");
         }
 
         GUILayout.BeginHorizontal();
@@ -73,19 +74,22 @@ public class GUICustomAuth : MonoBehaviour
         GUILayout.EndHorizontal();
 
 
-        if (GUILayout.Button("Login As User"))
+        if (GUILayout.Button("Login with Custom Authentication"))
         {
             PhotonNetwork.AuthValues = new AuthenticationValues();
             PhotonNetwork.AuthValues.SetAuthParameters(this.authName, this.authToken);
             PhotonNetwork.ConnectUsingSettings("1.0");
             this.authFailed = false;
         }
-        if (GUILayout.Button("Login Anonymously"))
+        if (GUILayout.Button("Skip Custom Authentication"))
         {
             PhotonNetwork.AuthValues = null;    // null by default but maybe set in a previous session.
             PhotonNetwork.ConnectUsingSettings("1.0");
             this.authFailed = false;
         }
+
+        GUILayout.Space(8.0f);
+
         if (GUILayout.Button("Open Dashboard (for Setup)"))
         {
             Application.OpenURL("https://cloud.exitgames.com/dashboard");
