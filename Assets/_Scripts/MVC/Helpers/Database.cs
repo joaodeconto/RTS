@@ -1,4 +1,4 @@
-#define DEBUG_DATABASE_CONNECTION
+//#define DEBUG_DATABASE_CONNECTION
 
 using UnityEngine;
 
@@ -232,14 +232,15 @@ public class Database : MonoBehaviour
 #if DEBUG_DATABASE_CONNECTION
 			Debug.LogWarning ("WWW response: " + www.text);
 #endif
-			object obj;
-			try {
+			object obj = null;
+			try
+			{
 				obj = JsonConvert.DeserializeObject (www.text, dc.objType);
-			} catch (JsonSerializationException ex) {
-#if DEBUG_DATABASE_CONNECTION
+			}
+			catch (JsonSerializationException ex)
+			{
 				Debug.LogError (ex.Message);
-#endif
-				obj = www.text;
+				obj = www.text as object;
 			}
 
 			//if (dc.cdc == null) { Debug.Log ("cdc é nulo?"); }
