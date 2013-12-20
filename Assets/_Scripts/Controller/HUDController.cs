@@ -444,7 +444,7 @@ public class HUDController : MonoBehaviour
 		hpLabel.GetComponent<UILabel> ().text = stat.Health.ToString ();
 		
 		Transform speedLabel = info.FindChild ("speed-label");
-		speedLabel.GetComponent<UILabel> ().text = ((int)unit.pathfind.speed).ToString ();
+		speedLabel.GetComponent<UILabel> ().text = ((int)unit.speed).ToString ();
 		
 		Transform unitsLabel = info.FindChild ("units-label");
 		unitsLabel.GetComponent<UILabel> ().text = unit.numberOfUnits.ToString ();

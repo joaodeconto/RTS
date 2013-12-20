@@ -92,15 +92,15 @@ public class StatsController : MonoBehaviour
 				{
 					if (i-1 % 3 == 0)
 					{
-						newDestination += Vector3.left * unit.pathfind.radius * k;
+						newDestination += Vector3.left * unit.GetPathFindRadius * k;
 					}
 					if (i-1 % 3 == 1)
 					{
-						newDestination += Vector3.right * unit.pathfind.radius * k;
+						newDestination += Vector3.right * unit.GetPathFindRadius * k;
 					}
 					if (i-1 % 3 == 2)
 					{
-						newDestination += Vector3.back * unit.pathfind.radius * k;
+						newDestination += Vector3.back * unit.GetPathFindRadius * k;
 						k++;
 					}
 				}

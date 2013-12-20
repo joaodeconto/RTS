@@ -114,7 +114,7 @@ public class Worker : Unit
 				}
 				else
 				{
-					pathfind.Stop ();
+					Pathfind.Stop ();
 					transform.LookAt (resource.transform);
 				}
 
@@ -161,7 +161,7 @@ public class Worker : Unit
 				{
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
-						ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
+						ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(Pathfind.velocity.sqrMagnitude, 0f, 1f);
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying, WrapMode.Loop);
 					}
 
@@ -197,7 +197,7 @@ public class Worker : Unit
 					if (resource != null) Move (resource.transform.position);
 					else
 					{
-						pathfind.Stop ();
+						Pathfind.Stop ();
 						unitState = Unit.UnitState.Idle;
 					}
 
@@ -230,7 +230,7 @@ public class Worker : Unit
 					// Patch para tirar travada ¬¬
 					Move (transform.position - transform.forward);
 
-					Move (pathfindTarget);
+					Move (PathfindTarget);
 
 					resourceWorker[0].extractingObject.SetActive (false);
 
@@ -247,7 +247,7 @@ public class Worker : Unit
 					}
 				}
 
-				pathfind.Stop ();
+				Pathfind.Stop ();
 				if (workerState == WorkerState.Building)
 				{
 					if (!IsBuilding) StartCoroutine (StartConstruct ());
@@ -461,9 +461,9 @@ public class Worker : Unit
 		currentNumberOfResources = gotNumberResources;
 		hasResource = true;
 
-		pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
-		pathfind.speed = resourceWorker[resourceId].carryingSpeed;
-		pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
+		Pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
+		Pathfind.speed = resourceWorker[resourceId].carryingSpeed;
+		Pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
 
@@ -605,7 +605,7 @@ public class Worker : Unit
 				}
 				else
 				{
-					pathfind.Stop ();
+					Pathfind.Stop ();
 					unitState = Unit.UnitState.Idle;
 					factoryChoose = null;
 					isMovingToFactory = false;
@@ -618,7 +618,7 @@ public class Worker : Unit
 			{
 				factoryChoose = null;
 
-				pathfind.Stop ();
+				Pathfind.Stop ();
 				unitState = Unit.UnitState.Idle;
 				factoryChoose = null;
 				isMovingToFactory = false;
@@ -643,7 +643,7 @@ public class Worker : Unit
 		{
 			if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.capsuleCollider.radius)
 			{
-				pathfind.Stop ();
+				Pathfind.Stop ();
 
 				if (resource.AddWorker (this))
 				{

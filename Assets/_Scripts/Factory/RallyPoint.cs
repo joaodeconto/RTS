@@ -21,9 +21,10 @@ public class RallyPoint : MonoBehaviour, IMovementObserver {
 	public IMovementObservable observedUnit { get; private set; }
 	private Vector3 lastObservedPosition = Vector3.zero;
 
+	private Vector3 lastSavedPosition;
 	
 	// Use this for initialization
-	void Start ()
+	public void Init (Vector3 initialPosition)
 	{
 		touchController = ComponentGetter.Get<TouchController> ();
 		
@@ -37,7 +38,8 @@ public class RallyPoint : MonoBehaviour, IMovementObserver {
 		transform.GetChild (0).renderer.material.color = lineRenderer.material.color;
 
 		//Atualizar a primeira vez
-		UpdatePosition (this.transform.position);
+		SavePosition (initialPosition);
+		UpdatePosition (initialPosition);
 	}
 	
 	// Update is called once per frame
@@ -85,23 +87,44 @@ public class RallyPoint : MonoBehaviour, IMovementObserver {
 
 //			Debug.Log ("hit: " + LayerMask.LayerToName(goHit.layer) + " - " + goHit.name);
 
+			//Testar se a layer do hit esta disponivel para ser usada como referencia para o rallypoint
 			if ((goHit.layer & layerMask) != 0)
 			{
-				MonoBehaviour[] scripts = goHit.GetComponents<MonoBehaviour> ();
+				UpdatePosition (hit.point);
 
-				foreach (MonoBehaviour script in scripts)
+				if (observedUnit != null)
 				{
-					IMovementObservable observable = script as IMovementObservable;
+					observedUnit.UnRegisterMovementObserver (this);
+					observedUnit = null;
+				}
 
-					if (observable != null)
+				Unit unit = goHit.GetComponent<Unit> ();
+
+				if (unit == null)
+				{
+					SavePosition (hit.point);
+				}
+				else
+				{
+					GameplayManager gm = ComponentGetter.Get<GameplayManager> ();
+					
+					if (gm.IsSameTeam (unit) || gm.IsAlly (unit))
 					{
-						observedUnit = observable;
-						observedUnit.RegisterMovementObserver (this);
-						break;
+						MonoBehaviour[] scripts = goHit.GetComponents<MonoBehaviour> ();
+						
+						foreach (MonoBehaviour script in scripts)
+						{
+							IMovementObservable observable = script as IMovementObservable;
+							
+							if (observable != null)
+							{
+								observedUnit = observable;
+								observedUnit.RegisterMovementObserver (this);
+								break;
+							}
+						}
 					}
 				}
-				
-				UpdatePosition (hit.point);
 			}
 		}
 		
@@ -126,10 +149,15 @@ public class RallyPoint : MonoBehaviour, IMovementObserver {
 
 	public void OnUnRegisterObserver ()
 	{
-		transform.position = lastObservedPosition;
+		UpdatePosition (lastSavedPosition);
 	}
 
 	#endregion
+
+	void SavePosition (Vector3 position)
+	{
+		lastSavedPosition = position;
+	}
 
 	void CalculateLine ()
 	{
