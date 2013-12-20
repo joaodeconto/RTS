@@ -47,7 +47,7 @@ public class FactoryBase : IStats
 
 	public bool hasRallypoint { get; private set; }
 	
-	private Transform rallypoint;
+	private Transform goRallypoint;
 	
 	public BuildingState buildingState { get; set; }
 	protected int levelConstruct;
@@ -112,18 +112,17 @@ public class FactoryBase : IStats
 			
 			GameObject instantiateRallypoint = Resources.Load ("Rallypoint", typeof(GameObject)) as GameObject;
 			
-			GameObject goRallypoint = NGUITools.AddChild (gameObject, instantiateRallypoint);
+			instantiateRallypoint = NGUITools.AddChild (gameObject, instantiateRallypoint);
 
-			rallypoint = goRallypoint.transform;
-			rallypoint.parent = this.transform;
+			goRallypoint = instantiateRallypoint.transform;
+			goRallypoint.parent = this.transform;
+			goRallypoint.gameObject.SetActive (false);
 
-			Vector3 pos = rallypoint.position;
+			Vector3 pos = goRallypoint.position;
 			pos.z -= transform.collider.bounds.size.z;
-			rallypoint.position = pos;
 
-			rallypoint.gameObject.SetActive (false);
-			
-			hasRallypoint = (rallypoint != null);
+			RallyPoint rallyPoint = goRallypoint.GetComponent<RallyPoint> ();
+			rallyPoint.Init (pos);
 		}
 
 		playerUnit = gameplayManager.IsSameTeam (this);
@@ -258,26 +257,35 @@ public class FactoryBase : IStats
 		if (!hasRallypoint) return;
 
 		// Look At
-		Vector3 difference = rallypoint.position - transform.position;
+		Vector3 difference = goRallypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);
 		Vector3 forward = rotation * Vector3.forward;
 
 		Vector3 unitSpawnPosition = transform.position + (forward * helperCollider.radius);
 
+		Unit newUnit = null;
 		if (PhotonNetwork.offlineMode)
 		{
-			Unit newUnit = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
-//			newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
-			newUnit.Move (rallypoint.position);
-			newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
+			Unit u = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
+			newUnit = u;
 		}
 		else
 		{
-	        GameObject newUnit = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
-//			newUnit.GetComponent<Unit> ().Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
-			newUnit.GetComponent<Unit> ().Move (rallypoint.position);
-			newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
+	        GameObject u = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
+			newUnit = u.GetComponent<Unit> ();
 		}
+		
+		//newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
+
+		RallyPoint rallypoint = goRallypoint.GetComponent<RallyPoint> ();
+
+		if (rallypoint.observedUnit != null)
+		{
+			newUnit.Follow (rallypoint.observedUnit);
+		}
+		
+		newUnit.Move (goRallypoint.position);
+		newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 	}
 
 	public virtual IEnumerator OnDie ()
@@ -463,9 +471,9 @@ public class FactoryBase : IStats
 		{
 			if (!hasRallypoint) return;
 
-			rallypoint.gameObject.SetActive (true);
-			if (!rallypoint.gameObject.activeSelf)
-				rallypoint.gameObject.SetActive (true);
+			goRallypoint.gameObject.SetActive (true);
+			if (!goRallypoint.gameObject.activeSelf)
+				goRallypoint.gameObject.SetActive (true);
 
 			foreach (UnitFactory uf in unitsToCreate)
 			{
@@ -575,7 +583,7 @@ public class FactoryBase : IStats
 		{
 			if (!hasRallypoint) return;
 
-			rallypoint.gameObject.SetActive (false);
+			goRallypoint.gameObject.SetActive (false);
 
 			hudController.DestroyInspector ("factory");
 		}

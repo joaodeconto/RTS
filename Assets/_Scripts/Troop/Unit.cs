@@ -7,7 +7,7 @@ using System.Linq;
 using Visiorama.Extension;
 using Visiorama;
 
-public class Unit : IStats, IMovementObservable
+public class Unit : IStats, IMovementObservable, IMovementObserver
 {
 	public const string UnitGroupQueueName = "Unit Group";
 
@@ -37,6 +37,7 @@ public class Unit : IStats, IMovementObservable
 	public float probeRange         = 1f; // how far the character can "see"
     public float turnSpeedAvoidance = 50f; // how fast to turn
 	public int numberOfUnits = 1;
+	public float speed { get { return Pathfind.speed; } }
 
 	public string guiTextureName;
 
@@ -74,10 +75,29 @@ public class Unit : IStats, IMovementObservable
 
 	protected bool invokeCheckEnemy;
 
-	[System.NonSerializedAttribute]
-	public NavMeshAgent pathfind;
-	[System.NonSerializedAttribute]
-	public Vector3 pathfindTarget;
+	protected NavMeshAgent Pathfind;
+
+	public float GetPathFindRadius
+	{
+		get	{
+			return Pathfind.radius;
+		}
+	}
+
+	protected Vector3 PathfindTarget
+	{
+		get {
+			return m_pathFindTarget;
+		}
+
+		set {
+			m_lastSavedPosition = m_pathFindTarget;
+			m_pathFindTarget = value;
+		}
+	}
+
+	private Vector3 m_pathFindTarget;
+	private Vector3 m_lastSavedPosition;
 
 	protected HUDController hudController;
 	protected InteractionController interactionController;
@@ -90,6 +110,9 @@ public class Unit : IStats, IMovementObservable
 
 	// IMovementObservable
 	List<IMovementObserver> observers = new List<IMovementObserver> ();
+
+	//IMovementObserver
+	IMovementObservable followedUnit = null;
 
 	public override void Init ()
 	{
@@ -107,13 +130,13 @@ public class Unit : IStats, IMovementObservable
 		hudController         = ComponentGetter.Get<HUDController> ();
 		interactionController = ComponentGetter.Get<InteractionController>();
 
-		pathfind = GetComponent<NavMeshAgent>();
+		Pathfind = GetComponent<NavMeshAgent>();
 
-		normalAcceleration = pathfind.acceleration;
-		normalSpeed        = pathfind.speed;
-		normalAngularSpeed = pathfind.angularSpeed;
+		normalAcceleration = Pathfind.acceleration;
+		normalSpeed        = Pathfind.speed;
+		normalAngularSpeed = Pathfind.angularSpeed;
 
-		pathfindTarget = transform.position;
+		PathfindTarget = transform.position;
 
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
@@ -145,12 +168,6 @@ public class Unit : IStats, IMovementObservable
 		if (!IsRemoved && !playerUnit)
 		{
 			statsController.RemoveStats (this);
-
-			//IMovementObservable
-			foreach (IMovementObserver o in observers)
-			{
-				UnRegisterMovementObserver (o);
-			}
 		}
 	}
 
@@ -183,7 +200,7 @@ public class Unit : IStats, IMovementObservable
 			case UnitState.Walk:
 				if (unitAnimation.Walk)
 				{
-					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(pathfind.velocity.sqrMagnitude, 0f, 1f);
+					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(Pathfind.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 					
 			}
@@ -192,7 +209,7 @@ public class Unit : IStats, IMovementObservable
 
 				if (targetAttack != null)
 				{
-					pathfindTarget = transform.position;
+					PathfindTarget = transform.position;
 
 					if (IsRangeAttack(targetAttack))
 					{
@@ -213,12 +230,12 @@ public class Unit : IStats, IMovementObservable
 						}
 						else
 						{
-							pathfindTarget = targetAttack.transform.position + (targetAttack.transform.forward * targetAttack.GetComponent<CapsuleCollider>().radius);
-							Move (pathfindTarget);
+							PathfindTarget = targetAttack.transform.position + (targetAttack.transform.forward * targetAttack.GetComponent<CapsuleCollider>().radius);
+							Move (PathfindTarget);
 						}
 					}
 				}
-				else if (MoveComplete(pathfindTarget))
+				else if (MoveComplete(PathfindTarget))
 				{
 					StopMove ();
 					unitState = UnitState.Idle;
@@ -241,7 +258,7 @@ public class Unit : IStats, IMovementObservable
 
 				StopMove ();
 
-				pathfindTarget = transform.position;
+				PathfindTarget = transform.position;
 
 				if (targetAttack != null)
 				{
@@ -298,11 +315,12 @@ public class Unit : IStats, IMovementObservable
 	#region Move Pathfind w/ Avoidance
 	public void Move (Vector3 destination)
 	{
-		if (!pathfind.updatePosition) pathfind.updatePosition = true;
+		if (!Pathfind.updatePosition) Pathfind.updatePosition = true;
 
-		if (pathfindTarget != destination) pathfind.SetDestination (destination);
+		if (PathfindTarget != destination) Pathfind.SetDestination (destination);
 
-		pathfindTarget = destination;
+		PathfindTarget = destination;
+
 		unitState = UnitState.Walk;
 	}
 
@@ -311,7 +329,7 @@ public class Unit : IStats, IMovementObservable
 		if (unitState != UnitState.Walk) return;
 
         RaycastHit hit;
-        Vector3 dir = (pathfindTarget - transform.position).normalized;
+        Vector3 dir = (PathfindTarget - transform.position).normalized;
 
         bool previousCastMissed = true;
 
@@ -329,8 +347,8 @@ public class Unit : IStats, IMovementObservable
 	                Debug.DrawLine(transform.position, hit.point, Color.green);
 	                previousCastMissed = false;
 	                obstacleAvoid = true;
-	                pathfind.Stop(true);
-	                pathfind.ResetPath();
+	                Pathfind.Stop(true);
+	                Pathfind.ResetPath();
 	                if(hit.transform != transform)
 					{
 	                    obstacleInPath = hit.transform;
@@ -347,8 +365,8 @@ public class Unit : IStats, IMovementObservable
                 Debug.DrawLine(transform.position, hit.point, Color.green);
                 previousCastMissed = false;
                 obstacleAvoid = true;
-                pathfind.Stop(true);
-                pathfind.ResetPath();
+                Pathfind.Stop(true);
+                Pathfind.ResetPath();
                 if(hit.transform != transform)
 				{
                     obstacleInPath = hit.transform;
@@ -360,7 +378,7 @@ public class Unit : IStats, IMovementObservable
         }
 
 		Vector3 leftReference = probePoint;
-		leftReference.x -= (pathfind.radius);
+		leftReference.x -= (Pathfind.radius);
 
         if (obstacleAvoid &&
 			previousCastMissed &&
@@ -373,7 +391,7 @@ public class Unit : IStats, IMovementObservable
 					// ignore our target
 	                Debug.DrawLine(leftReference, hit.point, Color.red);
 	                obstacleAvoid = true;
-	                pathfind.Stop();
+	                Pathfind.Stop();
 	                if(hit.transform != transform) {
 	                    obstacleInPath = hit.transform;
 	                    previousCastMissed = false;
@@ -387,7 +405,7 @@ public class Unit : IStats, IMovementObservable
 				// ignore our target
                 Debug.DrawLine(leftReference, hit.point, Color.red);
                 obstacleAvoid = true;
-                pathfind.Stop();
+                Pathfind.Stop();
                 if(hit.transform != transform) {
                     obstacleInPath = hit.transform;
                     previousCastMissed = false;
@@ -398,7 +416,7 @@ public class Unit : IStats, IMovementObservable
         }
 
 		Vector3 rightReference = probePoint;
-		rightReference.x += (pathfind.radius);
+		rightReference.x += (Pathfind.radius);
 
         // check the other side :)
         if (obstacleAvoid &&
@@ -412,7 +430,7 @@ public class Unit : IStats, IMovementObservable
 					// ignore our target
 	                Debug.DrawLine(rightReference, hit.point, Color.green);
 	                obstacleAvoid = true;
-	                pathfind.Stop();
+	                Pathfind.Stop();
 	                if(hit.transform != transform) {
 	                    obstacleInPath = hit.transform;
 	                    dir += hit.normal * turnSpeedAvoidance;
@@ -424,7 +442,7 @@ public class Unit : IStats, IMovementObservable
 				// ignore our target
                 Debug.DrawLine(rightReference, hit.point, Color.green);
                 obstacleAvoid = true;
-                pathfind.Stop();
+                Pathfind.Stop();
                 if(hit.transform != transform) {
                     obstacleInPath = hit.transform;
                     dir += hit.normal * turnSpeedAvoidance;
@@ -442,9 +460,9 @@ public class Unit : IStats, IMovementObservable
 			    Debug.Log("Back on Navigation! unit - " + gameObject.name);
 			    obstacleAvoid = false; // don't let Unity nav and our avoidance nav fight, character does odd things
 			    obstacleInPath = null; // Hakuna Matata
-			    pathfind.ResetPath();
-			    pathfind.SetDestination(pathfindTarget);
-			    pathfind.Resume(); // Unity nav can resume movement control
+			    Pathfind.ResetPath();
+			    Pathfind.SetDestination(PathfindTarget);
+			    Pathfind.Resume(); // Unity nav can resume movement control
 			}
 		}
 
@@ -452,20 +470,20 @@ public class Unit : IStats, IMovementObservable
         if(obstacleAvoid) {
             Quaternion rot = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime);
-            transform.position += transform.forward * pathfind.speed * Time.deltaTime;
+            transform.position += transform.forward * Pathfind.speed * Time.deltaTime;
         }
     }
 
 	public void StopMove ()
 	{
-		pathfind.Stop ();
+		Pathfind.Stop ();
 	}
 	#endregion
 
 	private IEnumerator Attack ()
 	{
 		Quaternion rotation = Quaternion.LookRotation(targetAttack.transform.position - transform.position);
-		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * pathfind.angularSpeed);
+		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
 
 		if (unitAnimation.Attack)
 		{
@@ -598,8 +616,8 @@ public class Unit : IStats, IMovementObservable
 
 	public bool MoveComplete (Vector3 destination)
 	{
-		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
-				pathfind.velocity.sqrMagnitude < 0.1f;
+		return (Vector3.Distance(transform.position, Pathfind.destination) <= 2) &&
+				Pathfind.velocity.sqrMagnitude < 0.1f;
 //		return Vector3.Distance(transform.position, destination) <= 2;
 	}
 
@@ -608,8 +626,8 @@ public class Unit : IStats, IMovementObservable
 	{
 //		if (pathfind.desiredVelocity.sqrMagnitude < 0.001f) start = !start;
 //		return pathfind.desiredVelocity.sqrMagnitude < 0.001f || !start;
-		return (Vector3.Distance(transform.position, pathfind.destination) <= 2) &&
-				pathfind.velocity.sqrMagnitude < 0.1f;
+		return (Vector3.Distance(transform.position, Pathfind.destination) <= 2) &&
+				Pathfind.velocity.sqrMagnitude < 0.1f;
 //		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
 	}
 
@@ -786,9 +804,16 @@ public class Unit : IStats, IMovementObservable
 	{
 		IsDead = true;
 
-		pathfind.Stop ();
+		Pathfind.Stop ();
 
 		unitState = UnitState.Die;
+
+		//IMovementObservable
+		int c = observers.Count;
+		while (--c != -1)
+		{
+			UnRegisterMovementObserver (observers[c]);
+		}
 
 		statsController.RemoveStats(this);
 
@@ -833,9 +858,9 @@ public class Unit : IStats, IMovementObservable
 
 	internal void ResetPathfindValue ()
 	{
-		pathfind.acceleration = normalAcceleration;
-		pathfind.speed = normalSpeed;
-		pathfind.angularSpeed = normalAngularSpeed;
+		Pathfind.acceleration = normalAcceleration;
+		Pathfind.speed = normalSpeed;
+		Pathfind.angularSpeed = normalAngularSpeed;
 	}
 
 	public override void DrawGizmosSelected ()
@@ -860,13 +885,20 @@ public class Unit : IStats, IMovementObservable
 
 	public override bool IsVisible
 	{
-		get
-		{
+		get {
 			return model.activeSelf;
 		}
 	}
 
 	#region IMovementObservable implementation
+
+	/// <summary>
+	/// Registers the movement observer.
+	/// </summary>
+	/// <param name="observer">Observer.</param>
+	/// <description>
+	/// Avoid using this method use the Follow method instead
+	/// </description>
 
 	public void RegisterMovementObserver (IMovementObserver observer)
 	{
@@ -875,7 +907,12 @@ public class Unit : IStats, IMovementObservable
 
 	public void UnRegisterMovementObserver (IMovementObserver observer)
 	{
-		observers.Remove (observer);
+		bool success = observers.Remove (observer);
+
+		if (success)
+		{
+			observer.OnUnRegisterObserver ();
+		}
 	}
 
 	public void NotifyMovement ()
@@ -883,6 +920,43 @@ public class Unit : IStats, IMovementObservable
 		foreach (IMovementObserver o in observers)
 		{
 			o.UpdatePosition (transform.position);
+		}
+	}
+
+	#endregion
+
+	public void Follow (IMovementObservable observable)
+	{
+		observable.RegisterMovementObserver (this);
+		followedUnit = observable;
+	}
+
+	public void UnFollow  ()
+	{
+		if (followedUnit == null)
+			return;
+
+		followedUnit.UnRegisterMovementObserver (this);
+		followedUnit = null;
+	}
+
+	#region IMovementObserver implementation
+
+	public void UpdatePosition (Vector3 newPosition)
+	{
+		Vector3 forwardVec = (transform.forward.normalized) * this.GetPathFindRadius * 2.0f;
+
+		Move (newPosition - forwardVec);
+	}
+
+	public void OnUnRegisterObserver ()
+	{
+		Move (LastPosition);
+	}
+
+	public Vector3 LastPosition {
+		get {
+			return m_lastSavedPosition;
 		}
 	}
 

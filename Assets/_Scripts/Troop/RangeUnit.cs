@@ -54,9 +54,9 @@ public class RangeUnit : Unit
 
 			if (IsAttacking) return;
 			
-			pathfind.Stop ();
+			Pathfind.Stop ();
 
-			pathfindTarget = transform.position;
+			PathfindTarget = transform.position;
 
 			StartCoroutine(Attack ());
 		}
@@ -71,7 +71,7 @@ public class RangeUnit : Unit
 		if (highRangeAnimation != null)
 		{
 			Quaternion rotation = Quaternion.LookRotation(targetAttack.transform.position - transform.position);
-			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * pathfind.angularSpeed);
+			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
 			
 			ControllerAnimation.PlayCrossFade (highRangeAnimation, WrapMode.Once);
 
