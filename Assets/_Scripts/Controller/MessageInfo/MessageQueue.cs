@@ -92,7 +92,7 @@ public abstract class MessageQueue : MonoBehaviour
 													Pref_button);
 			
 			button.name  = buttonName;
-			button.layer = gameObject.layer;
+//			button.layer = gameObject.layer;
 			button.transform.localPosition = Vector3.up * 10000;//Coloca em um lugar em distante para somente aparecer no reposition grid
 			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 
@@ -110,7 +110,7 @@ public abstract class MessageQueue : MonoBehaviour
 													Pref_button);
 			
 			button.name  = buttonName;
-			button.layer = gameObject.layer;
+//			button.layer = gameObject.layer;
 			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
 //			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 	

@@ -78,7 +78,7 @@ public class FirstCellMessageQueue : MessageQueue
 				GameObject button = NGUITools.AddChild (uiGridFirst.gameObject,
 				                                        Pref_button);
 				button.name  = buttonName;
-				button.layer = gameObject.layer;
+//				button.layer = gameObject.layer;
 				button.transform.localPosition = Vector3.up * 100000;
 			    button.transform.GetComponentInChildren<UISprite>().height = Mathf.CeilToInt(FirstCellSize.y);
 		    	button.transform.GetComponentInChildren<UISprite>().width = Mathf.CeilToInt(FirstCellSize.x);
@@ -102,8 +102,8 @@ public class FirstCellMessageQueue : MessageQueue
 			                                        Pref_button);
 			
 			button.name  = buttonName;
-			button.layer = gameObject.layer;
-//			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
+//			button.layer = gameObject.layer;
+			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
 			button.transform.GetComponentInChildren<UISprite>().height = Mathf.CeilToInt(CellSize.y);
 			button.transform.GetComponentInChildren<UISprite>().width = Mathf.CeilToInt(CellSize.x);
 			//button.transform.localPosition = Vector3.zero;
