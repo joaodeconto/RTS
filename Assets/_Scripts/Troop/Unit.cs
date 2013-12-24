@@ -7,7 +7,7 @@ using System.Linq;
 using Visiorama.Extension;
 using Visiorama;
 
-public class Unit : IStats, IMovementObservable, IMovementObserver
+public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObservable, IAttackObserver
 {
 	public const string UnitGroupQueueName = "Unit Group";
 
@@ -52,11 +52,13 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	public Animation ControllerAnimation;
 
+	public IActionStrategy[] behaviours;
+	public IActionStrategy currentBehaviour;
+
 	private bool canHit;
 	public bool CanHit
 	{
-		get
-		{
+		get {
 			if (!canHit) canHit = (IsDead);
 
 			return canHit;
@@ -67,7 +69,15 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
     private bool obstacleAvoid = false; // internal var
 
 	protected PhotonPlayer playerTargetAttack;
-	protected GameObject targetAttack;
+
+	protected GameObject m_targetAttack;
+	protected GameObject TargetAttack {
+		get { return m_targetAttack; }
+		set {
+			m_targetAttack = value;
+			NotifyBeginAttack ();
+		}
+	}
 	protected bool followingTarget;
 	protected float attackBuff;
 
@@ -77,15 +87,13 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	protected NavMeshAgent Pathfind;
 
-	public float GetPathFindRadius
-	{
+	public float GetPathFindRadius {
 		get	{
 			return Pathfind.radius;
 		}
 	}
 
-	protected Vector3 PathfindTarget
-	{
+	protected Vector3 PathfindTarget {
 		get {
 			return m_pathFindTarget;
 		}
@@ -109,10 +117,11 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 	protected float normalAngularSpeed;
 
 	// IMovementObservable
-	List<IMovementObserver> observers = new List<IMovementObserver> ();
+	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
+	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
 
 	//IMovementObserver
-	IMovementObservable followedUnit = null;
+	Unit followedUnit = null;
 
 	public override void Init ()
 	{
@@ -194,7 +203,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 				StartCheckEnemy ();
 
-				if (targetAttack != null) unitState = UnitState.Walk;
+				if (TargetAttack != null) unitState = UnitState.Walk;
 
 				break;
 			case UnitState.Walk:
@@ -202,35 +211,34 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 				{
 					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(Pathfind.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
-					
-			}
+				}
 				
 				CancelCheckEnemy ();
 
-				if (targetAttack != null)
-				{
+				if (TargetAttack != null)
+				{	
 					PathfindTarget = transform.position;
 
-					if (IsRangeAttack(targetAttack))
+					if (IsRangeAttack(TargetAttack))
 					{
 						unitState = UnitState.Attack;
 					}
 //					else if (InDistanceView (targetAttack.transform.position))
-					else if (targetAttack.GetComponent<IStats> ().IsVisible)
+					else if (TargetAttack.GetComponent<IStats> ().IsVisible)
 					{
-						Move (targetAttack.transform.position);
+						Move (TargetAttack.transform.position);
 					}
 					else
 					{
 						if (followingTarget)
 						{
-							targetAttack    = null;
+							TargetAttack    = null;
 							unitState       = UnitState.Idle;
 							followingTarget = false;
 						}
 						else
 						{
-							PathfindTarget = targetAttack.transform.position + (targetAttack.transform.forward * targetAttack.GetComponent<CapsuleCollider>().radius);
+							PathfindTarget = TargetAttack.transform.position + (TargetAttack.transform.forward * TargetAttack.GetComponent<CapsuleCollider>().radius);
 							Move (PathfindTarget);
 						}
 					}
@@ -245,9 +253,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 				followingTarget = true;
 
-				if (targetAttack != null)
+				if (TargetAttack != null)
 				{
-					if (targetAttack.GetComponent<IStats>().IsRemoved)
+					if (TargetAttack.GetComponent<IStats>().IsRemoved)
 					{
 						TargetingEnemy (null);
 						IsAttacking = false;
@@ -260,9 +268,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 				PathfindTarget = transform.position;
 
-				if (targetAttack != null)
+				if (TargetAttack != null)
 				{
-					if (IsRangeAttack (targetAttack))
+					if (IsRangeAttack (TargetAttack))
 					{
 						StartCoroutine(Attack ());
 					}
@@ -338,9 +346,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
         if(Physics.Raycast(probePoint, transform.forward, out hit, probeRange))
 		{
-			if (targetAttack != null)
+			if (TargetAttack != null)
 			{
-	            if(obstacleInPath != targetAttack)
+	            if(obstacleInPath != TargetAttack)
 				{
 					// ignore our target
 	                Debug.Log("Found an object in path! - " + gameObject.name);
@@ -384,9 +392,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 			previousCastMissed &&
 			Physics.Raycast(leftReference, transform.forward, out hit, probeRange))
 		{
-			if (targetAttack != null)
+			if (TargetAttack != null)
 			{
-	            if(obstacleInPath != targetAttack)
+	            if(obstacleInPath != TargetAttack)
 				{
 					// ignore our target
 	                Debug.DrawLine(leftReference, hit.point, Color.red);
@@ -423,9 +431,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 			previousCastMissed &&
 			Physics.Raycast(rightReference, transform.forward, out hit, probeRange))
 		{
-			if (targetAttack != null)
+			if (TargetAttack != null)
 			{
-	            if (obstacleInPath != targetAttack)
+	            if (obstacleInPath != TargetAttack)
 				{
 					// ignore our target
 	                Debug.DrawLine(rightReference, hit.point, Color.green);
@@ -482,7 +490,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	private IEnumerator Attack ()
 	{
-		Quaternion rotation = Quaternion.LookRotation(targetAttack.transform.position - transform.position);
+		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
 
 		if (unitAnimation.Attack)
@@ -493,11 +501,11 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 			if (!PhotonNetwork.offlineMode)
 			{
-				photonView.RPC ("AttackStat", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
 			}
 			else
 			{
-				targetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+				TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
 			}
 
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
@@ -514,11 +522,11 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 			{
 				if (PhotonNetwork.offlineMode)
 				{
-					targetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+					TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
 				}
 				else
 				{
-					photonView.RPC ("AttackStat", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
 //					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
 //					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 				}
@@ -638,8 +646,8 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 			if (!gameplayManager.IsBoot (enemy.GetComponent<IStats>().team))
 			{
 				PhotonPlayer[] pp = (from pps in PhotonNetwork.playerList
-		        where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
-		        select pps).ToArray ();
+							         where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
+							         select pps).ToArray ();
 				playerTargetAttack = pp[0];
 			}
 			else
@@ -651,7 +659,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 		}
 		else playerTargetAttack = null;
 
-		targetAttack = enemy;
+		TargetAttack = enemy;
 	}
 
 	private Unit BinarySearch(Unit[] units, Unit unit, int first, int last)
@@ -736,7 +744,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 		}
 		*/
 		
-		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1<<LayerMask.NameToLayer ("Unit"));
+		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1 << LayerMask.NameToLayer ("Unit"));
 
 		if (nearbyUnits.Length == 0) return;
 
@@ -809,10 +817,17 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 		unitState = UnitState.Die;
 
 		//IMovementObservable
-		int c = observers.Count;
+		int c = IMOobservers.Count;
 		while (--c != -1)
 		{
-			UnRegisterMovementObserver (observers[c]);
+			UnRegisterMovementObserver (IMOobservers[c]);
+		}
+		
+		//IAttackObservable
+		c = IAOobservers.Count;
+		while (--c != -1)
+		{
+			UnRegisterAttackObserver (IAOobservers[c]);
 		}
 
 		statsController.RemoveStats(this);
@@ -889,6 +904,23 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 			return model.activeSelf;
 		}
 	}
+	
+	public void Follow (Unit followed)
+	{
+		followed.RegisterMovementObserver (this);
+		followed.RegisterAttackObserver (this);
+		followedUnit = followed;
+	}
+	
+	public void UnFollow  ()
+	{
+		if (followedUnit == null)
+			return;
+		
+		followedUnit.UnRegisterMovementObserver (this);
+		followedUnit.UnRegisterAttackObserver (this);
+		followedUnit = null;
+	}
 
 	#region IMovementObservable implementation
 
@@ -902,12 +934,17 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	public void RegisterMovementObserver (IMovementObserver observer)
 	{
-		observers.Add (observer);
+		IMOobservers.Add (observer);
 	}
 
+	/// <summary>
+	/// Unregister the movement observer.
+	/// </summary>
+	/// <param name="observer">Observer.</param>
+	/// Avoid using this method use the UnFollow method instead
 	public void UnRegisterMovementObserver (IMovementObserver observer)
 	{
-		bool success = observers.Remove (observer);
+		bool success = IMOobservers.Remove (observer);
 
 		if (success)
 		{
@@ -917,7 +954,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	public void NotifyMovement ()
 	{
-		foreach (IMovementObserver o in observers)
+		foreach (IMovementObserver o in IMOobservers)
 		{
 			o.UpdatePosition (transform.position);
 		}
@@ -925,25 +962,13 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 
 	#endregion
 
-	public void Follow (IMovementObservable observable)
-	{
-		observable.RegisterMovementObserver (this);
-		followedUnit = observable;
-	}
-
-	public void UnFollow  ()
-	{
-		if (followedUnit == null)
-			return;
-
-		followedUnit.UnRegisterMovementObserver (this);
-		followedUnit = null;
-	}
-
 	#region IMovementObserver implementation
 
 	public void UpdatePosition (Vector3 newPosition)
 	{
+		if (TargetAttack != null)
+			return;
+		
 		Vector3 forwardVec = (transform.forward.normalized) * this.GetPathFindRadius * 2.0f;
 
 		Move (newPosition - forwardVec);
@@ -958,6 +983,43 @@ public class Unit : IStats, IMovementObservable, IMovementObserver
 		get {
 			return m_lastSavedPosition;
 		}
+	}
+
+	#endregion
+
+	#region IAttackObservable implementation
+
+	public void RegisterAttackObserver (IAttackObserver observer)
+	{
+		IAOobservers.Add (observer);
+	}
+
+	public void UnRegisterAttackObserver (IAttackObserver observer)
+	{
+		bool success = IAOobservers.Remove (observer);
+		
+		if (success)
+		{
+			observer.OnUnRegisterObserver ();
+		}
+	}
+
+	public void NotifyBeginAttack ()
+	{
+		foreach (IAttackObserver o in IAOobservers)
+		{
+			o.BeginAttack (TargetAttack);
+		}
+	}
+
+	#endregion
+
+	#region IAttackObserver implementation
+
+	public void BeginAttack (GameObject enemy)
+	{
+		CancelCheckEnemy ();
+		TargetingEnemy (enemy);
 	}
 
 	#endregion

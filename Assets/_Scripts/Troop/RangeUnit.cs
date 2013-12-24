@@ -22,16 +22,16 @@ public class RangeUnit : Unit
 	
 	public override void IAStep ()
 	{
-		if (targetAttack != null)
+		if (TargetAttack != null)
 		{
 			if (!inHighRange)
 			{
-				if (IsHighRangeAttack (targetAttack))
+				if (IsHighRangeAttack (TargetAttack))
 					inHighRange = true;
 			}
 			else
 			{
-				if (IsRangeAttack (targetAttack))
+				if (IsRangeAttack (TargetAttack))
 					inHighRange = false;
 			}
 		}
@@ -45,7 +45,7 @@ public class RangeUnit : Unit
 		{
 			followingTarget = true;
 
-			if (targetAttack.GetComponent<IStats>().IsRemoved)
+			if (TargetAttack.GetComponent<IStats>().IsRemoved)
 			{
 				TargetingEnemy (null);
 				IsAttacking = false;
@@ -70,7 +70,7 @@ public class RangeUnit : Unit
 	{
 		if (highRangeAnimation != null)
 		{
-			Quaternion rotation = Quaternion.LookRotation(targetAttack.transform.position - transform.position);
+			Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
 			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
 			
 			ControllerAnimation.PlayCrossFade (highRangeAnimation, WrapMode.Once);
@@ -93,18 +93,18 @@ public class RangeUnit : Unit
 							 trnsInstantiateLocalPrefab.rotation) as GameObject;
 			}
 			
-			pRange.GetComponent<RangeObject> ().Init (targetAttack, 5f,
+			pRange.GetComponent<RangeObject> ().Init (TargetAttack, 5f,
 			(ht) => 
 			{
-				if (targetAttack != null)
+				if (TargetAttack != null)
 				{
 					if (!PhotonNetwork.offlineMode)
 					{
-						photonView.RPC ("AttackStat", playerTargetAttack, targetAttack.name, force + AdditionalForce);
+						photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
 					}
 					else
 					{
-						targetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+						TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
 					}
 				}
 			}

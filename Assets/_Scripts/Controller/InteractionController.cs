@@ -50,13 +50,6 @@ public class InteractionController : MonoBehaviour
 				uiExitGameObject.SetActive (true);
 			}
 		}
-
-#if UNITY_EDITOR
-		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
-		{
-			gameplayManager.resources.NumberOfRocks += 100;
-		}
-#endif
 		
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 		if (touchController.touchType != TouchController.TouchType.Ended)

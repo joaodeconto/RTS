@@ -8,8 +8,8 @@ using System.Linq;
 using Visiorama;
 using Visiorama.Utils;
 
-public class RallyPoint : MonoBehaviour, IMovementObserver {
-	
+public class RallyPoint : MonoBehaviour, IMovementObserver
+{
 	public Texture2D lineTexture;
 	public float start = 1.0f; 
 	public float end = 1.0f;
@@ -18,7 +18,8 @@ public class RallyPoint : MonoBehaviour, IMovementObserver {
 	protected TouchController touchController;
 	protected LineRenderer lineRenderer;
 
-	public IMovementObservable observedUnit { get; private set; }
+	public Unit observedUnit { get; private set; }
+	private IMovementObservable observed { get; set; }
 	private Vector3 lastObservedPosition = Vector3.zero;
 
 	private Vector3 lastSavedPosition;
@@ -92,10 +93,10 @@ public class RallyPoint : MonoBehaviour, IMovementObserver {
 			{
 				UpdatePosition (hit.point);
 
-				if (observedUnit != null)
+				if (observed != null)
 				{
-					observedUnit.UnRegisterMovementObserver (this);
-					observedUnit = null;
+					observed.UnRegisterMovementObserver (this);
+					observed = null;
 				}
 
 				Unit unit = goHit.GetComponent<Unit> ();
@@ -114,12 +115,14 @@ public class RallyPoint : MonoBehaviour, IMovementObserver {
 						
 						foreach (MonoBehaviour script in scripts)
 						{
-							IMovementObservable observable = script as IMovementObservable;
+							IMovementObservable o = script as IMovementObservable;
+							Unit u 				  = script as Unit;
 							
-							if (observable != null)
+							if (o != null && u != null)
 							{
-								observedUnit = observable;
-								observedUnit.RegisterMovementObserver (this);
+								observedUnit = u;
+								observed     = o;
+								observed.RegisterMovementObserver (this);
 								break;
 							}
 						}
