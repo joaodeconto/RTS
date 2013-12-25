@@ -33,37 +33,37 @@ public class NewGame : MonoBehaviour
 
 		buttons = this.transform.FindChild ("Menu").FindChild ("Buttons");
 
-		GameObject match2p = buttons.FindChild ("Match 2P").gameObject;
+		GameObject tutorial = buttons.FindChild ("Tutorial").gameObject;
 
-		dcb = match2p.AddComponent<DefaultCallbackButton> ();
+		dcb = tutorial.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								CreateRoom (2, "2P");
+								CreateRoom (1, "1P");
 							});
 
-		GameObject match3p = buttons.FindChild ("Match 3P").gameObject;
-
-		dcb = match3p.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
-							{
-								CreateRoom (3, "3P");
-							});
-
-		GameObject match4p = buttons.FindChild ("Match 4P").gameObject;
-
-		dcb = match4p.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
-							{
-								CreateRoom (4, "4P");
-							});
-
-		GameObject match2x2 = buttons.FindChild ("Match 2x2").gameObject;
-
-		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
-							{
-								CreateRoom (4, "2x2", GameplayManager.Mode.Cooperative);
-							});
+//		GameObject match3p = buttons.FindChild ("Match 3P").gameObject;
+//
+//		dcb = match3p.AddComponent<DefaultCallbackButton> ();
+//		dcb.Init(null, (ht_hud) =>
+//							{
+//								CreateRoom (3, "3P");
+//							});
+//
+//		GameObject match4p = buttons.FindChild ("Match 4P").gameObject;
+//
+//		dcb = match4p.AddComponent<DefaultCallbackButton> ();
+//		dcb.Init(null, (ht_hud) =>
+//							{
+//								CreateRoom (4, "4P");
+//							});
+//
+//		GameObject match2x2 = buttons.FindChild ("Match 2x2").gameObject;
+//
+//		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
+//		dcb.Init(null, (ht_hud) =>
+//							{
+//								CreateRoom (4, "2x2", GameplayManager.Mode.Cooperative);
+//							});
 
 		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
 
