@@ -38,7 +38,7 @@ public class NewGame : MonoBehaviour
 		dcb = tutorial.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, (ht_hud) =>
 							{
-								CreateRoom (1, "1P");
+								CreateRoom (1, "Tutorial");
 							});
 
 //		GameObject match3p = buttons.FindChild ("Match 3P").gameObject;
