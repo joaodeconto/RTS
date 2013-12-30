@@ -120,7 +120,7 @@ public class RangeUnit : Unit
 	{
 		if (!IsVisible) return;
 		
-		Debug.Log ("inHightRangeSync: " + inHighRange);
+//		Debug.Log ("inHightRangeSync: " + inHighRange);
 		
 		if (inHighRange)
 		{

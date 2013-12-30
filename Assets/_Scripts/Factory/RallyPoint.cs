@@ -136,7 +136,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 
 	#region IMovementObserver implementation
 
-	public void UpdatePosition (Vector3 newPosition)
+	public void UpdatePosition (Vector3 newPosition, GameObject go = null)
 	{
 		lastObservedPosition = transform.position;
 		transform.position   = newPosition;
@@ -150,7 +150,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		}
 	}
 
-	public void OnUnRegisterObserver ()
+	public void OnUnRegisterMovementObserver ()
 	{
 		UpdatePosition (lastSavedPosition);
 	}

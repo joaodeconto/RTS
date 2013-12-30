@@ -624,9 +624,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 
 	public bool MoveComplete (Vector3 destination)
 	{
-		return (Vector3.Distance(transform.position, Pathfind.destination) <= 2) &&
-				Pathfind.velocity.sqrMagnitude < 0.1f;
-//		return Vector3.Distance(transform.position, destination) <= 2;
+		float distanceToDestination = Vector3.Distance(transform.position, Pathfind.destination);
+	
+		return (distanceToDestination <= 2.0f) && Pathfind.velocity.sqrMagnitude < 0.1f;
 	}
 
 //	bool start = false;
@@ -948,15 +948,18 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 
 		if (success)
 		{
-			observer.OnUnRegisterObserver ();
+			observer.OnUnRegisterMovementObserver ();
 		}
 	}
 
 	public void NotifyMovement ()
 	{
-		foreach (IMovementObserver o in IMOobservers)
+		if (transform.position != LastPosition)
 		{
-			o.UpdatePosition (transform.position);
+			foreach (IMovementObserver o in IMOobservers)
+			{
+				o.UpdatePosition (transform.position);
+			}
 		}
 	}
 
@@ -964,17 +967,22 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 
 	#region IMovementObserver implementation
 
-	public void UpdatePosition (Vector3 newPosition)
+	public void UpdatePosition (Vector3 newPosition, GameObject go = null)
 	{
 		if (TargetAttack != null)
 			return;
-		
-		Vector3 forwardVec = (transform.forward.normalized) * this.GetPathFindRadius * 2.0f;
 
-		Move (newPosition - forwardVec);
+		Vector3 forwardVec = (transform.forward.normalized) * followedUnit.GetPathFindRadius * 2.0f;
+
+		newPosition = newPosition - forwardVec;
+
+		if (Vector3.Distance (this.transform.position, newPosition) < followedUnit.GetPathFindRadius * 2.0f)
+			return;
+
+		Move (newPosition);
 	}
 
-	public void OnUnRegisterObserver ()
+	public void OnUnRegisterMovementObserver ()
 	{
 		Move (LastPosition);
 	}
@@ -1000,7 +1008,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 		
 		if (success)
 		{
-			observer.OnUnRegisterObserver ();
+			observer.OnUnRegisterAttackObserver ();
 		}
 	}
 
@@ -1021,7 +1029,11 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 		CancelCheckEnemy ();
 		TargetingEnemy (enemy);
 	}
+	
+	public void OnUnRegisterAttackObserver ()
+	{
 
+	}
 	#endregion
 
 	// RPC

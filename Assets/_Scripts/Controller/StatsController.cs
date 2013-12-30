@@ -128,8 +128,9 @@ public class StatsController : MonoBehaviour
 		foreach (IStats stat in selectedStats)
 		{
 			Unit unit = stat as Unit;
-			
-			if (unit == null) continue;
+
+			//Nao permite seguir a si mesmo nem alguma unidade nula
+			if (unit == null || unit == allyUnit) continue;
 			
 			unit.Follow (allyUnit);
 			
