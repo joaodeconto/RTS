@@ -424,36 +424,42 @@ public class HUDController : MonoBehaviour
 		trnsPanelInfoBox.gameObject.SetActive (true);
 		
 		Unit unit = stat as Unit;
+
+		Transform infoStats = trnsPanelInfoBox.FindChild ("Info Stats");
+		Transform infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
+		Transform infoIcon = trnsPanelInfoBox.FindChild ("Info Icon");
 		
-		Transform nameLabel = trnsPanelInfoBox.FindChild ("name-label");
+		Transform nameLabel = infoQuali.FindChild ("name-label");
 		nameLabel.GetComponent<UILabel> ().text = stat.category;
 		
-		Transform spriteUnit = trnsPanelInfoBox.FindChild ("sprite-unit");
+		Transform spriteUnit = infoIcon.FindChild ("sprite-unit");
 		Debug.Log (unit.guiTextureName);
 		spriteUnit.GetComponent<UISprite> ().spriteName = unit.guiTextureName;
+
+		Transform currentHp = infoQuali.FindChild ("CurrentHP");
+		currentHp.GetComponent <UISlider> ().value = unit.Health;
 		
 		// Info
-		Transform info = trnsPanelInfoBox.FindChild ("info");
-		
-		Transform attackLabel = info.FindChild ("attack-label");
+				
+		Transform attackLabel = infoStats.FindChild ("attack-label");
 		attackLabel.GetComponent<UILabel> ().text = unit.AdditionalForce != 0 ?
 			unit.force + "(+" + unit.AdditionalForce + ")" :
 			unit.force.ToString ();
 		
-		Transform hpLabel = info.FindChild ("hp-label");
+		Transform hpLabel = infoStats.FindChild ("hp-label");
 		hpLabel.GetComponent<UILabel> ().text = stat.Health.ToString ();
 		
-		Transform speedLabel = info.FindChild ("speed-label");
+		Transform speedLabel = infoStats.FindChild ("speed-label");
 		speedLabel.GetComponent<UILabel> ().text = ((int)unit.speed).ToString ();
 		
-		Transform unitsLabel = info.FindChild ("units-label");
+		Transform unitsLabel = infoStats.FindChild ("units-label");
 		unitsLabel.GetComponent<UILabel> ().text = unit.numberOfUnits.ToString ();
 		
-		Transform timeLabel = info.FindChild ("time-label");
+		Transform timeLabel = infoStats.FindChild ("time-label");
 		timeLabel.GetComponent<UILabel> ().text = unit.timeToSpawn.ToString ();
 		
-		Transform goldLabel = info.FindChild ("gold-label");
-		goldLabel.GetComponent<UILabel> ().text = unit.costOfResources.ToString ();
+		Transform goldLabel = infoStats.FindChild ("gold-label");
+		goldLabel.GetComponent<UILabel> ().text = stat.costOfResources.ToString ();
 	}
 	
 	public void CloseInfoBox ()
