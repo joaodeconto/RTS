@@ -602,11 +602,7 @@ public class StatsController : MonoBehaviour
 													else
 													{
 														if (Time.time - (float)ht["time"] > 2f)
-														{
-															Vector3 pos = Math.CenterOfObjects (idleWorkers.ToArray ());
-															
-															Math.CenterCameraInObject (Camera.main, pos);
-															
+														{															
 															//Deselect anything was selected
 															DeselectAllStats();
 															
