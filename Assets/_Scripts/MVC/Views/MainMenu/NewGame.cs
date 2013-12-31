@@ -2,6 +2,7 @@ using UnityEngine;
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using Visiorama;
 
@@ -9,6 +10,32 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class NewGame : MonoBehaviour
 {
+	[System.Serializable ()]
+	public class NewGameMenuButtons
+	{
+		public Transform BtnTutorial;
+		public Transform Btn3P;
+		public Transform Btn4P;
+		public Transform Btn1x1;
+		public Transform Btn2x2;
+		public Transform BtnLeaveRoom;
+
+		public IEnumerable<Transform> Iterate
+		{
+			get
+			{
+				yield return BtnTutorial;
+				yield return Btn3P;
+				yield return Btn4P;
+				yield return Btn1x1;
+				yield return Btn2x2;
+				yield return BtnLeaveRoom;
+			}
+		}
+	}
+
+	public NewGameMenuButtons buttons;
+
 	public UILabel messageActiveGame;
 	public UILabel errorMessage;
 
@@ -16,7 +43,6 @@ public class NewGame : MonoBehaviour
 	bool wasInitialized      = false;
 
 	PhotonWrapper pw;
-	Transform buttons;
 
 	public void Open ()
 	{
@@ -31,50 +57,42 @@ public class NewGame : MonoBehaviour
 
 		DefaultCallbackButton dcb;
 
-		buttons = this.transform.FindChild ("Menu").FindChild ("Buttons");
-
-		GameObject tutorial = buttons.FindChild ("Tutorial").gameObject;
-
-		dcb = tutorial.AddComponent<DefaultCallbackButton> ();
-		dcb.Init(null, (ht_hud) =>
-							{
-								CreateRoom (1, "Tutorial");
-							});
-
-//		GameObject match3p = buttons.FindChild ("Match 3P").gameObject;
-//
-//		dcb = match3p.AddComponent<DefaultCallbackButton> ();
-//		dcb.Init(null, (ht_hud) =>
-//							{
-//								CreateRoom (3, "3P");
-//							});
-//
-//		GameObject match4p = buttons.FindChild ("Match 4P").gameObject;
-//
-//		dcb = match4p.AddComponent<DefaultCallbackButton> ();
-//		dcb.Init(null, (ht_hud) =>
-//							{
-//								CreateRoom (4, "4P");
-//							});
-//
-//		GameObject match2x2 = buttons.FindChild ("Match 2x2").gameObject;
-//
-//		dcb = match2x2.AddComponent<DefaultCallbackButton> ();
-//		dcb.Init(null, (ht_hud) =>
-//							{
-//								CreateRoom (4, "2x2", GameplayManager.Mode.Cooperative);
-//							});
-
-		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
-
-		dcb = leaveRoom.AddComponent<DefaultCallbackButton> ();
-		dcb.Init (null, (ht) =>
-							{
-								if (pw.LeaveRoom ())
-									Close ();
-							});
-
-		leaveRoom.SetActive (false);
+		if (buttons.BtnTutorial)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.BtnTutorial, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, "Tutorial"); } );
+		}
+		
+		if (buttons.Btn3P)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3P, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (3, "3P"); } );
+		}
+		
+		if (buttons.Btn4P)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4P, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (4, "4P"); } );
+		}
+		
+		if (buttons.Btn1x1)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1x1, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (2, "1x1"); } );
+		}
+		
+		if (buttons.Btn2x2)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2x2, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (4, "2x2", GameplayManager.Mode.Cooperative); } );
+		}
+		
+		if (buttons.BtnLeaveRoom)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.BtnLeaveRoom, false);
+			dcb.Init ( null, (ht_hud) => { if (pw.LeaveRoom ()) Close (); } );
+			buttons.BtnLeaveRoom.gameObject.SetActive (false);
+		}
 	}
 
 	public void Close ()
@@ -83,15 +101,17 @@ public class NewGame : MonoBehaviour
 
 		if (buttons == null) return;
 
-		foreach (Transform button in buttons)
+		foreach (Transform button in buttons.Iterate)
 		{
-			button.gameObject.SetActive (true);
+			if (button)
+			{
+				button.gameObject.SetActive (true);
+			}
 		}
 
 		messageActiveGame.enabled = false;
 
-		GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
-		leaveRoom.SetActive (false);
+		buttons.BtnLeaveRoom.gameObject.SetActive (false);
 	}
 
 	private void CreateRoom (int maxPlayers, string battleTypeName, GameplayManager.Mode mode = GameplayManager.Mode.Deathmatch)
@@ -100,19 +120,20 @@ public class NewGame : MonoBehaviour
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
 		PlayerDAO playerDao = ComponentGetter.Get <PlayerDAO> ();
 
-		playerBattleDao.CreateBattle (battleTypeName, DateTime.Now, maxPlayers,
-		(battle) =>
-		{
-			//Debug.Log ("message: " + message);
-			//Debug.Log ("playerBattle: " + playerBattle);
+		//TODO refazer as battles
+//		playerBattleDao.CreateBattle (battleTypeName, DateTime.Now, maxPlayers,
+//		(battle) =>
+//		{
+//			Debug.Log ("message: " + message);
+//			Debug.Log ("playerBattle: " + playerBattle);
 
 			string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + System.DateTime.Now.ToString ("mm-ss");
 			bool isVisible = true, isOpen = true;
 			
-			ConfigurationData.battle = battle;
+//			ConfigurationData.battle = battle;
 			
 			Hashtable properties = new Hashtable ();
-			properties.Add ("battle", battle.ToString ());
+//			properties.Add ("battle", battle.ToString ());
 			pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers, properties);
 
 			pw.SetPropertyOnPlayer ("team", 0);
@@ -125,32 +146,37 @@ public class NewGame : MonoBehaviour
 			messageActiveGame.enabled = true;
 			messageActiveGame.text = "Waiting For Other Players...";
 
-			foreach (Transform button in buttons)
+			foreach (Transform button in buttons.Iterate)
 			{
-				button.gameObject.SetActive (false);
+				if (button)
+				{
+					button.gameObject.SetActive (false);
+				}
 			}
-
-			GameObject leaveRoom = buttons.FindChild ("Leave Room").gameObject;
-			leaveRoom.SetActive (true);
+			
+			if (buttons.BtnLeaveRoom)
+			{
+				buttons.BtnLeaveRoom.gameObject.SetActive (true);
+			}
 
 			pw.TryToEnterGame (10000.0f,
 			(other_message) =>
 			{
-				//Debug.Log("message: " + message);
+				Debug.Log("message: " + other_message);
 
-				//messageActiveGame.enabled = false;
+				messageActiveGame.enabled = false;
 
-				//buttons.gameObject.SetActive (true);
+//				buttons.gameObject.SetActive (true);
 
-				//errorMessage.enabled = true;
+				errorMessage.enabled = true;
 
-				//Invoke ("CloseErrorMessage", 5.0f);
+				Invoke ("CloseErrorMessage", 5.0f);
 			},
 			(playersReady, nMaxPlayers) =>
 			{
 				messageActiveGame.text = "Waiting For Other Players - " + playersReady + "/" + nMaxPlayers;
 			});
-		});
+//		});
 	}
 
 	private void CloseErrorMessage ()

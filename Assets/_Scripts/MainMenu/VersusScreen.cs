@@ -40,8 +40,14 @@ public class VersusScreen : MonoBehaviour
 		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
 		
-		GameObject goPlayers = goVersusScreen.GetComponentInChildren<UIPanel> ().transform.FindChild ("Players").gameObject;
+		Invoke ("InstanceGame", timeToWait+1);
+		InvokeRepeating ("DescountTime", 1f, 1f);
 		
+		GameObject goPlayers = goVersusScreen.GetComponentInChildren<UIPanel> ().transform.FindChild ("Players").gameObject;
+
+		if (!goPlayers)
+			return;
+
 		int totalPlayers = PhotonNetwork.playerList.Length;
 		
 		int configurationOfScreenSelected = 0;
@@ -100,9 +106,6 @@ public class VersusScreen : MonoBehaviour
 				i++;
 			}
 		}
-		
-		Invoke ("InstanceGame", timeToWait+1);
-		InvokeRepeating ("DescountTime", 1f, 1f);
 	}
 	
 	void DescountTime ()

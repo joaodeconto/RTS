@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using Visiorama;
+
 public class InternalMainMenu : MonoBehaviour
 {
 	[System.Serializable]
@@ -34,8 +36,6 @@ public class InternalMainMenu : MonoBehaviour
 			//TODO fazer timeout de conexão
 //		});
 
-		goMainMenu.SetActive (true);
-
 		PlayerLabel.text = player.SzName;
 
 		listChildOptions = new List<Transform>();
@@ -44,32 +44,34 @@ public class InternalMainMenu : MonoBehaviour
 			listChildOptions.Add (child);
 
 			Transform button = child.FindChild ("Button");
+			DefaultCallbackButton dcb;
 
-			if (button != null)
+			Debug.Log ("llego");
+
+			if (button)
 			{
 				Hashtable ht = new Hashtable ();
 				ht["optionName"] = child.name;
 
-				button
-					.gameObject
-					.AddComponent<DefaultCallbackButton>()
-					.Init (ht, (ht_hud) =>
-					{
-						ShowMenu ((string)ht_hud["optionName"]);
-					});
+				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
+				dcb.Init (ht, (ht_hud) =>
+				{
+					Debug.Log (" chegou");
+					ShowMenu ((string)ht_hud["optionName"]);
+				});
 			}
 
 			if (child.name == "Quit")
 			{
-				button
-					.gameObject
-					.AddComponent<DefaultCallbackButton>()
-					.ChangeParams (null, (ht_dcb) =>
-					{
-						 Application.Quit ();
-					});
+				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
+				dcb.ChangeParams (null, (ht_dcb) =>
+				{
+					 Application.Quit ();
+				});
 			}
 		}
+		
+		goMainMenu.SetActive (true);
 	}
 
 	void InitScore ()
