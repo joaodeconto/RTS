@@ -65,7 +65,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 		}
 	}
 
-    private Transform obstacleInPath; // we found something!
+    private Transform obstacleInPath; 	// we found something!
     private bool obstacleAvoid = false; // internal var
 
 	protected PhotonPlayer playerTargetAttack;
@@ -74,8 +74,11 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	protected GameObject TargetAttack {
 		get { return m_targetAttack; }
 		set {
-			m_targetAttack = value;
-			NotifyBeginAttack ();
+			if (m_targetAttack != value)
+			{
+				m_targetAttack = value;
+				NotifyBeginAttack ();
+			}
 		}
 	}
 	protected bool followingTarget;
@@ -907,6 +910,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	
 	public void Follow (Unit followed)
 	{
+		TargetAttack    = null;
+		followingTarget = false;
+
 		followed.RegisterMovementObserver (this);
 		followed.RegisterAttackObserver (this);
 		followedUnit = followed;
@@ -972,11 +978,20 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 		if (TargetAttack != null)
 			return;
 
-		Vector3 forwardVec = (transform.forward.normalized) * followedUnit.GetPathFindRadius * 2.0f;
+		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 1.2f;
+		
+		Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized * 2.0f))
+								* minDistanceBetweenFollowedUnit;
+		
+		//		forwardVec = Vector3.Angle (followedUnit.transform.forward.normalized, 
+		//		                            this.transform.forward.normalized)
+		
+		//		forwardVec.x += Random.Range (minDistanceBetweenFollowedUnit / 2.0f, minDistanceBetweenFollowedUnit);
+		//		forwardVec.z += Random.Range (minDistanceBetweenFollowedUnit / 2.0f, minDistanceBetweenFollowedUnit);
+		
+		newPosition = newPosition + forwardVec;
 
-		newPosition = newPosition - forwardVec;
-
-		if (Vector3.Distance (this.transform.position, newPosition) < followedUnit.GetPathFindRadius * 2.0f)
+		if (Vector3.Distance (this.transform.position, newPosition) < minDistanceBetweenFollowedUnit)
 			return;
 
 		Move (newPosition);
