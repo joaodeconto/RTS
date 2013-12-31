@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
 using Visiorama;
+using Visiorama.Utils;
 
 [System.Serializable]
 public class Team
@@ -112,7 +114,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			if (MyTeam == i)
 			{
-				Camera.mainCamera.transform.position = teams[i].initialPosition.position;
+				Math.CenterCameraInObject (Camera.main, teams[i].initialPosition.position);
 			}
 			
 			teams[i].CreateColorTexture ();
