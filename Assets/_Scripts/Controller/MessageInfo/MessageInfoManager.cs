@@ -61,28 +61,28 @@ public class MessageInfoManager : MonoBehaviour
 
 			//nao usar HasfirstCell com Temporized Queue, nunca.
 
-			if(messageQueuesAttributes[i].hasFirstCell)
-			{
-				UIGrid uiGridFirst = GetQueueGrid(messageQueuesAttributes[i].queueName,
-				                                  messageQueuesAttributes[i].firstCellQueueAttributes.firstCellRootPosition);
-
-
-
-				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<FirstCellMessageQueue>();
-				FirstCellMessageQueue fmq = (FirstCellMessageQueue)(messageQueues[i]);				
-				fmq.Init(pref_button, uiGrid, uiGridFirst,
-				         messageQueuesAttributes[i].queueName,
-				         messageQueuesAttributes[i].rootPosition,
-				         messageQueuesAttributes[i].cellSize,
-				         messageQueuesAttributes[i].padding,
-				         messageQueuesAttributes[i].labelSize,
-				         messageQueuesAttributes[i].firstCellQueueAttributes.firstCellRootPosition,
-				         messageQueuesAttributes[i].firstCellQueueAttributes.firstCellSize,
-				         messageQueuesAttributes[i].maxPerLine,
-				         messageQueuesAttributes[i].maxItems);
-				    				        
-				Debug.Log("criou gridFirst");
-			}
+//			if(messageQueuesAttributes[i].hasFirstCell)
+//			{
+//				UIGrid uiGridFirst = GetQueueGrid(messageQueuesAttributes[i].queueName,
+//				                                  messageQueuesAttributes[i].firstCellQueueAttributes.firstCellRootPosition);
+//
+//
+//
+//				messageQueues[i] = messageQueuesAttributes[i].panel.gameObject.AddComponent<FirstCellMessageQueue>();
+//				FirstCellMessageQueue fmq = (FirstCellMessageQueue)(messageQueues[i]);				
+//				fmq.Init(pref_button, uiGrid, uiGridFirst,
+//				         messageQueuesAttributes[i].queueName,
+//				         messageQueuesAttributes[i].rootPosition,
+//				         messageQueuesAttributes[i].cellSize,
+//				         messageQueuesAttributes[i].padding,
+//				         messageQueuesAttributes[i].labelSize,
+//				         messageQueuesAttributes[i].firstCellQueueAttributes.firstCellRootPosition,
+//				         messageQueuesAttributes[i].firstCellQueueAttributes.firstCellSize,
+//				         messageQueuesAttributes[i].maxPerLine,
+//				         messageQueuesAttributes[i].maxItems);
+//				    				        
+//				Debug.Log("criou gridFirst");
+//			}
 
 
 			if(messageQueuesAttributes[i].IsTemporizedQueue)
