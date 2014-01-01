@@ -13,6 +13,8 @@ public class VersusScreen : MonoBehaviour
 	}
 	
 	public GameObject goVersusScreen;
+	public GameObject gameObjectPlayers;
+
 	public UILabel timeLabel;
 	
 	public GameObject prefabPlayerVersus;
@@ -42,11 +44,6 @@ public class VersusScreen : MonoBehaviour
 		
 		Invoke ("InstanceGame", timeToWait+1);
 		InvokeRepeating ("DescountTime", 1f, 1f);
-		
-		GameObject goPlayers = goVersusScreen.GetComponentInChildren<UIPanel> ().transform.FindChild ("Players").gameObject;
-
-		if (!goPlayers)
-			return;
 
 		int totalPlayers = PhotonNetwork.playerList.Length;
 		
@@ -78,17 +75,13 @@ public class VersusScreen : MonoBehaviour
 			{
 				if ((int)pp.customProperties["allies"] == ally)
 				{
-					SetPlayer (goPlayers,
-						configurationOfScreen[configurationOfScreenSelected].positions[i],
-						pp);
+					SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);
 					
 					i++;
 				}
 				else
 				{
-					SetPlayer (goPlayers,
-						configurationOfScreen[configurationOfScreenSelected].positions[k],
-						pp);
+					SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[k], pp);
 					
 					k++;
 				}
@@ -99,9 +92,7 @@ public class VersusScreen : MonoBehaviour
 			i = 0;
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
-				SetPlayer (goPlayers,
-					configurationOfScreen[configurationOfScreenSelected].positions[i],
-					pp);
+				SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);
 				
 				i++;
 			}
@@ -115,10 +106,10 @@ public class VersusScreen : MonoBehaviour
 		
 		if (timeCount == 0) CancelInvoke ("DescountTime");
 	}
-	
-	void SetPlayer (GameObject goPlayers, Vector3 position, PhotonPlayer pp)
+		
+	void SetPlayer (Vector3 position, PhotonPlayer pp)
 	{
-		GameObject button = NGUITools.AddChild (goPlayers, prefabPlayerVersus);
+		GameObject button = NGUITools.AddChild (gameObjectPlayers, prefabPlayerVersus);
 		button.transform.localPosition = position;
 		
 		button.GetComponentInChildren<UILabel> ().text = pp.name;

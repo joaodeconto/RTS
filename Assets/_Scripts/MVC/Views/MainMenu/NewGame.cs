@@ -139,7 +139,7 @@ public class NewGame : MonoBehaviour
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
 
-			VDebug.Log ("battle: " + properties["battle"]);
+//			VDebug.Log ("battle: " + properties["battle"]);
 
 			GameplayManager.mode = mode;
 

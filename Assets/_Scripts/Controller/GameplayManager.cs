@@ -455,6 +455,8 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void EndMatch ()
 	{
+		Debug.LogWarning ("chegou");
+
 		Score.Save ();
 
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();

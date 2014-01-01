@@ -79,22 +79,27 @@ public class Score : MonoBehaviour
 		dataScoreDAO.LoadAllPlayerScores (player.ToDatabaseModel (),
 											(scores) =>
 											{
-												Debug.Log ("Llego!");
 												dicDataScore = scores;
 											});
 	}
 	
 	public void _LoadBattleScore (A b)
 	{
-		dataScoreDAO.LoadAllBattleScores (ConfigurationData.battle.ToDatabaseModel (),
-											(scores) =>
-											{
-												dicCurrentBattleScore = scores;
-			
-												b (dicCurrentBattleScore);
-											});
+		if (ConfigurationData.battle != null)
+		{
+			dataScoreDAO.LoadAllBattleScores (ConfigurationData.battle.ToDatabaseModel (),
+												(scores) =>
+												{
+													dicCurrentBattleScore = scores;
+				
+													b (dicCurrentBattleScore);
+												});
+		}	
+		else
+		{
+			Debug.LogWarning ("ConfigurationData.battle is null!");
+		}
 	}
-
 
 	public void _SaveScore ()
 	{

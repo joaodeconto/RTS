@@ -217,8 +217,11 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 		SetPlayer ( playerName, true );
 		SetPropertyOnPlayer ("team", PhotonNetwork.playerList.Length - 1);
-		
-		ConfigurationData.battle = new Model.Battle ((string)PhotonNetwork.room.customProperties["battle"]);
+
+		if (PhotonNetwork.room.customProperties.ContainsKey ("battle"))
+			ConfigurationData.battle = new Model.Battle ((string)PhotonNetwork.room.customProperties["battle"]);
+		else
+			Debug.LogWarning ("Nao contem battle key in the CustomProperties of the joined room");
 	}
 
 	private void OnCreatedRoom()

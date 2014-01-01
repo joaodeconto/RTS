@@ -180,7 +180,9 @@ public class StatsController : MonoBehaviour
 
 	public void AddStats (IStats stat)
 	{
-		Debug.Log ("gameplay is null: " + gameplayManager);
+		//Inicializar antes de usar o gameplayManager
+		if (!gameplayManager)
+			Init ();
 
 		if (gameplayManager.IsSameTeam (stat.team))
 		{

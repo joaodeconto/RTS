@@ -296,6 +296,10 @@ public class MiniMapController : MonoBehaviour
 
 	public void AddUnit (Transform trns, int teamId)
 	{
+		//Inicializando se nao foi inicializado ainda
+		if (unitList == null)
+			Init ();
+
 #if UNITY_EDITOR
  		if(unitList.Length <= teamId)
 		{

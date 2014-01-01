@@ -46,8 +46,6 @@ public class InternalMainMenu : MonoBehaviour
 			Transform button = child.FindChild ("Button");
 			DefaultCallbackButton dcb;
 
-			Debug.Log ("llego");
-
 			if (button)
 			{
 				Hashtable ht = new Hashtable ();
@@ -56,7 +54,6 @@ public class InternalMainMenu : MonoBehaviour
 				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
 				dcb.Init (ht, (ht_hud) =>
 				{
-					Debug.Log (" chegou");
 					ShowMenu ((string)ht_hud["optionName"]);
 				});
 			}
