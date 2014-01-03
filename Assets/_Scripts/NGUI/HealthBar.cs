@@ -1,39 +1,47 @@
 using UnityEngine;
 using System.Collections;
 
-public class HealthBar : MonoBehaviour {
-	
-	[System.NonSerialized]
-	public IStats target;
+[RequireComponent(typeof(UISlider))]
+public class HealthBar : MonoBehaviour, IHealthObserver
+{
+	public IHealthObservable Target { private set; get; }
 
 	protected UISlider slider;
-
-	public delegate void UpdateHealthMethod ();
-	protected UpdateHealthMethod updateHealthMethod;
 
 	void Awake ()
 	{
 		slider = GetComponent<UISlider> ();
 	}
-
-	public void SetTarget (IStats target)
+	
+	void OnDestroy ()
 	{
-		this.target        = target;
-		updateHealthMethod = DefaultMethod;
+		Close ();
+	}
+
+	public void SetTarget (IHealthObservable target)
+	{
+		if (slider == null)
+			Awake ();
+
+		this.Target = target;
+		this.Target.RegisterHealthObserver (this);
 	}
 
 	public void Close ()
 	{
-		updateHealthMethod = null;
+		if (Target != null)
+			Target.UnRegisterHealthObserver (this);
 	}
 
-	void Update ()
+	#region IHealthObserver implementation
+
+	public void UpdateHealth (int currentHealth)
 	{
-		if (updateHealthMethod != null) updateHealthMethod ();
+		if (Target == null)
+			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
+
+		slider.sliderValue = (float)currentHealth / (float)Target.MaxHealth;
 	}
 
-	void DefaultMethod ()
-	{
-		slider.sliderValue = (float)target.Health / (float)target.MaxHealth;
-	}
+	#endregion
 }

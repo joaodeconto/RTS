@@ -139,7 +139,7 @@ public class HUDController : MonoBehaviour
 		IsDestroying = false;
 	}
 
-	public HealthBar CreateHealthBar (Transform target, int maxHealth, string referenceChild)
+	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
 	{
 		if (HUDRoot.go == null || pref_healthBar == null)
 		{
@@ -156,11 +156,15 @@ public class HUDController : MonoBehaviour
 		child.GetComponent<UISlider> ().backgroundWidget.width = Mathf.CeilToInt (maxHealth * 0.7f);
 		child.GetComponent<UISlider> ().backgroundWidget.height = 11;
 
-		child.AddComponent<UIFollowTarget>().target      = target.FindChild (referenceChild).transform;
+		child.AddComponent<UIFollowTarget>().target      = target.transform.FindChild (referenceChild).transform;
 		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
 		child.GetComponent<UIFollowTarget>().mUICamera   = uiRoot.transform.FindChild ("CameraHUD").camera;
 
-		return child.GetComponent<HealthBar> ();
+		HealthBar healthBar = child.GetComponent<HealthBar> ();
+
+		healthBar.SetTarget (target);
+
+		return healthBar;
 	}
 
 	public void CreateSelected (Transform target, float size, Color color)
@@ -201,7 +205,7 @@ public class HUDController : MonoBehaviour
 
 		foreach (Transform child in HUDRoot.go.transform)
 		{
-			if (child.GetComponent<HealthBar>().target == target.GetComponent<IStats> ())
+			if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
 			{
 				Destroy (child.gameObject);
 			}
@@ -377,28 +381,26 @@ public class HUDController : MonoBehaviour
 	{
 		if (oldFeedback != null) Destroy (oldFeedback);
 
-		GameObject newFeedback;
-		if (feedback == Feedbacks.Move)
+		GameObject newFeedback   = null;
+		GameObject pref_feedback = null;
+
+		switch (feedback)
 		{
-			newFeedback = Instantiate (pref_moveFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
-
-
-		}
-		else if (feedback == Feedbacks.Self)
-		{
-			newFeedback = Instantiate (pref_selfFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
-
-		}
-		else
-		{
-			newFeedback = Instantiate (pref_attackFeedback, position + offesetFeedback, Quaternion.identity) as GameObject;
-
+			case Feedbacks.Move:
+				pref_feedback = pref_moveFeedback;
+				break;
+			case Feedbacks.Self:
+				pref_feedback = pref_selfFeedback;
+				break;
+			case Feedbacks.Attack:
+				pref_feedback = pref_attackFeedback;
+				break;
 		}
 
+		newFeedback = Instantiate (pref_feedback, position + offesetFeedback, Quaternion.identity) as GameObject;
 		newFeedback.name = "Feedback";
-		newFeedback.transform.localScale = new Vector3(size * newFeedback.transform.localScale.x, 
-													   size * newFeedback.transform.localScale.y,
-													   size * newFeedback.transform.localScale.x);
+
+		newFeedback.transform.localScale = size * newFeedback.transform.localScale;
 		newFeedback.transform.eulerAngles = new Vector3 (90,0,0);
 		newFeedback.renderer.material.SetColor ("_TintColor", color);
 

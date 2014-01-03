@@ -113,8 +113,6 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	protected HUDController hudController;
 	protected InteractionController interactionController;
 
-	protected HealthBar healthBar;
-
 	protected float normalAcceleration;
 	protected float normalSpeed;
 	protected float normalAngularSpeed;
@@ -547,13 +545,11 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	{
 		base.Select ();
 
-		healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
-		healthBar.SetTarget (this);
-
 		Hashtable ht = new Hashtable();
 
-		ht["item"] = this;
-
+		ht["observableHealth"] = this;
+		
+		hudController.CreateHealthBar (this, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		hudController.CreateEnqueuedButtonInInspector ( this.name,
 														Unit.UnitGroupQueueName,
