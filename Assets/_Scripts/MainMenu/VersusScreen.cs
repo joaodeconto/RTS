@@ -17,8 +17,9 @@ public class VersusScreen : MonoBehaviour
 
 	public UILabel timeLabel;
 	
-	public GameObject prefabPlayerVersus;
-		
+	public GameObject prefabPlayerRight;
+	public GameObject prefabPlayerLeft;
+
 	public int timeToWait;
 	
 	public ConfigurationOfScreen[] configurationOfScreen;
@@ -109,10 +110,28 @@ public class VersusScreen : MonoBehaviour
 		
 	void SetPlayer (Vector3 position, PhotonPlayer pp)
 	{
-		GameObject button = NGUITools.AddChild (gameObjectPlayers, prefabPlayerVersus);
-		button.transform.localPosition = position;
-		
-		button.GetComponentInChildren<UILabel> ().text = pp.name;
+
+	
+		if (position.x <= 0)
+		{
+
+			GameObject button = NGUITools.AddChild (gameObjectPlayers, prefabPlayerLeft);
+						
+			button.transform.localPosition = position;
+			
+			button.GetComponentInChildren<UILabel> ().text = pp.name;
+		}
+
+		else
+		{
+			GameObject button = NGUITools.AddChild (gameObjectPlayers, prefabPlayerRight);
+						
+			button.transform.localPosition = position;
+			
+			button.GetComponentInChildren<UILabel> ().text = pp.name;
+
+		}
+
 	}
 	
 	void InstanceGame ()
