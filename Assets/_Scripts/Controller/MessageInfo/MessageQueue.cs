@@ -127,14 +127,18 @@ public abstract class MessageQueue : MonoBehaviour
 
 		int childIndex = uiGrid.transform.childCount - 1;
 
-		HealthObserverButton hbo = uiGrid
+		GameObject goMessageInfo = uiGrid
 									.transform
-									.GetChild(childIndex)
-									.gameObject
-									.GetComponent<HealthObserverButton> ();
-		hbo.StopToObserve ();
+										.GetChild(childIndex)
+										.gameObject;
 
-		Destroy (hbo.gameObject);
+		HealthObserverButton hbo = goMessageInfo.GetComponent<HealthObserverButton> ();
+
+		if (hbo != null)
+			hbo.StopToObserve ();
+
+		Destroy (goMessageInfo);
+
 		Invoke("RepositionGrid", 0.1f);
 	}
 
