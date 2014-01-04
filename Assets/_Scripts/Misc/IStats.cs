@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using Visiorama;
 
-public abstract class IStats : Photon.MonoBehaviour
+public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 {
 	public static int UniversalEntityCounter = 0;
 
@@ -90,8 +90,16 @@ public abstract class IStats : Photon.MonoBehaviour
 		public ButtonAttributes buttonAttributes;
 	}
 
-	public int Health { get; protected set; }
-	public int MaxHealth = 200;
+	public int maxHealth = 200;
+	private int m_health;
+	public int Health {
+		get { return m_health; }
+		protected set {
+			m_health = value; 
+			NotifyHealthChange ();
+		}
+	}
+	
 	public int Defense;
 
 	public int team;
@@ -121,6 +129,9 @@ public abstract class IStats : Photon.MonoBehaviour
 	protected StatsController statsController;
 	protected GameplayManager gameplayManager;
 	protected EventManager eventManager;
+
+	//IHealthObserver
+	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
 
 	void Awake ()
 	{
@@ -309,4 +320,34 @@ public abstract class IStats : Photon.MonoBehaviour
 		Gizmos.color = Color.white;
 		Gizmos.DrawWireSphere (this.transform.position, fieldOfView);
 	}
+	
+	#region IHealthObservable implementation
+	
+	public int MaxHealth {
+		get {
+			return maxHealth;
+		}
+	}
+	
+	public void RegisterHealthObserver (IHealthObserver observer)
+	{
+//		Debug.LogError (this.name + " - RegisterHealthObserver");
+		healthObservers.Add (observer);
+	}
+	
+	public void UnRegisterHealthObserver (IHealthObserver observer)
+	{
+		healthObservers.Remove (observer);
+	}
+	
+	public void NotifyHealthChange ()
+	{
+		Debug.Log (this.name + " - healthObservers.Count: " + healthObservers.Count );
+		foreach (IHealthObserver o in healthObservers)
+		{
+			o.UpdateHealth (m_health);
+		}
+	}
+
+	#endregion
 }

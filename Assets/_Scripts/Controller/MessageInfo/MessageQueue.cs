@@ -78,37 +78,33 @@ public abstract class MessageQueue : MonoBehaviour
 		
 //		Debug.Log ("Sem botoes");
 //		return;
-		 
+		
+		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
+		                                        Pref_button);
+
+		PersonalizedCallbackButton cb = null;
+
+		cb = ht.ContainsKey ("observableHealth") ? button.AddComponent<HealthObserverButton> ()
+												 : button.AddComponent<PersonalizedCallbackButton> ();
+		
 		if (nQueueItems > MaxItems)
 		{
 			// Refazendo o calculo
-			if (nQueueItems-1 == MaxItems) ChangeToGroupMessageInfo ();
+			if (nQueueItems - 1 == MaxItems) ChangeToGroupMessageInfo ();
 			
-			buttonName = RegexClone (buttonName);
+			buttonName = RegexClone (buttonName);https://www.youtube.com/watch?v=biMT1C76IX0
 			
 			if (CheckExistMessageInfo (buttonName)) return;
-			
-			GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-													Pref_button);
 			
 			button.name  = buttonName;
 //			button.layer = gameObject.layer;
 			button.transform.localPosition = Vector3.up * 10000;//Coloca em um lugar em distante para somente aparecer no reposition grid
 			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
 
-
-			
-			PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
-	
-			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
-			
-			Invoke("RepositionGrid", 0.1f);
+			cb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 		}
 		else
-		{
-			GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-													Pref_button);
-			
+		{			
 			button.name  = buttonName;
 //			button.layer = gameObject.layer;
 			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
@@ -116,12 +112,10 @@ public abstract class MessageQueue : MonoBehaviour
 	
 			//button.transform.localPosition = Vector3.zero;
 	
-			PersonalizedCallbackButton pcb = button.AddComponent<PersonalizedCallbackButton>();
-	
-			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
-			
-			Invoke("RepositionGrid", 0.1f);
+			cb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 		}
+		
+		Invoke("RepositionGrid", 0.1f);
 	}
 
 	public void DequeueMessageInfo()
@@ -133,7 +127,14 @@ public abstract class MessageQueue : MonoBehaviour
 
 		int childIndex = uiGrid.transform.childCount - 1;
 
-		Destroy (uiGrid.transform.GetChild(childIndex).gameObject);
+		HealthObserverButton hbo = uiGrid
+									.transform
+									.GetChild(childIndex)
+									.gameObject
+									.GetComponent<HealthObserverButton> ();
+		hbo.StopToObserve ();
+
+		Destroy (hbo.gameObject);
 		Invoke("RepositionGrid", 0.1f);
 	}
 

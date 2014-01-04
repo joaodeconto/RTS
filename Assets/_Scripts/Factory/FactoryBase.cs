@@ -75,18 +75,14 @@ public class FactoryBase : IStats
 
 	protected float realRangeView;
 
-	public bool IsNeededRepair
-	{
-		get
-		{
+	public bool IsNeededRepair {
+		get	{
 			return Health != MaxHealth;
 		}
 	}
 
-	public bool OverLimitCreateUnit
-	{
-		get
-		{
+	public bool OverLimitCreateUnit	{
+		get	{
 			return listedToCreate.Count >= MAX_NUMBER_OF_LISTED;
 		}
 	}
@@ -456,14 +452,12 @@ public class FactoryBase : IStats
 	public override void Select ()
 	{
 		base.Select ();
-
+		
+		hudController.CreateHealthBar (this, MaxHealth, "Health Reference");
+		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
+		
 		if(unitToCreate != null)
 			buildingSlider.gameObject.SetActiveRecursively(true);
-
-		HealthBar healthBar = hudController.CreateHealthBar (transform, MaxHealth, "Health Reference");
-		healthBar.SetTarget (this);
-
-		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 
 		if (!playerUnit) return;
 

@@ -18,25 +18,25 @@ public class Cheats : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		bool success = true;
+		bool success = false;
 		foreach (CheatData cd in cheats)
 		{
-			success = true;
+			success = false;
 
 			foreach (KeyCode k in cd.Hold)
 			{
-				if (Input.GetKey(k) == false)
+				if (Input.GetKey(k) == true)
 				{
-					success = false;
+					success = true;
 					break;
 				}
 			}
 			
 			foreach (KeyCode k in cd.Pressed)
 			{
-				if (Input.GetKeyDown(k) == false)
+				if (Input.GetKeyDown(k) == true)
 				{
-					success = false;
+					success = true;
 					break;
 				}
 			}
