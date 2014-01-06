@@ -1,12 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum SoundType
-{
-	Music,
-	Sound,
-	Voice
-}
+using Visiorama.Audio;
 
 public class VolumeController : MonoBehaviour
 {	

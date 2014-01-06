@@ -48,9 +48,9 @@ public class FogOfWar : MonoBehaviour
 		KNOWN_AREA,
 	}
 
-	//Temporary variables
+	//Temporary var	iables
 	Transform trns = null;
-	short maxX, maxY, minX, minY,
+	int maxX, maxY, minX, minY,
 		  range, xRange = 0,
 		  posX, posY,
 		  i,j,k;
@@ -84,7 +84,7 @@ public class FogOfWar : MonoBehaviour
 		// posicionando FogOfWar no local correto
 //		this.transform.position = new Vector3(mapSize.x * 0.5f , 0, mapSize.z * 0.5f);
 		
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || true	
 		GameObject poly = Instantiate(pref_plane, Vector3.zero, Quaternion.identity) as GameObject;
 
 		poly.layer = LayerMask.NameToLayer("FogOfWar");
@@ -114,25 +114,25 @@ public class FogOfWar : MonoBehaviour
 		if (!UseFog || allies == null)
 			return;
 		
-#if UNITY_ANDROID || UNITY_IPHONE
-		for (i = (short)(allies.Count - 1); i != -1; --i)
+#if UNITY_ANDROID || UNITY_IPHONE || true
+		for (i = (allies.Count - 1); i != -1; --i)
 		{
 			trns = allies[i];
 
-			posX = (short)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
-			posY = (short)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
+			posX = (int)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
+			posY = (int)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
-			range = (short)(SIZE_TEXTURE * (entityAllies[i].fieldOfView / mapSize.x));
+			range = (int)(SIZE_TEXTURE * (entityAllies[i].fieldOfView / mapSize.x));
 
-			maxY = (short)(Mathf.Clamp(posY + range, 0, SIZE_TEXTURE));
-			minY = (short)(Mathf.Clamp(posY - range, 0, SIZE_TEXTURE));
+			maxY = (Mathf.Clamp(posY + range, 0, SIZE_TEXTURE));
+			minY = (Mathf.Clamp(posY - range, 0, SIZE_TEXTURE));
 
 			for (k = minY; k != maxY; ++k)//, angle += changeAngleRate)
 			{
-				xRange = (short)(Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) ));
+				xRange = (int)(Mathf.Sqrt((range * range) - ((k - posY) * (k - posY)) ));
 
-				maxX = (short)(Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
-				minX = (short)(Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
+				maxX = (Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
+				minX = (Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
 
 				for (j = minX; j != maxX; ++j)
 				{
