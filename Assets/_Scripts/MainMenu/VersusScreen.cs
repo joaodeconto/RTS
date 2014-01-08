@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 using Visiorama;
@@ -13,12 +14,17 @@ public class VersusScreen : MonoBehaviour
 	}
 	
 	public GameObject goVersusScreen;
-	public GameObject gameObjectPlayers;
+	public GameObject gameObjectPlayerL;
+	public GameObject gameObjectPlayerR;
 
 	public UILabel timeLabel;
+	public UILabel mapName;
+	public UILabel battleMode;
+
 	
 	public GameObject prefabPlayerRight;
 	public GameObject prefabPlayerLeft;
+
 
 	public int timeToWait;
 	
@@ -42,7 +48,9 @@ public class VersusScreen : MonoBehaviour
 	{
 		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
-		
+
+		// LOAD GAMEPLAY!
+
 		Invoke ("InstanceGame", timeToWait+1);
 		InvokeRepeating ("DescountTime", 1f, 1f);
 
@@ -67,6 +75,8 @@ public class VersusScreen : MonoBehaviour
 		
 		if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 		{
+			battleMode.text = ("Ranked Coop"); 
+
 			int ally = (int)PhotonNetwork.player.customProperties["allies"];
 			
 			int k = totalPlayers / 2;
@@ -115,16 +125,18 @@ public class VersusScreen : MonoBehaviour
 		if (position.x <= 0)
 		{
 
-			GameObject button = NGUITools.AddChild (gameObjectPlayers, prefabPlayerLeft);
+			GameObject button = NGUITools.AddChild (gameObjectPlayerL, prefabPlayerLeft);
 						
 			button.transform.localPosition = position;
 			
 			button.GetComponentInChildren<UILabel> ().text = pp.name;
+
+
 		}
 
 		else
 		{
-			GameObject button = NGUITools.AddChild (gameObjectPlayers, prefabPlayerRight);
+			GameObject button = NGUITools.AddChild (gameObjectPlayerR, prefabPlayerRight);
 						
 			button.transform.localPosition = position;
 			

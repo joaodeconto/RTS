@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -189,18 +189,23 @@ static public class NGUITools
 	{
 		int layerMask = 1 << layer;
 
+		Camera cam;
+
 		for (int i = 0; i < UICamera.list.size; ++i)
 		{
-			Camera uc = UICamera.list.buffer[i].cachedCamera;
-			if ((uc != null) && (uc.cullingMask & layerMask) != 0)
-				return uc;
+			cam = UICamera.list.buffer[i].cachedCamera;
+			if ((cam != null) && (cam.cullingMask & layerMask) != 0)
+				return cam;
 		}
+
+		cam = Camera.main;
+		if (cam != null && (cam.cullingMask & layerMask) != 0) return cam;
 
 		Camera[] cameras = NGUITools.FindActive<Camera>();
 
 		for (int i = 0, imax = cameras.Length; i < imax; ++i)
 		{
-			Camera cam = cameras[i];
+			cam = cameras[i];
 			if ((cam.cullingMask & layerMask) != 0)
 				return cam;
 		}
@@ -287,7 +292,6 @@ static public class NGUITools
 
 			if (w != null)
 			{
-				if (!w.isVisible) return;
 				Vector4 region = w.drawingDimensions;
 				box.center = new Vector3((region.x + region.z) * 0.5f, (region.y + region.w) * 0.5f);
 				box.size = new Vector3(region.z - region.x, region.w - region.y);
@@ -540,7 +544,7 @@ static public class NGUITools
 
 		if (size > 0)
 		{
-			Array.Sort(list, UIWidget.CompareFunc);
+			Array.Sort(list, UIWidget.FullCompareFunc);
 
 			int start = 0;
 			int current = list[0].depth;

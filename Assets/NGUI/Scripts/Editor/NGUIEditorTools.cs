@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEditor;
@@ -802,10 +802,13 @@ public class NGUIEditorTools
 
 	public static void DrawTexture (Texture2D tex, Rect rect, Rect uv, Color color, Material mat)
 	{
+		int w = Mathf.RoundToInt(tex.width * uv.width);
+		int h = Mathf.RoundToInt(tex.height * uv.height);
+
 		// Create the texture rectangle that is centered inside rect.
 		Rect outerRect = rect;
-		outerRect.width = tex.width;
-		outerRect.height = tex.height;
+		outerRect.width = w;
+		outerRect.height = h;
 
 		if (outerRect.width > 0f)
 		{
@@ -852,7 +855,7 @@ public class NGUIEditorTools
 		Handles.DrawLine(new Vector3(outerRect.xMin, outerRect.yMax), new Vector3(outerRect.xMax, outerRect.yMax));
 
 		// Sprite size label
-		string text = string.Format("Texture Size: {0}x{1}", Mathf.RoundToInt(tex.width), Mathf.RoundToInt(tex.height));
+		string text = string.Format("Texture Size: {0}x{1}", w, h);
 		EditorGUI.DropShadowLabel(GUILayoutUtility.GetRect(Screen.width, 18f), text);
 	}
 
@@ -1408,15 +1411,19 @@ public class NGUIEditorTools
 	{
 		BetterList<UIWidget> list = new BetterList<UIWidget>();
 
-		for (int i = 0; i < UIWidget.list.size; ++i)
+		for (int i = 0; i < UIPanel.list.size; ++i)
 		{
-			UIWidget w = UIWidget.list[i];
-			Vector3[] corners = w.worldCorners;
-			if (SceneViewDistanceToRectangle(corners, mousePos) == 0f)
-				list.Add(w);
-		}
+			UIPanel p = UIPanel.list.buffer[i];
 
-		list.Sort(UIWidget.CompareFunc);
+			for (int b = 0; b < p.widgets.size; ++b)
+			{
+				UIWidget w = p.widgets.buffer[b];
+				Vector3[] corners = w.worldCorners;
+				if (SceneViewDistanceToRectangle(corners, mousePos) == 0f)
+					list.Add(w);
+			}
+		}
+		list.Sort(UIWidget.FullCompareFunc);
 		return list;
 	}
 
@@ -1791,11 +1798,11 @@ public class NGUIEditorTools
 
 	static public Object GUIDToObject (string guid)
 	{
+		if (string.IsNullOrEmpty(guid)) return null;
 #if !UNITY_3_5
 		// This method is not going to be available in Unity 3.5
 		if (s_GetInstanceIDFromGUID == null)
-			s_GetInstanceIDFromGUID = typeof(AssetDatabase).GetMethod("GetInstanceIDFromGUID");
-
+			s_GetInstanceIDFromGUID = typeof(AssetDatabase).GetMethod("GetInstanceIDFromGUID", BindingFlags.Static | BindingFlags.NonPublic);
 		int id = (int)s_GetInstanceIDFromGUID.Invoke(null, new object[] { guid });
 		if (id != 0) return EditorUtility.InstanceIDToObject(id);
 #endif

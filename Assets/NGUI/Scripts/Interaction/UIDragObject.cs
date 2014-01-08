@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -73,12 +73,12 @@ public class UIDragObject : MonoBehaviour
 	Vector3 mTargetPos;
 	Vector3 mLastPos;
 	UIPanel mPanel;
-	bool mPressed = false;
 	Vector3 mMomentum = Vector3.zero;
 	Vector3 mScroll = Vector3.zero;
 	Bounds mBounds;
 	int mTouchID = 0;
 	bool mStarted = false;
+	bool mPressed = false;
 
 	/// <summary>
 	/// Auto-upgrade the legacy data.
@@ -98,6 +98,8 @@ public class UIDragObject : MonoBehaviour
 			if (w != null) contentRect = w;
 		}
 	}
+
+	void OnDisable () { mStarted = false; }
 
 	/// <summary>
 	/// Find the panel responsible for this object.

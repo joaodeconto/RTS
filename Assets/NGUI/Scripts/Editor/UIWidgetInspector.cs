@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -462,14 +462,21 @@ public class UIWidgetInspector : UIRectEditor
 		bool canResize = (mWidget.GetComponent<UIStretch>() == null);
 		bool[] resizable = new bool[8];
 
-		UILabel lbl = mWidget as UILabel;
-		bool autoResized = (lbl != null) && (lbl.overflowMethod == UILabel.Overflow.ResizeFreely);
-		bool autoHeight = autoResized || ((lbl != null) && (lbl.overflowMethod == UILabel.Overflow.ResizeHeight));
+		resizable[4] = canResize && !mWidget.isAnchoredHorizontally;	// left
+		resizable[5] = canResize && !mWidget.isAnchoredVertically;		// top
+		resizable[6] = canResize && !mWidget.isAnchoredHorizontally;	// right
+		resizable[7] = canResize && !mWidget.isAnchoredVertically;		// bottom
 
-		resizable[4] = canResize && !autoResized;	// left
-		resizable[5] = canResize && !autoHeight;	// top
-		resizable[6] = canResize && !autoResized;	// right
-		resizable[7] = canResize && !autoHeight;	// bottom
+		if (mWidget.keepAspectRatio == UIWidget.AspectRatioSource.BasedOnHeight)
+		{
+			resizable[4] = false;
+			resizable[6] = false;
+		}
+		else if (mWidget.keepAspectRatio == UIWidget.AspectRatioSource.BasedOnWidth)
+		{
+			resizable[5] = false;
+			resizable[7] = false;
+		}
 
 		resizable[0] = resizable[7] && resizable[4]; // bottom-left
 		resizable[1] = resizable[5] && resizable[4]; // top-left
@@ -847,7 +854,7 @@ public class UIWidgetInspector : UIRectEditor
 			{
 				GUI.changed = false;
 				float alpha = EditorGUILayout.Slider("Alpha", mWidget.alpha, 0f, 1f);
-				
+
 				if (GUI.changed)
 				{
 					NGUIEditorTools.RegisterUndo("Alpha change", mWidget);
@@ -859,11 +866,30 @@ public class UIWidgetInspector : UIRectEditor
 			DrawDepth(type == PrefabType.Prefab);
 			DrawDimensions(type == PrefabType.Prefab);
 
+			SerializedProperty ratio = serializedObject.FindProperty("aspectRatio");
+			SerializedProperty aspect = serializedObject.FindProperty("keepAspectRatio");
+
+			GUILayout.BeginHorizontal();
+			{
+				if (!aspect.hasMultipleDifferentValues && aspect.intValue == 0)
+				{
+					EditorGUI.BeginDisabledGroup(true);
+					NGUIEditorTools.DrawProperty("Aspect Ratio", ratio, false, GUILayout.Width(130f));
+					EditorGUI.EndDisabledGroup();
+				}
+				else NGUIEditorTools.DrawProperty("Aspect Ratio", ratio, false, GUILayout.Width(130f));
+
+				NGUIEditorTools.DrawProperty("", aspect, false, GUILayout.MinWidth(20f));
+			}
+			GUILayout.EndHorizontal();
+
 			if (serializedObject.isEditingMultipleObjects || mWidget.hasBoxCollider)
 			{
 				GUILayout.BeginHorizontal();
-				NGUIEditorTools.DrawProperty("Box Collider", serializedObject, "autoResizeBoxCollider", GUILayout.Width(100f));
-				GUILayout.Label("auto-adjust to match");
+				{
+					NGUIEditorTools.DrawProperty("Box Collider", serializedObject, "autoResizeBoxCollider", GUILayout.Width(100f));
+					GUILayout.Label("auto-adjust to match");
+				}
 				GUILayout.EndHorizontal();
 			}
 			NGUIEditorTools.EndContents();
@@ -877,30 +903,44 @@ public class UIWidgetInspector : UIRectEditor
 	void DrawDimensions (bool isPrefab)
 	{
 		GUILayout.BeginHorizontal();
-		NGUIEditorTools.DrawProperty("Dimensions", serializedObject, "mWidth", GUILayout.MinWidth(100f));
-		NGUIEditorTools.SetLabelWidth(12f);
-		NGUIEditorTools.DrawProperty("x", serializedObject, "mHeight", GUILayout.MinWidth(30f));
-		NGUIEditorTools.SetLabelWidth(80f);
-
-		if (isPrefab)
 		{
-			GUILayout.Space(70f);
-		}
-		else
-		{
-			if (GUILayout.Button("Snap", GUILayout.Width(68f)))
+			EditorGUI.BeginDisabledGroup(!serializedObject.isEditingMultipleObjects && mWidget.isAnchoredHorizontally);
 			{
-				foreach (GameObject go in Selection.gameObjects)
-				{
-					UIWidget w = go.GetComponent<UIWidget>();
+				NGUIEditorTools.DrawProperty("Dimensions", serializedObject, "mWidth", GUILayout.MinWidth(100f));
+			}
+			EditorGUI.EndDisabledGroup();
 
-					if (w != null)
+			EditorGUI.BeginDisabledGroup(!serializedObject.isEditingMultipleObjects && mWidget.isAnchoredVertically);
+			{
+				NGUIEditorTools.SetLabelWidth(12f);
+				NGUIEditorTools.DrawProperty("x", serializedObject, "mHeight", GUILayout.MinWidth(30f));
+				NGUIEditorTools.SetLabelWidth(80f);
+			}
+			EditorGUI.EndDisabledGroup();
+
+			if (isPrefab)
+			{
+				GUILayout.Space(70f);
+			}
+			else
+			{
+				EditorGUI.BeginDisabledGroup(!serializedObject.isEditingMultipleObjects && mWidget.isFullyAnchored);
+
+				if (GUILayout.Button("Snap", GUILayout.Width(68f)))
+				{
+					foreach (GameObject go in Selection.gameObjects)
 					{
-						NGUIEditorTools.RegisterUndo("Widget Change", w);
-						NGUIEditorTools.RegisterUndo("Make Pixel-Perfect", w.transform);
-						w.MakePixelPerfect();
+						UIWidget w = go.GetComponent<UIWidget>();
+
+						if (w != null)
+						{
+							NGUIEditorTools.RegisterUndo("Widget Change", w);
+							NGUIEditorTools.RegisterUndo("Make Pixel-Perfect", w.transform);
+							w.MakePixelPerfect();
+						}
 					}
 				}
+				EditorGUI.EndDisabledGroup();
 			}
 		}
 		GUILayout.EndHorizontal();
@@ -941,14 +981,18 @@ public class UIWidgetInspector : UIRectEditor
 		}
 		GUILayout.EndHorizontal();
 
-		int matchingDepths = 0;
+		int matchingDepths = 1;
 
-		for (int i = 0; i < UIWidget.list.size; ++i)
+		UIPanel p = mWidget.panel;
+
+		if (p != null)
 		{
-			UIWidget w = UIWidget.list[i];
-			if (w != null && w.panel != null && mWidget.panel != null &&
-				w.panel.depth == mWidget.panel.depth && w.depth == mWidget.depth)
-				++matchingDepths;
+			for (int i = 0; i < p.widgets.size; ++i)
+			{
+				UIWidget w = p.widgets[i];
+				if (w != mWidget && w.depth == mWidget.depth)
+					++matchingDepths;
+			}
 		}
 
 		if (matchingDepths > 1)

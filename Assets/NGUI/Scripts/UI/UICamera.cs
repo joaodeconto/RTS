@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -334,7 +334,7 @@ public class UICamera : MonoBehaviour
 	static GameObject mHover;
 
 	// Joystick/controller/keyboard event
-	static MouseOrTouch mController = new MouseOrTouch();
+	static public MouseOrTouch controller = new MouseOrTouch();
 
 	// Used to ensure that joystick-based controls don't trigger that often
 	static float mNextEvent = 0f;
@@ -472,7 +472,7 @@ public class UICamera : MonoBehaviour
 				if (mMouse[i].pressed != null)
 					++count;
 
-			if (mController.pressed != null)
+			if (controller.pressed != null)
 				++count;
 
 			return count;
@@ -497,7 +497,7 @@ public class UICamera : MonoBehaviour
 				if (mMouse[i].dragged != null)
 					++count;
 
-			if (mController.dragged != null)
+			if (controller.dragged != null)
 				++count;
 
 			return count;
@@ -734,7 +734,7 @@ public class UICamera : MonoBehaviour
 	{
 		float time = RealTime.time;
 
-		if (mNextEvent < time)
+		if (mNextEvent < time && !string.IsNullOrEmpty(axis))
 		{
 			float val = Input.GetAxis(axis);
 
@@ -873,12 +873,14 @@ public class UICamera : MonoBehaviour
 	{
 		cachedCamera.eventMask = 0;
 		cachedCamera.transparencySortMode = TransparencySortMode.Orthographic;
-		if (debug) NGUIDebug.debugRaycast = true;
+		if (handlesEvents) NGUIDebug.debugRaycast = debug;
 	}
+#else
+	void Start () { if (handlesEvents) NGUIDebug.debugRaycast = debug; }
 #endif
 
 #if UNITY_EDITOR
-	void OnValidate () { NGUIDebug.debugRaycast = debug; }
+	void OnValidate () { if (handlesEvents) NGUIDebug.debugRaycast = debug; }
 #endif
 
 	/// <summary>
@@ -949,7 +951,7 @@ public class UICamera : MonoBehaviour
 		// If it's time to show a tooltip, inform the object we're hovering over
 		if (useMouse && mHover != null)
 		{
-			float scroll = Input.GetAxis(scrollAxisName);
+			float scroll = !string.IsNullOrEmpty(scrollAxisName) ? Input.GetAxis(scrollAxisName) : 0f;
 			if (scroll != 0f) Notify(mHover, "OnScroll", scroll);
 
 			if (showTooltips && mTooltipTime != 0f && (mTooltipTime < RealTime.time ||
@@ -968,20 +970,8 @@ public class UICamera : MonoBehaviour
 
 	public void ProcessMouse ()
 	{
-		// No need to perform raycasts every frame
-		if (mNextRaycast < RealTime.time)
-		{
-			mNextRaycast = RealTime.time + 0.02f;
-			if (!Raycast(Input.mousePosition, out lastHit)) hoveredObject = fallThrough;
-			if (hoveredObject == null) hoveredObject = genericEventHandler;
-			for (int i = 0; i < 3; ++i) mMouse[i].current = hoveredObject;
-		}
-
-		lastTouchPosition = Input.mousePosition;
-		bool highlightChanged = (mMouse[0].last != mMouse[0].current);
-		if (highlightChanged) currentScheme = ControlScheme.Mouse;
-
 		// Update the position and delta
+		lastTouchPosition = Input.mousePosition;
 		mMouse[0].delta = lastTouchPosition - mMouse[0].pos;
 		mMouse[0].pos = lastTouchPosition;
 		bool posChanged = mMouse[0].delta.sqrMagnitude > 0.001f;
@@ -995,16 +985,34 @@ public class UICamera : MonoBehaviour
 
 		// Is any button currently pressed?
 		bool isPressed = false;
+		bool justPressed = false;
 
 		for (int i = 0; i < 3; ++i)
 		{
-			if (Input.GetMouseButton(i))
+			if (Input.GetMouseButtonDown(i))
+			{
+				currentScheme = ControlScheme.Mouse;
+				justPressed = true;
+				isPressed = true;
+			}
+			else if (Input.GetMouseButton(i))
 			{
 				currentScheme = ControlScheme.Mouse;
 				isPressed = true;
-				break;
 			}
 		}
+
+		// No need to perform raycasts every frame
+		if (isPressed || posChanged || mNextRaycast < RealTime.time)
+		{
+			mNextRaycast = RealTime.time + 0.02f;
+			if (!Raycast(Input.mousePosition, out lastHit)) hoveredObject = fallThrough;
+			if (hoveredObject == null) hoveredObject = genericEventHandler;
+			for (int i = 0; i < 3; ++i) mMouse[i].current = hoveredObject;
+		}
+
+		bool highlightChanged = (mMouse[0].last != mMouse[0].current);
+		if (highlightChanged) currentScheme = ControlScheme.Mouse;
 
 		if (isPressed)
 		{
@@ -1026,7 +1034,7 @@ public class UICamera : MonoBehaviour
 		}
 
 		// The button was released over a different object -- remove the highlight from the previous
-		if (!isPressed && mHover != null && highlightChanged)
+		if ((justPressed || !isPressed) && mHover != null && highlightChanged)
 		{
 			currentScheme = ControlScheme.Mouse;
 			if (mTooltip != null) ShowTooltip(false);
@@ -1177,7 +1185,7 @@ public class UICamera : MonoBehaviour
 	public void ProcessOthers ()
 	{
 		currentTouchID = -100;
-		currentTouch = mController;
+		currentTouch = controller;
 
 		// If this is an input field, ignore WASD and Space key presses
 		inputHasFocus = (mCurrentSelection != null && mCurrentSelection.GetComponent<UIInput>() != null);

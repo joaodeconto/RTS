@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -66,7 +66,6 @@ public class UITable : UIWidgetContainer
 	public OnReposition onReposition;
 
 	UIPanel mPanel;
-	UIScrollView mDrag;
 	bool mInitDone = false;
 	bool mReposition = false;
 	List<Transform> mChildren = new List<Transform>();
@@ -194,7 +193,7 @@ public class UITable : UIWidgetContainer
 	[ContextMenu("Execute")]
 	public void Reposition ()
 	{
-		if (Application.isPlaying && !mInitDone)
+		if (Application.isPlaying && !mInitDone && NGUITools.GetActive(this))
 		{
 			mReposition = true;
 			return;
@@ -208,15 +207,8 @@ public class UITable : UIWidgetContainer
 		List<Transform> ch = children;
 		if (ch.Count > 0) RepositionVariableSize(ch);
 
-		if (mDrag != null)
-		{
-			mDrag.UpdateScrollbars(true);
-			mDrag.RestrictWithinBounds(true);
-		}
-		else if (mPanel != null)
-		{
+		if (keepWithinPanel && mPanel != null)
 			mPanel.ConstrainTargetToBounds(myTrans, true);
-		}
 
 		if (onReposition != null)
 			onReposition();
@@ -240,12 +232,7 @@ public class UITable : UIWidgetContainer
 	void Init ()
 	{
 		mInitDone = true;
-
-		if (keepWithinPanel)
-		{
-			mPanel = NGUITools.FindInParents<UIPanel>(gameObject);
-			mDrag = NGUITools.FindInParents<UIScrollView>(gameObject);
-		}
+		mPanel = NGUITools.FindInParents<UIPanel>(gameObject);
 	}
 
 	/// <summary>

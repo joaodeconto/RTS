@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -9,7 +9,6 @@ using UnityEngine;
 /// Tween the object's alpha.
 /// </summary>
 
-[RequireComponent(typeof(UIRect))]
 [AddComponentMenu("NGUI/Tween/Tween Alpha")]
 public class TweenAlpha : UITweener
 {
@@ -23,7 +22,18 @@ public class TweenAlpha : UITweener
 
 	UIRect mRect;
 
-	public UIRect cachedRect { get { if (mRect == null) mRect = GetComponent<UIRect>(); return mRect; } }
+	public UIRect cachedRect
+	{
+		get
+		{
+			if (mRect == null)
+			{
+				mRect = GetComponent<UIRect>();
+				if (mRect == null) mRect = GetComponentInChildren<UIRect>();
+			}
+			return mRect;
+		}
+	}
 
 	[System.Obsolete("Use 'value' instead")]
 	public float alpha { get { return this.value; } set { this.value = value; } }

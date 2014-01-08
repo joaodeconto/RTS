@@ -1,11 +1,12 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
 using UnityEditor;
 
+[CanEditMultipleObjects]
 [CustomEditor(typeof(UIButton))]
 public class UIButtonEditor : UIWidgetContainerEditor
 {
@@ -18,30 +19,33 @@ public class UIButtonEditor : UIWidgetContainerEditor
 
 		GUILayout.Space(6f);
 
-		GUI.changed = false;
-		GameObject tt = (GameObject)EditorGUILayout.ObjectField("Target", button.tweenTarget, typeof(GameObject), true);
-
-		if (GUI.changed)
+		if (!serializedObject.isEditingMultipleObjects)
 		{
-			NGUIEditorTools.RegisterUndo("Button Change", button);
-			button.tweenTarget = tt;
-			UnityEditor.EditorUtility.SetDirty(button);
-		}
+			GUI.changed = false;
+			GameObject tt = (GameObject)EditorGUILayout.ObjectField("Target", button.tweenTarget, typeof(GameObject), true);
 
-		if (tt != null)
-		{
-			UIWidget w = tt.GetComponent<UIWidget>();
-
-			if (w != null)
+			if (GUI.changed)
 			{
-				GUI.changed = false;
-				Color c = EditorGUILayout.ColorField("Normal", w.color);
+				NGUIEditorTools.RegisterUndo("Button Change", button);
+				button.tweenTarget = tt;
+				UnityEditor.EditorUtility.SetDirty(button);
+			}
 
-				if (GUI.changed)
+			if (tt != null)
+			{
+				UIWidget w = tt.GetComponent<UIWidget>();
+
+				if (w != null)
 				{
-					NGUIEditorTools.RegisterUndo("Button Change", w);
-					w.color = c;
-					UnityEditor.EditorUtility.SetDirty(w);
+					GUI.changed = false;
+					Color c = EditorGUILayout.ColorField("Normal", w.color);
+
+					if (GUI.changed)
+					{
+						NGUIEditorTools.RegisterUndo("Button Change", w);
+						w.color = c;
+						UnityEditor.EditorUtility.SetDirty(w);
+					}
 				}
 			}
 		}

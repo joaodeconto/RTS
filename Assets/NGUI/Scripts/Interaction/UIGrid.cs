@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -67,6 +67,12 @@ public class UIGrid : UIWidgetContainer
 	public bool hideInactive = true;
 
 	/// <summary>
+	/// Whether the parent container will be notified of the grid's changes.
+	/// </summary>
+
+	public bool keepWithinPanel = false;
+
+	/// <summary>
 	/// Callback triggered when the grid repositions its contents.
 	/// </summary>
 
@@ -78,23 +84,19 @@ public class UIGrid : UIWidgetContainer
 
 	public bool repositionNow { set { if (value) { mReposition = true; enabled = true; } } }
 
-	bool mStarted = false;
 	bool mReposition = false;
 	UIPanel mPanel;
-	UIScrollView mDrag;
 	bool mInitDone = false;
 
 	void Init ()
 	{
 		mInitDone = true;
 		mPanel = NGUITools.FindInParents<UIPanel>(gameObject);
-		mDrag = NGUITools.FindInParents<UIScrollView>(gameObject);
 	}
 
 	void Start ()
 	{
 		if (!mInitDone) Init();
-		mStarted = true;
 		bool smooth = animateSmoothly;
 		animateSmoothly = false;
 		Reposition();
@@ -117,7 +119,7 @@ public class UIGrid : UIWidgetContainer
 	[ContextMenu("Execute")]
 	public void Reposition ()
 	{
-		if (Application.isPlaying && !mStarted)
+		if (Application.isPlaying && !mInitDone && NGUITools.GetActive(this))
 		{
 			mReposition = true;
 			return;
@@ -193,15 +195,8 @@ public class UIGrid : UIWidgetContainer
 			}
 		}
 
-		if (mDrag != null)
-		{
-			mDrag.UpdateScrollbars(true);
-			mDrag.RestrictWithinBounds(true);
-		}
-		else if (mPanel != null)
-		{
+		if (keepWithinPanel && mPanel != null)
 			mPanel.ConstrainTargetToBounds(myTrans, true);
-		}
 
 		if (onReposition != null)
 			onReposition();

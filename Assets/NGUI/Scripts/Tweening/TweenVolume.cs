@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -9,6 +9,7 @@ using UnityEngine;
 /// Tween the audio source's volume.
 /// </summary>
 
+[RequireComponent(typeof(AudioSource))]
 [AddComponentMenu("NGUI/Tween/Tween Volume")]
 public class TweenVolume : UITweener
 {
@@ -36,7 +37,7 @@ public class TweenVolume : UITweener
 				
 				if (mSource == null)
 				{
-					mSource = GetComponentInChildren<AudioSource>();
+					mSource = GetComponent<AudioSource>();
 
 					if (mSource == null)
 					{

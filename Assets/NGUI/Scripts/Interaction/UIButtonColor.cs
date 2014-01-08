@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -80,6 +80,12 @@ public class UIButtonColor : UIWidgetContainer
 		if (!Application.isPlaying) return;
 #endif
 		if (mStarted) OnHover(UICamera.IsHighlighted(gameObject));
+		
+		if (UICamera.currentTouch != null)
+		{
+			if (UICamera.currentTouch.pressed == gameObject) OnPress(true);
+			else if (UICamera.currentTouch.current == gameObject) OnHover(true);
+		}
 	}
 
 	protected virtual void OnDisable ()

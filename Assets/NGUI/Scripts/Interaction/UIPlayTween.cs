@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -116,6 +116,15 @@ public class UIPlayTween : MonoBehaviour
 		if (!Application.isPlaying) return;
 #endif
 		if (mStarted) OnHover(UICamera.IsHighlighted(gameObject));
+
+		if (UICamera.currentTouch != null)
+		{
+			if (trigger == Trigger.OnPress || trigger == Trigger.OnPressTrue)
+				mActivated = (UICamera.currentTouch.pressed == gameObject);
+
+			if (trigger == Trigger.OnHover || trigger == Trigger.OnHoverTrue)
+				mActivated = (UICamera.currentTouch.current == gameObject);
+		}
 	}
 
 	void OnHover (bool isOver)
