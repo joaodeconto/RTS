@@ -34,7 +34,7 @@ public class StatsController : MonoBehaviour
 	protected Vector3 centerOfTroop;
 
 	protected GameplayManager gameplayManager;
-	protected SoundManager soundManager;
+	protected SoundManagerRTS soundManager;
 	protected HUDController hudController;
 
 	protected List<Worker> idleWorkers;
@@ -42,7 +42,7 @@ public class StatsController : MonoBehaviour
 	public void Init ()
 	{
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-		soundManager    = ComponentGetter.Get<SoundManager> ();
+		soundManager    = ComponentGetter.Get<SoundManagerRTS> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 
 		selectedStats 	= new List<IStats> ();

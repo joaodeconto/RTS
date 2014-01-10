@@ -4,16 +4,16 @@ using System.Collections;
 
 using Visiorama.Audio;
 
-[CustomEditor(typeof(SoundManager))]
+[CustomEditor(typeof(SoundManagerRTS))]
 public class SoundManagerInspector : Editor
 {
 
-	SoundManager soundManager;
+	SoundManagerRTS soundManager;
 	Vector2 scrollPosition = Vector2.zero;
 	
 	void OnEnable ()
 	{
-		soundManager = target as SoundManager;
+		soundManager = target as SoundManagerRTS;
 	}
 	
 	public override void OnInspectorGUI ()
