@@ -6,6 +6,7 @@ using Visiorama.Utils;
 
 using Visiorama;
 
+
 public class StatsController : MonoBehaviour
 {
 	public const int MAX_NUMBER_OF_GROUPS = 9;

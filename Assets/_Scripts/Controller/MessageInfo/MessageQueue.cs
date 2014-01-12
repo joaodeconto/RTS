@@ -92,14 +92,14 @@ public abstract class MessageQueue : MonoBehaviour
 			// Refazendo o calculo
 			if (nQueueItems - 1 == MaxItems) ChangeToGroupMessageInfo ();
 			
-			buttonName = RegexClone (buttonName);https://www.youtube.com/watch?v=biMT1C76IX0
+			buttonName = RegexClone (buttonName);
 			
 			if (CheckExistMessageInfo (buttonName)) return;
 			
 			button.name  = buttonName;
 //			button.layer = gameObject.layer;
 			button.transform.localPosition = Vector3.up * 10000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
+//			button.transform.FindChild("Foreground"). = new Vector3(CellSize.x, CellSize.y, 1);
 
 			cb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 		}

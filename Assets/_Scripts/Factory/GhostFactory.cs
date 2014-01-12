@@ -55,7 +55,7 @@ public class GhostFactory : MonoBehaviour
 			
 			thisFactory.helperCollider.isTrigger = true;
 			realRadius = thisFactory.helperCollider.radius;
-			thisFactory.helperCollider.radius += 3f;
+		//	thisFactory.helperCollider.radius += 3f;
 			
 			helperColliderGameObject = thisFactory.helperCollider.gameObject;
 			
@@ -65,7 +65,7 @@ public class GhostFactory : MonoBehaviour
 		{
 			GetComponent<CapsuleCollider> ().isTrigger = true;
 			realRadius = GetComponent<CapsuleCollider> ().radius;
-			GetComponent<CapsuleCollider> ().radius += 3f;
+	//		GetComponent<CapsuleCollider> ().radius += 3f;
 			
 			helperColliderGameObject = gameObject;
 		}

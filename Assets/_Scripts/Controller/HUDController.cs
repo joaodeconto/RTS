@@ -152,9 +152,9 @@ public class HUDController : MonoBehaviour
 		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
 
 		child.GetComponent<UISlider> ().foregroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
-		child.GetComponent<UISlider> ().foregroundWidget.height = 10;
-		child.GetComponent<UISlider> ().backgroundWidget.width = Mathf.CeilToInt (maxHealth * 0.7f);
-		child.GetComponent<UISlider> ().backgroundWidget.height = 11;
+		child.GetComponent<UISlider> ().foregroundWidget.height = 8;
+		child.GetComponent<UISlider> ().backgroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
+		child.GetComponent<UISlider> ().backgroundWidget.height = 8;
 
 		child.AddComponent<UIFollowTarget>().target      = target.transform.FindChild (referenceChild).transform;
 		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
@@ -419,7 +419,7 @@ public class HUDController : MonoBehaviour
 		Destroy (newFeedback, duration);
 	}
 	
-	public void OpenInfoBox (IStats stat)
+	public void OpenInfoBoxUnit (IStats stat)
 	{
 		RemoveEnqueuedButtonInInspector (stat.name, Unit.UnitGroupQueueName);
 		
@@ -462,6 +462,51 @@ public class HUDController : MonoBehaviour
 		
 		Transform goldLabel = infoStats.FindChild ("gold-label");
 		goldLabel.GetComponent<UILabel> ().text = stat.costOfResources.ToString ();
+	}
+
+	public void OpenInfoBoxFactory (IStats stat)
+	{
+		trnsPanelInfoBox.gameObject.SetActive (true);
+		
+		FactoryBase factory = stat as FactoryBase;
+		
+		Transform infoStats = trnsPanelInfoBox.FindChild ("Info Stats");
+		Transform infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
+		Transform infoIcon = trnsPanelInfoBox.FindChild ("Info Icon");
+
+		infoStats.gameObject.SetActive (false);
+		
+		Transform nameLabel = infoQuali.FindChild ("name-label");
+		nameLabel.GetComponent<UILabel> ().text = stat.category;
+		
+		Transform spriteFactory = infoIcon.FindChild ("sprite-unit");
+		Debug.Log (factory.guiTextureName);
+		spriteFactory.GetComponent<UISprite> ().spriteName = factory.guiTextureName;
+		
+	//-----------------------------	Transform currentHp = infoQuali.FindChild ("CurrentHP");
+	//-----------------------------	currentHp.GetComponent <UISlider> ().value = unit.Health;
+		
+		// Info
+		
+//		Transform attackLabel = infoStats.FindChild ("attack-label");
+//		attackLabel.GetComponent<UILabel> ().text = unit.AdditionalForce != 0 ?
+//			unit.force + "(+" + unit.AdditionalForce + ")" :
+//				unit.force.ToString ();
+//		
+//		Transform hpLabel = infoStats.FindChild ("hp-label");
+//		hpLabel.GetComponent<UILabel> ().text = stat.Health.ToString ();
+//		
+//		Transform speedLabel = infoStats.FindChild ("speed-label");
+//		speedLabel.GetComponent<UILabel> ().text = ((int)unit.speed).ToString ();
+//		
+//		Transform unitsLabel = infoStats.FindChild ("units-label");
+//		unitsLabel.GetComponent<UILabel> ().text = unit.numberOfUnits.ToString ();
+//		
+//		Transform timeLabel = infoStats.FindChild ("time-label");
+//		timeLabel.GetComponent<UILabel> ().text = unit.timeToSpawn.ToString ();
+//		
+//		Transform goldLabel = infoStats.FindChild ("gold-label");
+//		goldLabel.GetComponent<UILabel> ().text = stat.costOfResources.ToString ();
 	}
 	
 	public void CloseInfoBox ()

@@ -64,7 +64,7 @@ public class SelectionController : MonoBehaviour
 				statsController.PlaySelectSound ();
 				if (statsController.selectedStats.Count == 1)
 				{
-					ComponentGetter.Get<HUDController> ().OpenInfoBox (statsController.selectedStats[0]);
+					ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0]);
 				}
 				return true;
 			}
@@ -100,6 +100,7 @@ public class SelectionController : MonoBehaviour
 				if (b.Intersects (stat.collider.bounds))
 				{
 					statsController.SelectStat (stat, true);
+
 					break;
 				}
 			}
@@ -141,6 +142,7 @@ public class SelectionController : MonoBehaviour
 								touchController.IsInCamera (stat.transform.position))
 							{
 								statsController.SelectStat (stat, true);
+
 							}
 						}
 						return true; // selecionou unidades da mesma categoria da unidade selecionada
@@ -179,7 +181,7 @@ public class SelectionController : MonoBehaviour
 							
 							lastStatClick = selectedUnit;
 							
-							ComponentGetter.Get<HUDController> ().OpenInfoBox (selectedUnit);
+							ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (selectedUnit);
 
 						}
 					}
@@ -198,6 +200,9 @@ public class SelectionController : MonoBehaviour
 				if (!gameplayManager.IsSameTeam (factorySelected)) 
 				{
 					statsController.SelectStat (factorySelected, true);
+
+
+
 					return true;
 				}
 				else
@@ -245,6 +250,9 @@ public class SelectionController : MonoBehaviour
 									touchController.IsInCamera (currentFactory.transform.position))
 								{
 									statsController.SelectStat (stat, true);
+
+
+
 								}
 							}
 							return true;
@@ -269,7 +277,7 @@ public class SelectionController : MonoBehaviour
 								if (statsController.statsTypeSelected == StatsController.StatsTypeSelected.Factory)
 								{
 									FactoryBase fc = statsController.selectedStats[0] as FactoryBase;
-									
+
 									if (fc.wasBuilt)
 									{
 										statsController.DeselectAllStats ();
@@ -291,6 +299,7 @@ public class SelectionController : MonoBehaviour
 								touchController.IsInCamera (currentFactory.transform.position))
 							{
 								statsController.SelectStat (stat, true);
+
 							}
 							
 							if (statsController.statsTypeSelected == StatsController.StatsTypeSelected.Factory)
@@ -328,8 +337,10 @@ public class SelectionController : MonoBehaviour
 						}
 						statsController.SelectStat (factorySelected, true);
 						statsController.PlaySelectSound ();
+
 						
 						lastStatClick = factorySelected;
+						ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (statsController.selectedStats[0]);
 					}
 					return true;
 				}
@@ -389,6 +400,7 @@ public class SelectionController : MonoBehaviour
 					if (b.Intersects (stat.collider.bounds))
 					{
 						statsController.SelectStat (stat, true);
+
 						break;
 					}
 				}
@@ -425,6 +437,8 @@ public class SelectionController : MonoBehaviour
 							{
 								statsController.DeselectAllStats ();
 								statsController.SelectStat (factory, true);
+
+
 							}
 							else
 								statsController.DeselectAllStats ();
