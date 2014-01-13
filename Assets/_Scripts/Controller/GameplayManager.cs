@@ -461,24 +461,30 @@ public class GameplayManager : Photon.MonoBehaviour
 
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 
-		Model.Battle battle = new Model.Battle ((string)pw.GetPropertyOnRoom ("battle"));
-		Model.Player player = new Model.Player((string)pw.GetPropertyOnPlayer ("player"));
+		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
+		string encodedPlayer = (string)pw.GetPropertyOnPlayer ("player");
 
-		PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
-
-		pbDAO.CreatePlayerBattle (player, battle,
-		(playerBattle, message) =>
+		if (!string.IsNullOrEmpty (encodedBattle) && !string.IsNullOrEmpty (encodedPlayer))
 		{
-			playerBattle.BlWin = winGame;
+			Model.Battle battle = new Model.Battle (encodedBattle);
+			Model.Player player = new Model.Player(encodedPlayer);
 
-			pbDAO.UpdatePlayerBattle (playerBattle,
-			(playerBattle_update, message_update) =>
+			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
+
+			pbDAO.CreatePlayerBattle (player, battle,
+			(playerBattle, message) =>
 			{
-				if (playerBattle_update != null)
-					Debug.Log ("message: " + message);
-				else
-					Debug.Log ("salvou playerBattle");
+				playerBattle.BlWin = winGame;
+
+				pbDAO.UpdatePlayerBattle (playerBattle,
+				(playerBattle_update, message_update) =>
+				{
+					if (playerBattle_update != null)
+						Debug.Log ("message: " + message);
+					else
+						Debug.Log ("salvou playerBattle");
+				});
 			});
-		});
+		}
 	}
 }

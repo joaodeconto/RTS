@@ -241,15 +241,20 @@ public class FactoryBase : IStats
 		eventManager.AddEvent("create unit", unitName, unit.guiTextureName);
 
 		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-		Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
 
-		Debug.Log ("battle: " + battle);
-		//Score
-		Score.AddScorePoints ("Units created", 1);
-		Score.AddScorePoints ("Units created", 1, battle.IdBattle);
-		Score.AddScorePoints (unitName + " created", 1);
-		Score.AddScorePoints (unitName + " created", 1, battle.IdBattle);
+		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
 
+		if (!string.IsNullOrEmpty (encodedBattle))
+		{
+			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+
+			Debug.Log ("battle: " + battle);
+			//Score
+			Score.AddScorePoints ("Units created", 1);
+			Score.AddScorePoints ("Units created", 1, battle.IdBattle);
+			Score.AddScorePoints (unitName + " created", 1);
+			Score.AddScorePoints (unitName + " created", 1, battle.IdBattle);
+		}
 		if (!hasRallypoint) return;
 
 		// Look At
