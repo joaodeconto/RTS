@@ -29,8 +29,9 @@ public class GameplayManager : Photon.MonoBehaviour
 {
 	[System.Serializable]
 	public class HUD
-	{
-		public UILabel labelResources;
+	{    
+		public UILabel labelRocks;
+		public UILabel labelMana;
 		public UILabel labelUnits;
 		public GameObject uiVictoryObject;
 		public GameObject uiDefeatObject;
@@ -435,7 +436,8 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void Update ()
 	{
-		hud.labelResources.text = resources.NumberOfRocks.ToString ();
+		hud.labelMana.text = resources.NumberOfMana.ToString ();
+		hud.labelRocks.text = resources.NumberOfRocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + maxOfUnits.ToString ();
 
 		if (loseGame || winGame)

@@ -6,10 +6,12 @@ using System.Collections.Generic;
 public class ResourcesManager
 {
 	public int NumberOfRocks;
+	public int NumberOfMana;
 
 	public ResourcesManager ()
 	{
 		NumberOfRocks = 50;
+		NumberOfMana = 50;
 	}
 
 	public void Set (Resource.Type resourceType, int numberOfResources)
@@ -17,6 +19,11 @@ public class ResourcesManager
 		if (resourceType == Resource.Type.Rock)
 		{
 			NumberOfRocks += numberOfResources;
+		}
+
+		if (resourceType == Resource.Type.Mana)
+		{
+			NumberOfMana += numberOfResources;
 		}
 	}
 
@@ -29,11 +36,21 @@ public class ResourcesManager
 
 		if (discount) NumberOfRocks -= resourceCost.NumberOfRocks;
 		return true;
+
+		if (NumberOfMana - resourceCost.NumberOfMana < 0)
+		{
+			return false;
+		}
+		
+		if (discount) NumberOfMana -= resourceCost.NumberOfMana;
+		return true;
 	}
 
 	public void ReturnResources (ResourcesManager resourceCost, float percent = 1f)
 	{
 		NumberOfRocks += Mathf.FloorToInt((float)resourceCost.NumberOfRocks * percent);
+
+		NumberOfMana += Mathf.FloorToInt((float)resourceCost.NumberOfMana * percent);
 	}
 }
 
@@ -43,7 +60,11 @@ public class Resource : Photon.MonoBehaviour
 	public enum Type
 	{
 		None,
-		Rock
+		Rock,
+		Mana,
+		Wood,
+		Food,
+	    Gold
 	}
 
 	public Type type;
@@ -71,25 +92,28 @@ public class Resource : Photon.MonoBehaviour
 
 	public void ExtractResource (Worker worker)
 	{
-		WorkersResistance[worker] = Mathf.Max (0, WorkersResistance[worker] - worker.forceToExtract);
-		if (WorkersResistance[worker] == 0f)
-		{
-			if (numberOfResources - worker.numberMaxGetResources <= 0)
-			{
-				DiscountResources (worker.numberMaxGetResources);
-				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
-				else Destroy (gameObject);
-				worker.GetResource (numberOfResources);
-			}
-			else
-			{
-				DiscountResources (worker.numberMaxGetResources);
-				if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
 
-				worker.GetResource ();
+
+			WorkersResistance[worker] = Mathf.Max (0, WorkersResistance[worker] - worker.forceToExtract);
+			if (WorkersResistance[worker] == 0f)
+			{
+				if (numberOfResources - worker.numberMaxGetResources <= 0)
+				{
+					DiscountResources (worker.numberMaxGetResources);
+					if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
+					else Destroy (gameObject);
+					worker.GetResource (numberOfResources);
+				}
+				else
+				{
+					DiscountResources (worker.numberMaxGetResources);
+					if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
+
+					worker.GetResource ();
+				}
+				WorkersResistance[worker] = resistance;
 			}
-			WorkersResistance[worker] = resistance;
-		}
+
 	}
 
 	[RPC]
