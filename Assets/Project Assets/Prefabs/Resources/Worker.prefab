@@ -652,7 +652,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.5231342, y: 0, z: 38.0328865}
+  m_LocalPosition: {x: 30.4192333, y: 0, z: 28.4295464}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
@@ -1359,7 +1359,7 @@ MonoBehaviour:
   - type: 1
     extractingObject: {fileID: 100068}
     carryingObject: {fileID: 100070}
-    carryingSpeed: 3
+    carryingSpeed: 2
     carryingAcceleration: 6
     carryingAngularSpeed: 360
     workerAnimation:
@@ -1367,18 +1367,8 @@ MonoBehaviour:
       CarryingIdle: {fileID: 7400006, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
       Carrying: {fileID: 7400004, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
   - type: 2
-    extractingObject: {fileID: 0}
-    carryingObject: {fileID: 0}
-    carryingSpeed: 1
-    carryingAcceleration: 6
-    carryingAngularSpeed: 360
-    workerAnimation:
-      Extracting: {fileID: 7400014, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
-      CarryingIdle: {fileID: 7400014, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
-      Carrying: {fileID: 7400014, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
-  - type: 3
-    extractingObject: {fileID: 0}
-    carryingObject: {fileID: 0}
+    extractingObject: {fileID: 100068}
+    carryingObject: {fileID: 100070}
     carryingSpeed: 1
     carryingAcceleration: 6
     carryingAngularSpeed: 360
@@ -1644,14 +1634,14 @@ NavMeshAgent:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
-  m_Radius: .699999988
+  m_Radius: .800000012
   m_Speed: 4
   m_Acceleration: 100
   avoidancePriority: 0
   m_AngularSpeed: 360
   m_StoppingDistance: .100000001
   m_AutoTraverseOffMeshLink: 0
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0

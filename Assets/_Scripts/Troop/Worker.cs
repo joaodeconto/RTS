@@ -6,13 +6,6 @@ using Visiorama.Extension;
 
 public class Worker : Unit
 {
-	[System.Serializable]
-		public class WorkerAnimation
-		{
-			public AnimationClip Extracting;
-			public AnimationClip CarryingIdle;
-			public AnimationClip Carrying;
-		}
 
 	[System.Serializable]
 		public class ResourceWorker
@@ -24,6 +17,16 @@ public class Worker : Unit
 			public float carryingAcceleration;
 			public float carryingAngularSpeed;
 			public WorkerAnimation workerAnimation;
+			public int forceToExtract;
+					
+		}
+
+	[System.Serializable]
+		public class WorkerAnimation
+		{
+			public AnimationClip Extracting;
+			public AnimationClip CarryingIdle;
+			public AnimationClip Carrying;
 		}
 
 	[System.Serializable]
@@ -44,7 +47,7 @@ public class Worker : Unit
 		Repairing	 = 5
 	}
 
-	public int forceToExtract;
+
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
 	public ResourceWorker[] resourceWorker;
