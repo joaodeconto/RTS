@@ -17,7 +17,7 @@ public class Worker : Unit
 			public float carryingAcceleration;
 			public float carryingAngularSpeed;
 			public WorkerAnimation workerAnimation;
-			public int forceToExtract;
+			
 					
 		}
 
@@ -47,12 +47,13 @@ public class Worker : Unit
 		Repairing	 = 5
 	}
 
-
+	public int forceToExtract;
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
 	public ResourceWorker[] resourceWorker;
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
+
 
 	public WorkerState workerState {get; set;}
 

@@ -62,9 +62,7 @@ public class Resource : Photon.MonoBehaviour
 		None,
 		Rock,
 		Mana,
-		Wood,
-		Food,
-	    Gold
+
 	}
 
 	public Type type;
