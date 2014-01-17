@@ -572,7 +572,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 37.0499802, y: 91.4371872, z: -73.0842896}
+  m_LocalPosition: {x: 28.0338421, y: 0, z: 48.7919693}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400070}
@@ -1097,12 +1097,13 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 2
         gridYIndex: 0
-  pref_ParticleDamage: {fileID: 100000, guid: 462f032b6d15d904bb7fbeb2ee3e1e81, type: 2}
+  pref_ParticleDamage: {fileID: 0}
   transformParticleDamageReference: {fileID: 400002}
   playerUnit: 1
   category: Neanderthal
   costOfResources:
     NumberOfRocks: 200
+    NumberOfMana: 50
   model: {fileID: 100068}
   force: 7
   distanceView: 7
@@ -1324,15 +1325,15 @@ NavMeshAgent:
   m_Radius: .800000012
   m_Speed: 3.5
   m_Acceleration: 10
-  avoidancePriority: 10
+  avoidancePriority: 0
   m_AngularSpeed: 360
-  m_StoppingDistance: 1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
+  m_StoppingDistance: .100000001
+  m_AutoTraverseOffMeshLink: 0
+  m_AutoBraking: 0
+  m_AutoRepath: 0
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
 --- !u!205 &20500000
 LODGroup:

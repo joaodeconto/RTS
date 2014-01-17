@@ -121,25 +121,25 @@ public class NewGame : MonoBehaviour
 		PlayerDAO playerDao = ComponentGetter.Get <PlayerDAO> ();
 
 		//TODO refazer as battles
-//		playerBattleDao.CreateBattle (battleTypeName, DateTime.Now, maxPlayers,
-//		(battle) =>
-//		{
+		playerBattleDao.CreateBattle (battleTypeName, DateTime.Now, maxPlayers,
+		(battle) =>
+		{
 //			Debug.Log ("message: " + message);
 //			Debug.Log ("playerBattle: " + playerBattle);
 
 			string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + System.DateTime.Now.ToString ("mm-ss");
 			bool isVisible = true, isOpen = true;
 			
-//			ConfigurationData.battle = battle;
+			ConfigurationData.battle = battle;
 			
 			Hashtable properties = new Hashtable ();
-//			properties.Add ("battle", battle.ToString ());
+			properties.Add ("battle", battle.ToString ());
 			pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers, properties);
 
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
 
-//			VDebug.Log ("battle: " + properties["battle"]);
+			VDebug.Log ("battle: " + properties["battle"]);
 
 			GameplayManager.mode = mode;
 
@@ -176,7 +176,7 @@ public class NewGame : MonoBehaviour
 			{
 				messageActiveGame.text = "Waiting For Other Players - " + playersReady + "/" + nMaxPlayers;
 			});
-//		});
+		});
 	}
 
 	private void CloseErrorMessage ()
