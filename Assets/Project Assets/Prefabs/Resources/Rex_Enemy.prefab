@@ -1020,8 +1020,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100072}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 35.0625305, y: 89.7249832, z: -74.4343491}
+  m_LocalRotation: {x: 0, y: .736546695, z: 0, w: -.676386774}
+  m_LocalPosition: {x: 24.5434952, y: 0, z: 27.9038029}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400076}
@@ -1034,8 +1034,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100074}
-  m_LocalRotation: {x: .720952034, y: 0, z: 0, w: .692985058}
-  m_LocalPosition: {x: 0, y: -7.22968102, z: 4.80764008}
+  m_LocalRotation: {x: .722010314, y: -.00618933141, z: -.00595067721, w: .691829026}
+  m_LocalPosition: {x: -.154709741, y: -7.2440815, z: 4.77940559}
   m_LocalScale: {x: 9.20790768, y: 9.20791054, z: 9.20790958}
   m_Children: []
   m_Father: {fileID: 400068}
@@ -1121,7 +1121,7 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 2
         gridYIndex: 0
-  pref_ParticleDamage: {fileID: 100000, guid: 462f032b6d15d904bb7fbeb2ee3e1e81, type: 2}
+  pref_ParticleDamage: {fileID: 0}
   transformParticleDamageReference: {fileID: 400070}
   playerUnit: 1
   category: Rex
@@ -1202,8 +1202,8 @@ SkinnedMeshRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 22a9a792f4d234f48a74e150c3f89dda, type: 2}
-  - {fileID: 2100000, guid: 22a9a792f4d234f48a74e150c3f89dda, type: 2}
+  - {fileID: -1900966153, guid: 0d3e48b305cc3bf49840484c20097222, type: 3}
+  - {fileID: -1900966153, guid: 0d3e48b305cc3bf49840484c20097222, type: 3}
   - {fileID: 2100000, guid: 04ea912f1f4cb3d4bbc81bbd2b7cea1a, type: 2}
   - {fileID: 485726153, guid: 6bb38750ca74ee04f8d0d22167e3f686, type: 3}
   m_SubsetIndices: 
@@ -1268,8 +1268,8 @@ SkinnedMeshRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 22a9a792f4d234f48a74e150c3f89dda, type: 2}
-  - {fileID: 2100000, guid: 22a9a792f4d234f48a74e150c3f89dda, type: 2}
+  - {fileID: -1900966153, guid: 0d3e48b305cc3bf49840484c20097222, type: 3}
+  - {fileID: -1900966153, guid: 0d3e48b305cc3bf49840484c20097222, type: 3}
   - {fileID: 2100000, guid: 04ea912f1f4cb3d4bbc81bbd2b7cea1a, type: 2}
   - {fileID: 485726153, guid: 6bb38750ca74ee04f8d0d22167e3f686, type: 3}
   m_SubsetIndices: 
@@ -1329,15 +1329,15 @@ NavMeshAgent:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100072}
   m_Enabled: 1
-  m_Radius: 1.79999995
+  m_Radius: 1.5
   m_Speed: 5
   m_Acceleration: 5
   avoidancePriority: 0
-  m_AngularSpeed: 360
-  m_StoppingDistance: .100000001
-  m_AutoTraverseOffMeshLink: 0
-  m_AutoBraking: 0
-  m_AutoRepath: 0
+  m_AngularSpeed: 270
+  m_StoppingDistance: 1
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1

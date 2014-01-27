@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: -1500306622, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &100002
 GameObject:
@@ -37,7 +37,7 @@ GameObject:
   m_TagString: Factory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &100004
 GameObject:
@@ -49,7 +49,6 @@ GameObject:
   - 4: {fileID: 400004}
   - 33: {fileID: 3300004}
   - 23: {fileID: 2300004}
-  - 135: {fileID: 13500000}
   m_Layer: 18
   m_Name: rockManaGenerator
   m_TagString: Untagged
@@ -72,7 +71,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &100008
 GameObject:
@@ -106,7 +105,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 0
 --- !u!1 &100012
 GameObject:
@@ -140,7 +139,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 0
 --- !u!1 &100016
 GameObject:
@@ -157,7 +156,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &100018
 GameObject:
@@ -182,7 +181,7 @@ Transform:
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: -.637083352, y: -.306797713, z: -.306797624, w: .637083352}
   m_LocalPosition: {x: -.0885696411, y: 1.32444029e-08, z: .293376923}
-  m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
 --- !u!4 &400002
@@ -192,7 +191,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.0494957, y: 0, z: 37.5303192}
+  m_LocalPosition: {x: 28.9595509, y: 0, z: 25.0958004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400018}
@@ -245,7 +244,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
   m_LocalRotation: {x: -.473662227, y: -.450910121, z: -.274966508, w: .704782009}
-  m_LocalPosition: {x: -5.35784054, y: .212443352, z: -.0109558105}
+  m_LocalPosition: {x: -5.35783958, y: .212443352, z: -.0109558105}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -494,7 +493,7 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 4.88000011
-  m_Range: 11.1036072
+  m_Range: 11.2725372
   m_SpotAngle: 48
   m_CookieSize: 10
   m_Shadows:
@@ -520,7 +519,7 @@ Light:
   m_AreaSize: {x: 1, y: 1}
 --- !u!111 &11100002
 Animation:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
@@ -534,7 +533,7 @@ Animation:
   m_CullingType: 0
 --- !u!111 &11100004
 Animation:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
@@ -561,14 +560,14 @@ MonoBehaviour:
   Defense: 0
   team: 0
   ally: 0
-  fieldOfView: 0
-  sizeOfSelected: 5.19000006
+  fieldOfView: 15
+  sizeOfSelected: 5
   rendererTeamColor:
   - materialToApplyColor: {fileID: 2100000, guid: 116bd71d296f3db4ca53521bbf1dd52c,
       type: 2}
   movementActions: []
   pref_ParticleDamage: {fileID: 0}
-  transformParticleDamageReference: {fileID: 400016}
+  transformParticleDamageReference: {fileID: 0}
   playerUnit: 0
   category: Obelisk
   costOfResources:
@@ -578,9 +577,9 @@ MonoBehaviour:
   unitsToCreate: []
   receiveResource: 2
   buildingObjects:
-    baseObject: {fileID: 100002}
-    unfinishedObject: {fileID: 100002}
-    finishedObject: {fileID: 100002}
+    baseObject: {fileID: 100000}
+    unfinishedObject: {fileID: 100000}
+    finishedObject: {fileID: 100000}
     desactiveObjectsWhenInstance: []
   buttonName: Obelisk
   guiTextureName: Obelisk
@@ -612,7 +611,7 @@ MonoBehaviour:
   ownerId: 0
   group: 0
   prefixBackup: -1
-  observed: {fileID: 400002}
+  observed: {fileID: 11400002}
   synchronization: 1
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
@@ -630,18 +629,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintSize: 5
   terrainName: Terrain
---- !u!135 &13500000
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 4.34000015
-  m_Center: {x: .0700000003, y: 1.13999999, z: -1.58000004}
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -1747,8 +1734,8 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
-  m_Radius: 2
-  m_Height: 1
+  m_Radius: 1.25
+  m_Height: 9.97999954
   m_MoveThreshold: 0
   m_Carve: 1
 --- !u!1001 &100100000
