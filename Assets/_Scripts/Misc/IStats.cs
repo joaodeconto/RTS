@@ -47,6 +47,31 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			}
 		}
 	}
+	
+	[System.Serializable]
+	public class RendererTeamSubstanceColor
+	{
+		public Transform subMesh;
+
+		private ProceduralMaterial substance;
+		private ProceduralPropertyDescription[] curProperties;
+
+		public void SetColorInMaterial (Transform transform, int teamID)
+		{
+			Color teamColor = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID);
+
+			substance = subMesh.renderer.sharedMaterial as ProceduralMaterial;
+			curProperties = substance.GetProceduralPropertyDescriptions();
+			
+			foreach (ProceduralPropertyDescription curProperty in curProperties)
+			{
+//				ProceduralPropertyDescription curProperty = curProperties[i];
+
+				if (curProperty.type == ProceduralPropertyType.Color4)
+					substance.SetProceduralColor(curProperty.name, teamColor);
+			}
+		}
+	}
 
 	[System.Serializable]
 	public class GridItemAttributes
@@ -108,6 +133,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public float sizeOfSelected = 1f;
 
 	public RendererTeamColor[] rendererTeamColor;
+	public RendererTeamSubstanceColor[] rendererTeamSubstanceColor;
 
 	public MovementAction[] movementActions;
 
@@ -174,7 +200,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		IsRemoved = false;
 		
 		statsController.AddStats (this);
-
 
 // =================================================================
 // |                                                               |
@@ -303,9 +328,14 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	void SetColorTeam ()
 	{
-		foreach (RendererTeamColor rtc in rendererTeamColor)
+//		foreach (RendererTeamColor rtc in rendererTeamColor)
+//		{
+//			rtc.SetColorInMaterial (transform, team);
+//		}
+
+		foreach (RendererTeamSubstanceColor rtsc in rendererTeamSubstanceColor)
 		{
-			rtc.SetColorInMaterial (transform, team);
+			rtsc.SetColorInMaterial (transform, team);
 		}
 	}
 
