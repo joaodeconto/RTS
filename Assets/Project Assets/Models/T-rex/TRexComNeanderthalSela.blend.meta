@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 892f2504a0b7eda40a1cba23cf99f848
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 16
   fileIDToRecycleName:
     100000: Armature
     100002: Bone_001
@@ -36,9 +36,8 @@ ModelImporter:
     100060: Root_004
     100062: Root_005
     100064: Root_006
-    100066: Sela
+    100066: Trex_001
     100068: //RootNode
-    100070: Trex
     400000: Armature
     400002: Bone_001
     400004: Bone_002
@@ -72,43 +71,43 @@ ModelImporter:
     400060: Root_004
     400062: Root_005
     400064: Root_006
-    400066: Sela
+    400066: Trex_001
     400068: //RootNode
-    400070: Trex
-    4300000: Sela
-    4300002: Trex
+    4300000: Trex_001
     7400000: Default Take
     7400002: Rex_Attack
     7400004: Rex_Death
     7400006: Rex_Idle
     7400008: Rex_Walk_001
-    7400010: Triceratops_Attack
     9500000: //RootNode
     11100000: //RootNode
-    13700000: Sela
-    13700002: Trex
+    13700000: Trex_001
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    animationCompression: 2
+    optimizeGameObjects: 0
+    animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
     clipAnimations:
-    - name: Rex_Attack
+    - serializedVersion: 16
+      name: Rex_Attack
       takeName: Rex_Attack
-      firstFrame: 1
-      lastFrame: 38
+      firstFrame: 0
+      lastFrame: 37
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
-      loop: 1
+      loop: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -120,16 +119,91 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
-    - name: Rex_Death
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Foot_IK_L
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Bone_001
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002/Bone_003
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002/Bone_003/Bone_004
+        weight: 1
+      - path: Armature/Root/Bone_L
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R/Leg3_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Bone_R
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L/Leg3_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Root_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002/Root_001_L_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002/Root_001_L_003/Root_001_L_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002/Root_001_R_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002/Root_001_R_003/Root_001_R_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_005
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_005/Root_006
+        weight: 1
+      - path: Trex_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Rex_Death
       takeName: Rex_Death
-      firstFrame: 1
+      firstFrame: 0
       lastFrame: 24
-      wrapMode: 0
+      wrapMode: 8
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -141,16 +215,91 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
-    - name: Rex_Idle
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Foot_IK_L
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Bone_001
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002/Bone_003
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002/Bone_003/Bone_004
+        weight: 1
+      - path: Armature/Root/Bone_L
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R/Leg3_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Bone_R
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L/Leg3_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Root_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002/Root_001_L_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002/Root_001_L_003/Root_001_L_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002/Root_001_R_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002/Root_001_R_003/Root_001_R_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_005
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_005/Root_006
+        weight: 1
+      - path: Trex_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Rex_Idle
       takeName: Rex_Idle
-      firstFrame: 1
+      firstFrame: 0
       lastFrame: 119
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -162,16 +311,91 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
-    - name: Rex_Walk_001
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Foot_IK_L
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Bone_001
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002/Bone_003
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002/Bone_003/Bone_004
+        weight: 1
+      - path: Armature/Root/Bone_L
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R/Leg3_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Bone_R
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L/Leg3_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Root_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002/Root_001_L_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002/Root_001_L_003/Root_001_L_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002/Root_001_R_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002/Root_001_R_003/Root_001_R_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_005
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_005/Root_006
+        weight: 1
+      - path: Trex_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Rex_Walk_001
       takeName: Rex_Walk_001
-      firstFrame: 1
-      lastFrame: 23
-      wrapMode: 0
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -183,12 +407,85 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Foot_IK_L
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Bone_001
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002/Bone_003
+        weight: 1
+      - path: Armature/Root/Bone_001/Bone_002/Bone_003/Bone_004
+        weight: 1
+      - path: Armature/Root/Bone_L
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature/Root/Bone_L/Leg1_R/Leg2_R/Leg3_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Bone_R
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature/Root/Bone_R/Leg1_L/Leg2_L/Leg3_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Root_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002/Root_001_L_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_L/Root_001_L_001/Root_001_L_002/Root_001_L_003/Root_001_L_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002/Root_001_R_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_001_R/Root_001_R_001/Root_001_R_002/Root_001_R_003/Root_001_R_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_004
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_005
+        weight: 1
+      - path: Armature/Root/Root_001/Root_002/Root_003/Root_005/Root_006
+        weight: 1
+      - path: Trex_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
-    meshCompression: 0
+    globalScale: .127000004
+    meshCompression: 2
     addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
@@ -210,7 +507,6 @@ ModelImporter:
   humanDescription:
     human: []
     skeleton: []
-    handles: []
     armTwist: .5
     foreArmTwist: .5
     upperLegTwist: .5
@@ -220,6 +516,6 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  additionalBone: 1
   animationType: 1
+  additionalBone: 0
   userData: 

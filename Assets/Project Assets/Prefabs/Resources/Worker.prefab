@@ -652,7 +652,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: -.899862528, z: 0, w: .436173737}
-  m_LocalPosition: {x: 26.4190807, y: -1.86264515e-09, z: 25.5648403}
+  m_LocalPosition: {x: 20.9762897, y: 0, z: 28.9076557}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
@@ -1305,6 +1305,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1010803960, guid: da63dd028d97cde489461eb279125a07,
       type: 3}
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 400008}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -1591,7 +1593,7 @@ SkinnedMeshRenderer:
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
-  m_Mesh: {fileID: 4300000, guid: 55e1afc4d1695734ab5f8fa62e680b29, type: 2}
+  m_Mesh: {fileID: 0}
   m_Bones:
   - {fileID: 400058}
   - {fileID: 400054}
@@ -1646,7 +1648,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!205 &20500000
 LODGroup:
   m_ObjectHideFlags: 1

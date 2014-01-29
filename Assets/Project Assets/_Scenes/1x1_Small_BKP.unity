@@ -2469,7 +2469,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 934423629}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -2502,7 +2503,7 @@ MonoBehaviour:
   model: {fileID: 644478905}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -2546,12 +2547,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &55933286
 GameObject:
   m_ObjectHideFlags: 0
@@ -3017,7 +3018,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 863878782}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -3050,7 +3052,7 @@ MonoBehaviour:
   model: {fileID: 870540948}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -3094,12 +3096,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &64367152
 GameObject:
   m_ObjectHideFlags: 0
@@ -4905,46 +4907,46 @@ Transform:
   m_Children:
   - {fileID: 1988825612}
   - {fileID: 1288439803}
-  - {fileID: 2088619287}
-  - {fileID: 292427628}
-  - {fileID: 2094336300}
-  - {fileID: 1522967922}
-  - {fileID: 153190036}
-  - {fileID: 2053915843}
-  - {fileID: 848305098}
-  - {fileID: 1141406632}
-  - {fileID: 62251145}
-  - {fileID: 1486878030}
-  - {fileID: 1336293164}
-  - {fileID: 907728770}
-  - {fileID: 557417304}
-  - {fileID: 2072681070}
-  - {fileID: 387518954}
-  - {fileID: 1224604089}
-  - {fileID: 958174668}
-  - {fileID: 199976714}
-  - {fileID: 1124297181}
-  - {fileID: 1689402309}
-  - {fileID: 1195489165}
-  - {fileID: 1400047334}
-  - {fileID: 1824016902}
-  - {fileID: 1060198756}
   - {fileID: 54367553}
-  - {fileID: 480953834}
-  - {fileID: 1590379672}
   - {fileID: 345747800}
-  - {fileID: 486671054}
-  - {fileID: 189077029}
   - {fileID: 214083630}
-  - {fileID: 1937843838}
-  - {fileID: 939132030}
-  - {fileID: 1585478279}
-  - {fileID: 2002117749}
-  - {fileID: 942408923}
-  - {fileID: 1508307349}
-  - {fileID: 721061041}
   - {fileID: 1339326177}
+  - {fileID: 292427628}
+  - {fileID: 1689402309}
+  - {fileID: 1400047334}
+  - {fileID: 189077029}
+  - {fileID: 1937843838}
+  - {fileID: 387518954}
+  - {fileID: 2002117749}
+  - {fileID: 480953834}
+  - {fileID: 486671054}
+  - {fileID: 62251145}
+  - {fileID: 557417304}
   - {fileID: 1780520984}
+  - {fileID: 721061041}
+  - {fileID: 1141406632}
+  - {fileID: 2072681070}
+  - {fileID: 1336293164}
+  - {fileID: 848305098}
+  - {fileID: 1195489165}
+  - {fileID: 1486878030}
+  - {fileID: 199976714}
+  - {fileID: 1508307349}
+  - {fileID: 1585478279}
+  - {fileID: 1124297181}
+  - {fileID: 1824016902}
+  - {fileID: 153190036}
+  - {fileID: 942408923}
+  - {fileID: 2088619287}
+  - {fileID: 1060198756}
+  - {fileID: 1224604089}
+  - {fileID: 1522967922}
+  - {fileID: 907728770}
+  - {fileID: 958174668}
+  - {fileID: 939132030}
+  - {fileID: 1590379672}
+  - {fileID: 2053915843}
+  - {fileID: 2094336300}
   m_Father: {fileID: 0}
 --- !u!1 &108195158
 GameObject:
@@ -5539,7 +5541,7 @@ AudioSource:
     type: 2}
   m_PrefabInternal: {fileID: 1263302650}
   m_GameObject: {fileID: 125080137}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
   m_PlayOnAwake: 1
@@ -5599,7 +5601,7 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 1263302650}
   m_GameObject: {fileID: 125080137}
   m_Enabled: 1
-  m_Radius: .119999997
+  m_Radius: .400000006
   m_Height: .829999983
   m_MoveThreshold: 0
   m_Carve: 1
@@ -5634,8 +5636,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 2
-  m_Height: 1.64999998
+  m_Radius: .850000024
+  m_Height: 3.05999994
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &125080143
@@ -6632,7 +6634,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 557517357}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -6665,7 +6668,7 @@ MonoBehaviour:
   model: {fileID: 888547982}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -6709,12 +6712,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &153694884
 GameObject:
   m_ObjectHideFlags: 0
@@ -8940,7 +8943,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1295557554}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -8973,7 +8977,7 @@ MonoBehaviour:
   model: {fileID: 1782581278}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -9017,12 +9021,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &189908002
 GameObject:
   m_ObjectHideFlags: 0
@@ -9273,7 +9277,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 2829439}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -9306,7 +9311,7 @@ MonoBehaviour:
   model: {fileID: 1142746520}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -9350,12 +9355,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &200016761
 GameObject:
   m_ObjectHideFlags: 0
@@ -9931,7 +9936,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1820717077}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -9964,7 +9970,7 @@ MonoBehaviour:
   model: {fileID: 909382088}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -10008,12 +10014,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &214359436
 GameObject:
   m_ObjectHideFlags: 0
@@ -10447,7 +10453,7 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 1425144232}
   m_GameObject: {fileID: 231111063}
   m_Enabled: 1
-  m_Radius: .119999997
+  m_Radius: .400000006
   m_Height: .829999983
   m_MoveThreshold: 0
   m_Carve: 1
@@ -10482,8 +10488,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 2
-  m_Height: 1.64999998
+  m_Radius: .850000024
+  m_Height: 3.05999994
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &231111068
@@ -10509,7 +10515,7 @@ AudioSource:
     type: 2}
   m_PrefabInternal: {fileID: 1425144232}
   m_GameObject: {fileID: 231111063}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
   m_PlayOnAwake: 1
@@ -10856,7 +10862,7 @@ AudioSource:
     type: 2}
   m_PrefabInternal: {fileID: 1730970941}
   m_GameObject: {fileID: 243658349}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
   m_PlayOnAwake: 1
@@ -10916,7 +10922,7 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 1730970941}
   m_GameObject: {fileID: 243658349}
   m_Enabled: 1
-  m_Radius: .119999997
+  m_Radius: .400000006
   m_Height: .829999983
   m_MoveThreshold: 0
   m_Carve: 1
@@ -10951,8 +10957,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 2
-  m_Height: 1.64999998
+  m_Radius: .850000024
+  m_Height: 3.05999994
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &243658355
@@ -11663,8 +11669,8 @@ Transform:
   m_PrefabInternal: {fileID: 958430453}
   m_GameObject: {fileID: 258320457}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.418692827, y: .00139867782, z: .316997737}
-  m_LocalScale: {x: .200000003, y: .200000003, z: .200000003}
+  m_LocalPosition: {x: -.221280098, y: 0, z: .132896423}
+  m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children: []
   m_Father: {fileID: 1708542955}
 --- !u!23 &258320459
@@ -13006,7 +13012,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 327887833}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -13039,7 +13046,7 @@ MonoBehaviour:
   model: {fileID: 1529906764}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -13083,12 +13090,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &292624375
 GameObject:
   m_ObjectHideFlags: 0
@@ -15292,7 +15299,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 93867040}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -15325,7 +15333,7 @@ MonoBehaviour:
   model: {fileID: 1953367377}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -15369,12 +15377,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &347901612
 GameObject:
   m_ObjectHideFlags: 0
@@ -16650,7 +16658,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1147933962}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -16683,7 +16692,7 @@ MonoBehaviour:
   model: {fileID: 1187461015}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -16727,12 +16736,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &388364774
 GameObject:
   m_ObjectHideFlags: 0
@@ -20468,7 +20477,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1528683128}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -20501,7 +20511,7 @@ MonoBehaviour:
   model: {fileID: 606133931}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -20545,12 +20555,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &481306380
 GameObject:
   m_ObjectHideFlags: 0
@@ -20882,7 +20892,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1911585096}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -20915,7 +20926,7 @@ MonoBehaviour:
   model: {fileID: 288366418}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -20959,12 +20970,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &490647957
 GameObject:
   m_ObjectHideFlags: 0
@@ -23951,7 +23962,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1240188409}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -23984,7 +23996,7 @@ MonoBehaviour:
   model: {fileID: 1728165747}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -24028,12 +24040,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &557517356
 GameObject:
   m_ObjectHideFlags: 0
@@ -28509,8 +28521,8 @@ Transform:
   m_PrefabInternal: {fileID: 1730970941}
   m_GameObject: {fileID: 652127200}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.418692827, y: .00139867782, z: .316997737}
-  m_LocalScale: {x: .200000003, y: .200000003, z: .200000003}
+  m_LocalPosition: {x: -.221280098, y: 0, z: .132896423}
+  m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children: []
   m_Father: {fileID: 243658350}
 --- !u!23 &652127202
@@ -31400,7 +31412,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1490179905}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -31433,7 +31446,7 @@ MonoBehaviour:
   model: {fileID: 74803304}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -31477,12 +31490,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &721890086
 GameObject:
   m_ObjectHideFlags: 0
@@ -32708,8 +32721,8 @@ Transform:
   m_PrefabInternal: {fileID: 723605294}
   m_GameObject: {fileID: 772005101}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.418692827, y: .00139867782, z: .316997737}
-  m_LocalScale: {x: .200000003, y: .200000003, z: .200000003}
+  m_LocalPosition: {x: -.221280098, y: 0, z: .132896423}
+  m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children: []
   m_Father: {fileID: 1444067774}
 --- !u!23 &772005103
@@ -35586,7 +35599,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 904026176}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -35619,7 +35633,7 @@ MonoBehaviour:
   model: {fileID: 147928232}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -35663,12 +35677,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &849301058
 GameObject:
   m_ObjectHideFlags: 0
@@ -38274,7 +38288,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1135730928}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -38307,7 +38322,7 @@ MonoBehaviour:
   model: {fileID: 1359943521}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -38351,12 +38366,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &907999231
 GameObject:
   m_ObjectHideFlags: 0
@@ -40657,7 +40672,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 809658032}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -40690,7 +40706,7 @@ MonoBehaviour:
   model: {fileID: 1168108873}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -40734,12 +40750,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &939988961
 GameObject:
   m_ObjectHideFlags: 0
@@ -40881,7 +40897,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1440788931}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -40914,7 +40931,7 @@ MonoBehaviour:
   model: {fileID: 16454516}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -40958,12 +40975,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &943277328
 GameObject:
   m_ObjectHideFlags: 0
@@ -41647,7 +41664,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 896918804}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -41680,7 +41698,7 @@ MonoBehaviour:
   model: {fileID: 1947082506}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -41724,12 +41742,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1001 &958430453
 Prefab:
   m_ObjectHideFlags: 0
@@ -47374,7 +47392,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 347918693}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -47407,7 +47426,7 @@ MonoBehaviour:
   model: {fileID: 446408705}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -47451,12 +47470,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1061910764
 GameObject:
   m_ObjectHideFlags: 0
@@ -54434,7 +54453,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 995557043}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -54467,7 +54487,7 @@ MonoBehaviour:
   model: {fileID: 1732569528}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -54511,12 +54531,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1125492767
 GameObject:
   m_ObjectHideFlags: 0
@@ -56120,7 +56140,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 336187745}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -56153,7 +56174,7 @@ MonoBehaviour:
   model: {fileID: 865054835}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -56197,12 +56218,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1001 &1141457526
 Prefab:
   m_ObjectHideFlags: 0
@@ -58650,7 +58671,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1385830616}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -58683,7 +58705,7 @@ MonoBehaviour:
   model: {fileID: 1935027862}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -58727,12 +58749,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1196219601
 GameObject:
   m_ObjectHideFlags: 0
@@ -59787,7 +59809,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1425398777}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -59820,7 +59843,7 @@ MonoBehaviour:
   model: {fileID: 1086691434}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -59864,12 +59887,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1225962065
 GameObject:
   m_ObjectHideFlags: 0
@@ -64038,8 +64061,8 @@ Transform:
   m_PrefabInternal: {fileID: 1263302650}
   m_GameObject: {fileID: 1317164830}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.418692827, y: .00139867782, z: .316997737}
-  m_LocalScale: {x: .200000003, y: .200000003, z: .200000003}
+  m_LocalPosition: {x: -.221280098, y: 0, z: .132896423}
+  m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children: []
   m_Father: {fileID: 125080138}
 --- !u!23 &1317164832
@@ -64869,7 +64892,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 72850225}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -64902,7 +64926,7 @@ MonoBehaviour:
   model: {fileID: 1488312577}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -64946,12 +64970,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!4 &1336293164
 Transform:
   m_ObjectHideFlags: 0
@@ -65488,7 +65512,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1850205965}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -65521,7 +65546,7 @@ MonoBehaviour:
   model: {fileID: 1605458825}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -65565,12 +65590,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1001 &1339741069
 Prefab:
   m_ObjectHideFlags: 0
@@ -70658,7 +70683,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 805638255}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -70691,7 +70717,7 @@ MonoBehaviour:
   model: {fileID: 1869600057}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -70735,12 +70761,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1401635739
 GameObject:
   m_ObjectHideFlags: 0
@@ -72341,7 +72367,7 @@ AudioSource:
     type: 2}
   m_PrefabInternal: {fileID: 723605294}
   m_GameObject: {fileID: 1444067773}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
   m_PlayOnAwake: 1
@@ -72401,7 +72427,7 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 723605294}
   m_GameObject: {fileID: 1444067773}
   m_Enabled: 1
-  m_Radius: .119999997
+  m_Radius: .400000006
   m_Height: .829999983
   m_MoveThreshold: 0
   m_Carve: 1
@@ -72436,8 +72462,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 2
-  m_Height: 1.64999998
+  m_Radius: .850000024
+  m_Height: 3.05999994
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1444067779
@@ -73995,7 +74021,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1598068809}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -74028,7 +74055,7 @@ MonoBehaviour:
   model: {fileID: 805869039}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -74072,12 +74099,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1487587850
 GameObject:
   m_ObjectHideFlags: 0
@@ -74831,7 +74858,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 90229423}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -74864,7 +74892,7 @@ MonoBehaviour:
   model: {fileID: 1916413186}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -74908,12 +74936,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1508462546
 GameObject:
   m_ObjectHideFlags: 0
@@ -76866,7 +76894,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 2035032390}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -76899,7 +76928,7 @@ MonoBehaviour:
   model: {fileID: 348769428}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -76943,12 +76972,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1525815835
 GameObject:
   m_ObjectHideFlags: 0
@@ -79995,7 +80024,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 204521506}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -80028,7 +80058,7 @@ MonoBehaviour:
   model: {fileID: 621307044}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -80072,12 +80102,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1586269904
 GameObject:
   m_ObjectHideFlags: 0
@@ -80973,7 +81003,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 835078507}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -81006,7 +81037,7 @@ MonoBehaviour:
   model: {fileID: 716531518}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -81050,12 +81081,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1590473500
 GameObject:
   m_ObjectHideFlags: 0
@@ -83960,7 +83991,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1223231835}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -83993,7 +84025,7 @@ MonoBehaviour:
   model: {fileID: 56764603}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -84037,12 +84069,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1690686257
 GameObject:
   m_ObjectHideFlags: 0
@@ -84699,7 +84731,7 @@ AudioSource:
     type: 2}
   m_PrefabInternal: {fileID: 958430453}
   m_GameObject: {fileID: 1708542954}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
   m_PlayOnAwake: 1
@@ -84759,7 +84791,7 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 958430453}
   m_GameObject: {fileID: 1708542954}
   m_Enabled: 1
-  m_Radius: .119999997
+  m_Radius: .400000006
   m_Height: .829999983
   m_MoveThreshold: 0
   m_Carve: 1
@@ -84794,8 +84826,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 2
-  m_Height: 1.64999998
+  m_Radius: .850000024
+  m_Height: 3.05999994
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1708542960
@@ -88034,7 +88066,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 722882450}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -88067,7 +88100,7 @@ MonoBehaviour:
   model: {fileID: 688063221}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -88111,12 +88144,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1781400855
 GameObject:
   m_ObjectHideFlags: 0
@@ -90042,7 +90075,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 505717437}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -90075,7 +90109,7 @@ MonoBehaviour:
   model: {fileID: 1017709082}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -90119,12 +90153,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1824432415
 GameObject:
   m_ObjectHideFlags: 0
@@ -92495,9 +92529,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1444067774}
+  - {fileID: 231111064}
   - {fileID: 1708542955}
   - {fileID: 125080138}
-  - {fileID: 231111064}
   - {fileID: 243658350}
   m_Father: {fileID: 0}
 --- !u!1 &1906121237
@@ -93676,8 +93710,8 @@ Transform:
   m_PrefabInternal: {fileID: 1425144232}
   m_GameObject: {fileID: 1922284536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.418692827, y: .00139867782, z: .316997737}
-  m_LocalScale: {x: .200000003, y: .200000003, z: .200000003}
+  m_LocalPosition: {x: -.221280098, y: 0, z: .132896423}
+  m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children: []
   m_Father: {fileID: 231111064}
 --- !u!23 &1922284538
@@ -94460,7 +94494,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 820470882}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -94493,7 +94528,7 @@ MonoBehaviour:
   model: {fileID: 731061639}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -94537,12 +94572,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &1938947628
 GameObject:
   m_ObjectHideFlags: 0
@@ -97232,7 +97267,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1346139544}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -97265,7 +97301,7 @@ MonoBehaviour:
   model: {fileID: 1830635485}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -97309,12 +97345,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &2002143265
 GameObject:
   m_ObjectHideFlags: 0
@@ -99196,7 +99232,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 1106365214}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -99229,7 +99266,7 @@ MonoBehaviour:
   model: {fileID: 1788551668}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -99273,12 +99310,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &2054305924
 GameObject:
   m_ObjectHideFlags: 0
@@ -100018,7 +100055,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 430055751}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -100051,7 +100089,7 @@ MonoBehaviour:
   model: {fileID: 135495934}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -100095,12 +100133,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &2074914896
 GameObject:
   m_ObjectHideFlags: 0
@@ -100649,7 +100687,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 828273294}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -100682,7 +100721,7 @@ MonoBehaviour:
   model: {fileID: 296531483}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -100726,12 +100765,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &2090135604
 GameObject:
   m_ObjectHideFlags: 0
@@ -100900,7 +100939,8 @@ MonoBehaviour:
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 524976453}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -100933,7 +100973,7 @@ MonoBehaviour:
   model: {fileID: 13999373}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -100977,12 +101017,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &2095740711
 GameObject:
   m_ObjectHideFlags: 0

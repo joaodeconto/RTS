@@ -720,7 +720,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100022}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.0669441, y: 0, z: 24.8301125}
+  m_LocalPosition: {x: 34.3778381, y: -3.7252903e-09, z: 39.0735168}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400076}
@@ -1067,13 +1067,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   Defense: 0
-  team: 0
+  team: 9
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 400004}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -1106,7 +1108,7 @@ MonoBehaviour:
   model: {fileID: 100000}
   force: 6
   distanceView: 9.39999962
-  attackRange: 3.48000002
+  attackRange: 3
   attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 50
@@ -1291,12 +1293,12 @@ NavMeshAgent:
   m_AngularSpeed: 270
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

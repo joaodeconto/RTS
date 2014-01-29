@@ -99,6 +99,7 @@ GameObject:
   - 136: {fileID: 13600000}
   - 114: {fileID: 11400006}
   - 54: {fileID: 5400000}
+  - 114: {fileID: 11400002}
   m_Layer: 18
   m_Name: MainBuilding
   m_TagString: Factory
@@ -354,12 +355,22 @@ MonoBehaviour:
     baseObject: {fileID: 100004}
     unfinishedObject: {fileID: 100006}
     finishedObject: {fileID: 100008}
-    desactiveObjectsWhenInstance:
-    - {fileID: 100002}
+    desactiveObjectsWhenInstance: []
   buttonName: Main Building
   guiTextureName: main-building
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 905aefc6e5de9e84d87bfba0c27c1a60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -375,7 +386,7 @@ MonoBehaviour:
   ownerId: 0
   group: 0
   prefixBackup: -1
-  observed: {fileID: 11400000}
+  observed: {fileID: 11400002}
   synchronization: 1
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
