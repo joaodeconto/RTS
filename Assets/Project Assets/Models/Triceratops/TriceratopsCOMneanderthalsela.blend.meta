@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: c8626672facb11c43b2b5a4ee1a4c476
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 16
   fileIDToRecycleName:
     100000: Armature
     100002: BFoot_L
@@ -25,15 +25,14 @@ ModelImporter:
     100038: Neck1
     100040: Neck2
     100042: Root
-    100044: Sela
-    100046: Tail1
-    100048: Tail2
-    100050: Tail3
-    100052: Tail4
-    100054: Torso
-    100056: triceratops
-    100058: //RootNode
-    100060: Up_Spine
+    100044: Tail1
+    100046: Tail2
+    100048: Tail3
+    100050: Tail4
+    100052: Torso
+    100054: triceratops
+    100056: //RootNode
+    100058: Up_Spine
     400000: Armature
     400002: BFoot_L
     400004: BFoot_R
@@ -56,17 +55,15 @@ ModelImporter:
     400038: Neck1
     400040: Neck2
     400042: Root
-    400044: Sela
-    400046: Tail1
-    400048: Tail2
-    400050: Tail3
-    400052: Tail4
-    400054: Torso
-    400056: triceratops
-    400058: //RootNode
-    400060: Up_Spine
-    4300000: Sela
-    4300002: triceratops
+    400044: Tail1
+    400046: Tail2
+    400048: Tail3
+    400050: Tail4
+    400052: Torso
+    400054: triceratops
+    400056: //RootNode
+    400058: Up_Spine
+    4300000: triceratops
     7400000: Default Take
     7400002: BrachioPoseLib_001
     7400004: Triceratops_Attack
@@ -76,72 +73,33 @@ ModelImporter:
     7400012: Triceratops_Walk
     9500000: //RootNode
     11100000: //RootNode
-    13700000: Sela
-    13700002: triceratops
+    13700000: triceratops
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    optimizeGameObjects: 0
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
     clipAnimations:
-    - name: Default Take
-      takeName: Default Take
-      firstFrame: 0
-      lastFrame: 60
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      transformMask: []
-    - name: BrachioPoseLib_001
-      takeName: BrachioPoseLib_001
-      firstFrame: 0
-      lastFrame: 1
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      transformMask: []
-    - name: Triceratops_Attack
+    - serializedVersion: 16
+      name: Triceratops_Attack
       takeName: Triceratops_Attack
-      firstFrame: 1
+      firstFrame: -1
       lastFrame: 24
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
-      loop: 1
+      loop: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -153,16 +111,81 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
-    - name: Triceratops_Death
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Torso
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L/BFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R/BFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2/Tail1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L/FFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R/FFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1/Head
+        weight: 1
+      - path: triceratops
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Triceratops_Death
       takeName: Triceratops_Death
-      firstFrame: 1
+      firstFrame: -1
       lastFrame: 44
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -174,16 +197,81 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
-    - name: Triceratops_Idle
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Torso
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L/BFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R/BFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2/Tail1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L/FFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R/FFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1/Head
+        weight: 1
+      - path: triceratops
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Triceratops_Idle
       takeName: Triceratops_Idle
-      firstFrame: 1
+      firstFrame: -1
       lastFrame: 129
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
-      loop: 1
+      loop: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -195,16 +283,81 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
-    - name: Triceratops_Run
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Torso
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L/BFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R/BFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2/Tail1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L/FFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R/FFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1/Head
+        weight: 1
+      - path: triceratops
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Triceratops_Run
       takeName: Triceratops_Run
-      firstFrame: 1
-      lastFrame: 16
+      firstFrame: 0
+      lastFrame: 15
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
-      loop: 1
+      loop: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -216,16 +369,81 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
-    - name: Triceratops_Walk
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Torso
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L/BFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R/BFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2/Tail1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L/FFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R/FFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1/Head
+        weight: 1
+      - path: triceratops
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Triceratops_Walk
       takeName: Triceratops_Walk
-      firstFrame: 1
+      firstFrame: 0
       lastFrame: 20
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -237,18 +455,81 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      transformMask: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Torso
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_L/BLeg2_L/BLeg1_L/BFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/BLeg3_R/BLeg2_R/BLeg1_R/BFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2
+        weight: 1
+      - path: Armature/Root/Torso/Low_Spine/Tail4/Tail3/Tail2/Tail1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_L/FLeg2_L/FLeg1_L/FFoot_L
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/FLeg3_R/FLeg2_R/FLeg1_R/FFoot_R
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1
+        weight: 1
+      - path: Armature/Root/Torso/Up_Spine/Neck2/Neck1/Head
+        weight: 1
+      - path: triceratops
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: .5
     meshCompression: 0
     addColliders: 0
-    importBlendShapes: 1
+    importBlendShapes: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
+    optimizeMeshForGPU: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
@@ -256,7 +537,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
+    splitTangentsAcrossUV: 0
     normalImportMode: 0
     tangentImportMode: 1
   importAnimation: 1
@@ -264,7 +545,6 @@ ModelImporter:
   humanDescription:
     human: []
     skeleton: []
-    handles: []
     armTwist: .5
     foreArmTwist: .5
     upperLegTwist: .5
@@ -274,6 +554,6 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  additionalBone: 1
   animationType: 1
+  additionalBone: 0
   userData: 
