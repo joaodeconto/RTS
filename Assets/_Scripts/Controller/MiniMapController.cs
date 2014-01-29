@@ -265,7 +265,7 @@ public class MiniMapController : MonoBehaviour
 		_go.transform.parent     = miniMapPanel.transform;
 		_go.transform.localScale = pref_go.GetComponent<UISprite> ().localSize;
 
-		Color teamColor = ComponentGetter.Get<GameplayManager>().teams[teamId].color;
+		Color teamColor = ComponentGetter.Get<GameplayManager>().teams[teamId].colors[0];
 
 		_go.GetComponent<UISlicedSprite>().color = teamColor;
 

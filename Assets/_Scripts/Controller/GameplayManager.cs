@@ -9,7 +9,7 @@ using Visiorama.Utils;
 public class Team
 {
 	public string name;
-	public Color color = Color.white;
+	public Color[] colors = new Color[3] { Color.white, Color.gray, Color.blue };
 	public Texture2D colorTexture;
 	public Transform initialPosition;
 
@@ -194,7 +194,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	/// 
 	public Color GetColorTeam ()
 	{
-		return GetColorTeam (MyTeam);
+		return GetColorTeam (MyTeam, 0);
 	}
 
 	/// <summary>
@@ -206,15 +206,24 @@ public class GameplayManager : Photon.MonoBehaviour
 	/// <param name='teamID'>
 	/// Team ID.
 	/// </param>
-	public Color GetColorTeam (int teamID)
+	public Color GetColorTeam (int teamID) { return GetColorTeam (teamID, 0); }
+	public Color GetColorTeam (int teamID, int indexColor)
 	{
 		if (teamID >= 0 && teamID < teams.Length)
 		{
-			return teams[teamID].color;
+			if (indexColor >= 0 && indexColor < teams[teamID].colors.Length)
+			{
+				return teams[teamID].colors[indexColor];
+			}
+			else
+			{
+				Debug.LogError ("The Team does not have the indexColor " + indexColor);
+				return Color.black;
+			}
 		}
 		else
 		{
-			Debug.LogError ("Team ID do not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
+			Debug.LogError ("Team ID does not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
 			return Color.black;
 		}
 	}
