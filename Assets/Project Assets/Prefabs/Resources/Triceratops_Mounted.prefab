@@ -523,7 +523,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: -.0030923509, y: .728798091, z: .00420272397, w: .684708774}
-  m_LocalPosition: {x: 21.1190662, y: 0, z: 25.7758427}
+  m_LocalPosition: {x: 28.6078033, y: 0, z: 26.1415062}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400066}
@@ -939,8 +939,10 @@ MonoBehaviour:
   fieldOfView: 15
   sizeOfSelected: 3.5
   rendererTeamColor:
-  - materialToApplyColor: {fileID: 2100000, guid: 04ea912f1f4cb3d4bbc81bbd2b7cea1a,
-      type: 2}
+  - materialToApplyColor: {fileID: 89581244, guid: a8df6d2f75d0e9546a917e4e327e1f31,
+      type: 3}
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 400006}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -963,7 +965,7 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 2
         gridYIndex: 0
-  pref_ParticleDamage: {fileID: 0}
+  pref_ParticleDamage: {fileID: 100004, guid: 20747cbb589a10f418c2fd1d67647962, type: 2}
   transformParticleDamageReference: {fileID: 400000}
   playerUnit: 1
   category: Triceratops
@@ -1151,7 +1153,7 @@ NavMeshAgent:
   m_Height: 3.21000004
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!205 &20500000
 LODGroup:
   m_ObjectHideFlags: 1
