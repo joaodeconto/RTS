@@ -53,6 +53,7 @@ public class HUDController : MonoBehaviour
 	}
 
 	public GameObject pref_healthBar;
+	public GameObject pref_SubstanceHealthBar;
 	public GameObject pref_selectedObject;
 
 	public UIRoot uiRoot;
@@ -141,20 +142,10 @@ public class HUDController : MonoBehaviour
 
 	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
 	{
-		if (HUDRoot.go == null || pref_healthBar == null)
-		{
-			return null;
-		}
-
 		GameObject child = NGUITools.AddChild(HUDRoot.go, pref_healthBar);
-
-		if (child.GetComponent<HealthBar> () == null) child.AddComponent <HealthBar> ();
-		if (child.GetComponent<UISlider> () == null) child.AddComponent <UISlider> ();
 
 		child.GetComponent<UISlider> ().foregroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
 		child.GetComponent<UISlider> ().foregroundWidget.height = 8;
-		child.GetComponent<UISlider> ().backgroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
-		child.GetComponent<UISlider> ().backgroundWidget.height = 8;
 
 		child.AddComponent<UIFollowTarget>().target      = target.transform.FindChild (referenceChild).transform;
 		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
@@ -164,6 +155,30 @@ public class HUDController : MonoBehaviour
 
 		healthBar.SetTarget (target);
 
+		return healthBar;
+	}
+	
+	public SubstanceHealthBar CreateSubstanceHealthBar (IStats target, float size, int maxHealth, string referenceChild)
+	{
+		GameObject selectObj = Instantiate (pref_SubstanceHealthBar, target.transform.position, Quaternion.identity) as GameObject;
+		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
+		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
+		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
+
+		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
+		refTransform.referenceObject = target.transform;
+		refTransform.positionX = true;
+		refTransform.positionY = true;
+		refTransform.positionZ = true;
+		refTransform.destroyObjectWhenLoseReference = true;
+		refTransform.offsetPosition += Vector3.up * 0.1f;
+		
+		selectObj.transform.parent = mainTranformSelectedObjects;
+		
+		SubstanceHealthBar healthBar = selectObj.GetComponent<SubstanceHealthBar> ();
+		
+		healthBar.SetTarget (target);
+		
 		return healthBar;
 	}
 
@@ -205,9 +220,20 @@ public class HUDController : MonoBehaviour
 
 		foreach (Transform child in HUDRoot.go.transform)
 		{
-			if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+			if (child.GetComponent<HealthBar>())
 			{
-				Destroy (child.gameObject);
+				if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+				{
+					Destroy (child.gameObject);
+				}
+			}
+			
+			if (child.GetComponent<SubstanceHealthBar>())
+			{
+				if (child.GetComponent<SubstanceHealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+				{
+					Destroy (child.gameObject);
+				}
 			}
 		}
 	}

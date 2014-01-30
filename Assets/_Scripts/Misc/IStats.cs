@@ -376,7 +376,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public void NotifyHealthChange ()
 	{
-		Debug.Log (this.name + " - healthObservers.Count: " + healthObservers.Count );
+//		Debug.Log (this.name + " - healthObservers.Count: " + healthObservers.Count );
 		foreach (IHealthObserver o in healthObservers)
 		{
 			o.UpdateHealth (m_health);

@@ -36,10 +36,10 @@ public class FogOfWar : MonoBehaviour
 
 	public Texture2D FogTexture { get; private set; }
 
-	private List<Transform> allies;
-	private List<Transform> enemies;
-	private List<IStats> entityAllies;
-	private List<IStats> entityEnemies;
+	private List<Transform> allies = new List<Transform> ();
+	private List<Transform> enemies = new List<Transform> ();
+	private List<IStats> entityAllies = new List<IStats> ();
+	private List<IStats> entityEnemies = new List<IStats> ();
 
 	private enum FogFlag
 	{
@@ -99,11 +99,6 @@ public class FogOfWar : MonoBehaviour
 		poly.renderer.material.mainTexture = FogTexture;
 #endif
 
-		allies        = new List<Transform>();
-		entityAllies  = new List<IStats>();
-		enemies       = new List<Transform>();
-		entityEnemies = new List<IStats>();
-		
 		InvokeRepeating ("UpdateFog", 0f, 1f);
 		
 		return this;

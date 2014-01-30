@@ -247,10 +247,11 @@ public class MiniMapController : MonoBehaviour
 		GameObject miniMapObject = Instantiate (beingAttackedMiniMap) as GameObject;
 
 		miniMapObject.transform.parent     = miniMapPanel.transform;
-		miniMapObject.GetComponent <UITexture>().height = beingAttackedMiniMap.GetComponent <UITexture>().height;
-		miniMapObject.GetComponent <UITexture>().width = beingAttackedMiniMap.GetComponent <UITexture>().width;
+		miniMapObject.GetComponent <UISprite>().height = beingAttackedMiniMap.GetComponent <UISprite>().height;
+		miniMapObject.GetComponent <UISprite>().width = beingAttackedMiniMap.GetComponent <UISprite>().width;
 
-		miniMapObject.GetComponent<TweenScale> ().Play (true);
+		miniMapObject.GetComponent<TweenHeight> ().Play (true);
+		miniMapObject.GetComponent<TweenWidth> ().Play (true);
 
 		miniMapObject.GetComponent<UISprite> ().depth = 10;
 
