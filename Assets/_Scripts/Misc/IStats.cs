@@ -58,17 +58,21 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 		public void SetColorInMaterial (Transform transform, int teamID)
 		{
-			Color teamColor = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID);
+			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
+			Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
+			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
 
-			substance = subMesh.renderer.sharedMaterial as ProceduralMaterial;
+			substance 	  = subMesh.renderer.sharedMaterial as ProceduralMaterial;
 			curProperties = substance.GetProceduralPropertyDescriptions();
 			
 			foreach (ProceduralPropertyDescription curProperty in curProperties)
 			{
-//				ProceduralPropertyDescription curProperty = curProperties[i];
-
-				if (curProperty.type == ProceduralPropertyType.Color4)
+				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
 					substance.SetProceduralColor(curProperty.name, teamColor);
+				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor1"))
+					substance.SetProceduralColor(curProperty.name, teamColor1);
+				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor2"))
+					substance.SetProceduralColor(curProperty.name, teamColor2);
 			}
 		}
 	}
