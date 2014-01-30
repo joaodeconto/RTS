@@ -467,7 +467,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pref_healthBar: {fileID: 100004, guid: 7124a57782363ec4cb6632edc61ab84a, type: 2}
-  pref_selectedObject: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
+  pref_SubstanceHealthBar: {fileID: 100004, guid: 7124a57782363ec4cb6632edc61ab84a,
+    type: 2}
+  pref_selectedObject: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   uiRoot: {fileID: 0}
   mainTranformSelectedObjects: {fileID: 0}
   trnsOptionsMenu: {fileID: 0}
@@ -475,7 +477,7 @@ MonoBehaviour:
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
   offesetFeedback: {x: 0, y: .100000001, z: 0}
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
-  pref_selfFeedback: {fileID: 100000, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
+  pref_selfFeedback: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   pref_attackFeedback: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
   sliders:
   - {fileID: 0}
@@ -501,27 +503,22 @@ MonoBehaviour:
   messageQueuesAttributes:
   - queueName: Unit Group
     panel: {fileID: 0}
-    hasFirstCell: 0
-    rootPosition: {x: -280, y: 88}
+    rootPosition: {x: -5, y: 0}
     cellSize: {x: 50, y: 50}
-    padding: {x: 12, y: 3}
+    padding: {x: 5, y: 3}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 10
-    maxItems: 20
+    maxItems: 100
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    firstCellQueueAttributes:
-      firstCellRootPosition: {x: 0, y: 0}
-      firstCellSize: {x: 0, y: 0}
   - queueName: Factory
     panel: {fileID: 0}
-    hasFirstCell: 1
-    rootPosition: {x: 110, y: 60}
+    rootPosition: {x: -10, y: 82}
     cellSize: {x: 50, y: 50}
-    padding: {x: 3, y: 3}
+    padding: {x: 6, y: 0}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
@@ -530,15 +527,11 @@ MonoBehaviour:
     temporizedQueueAttributes:
       timeToFadeout: 0
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    firstCellQueueAttributes:
-      firstCellRootPosition: {x: 110, y: 60}
-      firstCellSize: {x: 100, y: 100}
   - queueName: Events
     panel: {fileID: 0}
-    hasFirstCell: 0
     rootPosition: {x: 0, y: 0}
     cellSize: {x: 40, y: 40}
-    padding: {x: 5, y: 5}
+    padding: {x: 5, y: 12}
     labelSize: 24
     IsVerticalQueue: 1
     maxPerLine: 10
@@ -546,13 +539,9 @@ MonoBehaviour:
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
       timeToFadeout: 4
-      fadeColor: {r: 1, g: .724137962, b: 0, a: 0}
-    firstCellQueueAttributes:
-      firstCellRootPosition: {x: 0, y: 0}
-      firstCellSize: {x: 0, y: 0}
+      fadeColor: {r: 1, g: 1, b: 1, a: 0}
   - queueName: Chat
     panel: {fileID: 0}
-    hasFirstCell: 0
     rootPosition: {x: -800, y: 110}
     cellSize: {x: 0, y: 0}
     padding: {x: 0, y: 0}
@@ -562,11 +551,8 @@ MonoBehaviour:
     maxItems: 5
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 0
+      timeToFadeout: 4
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    firstCellQueueAttributes:
-      firstCellRootPosition: {x: 0, y: 0}
-      firstCellSize: {x: 0, y: 0}
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -697,19 +683,19 @@ MonoBehaviour:
     Message: Insufficient resources
     spriteName: 
   - Name: reach enqueued units
-    Message: Queue is full
+    Message: training queue is full
     spriteName: 
   - Name: need more houses
-    Message: 'Need more houses '
+    Message: 'need more houses '
     spriteName: 
   - Name: reach max population
-    Message: Reached on max population
+    Message: reached max population
     spriteName: 
   - Name: create unit
-    Message: '{0} trained'
+    Message: '{0} train complete'
     spriteName: 
   - Name: being attacked
-    Message: You are being attacked
+    Message: we are under attack
     spriteName: 
 --- !u!114 &11400020
 MonoBehaviour:
@@ -732,7 +718,7 @@ MonoBehaviour:
     zoomSpeed: .200000003
     zoom:
       min: 15
-      max: 23
+      max: 20
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -757,6 +743,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: Click
+    is3d: 0
+    soundType: 0
     soundsClip:
     - {fileID: 8300000, guid: 7bb4933e9760faf47a89560d2394dded, type: 3}
   soundType: 1
@@ -779,45 +767,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 100016}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 463cf097268fe2b43ac9c5a497c9765c, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f7dd739c8ba2a84dacc153422b40126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
-  - name: Worker
+  - name: 
+    is3d: 0
+    soundType: 0
     soundsClip:
-    - {fileID: 8300000, guid: e49f334396a591c4db0cbc56adb84cfc, type: 3}
-  - name: Neanderthal
-    soundsClip:
-    - {fileID: 8300000, guid: a016e1c7582b3b24a8cc4bf6e1d7141b, type: 3}
-  - name: Raptor
-    soundsClip:
-    - {fileID: 8300000, guid: 3a620befb956c494b9dd63d38d77a762, type: 3}
-  - name: Triceratops
-    soundsClip:
-    - {fileID: 8300000, guid: 323c4d3ca0b0c464bbcba3119a281552, type: 3}
-  - name: Rex
-    soundsClip:
-    - {fileID: 8300000, guid: 8241da6e12637ef4985de4f9fccc329d, type: 3}
-  - name: TroopSelected
-    soundsClip:
-    - {fileID: 8300000, guid: c7ac946ca172d4d4499d904f48503f2f, type: 3}
-  - name: BuildingSelected
-    soundsClip:
-    - {fileID: 8300000, guid: 6f6ad43210456ca43b4f9e04e12fed1c, type: 3}
-  - name: ConfirmAtk
-    soundsClip:
-    - {fileID: 8300000, guid: 77f32f4466e3e7f4b90691d51e114969, type: 3}
-    - {fileID: 8300000, guid: 4ad7633f7befb9d4b81c2123c39c2dae, type: 3}
-  - name: ConfirmMov
-    soundsClip:
-    - {fileID: 8300000, guid: 7d93183d7fa55d34fa5e60699b70656f, type: 3}
-  - name: Mining
-    soundsClip:
-    - {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
-  - name: BattleSounds
-    soundsClip:
-    - {fileID: 8300000, guid: 665df2da9644a8e4bb5b413df8bfeae0, type: 3}
-  soundType: 2
+    - {fileID: 0}
+  soundType: 1
 --- !u!114 &11400030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -830,46 +789,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teams:
-  - name: Time lol
-    color: {r: .448529422, g: 0, b: 0, a: 1}
+  - name: Time 1
+    colors:
+    - {r: .717647076, g: .717647076, b: .717647076, a: 0}
+    - {r: .819607854, g: .819607854, b: .819607854, a: 0}
+    - {r: .4627451, g: .525490224, b: .643137276, a: 0}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
-  - name: Time legalzinho
-    color: {r: 1, g: .316176474, b: .316176474, a: 1}
+  - name: Time 2
+    colors:
+    - {r: .792156875, g: 0, b: 0, a: 0}
+    - {r: .75686276, g: .75686276, b: .75686276, a: 0}
+    - {r: .372549027, g: .447058827, b: .576470613, a: 0}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
-  - name: time mais massa
-    color: {r: 1, g: .636363626, b: .235294104, a: 1}
-    colorTexture: {fileID: 0}
-    initialPosition: {fileID: 0}
-  - name: super time
-    color: {r: .668860495, g: .323529422, b: 1, a: 1}
-    colorTexture: {fileID: 0}
-    initialPosition: {fileID: 0}
-  - name: super time
-    color: {r: .302183867, g: .150367573, b: .447761178, a: 1}
-    colorTexture: {fileID: 0}
-    initialPosition: {fileID: 0}
-  - name: super time
-    color: {r: .302183867, g: .150367573, b: .447761178, a: 1}
+  - name: Time 3
+    colors:
+    - {r: .937254906, g: .870588243, b: .65882355, a: 0}
+    - {r: .823529422, g: .823529422, b: .823529422, a: 0}
+    - {r: .435294122, g: .498039216, b: .623529434, a: 0}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: super time
-    color: {r: .302183867, g: .150367573, b: .447761178, a: 1}
+    colors: []
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: super time
-    color: {r: .302183867, g: .150367573, b: .447761178, a: 1}
+    colors: []
+    colorTexture: {fileID: 0}
+    initialPosition: {fileID: 0}
+  - name: super time
+    colors: []
+    colorTexture: {fileID: 0}
+    initialPosition: {fileID: 0}
+  - name: super time
+    colors: []
+    colorTexture: {fileID: 0}
+    initialPosition: {fileID: 0}
+  - name: super time
+    colors: []
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: selvagens
-    color: {r: .852941155, g: .538130164, b: .22577855, a: 1}
+    colors:
+    - {r: .709803939, g: .709803939, b: .709803939, a: 0}
+    - {r: .694117665, g: .694117665, b: .694117665, a: 0}
+    - {r: .639215708, g: .639215708, b: .639215708, a: 0}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   resources:
     NumberOfRocks: 9999
+    NumberOfMana: 50
   hud:
-    labelResources: {fileID: 0}
+    labelRocks: {fileID: 0}
+    labelMana: {fileID: 0}
     labelUnits: {fileID: 0}
     uiVictoryObject: {fileID: 0}
     uiDefeatObject: {fileID: 0}
@@ -908,6 +881,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: BeingAttacked
+    is3d: 0
+    soundType: 0
     soundsClip:
     - {fileID: 8300000, guid: 764db8f6e7d4a284a924513dce0794de, type: 3}
   soundType: 1
@@ -923,7 +898,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoload: 1
-  targetFPS: 60
+  targetFPS: 30
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
