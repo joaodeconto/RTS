@@ -3,10 +3,11 @@ using System.Collections;
 
 public class MenuButtonHandler : MonoBehaviour
 {
-	public GameObject audioOptionsObject;
-	
+	public GameObject mainMenuObject;
+
+
 	void OnClick ()
 	{
-		audioOptionsObject.SetActive (true);
+		mainMenuObject.SetActive (true);
 	}
 }

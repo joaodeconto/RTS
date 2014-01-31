@@ -1,32 +1,32 @@
 fileFormatVersion: 2
-guid: da63dd028d97cde489461eb279125a07
+guid: a678cf72294e0ea4985f9aa6d5c8616a
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
   - serializedVersion: 10
     name: SUB_Worker
     prototypeName: SUB_Worker
-    shaderName: Mobile/Bumped Diffuse
+    shaderName: Bumped Specular
     inputs:
-    - name: outputcolor_1
+    - name: outputcolor
       value:
         scalar[0]: 1
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 1
         texture: {instanceID: 0}
-    - name: outputcolor
+    - name: outputcolor_1
       value:
-        scalar[0]: .411764681
-        scalar[1]: .411764681
-        scalar[2]: .411764681
+        scalar[0]: .125
+        scalar[1]: .0801724046
+        scalar[2]: 0
         scalar[3]: 1
         texture: {instanceID: 0}
     - name: outputcolor_2
       value:
-        scalar[0]: 1
-        scalar[1]: 1
-        scalar[2]: 0
+        scalar[0]: .492647052
+        scalar[1]: .437323004
+        scalar[2]: .260813147
         scalar[3]: 1
         texture: {instanceID: 0}
     materialInformation:
@@ -72,12 +72,12 @@ SubstanceImporter:
       filterMode: 1
       aniso: 1
       wrapMode: 0
-    - name: SUB_Worker_Output_2
+    - name: SUB_Worker_Output_1
       alphaSource: 0
       filterMode: 1
       aniso: 1
       wrapMode: 0
-    - name: SUB_Worker_Output_1
+    - name: SUB_Worker_Output_2
       alphaSource: 0
       filterMode: 1
       aniso: 1
@@ -87,12 +87,6 @@ SubstanceImporter:
       buildTarget: 
       textureWidth: 512
       textureHeight: 512
-      textureFormat: 0
-      loadingBehavior: 1
-    - serializedVersion: 2
-      buildTarget: Android
-      textureWidth: 256
-      textureHeight: 256
       textureFormat: 0
       loadingBehavior: 1
   deletedPrototypes: []
