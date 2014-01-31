@@ -399,7 +399,8 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 
 		ht["observableHealth"] = this;
 		
-		hudController.CreateHealthBar (this, MaxHealth, "Health Reference");
+//		hudController.CreateHealthBar (this, MaxHealth, "Health Reference");
+		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 //		hudController.CreateSelected (transform, gameplayManager.GetColorTeam (team));
 		hudController.CreateEnqueuedButtonInInspector ( this.name,

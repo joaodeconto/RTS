@@ -100,7 +100,6 @@ GameObject:
   - 114: {fileID: 11400006}
   - 54: {fileID: 5400000}
   - 114: {fileID: 11400002}
-  - 114: {fileID: 11400008}
   m_Layer: 18
   m_Name: MainBuilding
   m_TagString: Factory
@@ -141,7 +140,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: -3.05564669e-07, y: 4.21468513e-08, z: -.949687898, w: .313198119}
-  m_LocalPosition: {x: -.724032164, y: 1.86276078, z: -.0406100117}
+  m_LocalPosition: {x: 1.6653595, y: 3.14810967, z: .262579799}
   m_LocalScale: {x: .627228975, y: .627228975, z: 1.13745022}
   m_Children:
   - {fileID: 400000}
@@ -187,7 +186,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100032}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.2236843, y: 0, z: 29.6951561}
+  m_LocalPosition: {x: 26.051506, y: 0, z: 23.4791355}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400056}
@@ -337,8 +336,8 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 0
         gridYIndex: 0
-  pref_ParticleDamage: {fileID: 0}
-  transformParticleDamageReference: {fileID: 0}
+  pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
+  transformParticleDamageReference: {fileID: 400056}
   playerUnit: 0
   category: Main Base
   costOfResources:
@@ -363,7 +362,7 @@ MonoBehaviour:
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400002
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100032}
@@ -387,7 +386,7 @@ MonoBehaviour:
   ownerId: 0
   group: 0
   prefixBackup: -1
-  observed: {fileID: 11400008}
+  observed: {fileID: 11400002}
   synchronization: 1
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
@@ -405,17 +404,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintSize: 8
   terrainName: Terrain
---- !u!114 &11400008
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 905aefc6e5de9e84d87bfba0c27c1a60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -435,7 +423,7 @@ ParticleSystem:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  lengthInSec: 3
+  lengthInSec: 3.96000004
   startDelay: 0
   speed: 1
   randomSeed: 0
@@ -596,7 +584,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: .839999974
+      scalar: .680000007
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -611,7 +599,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: .726190507
+          value: .897058725
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1457,7 +1445,7 @@ ParticleSystem:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  lengthInSec: 3
+  lengthInSec: 3.98000002
   startDelay: 0
   speed: 1
   randomSeed: 0
@@ -1628,12 +1616,12 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: .300000012
+      scalar: 1.02999997
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 1
+          value: .5825243
           inSlope: 0
           outSlope: 0
           tangentMode: 0

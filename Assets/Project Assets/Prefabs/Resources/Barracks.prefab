@@ -10,8 +10,8 @@ GameObject:
   - 4: {fileID: 400000}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  m_Layer: 18
-  m_Name: LizardAras_002
+  m_Layer: 0
+  m_Name: LizardAras02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,8 +27,8 @@ GameObject:
   - 4: {fileID: 400002}
   - 33: {fileID: 3300002}
   - 23: {fileID: 2300002}
-  m_Layer: 18
-  m_Name: LizardAras_001
+  m_Layer: 0
+  m_Name: LizardAras01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,7 @@ GameObject:
   - 4: {fileID: 400004}
   - 33: {fileID: 3300004}
   - 23: {fileID: 2300004}
-  m_Layer: 18
+  m_Layer: 0
   m_Name: LizardAras
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,9 +59,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400006}
-  - 114: {fileID: 11400000}
-  - 111: {fileID: 11100000}
-  m_Layer: 18
+  - 95: {fileID: 9500000}
+  m_Layer: 0
   m_Name: LizardAras
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +84,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100014
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -100,7 +99,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100016
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -174,15 +173,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
-  m_LocalRotation: {x: 0, y: -.642056465, z: 0, w: .766657412}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: .999997616, z: 0, w: .00218154024}
+  m_LocalPosition: {x: -.270954132, y: 0, z: .0671672821}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400004}
   - {fileID: 400002}
   - {fileID: 400000}
-  - {fileID: 400012}
-  - {fileID: 400014}
   m_Father: {fileID: 400018}
 --- !u!4 &400012
 Transform:
@@ -190,32 +187,34 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100014}
-  m_LocalRotation: {x: 0, y: .642056465, z: 0, w: .766657352}
+  m_LocalRotation: {x: 0, y: 2.82477721e-08, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 400006}
+  m_Father: {fileID: 400018}
 --- !u!4 &400014
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100016}
-  m_LocalRotation: {x: 0, y: .642056465, z: 0, w: .766657352}
+  m_LocalRotation: {x: 0, y: 2.82477721e-08, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 400006}
+  m_Father: {fileID: 400018}
 --- !u!4 &400018
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100018}
-  m_LocalRotation: {x: 0, y: -.318752676, z: 0, w: .947837949}
-  m_LocalPosition: {x: 27.9942493, y: 0, z: 35.0487518}
+  m_LocalRotation: {x: 0, y: .294974089, z: 0, w: .955505311}
+  m_LocalPosition: {x: 22.1678658, y: 0, z: 23.4123459}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 400012}
+  - {fileID: 400014}
   - {fileID: 400006}
   m_Father: {fileID: 0}
 --- !u!4 &400020
@@ -299,14 +298,14 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Mesh: {fileID: 4300000, guid: cb20aa5ecd681164c97a3cf8e2b45990, type: 3}
+  m_Mesh: {fileID: 4300008, guid: cb20aa5ecd681164c97a3cf8e2b45990, type: 3}
 --- !u!33 &3300002
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_Mesh: {fileID: 4300002, guid: cb20aa5ecd681164c97a3cf8e2b45990, type: 3}
+  m_Mesh: {fileID: 4300010, guid: cb20aa5ecd681164c97a3cf8e2b45990, type: 3}
 --- !u!33 &3300004
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -329,32 +328,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!111 &11100000
-Animation:
+--- !u!95 &9500000
+Animator:
+  serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
+  m_Avatar: {fileID: 9000000, guid: cb20aa5ecd681164c97a3cf8e2b45990, type: 3}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_ApplyRootMotion: 1
   m_AnimatePhysics: 0
-  m_CullingType: 0
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_HasTransformHierarchy: 1
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -383,8 +370,8 @@ MonoBehaviour:
   Defense: 0
   team: 0
   ally: 0
-  fieldOfView: 13.0900002
-  sizeOfSelected: 10
+  fieldOfView: 11
+  sizeOfSelected: 8
   rendererTeamColor:
   - materialToApplyColor: {fileID: -1489961899, guid: b405905ac21de7c49a8293c1f06026f8,
       type: 3}
@@ -402,7 +389,7 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 0
         gridYIndex: 0
-  pref_ParticleDamage: {fileID: 100004, guid: 169b10ce10f4327cb9f40f6b117ed8d7, type: 2}
+  pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
   transformParticleDamageReference: {fileID: 400012}
   playerUnit: 0
   category: Barracks
@@ -497,7 +484,7 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100018}
   m_Enabled: 1
-  m_Radius: 3.21000004
+  m_Radius: 2.6400001
   m_Height: 2
   m_MoveThreshold: 0
   m_Carve: 1
