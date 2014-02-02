@@ -16,10 +16,13 @@ public class Worker : Unit
 			public float carryingSpeed;
 			public float carryingAcceleration;
 			public float carryingAngularSpeed;
+		    public int carryingAvoidancePriority;
 			public WorkerAnimation workerAnimation;
-			
-					
+			public ObstacleAvoidanceType extractingAvoidance;
+
 		}
+
+
 
 	[System.Serializable]
 		public class WorkerAnimation
@@ -445,6 +448,8 @@ public class Worker : Unit
 	{
 		IsExtracting = true;
 
+		Pathfind.obstacleAvoidanceType = resourceWorker[resourceId].extractingAvoidance;
+
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 
@@ -469,6 +474,7 @@ public class Worker : Unit
 		Pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
 		Pathfind.speed = resourceWorker[resourceId].carryingSpeed;
 		Pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
+		Pathfind.avoidancePriority = resourceWorker[resourceId].carryingAvoidancePriority;
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
 
