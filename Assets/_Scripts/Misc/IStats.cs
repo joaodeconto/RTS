@@ -53,6 +53,65 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	{
 		public Transform subMesh;
 
+		private static Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
+
+		public void SetColorInMaterial (Transform transform, int teamID)
+		{
+			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
+			Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
+			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
+
+			string unitName = transform.name;
+			unitName.Remove (unitName.IndexOf ("("));
+			string keyUnitTeamMaterial = unitName + " - " + teamID;
+			
+			//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
+			if (!unitTeamMaterials.ContainsKey (keyUnitTeamMaterial))
+			{
+				int nMaterials = subMesh.renderer.materials.Length;
+				unitTeamMaterials.Add (keyUnitTeamMaterial, new ProceduralMaterial[nMaterials]);
+
+				for (int i = 0, iMax = subMesh.renderer.materials.Length; i != iMax; ++i)
+				{
+					ProceduralMaterial substance 				  = subMesh.renderer.materials[i] as ProceduralMaterial;
+					ProceduralPropertyDescription[] curProperties = substance.GetProceduralPropertyDescriptions();
+					
+					//Setando os valores corretos de cor
+					foreach (ProceduralPropertyDescription curProperty in curProperties)
+					{
+						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
+							substance.SetProceduralColor(curProperty.name, teamColor);
+						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor1"))
+							substance.SetProceduralColor(curProperty.name, teamColor1);
+						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor2"))
+							substance.SetProceduralColor(curProperty.name, teamColor2);
+					}
+
+					substance.RebuildTextures ();
+
+					unitTeamMaterials[keyUnitTeamMaterial][i] = substance;
+				}
+			}
+
+			//Associando na unidade os materiais corretos
+			ProceduralMaterial[] pms = unitTeamMaterials[keyUnitTeamMaterial];
+//			List<Material> mms = new List<Material> ();
+//
+//			foreach (ProceduralMaterial pm in pms)
+//			{
+//				mms.Add (pm)
+//			}
+			subMesh.renderer.sharedMaterials = pms as Material[];
+
+			Debug.Log ("Substance materials count: " + unitTeamMaterials.Count);	
+		}
+	}
+
+	/*
+	 //Old code
+
+		public Transform subMesh;
+
 		private ProceduralMaterial substance;
 		private ProceduralPropertyDescription[] curProperties;
 
@@ -75,8 +134,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 					substance.SetProceduralColor(curProperty.name, teamColor2);
 			}
 		}
-	}
-
+	 */
 	[System.Serializable]
 	public class GridItemAttributes
 	{
@@ -136,7 +194,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;
 
-	public RendererTeamColor[] rendererTeamColor;
+//	public RendererTeamColor[] rendererTeamColor;
 	public RendererTeamSubstanceColor[] rendererTeamSubstanceColor;
 
 	public MovementAction[] movementActions;
