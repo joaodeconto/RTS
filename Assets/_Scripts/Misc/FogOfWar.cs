@@ -99,7 +99,7 @@ public class FogOfWar : MonoBehaviour
 		poly.renderer.material.mainTexture = FogTexture;
 #endif
 
-		InvokeRepeating ("UpdateFog", 0f, 1f);
+		InvokeRepeating ("UpdateFog", 0f,0.5f);
 		
 		return this;
 	}
