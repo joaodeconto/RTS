@@ -19,6 +19,8 @@ namespace UnityTest
 		private bool isRunning;
 		private bool isCompiling;
 		private bool isBuilding;
+		private bool consoleErrorOnPauseValue;
+
 		#endregion
 
 		public IntegrationTestsRunnerWindow ()
@@ -70,7 +72,7 @@ namespace UnityTest
 
 		private void RunTests(IList<GameObject> tests)
 		{
-			if (!tests.Any ())
+			if (!tests.Any () || EditorApplication.isCompiling)
 				return;
 			Focus ();
 			testsToRun = renderer.GetTestResultsForGO (tests).ToList ();
@@ -87,6 +89,7 @@ namespace UnityTest
 				var testRunner = TestRunner.GetTestRunner();
 				testRunner.TestRunnerCallback.Add (new RunnerCallback (this));
 				testRunner.InitRunner(testsToRun);
+				consoleErrorOnPauseValue = GetConsoleErrorPause();
 				SetConsoleErrorPause (false);
 				isRunning = true;
 
@@ -103,7 +106,17 @@ namespace UnityTest
 			{
 				isCompiling = false;
 				renderer.InvalidateTestList ();
+				EditorApplication.RepaintHierarchyWindow ();
 			}
+		}
+
+		private bool GetConsoleErrorPause ()
+		{
+			Assembly assembly = Assembly.GetAssembly (typeof (SceneView));
+			Type type = assembly.GetType ("UnityEditorInternal.LogEntries");
+			PropertyInfo method = type.GetProperty ("consoleFlags");
+			var result = (int)method.GetValue(new object (), new object[]{});
+			return (result & (1 << 2)) != 0;
 		}
 
 		private void SetConsoleErrorPause (bool b)
@@ -215,6 +228,7 @@ namespace UnityTest
 				EditorApplication.isPlaying = false;
 				if (integrationTestRunnerWindow.renderer.blockUIWhenRunning)
 					EditorUtility.ClearProgressBar();
+				integrationTestRunnerWindow.SetConsoleErrorPause (integrationTestRunnerWindow.consoleErrorOnPauseValue);
 			}
 
 			public void TestStarted (TestResult test)

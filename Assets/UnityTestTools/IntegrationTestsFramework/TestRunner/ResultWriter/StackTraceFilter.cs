@@ -2,7 +2,7 @@
 // Based on nUnit 2.6.2 (http://www.nunit.org/)
 // ****************************************************************
 
-namespace UnityTest.IntegrationTestRunner
+namespace UnityTest
 {
 	using System;
 	using System.IO;

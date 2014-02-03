@@ -171,6 +171,12 @@ public class UIPanel : UIRect
 	}
 
 	/// <summary>
+	/// Whether the rectangle can be anchored.
+	/// </summary>
+
+	public override bool canBeAnchored { get { return mClipping != UIDrawCall.Clipping.None; } }
+
+	/// <summary>
 	/// Panel's alpha affects everything drawn by the panel.
 	/// </summary>
 
@@ -186,6 +192,7 @@ public class UIPanel : UIRect
 
 			if (mAlpha != val)
 			{
+				mResized = true;
 				mAlpha = val;
 				SetDirty();
 			}
@@ -612,7 +619,9 @@ public class UIPanel : UIRect
 	public bool IsVisible (Vector3 worldPos)
 	{
 		if (mAlpha < 0.001f) return false;
-		if (mClipping == UIDrawCall.Clipping.None) return true;
+		if (mClipping == UIDrawCall.Clipping.None ||
+			mClipping == UIDrawCall.Clipping.ConstrainButDontClip) return true;
+
 		UpdateTransformMatrix();
 
 		Vector3 pos = worldToLocal.MultiplyPoint3x4(worldPos);
@@ -627,8 +636,10 @@ public class UIPanel : UIRect
 	/// Returns whether the specified widget is visible by the panel.
 	/// </summary>
 
-	public bool IsVisible (UIRect w)
+	public bool IsVisible (UIWidget w)
 	{
+		if ((mClipping == UIDrawCall.Clipping.None || mClipping == UIDrawCall.Clipping.ConstrainButDontClip) && !w.hideIfOffScreen)
+			return true;
 		Vector3[] corners = w.worldCorners;
 		return IsVisible(corners[0], corners[1], corners[2], corners[3]);
 	}
@@ -709,7 +720,10 @@ public class UIPanel : UIRect
 	protected override void OnDisable ()
 	{
 		for (int i = 0; i < drawCalls.size; ++i)
-			UIDrawCall.Destroy(drawCalls.buffer[i]);
+		{
+			UIDrawCall dc = drawCalls.buffer[i];
+			if (dc != null) UIDrawCall.Destroy(dc);
+		}
 		drawCalls.Clear();
 		list.Remove(this);
 		
@@ -1184,6 +1198,8 @@ public class UIPanel : UIRect
 		}
 	}
 
+	bool mForced = false;
+
 	/// <summary>
 	/// Update all of the widgets belonging to this panel.
 	/// </summary>
@@ -1196,6 +1212,12 @@ public class UIPanel : UIRect
 		bool forceVisible = cullWhileDragging ? false : (mCullTime > mUpdateTime);
 #endif
 		bool changed = false;
+
+		if (mForced != forceVisible)
+		{
+			mForced = forceVisible;
+			mResized = true;
+		}
 
 		// Update all widgets
 		for (int i = 0, imax = widgets.size; i < imax; ++i)
@@ -1246,9 +1268,7 @@ public class UIPanel : UIRect
 				if (w.UpdateTransform(frame) || mResized)
 				{
 					// Only proceed to checking the widget's visibility if it actually moved
-					bool vis = forceVisible ||
-						(mClipping == UIDrawCall.Clipping.None && !w.hideIfOffScreen) ||
-						(w.CalculateCumulativeAlpha(frame) > 0.001f && IsVisible(w));
+					bool vis = forceVisible || (w.CalculateCumulativeAlpha(frame) > 0.001f && IsVisible(w));
 					w.UpdateVisibility(vis);
 				}
 				

@@ -1,14 +1,18 @@
+//----------------------------------------------
+//           Tasharen Fog of War
+// Copyright © 2012-2014 Tasharen Entertainment
+//----------------------------------------------
+
 using UnityEngine;
 using System.Threading;
 
 /// <summary>
-/// Fog of War system needs 3 components in order to work:
-/// - Fog of War system that will create a height map of your scene and perform all the updates (this class).
-/// - Fog of War Image Effect on the camera that will be displaying the fog of war.
-/// - Fog of War Revealer on one or more game objects in the world.
+/// Fog of War requires 3 things in order to work:
+/// 1. Fog of War system that will create a height map of your scene and perform all the updates (this class).
+/// 2. Fog of War Revealer (FOWRevealer) on one or more game objects in the world.
+/// 3. Either a FOWImageEffect on your camera, or have your game objects use FOW-sampling shaders such as "Fog of War/Diffuse".
 /// </summary>
 
-[AddComponentMenu("Fog of War/System")]
 public class FOWSystem : MonoBehaviour
 {
 	public enum LOSChecks
@@ -41,12 +45,6 @@ public class FOWSystem : MonoBehaviour
 
 	static public FOWSystem instance;
 
-	// Height map used for visibility checks. Integers are used instead of floats as integer checks are significantly faster.
-	protected int[,] mHeights;
-	protected Transform mTrans;
-	protected Vector3 mOrigin = Vector3.zero;
-	protected Vector3 mSize = Vector3.one;
-
 	// Revealers that the thread is currently working with
 	static BetterList<Revealer> mRevealers = new BetterList<Revealer>();
 
@@ -55,6 +53,12 @@ public class FOWSystem : MonoBehaviour
 
 	// Revealers that have been removed since last update
 	static BetterList<Revealer> mRemoved = new BetterList<Revealer>();
+
+	// Height map used for visibility checks. Integers are used instead of floats as integer checks are significantly faster.
+	protected int[,] mHeights;
+	protected Transform mTrans;
+	protected Vector3 mOrigin = Vector3.zero;
+	protected Vector3 mSize = Vector3.one;
 
 	// Color buffers -- prepared on the worker thread.
 	protected Color32[] mBuffer0;
@@ -72,6 +76,19 @@ public class FOWSystem : MonoBehaviour
 	protected State mState = State.Blending;
 
 	Thread mThread;
+	float mElapsed = 0f;
+
+	/// <summary>
+	/// Color tint given to unexplored pixels.
+	/// </summary>
+
+	public Color unexploredColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+
+	/// <summary>
+	/// Color tint given to explored (but not visible) pixels.
+	/// </summary>
+
+	public Color exploredColor = new Color(0.2f, 0.2f, 0.2f, 1f);
 
 	/// <summary>
 	/// Size of your world in units. For example, if you have a 256x256 terrain, then just leave this at '256'.
@@ -89,13 +106,13 @@ public class FOWSystem : MonoBehaviour
 	/// How frequently the visibility checks get performed.
 	/// </summary>
 
-	public float updateFrequency = 0.1f;
+	public float updateFrequency = 0.25f;
 
 	/// <summary>
 	/// How long it takes for textures to blend from one to another.
 	/// </summary>
 
-	public float textureBlendTime = 0.5f;
+	public float textureBlendTime = 1f;
 
 	/// <summary>
 	/// How many blur iterations will be performed. More iterations result in smoother edges.
@@ -121,7 +138,7 @@ public class FOWSystem : MonoBehaviour
 	/// Radius of the sphere if using SphereCast. If 0, line-based raycasting will be used instead.
 	/// </summary>
 
-	public float raycastRadius = 0f;
+	public float raycastRadius = 1f;
 
 	/// <summary>
 	/// Allows for some height variance when performing line-of-sight checks.
@@ -251,7 +268,23 @@ public class FOWSystem : MonoBehaviour
 		}
 	}
 
-	float mElapsed = 0f;
+	/// <summary>
+	/// Update the shader properties.
+	/// </summary>
+
+	void LateUpdate ()
+	{
+		float invScale = 1f / worldSize;
+		float x = mTrans.position.x - worldSize * 0.5f;
+		float z = mTrans.position.z - worldSize * 0.5f;
+		Vector4 p = new Vector4(-x * invScale, -z * invScale, invScale, mBlendFactor);
+
+		Shader.SetGlobalColor("_FOWUnexplored", unexploredColor);
+		Shader.SetGlobalColor("_FOWExplored", exploredColor);
+		Shader.SetGlobalVector("_FOWParams", p);
+		Shader.SetGlobalTexture("_FOWTex0", mTexture0);
+		Shader.SetGlobalTexture("_FOWTex1", mTexture1);
+	}
 
 	/// <summary>
 	/// If it's time to update, do so now.
@@ -518,6 +551,11 @@ public class FOWSystem : MonoBehaviour
 		int xmax = Mathf.RoundToInt((pos.x + r.outer) * worldToTex);
 		int ymax = Mathf.RoundToInt((pos.z + r.outer) * worldToTex);
 
+		xmin = Mathf.Clamp(xmin, 0, textureSize - 1);
+		xmax = Mathf.Clamp(xmax, 0, textureSize - 1);
+		ymin = Mathf.Clamp(ymin, 0, textureSize - 1);
+		ymax = Mathf.Clamp(ymax, 0, textureSize - 1);
+		
 		int cx = Mathf.RoundToInt(pos.x * worldToTex);
 		int cy = Mathf.RoundToInt(pos.z * worldToTex);
 
@@ -529,40 +567,34 @@ public class FOWSystem : MonoBehaviour
 		int gh = WorldToGridHeight(r.pos.y);
 		int variance = Mathf.RoundToInt(Mathf.Clamp01(margin / (heightRange.y - heightRange.x)) * 255);
 		Color32 white = new Color32(255, 255, 255, 255);
-
+		
 		for (int y = ymin; y < ymax; ++y)
 		{
-			if (y > -1 && y < textureSize)
+			for (int x = xmin; x < xmax; ++x)
 			{
-				for (int x = xmin; x < xmax; ++x)
+				int xd = x - cx;
+				int yd = y - cy;
+				int dist = xd * xd + yd * yd;
+				int index = x + y * textureSize;
+
+				if (dist < minRange || (cx == x && cy == y))
 				{
-					if (x > -1 && x < textureSize)
+					mBuffer1[index] = white;
+				}
+				else if (dist < maxRange)
+				{
+					Vector2 v = new Vector2(xd, yd);
+					v.Normalize();
+					v *= r.inner;
+
+					int sx = cx + Mathf.RoundToInt(v.x);
+					int sy = cy + Mathf.RoundToInt(v.y);
+
+					if (sx > -1 && sx < textureSize &&
+						sy > -1 && sy < textureSize &&
+						IsVisible(sx, sy, x, y, Mathf.Sqrt(dist), gh, variance))
 					{
-						int xd = x - cx;
-						int yd = y - cy;
-						int dist = xd * xd + yd * yd;
-						int index = x + y * textureSize;
-
-						if (dist < minRange || (cx == x && cy == y))
-						{
-							mBuffer1[index] = white;
-						}
-						else if (dist < maxRange)
-						{
-							Vector2 v = new Vector2(xd, yd);
-							v.Normalize();
-							v *= r.inner;
-
-							int sx = cx + Mathf.RoundToInt(v.x);
-							int sy = cy + Mathf.RoundToInt(v.y);
-
-							if (sx > -1 && sx < textureSize &&
-								sy > -1 && sy < textureSize &&
-								IsVisible(sx, sy, x, y, Mathf.Sqrt(dist), gh, variance))
-							{
-								mBuffer1[index] = white;
-							}
-						}
+						mBuffer1[index] = white;
 					}
 				}
 			}
@@ -750,7 +782,7 @@ public class FOWSystem : MonoBehaviour
 			}
 		}
 	}
-	
+
 	/// <summary>
 	/// Update the specified texture with the new color buffer.
 	/// </summary>

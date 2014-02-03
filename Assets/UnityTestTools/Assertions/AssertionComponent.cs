@@ -88,14 +88,15 @@ namespace UnityTest
 		private void OnComponentCopy ()
 		{
 			if (m_ActionBase == null) return;
-			var oldAction = FindObjectsOfType (typeof (AssertionComponent)).Where (o => ((AssertionComponent) o).m_ActionBase == m_ActionBase && o != this);
+			var oldActionList = FindObjectsOfType (typeof (AssertionComponent)).Where (o => ((AssertionComponent) o).m_ActionBase == m_ActionBase && o != this);
 
 			//if it's not a copy but a new component don't do anything
-			if (!oldAction.Any ()) return;
-			if (oldAction.Count () > 1)
+			if (!oldActionList.Any ()) return;
+			if (oldActionList.Count () > 1)
 				Debug.LogWarning ("More than one refence to comparer found. This shouldn't happen");
 
-			m_ActionBase = ((AssertionComponent) oldAction.Single ()).m_ActionBase.CreateCopy ();
+			var oldAction = oldActionList.First() as AssertionComponent;
+			m_ActionBase = oldAction.m_ActionBase.CreateCopy (oldAction.gameObject, gameObject);
 		}
 
 		public void Start ()
@@ -129,6 +130,8 @@ namespace UnityTest
 			{
 				if (repeatCheckFrame)
 					checkOnFrame += repeatEveryFrame;
+				else
+					checkOnFrame = Int32.MaxValue;
 				return true;
 			}
 			return false;

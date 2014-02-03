@@ -1,10 +1,14 @@
+//----------------------------------------------
+//           Tasharen Fog of War
+// Copyright © 2012-2014 Tasharen Entertainment
+//----------------------------------------------
+
 using UnityEngine;
 
 /// <summary>
 /// Adding a Fog of War Renderer to any game object will hide that object's renderers if they are not visible according to the fog of war.
 /// </summary>
 
-[AddComponentMenu("Fog of War/Renderers")]
 public class FOWRenderers : MonoBehaviour
 {
 	Transform mTrans;

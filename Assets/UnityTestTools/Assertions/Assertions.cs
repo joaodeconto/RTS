@@ -25,7 +25,6 @@ namespace UnityTest
 		{
 			if (!Debug.isDebugBuild)
 				return;
-
 			foreach (var assertion in assertions)
 			{
 				assertion.checksPerformed++;
@@ -33,32 +32,7 @@ namespace UnityTest
 				if (!result)
 				{
 					assertion.hasFailed = true;
-					string message = "";
-					if (assertion.Action is ComparerBase)
-					{ //needs different message for different comapre to type.
-						var comparer = assertion.Action as ComparerBase;
-						message = assertion.name + " assertion failed.\n(" + assertion.Action.go + ")." + assertion.Action.thisPropertyPath + " "
-							+ comparer.compareToType;
-
-						switch (comparer.compareToType)
-						{
-								case ComparerBase.CompareToType.CompareToObject:
-									message +=" (" + comparer.other + ")." + comparer.otherPropertyPath + " failed.";
-									break;
-								case ComparerBase.CompareToType.CompareToConstantValue:
-									message += comparer.ConstValue + " failed.";
-									break;
-								case ComparerBase.CompareToType.CompareToNull:
-									message += " failed.";
-									break;
-						}
-					}
-					else
-					{
-						message = assertion.name + " assertion failed.\n(" + assertion.Action.go + ")." + assertion.Action.thisPropertyPath + " failed.";
-					}
-
-					Debug.LogException (new AssertionException (message), assertion);
+					Debug.LogException (new AssertionException (assertion), assertion);
 				}
 			}
 		}

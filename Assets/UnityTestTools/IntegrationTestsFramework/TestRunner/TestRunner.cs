@@ -10,6 +10,8 @@ namespace UnityTest
 	[Serializable]
 	public class TestRunner : MonoBehaviour
 	{
+		private bool imitateBatchMode = false; //set true if you want to imitate batch mode behaviour in non-batch mode mode run
+
 		private TestResult currentTest;
 
 		public List<TestResult> testToRun = new List<TestResult>();
@@ -20,7 +22,7 @@ namespace UnityTest
 			get
 			{
 #if UNITY_EDITOR
-				if (!UnityEditorInternal.InternalEditorUtility.inBatchMode) return true;
+				if (!UnityEditorInternal.InternalEditorUtility.inBatchMode && !imitateBatchMode) return true;
 #endif
 				return false;
 			}
@@ -28,7 +30,7 @@ namespace UnityTest
 
 		private double startTime;
 		private bool readyToRun;
-		
+
 		private AssertionComponent[] assertionsToCheck = null;
 		private string testMessages;
 		private string stacktrace;
@@ -47,7 +49,7 @@ namespace UnityTest
 		public void Awake ()
 		{
 #if UNITY_EDITOR
-			if (!UnityEditorInternal.InternalEditorUtility.inBatchMode) return;
+			if (!UnityEditorInternal.InternalEditorUtility.inBatchMode && !imitateBatchMode) return;
 #endif
 			DisableAllTests ();
 		}
@@ -64,7 +66,7 @@ namespace UnityTest
 		public void Start()
 		{
 #if UNITY_EDITOR
-			if (!UnityEditorInternal.InternalEditorUtility.inBatchMode) return;
+			if (!UnityEditorInternal.InternalEditorUtility.inBatchMode && !imitateBatchMode) return;
 #endif
 			var tests = FindAllTests();
 			InitRunner(tests);
@@ -211,20 +213,12 @@ namespace UnityTest
 
 		private void FinishTestRun ()
 		{
-			TestRunnerCallback.RunFinished(testToRun);
 			PrintResultToLog ();
 #if UNITY_EDITOR || UNITY_STANDALONE
 			WriteResultsToFile();
 #endif
-#if UNITY_EDITOR
-			if (UnityEditorInternal.InternalEditorUtility.inBatchMode)
-			{
-				UnityEditor.EditorApplication.isPlaying = false;
-				UnityEditor.EditorApplication.Exit(0);
-			}
-#else
+			TestRunnerCallback.RunFinished (testToRun);
 			LoadNextLevelOrQuit ();
-#endif
 		}
 
 		private void PrintResultToLog ()
@@ -247,18 +241,29 @@ namespace UnityTest
 
 		private void LoadNextLevelOrQuit ()
 		{
+#if UNITY_EDITOR
+			if (UnityEditorInternal.InternalEditorUtility.inBatchMode || imitateBatchMode)
+			{
+				if (Application.loadedLevel < Application.levelCount - 1)
+					Application.LoadLevel (Application.loadedLevel + 1);
+				else
+					UnityEditor.EditorApplication.Exit (0);
+			}
+#else
 			if(Application.loadedLevel < Application.levelCount - 1)
 				Application.LoadLevel (Application.loadedLevel + 1);
 			else
 				Application.Quit ();
+#endif
 		}
 
 		private void WriteResultsToFile()
 		{
 			var path = System.IO.Path.Combine (Application.dataPath,
 												Application.loadedLevelName + "-TestResults.xml");
-			var resultWriter = new XmlResultWriter(Application.loadedLevelName, path);
-			resultWriter.SaveTestResult(testToRun.ToArray());
+			Debug.Log ("Saving results in " + path);
+			var resultWriter = new XmlResultWriter(path);
+			resultWriter.SaveTestResult (Application.loadedLevelName, testToRun.ToArray ());
 		}
 
 		private void StartNewTest ()
@@ -274,7 +279,11 @@ namespace UnityTest
 			currentTest.go.SetActive (true);
 			
 			if (currentTest.TestComponent.succeedAfterAllAssertionsAreExecuted)
-				assertionsToCheck = currentTest.go.GetComponentsInChildren<AssertionComponent>().Where(a => a.enabled).ToArray();
+			{
+				var assertionList = currentTest.go.GetComponentsInChildren<AssertionComponent> ().Where (a => a.enabled);
+				if(assertionList.Any())
+					assertionsToCheck = assertionList.ToArray();
+			}
 
 			if (currentTest.TestComponent.IsExludedOnThisPlatform ())
 			{

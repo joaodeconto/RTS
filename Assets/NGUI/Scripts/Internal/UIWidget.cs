@@ -73,6 +73,15 @@ public class UIWidget : UIRect
 
 	public float aspectRatio = 1f;
 
+	public delegate bool HitCheck (Vector3 worldPos);
+
+	/// <summary>
+	/// Custom hit check function. If set, all hit checks (including events) will call this function,
+	/// passing the world position. Return 'true' if it's within the bounds of your choice, 'false' otherwise.
+	/// </summary>
+
+	public HitCheck hitCheck;
+
 	/// <summary>
 	/// Panel that's managing this widget.
 	/// </summary>
@@ -162,6 +171,8 @@ public class UIWidget : UIRect
 
 				if (keepAspectRatio == AspectRatioSource.BasedOnWidth)
 					mHeight = Mathf.RoundToInt(mWidth / aspectRatio);
+				else if (keepAspectRatio == AspectRatioSource.Free)
+					aspectRatio = mWidth / (float)mHeight;
 
 				mMoved = true;
 				if (autoResizeBoxCollider) ResizeCollider();
@@ -191,6 +202,8 @@ public class UIWidget : UIRect
 
 				if (keepAspectRatio == AspectRatioSource.BasedOnHeight)
 					mWidth = Mathf.RoundToInt(mHeight * aspectRatio);
+				else if (keepAspectRatio == AspectRatioSource.Free)
+					aspectRatio = mWidth / (float)mHeight;
 
 				mMoved = true;
 				if (autoResizeBoxCollider) ResizeCollider();
@@ -215,7 +228,6 @@ public class UIWidget : UIRect
 			{
 				bool alphaChange = (mColor.a != value.a);
 				mColor = value;
-				UpdateFinalAlpha(Time.frameCount);
 				Invalidate(alphaChange);
 			}
 		}
@@ -236,7 +248,6 @@ public class UIWidget : UIRect
 			if (mColor.a != value)
 			{
 				mColor.a = value;
-				UpdateFinalAlpha(Time.frameCount);
 				Invalidate(true);
 			}
 		}
@@ -246,7 +257,7 @@ public class UIWidget : UIRect
 	/// Whether the widget is currently visible.
 	/// </summary>
 
-	public bool isVisible { get { return mIsVisible && mIsInFront; } }
+	public bool isVisible { get { return mIsVisible && mIsInFront && finalAlpha > 0.001f; } }
 
 	/// <summary>
 	/// Whether the widget has vertices to draw.
@@ -581,6 +592,23 @@ public class UIWidget : UIRect
 	}
 
 	/// <summary>
+	/// Update the widget's visibility and final alpha.
+	/// </summary>
+
+	public override void Invalidate (bool includeChildren)
+	{
+		mChanged = true;
+		mAlphaFrameID = -1;
+
+		if (panel != null)
+		{
+			UpdateVisibility(CalculateCumulativeAlpha(Time.frameCount) > 0.001f && panel.IsVisible(this));
+			UpdateFinalAlpha(Time.frameCount);
+			if (includeChildren) base.Invalidate(true);
+		}
+	}
+
+	/// <summary>
 	/// Same as final alpha, except it doesn't take own visibility into consideration. Used by panels.
 	/// </summary>
 
@@ -753,35 +781,51 @@ public class UIWidget : UIRect
 	{
 		base.OnValidate();
 
-		// Prior to NGUI 2.7.0 width and height was specified as transform's local scale
-		if ((mWidth == 100 || mWidth == minWidth) &&
-			(mHeight == 100 || mHeight == minHeight) && cachedTransform.localScale.magnitude > 8f)
+		if (NGUITools.GetActive(this))
 		{
-			UpgradeFrom265();
-			cachedTransform.localScale = Vector3.one;
+			// Prior to NGUI 2.7.0 width and height was specified as transform's local scale
+			if ((mWidth == 100 || mWidth == minWidth) &&
+				(mHeight == 100 || mHeight == minHeight) && cachedTransform.localScale.magnitude > 8f)
+			{
+				UpgradeFrom265();
+				cachedTransform.localScale = Vector3.one;
+			}
+
+			if (mWidth < minWidth) mWidth = minWidth;
+			if (mHeight < minHeight) mHeight = minHeight;
+			if (autoResizeBoxCollider) ResizeCollider();
+
+			// If the texture is changing, we need to make sure to rebuild the draw calls
+			if (mOldTex != mainTexture || mOldShader != shader)
+			{
+				mOldTex = mainTexture;
+				mOldShader = shader;
+			}
+
+			if (panel != null)
+			{
+				panel.RemoveWidget(this);
+				panel = null;
+			}
+
+			aspectRatio = (keepAspectRatio == AspectRatioSource.Free) ?
+				(float)mWidth / mHeight : Mathf.Max(0.01f, aspectRatio);
+
+			if (keepAspectRatio == AspectRatioSource.BasedOnHeight)
+			{
+				mWidth = Mathf.RoundToInt(mHeight * aspectRatio);
+			}
+			else if (keepAspectRatio == AspectRatioSource.BasedOnWidth)
+			{
+				mHeight = Mathf.RoundToInt(mWidth / aspectRatio);
+			}
+			CreatePanel();
 		}
-
-		if (mWidth < minWidth) mWidth = minWidth;
-		if (mHeight < minHeight) mHeight = minHeight;
-		if (autoResizeBoxCollider) ResizeCollider();
-
-		// If the texture is changing, we need to make sure to rebuild the draw calls
-		if (mOldTex != mainTexture || mOldShader != shader)
+		else
 		{
-			mOldTex = mainTexture;
-			mOldShader = shader;
+			if (mWidth < minWidth) mWidth = minWidth;
+			if (mHeight < minHeight) mHeight = minHeight;
 		}
-
-		if (panel != null)
-		{
-			panel.RemoveWidget(this);
-			panel = null;
-		}
-
-		aspectRatio = (keepAspectRatio == AspectRatioSource.Free) ?
-			(float)mWidth / mHeight : Mathf.Max(0.01f, aspectRatio);
-
-		CreatePanel();
 	}
 #endif
 
@@ -881,6 +925,7 @@ public class UIWidget : UIRect
 	{
 		base.OnInit();
 		RemoveFromPanel();
+		mMoved = true;
 
 		// Prior to NGUI 2.7.0 width and height was specified as transform's local scale
 		if (mWidth == 100 && mHeight == 100 && cachedTransform.localScale.magnitude > 8f)
@@ -1147,8 +1192,9 @@ public class UIWidget : UIRect
 
 			Color outline = new Color(1f, 1f, 1f, 0.2f);
 
+			float adjustment = (root != null) ? 0.25f : 0.001f;
 			Vector2 offset = pivotOffset;
-			Vector3 center = new Vector3(mWidth * (0.5f - offset.x), mHeight * (0.5f - offset.y), -mDepth * 0.25f);
+			Vector3 center = new Vector3(mWidth * (0.5f - offset.x), mHeight * (0.5f - offset.y), -mDepth * adjustment);
 			Vector3 size = new Vector3(mWidth, mHeight, 1f);
 
 			// Draw the gizmo
@@ -1233,7 +1279,7 @@ public class UIWidget : UIRect
 
 		// Notify the listeners
 		if (mMoved && onChange != null) onChange();
-		return mMoved;
+		return mMoved || mChanged;
 	}
 
 #if UNITY_3_5 || UNITY_4_0

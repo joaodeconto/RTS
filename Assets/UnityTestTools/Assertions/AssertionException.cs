@@ -4,7 +4,7 @@ namespace UnityTest
 {
 	public class AssertionException : Exception
 	{
-		public AssertionException (string message) : base(message)
+		public AssertionException (AssertionComponent assertion) : base(assertion.Action.GetFailureMessage ())
 		{
 		}
 	}

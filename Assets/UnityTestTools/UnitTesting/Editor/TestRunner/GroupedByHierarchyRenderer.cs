@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityTest.UnitTestRunner;
 
 namespace UnityTest
 {
@@ -183,6 +182,8 @@ namespace UnityTest
 				resultState = TestResultState.Failure;
 			else if (unitTestResult.Any (t => t.ResultState == TestResultState.Success))
 				resultState = TestResultState.Success;
+			else if( unitTestResult.All (t=>t.IsIgnored))
+				resultState = TestResultState.Ignored;
 
 			var isClassFolded = PrintFoldout (fullName,
 										displayName, resultState);
@@ -200,13 +201,13 @@ namespace UnityTest
 					return true;
 			}
 
-			EditorGUIUtility.SetIconSize(new Vector2(12,12));
+			EditorGUIUtility.SetIconSize(new Vector2(16,16));
 			GUILayout.BeginHorizontal (GUILayout.Height (18));
 			Indent ();
 			var foldoutGUIContent = new GUIContent(displayName, GuiHelper.GetIconForCategoryResult(resultState), fullName);
 
 			var style = IsGroupSelected (fullName) ? Styles.selectedFoldout : Styles.foldout;
-			var rect = GUILayoutUtility.GetRect (foldoutGUIContent, style, GUILayout.MaxHeight (18));
+			var rect = GUILayoutUtility.GetRect (foldoutGUIContent, style, GUILayout.MaxHeight (16));
 
 			if (rect.Contains (Event.current.mousePosition))
 			{
@@ -242,7 +243,7 @@ namespace UnityTest
 
 		private void PrintTest(string printedName, UnitTestResult test)
 		{
-			EditorGUIUtility.SetIconSize(new Vector2(12, 12));
+			EditorGUIUtility.SetIconSize(new Vector2(16, 16));
 			GUILayout.BeginHorizontal (GUILayout.Height (18));
 			
 			var foldoutGUIContent = new GUIContent (printedName,
@@ -250,8 +251,9 @@ namespace UnityTest
 													test.Test.FullName);
 
 			Indent ();
+			GUILayout.Space (10);
 			var rect = GUILayoutUtility.GetRect(foldoutGUIContent,
-												EditorStyles.label, GUILayout.ExpandWidth (true), GUILayout.MaxHeight (18));
+												EditorStyles.label, GUILayout.ExpandWidth (true)/*, GUILayout.MaxHeight (18)*/);
 
 			if (rect.Contains(Event.current.mousePosition) && Event.current.type == EventType.MouseDown && Event.current.button == 0)
 			{
@@ -269,9 +271,8 @@ namespace UnityTest
 			}
 
 			var style = IsTestSelected (test) ? Styles.selectedLabel : Styles.label;
-
-
 			EditorGUI.LabelField(rect, foldoutGUIContent, style);
+
 			if (notifyOnSlowRun && test.Duration > slowTestThreshold)
 			{
 				var labelRect = style.CalcSize (foldoutGUIContent);
@@ -386,7 +387,7 @@ namespace UnityTest
 
 			m.AddItem(guiOpenInEditor,
 						false,
-						data => GuiHelper.OpenInEditor (test),
+						data => GuiHelper.OpenInEditor (test, false),
 						"");
 				
 			m.ShowAsContext();
@@ -394,7 +395,7 @@ namespace UnityTest
 		private void OpenFailedTestOnError()
 		{
 			var test = selectedTests.Single ();
-			GuiHelper.OpenInEditor(test);
+			GuiHelper.OpenInEditor(test, true);
 		}
 	}
 }

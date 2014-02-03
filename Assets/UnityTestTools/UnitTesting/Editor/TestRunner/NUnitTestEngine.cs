@@ -11,6 +11,12 @@ namespace UnityTest
 	public class NUnitTestEngine : IUnitTestEngine
 	{
 		private List<UnitTestResult> testList = new List<UnitTestResult>();
+		private string[] assembliesWithTests = new[]
+			{
+				"Assembly-CSharp", "Assembly-CSharp-Editor", 
+				"Assembly-Boo", "Assembly-Boo-Editor", 
+				"Assembly-UnityScript", "Assembly-UnityScript-Editor"
+			};
 
 		public UnitTestResult[] GetTests(bool reload)
 		{
@@ -63,7 +69,7 @@ namespace UnityTest
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 			{
 				var assemblyName = assembly.GetName().Name;
-				if (assemblyName == "Assembly-CSharp" || assemblyName == "Assembly-CSharp-Editor") assemblyList.Add(assembly.Location);
+				if (assembliesWithTests.Contains(assemblyName)) assemblyList.Add (assembly.Location);
 			}
 
 			return assemblyList;
@@ -77,6 +83,7 @@ namespace UnityTest
 			var builder = new TestSuiteBuilder();
 			TestExecutionContext.CurrentContext.TestPackage = testPackage;
 			TestSuite suite = builder.Build(testPackage);
+
 
 			return suite;
 		}
@@ -146,7 +153,16 @@ namespace UnityTest
 			if (test.IsSuite)
 				ToUnitTestResult(test.Tests);
 			else
+			{
+				if(test is TestMethod)
+				{
+					var tm = test as TestMethod;
+					if( tm.Method.DeclaringType != tm.Method.ReflectedType )
+						return;
+
+				}
 				UpdateTest(test.UnitTestResult());
+			}
 		}
 
 		private void ToUnitTestResult(IList list)

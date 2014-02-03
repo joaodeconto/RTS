@@ -2,7 +2,9 @@
 // Based on nUnit 2.6.2 (http://www.nunit.org/)
 // ****************************************************************
 
-namespace UnityTest.IntegrationTestRunner
+using System;
+
+namespace UnityTest
 {
 	/// <summary>
 	/// Summary description for ResultSummarizer.
@@ -13,33 +15,18 @@ namespace UnityTest.IntegrationTestRunner
 		private int failureCount = 0;
 		private int ignoreCount = 0;
 		private int inconclusiveCount = 0;
-		private string name;
 		private int notRunnable = 0;
 		private int resultCount = 0;
 		private int skipCount = 0;
 		private int successCount = 0;
 		private int testsRun = 0;
 
-		private double time = 0.0d;
-
-		public ResultSummarizer ()
-		{
-		}
-
-		public ResultSummarizer (ITestResult result)
-		{
-			Summarize (result);
-		}
+		private TimeSpan duration = new TimeSpan();
 
 		public ResultSummarizer (ITestResult[] results)
 		{
 			foreach (var result in results)
 				Summarize (result);
-		}
-
-		public string Name
-		{
-			get { return name; }
 		}
 
 		public bool Success
@@ -122,9 +109,9 @@ namespace UnityTest.IntegrationTestRunner
 			get { return ignoreCount; }
 		}
 
-		public double Time
+		public double Duration
 		{
-			get { return time; }
+			get { return duration.TotalSeconds; }
 		}
 
 		public int TestsNotRun
@@ -134,12 +121,7 @@ namespace UnityTest.IntegrationTestRunner
 
 		public void Summarize (ITestResult result)
 		{
-			if (this.name == null)
-			{
-				this.name = result.Name;
-				this.time = result.Duration;
-			}
-
+			duration += TimeSpan.FromSeconds (result.Duration);
 			resultCount++;
 
 			switch (result.ResultState)

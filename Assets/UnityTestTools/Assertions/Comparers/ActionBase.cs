@@ -80,16 +80,26 @@ namespace UnityTest
 			return result;
 		}
 
-		public ActionBase CreateCopy ()
+		public ActionBase CreateCopy (GameObject oldGameObject, GameObject newGameObject)
 		{
 			var newObj = CreateInstance (GetType ()) as ActionBase;
 			var fields = GetType ().GetFields (BindingFlags.Public | BindingFlags.Instance);
 			foreach (var field in fields)
 			{
 				var value = field.GetValue (this);
+				if (value is GameObject)
+				{
+					if (value as GameObject == oldGameObject)
+						value = newGameObject;
+				}
 				field.SetValue (newObj, value);
 			}
 			return newObj;
+		}
+
+		public virtual string GetFailureMessage ()
+		{
+			return name + " assertion failed.\n(" + go + ")." + thisPropertyPath + " failed.";
 		}
 	}
 

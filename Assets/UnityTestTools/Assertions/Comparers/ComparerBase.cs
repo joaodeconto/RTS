@@ -76,6 +76,25 @@ namespace UnityTest
 					return null;
 			}
 		}
+
+		public override string GetFailureMessage ()
+		{
+			var message = name + " assertion failed.\n(" + go + ")." + thisPropertyPath + " " + compareToType;
+
+			switch (compareToType)
+			{
+				case ComparerBase.CompareToType.CompareToObject:
+					message += " (" + other + ")." + otherPropertyPath + " failed.";
+					break;
+				case ComparerBase.CompareToType.CompareToConstantValue:
+					message += ConstValue + " failed.";
+					break;
+				case ComparerBase.CompareToType.CompareToNull:
+					message += " failed.";
+					break;
+			}
+			return message;
+		}
 	}
 
 	[Serializable]

@@ -1,56 +1,35 @@
+//----------------------------------------------
+//           Tasharen Fog of War
+// Copyright © 2012-2014 Tasharen Entertainment
+//----------------------------------------------
+
 using UnityEngine;
 
 /// <summary>
-/// Fog of War system needs 3 components in order to work:
-/// - Fog of War system that will create a height map of your scene and perform all the updates.
-/// - Fog of War Image Effect on the camera that will be displaying the fog of war (this class).
-/// - Fog of War Revealer on one or more game objects in the world.
+/// Fog of War requires 3 things in order to work:
+/// 1. Fog of War system (FOWSystem) that will create a height map of your scene and perform all the updates.
+/// 2. Fog of War Revealer on one or more game objects in the world.
+/// 3. Either a FOWImageEffect on your camera, or have your game objects use FOW-sampling shaders such as "Fog of War/Diffuse".
 /// </summary>
 
 [RequireComponent(typeof(Camera))]
-[AddComponentMenu("Fog of War/Image Effect")]
-public class FOWEffect : MonoBehaviour
+public class FOWImageEffect : MonoBehaviour
 {
 	/// <summary>
 	/// Shader used to create the effect. Should reference "Image Effects/Fog of War".
 	/// </summary>
 
 	public Shader shader;
-	public Shader shaderMobile;
 
-	/// <summary>
-	/// Color tint given to unexplored pixels.
-	/// </summary>
-	
-	public Color unexploredColor = new Color(0.05f, 0.05f, 0.05f, 1f);
-
-	/// <summary>
-	/// Color tint given to explored (but not visible) pixels.
-	/// </summary>
-
-	public Color exploredColor = new Color(0.2f, 0.2f, 0.2f, 1f);
-	
-	public Shader CurrentShader
-	{
-		get
-		{
-#if UNITY_ANDROID || UNITY_IPHONE
-			return shaderMobile;
-#else
-			return shader;
-#endif
-		}
-	}
-
-	FOWSystem mFog;
-#if !UNITY_ANDROID && !UNITY_IPHONE
 	Camera mCam;
+	FOWSystem mFog;
 	Matrix4x4 mInverseMVP;
 	Material mMat;
-	
+
 	/// <summary>
 	/// The camera we're working with needs depth.
 	/// </summary>
+
 	void OnEnable ()
 	{
 		mCam = camera;
@@ -61,8 +40,8 @@ public class FOWEffect : MonoBehaviour
 	/// <summary>
 	/// Destroy the material when disabled.
 	/// </summary>
+
 	void OnDisable () { if (mMat) DestroyImmediate(mMat); }
-#endif
 
 	/// <summary>
 	/// Automatically disable the effect if the shaders don't support it.
@@ -70,41 +49,14 @@ public class FOWEffect : MonoBehaviour
 
 	void Start ()
 	{
-		if (!SystemInfo.supportsImageEffects || !CurrentShader || !CurrentShader.isSupported)
-		{
+		if (!SystemInfo.supportsImageEffects || !shader || !shader.isSupported)
 			enabled = false;
-		}
 	}
 
-#if UNITY_ANDROID || UNITY_IPHONE
-//	void OnPreRender()
-//    {
-//        if (mFog == null)
-//        {
-//            mFog = FOWSystem.instance;
-//            if (mFog == null) mFog = FindObjectOfType(typeof(FOWSystem)) as FOWSystem;
-//        }
-//     
-//        if (mFog == null || !mFog.enabled)
-//        {
-//            enabled = false;
-//            return;
-//        }
-//     
-//        float invScale = 1f / mFog.worldSize;
-//        Transform t = mFog.transform;
-//        float x = t.position.x - mFog.worldSize * 0.5f;
-//        float z = t.position.z - mFog.worldSize * 0.5f;
-//        Vector4 p = new Vector4(-x * invScale, -z * invScale, invScale, mFog.blendFactor);
-//     
-//        Shader.SetGlobalColor("_Unexplored", unexploredColor);
-//        Shader.SetGlobalColor("_Explored", exploredColor);
-//        Shader.SetGlobalVector("_Params", p);
-//        Shader.SetGlobalTexture("_FogTex0", mFog.texture0);
-//        Shader.SetGlobalTexture("_FogTex1", mFog.texture1);
-//    }
-#else
-	// Called by camera to apply image effect
+	/// <summary>
+	/// Called by camera to apply image effect.
+	/// </summary>
+
 	void OnRenderImage (RenderTexture source, RenderTexture destination)
 	{
 		if (mFog == null)
@@ -152,15 +104,14 @@ public class FOWEffect : MonoBehaviour
 		}
 
 		Vector4 p = new Vector4(-x * invScale, -z * invScale, invScale, mFog.blendFactor);
-		mMat.SetColor("_Unexplored", unexploredColor);
-		mMat.SetColor("_Explored", exploredColor);
-		mMat.SetVector("_CamPos", camPos);
-		mMat.SetVector("_Params", p);
-		mMat.SetMatrix("_InverseMVP", mInverseMVP);
+		mMat.SetColor("_Unexplored", mFog.unexploredColor);
+		mMat.SetColor("_Explored", mFog.exploredColor);
 		mMat.SetTexture("_FogTex0", mFog.texture0);
 		mMat.SetTexture("_FogTex1", mFog.texture1);
+		mMat.SetMatrix("_InverseMVP", mInverseMVP);
+		mMat.SetVector("_CamPos", camPos);
+		mMat.SetVector("_Params", p);
 
 		Graphics.Blit(source, destination, mMat);
 	}
-#endif
 }

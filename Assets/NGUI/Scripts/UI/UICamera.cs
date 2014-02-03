@@ -603,6 +603,19 @@ public class UICamera : MonoBehaviour
 					for (int b = 0; b < hits.Length; ++b)
 					{
 						GameObject go = hits[b].collider.gameObject;
+						UIWidget w = go.GetComponent<UIWidget>();
+
+						if (w != null)
+						{
+							if (!w.isVisible) continue;
+							if (w.hitCheck != null && !w.hitCheck(hits[b].point)) continue;
+						}
+						else
+						{
+							UIRect rect = NGUITools.FindInParents<UIRect>(go);
+							if (rect != null && rect.finalAlpha < 0.001f) continue;
+						}
+
 						mHit.depth = NGUITools.CalculateRaycastDepth(go);
 
 						if (mHit.depth != int.MaxValue)
@@ -630,11 +643,28 @@ public class UICamera : MonoBehaviour
 					}
 					mHits.Clear();
 				}
-				else if (hits.Length == 1 && IsVisible(ref hits[0]))
+				else if (hits.Length == 1)
 				{
-					hit = hits[0];
-					hoveredObject = hit.collider.gameObject;
-					return true;
+					Collider c = hits[0].collider;
+					UIWidget w = c.GetComponent<UIWidget>();
+
+					if (w != null)
+					{
+						if (!w.isVisible) continue;
+						if (w.hitCheck != null && !w.hitCheck(hits[0].point)) continue;
+					}
+					else
+					{
+						UIRect rect = NGUITools.FindInParents<UIRect>(c.gameObject);
+						if (rect != null && rect.finalAlpha < 0.001f) continue;
+					}
+
+					if (IsVisible(ref hits[0]))
+					{
+						hit = hits[0];
+						hoveredObject = hit.collider.gameObject;
+						return true;
+					}
 				}
 				continue;
 			}
@@ -1335,8 +1365,10 @@ public class UICamera : MonoBehaviour
 				currentTouch.delta = currentTouch.totalDelta;
 
 				// OnDragOver is sent for consistency, so that OnDragOut is always preceded by OnDragOver
+				isDragging = true;
 				Notify(currentTouch.dragged, "OnDragStart", null);
 				Notify(currentTouch.last, "OnDragOver", currentTouch.dragged);
+				isDragging = false;
 			}
 			else if (!currentTouch.dragStarted && drag < mag)
 			{

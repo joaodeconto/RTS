@@ -206,7 +206,6 @@ GameObject:
   - 4: {fileID: 400024}
   - 114: {fileID: 11400030}
   - 114: {fileID: 11400032}
-  - 114: {fileID: 11400034}
   m_Layer: 0
   m_Name: GameplayManager
   m_TagString: Untagged
@@ -770,13 +769,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f7dd739c8ba2a84dacc153422b40126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds:
-  - name: 
-    is3d: 0
-    soundType: 0
-    soundsClip:
-    - {fileID: 0}
-  soundType: 1
+  soundConnections: []
+  audios: []
+  currentLevel: 
+  currentSoundConnection: {fileID: 0}
+  crossDuration: 5
+  showDebug: 1
+  offTheBGM: 0
+  isPaused: 0
+  movingOnFromSong: 0
+  storage: {fileID: 0}
+  RESOURCES_PATH: Sounds/SFX
+  storedSFXs: []
+  ownedSFXObjects: []
+  unOwnedSFXObjects: []
+  sfxGroups: []
+  clipToGroupKeys: []
+  clipToGroupValues: []
+  mCurrentOwnedSFXObject: 0
+  offTheSFX: 0
+  CAP_AMOUNT: 3
 --- !u!114 &11400030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -791,16 +803,16 @@ MonoBehaviour:
   teams:
   - name: Time 1
     colors:
-    - {r: .717647076, g: .717647076, b: .717647076, a: 0}
-    - {r: .819607854, g: .819607854, b: .819607854, a: 0}
-    - {r: .4627451, g: .525490224, b: .643137276, a: 0}
+    - {r: 0, g: 0, b: 1, a: 1}
+    - {r: .272058845, g: .227497473, b: .0820177346, a: 1}
+    - {r: .264705896, g: .264705896, b: .264705896, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: Time 2
     colors:
-    - {r: .792156875, g: 0, b: 0, a: 0}
-    - {r: .75686276, g: .75686276, b: .75686276, a: 0}
-    - {r: .372549027, g: .447058827, b: .576470613, a: 0}
+    - {r: 1, g: 0, b: 0, a: 1}
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: .272058845, g: .204954669, b: .120025963, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: Time 3
@@ -832,9 +844,9 @@ MonoBehaviour:
     initialPosition: {fileID: 0}
   - name: selvagens
     colors:
-    - {r: .709803939, g: .709803939, b: .709803939, a: 0}
-    - {r: .694117665, g: .694117665, b: .694117665, a: 0}
-    - {r: .639215708, g: .639215708, b: .639215708, a: 0}
+    - {r: 0, g: 1, b: .0896551609, a: 1}
+    - {r: 0, g: .433823526, b: .0747971758, a: 1}
+    - {r: .471285462, g: .179227918, b: .625, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   resources:
@@ -864,28 +876,10 @@ MonoBehaviour:
   group: 0
   prefixBackup: -1
   observed: {fileID: 0}
-  synchronization: 2
+  synchronization: 1
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   instantiationId: 0
---- !u!114 &11400034
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba13a7c7f20708b40a1eb94f6329f6e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds:
-  - name: BeingAttacked
-    is3d: 0
-    soundType: 0
-    soundsClip:
-    - {fileID: 8300000, guid: 764db8f6e7d4a284a924513dce0794de, type: 3}
-  soundType: 1
 --- !u!114 &11400036
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -14,6 +14,9 @@ namespace UnityTest
 			public static readonly GUIStyle selectedTestStyle;
 			public static readonly GUIStyle testStyle;
 			public static readonly GUIStyle iconStyle;
+			public static GUIStyle buttonLeft; 
+			public static GUIStyle buttonMid;
+			public static GUIStyle buttonRight;
 
 			static Styles ()
 			{
@@ -22,6 +25,9 @@ namespace UnityTest
 				selectedTestStyle.active.textColor = selectedTestStyle.normal.textColor = selectedTestStyle.onActive.textColor = new Color (0.3f, 0.5f, 0.85f);
 				iconStyle = new GUIStyle(EditorStyles.label);
 				iconStyle.fixedWidth = 24;
+				buttonLeft = GUI.skin.FindStyle (GUI.skin.button.name + "left");
+				buttonMid = GUI.skin.FindStyle (GUI.skin.button.name + "mid");
+				buttonRight = GUI.skin.FindStyle (GUI.skin.button.name + "right");
 			}
 		}
 
@@ -116,14 +122,15 @@ namespace UnityTest
 
 		private void DrawTest (TestResult testInfo)
 		{
-			EditorGUIUtility.SetIconSize (new Vector2 (12,
-														12));
+			EditorGUIUtility.SetIconSize (new Vector2 (16, 16));
+			Color tempColor = GUI.color;
+			if (testInfo.isRunning)
+			{
+				var frame = Mathf.Abs(Mathf.Cos (Time.realtimeSinceStartup*4)) * 0.6f + 0.4f;
+				GUI.color = new Color (1, 1, 1, frame);
+			}
 
-			var icon = GetIconBasedOnResultType (testInfo);
-			var iconRect = GUILayoutUtility.GetRect (icon, Styles.iconStyle, GUILayout.Width(12));
-			EditorGUI.LabelField (iconRect, icon, Styles.iconStyle);
-
-			var label = new GUIContent (testInfo.name);
+			var label = new GUIContent (testInfo.name, GetIconBasedOnResultType (testInfo).image);
 			var labelRect = GUILayoutUtility.GetRect (label, EditorStyles.label, GUILayout.ExpandWidth (true));
 
 			if (labelRect.Contains (Event.current.mousePosition)
@@ -142,6 +149,7 @@ namespace UnityTest
 								label,
 								selectedTests.Contains (testInfo) ? Styles.selectedTestStyle : Styles.testStyle);
 
+			if (testInfo.isRunning) GUI.color = tempColor;
 			EditorGUIUtility.SetIconSize (Vector2.zero);
 		}
 
@@ -172,11 +180,10 @@ namespace UnityTest
 
 		private GUIContent GetIconBasedOnResultType (TestResult result)
 		{
-			if (result == null) return Icons.guiUnknownImg;
+			if (result == null) 
+				return Icons.guiUnknownImg;
 			if (result.isRunning)
-			{
-				return Icons.GetSpinningIcon ();
-			}
+				return Icons.guiUnknownImg;
 
 			if (result.resultType == TestResult.ResultType.NotRun
 				&& result.TestComponent.ignored)
@@ -209,30 +216,33 @@ namespace UnityTest
 			}
 			GUILayout.Label ("Integration Tests (" + sceneName + ")",
 							EditorStyles.boldLabel);
-
+			
 			EditorGUILayout.BeginHorizontal ();
 
-			if (GUILayout.Button(guiCreateNewTest,
-								EditorStyles.label,
+			var layoutOptions = new [] {
 								GUILayout.Height(24),
-								GUILayout.Width(24)) && !isRunning)
+								GUILayout.Width(32),
+								};
+			if (GUILayout.Button (guiRunAllTests,
+								Styles.buttonLeft,
+								layoutOptions
+								) && !isRunning)
 			{
-				SelectTest(testManager.AddTest());
+				RunTest (GetVisibleNotIgnoredTests ());
 			}
 			if (GUILayout.Button(guiRunSelectedTests,
-								EditorStyles.label,
-								GUILayout.Height (24),
-								GUILayout.Width(24)) && !isRunning)
+								Styles.buttonMid,
+								layoutOptions
+								) && !isRunning)
 			{
 				RunTest(selectedTests.Select (t=>t.go).ToList ());
 			}
-			if (GUILayout.Button(guiRunAllTests,
-								EditorStyles.label,
-								GUILayout.Height(24),
-								GUILayout.Width(24)
+			if (GUILayout.Button (guiCreateNewTest,
+								Styles.buttonRight,
+								layoutOptions
 								) && !isRunning)
 			{
-				RunTest(GetVisibleNotIgnoredTests());
+				SelectTest (testManager.AddTest ());
 			}
 			GUILayout.FlexibleSpace ();
 
@@ -309,13 +319,9 @@ namespace UnityTest
 				
 				if (testInfo.resultType == TestResult.ResultType.Timeout)
 				{
-					EditorGUIUtility.SetIconSize(new Vector2(12,
-																12));
-
 					GUILayout.Label(guiTimeoutIcon,
-									EditorStyles.label,
-									GUILayout.Width(60));
-					EditorGUIUtility.SetIconSize(Vector2.zero);
+									GUILayout.Width(24)
+									);
 					GUILayout.FlexibleSpace();
 				}
 				
@@ -440,11 +446,9 @@ namespace UnityTest
 						DrawContextTestMenu (testManager.GetResultFor(go));
 					}
 
-					EditorGUIUtility.SetIconSize (new Vector2 (12,
-																12));
-					
-					EditorGUI.LabelField (new Rect (rect.xMax - 14,
-													rect.yMin + 1,
+					EditorGUIUtility.SetIconSize (new Vector2 (15, 15));
+					EditorGUI.LabelField (new Rect (rect.xMax - 18,
+													rect.yMin - 2,
 													rect.width,
 													rect.height),
 										GetIconBasedOnResultType (testManager.GetResultFor(go)));

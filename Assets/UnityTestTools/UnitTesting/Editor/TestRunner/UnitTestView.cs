@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,19 @@ namespace UnityTest
 	[Serializable]
 	public class UnitTestView : EditorWindow
 	{
+		private static class Styles
+		{
+			public static GUIStyle buttonLeft;
+			public static GUIStyle buttonMid;
+			public static GUIStyle buttonRight;
+			static Styles ()
+			{
+				buttonLeft = GUI.skin.FindStyle (GUI.skin.button.name + "left");
+				buttonMid = GUI.skin.FindStyle (GUI.skin.button.name + "mid");
+				buttonRight = GUI.skin.FindStyle (GUI.skin.button.name + "right");
+			}
+		}
+
 		private List<IUnitTestEngine> testEngines = new List<IUnitTestEngine> ();
 
 		[SerializeField]
@@ -37,6 +51,7 @@ namespace UnityTest
 		private bool optionsFoldout;
 		private bool runOnRecompilation;
 		private bool horizontalSplit = true;
+		private bool autoSaveSceneBeforeRun;
 		private bool runTestOnANewScene = true;
 		private bool notifyOnSlowRun;
 		private float slowTestThreshold = 1f;
@@ -58,7 +73,8 @@ namespace UnityTest
 		private readonly GUIContent guiRerunFailedTestsIcon = new GUIContent (Icons.runFailedImg, "Rerun failed tests");
 		private readonly GUIContent guiOptionButton = new GUIContent ("Options", Icons.gearImg);
 		private readonly GUIContent guiRunOnRecompile = new GUIContent ("Run on recompile", "Run on recompile");
-		private readonly GUIContent guiRunTestOnRecompile = new GUIContent ("Run tests on a new scene", "Run tests on a new scene");
+		private readonly GUIContent guiRunTestsOnNewScene = new GUIContent ("Run tests on a new scene", "Run tests on a new scene");
+		private readonly GUIContent guiAutoSaveSceneBeforeRun = new GUIContent ("Autosave scene", "The runner will automaticall save current scene changes before it starts");
 		private readonly GUIContent guiShowDetailsBelowTests = new GUIContent ("Show details below tests", "Show run details below test list");
 		private readonly GUIContent guiNotifyWhenSlow = new GUIContent ("Notify when test is slow", "When test will run longer that set threshold, it will be marked as slow");
 		private readonly GUIContent guiSlowTestThreshold = new GUIContent ("Slow test threshold");
@@ -73,6 +89,7 @@ namespace UnityTest
 			{
 				runOnRecompilation = EditorPrefs.GetBool ("UTR-runOnRecompilation");
 				runTestOnANewScene = EditorPrefs.GetBool ("UTR-runTestOnANewScene");
+				autoSaveSceneBeforeRun = EditorPrefs.GetBool ("UTR-autoSaveSceneBeforeRun");
 				horizontalSplit = EditorPrefs.GetBool ("UTR-horizontalSplit");
 				notifyOnSlowRun = EditorPrefs.GetBool ("UTR-notifyOnSlowRun");
 				slowTestThreshold = EditorPrefs.GetFloat ("UTR-slowTestThreshold");
@@ -100,8 +117,9 @@ namespace UnityTest
 
 		public void SaveOptions()
 		{
-			EditorPrefs.SetBool ("UTR-runOnRecompilation", runOnRecompilation);
+			EditorPrefs.SetBool("UTR-runOnRecompilation", runOnRecompilation);
 			EditorPrefs.SetBool("UTR-runTestOnANewScene", runTestOnANewScene);
+			EditorPrefs.SetBool("UTR-autoSaveSceneBeforeRun", autoSaveSceneBeforeRun);
 			EditorPrefs.SetBool("UTR-horizontalSplit", horizontalSplit);
 			EditorPrefs.SetBool("UTR-notifyOnSlowRun", notifyOnSlowRun);
 			EditorPrefs.SetFloat("UTR-slowTestThreshold", slowTestThreshold);
@@ -125,17 +143,19 @@ namespace UnityTest
 
 			EditorGUILayout.BeginHorizontal ();
 
-			if (GUILayout.Button(guiRunSelectedTestsIcon, EditorStyles.label, GUILayout.Height(24), GUILayout.Width(24)))
-			{
-				RunTests(GetAllSelectedTests());
-			}
-
-			if (GUILayout.Button(guiRunAllTestsIcon, EditorStyles.label, GUILayout.Height(24), GUILayout.Width(24)))
+			var layoutOptions = new[] {
+								GUILayout.Width(32),
+								GUILayout.Height(24)
+								};
+			if (GUILayout.Button (guiRunAllTestsIcon, Styles.buttonLeft, layoutOptions))
 			{
 				RunTests (GetAllVisibleTests ());
 			}
-
-			if (GUILayout.Button(guiRerunFailedTestsIcon, EditorStyles.label, GUILayout.Height(24), GUILayout.Width(24)))
+			if (GUILayout.Button (guiRunSelectedTestsIcon, Styles.buttonMid, layoutOptions))
+			{
+				RunTests(GetAllSelectedTests());
+			}
+			if (GUILayout.Button (guiRerunFailedTestsIcon, Styles.buttonRight, layoutOptions))
 			{
 				RunTests(GetAllFailedTests());
 			}
@@ -173,11 +193,9 @@ namespace UnityTest
 			RenderTestList ();
 
 			if (horizontalSplit)
-				GUILayout.Box ("",
-								new[] {GUILayout.ExpandWidth (true), GUILayout.Height (1)});
+				GUILayout.Box ("", new[] {GUILayout.ExpandWidth (true), GUILayout.Height (1)});
 			else
-				GUILayout.Box ("",
-								new[] {GUILayout.ExpandHeight (true), GUILayout.Width (1)});
+				GUILayout.Box ("", new[] {GUILayout.ExpandHeight (true), GUILayout.Width (1)});
 
 			RenderTestInfo ();
 
@@ -193,8 +211,7 @@ namespace UnityTest
 		{
 			if (rendererList.Count > 1)
 			{
-				toolbarScroll = EditorGUILayout.BeginScrollView(toolbarScroll,
-																GUILayout.ExpandHeight(false));
+				toolbarScroll = EditorGUILayout.BeginScrollView(toolbarScroll, GUILayout.ExpandHeight(false));
 
 				EditorGUILayout.BeginHorizontal ();
 				var toolbarList = rendererList.Select(hierarchyRenderer =>
@@ -258,8 +275,7 @@ namespace UnityTest
 			GetRenderer().slowTestThreshold = slowTestThreshold;
 			if (rendererList.ElementAtOrDefault(selectedRenderer) == null)
 				selectedRenderer = 0;
-			shouldUpdateTestList = rendererList[selectedRenderer].RenderTests (filteredResults,
-													RunTests);
+			shouldUpdateTestList = rendererList[selectedRenderer].RenderTests (filteredResults, RunTests);
 			EditorGUILayout.EndScrollView ();
 		}
 
@@ -279,18 +295,12 @@ namespace UnityTest
 			EditorGUI.BeginChangeCheck();
 			EditorGUILayout.BeginHorizontal ();
 			EditorGUILayout.BeginVertical ();
-			showSucceeded = EditorGUILayout.Toggle("Show succeeded",
-														showSucceeded,
-														GUILayout.MinWidth (120));
-			showFailed = EditorGUILayout.Toggle("Show failed",
-													showFailed,
-													GUILayout.MinWidth (120));
+			showSucceeded = EditorGUILayout.Toggle("Show succeeded", showSucceeded, GUILayout.MinWidth (120));
+			showFailed = EditorGUILayout.Toggle("Show failed", showFailed, GUILayout.MinWidth (120));
 			EditorGUILayout.EndVertical ();
 			EditorGUILayout.BeginVertical ();
-			showIgnored = EditorGUILayout.Toggle("Show ignored",
-													showIgnored);
-			showNotRun = EditorGUILayout.Toggle("Show not runned",
-													showNotRun);
+			showIgnored = EditorGUILayout.Toggle("Show ignored", showIgnored);
+			showNotRun = EditorGUILayout.Toggle("Show not runned", showNotRun);
 			EditorGUILayout.EndVertical ();
 			EditorGUILayout.EndHorizontal ();
 			if (EditorGUI.EndChangeCheck())
@@ -300,17 +310,14 @@ namespace UnityTest
 		private void DrawOptions ()
 		{
 			EditorGUI.BeginChangeCheck ();
-			runOnRecompilation = EditorGUILayout.Toggle (guiRunOnRecompile,
-															runOnRecompilation);
-			runTestOnANewScene = EditorGUILayout.Toggle (guiRunTestOnRecompile,
-														runTestOnANewScene);
-			horizontalSplit = EditorGUILayout.Toggle (guiShowDetailsBelowTests,
-													horizontalSplit);
-			notifyOnSlowRun = EditorGUILayout.Toggle(guiNotifyWhenSlow,
-													notifyOnSlowRun);
+			runOnRecompilation = EditorGUILayout.Toggle (guiRunOnRecompile, runOnRecompilation);
+			runTestOnANewScene = EditorGUILayout.Toggle (guiRunTestsOnNewScene, runTestOnANewScene);
+			if (runTestOnANewScene)
+				autoSaveSceneBeforeRun = EditorGUILayout.Toggle (guiAutoSaveSceneBeforeRun, autoSaveSceneBeforeRun);
+			horizontalSplit = EditorGUILayout.Toggle (guiShowDetailsBelowTests, horizontalSplit);
+			notifyOnSlowRun = EditorGUILayout.Toggle(guiNotifyWhenSlow, notifyOnSlowRun);
 			if (notifyOnSlowRun)
-				slowTestThreshold = EditorGUILayout.FloatField(guiSlowTestThreshold,
-													slowTestThreshold);
+				slowTestThreshold = EditorGUILayout.FloatField(guiSlowTestThreshold, slowTestThreshold);
 			if (EditorGUI.EndChangeCheck())
 				SaveOptions();
 			EditorGUILayout.Space ();
@@ -328,7 +335,7 @@ namespace UnityTest
 			if (!showIgnored)
 				results = results.Where (r => !r.IsIgnored);
 			if (!showFailed)
-				results = results.Where (r => !(r.IsFailure || r.IsError));
+				results = results.Where (r => !(r.IsFailure || r.IsError || r.IsInconclusive));
 			if (!showNotRun)
 				results = results.Where (r => r.Executed);
 			if (!showSucceeded)
@@ -412,8 +419,13 @@ namespace UnityTest
 		public void OnRecompile ()
 		{
 			RefreshTests ();
-			if (runOnRecompilation)
+			if (runOnRecompilation && IsCompilationCompleted())
 				RunTests (GetAllVisibleTests ());
+		}
+
+		private bool IsCompilationCompleted ()
+		{
+			return File.Exists (Path.GetFullPath ("Library/ScriptAssemblies/CompilationCompleted.txt"));
 		}
 
 		private void RunTests (string[] tests)
@@ -429,12 +441,16 @@ namespace UnityTest
 
 		private void StartTestRun ()
 		{
-			var currentScene = EditorApplication.currentScene;
 			var okToRun = true;
 			if (runTestOnANewScene && !UnityEditorInternal.InternalEditorUtility.inBatchMode)
+			{
+				if (autoSaveSceneBeforeRun)
+					EditorApplication.SaveScene ();
 				okToRun = EditorApplication.SaveCurrentSceneIfUserWantsTo ();
+			}
 			if (okToRun)
 			{
+				var currentScene = EditorApplication.currentScene;
 				if (runTestOnANewScene || UnityEditorInternal.InternalEditorUtility.inBatchMode)
 					EditorApplication.NewScene ();
 				var callbackList = new TestRunnerCallbackList ();
@@ -537,9 +553,8 @@ namespace UnityTest
 
 			public void RunFinished ()
 			{
-				var resultWriter = new XmlResultWriter(EditorApplication.currentScene,
-															"UnitTestResults.xml");
-				resultWriter.SaveTestResult(unitTestView.testList.ToArray());
+				var resultWriter = new XmlResultWriter("UnitTestResults.xml");
+				resultWriter.SaveTestResult ("Unit Tests", unitTestView.testList.ToArray ());
 				EditorUtility.ClearProgressBar();
 			}
 

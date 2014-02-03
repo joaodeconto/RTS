@@ -1,13 +1,17 @@
+//----------------------------------------------
+//           Tasharen Fog of War
+// Copyright © 2012-2014 Tasharen Entertainment
+//----------------------------------------------
+
 using UnityEngine;
 
 /// <summary>
-/// Fog of War system needs 3 components in order to work:
-/// - Fog of War system that will create a height map of your scene and perform all the updates.
-/// - Fog of War Image Effect on the camera that will be displaying the fog of war.
-/// - Fog of War Revealer on one or more game objects in the world (this class).
+/// Fog of War requires 3 things in order to work:
+/// 1. Fog of War system (FOWSystem) that will create a height map of your scene and perform all the updates.
+/// 2. Fog of War Revealer on one or more game objects in the world (this class).
+/// 3. Either a FOWImageEffect on your camera, or have your game objects use FOW-sampling shaders such as "Fog of War/Diffuse".
 /// </summary>
 
-[AddComponentMenu("Fog of War/Revealer")]
 public class FOWRevealer : MonoBehaviour
 {
 	Transform mTrans;

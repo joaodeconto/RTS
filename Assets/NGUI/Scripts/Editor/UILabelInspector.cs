@@ -15,7 +15,11 @@ using UnityEditor;
 /// </summary>
 
 [CanEditMultipleObjects]
+#if UNITY_3_5
 [CustomEditor(typeof(UILabel))]
+#else
+[CustomEditor(typeof(UILabel), true)]
+#endif
 public class UILabelInspector : UIWidgetInspector
 {
 	public enum FontType
@@ -70,7 +74,7 @@ public class UILabelInspector : UIWidgetInspector
 			}
 			else
 			{
-				ComponentSelector.Show<Font>(OnDynamicFont);
+				ComponentSelector.Show<Font>(OnDynamicFont, new string[] { ".ttf", ".otf" });
 			}
 		}
 
@@ -126,6 +130,19 @@ public class UILabelInspector : UIWidgetInspector
 				GUILayout.EndHorizontal();
 
 				NGUIEditorTools.DrawProperty("Material", serializedObject, "mMaterial");
+			}
+			else if (fnt != null)
+			{
+				GUILayout.BeginHorizontal();
+				SerializedProperty prop = NGUIEditorTools.DrawProperty("Font Size", serializedObject, "mFontSize", GUILayout.Width(142f));
+
+				EditorGUI.BeginDisabledGroup(true);
+				if (!serializedObject.isEditingMultipleObjects)
+					GUILayout.Label(" Default: " + mLabel.defaultFontSize);
+				EditorGUI.EndDisabledGroup();
+
+				NGUISettings.fontSize = prop.intValue;
+				GUILayout.EndHorizontal();
 			}
 
 			bool ww = GUI.skin.textField.wordWrap;

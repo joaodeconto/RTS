@@ -1,119 +1,153 @@
-// ****************************************************************
-// Based on nUnit 2.6.2 (http://www.nunit.org/)
-// ****************************************************************
-
 using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Xml;
-using System.Reflection;
 using System.Text;
 
-namespace UnityTest.IntegrationTestRunner
+namespace UnityTest
 {
-
-	/// <summary>
-	/// Summary description for XmlResultWriter.
-	/// </summary>
 	public class XmlResultWriter
 	{
-		private XmlTextWriter xmlWriter;
-		private string m_resultsName;
+		private StringBuilder resultWriter = new StringBuilder();
+		private int indend = 0;
+		private string filePath;
+
+		private const string nUnitVersion = "2.6.2-Unity";
 
 		#region Constructors
 
-		public XmlResultWriter(string resultsName, string fileName)
+		public XmlResultWriter(string filePath)
 		{
-			xmlWriter = new XmlTextWriter(new StreamWriter(fileName,
-															false,
-															Encoding.UTF8));
-			m_resultsName = resultsName;
+			this.filePath = filePath;
 		}
 
 		#endregion
 
-		private void InitializeXmlFile(ITestResult[] result)
+		public void SaveTestResult(string resultsName, ITestResult[] results)
 		{
-			var summaryResults = new ResultSummarizer(result);
-
-			xmlWriter.Formatting = Formatting.Indented;
-			xmlWriter.WriteStartDocument(false);
-			xmlWriter.WriteComment("This file represents the results of running a test suite");
-
-			xmlWriter.WriteStartElement("test-results");
-
-			xmlWriter.WriteAttributeString("name",
-											m_resultsName);
-			xmlWriter.WriteAttributeString("total",
-											summaryResults.TestsRun.ToString());
-			xmlWriter.WriteAttributeString("errors",
-											summaryResults.Errors.ToString());
-			xmlWriter.WriteAttributeString("failures",
-											summaryResults.Failures.ToString());
-			xmlWriter.WriteAttributeString("not-run",
-											summaryResults.TestsNotRun.ToString());
-			xmlWriter.WriteAttributeString("inconclusive",
-											summaryResults.Inconclusive.ToString());
-			xmlWriter.WriteAttributeString("ignored",
-											summaryResults.Ignored.ToString());
-			xmlWriter.WriteAttributeString("skipped",
-											summaryResults.Skipped.ToString());
-			xmlWriter.WriteAttributeString("invalid",
-											summaryResults.NotRunnable.ToString());
-
-			DateTime now = DateTime.Now;
-			xmlWriter.WriteAttributeString("date",
-											XmlConvert.ToString(now,
-																"yyyy-MM-dd"));
-			xmlWriter.WriteAttributeString("time",
-											XmlConvert.ToString(now,
-																"HH:mm:ss"));
-			WriteEnvironment();
-			WriteCultureInfo();
-		}
-
-		private void WriteCultureInfo()
-		{
-			xmlWriter.WriteStartElement("culture-info");
-			xmlWriter.WriteAttributeString("current-culture",
-											CultureInfo.CurrentCulture.ToString());
-			xmlWriter.WriteAttributeString("current-uiculture",
-											CultureInfo.CurrentUICulture.ToString());
-			xmlWriter.WriteEndElement();
-		}
-
-		private void WriteEnvironment()
-		{
-			xmlWriter.WriteStartElement("environment");
-			xmlWriter.WriteAttributeString("nunit-version",
-											Assembly.GetExecutingAssembly().GetName().Version.ToString());
-			xmlWriter.WriteAttributeString("clr-version",
-											Environment.Version.ToString());
-			xmlWriter.WriteAttributeString("os-version",
-											Environment.OSVersion.ToString());
-			xmlWriter.WriteAttributeString("platform",
-											Environment.OSVersion.Platform.ToString());
-			xmlWriter.WriteAttributeString("cwd",
-											Environment.CurrentDirectory);
-			xmlWriter.WriteAttributeString("machine-name",
-											Environment.MachineName);
-			xmlWriter.WriteAttributeString("user",
-											Environment.UserName);
-			xmlWriter.WriteAttributeString("user-domain",
-											Environment.UserDomainName);
-			xmlWriter.WriteEndElement();
-		}
-
-		#region Public Methods
-
-		public void SaveTestResult(ITestResult[] results)
-		{
-			InitializeXmlFile(results);
+			InitializeXmlFile(resultsName, new ResultSummarizer(results));
 			foreach (var result in results)
 			{
 				WriteResultElement(result);
 			}
 			TerminateXmlFile();
+		}
+
+		private void InitializeXmlFile ( string resultsName, ResultSummarizer summaryResults )
+		{
+			WriteHeader ();
+
+			DateTime now = DateTime.Now;
+			var attributes = new Dictionary<string, string>
+				{
+					{"name", "Unity Tests"},
+					{"total", summaryResults.TestsRun.ToString ()},
+					{"errors", summaryResults.Errors.ToString ()},
+					{"failures", summaryResults.Failures.ToString ()},
+					{"not-run", summaryResults.TestsNotRun.ToString ()},
+					{"inconclusive", summaryResults.Inconclusive.ToString ()},
+					{"ignored", summaryResults.Ignored.ToString ()},
+					{"skipped", summaryResults.Skipped.ToString ()},
+					{"invalid", summaryResults.NotRunnable.ToString ()},
+					{"date", now.ToString("yyyy-MM-dd")},
+					{"time", now.ToString("HH:mm:ss")}
+				};
+
+			WriteOpeningElement ("test-results", attributes);
+			
+			WriteEnvironment();
+			WriteCultureInfo();
+			WriteTestSuite (resultsName, summaryResults);
+			WriteOpeningElement("results");
+		}
+
+		private void WriteOpeningElement (string elementName)
+		{
+			WriteOpeningElement (elementName, new Dictionary<string, string> ());
+		}
+
+		private void WriteOpeningElement (string elementName, Dictionary<string, string> attributes)
+		{
+			WriteOpeningElement (elementName, attributes, false);
+		}
+
+
+		private void WriteOpeningElement (string elementName, Dictionary<string, string> attributes, bool closeImmediatelly)
+		{
+			WriteIndend ();
+			indend++;
+			resultWriter.Append ("<");
+			resultWriter.Append (elementName);
+			foreach (var attribute in attributes)
+			{
+				resultWriter.AppendFormat (" {0}=\"{1}\"", attribute.Key, attribute.Value);
+			}
+			if (closeImmediatelly)
+			{
+				resultWriter.Append (" /");
+				indend--;
+			}
+			resultWriter.AppendLine(">");
+		}
+
+		private void WriteIndend ()
+		{
+			for (int i = 0; i < indend; i++)
+			{
+				resultWriter.Append ("  ");
+			}
+		}
+
+		private void WriteClosingElement ( string elementName )
+		{
+			indend--;
+			WriteIndend ();
+			resultWriter.AppendLine ("</" + elementName + ">");
+		}
+
+		private void WriteHeader ()
+		{
+			resultWriter.AppendLine ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+			resultWriter.AppendLine ("<!--This file represents the results of running a test suite-->");
+		}
+
+		private void WriteEnvironment ()
+		{
+			var attributes = new Dictionary<string, string>
+				{
+					{"nunit-version", nUnitVersion},
+					{"clr-version", Environment.Version.ToString ()},
+					{"os-version", Environment.OSVersion.ToString ()},
+					{"platform", Environment.OSVersion.Platform.ToString ()},
+					{"cwd", Environment.CurrentDirectory},
+					{"machine-name", Environment.MachineName},
+					{"user", Environment.UserName},
+					{"user-domain", Environment.UserDomainName}
+				};
+			WriteOpeningElement ("environment", attributes, true);
+		}
+
+		private void WriteCultureInfo()
+		{
+			var attributes = new Dictionary<string, string>
+				{
+					{"current-culture", CultureInfo.CurrentCulture.ToString ()},
+					{"current-uiculture", CultureInfo.CurrentUICulture.ToString ()}
+				};
+			WriteOpeningElement ("culture-info", attributes, true);
+		}
+
+		private void WriteTestSuite (string resultsName, ResultSummarizer summaryResults)
+		{
+			var attributes = new Dictionary<string, string>
+				{
+					{"name", resultsName},
+					{"type", "Assembly"},
+					{"executed", "True"},
+					{"result", summaryResults.Success ? "Success" : "Failure"},
+					{"success", summaryResults.Success ? "True" : "False"},
+					{"time", summaryResults.Duration.ToString ("#####0.000", NumberFormatInfo.InvariantInfo)}
+				};
+			WriteOpeningElement ("test-suite", attributes);
 		}
 
 		private void WriteResultElement(ITestResult result)
@@ -140,94 +174,89 @@ namespace UnityTest.IntegrationTestRunner
 					break;
 			}
 
-			xmlWriter.WriteEndElement(); // test element
+			WriteClosingElement("test-case");
 		}
 
 		private void TerminateXmlFile()
 		{
-				xmlWriter.WriteEndElement(); // test-results
-				xmlWriter.WriteEndDocument();
-				xmlWriter.Flush();
+			WriteClosingElement ("results");
+			WriteClosingElement ("test-suite");
+			WriteClosingElement ("test-results");
 
-				xmlWriter.Close();
+			try
+			{
+				using (var fs = System.IO.File.OpenWrite (filePath))
+				using (var sw = new System.IO.StreamWriter(fs, Encoding.UTF8))
+				{
+					sw.Write (resultWriter.ToString());
+				}
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError ("Error while opening file " + filePath);
+				UnityEngine.Debug.LogException (e);
+			}
 		}
-
-		#endregion
 
 		#region Element Creation Helpers
 
 		private void StartTestElement(ITestResult result)
 		{
-			xmlWriter.WriteStartElement("test-case");
-			xmlWriter.WriteAttributeString("name",
-												result.FullName);
-
-			xmlWriter.WriteAttributeString("executed",
-											result.Executed.ToString());
-			xmlWriter.WriteAttributeString("result",
-											result.ResultState.ToString());
-
+			var attributes = new Dictionary<string, string>
+				{
+					{"name", result.FullName}, 
+					{"executed", result.Executed.ToString ()}
+				};
+			var resultString = "";
+			switch (result.ResultState)
+			{
+				case TestResultState.Cancelled:
+					resultString = TestResultState.Failure.ToString();
+					break;
+				default:
+					resultString = result.ResultState.ToString ();
+					break;
+			}
+			attributes.Add ("result", resultString);
 			if (result.Executed)
 			{
-				xmlWriter.WriteAttributeString("success",
-												result.IsSuccess.ToString());
-				xmlWriter.WriteAttributeString("time",
-												result.Duration.ToString("#####0.000",
-																	NumberFormatInfo.InvariantInfo));
+				attributes.Add ("success", result.IsSuccess.ToString ());
+				attributes.Add( "time", result.Duration.ToString("#####0.000", NumberFormatInfo.InvariantInfo));
 			}
+			WriteOpeningElement ("test-case", attributes);
 		}
 
 		private void WriteReasonElement(ITestResult result)
 		{
-			xmlWriter.WriteStartElement("reason");
-			xmlWriter.WriteStartElement("message");
-			xmlWriter.WriteCData(result.Message);
-			xmlWriter.WriteEndElement();
-			xmlWriter.WriteEndElement();
+			WriteOpeningElement ("reason");
+			WriteOpeningElement ("message");
+			WriteCData(result.Message);
+			WriteClosingElement ("message");
+			WriteClosingElement ("reason");
+			
 		}
 
 		private void WriteFailureElement(ITestResult result)
 		{
-			xmlWriter.WriteStartElement("failure");
-
-			xmlWriter.WriteStartElement("message");
-			WriteCData(result.Message);
-			xmlWriter.WriteEndElement();
-
-			xmlWriter.WriteStartElement("stack-trace");
+			WriteOpeningElement ("failure");
+			WriteOpeningElement ("message");
+			WriteCData (result.Message);
+			WriteClosingElement ("message");
+			WriteOpeningElement ("stack-trace");
 			if (result.StackTrace != null)
-				WriteCData(StackTraceFilter.Filter(result.StackTrace));
-			xmlWriter.WriteEndElement();
-
-			xmlWriter.WriteEndElement();
+				WriteCData (StackTraceFilter.Filter (result.StackTrace));
+			WriteClosingElement ("stack-trace");
+			WriteClosingElement ("failure");
 		}
 
 		#endregion
-
-		#region Output Helpers
 
 		private void WriteCData(string text)
 		{
-			int start = 0;
-			while (true)
-			{
-				int illegal = text.IndexOf("]]>",
-											start);
-				if (illegal < 0)
-					break;
-				xmlWriter.WriteCData(text.Substring(start,
-													illegal - start + 2));
-				start = illegal + 2;
-				if (start >= text.Length)
-					return;
-			}
-
-			if (start > 0)
-				xmlWriter.WriteCData(text.Substring(start));
-			else
-				xmlWriter.WriteCData(text);
+			if (text.Length == 0)
+				return;
+			resultWriter.AppendFormat ("<![CDATA[{0}]]>", text);
+			resultWriter.AppendLine ();
 		}
-
-		#endregion
 	}
 }

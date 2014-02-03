@@ -45,7 +45,7 @@ namespace UnityTest
 				case TestResultState.Skipped:
 					return Icons.unknownImg;
 				case TestResultState.Ignored:
-					return Icons.unknownImg;
+					return Icons.ignoreImg;
 				default:
 					return null;
 			}
@@ -85,13 +85,13 @@ namespace UnityTest
 			return path;
 		}
 
-		public static void OpenInEditor(UnitTestResult test)
+		public static void OpenInEditor(UnitTestResult test, bool openError)
 		{
 
 			var sourceFilePath = ExtractSourceFilePath(test.StackTrace);
 			var sourceFileLine = ExtractSourceFileLine(test.StackTrace);
 
-			if (sourceFileLine == 0 || string.IsNullOrEmpty(sourceFilePath))
+			if (!openError || sourceFileLine == 0 || string.IsNullOrEmpty (sourceFilePath))
 			{
 				var sp = GetSequencePointOfTest(test);
 				sourceFileLine = sp.StartLine;

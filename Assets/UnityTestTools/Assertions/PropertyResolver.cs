@@ -83,7 +83,7 @@ namespace UnityTest
 			return resultList.ToArray();
 		}
 
-		private bool PropertyPathIsValid ( string propertPath )
+		internal bool PropertyPathIsValid ( string propertPath )
 		{
 			if (propertPath.StartsWith ("."))
 				return false;
@@ -176,7 +176,7 @@ namespace UnityTest
 			throw new Exception("Only properties and fields are allowed");
 		}
 
-		private Type[] GetAllComponents ( GameObject gameObject )
+		internal Type[] GetAllComponents ( GameObject gameObject )
 		{
 			var result = new List<Type>();
 			var components = gameObject.GetComponents(typeof(Component));
