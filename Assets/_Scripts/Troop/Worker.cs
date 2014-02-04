@@ -15,7 +15,6 @@ public class Worker : Unit
 		public float carryingSpeed;
 		public float carryingAcceleration;
 		public float carryingAngularSpeed;
-	    public int carryingAvoidancePriority;
 		public WorkerAnimation workerAnimation;
 	}
 
@@ -187,6 +186,9 @@ public class Worker : Unit
 					}
 
 					workerState = WorkerState.Carrying;
+
+					Pathfind.avoidancePriority 	   = workerStateAvoidance.Carrying.priority;
+					Pathfind.obstacleAvoidanceType = workerStateAvoidance.Carrying.type;
 				}
 				else
 				{
@@ -194,6 +196,9 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 
 					workerState = WorkerState.CarryingIdle;
+
+					Pathfind.obstacleAvoidanceType = workerStateAvoidance.CarryingIdle.type;
+					Pathfind.avoidancePriority 	   = workerStateAvoidance.CarryingIdle.priority;
 				}
 
 				if (!HasFactory ()) return;
@@ -245,6 +250,10 @@ public class Worker : Unit
 				break;
 			case WorkerState.Building:
 			case WorkerState.Repairing:
+			
+				Pathfind.obstacleAvoidanceType = workerStateAvoidance.BuildingOrRepairing.type;
+				Pathfind.avoidancePriority 	   = workerStateAvoidance.BuildingOrRepairing.priority;
+
 				if (!HasFactory () ||
 					factoryChoose != lastFactory)
 				{
@@ -279,6 +288,9 @@ public class Worker : Unit
 				}
 				break;
 			case WorkerState.None:
+			
+				Pathfind.obstacleAvoidanceType = workerStateAvoidance.None.type;
+				Pathfind.avoidancePriority 	   = workerStateAvoidance.None.priority;
 
 				CheckConstructFactory ();
 
@@ -298,9 +310,6 @@ public class Worker : Unit
 				case WorkerState.Carrying:
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
-						Pathfind.obstacleAvoidanceType = workerStateAvoidance.Carrying.type;
-						Pathfind.avoidancePriority 	   = workerStateAvoidance.Carrying.priority;
-
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
@@ -311,9 +320,6 @@ public class Worker : Unit
 				case WorkerState.CarryingIdle:
 					if (resourceWorker[resourceId].workerAnimation.CarryingIdle)
 					{
-						Pathfind.obstacleAvoidanceType = workerStateAvoidance.CarryingIdle.type;
-						Pathfind.avoidancePriority 	   = workerStateAvoidance.CarryingIdle.priority;
-
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 						resourceWorker[resourceId].carryingObject.SetActive (true);
 						resourceWorker[resourceId].extractingObject.SetActive (false);
@@ -335,9 +341,6 @@ public class Worker : Unit
 				case WorkerState.Repairing:
 					if (resourceWorker[0].workerAnimation.Extracting)
 					{
-						Pathfind.obstacleAvoidanceType = workerStateAvoidance.BuildingOrRepairing.type;
-						Pathfind.avoidancePriority 	   = workerStateAvoidance.BuildingOrRepairing.priority;
-
 						ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting);
 						resourceWorker[0].extractingObject.SetActive (true);
 						if (lastResourceId != -1)
@@ -349,9 +352,6 @@ public class Worker : Unit
 					break;
 
 				case WorkerState.None:
-		
-					Pathfind.obstacleAvoidanceType = workerStateAvoidance.None.type;
-					Pathfind.avoidancePriority 	   = workerStateAvoidance.None.priority;
 					
 					bool isAttacking = (unitState == Unit.UnitState.Attack);
 
@@ -472,9 +472,6 @@ public class Worker : Unit
 	{
 		IsExtracting = true;
 
-		Pathfind.obstacleAvoidanceType = workerStateAvoidance.Extracting.type;
-		Pathfind.avoidancePriority 	   = workerStateAvoidance.Extracting.priority;
-
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 
@@ -499,7 +496,7 @@ public class Worker : Unit
 		Pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
 		Pathfind.speed = resourceWorker[resourceId].carryingSpeed;
 		Pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
-		Pathfind.avoidancePriority = resourceWorker[resourceId].carryingAvoidancePriority;
+
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
 
