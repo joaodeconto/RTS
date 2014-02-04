@@ -1217,6 +1217,22 @@ MonoBehaviour:
   forceToExtract: 2
   numberMaxGetResources: 8
   distanceToExtract: 1.5
+  workerStateAvoidance:
+    BuildingOrRepairing:
+      type: 4
+      priority: 1
+    Carrying:
+      type: 4
+      priority: 0
+    CarryingIdle:
+      type: 4
+      priority: 2
+    Extracting:
+      type: 0
+      priority: 2
+    None:
+      type: 4
+      priority: 2
   resourceWorker:
   - type: 1
     extractingObject: {fileID: 100068}
@@ -1229,7 +1245,6 @@ MonoBehaviour:
       Extracting: {fileID: 7400012, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
       CarryingIdle: {fileID: 7400006, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
       Carrying: {fileID: 7400004, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
-    extractingAvoidance: 0
   - type: 2
     extractingObject: {fileID: 100068}
     carryingObject: {fileID: 100070}
@@ -1241,7 +1256,6 @@ MonoBehaviour:
       Extracting: {fileID: 7400014, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
       CarryingIdle: {fileID: 7400014, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
       Carrying: {fileID: 7400014, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
-    extractingAvoidance: 0
   factoryConstruction:
   - factory: {fileID: 11400000, guid: 74c85a2adc76ed644b091d367b2acdfc, type: 2}
     costOfResources:
@@ -1442,8 +1456,8 @@ NavMeshAgent:
   m_Acceleration: 100
   avoidancePriority: 2
   m_AngularSpeed: 360
-  m_StoppingDistance: 1
-  m_AutoTraverseOffMeshLink: 1
+  m_StoppingDistance: 2
+  m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
