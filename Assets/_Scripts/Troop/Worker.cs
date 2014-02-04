@@ -6,39 +6,50 @@ using Visiorama.Extension;
 
 public class Worker : Unit
 {
+	[System.Serializable]
+	public class ResourceWorker
+	{
+		public Resource.Type type;
+		public GameObject extractingObject;
+		public GameObject carryingObject;
+		public float carryingSpeed;
+		public float carryingAcceleration;
+		public float carryingAngularSpeed;
+		public WorkerAnimation workerAnimation;
+	}
 
 	[System.Serializable]
-		public class ResourceWorker
-		{
-			public Resource.Type type;
-			public GameObject extractingObject;
-			public GameObject carryingObject;
-			public float carryingSpeed;
-			public float carryingAcceleration;
-			public float carryingAngularSpeed;
-		    public int carryingAvoidancePriority;
-			public WorkerAnimation workerAnimation;
-			public ObstacleAvoidanceType extractingAvoidance;
-
-		}
-
-
+	public class WorkerAnimation
+	{
+		public AnimationClip Extracting;
+		public AnimationClip CarryingIdle;
+		public AnimationClip Carrying;
+	}
 
 	[System.Serializable]
-		public class WorkerAnimation
-		{
-			public AnimationClip Extracting;
-			public AnimationClip CarryingIdle;
-			public AnimationClip Carrying;
-		}
+	public class FactoryConstruction
+	{
+		public FactoryBase factory;
+		public ResourcesManager costOfResources;
+		public IStats.GridItemAttributes gridItemAttributes;
+	}
 
 	[System.Serializable]
-		public class FactoryConstruction
+	public class WorkerStateAvoidance
+	{
+		[System.Serializable]
+		public class Avoidance
 		{
-			public FactoryBase factory;
-			public ResourcesManager costOfResources;
-			public IStats.GridItemAttributes gridItemAttributes;
+			public ObstacleAvoidanceType type;
+			public int priority;
 		}
+
+		public Avoidance BuildingOrRepairing;
+		public Avoidance Carrying;
+		public Avoidance CarryingIdle;
+		public Avoidance Extracting;
+		public Avoidance None;
+	}
 
 	public enum WorkerState
 	{
@@ -53,10 +64,12 @@ public class Worker : Unit
 	public int forceToExtract;
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
+
+	public WorkerStateAvoidance workerStateAvoidance;
+
 	public ResourceWorker[] resourceWorker;
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
-
 
 	public WorkerState workerState {get; set;}
 
@@ -173,6 +186,9 @@ public class Worker : Unit
 					}
 
 					workerState = WorkerState.Carrying;
+
+					Pathfind.avoidancePriority 	   = workerStateAvoidance.Carrying.priority;
+					Pathfind.obstacleAvoidanceType = workerStateAvoidance.Carrying.type;
 				}
 				else
 				{
@@ -180,6 +196,9 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 
 					workerState = WorkerState.CarryingIdle;
+
+					Pathfind.obstacleAvoidanceType = workerStateAvoidance.CarryingIdle.type;
+					Pathfind.avoidancePriority 	   = workerStateAvoidance.CarryingIdle.priority;
 				}
 
 				if (!HasFactory ()) return;
@@ -231,6 +250,10 @@ public class Worker : Unit
 				break;
 			case WorkerState.Building:
 			case WorkerState.Repairing:
+			
+				Pathfind.obstacleAvoidanceType = workerStateAvoidance.BuildingOrRepairing.type;
+				Pathfind.avoidancePriority 	   = workerStateAvoidance.BuildingOrRepairing.priority;
+
 				if (!HasFactory () ||
 					factoryChoose != lastFactory)
 				{
@@ -265,6 +288,9 @@ public class Worker : Unit
 				}
 				break;
 			case WorkerState.None:
+			
+				Pathfind.obstacleAvoidanceType = workerStateAvoidance.None.type;
+				Pathfind.avoidancePriority 	   = workerStateAvoidance.None.priority;
 
 				CheckConstructFactory ();
 
@@ -326,15 +352,11 @@ public class Worker : Unit
 					break;
 
 				case WorkerState.None:
-					if (unitState == Unit.UnitState.Attack)
-					{
-						resourceWorker[0].extractingObject.SetActive (true);
-					}
-					else
-					{
-						resourceWorker[0].extractingObject.SetActive (false);
-					}
+					
+					bool isAttacking = (unitState == Unit.UnitState.Attack);
 
+					resourceWorker[0].extractingObject.SetActive (isAttacking);
+		
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
@@ -377,6 +399,8 @@ public class Worker : Unit
 	public override IEnumerator OnDie ()
 	{
 		workerState = WorkerState.None;
+
+		Pathfind.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 
 		return base.OnDie ();
 	}
@@ -448,8 +472,6 @@ public class Worker : Unit
 	{
 		IsExtracting = true;
 
-		Pathfind.obstacleAvoidanceType = resourceWorker[resourceId].extractingAvoidance;
-
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 
@@ -474,7 +496,7 @@ public class Worker : Unit
 		Pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
 		Pathfind.speed = resourceWorker[resourceId].carryingSpeed;
 		Pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
-		Pathfind.avoidancePriority = resourceWorker[resourceId].carryingAvoidancePriority;
+
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
 

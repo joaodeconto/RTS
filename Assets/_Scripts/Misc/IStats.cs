@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using System.Text.RegularExpressions;
+
 using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
@@ -62,7 +64,13 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
 
 			string unitName = transform.name;
-			unitName.Remove (unitName.IndexOf ("("));
+			int startRemoveIndex = unitName.IndexOf ("(");
+			
+			unitName = Regex.Replace (unitName, "[0-9]", "" );
+			
+			startRemoveIndex = (startRemoveIndex > 0) ? startRemoveIndex : unitName.Length - 1;
+			unitName.Remove (startRemoveIndex);
+
 			string keyUnitTeamMaterial = unitName + " - " + teamID;
 			
 			//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
