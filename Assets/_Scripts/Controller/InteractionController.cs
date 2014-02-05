@@ -172,8 +172,7 @@ public class InteractionController : MonoBehaviour
 					worker.SetMoveToFactory (null);
 				}
 				
-				worker.Move (touchController.GetFinalPoint);
-				worker.SetResource(hit.GetComponent<Resource> ());
+				worker.SetResource (hit.GetComponent<Resource> ());
 
 				feedback = true;
 			}

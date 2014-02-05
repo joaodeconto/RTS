@@ -323,6 +323,8 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	#region Move Pathfind w/ Avoidance
 	public void Move (Vector3 destination)
 	{
+		Debug.Log (this.name + "New Destination: " + destination);
+
 		if (!Pathfind.updatePosition) Pathfind.updatePosition = true;
 
 		if (PathfindTarget != destination) Pathfind.SetDestination (destination);
@@ -731,13 +733,16 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 
 	public override void DrawGizmosSelected ()
 	{
-		base.DrawGizmosSelected ();
+//		base.DrawGizmosSelected ();
 
-		Gizmos.color = Color.cyan;
-		Gizmos.DrawWireSphere (this.transform.position, distanceView);
+//		Gizmos.color = Color.cyan;
+//		Gizmos.DrawWireSphere (this.transform.position, distanceView);
 
-		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere (this.transform.position, attackRange);
+//		Gizmos.color = Color.red;
+//		Gizmos.DrawWireSphere (this.transform.position, attackRange);
+
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
 	}
 
 	public override void SetVisible(bool isVisible)

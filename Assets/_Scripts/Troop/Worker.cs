@@ -71,7 +71,7 @@ public class Worker : Unit
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
 
-	public WorkerState workerState {get; set;}
+	public WorkerState workerState;// {get; set;}
 
 	public bool IsExtracting {get; protected set;}
 	public bool IsRepairing {get; protected set;}
@@ -220,7 +220,7 @@ public class Worker : Unit
 				{
 					gameplayManager.resources.Set (resourceType, currentNumberOfResources);
 
-					if (resource != null) Move (resource.transform.position);
+					if (resource != null) SetResource (resource);
 					else
 					{
 						Pathfind.Stop ();
@@ -427,6 +427,20 @@ public class Worker : Unit
 	public void SetResource (Resource newResource)
 	{
 		resource = newResource;
+
+		if (resource != null)
+		{
+			CapsuleCollider col = resource.GetComponent<CapsuleCollider> ();
+
+			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
+
+//			Debug.Log ("SetResource - randomVector: " + randomVector);
+
+			Vector3 position = resource.transform.position - randomVector;
+			position.y = resource.transform.position.y;
+
+			Move (position);
+		}
 	}
 
 	public bool CanConstruct (FactoryConstruction factory, bool discount = true)
@@ -748,8 +762,11 @@ public class Worker : Unit
 	{
 		base.DrawGizmosSelected ();
 
-		Gizmos.color = Color.green;
-		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
+//		Gizmos.color = Color.green;
+//		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
+		
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
 	}
 
 	// RPC
