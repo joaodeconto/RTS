@@ -1219,13 +1219,13 @@ MonoBehaviour:
   distanceToExtract: 1.5
   workerStateAvoidance:
     BuildingOrRepairing:
-      type: 4
+      type: 0
       priority: 1
     Carrying:
-      type: 4
+      type: 0
       priority: 0
     CarryingIdle:
-      type: 4
+      type: 0
       priority: 2
     Extracting:
       type: 0
@@ -1240,7 +1240,6 @@ MonoBehaviour:
     carryingSpeed: 2
     carryingAcceleration: 6
     carryingAngularSpeed: 360
-    carryingAvoidancePriority: 0
     workerAnimation:
       Extracting: {fileID: 7400012, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
       CarryingIdle: {fileID: 7400006, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
@@ -1251,7 +1250,6 @@ MonoBehaviour:
     carryingSpeed: 1
     carryingAcceleration: 6
     carryingAngularSpeed: 360
-    carryingAvoidancePriority: 0
     workerAnimation:
       Extracting: {fileID: 7400014, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
       CarryingIdle: {fileID: 7400014, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
@@ -1293,6 +1291,7 @@ MonoBehaviour:
       gridXIndex: 4
       gridYIndex: 1
   constructionAndRepairForce: 4
+  workerState: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
