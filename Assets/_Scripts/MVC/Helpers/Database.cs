@@ -30,7 +30,6 @@ public class Database : MonoBehaviour
 	public const string wrapperURL = "http://www.visiorama.com.br/uploads/RTS2/database/access.php";
 
 	private float timeToWait = 0.5f;
-	private bool FakeDatabase = true;
 
 	private Stack<DatabaseCall> DatabaseCallStack;
 
@@ -191,10 +190,7 @@ public class Database : MonoBehaviour
 
 	public IEnumerator _SendData ()
 	{
-		if (FakeDatabase)
-			DatabaseCallStack.Clear ();
-		else
-			StartCoroutine (__SendData ());
+		StartCoroutine (__SendData ());
 
 		yield return new WaitForSeconds (0.1f);
 	}

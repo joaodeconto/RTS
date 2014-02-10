@@ -52,6 +52,9 @@ public class PlayerBattleDAO : MonoBehaviour
 		db.Read (dbBattleType,
 		(response) =>
 		{
+		
+			Debug.Log ("Chegou");
+			
 			Model.BattleType battleType = null;
 			if ((response as DB.BattleType) != null)
 			{

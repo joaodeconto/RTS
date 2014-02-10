@@ -46,26 +46,26 @@ public class RangeObject : MonoBehaviour {
 			transform.position, targetPosition
 		};
 		
-////		Vector3 center = Math.CenterOfObjects (positionArrays);
-////		center.y += Mathf.Sqrt(Vector3.Distance (transform.position, targetPosition));
-//		
-////		iTween.MoveTo (gameObject, 
-////			iTween.Hash (iT.MoveTo.position, center, 
-////						iT.MoveTo.speed, speed, 
-//						iT.MoveTo.easetype, iTween.EaseType.linear,
-//						iT.MoveTo.oncomplete, "MaximumHeight"
-//			)
-//		);
-//		
-//		transform.LookAt (center);
-//		
-//		iTween.RotateTo (gameObject,
-//			iTween.Hash (iT.RotateTo.rotation, new Vector3 (0, transform.eulerAngles.y, 
-//															transform.eulerAngles.z),
-//						iT.RotateTo.time, 0.5f,
-//						iT.RotateTo.easetype, iTween.EaseType.linear
-//			)
-//		);
+		Vector3 center = Math.CenterOfObjects (positionArrays);
+		center.y += Mathf.Sqrt(Vector3.Distance (transform.position, targetPosition));
+		
+		iTween.MoveTo (gameObject, 
+			iTween.Hash (iT.MoveTo.position, center, 
+						iT.MoveTo.speed, speed, 
+						iT.MoveTo.easetype, iTween.EaseType.linear,
+						iT.MoveTo.oncomplete, "MaximumHeight"
+			)
+		);
+		
+		transform.LookAt (center);
+		
+		iTween.RotateTo (gameObject,
+			iTween.Hash (iT.RotateTo.rotation, new Vector3 (0, transform.eulerAngles.y, 
+															transform.eulerAngles.z),
+						iT.RotateTo.time, 0.5f,
+						iT.RotateTo.easetype, iTween.EaseType.linear
+			)
+		);
 	}
 	
 	void MaximumHeight ()
