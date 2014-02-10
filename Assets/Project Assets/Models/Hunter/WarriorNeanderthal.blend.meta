@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 16
   fileIDToRecycleName:
     100000: Arm1_L
     100002: Arm1_R
@@ -38,6 +38,9 @@ ModelImporter:
     100064: Thoe2_L
     100066: Thoe2_R
     100068: //RootNode
+    100070: Hunter
+    100072: Spear
+    100074: Spear_Backpack
     400000: Arm1_L
     400002: Arm1_R
     400004: Arm2_L
@@ -73,15 +76,30 @@ ModelImporter:
     400064: Thoe2_L
     400066: Thoe2_R
     400068: //RootNode
+    400070: Hunter
+    400072: Spear
+    400074: Spear_Backpack
     2300000: Group19303_001
     3300000: Group19303_001
     4300000: Group19303_001
     4300002: Group19303
+    4300004: Spear_Backpack
+    4300006: Hunter
+    4300008: Spear
     7400000: Default Take
     7400002: Spearman_shortAttack
     7400004: Action
+    7400006: Hunter_Attack
+    7400008: Hunter_Death
+    7400010: Hunter_Idle
+    7400012: Hunter_Run
+    7400014: Hunter_RunWithLance
     9500000: //RootNode
+    11100000: //RootNode
     13700000: Group19303
+    13700002: Hunter
+    13700004: Spear
+    13700006: Spear_Backpack
   materials:
     importMaterials: 1
     materialName: 0
@@ -89,16 +107,498 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    optimizeGameObjects: 0
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
-    clipAnimations: []
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Hunter_Attack
+      takeName: Hunter_Attack
+      firstFrame: -1
+      lastFrame: 49
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Pevis_IK
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001/Leg2_L_002
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001/Leg2_R_002
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L/Finger2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L/Thoe2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R/Finger2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R/Thoe2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck/Head
+        weight: 1
+      - path: Hunter
+        weight: 1
+      - path: Spear
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Hunter_Death
+      takeName: Hunter_Death
+      firstFrame: -1
+      lastFrame: 28
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Pevis_IK
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001/Leg2_L_002
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001/Leg2_R_002
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L/Finger2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L/Thoe2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R/Finger2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R/Thoe2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck/Head
+        weight: 1
+      - path: Hunter
+        weight: 1
+      - path: Spear
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Hunter_Idle
+      takeName: Hunter_Idle
+      firstFrame: -1
+      lastFrame: 99
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Pevis_IK
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001/Leg2_L_002
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001/Leg2_R_002
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L/Finger2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L/Thoe2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R/Finger2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R/Thoe2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck/Head
+        weight: 1
+      - path: Hunter
+        weight: 1
+      - path: Spear
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Hunter_Run
+      takeName: Hunter_Run
+      firstFrame: -1
+      lastFrame: 19
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Pevis_IK
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001/Leg2_L_002
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001/Leg2_R_002
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L/Finger2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L/Thoe2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R/Finger2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R/Thoe2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck/Head
+        weight: 1
+      - path: Hunter
+        weight: 1
+      - path: Spear
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Hunter_RunWithLance
+      takeName: Hunter_RunWithLance
+      firstFrame: -1
+      lastFrame: 19
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Pevis_IK
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001/Leg2_L_002
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001/Leg2_R_002
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L/Finger2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L/Thoe2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R/Finger2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R/Thoe2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck/Head
+        weight: 1
+      - path: Hunter
+        weight: 1
+      - path: Spear
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: .899999976
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -121,7 +621,6 @@ ModelImporter:
   humanDescription:
     human: []
     skeleton: []
-    handles: []
     armTwist: .5
     foreArmTwist: .5
     upperLegTwist: .5
@@ -131,6 +630,6 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
   additionalBone: 1
-  animationType: 2
   userData: 
