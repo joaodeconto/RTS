@@ -118,7 +118,7 @@ public class FactoryBase : IStats
 			pos.z -= transform.collider.bounds.size.z;
 
 			RallyPoint rallyPoint = goRallypoint.GetComponent<RallyPoint> ();
-			rallyPoint.Init (pos);
+			rallyPoint.Init (pos, this.team);
 		}
 
 		playerUnit = gameplayManager.IsSameTeam (this);

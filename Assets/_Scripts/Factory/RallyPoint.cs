@@ -15,6 +15,8 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 	public float end = 1.0f;
 	public string[] AllowedLayersToFollow = new string[2] { "Terrain", "Unit" };//Layers de objetos que podem ser seguidos 
 
+	public Transform subMesh;
+
 	protected TouchController touchController;
 	protected LineRenderer lineRenderer;
 
@@ -25,7 +27,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 	private Vector3 lastSavedPosition;
 	
 	// Use this for initialization
-	public void Init (Vector3 initialPosition)
+	public void Init (Vector3 initialPosition, int team)
 	{
 		touchController = ComponentGetter.Get<TouchController> ();
 		
@@ -38,9 +40,61 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		lineRenderer.SetWidth (start, end);
 		transform.GetChild (0).renderer.material.color = lineRenderer.material.color;
 
+		ChangeColor (team);
+
 		//Atualizar a primeira vez
 		SavePosition (initialPosition);
 		UpdatePosition (initialPosition);
+	}
+	
+	private static Dictionary<string, ProceduralMaterial[]> rallypointMaterials = new Dictionary<string, ProceduralMaterial[]> ();	
+	
+	//Caso esse metodo for modificado eh necessario modificar no IStats tbm
+	private void ChangeColor (int teamID)
+	{
+		Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
+		Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
+		Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
+		
+		string keyRallypointMaterial = "rallypoint - " + teamID;
+		
+		//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
+		if (!rallypointMaterials.ContainsKey (keyRallypointMaterial))
+		{
+			int nMaterials = subMesh.renderer.materials.Length;
+			rallypointMaterials.Add (keyRallypointMaterial, new ProceduralMaterial[nMaterials]);
+			
+			for (int i = 0, iMax = subMesh.renderer.materials.Length; i != iMax; ++i)
+			{
+				ProceduralMaterial substance 				  = subMesh.renderer.materials[i] as ProceduralMaterial;
+				ProceduralPropertyDescription[] curProperties = substance.GetProceduralPropertyDescriptions();
+				
+				//Setando os valores corretos de cor
+				foreach (ProceduralPropertyDescription curProperty in curProperties)
+				{
+					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
+						substance.SetProceduralColor(curProperty.name, teamColor);
+					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor1"))
+						substance.SetProceduralColor(curProperty.name, teamColor1);
+					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor2"))
+						substance.SetProceduralColor(curProperty.name, teamColor2);
+				}
+				
+				substance.RebuildTextures ();
+				
+				rallypointMaterials[keyRallypointMaterial][i] = substance;
+			}
+		}
+		
+		//Associando na unidade os materiais corretos
+		ProceduralMaterial[] pms = rallypointMaterials[keyRallypointMaterial];
+		//			List<Material> mms = new List<Material> ();
+		//
+		//			foreach (ProceduralMaterial pm in pms)
+		//			{
+		//				mms.Add (pm)
+		//			}
+		subMesh.renderer.sharedMaterials = pms as Material[];
 	}
 	
 	// Update is called once per frame

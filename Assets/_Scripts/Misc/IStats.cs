@@ -57,6 +57,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 		private static Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
 
+		//Caso esse metodo for modificado eh necessario modificar no Rallypoint tbm
 		public void SetColorInMaterial (Transform transform, int teamID)
 		{
 			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
