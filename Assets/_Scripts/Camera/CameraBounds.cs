@@ -2,15 +2,8 @@ using UnityEngine;
 using System.Collections;
 using Visiorama.Utils;
 
-public class CameraBounds : MonoBehaviour {
-	
-	// Classe Serializada de Vector3 com MinMaxFloat
-	[System.Serializable]
-	public class Vector3MinMax
-	{
-		public MinMaxFloat x, y, z;
-	}
-	
+public class CameraBounds : MonoBehaviour
+{
 	// Editor
 	public Vector3MinMax scenario;
 	public float height = 15f;
@@ -43,7 +36,7 @@ public class CameraBounds : MonoBehaviour {
 //		                    height, 
 //		                    Mathf.Clamp (position.z, scenario.z.min + (relativeSize/camera.orthographicSize), scenario.z.max + (relativeSize/camera.orthographicSize)));
 		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min, scenario.x.max), 
-		                    height, 
+		                    Mathf.Clamp (position.y, scenario.y.min, scenario.y.max), 
 		                    Mathf.Clamp (position.z, scenario.z.min, scenario.z.max));
 		
 	}

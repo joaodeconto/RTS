@@ -1,9 +1,11 @@
 using UnityEngine;
 using System.Collections;
+
 using Visiorama;
 using Visiorama.Utils;
 
-public class CameraMovement : MonoBehaviour {
+public class CameraMovement : MonoBehaviour
+{
 	public float speedMobile = 0.25f;
 	public float speed = 0.5f;
 	public Vector2 minimum = Vector2.one * 0.01f;
@@ -11,14 +13,21 @@ public class CameraMovement : MonoBehaviour {
 	
 	public float zoomSpeed;
 	public MinMaxFloat zoom;
-		
+	
 	protected Camera thisCamera;
 	
 	protected TouchController touchController;
-
+	
+	protected Vector3MinMax scenario;
+	protected CameraBounds bounds;
+	
 	void Start ()
 	{
 		touchController = ComponentGetter.Get<TouchController>();
+		bounds = GetComponent<CameraBounds> ();
+		
+		scenario = bounds.scenario;
+		
 		thisCamera = gameObject.camera;
 		
 		foreach (Camera camera in touchController.zoomSettings.cameras)
@@ -44,12 +53,43 @@ public class CameraMovement : MonoBehaviour {
 		
 		if (Input.GetAxis ("Mouse ScrollWheel") != 0)
 		{
-			float size = thisCamera.fieldOfView;
-			size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
-			thisCamera.fieldOfView = Mathf.Clamp (size, zoom.min, zoom.max);
-			foreach (Camera camera in touchController.zoomSettings.cameras)
+//			float size = thisCamera.fieldOfView;
+//			
+//			size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
+//			
+//			thisCamera.fieldOfView = Mathf.Clamp (size, zoom.min, zoom.max);
+//			
+//			
+//			foreach (Camera camera in touchController.zoomSettings.cameras)
+//			{
+//				camera.fieldOfView = thisCamera.fieldOfView;
+//			}
+
+			float movementForceDirection = Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
+			Vector3 cameraPosition = thisCamera.transform.position;
+			Vector3 impulse = thisCamera.transform.forward.normalized * movementForceDirection;
+			
+			CameraBounds bounds = GetComponent<CameraBounds> ();
+			
+			if ((movementForceDirection > 0 && ((impulse + cameraPosition).y > scenario.y.min)) ||
+			    (movementForceDirection < 0 && ((impulse + cameraPosition).y < scenario.y.max)))
 			{
-				camera.fieldOfView = thisCamera.fieldOfView;
+				cameraPosition += impulse;
+				
+				float screenRatio = (float)Screen.width / (float)Screen.height;
+				float angleRatio = thisCamera.transform.eulerAngles.x / 180f; 
+				float fieldOfViewRatio = (thisCamera.fieldOfView / 150f);
+				
+				scenario.x.min -= movementForceDirection * fieldOfViewRatio * screenRatio;
+				scenario.x.max += movementForceDirection * fieldOfViewRatio * screenRatio;
+				scenario.z.min += 2f * movementForceDirection * (1f / angleRatio) * fieldOfViewRatio * (1f / screenRatio);
+				scenario.z.max += 2f * movementForceDirection * (1f / angleRatio) * fieldOfViewRatio * (1f / screenRatio);
+			
+				thisCamera.transform.position = cameraPosition;
+				foreach (Camera camera in touchController.zoomSettings.cameras)
+				{
+					camera.transform.position = cameraPosition;
+				}
 			}
 		}
 
@@ -64,7 +104,7 @@ public class CameraMovement : MonoBehaviour {
 #endif
 	}
 
-	// Add Códigos na Framework
+	// Adicionar metodo na biblioteca
 	public void PanCamera (float dForward, float dRight)
     {
       Transform transform = Camera.main.transform;
