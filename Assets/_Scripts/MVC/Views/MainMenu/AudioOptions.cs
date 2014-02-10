@@ -45,7 +45,7 @@ public class AudioOptions : MonoBehaviour
 			volumeController.SetAllAudios ();
 		});
 		
-		checkbox = music.FindChild ("Checkbox");
+		checkbox = music.FindChild ("CheckBox");
 
 		checkbox.GetComponent<UIToggle> ().isChecked = VolumeController.musicOn;
 		
@@ -72,7 +72,7 @@ public class AudioOptions : MonoBehaviour
 			volumeController.SetAllAudios ();
 		});
 		
-		checkbox = sound.FindChild ("Checkbox");
+		checkbox = sound.FindChild ("CheckBox");
 
 		checkbox.GetComponent<UIToggle> ().isChecked = VolumeController.soundOn;
 		
@@ -99,7 +99,7 @@ public class AudioOptions : MonoBehaviour
 			volumeController.SetAllAudios ();
 		});
 		
-		checkbox = voice.FindChild ("Checkbox");
+		checkbox = voice.FindChild ("CheckBox");
 
 		checkbox.GetComponent<UIToggle> ().isChecked = VolumeController.voiceOn;
 		
