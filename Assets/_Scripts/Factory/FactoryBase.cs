@@ -458,7 +458,8 @@ public class FactoryBase : IStats
 	{
 		base.Select ();
 		
-		hudController.CreateHealthBar (this, MaxHealth, "Health Reference");
+//		hudController.CreateHealthBar (this, MaxHealth, "Health Reference");
+		hudController.CreateSubstanceHealthBar (this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		
 		if(unitToCreate != null)
