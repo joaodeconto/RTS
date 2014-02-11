@@ -38,6 +38,8 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		
 		this.Target = target;
 		this.Target.RegisterHealthObserver (this);
+		//Forçando atualizaçao de vida atual
+		this.Target.NotifyHealthChange ();
 	}
 	
 	public void Close ()
