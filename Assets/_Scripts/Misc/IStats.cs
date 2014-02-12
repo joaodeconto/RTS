@@ -202,6 +202,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public int ally;
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;
+	public float sizeOfSelectedHealthBar = 1f;
 
 //	public RendererTeamColor[] rendererTeamColor;
 	public RendererTeamSubstanceColor[] rendererTeamSubstanceColor;
