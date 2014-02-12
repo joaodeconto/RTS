@@ -111,7 +111,13 @@ public class SelectionController : MonoBehaviour
 
 			if (!Physics.Raycast (touchController.GetFinalRay, out hit))
 			{
-				return true;
+				return false;
+			}
+			
+			//Botao esquerdo ou um toque em touchscreen
+			if (interactionController.HasCallbacksForTouchId (TouchController.IdTouch.Id0))
+			{
+				return false;			
 			}
 
 			if (hit.transform.CompareTag ("Unit")) // return true
@@ -142,7 +148,6 @@ public class SelectionController : MonoBehaviour
 								touchController.IsInCamera (stat.transform.position))
 							{
 								statsController.SelectStat (stat, true);
-
 							}
 						}
 						return true; // selecionou unidades da mesma categoria da unidade selecionada
@@ -189,7 +194,7 @@ public class SelectionController : MonoBehaviour
 				}
 			}
 
-			if(!interactionController.HaveCallbacksForTouchId(TouchController.IdTouch.Id0))
+			if(!interactionController.HasCallbacksForTouchId(TouchController.IdTouch.Id0))
 			{
 				if (!leftShift) statsController.DeselectAllStats ();
 			}

@@ -457,6 +457,19 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 																								});
 															break;
 														case MovementAction.ActionType.Attack:
+															interactionController.AddCallback(TouchController.IdTouch.Id0,
+															                                  	(position, hit) =>
+															                                  	{
+																									IStats istats = hit.GetComponent <IStats> ();
+																									
+																									//Nao pode ser nulo e nao pode atacar aliados
+																									//so do mesmo time ou inimigo
+																									if (istats != null && 
+						    																			(gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
+																									{
+																										statsController.AttackTroop (istats.gameObject);
+																									}
+																								});
 															break;
 														}
 													});
