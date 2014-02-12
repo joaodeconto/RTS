@@ -337,6 +337,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 
 	public void StopMove ()
 	{
+		unitState = UnitState.Idle;
 		Pathfind.Stop ();
 	}
 	#endregion
@@ -419,18 +420,19 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 		{
 			ht = new Hashtable();
 			ht["actionType"] = ma.actionType;
-
+			
 			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
 													ma.buttonAttributes.gridItemAttributes.Position,
 													ht,
 													ma.buttonAttributes.spriteName,
-													(ht_hud) =>
-													{
-														switch((MovementAction.ActionType)ht["actionType"])
+													(_ht) =>
+			                                       {
+														MovementAction.ActionType action = (MovementAction.ActionType)_ht["actionType"];
+														switch(action)
 														{
 														case MovementAction.ActionType.Move:
 															interactionController.AddCallback(TouchController.IdTouch.Id0,
-																								(position) =>
+																								(position, hit) =>
 																								{
 																									statsController.MoveTroop(position);
 																								});
@@ -441,8 +443,18 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 														case MovementAction.ActionType.CancelMovement:
 															StopMove();
 															break;
-														case MovementAction.ActionType.Follow: //Rally Point
-
+														case MovementAction.ActionType.Follow:
+															interactionController.AddCallback(TouchController.IdTouch.Id0,
+															                                 	(position, hit) =>
+															                                  	{
+																									Unit unit = hit.GetComponent <Unit> ();
+																									
+																									Debug.LogWarning ("Seguindo apenas do mesmo time, nao segue aliados.");
+																									if (unit != null && gameplayManager.IsSameTeam (unit))
+																									{
+																										statsController.FollowTroop (unit);
+																									}
+																								});
 															break;
 														case MovementAction.ActionType.Attack:
 															break;
@@ -769,6 +781,9 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 		followed.RegisterMovementObserver (this);
 		followed.RegisterAttackObserver (this);
 		followedUnit = followed;
+		
+		if (followed.followedUnit == this)
+			followed.UnFollow ();
 	}
 	
 	public void UnFollow  ()

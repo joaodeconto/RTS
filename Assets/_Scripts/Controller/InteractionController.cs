@@ -6,10 +6,9 @@ using Visiorama;
 
 public class InteractionController : MonoBehaviour
 {
-	public delegate void InteractionCallback(Vector3 position);
+	public delegate void InteractionCallback(Vector3 position, Transform hit);
 
 	public GameObject uiExitGameObject;
-
 
 	protected TouchController touchController;
 	protected StatsController statsController;
@@ -35,7 +34,7 @@ public class InteractionController : MonoBehaviour
 		stackInteractionCallbacks.Push(ic);
 	}
 
-	public bool HaveCallbacksForTouchId(TouchController.IdTouch id)
+	public bool HasCallbacksForTouchId(TouchController.IdTouch id)
 	{
 		return (stackInteractionCallbacks.Count != 0);
 	}
@@ -67,7 +66,7 @@ public class InteractionController : MonoBehaviour
 
 				if(ic != null)
 				{
-					ic(touchController.GetFinalPoint);
+					ic(touchController.GetFinalPoint, touchController.GetFinalRaycastHit.transform);
 				}
 			}
 			break;

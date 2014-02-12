@@ -123,17 +123,25 @@ public class StatsController : MonoBehaviour
 	public void FollowTroop (Unit allyUnit)
 	{
 		if (allyUnit == null || otherSelected) return;
+		Debug.LogError ("hmm");
 		
 		bool feedback = false;
 		
 		foreach (IStats stat in selectedStats)
 		{
 			Unit unit = stat as Unit;
+			Debug.LogError ("hmm 1");
 
+			if (unit == allyUnit)
+			{
+				Debug.LogError ("egual! <o> - " + unit.name + " - " + allyUnit.name);
+			}
+			
 			//Nao permite seguir a si mesmo nem alguma unidade nula
 			if (unit == null || unit == allyUnit) continue;
 			
 			unit.Follow (allyUnit);
+			Debug.LogError ("hmm 2");
 			
 			feedback = true;
 		}
