@@ -1444,6 +1444,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 2097480857}
   movementActions:
@@ -1551,7 +1552,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 49742030}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.674394071, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1608196240}
@@ -2348,7 +2349,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 64367152}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: 360, z: 0}
+  m_LocalPosition: {x: 480, y: 360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1256166763}
@@ -4110,6 +4111,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 391076644}
   movementActions:
@@ -4452,7 +4454,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 144321297}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: 0, z: 0}
+  m_LocalPosition: {x: 480, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 565714253}
@@ -5883,13 +5885,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: .286764681, b: .286764681, a: 1}
   mPivot: 3
-  mWidth: 48
+  mWidth: 50
   mHeight: 22
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.18181825
+  aspectRatio: 2.27272725
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -6225,6 +6227,10 @@ Prefab:
     - target: {fileID: 11400032, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: subId
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400036, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: autoload
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
@@ -7825,6 +7831,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 992373854}
   movementActions:
@@ -10059,13 +10066,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 18
+  mWidth: 16
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .75
+  aspectRatio: .666666687
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -10533,7 +10540,7 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: .74999994, b: 0, a: 1}
   mPivot: 4
-  mWidth: 12
+  mWidth: 10
   mHeight: 36
   mDepth: 7
   autoResizeBoxCollider: 0
@@ -11565,6 +11572,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 17205992}
   movementActions:
@@ -12734,7 +12742,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 393818981}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: -360, z: 0}
+  m_LocalPosition: {x: 480, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1808377769}
@@ -14826,7 +14834,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 438919629}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -640, y: -360, z: 0}
+  m_LocalPosition: {x: -480, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 318045695}
@@ -16834,6 +16842,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1341840018}
   movementActions:
@@ -17965,6 +17974,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1073673889}
   movementActions:
@@ -22490,6 +22500,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 979617804}
   movementActions:
@@ -23426,13 +23437,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 64
+  mWidth: 62
   mHeight: 20
   mDepth: 16
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.20000005
+  aspectRatio: 3.29999995
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -23514,13 +23525,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 46
+  mWidth: 44
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.91666663
+  aspectRatio: 1.83333337
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -23650,13 +23661,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 34
+  mWidth: 32
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.41666663
+  aspectRatio: 1.33333337
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -24669,6 +24680,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 879445484}
   movementActions:
@@ -24925,7 +24937,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 793858514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -640, y: 360, z: 0}
+  m_LocalPosition: {x: -480, y: 360, z: 0}
   m_LocalScale: {x: 1.00012505, y: 1.00012505, z: 1.00012505}
   m_Children:
   - {fileID: 1302211684}
@@ -25349,7 +25361,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 815212944}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.674394071, y: -360, z: 0}
+  m_LocalPosition: {x: 0, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1966362250}
@@ -25595,6 +25607,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 497876507}
   movementActions:
@@ -26087,13 +26100,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 98
+  mWidth: 92
   mHeight: 24
   mDepth: 11
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.08333349
+  aspectRatio: 3.83333325
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -38076,13 +38089,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 0, g: .793103218, b: 1, a: 1}
   mPivot: 3
-  mWidth: 34
+  mWidth: 36
   mHeight: 22
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.5454545
+  aspectRatio: 1.63636363
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -38367,7 +38380,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1156483434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.674394071, y: 360, z: 0}
+  m_LocalPosition: {x: 0, y: 360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 356575896}
@@ -41552,6 +41565,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 55205302}
   movementActions:
@@ -42958,13 +42972,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 78
+  mWidth: 72
   mHeight: 24
   mDepth: 13
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.25
+  aspectRatio: 3
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -44870,6 +44884,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 190500932}
   movementActions:
@@ -49591,7 +49606,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1448290668}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.674394071, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 969284530}
@@ -49958,13 +49973,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 3
-  mWidth: 52
+  mWidth: 48
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.16666675
+  aspectRatio: 2
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -52837,13 +52852,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 18
+  mWidth: 16
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .75
+  aspectRatio: .666666687
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -55923,6 +55938,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 2060257923}
   movementActions:
@@ -56168,6 +56184,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1211777412}
   movementActions:
@@ -60092,13 +60109,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 48
+  mWidth: 44
   mHeight: 24
   mDepth: 13
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2
+  aspectRatio: 1.83333337
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -61519,6 +61536,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1635678967}
   movementActions:
@@ -63256,13 +63274,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 52
+  mWidth: 48
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.16666675
+  aspectRatio: 2
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -64088,7 +64106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 0
+  autoload: 1
   targetFPS: 30
 --- !u!1 &1959827971
 GameObject:
@@ -66763,6 +66781,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 12
   sizeOfSelected: 1.5
+  sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1002853862}
   movementActions:

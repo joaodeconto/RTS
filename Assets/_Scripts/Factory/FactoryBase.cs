@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Visiorama;
 using Visiorama.Extension;
 
-public class FactoryBase : IStats
+public class FactoryBase : IStats, IDeathObservable
 {
 	public const int MAX_NUMBER_OF_LISTED = 5;
 	public const string FactoryQueueName = "Factory";
@@ -86,6 +86,8 @@ public class FactoryBase : IStats
 			return listedToCreate.Count >= MAX_NUMBER_OF_LISTED;
 		}
 	}
+	
+	List<IDeathObserver> IDOobservers = new List<IDeathObserver> ();
 
 	public override void Init ()
 	{
@@ -301,7 +303,16 @@ public class FactoryBase : IStats
 
 			Deselect ();
 		}
-
+		
+		//IDeathObservable
+		NotifyDeath ();
+		
+		int c = IDOobservers.Count;
+		while (--c != -1)
+		{
+			UnRegisterDeathObserver (IDOobservers[c]);
+		}
+		
 //		yield return StartCoroutine (model.animation.WaitForAnimation (model.animation.clip));
 
 		yield return new WaitForSeconds (4f);
@@ -578,6 +589,12 @@ public class FactoryBase : IStats
 		buildingSlider.gameObject.SetActive(false);
 
 		hudController.DestroySelected (transform);
+		
+		int c = IDOobservers.Count;
+		while (--c != -1)
+		{
+			UnRegisterDeathObserver (IDOobservers[c]);
+		}
 
 		if (playerUnit && wasBuilt)
 		{
@@ -675,6 +692,29 @@ public class FactoryBase : IStats
 			return model.transform.parent != null;
 		}
 	}
+	
+	
+	#region IDeathObservable implementation
+	
+	public void RegisterDeathObserver (IDeathObserver observer)
+	{
+		IDOobservers.Add (observer);
+	}
+	
+	public void UnRegisterDeathObserver (IDeathObserver observer)
+	{
+		IDOobservers.Remove (observer);
+	}
+	
+	public void NotifyDeath ()
+	{
+		foreach (IDeathObserver o in IDOobservers)
+		{
+			o.OnObservableDie (this.gameObject);
+		}
+	}
+	
+	#endregion
 
 	// RPCs
 	[RPC]

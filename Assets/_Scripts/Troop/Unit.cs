@@ -7,7 +7,11 @@ using System.Linq;
 using Visiorama.Extension;
 using Visiorama;
 
-public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObservable, IAttackObserver
+public class Unit : IStats, IMovementObservable,
+							IMovementObserver, 
+							IAttackObservable,
+							IAttackObserver,
+							IDeathObservable
 {
 	public const string UnitGroupQueueName = "Unit Group";
 
@@ -52,12 +56,8 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 
 	public Animation ControllerAnimation;
 
-	public IActionStrategy[] behaviours;
-	public IActionStrategy currentBehaviour;
-
 	private bool canHit;
-	public bool CanHit
-	{
+	public bool CanHit {
 		get {
 			if (!canHit) canHit = (IsDead);
 
@@ -97,10 +97,7 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	}
 
 	protected Vector3 PathfindTarget {
-		get {
-			return m_pathFindTarget;
-		}
-
+		get { return m_pathFindTarget; }
 		set {
 			m_lastSavedPosition = m_pathFindTarget;
 			m_pathFindTarget = value;
@@ -117,9 +114,10 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	protected float normalSpeed;
 	protected float normalAngularSpeed;
 
-	// IMovementObservable
+	// IObservers
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
+	List<IDeathObserver> IDOobservers	 = new List<IDeathObserver> ();
 
 	//IMovementObserver
 	Unit followedUnit = null;
@@ -193,7 +191,6 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 			if (!playerUnit)
 				return;
 		}
-
 
 		switch (unitState)
 		{
@@ -323,8 +320,6 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	#region Move Pathfind w/ Avoidance
 	public void Move (Vector3 destination)
 	{
-		Debug.Log (this.name + "New Destination: " + destination);
-
 		if (!Pathfind.updatePosition) Pathfind.updatePosition = true;
 
 		if (PathfindTarget != destination) Pathfind.SetDestination (destination);
@@ -333,7 +328,6 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 
 		unitState = UnitState.Walk;
 	}
-
 
 	public void StopMove ()
 	{
@@ -438,7 +432,20 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 																								});
 															break;
 														case MovementAction.ActionType.Patrol:
-
+//					
+//															interactionController.AddCallback(TouchController.IdTouch.Id0,
+//															                                 	(position, hit) =>
+//															                                  	{
+//																									IStats istats = hit.GetComponent <IStats> ();
+//																									
+//																									//Nao pode ser nulo e nao pode atacar aliados
+//																									//so do mesmo time ou inimigo
+//																									if (istats != null && 
+//																									    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
+//																									{
+//																										statsController.AttackTroop (istats.gameObject);
+//																									}
+//																								});
 															break;
 														case MovementAction.ActionType.CancelMovement:
 															StopMove();
@@ -479,7 +486,13 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	public override void Deselect ()
 	{
 		base.Deselect ();
-
+		
+		int c = IDOobservers.Count;
+		while (--c != -1)
+		{
+			UnRegisterDeathObserver (IDOobservers[c]);
+		}
+		
 		hudController.DestroySelected (transform);
 	}
 
@@ -707,7 +720,16 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 		{
 			UnRegisterAttackObserver (IAOobservers[c]);
 		}
-
+		
+		//IDeathObservable
+		NotifyDeath ();
+		
+		c = IDOobservers.Count;
+		while (--c != -1)
+		{
+			UnRegisterDeathObserver (IDOobservers[c]);
+		}
+		
 		statsController.RemoveStats(this);
 
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
@@ -928,8 +950,30 @@ public class Unit : IStats, IMovementObservable, IMovementObserver, IAttackObser
 	
 	public void OnUnRegisterAttackObserver ()
 	{
-
+		//this method is empty, don't worry ;)
 	}
+	#endregion
+
+	#region IDeathObservable implementation
+
+	public void RegisterDeathObserver (IDeathObserver observer)
+	{
+		IDOobservers.Add (observer);
+	}
+
+	public void UnRegisterDeathObserver (IDeathObserver observer)
+	{
+		IDOobservers.Remove (observer);
+	}
+
+	public void NotifyDeath ()
+	{
+		foreach (IDeathObserver o in IDOobservers)
+		{
+			o.OnObservableDie (this.gameObject);
+		}
+	}
+
 	#endregion
 
 	// RPC
