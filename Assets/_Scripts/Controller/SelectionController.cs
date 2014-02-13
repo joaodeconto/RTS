@@ -64,7 +64,7 @@ public class SelectionController : MonoBehaviour
 				statsController.PlaySelectSound ();
 				if (statsController.selectedStats.Count == 1)
 				{
-					ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0]);
+					ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit);
 				}
 				return true;
 			}
@@ -345,7 +345,7 @@ public class SelectionController : MonoBehaviour
 
 						
 						lastStatClick = factorySelected;
-						ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (statsController.selectedStats[0]);
+						ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (statsController.selectedStats[0] as FactoryBase);
 					}
 					return true;
 				}

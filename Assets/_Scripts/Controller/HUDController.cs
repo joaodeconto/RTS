@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Visiorama;
 using Visiorama.Utils;
 
-public class HUDController : MonoBehaviour
+public class HUDController : MonoBehaviour, IDeathObserver
 {
 	private string PERSIST_STRING = "###_";
 
@@ -104,11 +104,9 @@ public class HUDController : MonoBehaviour
 	private Stack<ButtonStatus> stackButtonToCreate;
 
 	private bool _isDestroying;
-	private bool IsDestroying
-	{
-		get
-		{
-			if(_isDestroying == true)
+	private bool IsDestroying {
+		get	{
+			if(_isDestroying)
 			{
 				bool hasChild = false;
 				foreach(Transform c in trnsOptionsMenu)
@@ -119,14 +117,22 @@ public class HUDController : MonoBehaviour
 						break;
 					}
 				}
-				return _isDestroying = hasChild;
+				_isDestroying = hasChild;
 			}
-			else return _isDestroying;
+			return _isDestroying;
 		}
-		set
-		{
+		set	{
 			_isDestroying = value;
 		}
+	}
+	
+	private Transform infoStats;
+	private Transform infoQuali;
+	private Transform infoIcon;
+
+	private string cGODisplayedOnInfoBox {
+		get;
+		set;
 	}
 
 	public void Init()
@@ -138,6 +144,10 @@ public class HUDController : MonoBehaviour
 		stackButtonToCreate = new Stack<ButtonStatus>();
 
 		IsDestroying = false;
+		
+		infoStats = trnsPanelInfoBox.FindChild ("Info Stats");
+		infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
+		infoIcon  = trnsPanelInfoBox.FindChild ("Info Icon");
 	}
 
 	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
@@ -445,27 +455,24 @@ public class HUDController : MonoBehaviour
 		Destroy (newFeedback, duration);
 	}
 	
-	public void OpenInfoBoxUnit (IStats stat)
+	public void OpenInfoBoxUnit (Unit unit)
 	{
-		RemoveEnqueuedButtonInInspector (stat.name, Unit.UnitGroupQueueName);
+		cGODisplayedOnInfoBox = unit.name;
+		
+		RemoveEnqueuedButtonInInspector (unit.name, Unit.UnitGroupQueueName);
 		
 		trnsPanelInfoBox.gameObject.SetActive (true);
-		
-		Unit unit = stat as Unit;
-
-		Transform infoStats = trnsPanelInfoBox.FindChild ("Info Stats");
-		Transform infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
-		Transform infoIcon = trnsPanelInfoBox.FindChild ("Info Icon");
+		infoStats.gameObject.SetActive (true);
 		
 		Transform nameLabel = infoQuali.FindChild ("name-label");
-		nameLabel.GetComponent<UILabel> ().text = stat.category;
+		nameLabel.GetComponent<UILabel> ().text = unit.category;
 		
 		Transform spriteUnit = infoIcon.FindChild ("sprite-unit");
 		Debug.Log (unit.guiTextureName);
 		spriteUnit.GetComponent<UISprite> ().spriteName = unit.guiTextureName;
 
 		Transform currentHp = infoQuali.FindChild ("CurrentHP");
-		currentHp.GetComponent <UISlider> ().value = unit.Health;
+		currentHp.gameObject.GetComponent <HealthBar> ().SetTarget (unit);
 		
 		// Info
 				
@@ -475,7 +482,7 @@ public class HUDController : MonoBehaviour
 			unit.force.ToString ();
 		
 		Transform hpLabel = infoStats.FindChild ("hp-label");
-		hpLabel.GetComponent<UILabel> ().text = stat.Health.ToString ();
+		hpLabel.GetComponent<UILabel> ().text = unit.Health.ToString ();
 		
 		Transform speedLabel = infoStats.FindChild ("speed-label");
 		speedLabel.GetComponent<UILabel> ().text = ((int)unit.speed).ToString ();
@@ -486,31 +493,28 @@ public class HUDController : MonoBehaviour
 		Transform timeLabel = infoStats.FindChild ("time-label");
 		timeLabel.GetComponent<UILabel> ().text = unit.timeToSpawn.ToString ();
 		
-		Transform goldLabel = infoStats.FindChild ("gold-label");
-		goldLabel.GetComponent<UILabel> ().text = stat.costOfResources.ToString ();
+//		Transform goldLabel = infoStats.FindChild ("gold-label");
+//		goldLabel.GetComponent<UILabel> ().text = unit.costOfResources.ToString ();
+		
+		unit.RegisterDeathObserver (this);
 	}
 
-	public void OpenInfoBoxFactory (IStats stat)
+	public void OpenInfoBoxFactory (FactoryBase factory)
 	{
+		cGODisplayedOnInfoBox = factory.name;
+		
 		trnsPanelInfoBox.gameObject.SetActive (true);
-		
-		FactoryBase factory = stat as FactoryBase;
-		
-		Transform infoStats = trnsPanelInfoBox.FindChild ("Info Stats");
-		Transform infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
-		Transform infoIcon = trnsPanelInfoBox.FindChild ("Info Icon");
-
 		infoStats.gameObject.SetActive (false);
 		
 		Transform nameLabel = infoQuali.FindChild ("name-label");
-		nameLabel.GetComponent<UILabel> ().text = stat.category;
+		nameLabel.GetComponent<UILabel> ().text = factory.category;
 		
 		Transform spriteFactory = infoIcon.FindChild ("sprite-unit");
 		Debug.Log (factory.guiTextureName);
 		spriteFactory.GetComponent<UISprite> ().spriteName = factory.guiTextureName;
 		
-	//-----------------------------	Transform currentHp = infoQuali.FindChild ("CurrentHP");
-	//-----------------------------	currentHp.GetComponent <UISlider> ().value = unit.Health;
+		Transform currentHp = infoQuali.FindChild ("CurrentHP");
+		currentHp.gameObject.GetComponent <HealthBar> ().SetTarget (factory);
 		
 		// Info
 		
@@ -533,10 +537,24 @@ public class HUDController : MonoBehaviour
 //		
 //		Transform goldLabel = infoStats.FindChild ("gold-label");
 //		goldLabel.GetComponent<UILabel> ().text = stat.costOfResources.ToString ();
+		
+		factory.RegisterDeathObserver (this);
 	}
 	
 	public void CloseInfoBox ()
 	{
 		trnsPanelInfoBox.gameObject.SetActive (false);
 	}
+
+	#region IDeathObserver implementation
+
+	public void OnObservableDie (GameObject dyingGO)
+	{
+		if (dyingGO.name.Equals (cGODisplayedOnInfoBox))
+		{
+			CloseInfoBox ();
+		}
+	}
+
+	#endregion
 }
