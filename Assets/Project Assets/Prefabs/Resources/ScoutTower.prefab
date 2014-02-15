@@ -81,12 +81,12 @@ GameObject:
   - 4: {fileID: 400008}
   - 33: {fileID: 3300004}
   - 23: {fileID: 2300004}
-  m_Layer: 18
+  m_Layer: 0
   m_Name: Scout_Tower_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!1 &100010
 GameObject:
@@ -522,7 +522,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 46.8382187, y: 0, z: 31.6826534}
+  m_LocalPosition: {x: 81.0871964, y: .00122070312, z: 28.9631958}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -534,7 +534,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
-  m_LocalRotation: {x: -.707106888, y: 0, z: -0, w: .707106769}
+  m_LocalRotation: {x: -.707106888, y: 0, z: 0, w: .707106769}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -846,8 +846,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100060}
-  m_LocalRotation: {x: .281203359, y: .633647144, z: .658749878, w: .292343497}
-  m_LocalPosition: {x: -11.5919876, y: 8.17034245, z: 5.89794016}
+  m_LocalRotation: {x: .281203359, y: .633647084, z: .658749878, w: .292343497}
+  m_LocalPosition: {x: -11.5919876, y: 8.17034435, z: 5.89794159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400058}
@@ -909,6 +909,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
+  - {fileID: -1289557644, guid: b7265260bddb6b84e8843303e6e5ebaa, type: 3}
   - {fileID: -1289557644, guid: b7265260bddb6b84e8843303e6e5ebaa, type: 3}
   - {fileID: -1289557644, guid: b7265260bddb6b84e8843303e6e5ebaa, type: 3}
   m_SubsetIndices: 
@@ -1033,12 +1034,12 @@ MonoBehaviour:
   team: 0
   ally: 0
   fieldOfView: 20
-  sizeOfSelected: 4.96999979
-  sizeOfSelectedHealthBar: 5.21000004
+  sizeOfSelected: 5
+  sizeOfSelectedHealthBar: 7
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400002}
   - subMesh: {fileID: 400004}
-  - subMesh: {fileID: 400008}
+  - subMesh: {fileID: 0}
   movementActions: []
   pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
   transformParticleDamageReference: {fileID: 400000}
@@ -1047,13 +1048,13 @@ MonoBehaviour:
   costOfResources:
     NumberOfRocks: 100
     NumberOfMana: 0
-  model: {fileID: 100008}
+  model: {fileID: 0}
   unitsToCreate: []
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100002}
     unfinishedObject: {fileID: 100004}
-    finishedObject: {fileID: 100008}
+    finishedObject: {fileID: 0}
     desactiveObjectsWhenInstance:
     - {fileID: 100060}
   buttonName: Scout Tower
@@ -1159,8 +1160,8 @@ NavMeshObstacle:
   m_Enabled: 1
   m_Radius: 2.1400001
   m_Height: 6.40999985
-  m_MoveThreshold: 3
-  m_Carve: 1
+  m_MoveThreshold: 0
+  m_Carve: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
