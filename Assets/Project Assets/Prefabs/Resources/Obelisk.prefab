@@ -10,6 +10,8 @@ GameObject:
   - 4: {fileID: 400000}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
+  - 111: {fileID: 11100000}
+  - 114: {fileID: 11400008}
   m_Layer: 18
   m_Name: ObeliskMesh
   m_TagString: Untagged
@@ -575,6 +577,21 @@ Light:
   m_ShadowAngle: 0
   m_IndirectIntensity: 1
   m_AreaSize: {x: 1, y: 1}
+--- !u!111 &11100000
+Animation:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!111 &11100002
 Animation:
   m_ObjectHideFlags: 1
@@ -687,6 +704,17 @@ MonoBehaviour:
   IsModifyingMesh: 1
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1

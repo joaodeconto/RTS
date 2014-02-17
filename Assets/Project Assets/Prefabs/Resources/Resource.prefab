@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rockBlobTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,10 +29,10 @@ GameObject:
   - 136: {fileID: 13600000}
   - 114: {fileID: 11400000}
   - 208: {fileID: 20800000}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Resource
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
   m_IsActive: 1
@@ -53,7 +53,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &100006
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,13 +64,13 @@ GameObject:
   - 4: {fileID: 400006}
   - 33: {fileID: 3300004}
   - 23: {fileID: 2300004}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &100008
 GameObject:
   m_ObjectHideFlags: 0
@@ -81,13 +81,13 @@ GameObject:
   - 4: {fileID: 400008}
   - 33: {fileID: 3300006}
   - 23: {fileID: 2300006}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &100010
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,13 +98,13 @@ GameObject:
   - 4: {fileID: 400010}
   - 33: {fileID: 3300008}
   - 23: {fileID: 2300008}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -113,7 +113,7 @@ Transform:
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: -8.72545485e-08, y: -.998075724, z: -5.42079626e-09, w: -.0620066822}
   m_LocalPosition: {x: -.232761383, y: 0, z: .784950256}
-  m_LocalScale: {x: .5, y: .5, z: .5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
 --- !u!4 &400002
@@ -123,7 +123,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.2276649, y: 0, z: 40.6683807}
+  m_LocalPosition: {x: 155.300858, y: 0, z: 76.4897385}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400010}
@@ -138,8 +138,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: .0144516276, y: .0613732897, z: .228744343, w: .971442521}
-  m_LocalPosition: {x: -8.68437958, y: 16.183403, z: 1.66650009}
+  m_LocalRotation: {x: -.274763852, y: -.0235780384, z: .274991125, w: .921047688}
+  m_LocalPosition: {x: -4.37377501, y: 6.16374397, z: -3.18957162}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -362,7 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
 --- !u!136 &13600000
@@ -387,7 +387,7 @@ NavMeshObstacle:
   m_Enabled: 1
   m_Radius: 1.11000001
   m_Height: .829999983
-  m_MoveThreshold: 3
+  m_MoveThreshold: .5
   m_Carve: 1
 --- !u!1001 &100100000
 Prefab:

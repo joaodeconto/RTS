@@ -25,11 +25,11 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400002}
+  - 208: {fileID: 20800000}
   - 114: {fileID: 11400004}
   - 136: {fileID: 13600000}
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400000}
-  - 208: {fileID: 20800000}
   - 114: {fileID: 11400008}
   - 54: {fileID: 5400000}
   m_Layer: 18
@@ -81,6 +81,8 @@ GameObject:
   - 4: {fileID: 400010}
   - 33: {fileID: 3300004}
   - 23: {fileID: 2300004}
+  - 114: {fileID: 11400006}
+  - 111: {fileID: 11100000}
   m_Layer: 18
   m_Name: Cottage
   m_TagString: Untagged
@@ -246,6 +248,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!111 &11100000
+Animation:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -288,11 +305,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67391dc06270329409750cc9a58d1873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 200
+  maxHealth: 100
   Defense: 0
   team: 0
   ally: 0
-  fieldOfView: 10
+  fieldOfView: 14
   sizeOfSelected: 5
   sizeOfSelectedHealthBar: 7
   rendererTeamSubstanceColor:
@@ -319,6 +336,17 @@ MonoBehaviour:
   guiTextureName: cottage
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
+--- !u!114 &11400006
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1

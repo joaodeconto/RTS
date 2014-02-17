@@ -12,7 +12,7 @@ GameObject:
   m_Layer: 0
   m_Name: Camera Listener
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -109,8 +109,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: .382683396, y: 0, z: 0, w: .923879564}
-  m_LocalPosition: {x: 0, y: -0, z: 40}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.54115462, z: 65.5432129}
   m_LocalScale: {x: 48, y: 42, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -131,15 +131,15 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: .5, y: 0, z: 0, w: .866025388}
-  m_LocalPosition: {x: 63.764595, y: 84.9436035, z: -27.2217846}
+  m_LocalRotation: {x: .382683486, y: 0, z: 0, w: .923879564}
+  m_LocalPosition: {x: 85.0596619, y: 60, z: 18.7558823}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
-  - {fileID: 400008}
-  - {fileID: 400006}
-  - {fileID: 400010}
   - {fileID: 400000}
+  - {fileID: 400006}
+  - {fileID: 400008}
+  - {fileID: 400010}
   m_Father: {fileID: 0}
 --- !u!4 &400006
 Transform:
@@ -190,18 +190,19 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: .300000012
-  far clip plane: 1000
-  field of view: 30
+  near clip plane: .00999999978
+  far clip plane: 150
+  field of view: 23
   orthographic: 0
   orthographic size: 15
-  m_Depth: 2
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4096
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_HDR: 0
+  m_OcclusionCulling: 0
 --- !u!20 &2000002
 Camera:
   m_ObjectHideFlags: 1
@@ -211,25 +212,26 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: .731343269, g: .864732265, b: 1, a: 1}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
     height: 1
-  near clip plane: .300000012
-  far clip plane: 200
-  field of view: 30
+  near clip plane: 1
+  far clip plane: 150
+  field of view: 21
   orthographic: 0
-  orthographic size: 13
+  orthographic size: 15
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294962431
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_HDR: 0
+  m_OcclusionCulling: 1
 --- !u!20 &2000004
 Camera:
   m_ObjectHideFlags: 1
@@ -258,6 +260,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_HDR: 0
+  m_OcclusionCulling: 1
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -270,12 +273,15 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
 --- !u!23 &2300002
 Renderer:
   m_ObjectHideFlags: 1
@@ -288,12 +294,15 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
 --- !u!33 &3300000
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -321,7 +330,7 @@ Behaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -332,14 +341,15 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af1728c8e9abf7240b0febe279f60bee, type: 3}
   m_Name: 
-  speedMobile: .800000012
+  m_EditorClassIdentifier: 
+  speedMobile: .300000012
   speed: 1
   minimum: {x: .00999999978, y: .00999999978}
   maximum: {x: .99000001, y: .99000001}
-  zoomSpeed: 5
+  zoomSpeed: 20
   zoom:
-    min: 20
-    max: 50
+    min: 10
+    max: 21
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -350,21 +360,22 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 984d1c3dfa28446498a72320ac11e164, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   scenario:
     x:
-      min: 56
-      max: 300
+      min: 50
+      max: 210
     y:
       min: 0
       max: 30
     z:
-      min: 0
-      max: 279
+      min: -14
+      max: 190
   height: 40
   relativeSize: 15
 --- !u!114 &11400004
 MonoBehaviour:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
@@ -372,6 +383,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c0d02b39c7ba8449a6d3fc9e2d72c8f, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: e2d2b5a643c600d49b42ee8d15a57e5a, type: 3}
   shaderMobile: {fileID: 0}
   unexploredColor: {r: .0500000007, g: .0500000007, b: .0500000007, a: 1}

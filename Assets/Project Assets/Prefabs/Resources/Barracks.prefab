@@ -59,7 +59,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400006}
-  - 95: {fileID: 9500000}
+  - 111: {fileID: 11100000}
+  - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: LizardAras
   m_TagString: Untagged
@@ -328,20 +329,32 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!95 &9500000
-Animator:
-  serializedVersion: 2
+--- !u!111 &11100000
+Animation:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: cb20aa5ecd681164c97a3cf8e2b45990, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_ApplyRootMotion: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
   m_AnimatePhysics: 0
-  m_HasTransformHierarchy: 1
+  m_CullingType: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -370,7 +383,7 @@ MonoBehaviour:
   Defense: 0
   team: 0
   ally: 0
-  fieldOfView: 11
+  fieldOfView: 16
   sizeOfSelected: 8
   sizeOfSelectedHealthBar: 10
   rendererTeamSubstanceColor:

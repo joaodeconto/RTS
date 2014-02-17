@@ -32,7 +32,8 @@ public class FogOfWar : MonoBehaviour
 	public Color visibleAreaColor = new Color(1.0f,1.0f,1.0f,0.0f);
 	public Color knownAreaColor   = new Color(0.5f,0.5f,0.5f,0.5f);
 
-	public float fogHeight = 0.0f;	
+	public float fogHeight = 0.0f;
+	public float fogUpdate = 0.6f;
 
 	public Texture2D FogTexture { get; private set; }
 
@@ -99,7 +100,7 @@ public class FogOfWar : MonoBehaviour
 		poly.renderer.material.mainTexture = FogTexture;
 #endif
 
-		InvokeRepeating ("UpdateFog", 0f,0.5f);
+		InvokeRepeating ("UpdateFog", 0f,fogUpdate);
 		
 		return this;
 	}
