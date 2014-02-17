@@ -329,9 +329,12 @@ public class Unit : IStats, IMovementObservable,
 		unitState = UnitState.Walk;
 	}
 
-	public void StopMove ()
+	public void StopMove (bool changeState = false)
 	{
-		unitState = UnitState.Idle;
+		if (changeState)
+		{
+			unitState = UnitState.Idle;
+		}
 		Pathfind.Stop ();
 	}
 	#endregion
@@ -347,17 +350,17 @@ public class Unit : IStats, IMovementObservable,
 
 			IsAttacking = true;
 
-			if (!PhotonNetwork.offlineMode)
-			{
-				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
-			}
-			else
+			if (PhotonNetwork.offlineMode)
 			{
 				TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
 			}
-
+			else
+			{
+				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
+			}
+			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
-
+			
 			IsAttacking = false;
 		}
 		else
@@ -448,7 +451,7 @@ public class Unit : IStats, IMovementObservable,
 //																								});
 															break;
 														case MovementAction.ActionType.CancelMovement:
-															StopMove();
+															StopMove (true);
 															break;
 														case MovementAction.ActionType.Follow:
 															interactionController.AddCallback(TouchController.IdTouch.Id0,

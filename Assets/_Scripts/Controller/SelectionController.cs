@@ -206,8 +206,6 @@ public class SelectionController : MonoBehaviour
 				{
 					statsController.SelectStat (factorySelected, true);
 
-
-
 					return true;
 				}
 				else
@@ -393,10 +391,15 @@ public class SelectionController : MonoBehaviour
 						statsController.SelectStat (unit, true);
 					}
 				}
-
+				
+				//Verificando se foram selecionadas unidades
 				if (statsController.selectedStats.Count != 0)
 				{
 					statsController.PlaySelectSound ();
+					if (statsController.selectedStats.Count == 1)
+					{
+						ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit);
+					}
 					return true;
 				}
 				
