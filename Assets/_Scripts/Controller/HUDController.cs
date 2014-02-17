@@ -129,11 +129,20 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	private Transform infoStats;
 	private Transform infoQuali;
 	private Transform infoIcon;
-
-	private string cGODisplayedOnInfoBox {
-		get;
-		set;
-	}
+	
+	private UILabel attackLabel;
+	private UILabel hpLabel;
+	private UILabel speedLabel;
+	private UILabel timeLabel;
+	private UILabel unitsLabel;
+	
+	private UILabel nameLabel;
+	private HealthBar currentHp;
+	
+	private UISprite spriteFactory;
+	private UISprite spriteUnit;
+	
+	private string cGODisplayedOnInfoBox;
 
 	public void Init()
 	{
@@ -148,6 +157,18 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		infoStats = trnsPanelInfoBox.FindChild ("Info Stats");
 		infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
 		infoIcon  = trnsPanelInfoBox.FindChild ("Info Icon");
+		
+		attackLabel = infoStats.FindChild ("attack-label").GetComponent<UILabel> ();
+		hpLabel	    = infoStats.FindChild ("hp-label").GetComponent<UILabel> ();
+		speedLabel  = infoStats.FindChild ("speed-label").GetComponent<UILabel> ();
+		unitsLabel  = infoStats.FindChild ("units-label").GetComponent<UILabel> ();
+		timeLabel   = infoStats.FindChild ("time-label").GetComponent<UILabel> ();
+		
+		nameLabel = infoQuali.FindChild ("name-label").GetComponent<UILabel> ();
+		currentHp = infoQuali.FindChild ("CurrentHP").gameObject.GetComponent <HealthBar> ();
+		
+		spriteFactory = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
+		spriteUnit	  = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 	}
 
 	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
@@ -460,61 +481,43 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		cGODisplayedOnInfoBox = unit.name;
 		
 		RemoveEnqueuedButtonInInspector (unit.name, Unit.UnitGroupQueueName);
-		
-		trnsPanelInfoBox.gameObject.SetActive (true);
-		infoStats.gameObject.SetActive (true);
-		
-		Transform nameLabel = infoQuali.FindChild ("name-label");
-		nameLabel.GetComponent<UILabel> ().text = unit.category;
-		
-		Transform spriteUnit = infoIcon.FindChild ("sprite-unit");
-		Debug.Log (unit.guiTextureName);
-		spriteUnit.GetComponent<UISprite> ().spriteName = unit.guiTextureName;
+				
+		nameLabel.text = unit.category;
+				
+		spriteUnit.spriteName = unit.guiTextureName;
 
-		Transform currentHp = infoQuali.FindChild ("CurrentHP");
-		currentHp.gameObject.GetComponent <HealthBar> ().SetTarget (unit);
+		currentHp.SetTarget (unit);
 		
 		// Info
 				
-		Transform attackLabel = infoStats.FindChild ("attack-label");
-		attackLabel.GetComponent<UILabel> ().text = unit.AdditionalForce != 0 ?
-			unit.force + "(+" + unit.AdditionalForce + ")" :
-			unit.force.ToString ();
-		
-		Transform hpLabel = infoStats.FindChild ("hp-label");
-		hpLabel.GetComponent<UILabel> ().text = unit.Health.ToString ();
-		
-		Transform speedLabel = infoStats.FindChild ("speed-label");
-		speedLabel.GetComponent<UILabel> ().text = ((int)unit.speed).ToString ();
-		
-		Transform unitsLabel = infoStats.FindChild ("units-label");
-		unitsLabel.GetComponent<UILabel> ().text = unit.numberOfUnits.ToString ();
-		
-		Transform timeLabel = infoStats.FindChild ("time-label");
-		timeLabel.GetComponent<UILabel> ().text = unit.timeToSpawn.ToString ();
+		attackLabel.text = (unit.AdditionalForce != 0)
+							? unit.force + "(+" + unit.AdditionalForce + ")"
+							: unit.force.ToString ();
+				
+		hpLabel.text = unit.Health.ToString ();
+		speedLabel.text = ((int)unit.speed).ToString ();
+		unitsLabel.text = unit.numberOfUnits.ToString ();
+		timeLabel.text = unit.timeToSpawn.ToString ();
 		
 //		Transform goldLabel = infoStats.FindChild ("gold-label");
 //		goldLabel.GetComponent<UILabel> ().text = unit.costOfResources.ToString ();
 		
 		unit.RegisterDeathObserver (this);
+		
+		//Ligar painel so por ultimo
+		trnsPanelInfoBox.gameObject.SetActive (true);
+		infoStats.gameObject.SetActive (true);
 	}
 
 	public void OpenInfoBoxFactory (FactoryBase factory)
 	{
 		cGODisplayedOnInfoBox = factory.name;
 		
-		trnsPanelInfoBox.gameObject.SetActive (true);
-		infoStats.gameObject.SetActive (false);
+		nameLabel.text = factory.category;
 		
-		Transform nameLabel = infoQuali.FindChild ("name-label");
-		nameLabel.GetComponent<UILabel> ().text = factory.category;
-		
-		Transform spriteFactory = infoIcon.FindChild ("sprite-unit");
-		Debug.Log (factory.guiTextureName);
-		spriteFactory.GetComponent<UISprite> ().spriteName = factory.guiTextureName;
-		
-		Transform currentHp = infoQuali.FindChild ("CurrentHP");
-		currentHp.gameObject.GetComponent <HealthBar> ().SetTarget (factory);
+		spriteFactory.spriteName = factory.guiTextureName;
+
+		currentHp.SetTarget (factory);
 		
 		// Info
 		
@@ -539,6 +542,10 @@ public class HUDController : MonoBehaviour, IDeathObserver
 //		goldLabel.GetComponent<UILabel> ().text = stat.costOfResources.ToString ();
 		
 		factory.RegisterDeathObserver (this);
+		
+		//Ligar painel so por ultimo
+		infoStats.gameObject.SetActive (false);
+		trnsPanelInfoBox.gameObject.SetActive (true);
 	}
 	
 	public void CloseInfoBox ()
