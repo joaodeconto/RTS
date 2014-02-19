@@ -198,7 +198,8 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public int Defense;
 
-	public int team;
+	public int m_Team;
+	public int team { get { return m_Team; } set { Debug.LogError ("Changed team " + m_Team + " to " + value); m_Team = value; } }
 	public int ally;
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;

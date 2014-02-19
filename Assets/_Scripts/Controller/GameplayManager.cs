@@ -466,7 +466,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void EndMatch ()
 	{
-		Debug.LogWarning ("chegou");
+		Debug.LogError ("EndMatch");
 
 		Score.Save ();
 
