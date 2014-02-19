@@ -12,6 +12,8 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 	void Awake ()
 	{
 		MeshRenderer subMeshRenderer = GetComponent <MeshRenderer> ();
+		subMeshRenderer.enabled = false;
+		
 		//		Material mMaterial = new Material (subMeshRenderer.sharedMaterial);
 		//		substance 	  = subMeshRenderer.sharedMaterial as ProceduralMaterial;
 //		ProceduralMaterial mmMaterial = new ProceduralMaterial ();
@@ -22,6 +24,9 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		subMeshRenderer.sharedMaterial = mMaterial;
 		substance 	  = mMaterial;
 		curProperties = substance.GetProceduralPropertyDescriptions();
+		
+		//Começando sem vida, dae depois altera pro valor correto
+//		UpdateHealth (0);
 	}
 	
 	void OnDestroy ()
@@ -40,6 +45,9 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		this.Target.RegisterHealthObserver (this);
 		//Forçando atualizaçao de vida atual
 		this.Target.NotifyHealthChange ();
+		
+		MeshRenderer subMeshRenderer = GetComponent <MeshRenderer> ();
+		subMeshRenderer.enabled = true;
 	}
 	
 	public void Close ()
