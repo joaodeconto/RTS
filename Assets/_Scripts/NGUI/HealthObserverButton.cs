@@ -32,8 +32,8 @@ public class HealthObserverButton : PersonalizedCallbackButton
 
 		observable = ht["observableHealth"] as IHealthObservable;
 
-//		observable.RegisterHealthObserver (healthBar);
-		healthBar.SetTarget (observable);
+Debug.Log ("TODO: Retirar o comentario na linha abaixo");
+//		healthBar.SetTarget (observable);
 
 		ChangeParams(ht, onClick, onPress, onSliderChangeDelegate, onActivateDelegate, onRepeatClickDelegate, onDrag, onDrop);
 	}
@@ -47,14 +47,20 @@ public class HealthObserverButton : PersonalizedCallbackButton
 	                                  OnDragDelegate onDrag = null,
 	                                  OnDropDelegate onDrop = null)
 	{
+		healthBar = GetComponentInChildren<HealthBar> ();
+		
 		base.ChangeParams(ht, onClick, onPress, onSliderChangeDelegate, onActivateDelegate, onRepeatClickDelegate, onDrag, onDrop);
 		
-		healthBar.gameObject.SetActive (true);
+		Debug.Log ("TODO: Retirar o comentario na linha abaixo");
+//		healthBar.gameObject.SetActive (true);
 	}
 
 	public void StopToObserve ()
 	{
-		observable.UnRegisterHealthObserver (healthBar);
-		healthBar.gameObject.SetActive (false);
+		if (observable != null)
+			observable.UnRegisterHealthObserver (healthBar);
+			
+		if (healthBar != null)
+			healthBar.gameObject.SetActive (false);
 	}
 }
