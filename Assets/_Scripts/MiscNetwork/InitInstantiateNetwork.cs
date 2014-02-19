@@ -3,6 +3,7 @@ using System.Collections;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
+[System.Serializable]
 public class InitInstantiateNetwork : Photon.MonoBehaviour
 {
 	public GameObject prefabInstantiate;
@@ -23,16 +24,20 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 
 		if (PhotonNetwork.isMessageQueueRunning)
 		{
+			CancelInvoke ("CheckNetwork");
+			
 			int playerLoads = 0;
+			
+			Room cRoom = PhotonNetwork.room;
 
-			if (PhotonNetwork.room.customProperties.ContainsKey ("playerLoads"))
-				playerLoads = (int)PhotonNetwork.room.customProperties["playerLoads"];
+			if (cRoom.customProperties.ContainsKey ("playerLoads"))
+				playerLoads = (int)cRoom.customProperties["playerLoads"];
 
 			playerLoads += 1;
+			
 			Hashtable setPlayerLoads = new Hashtable() {{"playerLoads", playerLoads}};
-			PhotonNetwork.room.SetCustomProperties (setPlayerLoads);
+			cRoom.SetCustomProperties (setPlayerLoads);
 
-			CancelInvoke ("CheckNetwork");
 			InvokeRepeating ("NetworkInstantiatePrefab", 0.1f, 0.5f);
 		}
 	}
@@ -40,8 +45,10 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	void InstantiatePrefab ()
 	{
 		GameObject prefab = Instantiate (prefabInstantiate, transform.position, prefabInstantiate.transform.rotation) as GameObject;
-		prefab.GetComponent<IStats>().team = int.Parse (transform.parent.name);
-		prefab.GetComponent<IStats>().Init ();
+		
+		IStats stats = prefab.GetComponent<IStats>();
+		stats.team = int.Parse (transform.parent.name);
+		stats.Init ();
 	}
 
 	void NetworkInstantiatePrefab ()

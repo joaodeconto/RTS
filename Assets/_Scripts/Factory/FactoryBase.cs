@@ -287,6 +287,8 @@ public class FactoryBase : IStats, IDeathObservable
 			newUnit.Follow (rallypoint.observedUnit);
 		}
 		
+		newUnit.team = gameplayManager.MyTeam;
+		newUnit.ally = gameplayManager.Allies;
 		newUnit.Move (goRallypoint.position);
 		newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 	}
@@ -498,7 +500,7 @@ public class FactoryBase : IStats, IDeathObservable
 														uf.unit.guiTextureName,
 														(ht_hud) =>
 														{
-															List<FactoryBase> factorys = new List<FactoryBase> ();
+															List<FactoryBase> factories = new List<FactoryBase> ();
 															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
 
 															foreach (IStats stat in statsController.selectedStats)
@@ -507,12 +509,12 @@ public class FactoryBase : IStats, IDeathObservable
 
 																if (factory == null) continue;
 
-																factorys.Add (factory);
+																factories.Add (factory);
 															}
 
 															int i = 0, factoryChoose = 0, numberToCreate = -1;
 
-															foreach (FactoryBase factory in factorys)
+															foreach (FactoryBase factory in factories)
 															{
 																if (numberToCreate == -1)
 																{
@@ -527,8 +529,8 @@ public class FactoryBase : IStats, IDeathObservable
 																i++;
 															}
 
-															if (!factorys[factoryChoose].OverLimitCreateUnit)
-																factorys[factoryChoose].EnqueueUnitToCreate (unitFactory.unit);
+															if (!factories[factoryChoose].OverLimitCreateUnit)
+																factories[factoryChoose].EnqueueUnitToCreate (unitFactory.unit);
 															else
 																eventManager.AddEvent("reach enqueued units");
 

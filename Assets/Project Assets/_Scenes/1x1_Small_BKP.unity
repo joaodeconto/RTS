@@ -1368,8 +1368,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 49691775}
   - 195: {fileID: 49691780}
-  - 136: {fileID: 49691779}
   - 114: {fileID: 49691778}
+  - 136: {fileID: 49691779}
   - 114: {fileID: 49691777}
   - 114: {fileID: 49691776}
   m_Layer: 10
@@ -1438,13 +1438,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 2097480857}
   movementActions:
@@ -1475,12 +1475,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 2141264450}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -3115,13 +3115,13 @@ GameObject:
   - 4: {fileID: 89165897}
   - 33: {fileID: 89165899}
   - 23: {fileID: 89165898}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &89165897
 Transform:
   m_ObjectHideFlags: 0
@@ -3940,12 +3940,12 @@ GameObject:
   - 136: {fileID: 127231799}
   - 114: {fileID: 127231798}
   - 208: {fileID: 127231797}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Resource
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &127231795
 Transform:
@@ -4035,8 +4035,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 129152459}
   - 195: {fileID: 129152464}
-  - 136: {fileID: 129152463}
   - 114: {fileID: 129152462}
+  - 136: {fileID: 129152463}
   - 114: {fileID: 129152461}
   - 114: {fileID: 129152460}
   m_Layer: 10
@@ -4105,13 +4105,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 391076644}
   movementActions:
@@ -4142,12 +4142,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 895291708}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -5885,13 +5885,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: .286764681, b: .286764681, a: 1}
   mPivot: 3
-  mWidth: 50
+  mWidth: 48
   mHeight: 22
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.27272725
+  aspectRatio: 2.18181825
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -7431,16 +7431,16 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_StaticEditorFlags: 8
+  m_IsActive: 1
 --- !u!4 &213199033
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400004, guid: 5e1e8d14ae252ee40ab9f35bcec4939d, type: 2}
   m_PrefabInternal: {fileID: 1987847627}
   m_GameObject: {fileID: 213199032}
-  m_LocalRotation: {x: .0144516276, y: .0613732897, z: .228744343, w: .971442521}
-  m_LocalPosition: {x: -8.68437958, y: 16.183403, z: 1.66650009}
+  m_LocalRotation: {x: -.274763852, y: -.0235780384, z: .274991125, w: .921047688}
+  m_LocalPosition: {x: -4.37377501, y: 6.16374397, z: -3.18957162}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 355079608}
@@ -7486,7 +7486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
 --- !u!1 &215007730
@@ -7755,8 +7755,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 222938163}
   - 195: {fileID: 222938168}
-  - 136: {fileID: 222938167}
   - 114: {fileID: 222938166}
+  - 136: {fileID: 222938167}
   - 114: {fileID: 222938165}
   - 114: {fileID: 222938164}
   m_Layer: 10
@@ -7825,13 +7825,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 992373854}
   movementActions:
@@ -7862,12 +7862,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 1184091253}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -8725,6 +8725,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 1628598695}
@@ -9365,12 +9373,12 @@ GameObject:
   - 136: {fileID: 282056248}
   - 114: {fileID: 282056247}
   - 208: {fileID: 282056246}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Resource
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &282056244
 Transform:
@@ -9707,13 +9715,13 @@ GameObject:
   - 4: {fileID: 287152204}
   - 33: {fileID: 287152206}
   - 23: {fileID: 287152205}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &287152204
 Transform:
   m_ObjectHideFlags: 0
@@ -9870,12 +9878,12 @@ GameObject:
   - 136: {fileID: 294867964}
   - 114: {fileID: 294867963}
   - 208: {fileID: 294867962}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Resource
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &294867960
 Transform:
@@ -10066,13 +10074,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 16
+  mWidth: 18
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .666666687
+  aspectRatio: .75
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -10540,7 +10548,7 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: .74999994, b: 0, a: 1}
   mPivot: 4
-  mWidth: 10
+  mWidth: 12
   mHeight: 36
   mDepth: 7
   autoResizeBoxCollider: 0
@@ -10581,12 +10589,12 @@ GameObject:
   - 4: {fileID: 323285293}
   - 33: {fileID: 323285295}
   - 23: {fileID: 323285294}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rockBlobTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &323285293
 Transform:
@@ -10596,7 +10604,7 @@ Transform:
   m_GameObject: {fileID: 323285292}
   m_LocalRotation: {x: -8.72545485e-08, y: -.998075724, z: -5.42079626e-09, w: -.0620066822}
   m_LocalPosition: {x: -.232761383, y: 0, z: .784950256}
-  m_LocalScale: {x: .5, y: .5, z: .5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1630533787}
 --- !u!23 &323285294
@@ -10806,13 +10814,13 @@ GameObject:
   - 4: {fileID: 328118094}
   - 33: {fileID: 328118096}
   - 23: {fileID: 328118095}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &328118094
 Transform:
   m_ObjectHideFlags: 0
@@ -11403,6 +11411,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 349725022}
@@ -11482,6 +11498,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 564577706}
@@ -11496,8 +11520,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 349725023}
   - 195: {fileID: 349725028}
-  - 136: {fileID: 349725027}
   - 114: {fileID: 349725026}
+  - 136: {fileID: 349725027}
   - 114: {fileID: 349725025}
   - 114: {fileID: 349725024}
   m_Layer: 10
@@ -11566,13 +11590,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 17205992}
   movementActions:
@@ -11603,12 +11627,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 1199990651}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -11879,12 +11903,12 @@ GameObject:
   - 136: {fileID: 355079612}
   - 114: {fileID: 355079611}
   - 208: {fileID: 355079610}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Resource
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &355079608
 Transform:
@@ -14072,16 +14096,16 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_StaticEditorFlags: 8
+  m_IsActive: 1
 --- !u!4 &407130228
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400004, guid: 5e1e8d14ae252ee40ab9f35bcec4939d, type: 2}
   m_PrefabInternal: {fileID: 486733538}
   m_GameObject: {fileID: 407130227}
-  m_LocalRotation: {x: .0144516276, y: .0613732897, z: .228744343, w: .971442521}
-  m_LocalPosition: {x: -8.68437958, y: 16.183403, z: 1.66650009}
+  m_LocalRotation: {x: -.274763852, y: -.0235780384, z: .274991125, w: .921047688}
+  m_LocalPosition: {x: -4.37377501, y: 6.16374397, z: -3.18957162}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1630533787}
@@ -14127,7 +14151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
 --- !u!1001 &407214075
@@ -14176,6 +14200,14 @@ Prefab:
     - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
       propertyPath: playerUnit
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
@@ -16545,6 +16577,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 1268639524}
@@ -16766,8 +16806,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 533968608}
   - 195: {fileID: 533968613}
-  - 136: {fileID: 533968612}
   - 114: {fileID: 533968611}
+  - 136: {fileID: 533968612}
   - 114: {fileID: 533968610}
   - 114: {fileID: 533968609}
   m_Layer: 10
@@ -16836,13 +16876,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1341840018}
   movementActions:
@@ -16873,12 +16913,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 1306427793}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -17898,8 +17938,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 564577707}
   - 195: {fileID: 564577712}
-  - 136: {fileID: 564577711}
   - 114: {fileID: 564577710}
+  - 136: {fileID: 564577711}
   - 114: {fileID: 564577709}
   - 114: {fileID: 564577708}
   m_Layer: 10
@@ -17968,13 +18008,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1073673889}
   movementActions:
@@ -18005,12 +18045,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 703466862}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -20711,13 +20751,13 @@ GameObject:
   - 4: {fileID: 638142517}
   - 33: {fileID: 638142519}
   - 23: {fileID: 638142518}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &638142517
 Transform:
   m_ObjectHideFlags: 0
@@ -20851,16 +20891,16 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_StaticEditorFlags: 8
+  m_IsActive: 1
 --- !u!4 &639644731
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400004, guid: 5e1e8d14ae252ee40ab9f35bcec4939d, type: 2}
   m_PrefabInternal: {fileID: 547827074}
   m_GameObject: {fileID: 639644730}
-  m_LocalRotation: {x: .0144516276, y: .0613732897, z: .228744343, w: .971442521}
-  m_LocalPosition: {x: -8.68437958, y: 16.183403, z: 1.66650009}
+  m_LocalRotation: {x: -.274763852, y: -.0235780384, z: .274991125, w: .921047688}
+  m_LocalPosition: {x: -4.37377501, y: 6.16374397, z: -3.18957162}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 127231795}
@@ -20906,7 +20946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
 --- !u!1 &641126778
@@ -21848,12 +21888,12 @@ GameObject:
   - 4: {fileID: 678465449}
   - 33: {fileID: 678465451}
   - 23: {fileID: 678465450}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rockBlobTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &678465449
 Transform:
@@ -21863,7 +21903,7 @@ Transform:
   m_GameObject: {fileID: 678465448}
   m_LocalRotation: {x: -8.72545485e-08, y: -.998075724, z: -5.42079626e-09, w: -.0620066822}
   m_LocalPosition: {x: -.232761383, y: 0, z: .784950256}
-  m_LocalScale: {x: .5, y: .5, z: .5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1151343637}
 --- !u!23 &678465450
@@ -22424,8 +22464,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 701803504}
   - 195: {fileID: 701803509}
-  - 136: {fileID: 701803508}
   - 114: {fileID: 701803507}
+  - 136: {fileID: 701803508}
   - 114: {fileID: 701803506}
   - 114: {fileID: 701803505}
   m_Layer: 10
@@ -22494,13 +22534,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 979617804}
   movementActions:
@@ -22531,12 +22571,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 1662261155}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -22585,6 +22625,32 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
+--- !u!1 &703114510
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 703114511}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: -2065832391, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &703114511
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 703114510}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.76302338, y: 26.4912109, z: -17.6484833}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1112404318}
 --- !u!1 &703466862
 GameObject:
   m_ObjectHideFlags: 0
@@ -22697,13 +22763,13 @@ GameObject:
   - 4: {fileID: 709505958}
   - 33: {fileID: 709505960}
   - 23: {fileID: 709505959}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &709505958
 Transform:
   m_ObjectHideFlags: 0
@@ -22868,6 +22934,14 @@ Prefab:
     - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
       propertyPath: playerUnit
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
@@ -23437,13 +23511,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 62
+  mWidth: 64
   mHeight: 20
   mDepth: 16
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.29999995
+  aspectRatio: 3.20000005
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -23525,13 +23599,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 44
+  mWidth: 46
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.83333337
+  aspectRatio: 1.91666663
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -23593,6 +23667,7 @@ MonoBehaviour:
   visibleAreaColor: {r: 1, g: 1, b: 1, a: 0}
   knownAreaColor: {r: .213235319, g: .213235319, b: .213235319, a: .674509823}
   fogHeight: 12
+  fogUpdate: .600000024
 --- !u!4 &721890088
 Transform:
   m_ObjectHideFlags: 0
@@ -23661,13 +23736,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 32
+  mWidth: 34
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.33333337
+  aspectRatio: 1.41666663
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -24148,12 +24223,12 @@ GameObject:
   - 4: {fileID: 764799593}
   - 33: {fileID: 764799595}
   - 23: {fileID: 764799594}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rockBlobTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &764799593
 Transform:
@@ -24163,7 +24238,7 @@ Transform:
   m_GameObject: {fileID: 764799592}
   m_LocalRotation: {x: -8.72545485e-08, y: -.998075724, z: -5.42079626e-09, w: -.0620066822}
   m_LocalPosition: {x: -.232761383, y: 0, z: .784950256}
-  m_LocalScale: {x: .5, y: .5, z: .5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 127231795}
 --- !u!23 &764799594
@@ -24604,8 +24679,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 789439581}
   - 195: {fileID: 789439586}
-  - 136: {fileID: 789439585}
   - 114: {fileID: 789439584}
+  - 136: {fileID: 789439585}
   - 114: {fileID: 789439583}
   - 114: {fileID: 789439582}
   m_Layer: 10
@@ -24674,13 +24749,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 879445484}
   movementActions:
@@ -24711,12 +24786,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 215007730}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -25531,8 +25606,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 836921059}
   - 195: {fileID: 836921064}
-  - 136: {fileID: 836921063}
   - 114: {fileID: 836921062}
+  - 136: {fileID: 836921063}
   - 114: {fileID: 836921061}
   - 114: {fileID: 836921060}
   m_Layer: 10
@@ -25601,13 +25676,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 497876507}
   movementActions:
@@ -25638,12 +25713,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 546160566}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -26100,13 +26175,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 92
+  mWidth: 98
   mHeight: 24
   mDepth: 11
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.83333325
+  aspectRatio: 4.08333349
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -26482,13 +26557,13 @@ GameObject:
   - 4: {fileID: 875138940}
   - 33: {fileID: 875138942}
   - 23: {fileID: 875138941}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &875138940
 Transform:
   m_ObjectHideFlags: 0
@@ -27116,6 +27191,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabInstantiate: {fileID: 100072, guid: 1d3e301ff447d644a90dcabff9dfc493, type: 2}
+--- !u!1 &885497793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 885497794}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: -2065832391, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &885497794
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 885497793}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11.8473568, y: 26.4912109, z: -23.3000526}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1112404318}
 --- !u!1 &890089716
 GameObject:
   m_ObjectHideFlags: 0
@@ -27159,8 +27260,8 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_StaticEditorFlags: 8
+  m_IsActive: 1
 --- !u!33 &891051212
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -27203,7 +27304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
 --- !u!4 &891051215
@@ -27212,8 +27313,8 @@ Transform:
   m_PrefabParentObject: {fileID: 400004, guid: 5e1e8d14ae252ee40ab9f35bcec4939d, type: 2}
   m_PrefabInternal: {fileID: 1224457788}
   m_GameObject: {fileID: 891051211}
-  m_LocalRotation: {x: .0144516276, y: .0613732897, z: .228744343, w: .971442521}
-  m_LocalPosition: {x: -8.68437958, y: 16.183403, z: 1.66650009}
+  m_LocalRotation: {x: -.274763852, y: -.0235780384, z: .274991125, w: .921047688}
+  m_LocalPosition: {x: -4.37377501, y: 6.16374397, z: -3.18957162}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 282056244}
@@ -27854,6 +27955,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 1364110511}
@@ -27905,6 +28014,14 @@ Prefab:
     - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
       propertyPath: playerUnit
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
@@ -29296,8 +29413,8 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_StaticEditorFlags: 8
+  m_IsActive: 1
 --- !u!33 &927554499
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -29340,7 +29457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
 --- !u!4 &927554502
@@ -29349,8 +29466,8 @@ Transform:
   m_PrefabParentObject: {fileID: 400004, guid: 5e1e8d14ae252ee40ab9f35bcec4939d, type: 2}
   m_PrefabInternal: {fileID: 467966278}
   m_GameObject: {fileID: 927554498}
-  m_LocalRotation: {x: .0144516276, y: .0613732897, z: .228744343, w: .971442521}
-  m_LocalPosition: {x: -8.68437958, y: 16.183403, z: 1.66650009}
+  m_LocalRotation: {x: -.274763852, y: -.0235780384, z: .274991125, w: .921047688}
+  m_LocalPosition: {x: -4.37377501, y: 6.16374397, z: -3.18957162}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1044954156}
@@ -33449,6 +33566,62 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!1 &1010660587
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1010660589}
+  - 114: {fileID: 1010660588}
+  m_Layer: 0
+  m_Name: Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: -1203168336, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1010660588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1010660587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3624e1194dd23b94099af563149ac4ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RunOnStart: 1
+  Interval: 5
+  Variation: 2
+  WildTeam: 8
+  InfiniteSpawn: 0
+  maxEntitiesToSpawn: 20
+  spawnObjects:
+  - GoToTransform: {fileID: 1083494814}
+    PrefabToInstatiate: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+    IsWild: 1
+    Team: 8
+  spawnPositions:
+  - {fileID: 703114511}
+  - {fileID: 2089762331}
+  - {fileID: 885497794}
+  numSpawnedObjects: 0
+--- !u!4 &1010660589
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1010660587}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.7230721, y: 0, z: 56.513504}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1083494814}
+  - {fileID: 1112404318}
+  m_Father: {fileID: 1661609320}
 --- !u!1 &1015486868
 GameObject:
   m_ObjectHideFlags: 0
@@ -33613,6 +33786,14 @@ Prefab:
     - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
       propertyPath: playerUnit
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
@@ -33964,13 +34145,13 @@ GameObject:
   - 4: {fileID: 1034533386}
   - 33: {fileID: 1034533388}
   - 23: {fileID: 1034533387}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1034533386
 Transform:
   m_ObjectHideFlags: 0
@@ -34081,16 +34262,16 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_StaticEditorFlags: 8
+  m_IsActive: 1
 --- !u!4 &1038974490
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400004, guid: 5e1e8d14ae252ee40ab9f35bcec4939d, type: 2}
   m_PrefabInternal: {fileID: 1409198744}
   m_GameObject: {fileID: 1038974489}
-  m_LocalRotation: {x: .0144516276, y: .0613732897, z: .228744343, w: .971442521}
-  m_LocalPosition: {x: -8.68437958, y: 16.183403, z: 1.66650009}
+  m_LocalRotation: {x: -.274763852, y: -.0235780384, z: .274991125, w: .921047688}
+  m_LocalPosition: {x: -4.37377501, y: 6.16374397, z: -3.18957162}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 294867960}
@@ -34136,7 +34317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
 --- !u!1 &1042036321
@@ -34237,13 +34418,13 @@ GameObject:
   - 4: {fileID: 1044861510}
   - 33: {fileID: 1044861512}
   - 23: {fileID: 1044861511}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1044861510
 Transform:
   m_ObjectHideFlags: 0
@@ -34297,12 +34478,12 @@ GameObject:
   - 136: {fileID: 1044954160}
   - 114: {fileID: 1044954159}
   - 208: {fileID: 1044954158}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Resource
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1044954156
 Transform:
@@ -34679,6 +34860,14 @@ Prefab:
     - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
       propertyPath: playerUnit
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
@@ -35579,6 +35768,32 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
+--- !u!1 &1083494813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1083494814}
+  m_Layer: 0
+  m_Name: GoToLocation
+  m_TagString: Untagged
+  m_Icon: {fileID: -1003283189, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1083494814
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1083494813}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.4288483, y: -26.4912109, z: 8.34221649}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1010660589}
 --- !u!1 &1088166046
 GameObject:
   m_ObjectHideFlags: 0
@@ -35665,12 +35880,12 @@ GameObject:
   - 4: {fileID: 1088852727}
   - 33: {fileID: 1088852729}
   - 23: {fileID: 1088852728}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rockBlobTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1088852727
 Transform:
@@ -35680,7 +35895,7 @@ Transform:
   m_GameObject: {fileID: 1088852726}
   m_LocalRotation: {x: -8.72545485e-08, y: -.998075724, z: -5.42079626e-09, w: -.0620066822}
   m_LocalPosition: {x: -.232761383, y: 0, z: .784950256}
-  m_LocalScale: {x: .5, y: .5, z: .5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 294867960}
 --- !u!23 &1088852728
@@ -36385,6 +36600,35 @@ Transform:
   m_Children:
   - {fileID: 739297656}
   m_Father: {fileID: 1669050901}
+--- !u!1 &1112404317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1112404318}
+  m_Layer: 0
+  m_Name: SpawnPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1112404318
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1112404317}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.6867485, y: -26.4912109, z: 17.6484833}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2089762331}
+  - {fileID: 885497794}
+  - {fileID: 703114511}
+  m_Father: {fileID: 1010660589}
 --- !u!1 &1112832096
 GameObject:
   m_ObjectHideFlags: 0
@@ -38089,13 +38333,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 0, g: .793103218, b: 1, a: 1}
   mPivot: 3
-  mWidth: 36
+  mWidth: 34
   mHeight: 22
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.63636363
+  aspectRatio: 1.5454545
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -38159,12 +38403,12 @@ GameObject:
   - 136: {fileID: 1151343641}
   - 114: {fileID: 1151343640}
   - 208: {fileID: 1151343639}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Resource
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1151343637
 Transform:
@@ -38414,13 +38658,13 @@ GameObject:
   - 4: {fileID: 1157472009}
   - 33: {fileID: 1157472011}
   - 23: {fileID: 1157472010}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1157472009
 Transform:
   m_ObjectHideFlags: 0
@@ -41489,8 +41733,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 1268639525}
   - 195: {fileID: 1268639530}
-  - 136: {fileID: 1268639529}
   - 114: {fileID: 1268639528}
+  - 136: {fileID: 1268639529}
   - 114: {fileID: 1268639527}
   - 114: {fileID: 1268639526}
   m_Layer: 10
@@ -41559,13 +41803,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 55205302}
   movementActions:
@@ -41596,12 +41840,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 1108571716}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -42972,13 +43216,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 72
+  mWidth: 78
   mHeight: 24
   mDepth: 13
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3
+  aspectRatio: 3.25
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -43472,13 +43716,13 @@ GameObject:
   - 4: {fileID: 1331726670}
   - 33: {fileID: 1331726672}
   - 23: {fileID: 1331726671}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1331726670
 Transform:
   m_ObjectHideFlags: 0
@@ -44409,13 +44653,13 @@ GameObject:
   - 4: {fileID: 1348116363}
   - 33: {fileID: 1348116365}
   - 23: {fileID: 1348116364}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1348116363
 Transform:
   m_ObjectHideFlags: 0
@@ -44808,8 +45052,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 1364110512}
   - 195: {fileID: 1364110517}
-  - 136: {fileID: 1364110516}
   - 114: {fileID: 1364110515}
+  - 136: {fileID: 1364110516}
   - 114: {fileID: 1364110514}
   - 114: {fileID: 1364110513}
   m_Layer: 10
@@ -44878,13 +45122,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 190500932}
   movementActions:
@@ -44915,12 +45159,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 159019818}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -46733,6 +46977,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 533968607}
@@ -46996,12 +47248,12 @@ GameObject:
   - 4: {fileID: 1383951918}
   - 33: {fileID: 1383951920}
   - 23: {fileID: 1383951919}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rockBlobTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1383951918
 Transform:
@@ -47011,7 +47263,7 @@ Transform:
   m_GameObject: {fileID: 1383951917}
   m_LocalRotation: {x: -8.72545485e-08, y: -.998075724, z: -5.42079626e-09, w: -.0620066822}
   m_LocalPosition: {x: -.232761383, y: 0, z: .784950256}
-  m_LocalScale: {x: .5, y: .5, z: .5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 282056244}
 --- !u!23 &1383951919
@@ -48710,13 +48962,13 @@ GameObject:
   - 4: {fileID: 1401896070}
   - 33: {fileID: 1401896072}
   - 23: {fileID: 1401896071}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1401896070
 Transform:
   m_ObjectHideFlags: 0
@@ -49354,6 +49606,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 836921058}
@@ -49973,13 +50233,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 3
-  mWidth: 48
+  mWidth: 52
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2
+  aspectRatio: 2.16666675
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -50516,13 +50776,13 @@ GameObject:
   - 4: {fileID: 1472577950}
   - 33: {fileID: 1472577952}
   - 23: {fileID: 1472577951}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1472577950
 Transform:
   m_ObjectHideFlags: 0
@@ -50703,13 +50963,13 @@ GameObject:
   - 4: {fileID: 1477257507}
   - 33: {fileID: 1477257509}
   - 23: {fileID: 1477257508}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1477257507
 Transform:
   m_ObjectHideFlags: 0
@@ -52852,13 +53112,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 16
+  mWidth: 18
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .666666687
+  aspectRatio: .75
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -54862,13 +55122,13 @@ GameObject:
   - 4: {fileID: 1570222099}
   - 33: {fileID: 1570222101}
   - 23: {fileID: 1570222100}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1570222099
 Transform:
   m_ObjectHideFlags: 0
@@ -55862,8 +56122,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 1622005516}
   - 195: {fileID: 1622005521}
-  - 136: {fileID: 1622005520}
   - 114: {fileID: 1622005519}
+  - 136: {fileID: 1622005520}
   - 114: {fileID: 1622005518}
   - 114: {fileID: 1622005517}
   m_Layer: 10
@@ -55932,13 +56192,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 2060257923}
   movementActions:
@@ -55969,12 +56229,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 1465720991}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -56108,8 +56368,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 1628598696}
   - 195: {fileID: 1628598701}
-  - 136: {fileID: 1628598700}
   - 114: {fileID: 1628598699}
+  - 136: {fileID: 1628598700}
   - 114: {fileID: 1628598698}
   - 114: {fileID: 1628598697}
   m_Layer: 10
@@ -56178,13 +56438,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1211777412}
   movementActions:
@@ -56215,12 +56475,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 917603772}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -56281,12 +56541,12 @@ GameObject:
   - 136: {fileID: 1630533791}
   - 114: {fileID: 1630533790}
   - 208: {fileID: 1630533789}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Resource
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1177953632, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1630533787
 Transform:
@@ -56665,12 +56925,12 @@ GameObject:
   - 4: {fileID: 1639669687}
   - 33: {fileID: 1639669689}
   - 23: {fileID: 1639669688}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rockBlobTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1639669687
 Transform:
@@ -56680,7 +56940,7 @@ Transform:
   m_GameObject: {fileID: 1639669686}
   m_LocalRotation: {x: -8.72545485e-08, y: -.998075724, z: -5.42079626e-09, w: -.0620066822}
   m_LocalPosition: {x: -.232761383, y: 0, z: .784950256}
-  m_LocalScale: {x: .5, y: .5, z: .5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 355079608}
 --- !u!23 &1639669688
@@ -56989,6 +57249,33 @@ Transform:
   - {fileID: 1487461184}
   - {fileID: 1908974944}
   m_Father: {fileID: 180691453}
+--- !u!1 &1661609319
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1661609320}
+  m_Layer: 0
+  m_Name: Spawns
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1661609320
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1661609319}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1010660589}
+  m_Father: {fileID: 0}
 --- !u!1 &1662261155
 GameObject:
   m_ObjectHideFlags: 0
@@ -59544,13 +59831,13 @@ GameObject:
   - 4: {fileID: 1743215006}
   - 33: {fileID: 1743215008}
   - 23: {fileID: 1743215007}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1743215006
 Transform:
   m_ObjectHideFlags: 0
@@ -60109,13 +60396,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 44
+  mWidth: 48
   mHeight: 24
   mDepth: 13
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.83333337
+  aspectRatio: 2
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -60508,8 +60795,8 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_StaticEditorFlags: 8
+  m_IsActive: 1
 --- !u!33 &1792523405
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -60552,7 +60839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
 --- !u!4 &1792523408
@@ -60561,8 +60848,8 @@ Transform:
   m_PrefabParentObject: {fileID: 400004, guid: 5e1e8d14ae252ee40ab9f35bcec4939d, type: 2}
   m_PrefabInternal: {fileID: 877667612}
   m_GameObject: {fileID: 1792523404}
-  m_LocalRotation: {x: .0144516276, y: .0613732897, z: .228744343, w: .971442521}
-  m_LocalPosition: {x: -8.68437958, y: 16.183403, z: 1.66650009}
+  m_LocalRotation: {x: -.274763852, y: -.0235780384, z: .274991125, w: .921047688}
+  m_LocalPosition: {x: -4.37377501, y: 6.16374397, z: -3.18957162}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1151343637}
@@ -61122,6 +61409,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 789439580}
@@ -61295,13 +61590,13 @@ GameObject:
   - 4: {fileID: 1827962527}
   - 33: {fileID: 1827962529}
   - 23: {fileID: 1827962528}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1827962527
 Transform:
   m_ObjectHideFlags: 0
@@ -61460,8 +61755,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 1838163985}
   - 195: {fileID: 1838163990}
-  - 136: {fileID: 1838163989}
   - 114: {fileID: 1838163988}
+  - 136: {fileID: 1838163989}
   - 114: {fileID: 1838163987}
   - 114: {fileID: 1838163986}
   m_Layer: 10
@@ -61530,13 +61825,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1635678967}
   movementActions:
@@ -61567,12 +61862,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 1565768061}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -62073,13 +62368,13 @@ GameObject:
   - 4: {fileID: 1873664989}
   - 33: {fileID: 1873664991}
   - 23: {fileID: 1873664990}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1873664989
 Transform:
   m_ObjectHideFlags: 0
@@ -63274,13 +63569,13 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 5
-  mWidth: 48
+  mWidth: 52
   mHeight: 24
   mDepth: 22
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2
+  aspectRatio: 2.16666675
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -63702,13 +63997,13 @@ GameObject:
   - 4: {fileID: 1930112141}
   - 33: {fileID: 1930112143}
   - 23: {fileID: 1930112142}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1930112141
 Transform:
   m_ObjectHideFlags: 0
@@ -64006,13 +64301,13 @@ GameObject:
   - 4: {fileID: 1956577488}
   - 33: {fileID: 1956577490}
   - 23: {fileID: 1956577489}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &1956577488
 Transform:
   m_ObjectHideFlags: 0
@@ -65390,6 +65685,14 @@ Prefab:
       propertyPath: playerUnit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
   m_RootGameObject: {fileID: 1622005515}
@@ -65706,12 +66009,12 @@ GameObject:
   - 4: {fileID: 2007841689}
   - 33: {fileID: 2007841691}
   - 23: {fileID: 2007841690}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rockBlobTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &2007841689
 Transform:
@@ -65721,7 +66024,7 @@ Transform:
   m_GameObject: {fileID: 2007841688}
   m_LocalRotation: {x: -8.72545485e-08, y: -.998075724, z: -5.42079626e-09, w: -.0620066822}
   m_LocalPosition: {x: -.232761383, y: 0, z: .784950256}
-  m_LocalScale: {x: .5, y: .5, z: .5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1044954156}
 --- !u!23 &2007841690
@@ -66705,8 +67008,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 2054694571}
   - 195: {fileID: 2054694576}
-  - 136: {fileID: 2054694575}
   - 114: {fileID: 2054694574}
+  - 136: {fileID: 2054694575}
   - 114: {fileID: 2054694573}
   - 114: {fileID: 2054694572}
   m_Layer: 10
@@ -66775,13 +67078,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   Defense: 0
-  team: 8
+  m_Team: 8
   ally: 0
-  fieldOfView: 12
+  fieldOfView: 16
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 1
+  sizeOfSelectedHealthBar: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 1002853862}
   movementActions:
@@ -66812,12 +67115,12 @@ MonoBehaviour:
   category: Raptor
   costOfResources:
     NumberOfRocks: 100
-    NumberOfMana: 50
+    NumberOfMana: 0
   model: {fileID: 783731020}
-  force: 6
+  force: 10
   distanceView: 9.39999962
   attackRange: 3
-  attackDuration: 0
+  attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 50
   numberOfUnits: 2
@@ -67228,13 +67531,13 @@ GameObject:
   - 4: {fileID: 2066398456}
   - 33: {fileID: 2066398458}
   - 23: {fileID: 2066398457}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Rock_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_StaticEditorFlags: 8
+  m_IsActive: 0
 --- !u!4 &2066398456
 Transform:
   m_ObjectHideFlags: 0
@@ -67640,6 +67943,32 @@ Transform:
   m_LocalScale: {x: .999999702, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447934679}
+--- !u!1 &2089762330
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2089762331}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: -2065832391, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2089762331
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2089762330}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -14.6308689, y: 26.4912109, z: -15.6246109}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1112404318}
 --- !u!1 &2089768485
 GameObject:
   m_ObjectHideFlags: 0
@@ -68250,6 +68579,14 @@ Prefab:
     - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
       propertyPath: playerUnit
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+      propertyPath: m_Team
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}

@@ -155,6 +155,8 @@ public class Unit : IStats, IMovementObservable,
 
 		InvokeRepeating ("NotifyMovement", timeToNotifyMovementObservers, timeToNotifyMovementObservers);
 
+		unitState = UnitState.Idle;
+			
 		if (!enabled) enabled = playerUnit;
 	}
 
@@ -320,6 +322,8 @@ public class Unit : IStats, IMovementObservable,
 	#region Move Pathfind w/ Avoidance
 	public void Move (Vector3 destination)
 	{
+		Pathfind.enabled = true;
+	
 		if (!Pathfind.updatePosition) Pathfind.updatePosition = true;
 
 		if (PathfindTarget != destination) Pathfind.SetDestination (destination);
@@ -360,7 +364,7 @@ public class Unit : IStats, IMovementObservable,
 			}
 			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
-			
+  			
 			IsAttacking = false;
 		}
 		else
@@ -413,6 +417,9 @@ public class Unit : IStats, IMovementObservable,
 															statsController.SelectStat(this, true);
 														});
 
+		if (!gameplayManager.IsSameTeam (this.team))
+			return;
+		
 		foreach (MovementAction ma in movementActions)
 		{
 			ht = new Hashtable();
