@@ -5,6 +5,7 @@ Faz parte do projeto:
 - RTS online para Mobile (Android e iPhone/iPad) de nova geração.
 - Batalhas de média de 10 ~ 20 minutos (instaurar um limite de tempo máximo por partida?)
 - Batalha nos modos 1x1, 2x2 1x3(deathmatch)
+- A batalha termina quando apenas uma das estruturas "monumento" estiver ativa no jogo, o dono da estrutura é o vencedor.
 - Rentabilidade do projeto ocorrerá através da venda de cristais(moedas) que possibilitam o jogo online, a compra de upgrades, apostas e vantagens nas batalhas.
 - Ranking baseado em pontuação de partidas, dividido em Categorias e ligas menores de (50) jogadores. 
 - O jogador deve receber o mínimo de moedas para continuar uma jogabilidade básica, baseado num sistema de recompensas "Achievments" camarada.
@@ -17,6 +18,8 @@ Não faz parte do projeto:
 - Não será desenvolvida uma IA para controlar um time adversário ou aliado
 
 - Formação de clãs e alianças online,
+
+
 
 Questões relevantes do projeto:
 
@@ -31,40 +34,57 @@ Questões relevantes do projeto:
 	* poderia ser adquirida através de achivments, deixando com que a pontuação de batalha defina apenas o ranking.
 	  temos elementos como os símbolos, cores e avatares para premiar neste sentido.
 
+- Loading:
+
+	É IMPERATIVO que todos jogadores inciem a pardida sincronizadamente, ou seja, o loading é crucial e deve se tratado como emergência. 
+
+- Battle LOG:
+
+	Não será novidade se tivermos tons de reclamações sobre bugs e injustiças, muito interessante um battle log bem polido. Qual a possibilidade?
+
 
 
 Pendências:
+
 - Main Menu
- - Funcionar a mudança de volume ou pelo menos desligar ligar coisas
-	*já foi plenamente funcional
+ 	- Funcionar a mudança de volume ou pelo menos desligar ligar coisas
+		*já foi plenamente funcional
 	
- - Char do jogador deve aparecer e ser recolhido do banco de dados
+	 - Char do jogador deve aparecer e ser recolhido do banco de dados
   
-   Aqui abrme-se três possibilidades
+ 	  Aqui abrme-se três possibilidades
 
-   1: Jogador pode enviar uma imagem que será cortada 
-	*bah, ficar selecionando imagem pornô vai ser chato, só se for a foto do face.
+	   1: Jogador pode enviar uma imagem que será cortada 
+		*bah, ficar selecionando imagem pornô vai ser chato, só se for a foto do face.
 
-   2: Imagens pré-escolhidas e jogador pode selecionar um dentre as opções já existentes. Tosquinho, mas funcional
-	*minha primeira opção com certeza, foi a ultima coisa que pedi pro ian. Pode ser terceirizado
-
-   3: Retirar char
-	* Talvez mais interessante seria tratar como uma tribo, ou civilização e dar o nome a ela e as unidades,
-          Escolher um pacote de sons e estilo como no worms por exemplo.
-
- - Nova conta
-
-  - Fazer funcionar o esquema de só validar, só se o jogador dizer que aceita os termos de serviço
-	* e tem que ter um termo de serviços, deve ter gerador disso... espero
- - Fazer funcionar o remember me
-	* logo
- - Pegar dados do jogador do banco de dados
-   - criaturas criadas
-   - cristais obtidos
-   - inimigos derrotados
-	* grava tudo que puder, se estourar vamos cortando. Com certeza reinicializaremos este banco primario ainda.
+	   2: Imagens pré-escolhidas e jogador pode selecionar um dentre as opções já existentes. Tosquinho, mas funcional
+		*minha primeira opção com certeza, foi a ultima coisa que pedi pro ian. Pode ser terceirizado
 	
- - Ativar/desativar músicas/sons
-	* ficou tudo na mão do cristian, todos os sons estão desabilitados... 
+   	3: Retirar char
+		* Talvez mais interessante seria tratar como uma tribo, ou civilização e dar o nome a ela e as unidades,
+         	 Escolher um pacote de sons e estilo como no worms por exemplo.
 
- - Link Facebook e Atentado ao post, istoé, posta que te dou uma moedinha.
+	  - Nova conta
+
+	  - Fazer funcionar o esquema de só validar, só se o jogador dizer que aceita os termos de serviço
+		* e tem que ter um termo de serviços, deve ter gerador disso... espero
+	  - Fazer funcionar o remember me
+		* Na verdade, ativar sistema de autologin, ou seja, o jogador preenche apenas uma vez.
+                  Coloco um logoff nos options. Pra mobile isso é o mais comum.
+
+	 - Pegar dados do jogador do banco de dados
+	   - criaturas criadas
+	   - cristais obtidos
+	   - inimigos derrotados
+		* grava tudo que puder, se estourar vamos cortando. Com certeza reinicializaremos este banco primario ainda.
+		
+	 - Ativar/desativar músicas/sons
+		* ficou tudo na mão do cristian, todos os sons estão desabilitados... 
+
+	 - Link Facebook e Atentado ao post, istoé, posta que te dou uma moedinha.
+
+	 - Definição de Asset para facilitar no e-commerce, se precisar compro mais de um.
+
+	 -
+
+ 
