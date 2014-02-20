@@ -1,33 +1,70 @@
-20 de fevereiro a dia 14 de março
+﻿20 de fevereiro a dia 14 de março
 
 Escopo
 Faz parte do projeto:
-- Um RTS online para Mobile (Android e iPhone/iPad)
-- Batalhas de média de 10 ~ 20 minutos
-- Batalhas ocorrem entre jogadores
-- Rentabilidade do projeto ocorrerá através de compras de cristais no jogo que proporcionam ao jogador pequenas vantagens nas batalhas
+- RTS online para Mobile (Android e iPhone/iPad) de nova geração.
+- Batalhas de média de 10 ~ 20 minutos (instaurar um limite de tempo máximo por partida?)
+- Batalha nos modos 1x1, 2x2 1x3(deathmatch)
+- Rentabilidade do projeto ocorrerá através da venda de cristais(moedas) que possibilitam o jogo online, a compra de upgrades, apostas e vantagens nas batalhas.
+- Ranking baseado em pontuação de partidas, dividido em Categorias e ligas menores de (50) jogadores. 
+- O jogador deve receber o mínimo de moedas para continuar uma jogabilidade básica, baseado num sistema de recompensas "Achievments" camarada.
+- Customização de cores e símbolo do jogador.
 
 Não faz parte do projeto:
+
+- Tournaments semanais no estilo "copa" com custo de inscrição e premiação em moedas.
+
 - Não será desenvolvida uma IA para controlar um time adversário ou aliado
 
+- Formação de clãs e alianças online,
+
 Questões relevantes do projeto:
+
 - Como ocorrerá a monetização? Dentro ou fora do jogo? Cartão de crédito, boleto?
+
+	* Inicialmente usaremos o google play e apple store, ambos tem acesso ao cartão do cliente e dispõe do serviço.
+          restando para nós a parte de implementação das apis dentro do jogo, se foi essa a pergunta.
+          Em relação as contas e cadastros já tenho tudo certo de ambos markets. 
+
 - Jogador terá níveis de experiência? (Isso mantém o jogador preso ao jogo normalmente)
+
+	* poderia ser adquirida através de achivments, deixando com que a pontuação de batalha defina apenas o ranking.
+	  temos elementos como os símbolos, cores e avatares para premiar neste sentido.
+
+
 
 Pendências:
 - Main Menu
  - Funcionar a mudança de volume ou pelo menos desligar ligar coisas
+	*já foi plenamente funcional
+	
  - Char do jogador deve aparecer e ser recolhido do banco de dados
-  - Aqui abrme-se três possibilidades
-   1: Jogador pode enviar uma imagem que será cortada
+  
+   Aqui abrme-se três possibilidades
+
+   1: Jogador pode enviar uma imagem que será cortada 
+	*bah, ficar selecionando imagem pornô vai ser chato, só se for a foto do face.
+
    2: Imagens pré-escolhidas e jogador pode selecionar um dentre as opções já existentes. Tosquinho, mas funcional
+	*minha primeira opção com certeza, foi a ultima coisa que pedi pro ian. Pode ser terceirizado
+
    3: Retirar char
+	* Talvez mais interessante seria tratar como uma tribo, ou civilização e dar o nome a ela e as unidades,
+          Escolher um pacote de sons e estilo como no worms por exemplo.
+
  - Nova conta
+
   - Fazer funcionar o esquema de só validar, só se o jogador dizer que aceita os termos de serviço
+	* e tem que ter um termo de serviços, deve ter gerador disso... espero
  - Fazer funcionar o remember me
+	* logo
  - Pegar dados do jogador do banco de dados
    - criaturas criadas
    - cristais obtidos
    - inimigos derrotados
+	* grava tudo que puder, se estourar vamos cortando. Com certeza reinicializaremos este banco primario ainda.
+	
  - Ativar/desativar músicas/sons
- - Fazer funcionar a
+	* ficou tudo na mão do cristian, todos os sons estão desabilitados... 
+
+ - Link Facebook e Atentado ao post, istoé, posta que te dou uma moedinha.

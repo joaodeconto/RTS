@@ -134,8 +134,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: 0, z: .707106829, w: .707106829}
-  m_LocalPosition: {x: 30, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400012}
@@ -146,7 +146,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 283.358551, y: -1.97941589, z: 0}
+  m_LocalPosition: {x: 283.358551, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400008}
@@ -157,7 +157,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 120.038864, y: -1.97941589, z: 0}
+  m_LocalPosition: {x: 118.151398, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400008}
@@ -168,7 +168,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -162.073929, y: -1.97941589, z: 0}
+  m_LocalPosition: {x: -148, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400008}
@@ -196,7 +196,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 190.375763, y: -1.97941589, z: 0}
+  m_LocalPosition: {x: 188.498138, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400008}
@@ -207,7 +207,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -237.103943, y: -1.97941589, z: 0}
+  m_LocalPosition: {x: -236, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -219,7 +219,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -243, y: 0, z: 0}
+  m_LocalPosition: {x: -243.02121, y: -15.8748703, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400008}
@@ -266,16 +266,16 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   mColor: {r: 0, g: .00689673424, b: 1, a: 1}
-  mPivot: 4
-  mWidth: 22
-  mHeight: 133
+  mPivot: 3
+  mWidth: 81
+  mHeight: 46
   mDepth: 14
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .165413529
+  aspectRatio: 1.76086962
   mAtlas: {fileID: 11400000, guid: f4a23cec399fa7045aa83d1db18e9378, type: 2}
-  mSpriteName: simpleFlash
+  mSpriteName: simpleLightbeam
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -326,7 +326,7 @@ MonoBehaviour:
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
   mText: 123456
-  mFontSize: 22
+  mFontSize: 20
   mFontStyle: 0
   mEncoding: 0
   mMaxLineCount: 1
@@ -339,7 +339,7 @@ MonoBehaviour:
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
-  mSpacingX: 0
+  mSpacingX: -2
   mSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
@@ -386,7 +386,7 @@ MonoBehaviour:
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
   mText: 12345
-  mFontSize: 22
+  mFontSize: 20
   mFontStyle: 0
   mEncoding: 0
   mMaxLineCount: 1
@@ -399,7 +399,7 @@ MonoBehaviour:
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
-  mSpacingX: 0
+  mSpacingX: -2
   mSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
@@ -435,18 +435,18 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 3
-  mWidth: 216
+  mWidth: 197
   mHeight: 22
   mDepth: 110
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 9.81818199
+  aspectRatio: 8.95454502
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
-  mText: Joao vicente de conto
-  mFontSize: 22
+  mText: Joao vicente de
+  mFontSize: 20
   mFontStyle: 0
   mEncoding: 0
   mMaxLineCount: 1
@@ -459,7 +459,7 @@ MonoBehaviour:
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
-  mSpacingX: 0
+  mSpacingX: -2
   mSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
@@ -493,18 +493,18 @@ MonoBehaviour:
     target: {fileID: 0}
     relative: 1
     absolute: 0
-  mColor: {r: .485294104, g: .485294104, b: .485294104, a: 1}
+  mColor: {r: .485294104, g: .485294104, b: .485294104, a: .384313732}
   mPivot: 3
   mWidth: 530
-  mHeight: 38
-  mDepth: 13
+  mHeight: 3
+  mDepth: -9
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 13.9473686
+  aspectRatio: 176.666672
   mAtlas: {fileID: 11400000, guid: 578a13a4ecca3df45ac2c46f6179c82a, type: 2}
   mSpriteName: volume-slider
-  mType: 1
+  mType: 0
   mFillDirection: 4
   mFillAmount: 1
   mInvert: 0
@@ -554,7 +554,7 @@ MonoBehaviour:
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
   mText: 12345
-  mFontSize: 22
+  mFontSize: 20
   mFontStyle: 0
   mEncoding: 0
   mMaxLineCount: 1
@@ -567,7 +567,7 @@ MonoBehaviour:
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
-  mSpacingX: 0
+  mSpacingX: -2
   mSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
@@ -603,18 +603,18 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 3
-  mWidth: 62
-  mHeight: 22
+  mWidth: 80
+  mHeight: 26
   mDepth: 110
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.81818175
+  aspectRatio: 3.07692313
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
   mText: 100000
-  mFontSize: 22
+  mFontSize: 20
   mFontStyle: 0
   mEncoding: 0
   mMaxLineCount: 1
@@ -627,7 +627,7 @@ MonoBehaviour:
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
-  mSpacingX: 0
+  mSpacingX: -2
   mSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
