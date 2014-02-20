@@ -34,23 +34,6 @@ public class Worker : Unit
 		public IStats.GridItemAttributes gridItemAttributes;
 	}
 
-	[System.Serializable]
-	public class WorkerStateAvoidance
-	{
-		[System.Serializable]
-		public class Avoidance
-		{
-			public ObstacleAvoidanceType type;
-			public int priority;
-		}
-
-		public Avoidance BuildingOrRepairing;
-		public Avoidance Carrying;
-		public Avoidance CarryingIdle;
-		public Avoidance Extracting;
-		public Avoidance None;
-	}
-
 	public enum WorkerState
 	{
 		None		 = 0,
@@ -64,8 +47,6 @@ public class Worker : Unit
 	public int forceToExtract;
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
-
-	public WorkerStateAvoidance workerStateAvoidance;
 
 	public ResourceWorker[] resourceWorker;
 	public FactoryConstruction[] factoryConstruction;
@@ -186,9 +167,6 @@ public class Worker : Unit
 					}
 
 					workerState = WorkerState.Carrying;
-
-					Pathfind.avoidancePriority 	   = workerStateAvoidance.Carrying.priority;
-					Pathfind.obstacleAvoidanceType = workerStateAvoidance.Carrying.type;
 				}
 				else
 				{
@@ -197,8 +175,6 @@ public class Worker : Unit
 
 					workerState = WorkerState.CarryingIdle;
 
-					Pathfind.obstacleAvoidanceType = workerStateAvoidance.CarryingIdle.type;
-					Pathfind.avoidancePriority 	   = workerStateAvoidance.CarryingIdle.priority;
 				}
 
 				if (!HasFactory ()) return;
@@ -251,9 +227,6 @@ public class Worker : Unit
 			case WorkerState.Building:
 			case WorkerState.Repairing:
 			
-				Pathfind.obstacleAvoidanceType = workerStateAvoidance.BuildingOrRepairing.type;
-				Pathfind.avoidancePriority 	   = workerStateAvoidance.BuildingOrRepairing.priority;
-
 				if (!HasFactory () ||
 					factoryChoose != lastFactory)
 				{
@@ -289,9 +262,6 @@ public class Worker : Unit
 				break;
 			case WorkerState.None:
 			
-				Pathfind.obstacleAvoidanceType = workerStateAvoidance.None.type;
-				Pathfind.avoidancePriority 	   = workerStateAvoidance.None.priority;
-
 				CheckConstructFactory ();
 
 				CheckResource ();
