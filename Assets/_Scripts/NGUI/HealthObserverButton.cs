@@ -32,8 +32,7 @@ public class HealthObserverButton : PersonalizedCallbackButton
 
 		observable = ht["observableHealth"] as IHealthObservable;
 
-Debug.Log ("TODO: Retirar o comentario na linha abaixo");
-//		healthBar.SetTarget (observable);
+		healthBar.SetTarget (observable);
 
 		ChangeParams(ht, onClick, onPress, onSliderChangeDelegate, onActivateDelegate, onRepeatClickDelegate, onDrag, onDrop);
 	}
@@ -51,8 +50,7 @@ Debug.Log ("TODO: Retirar o comentario na linha abaixo");
 		
 		base.ChangeParams(ht, onClick, onPress, onSliderChangeDelegate, onActivateDelegate, onRepeatClickDelegate, onDrag, onDrop);
 		
-		Debug.Log ("TODO: Retirar o comentario na linha abaixo");
-//		healthBar.gameObject.SetActive (true);
+		healthBar.gameObject.SetActive (true);
 	}
 
 	public void StopToObserve ()
