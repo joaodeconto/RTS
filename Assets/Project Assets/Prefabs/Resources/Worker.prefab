@@ -1218,22 +1218,6 @@ MonoBehaviour:
   forceToExtract: 2
   numberMaxGetResources: 10
   distanceToExtract: 1
-  workerStateAvoidance:
-    BuildingOrRepairing:
-      type: 0
-      priority: 1
-    Carrying:
-      type: 0
-      priority: 3
-    CarryingIdle:
-      type: 0
-      priority: 2
-    Extracting:
-      type: 0
-      priority: 2
-    None:
-      type: 0
-      priority: 3
   resourceWorker:
   - type: 1
     extractingObject: {fileID: 100068}
@@ -1262,14 +1246,14 @@ MonoBehaviour:
       NumberOfMana: 0
     gridItemAttributes:
       gridXIndex: 2
-      gridYIndex: 0
+      gridYIndex: 1
   - factory: {fileID: 11400004, guid: a77a63a079277ef4299d9bfed72091ab, type: 2}
     costOfResources:
       NumberOfRocks: 300
       NumberOfMana: 0
     gridItemAttributes:
       gridXIndex: 0
-      gridYIndex: 1
+      gridYIndex: 2
   - factory: {fileID: 11400004, guid: bda9eea0154e54849a501374d7ba96d0, type: 2}
     costOfResources:
       NumberOfRocks: 80
@@ -1283,21 +1267,21 @@ MonoBehaviour:
       NumberOfMana: 0
     gridItemAttributes:
       gridXIndex: 0
-      gridYIndex: 0
+      gridYIndex: 1
   - factory: {fileID: 11400004, guid: 1814a739a4bf72a4ab45559e209322db, type: 2}
     costOfResources:
       NumberOfRocks: 90
       NumberOfMana: 0
     gridItemAttributes:
       gridXIndex: 1
-      gridYIndex: 1
+      gridYIndex: 2
   - factory: {fileID: 11400008, guid: 5959741365e43614f99fc41eed01fd0a, type: 2}
     costOfResources:
       NumberOfRocks: 200
       NumberOfMana: 50
     gridItemAttributes:
       gridXIndex: 2
-      gridYIndex: 1
+      gridYIndex: 2
   constructionAndRepairForce: 4
   workerState: 0
 --- !u!114 &11400002
