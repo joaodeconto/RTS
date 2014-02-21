@@ -41,7 +41,10 @@ public sealed class InteractiveConsole : MonoBehaviour
             lastResponse = "Error Response:\n" + result.Error;
         else if (!FB.IsLoggedIn) {
             lastResponse = "Login cancelled by Player";
+        } else {
+			lastResponse = "Is logged! Player: " + FB.UserId;
         }
+        
     }
 
     private void CallFBLogout()

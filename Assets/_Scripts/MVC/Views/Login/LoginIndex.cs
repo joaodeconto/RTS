@@ -4,19 +4,40 @@ using System.Collections;
 using Visiorama;
 
 public class LoginIndex : IView
-{
+{				
 	public UIInput username;
 	public UIInput password;
 	public UILabel errorMessage;
-	public GameObject submitButton;
+	public GameObject FacebookButton;
+	public GameObject SubmitButton;
 	public GameObject NewAccountButton;
+	
+	private FacebookLoginHandler fh;
 
 	// Use this for initialization
 	public void Init ()
 	{
 		errorMessage.enabled = false;
-
-		submitButton
+		
+		FacebookButton
+			.AddComponent<DefaultCallbackButton>()
+			.Init
+			(
+				null,
+				(ht_hud) =>
+				{
+					fh.DoLogin ();
+				}
+			);
+		
+		GameObject goFacebookHandler;	
+		goFacebookHandler = new GameObject ("FacebookLoginHandler");
+		goFacebookHandler.transform.parent = this.transform;
+		
+		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();
+		fh.OnLoggedIn = Yupy;
+		
+		SubmitButton
 			.AddComponent<DefaultCallbackButton>()
 			.Init (null,
 			(ht_hud) =>
@@ -35,11 +56,22 @@ public class LoginIndex : IView
 
 		NewAccountButton
 			.AddComponent<DefaultCallbackButton>()
-			.Init (null,
-			(ht_hud) =>
-			{
-				controller.SendMessage ("NewAccount", SendMessageOptions.DontRequireReceiver );
-			});
+			.Init
+			(
+				null,
+				(ht_hud) =>
+				{
+					controller.SendMessage ("NewAccount", SendMessageOptions.DontRequireReceiver );
+				}
+			);
+	}
+	
+	public bool Yupy ()
+	{
+		errorMessage.enabled = true;
+		errorMessage.text = "Fez login no facebook!";
+		Invoke ("CloseErrorMessage", 20.0f);
+		return true;
 	}
 
 	public void ShowErrorMessage ()
