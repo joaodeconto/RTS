@@ -350,8 +350,16 @@ public class Worker : Unit
 		{
 			ht = new Hashtable();
 			ht["factory"] = fc;
-			ht["rocks"]   = fc.costOfResources.NumberOfRocks;
-			ht["mana"]   = fc.costOfResources.NumberOfMana;
+
+			if (fc.costOfResources.NumberOfRocks != 0)
+			{
+				ht["gold"] = fc.costOfResources.NumberOfRocks;
+			}
+			
+			if (fc.costOfResources.NumberOfMana != 0)
+			{
+				ht["mana"] = fc.costOfResources.NumberOfMana;
+			}
 
 			hudController.CreateButtonInInspector ( fc.factory.name,
 													fc.gridItemAttributes.Position,
