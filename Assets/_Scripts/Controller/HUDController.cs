@@ -239,6 +239,46 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
 
+	public bool HasSelected (Transform target)
+	{
+		bool hasSelected = false;
+		
+		foreach (Transform child in mainTranformSelectedObjects)
+		{
+			if (child.GetComponent<ReferenceTransform>().referenceObject == target)
+			{
+				hasSelected = true;
+				break;
+			}
+		}
+		
+		if (!hasSelected)
+		{
+			foreach (Transform child in HUDRoot.go.transform)
+			{
+				if (child.GetComponent<HealthBar>())
+				{
+					if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+					{
+						hasSelected = true;
+                        break;
+					}
+				}
+				
+				if (child.GetComponent<SubstanceHealthBar>())
+	            {
+	                if (child.GetComponent<SubstanceHealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+					{
+						hasSelected = true;
+						break;
+                    }
+	            }
+	        }
+		}
+		
+		return hasSelected;
+	}
+
 	public void DestroySelected (Transform target)
 	{
 		foreach (Transform child in mainTranformSelectedObjects)

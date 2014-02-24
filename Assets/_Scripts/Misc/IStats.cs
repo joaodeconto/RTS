@@ -226,6 +226,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	internal int Group = -1;
 	
 	protected StatsController statsController;
+	protected HUDController hudController;
 	protected GameplayManager gameplayManager;
 	protected EventManager eventManager;
 
@@ -238,12 +239,13 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	}
 
 	public virtual void Init ()
-	{
-		Health = MaxHealth;
-		
+	{		
 		statsController = ComponentGetter.Get<StatsController> ();
+		hudController   = ComponentGetter.Get<HUDController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		eventManager    = ComponentGetter.Get<EventManager> ();
+		
+		Health = MaxHealth;
 		
 		if (!gameplayManager.IsBoot (team))
 		{
@@ -445,6 +447,13 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public void NotifyHealthChange ()
 	{
+		if (!hudController.HasSelected (this.transform))
+		{
+			hudController.CreateSubstanceHealthBar (this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
+			
+			Invoke ("DestroySelectedHealthBar", 5.0f);
+		}
+		
 //		Debug.Log (this.name + " - healthObservers.Count: " + healthObservers.Count );
 		foreach (IHealthObserver o in healthObservers)
 		{
@@ -453,4 +462,12 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	}
 
 	#endregion
+	
+	public void DestroySelectedHealthBar ()
+	{
+		if (!Selected)
+		{
+			hudController.DestroySelected (transform);
+		}
+	}
 }
