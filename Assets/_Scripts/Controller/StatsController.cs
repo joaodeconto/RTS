@@ -24,6 +24,8 @@ public class StatsController : MonoBehaviour
 	public bool keepFormation {get; set;}
 
 	public Vector3 idleButtonPosition;
+	public Transform idleWorkerButtonParent = null;
+
 	public List<IStats> myStats = new List<IStats> ();
 	public List<IStats> otherStats = new List<IStats> ();
 	
@@ -42,6 +44,9 @@ public class StatsController : MonoBehaviour
 
 	public void Init ()
 	{
+		if (idleWorkerButtonParent != null)
+			Debug.LogError ("Botao do idle worker sera instanciado em relacao ao objeto: " + idleWorkerButtonParent.name + " e nao ao menu padrao");
+	
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		soundManager    = ComponentGetter.Get<SoundManagerRTS> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
@@ -558,7 +563,7 @@ public class StatsController : MonoBehaviour
 
 		if(idleWorkers.Count == 0)
 		{
-			hud.RemoveButtonInInspector(buttonIdleWorkersName);
+			hud.RemoveButtonInInspector (buttonIdleWorkersName, idleWorkerButtonParent);
 		}
 		else
 		{
@@ -567,6 +572,11 @@ public class StatsController : MonoBehaviour
 			ht["currentIdleWorker"] = 0;
 			ht["counter"] = idleWorkers.Count;
 			ht["time"] = 0f;
+			
+			if (idleWorkerButtonParent != null)
+			{
+				ht["parent"] = idleWorkerButtonParent;
+			}
 
 			hud.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
 												idleButtonPosition,

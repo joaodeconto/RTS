@@ -371,15 +371,17 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		if(!string.IsNullOrEmpty(bs.textureName))
 			bs.ht["textureName"] = bs.textureName;
 
-		Transform trns = trnsOptionsMenu.Find(buttonName);
-		GameObject button = null;
-
-		if (trns != null)
-			button = trns.gameObject;
+		Transform buttonParent = null;
+		if (bs.ht.ContainsKey ("parent"))
+		{
+			buttonParent = (Transform)bs.ht["parent"];
+		}
 		else
-			//button = prefabCache.Get(trnsOptionsMenu, "Button");
-			button = NGUITools.AddChild(trnsOptionsMenu.gameObject,
-										pref_button);
+		{
+			buttonParent = trnsOptionsMenu;
+		}
+
+		GameObject button = GetButtonInHUD (buttonName, buttonParent);
 
 		button.name = buttonName;
 		button.transform.localPosition = bs.position;
@@ -395,9 +397,26 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			pcb.ChangeParams(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
 	}
 
-	public void RemoveButtonInInspector(string buttonName)
+	GameObject GetButtonInHUD (string buttonName, Transform parentButton)
 	{
-		foreach (Transform child in trnsOptionsMenu)
+		GameObject button = null;
+		
+		Transform trns = parentButton.Find(buttonName);
+		if (trns != null)
+			button = trns.gameObject;
+		else
+			//button = prefabCache.Get(trnsOptionsMenu, "Button");
+			button = NGUITools.AddChild(parentButton.gameObject,
+                                        pref_button);
+                                        
+		return button;
+	}
+
+	public void RemoveButtonInInspector(string buttonName, Transform buttonParent = null)
+	{
+		Transform trns = (buttonParent != null) ? buttonParent : trnsOptionsMenu;
+	
+		foreach (Transform child in trns)
 		{
 			if (child.gameObject.name.Equals(buttonName) ||
 				child.gameObject.name.Equals(PERSIST_STRING + buttonName))
