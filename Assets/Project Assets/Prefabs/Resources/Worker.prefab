@@ -1165,7 +1165,7 @@ MonoBehaviour:
   ally: 0
   fieldOfView: 14
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 2
+  sizeOfSelectedHealthBar: 2.5
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400008}
   movementActions:
@@ -1198,7 +1198,7 @@ MonoBehaviour:
     NumberOfRocks: 50
     NumberOfMana: 50
   model: {fileID: 100008}
-  force: 1
+  force: 2
   distanceView: 10
   attackRange: 2
   attackDuration: 1
@@ -1213,11 +1213,11 @@ MonoBehaviour:
     Attack: {fileID: 7400008, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
     DieAnimation: {fileID: 7400010, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
     SpecialAttack: []
-  timeToSpawn: 4
+  timeToSpawn: 6
   ControllerAnimation: {fileID: 11100000}
   forceToExtract: 2
   numberMaxGetResources: 10
-  distanceToExtract: 1
+  distanceToExtract: 1.5
   resourceWorker:
   - type: 1
     extractingObject: {fileID: 100068}
@@ -1230,8 +1230,8 @@ MonoBehaviour:
       CarryingIdle: {fileID: 7400006, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
       Carrying: {fileID: 7400004, guid: fd9c3fd4f40ecbf409f5c010a68f52e2, type: 3}
   - type: 2
-    extractingObject: {fileID: 100068}
-    carryingObject: {fileID: 100070}
+    extractingObject: {fileID: 0}
+    carryingObject: {fileID: 0}
     carryingSpeed: 1
     carryingAcceleration: 6
     carryingAngularSpeed: 360
@@ -1447,7 +1447,7 @@ NavMeshAgent:
   m_Acceleration: 100
   avoidancePriority: 2
   m_AngularSpeed: 360
-  m_StoppingDistance: .100000001
+  m_StoppingDistance: .300000012
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1

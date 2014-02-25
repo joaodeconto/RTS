@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 198: {fileID: 19800000}
   - 199: {fileID: 19900000}
-  m_Layer: 1
+  m_Layer: 11
   m_Name: Gold Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,13 +46,12 @@ GameObject:
   - 4: {fileID: 400004}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  - 64: {fileID: 6400000}
   m_Layer: 11
   m_Name: SandRock_05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 4294967263
   m_IsActive: 1
 --- !u!4 &400000
 Transform:
@@ -71,8 +70,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_LocalRotation: {x: 0, y: -.104000546, z: 0, w: -.994577289}
-  m_LocalPosition: {x: 46.5250664, y: 0, z: 178.152161}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 85.2834473, y: 0, z: 75.0830917}
   m_LocalScale: {x: 1, y: 1, z: -1}
   m_Children:
   - {fileID: 400004}
@@ -83,8 +82,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: 0, y: 0, z: .0551419854, w: .998478591}
-  m_LocalPosition: {x: -.901687622, y: 1.88130856, z: 0}
+  m_LocalRotation: {x: -.0331453606, y: -.600176573, z: .0440683961, w: .797964573}
+  m_LocalPosition: {x: -.901687622, y: 1.88130856, z: -0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 400000}
@@ -117,19 +116,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_Mesh: {fileID: 4300002, guid: c7ee12615d2d3d245bdc246bad5aef3a, type: 3}
---- !u!64 &6400000
-MeshCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_SmoothSphereCollisions: 0
-  m_Convex: 0
-  m_Mesh: {fileID: 4300002, guid: c7ee12615d2d3d245bdc246bad5aef3a, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -146,7 +132,7 @@ MonoBehaviour:
   group: 0
   prefixBackup: -1
   observed: {fileID: 11400002}
-  synchronization: 0
+  synchronization: 1
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   instantiationId: 0
@@ -174,7 +160,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1.90999997
+  m_Radius: 3
   m_Height: 4.82000017
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -228,7 +214,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: .100000001
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -669,7 +655,7 @@ ParticleSystem:
     cycles: 1
     randomRow: 1
   VelocityModule:
-    enabled: 0
+    enabled: 1
     x:
       scalar: 0
       maxCurve:
@@ -1249,7 +1235,7 @@ NavMeshObstacle:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 1.11000001
   m_Height: .829999983
   m_MoveThreshold: .5
