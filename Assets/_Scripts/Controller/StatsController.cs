@@ -501,7 +501,21 @@ public class StatsController : MonoBehaviour
 
 	public void ChangeVisibility (IStats stat, bool visibility)
 	{
-		ComponentGetter.Get<MiniMapController> ().SetVisibilityUnit (stat.transform, stat.team, visibility);
+		MiniMapController mmc = ComponentGetter.Get<MiniMapController> ();
+		
+		Unit unit = stat as Unit;
+		
+		if (unit != null)
+		{
+			mmc.SetVisibilityUnit (stat.transform, stat.team, visibility);
+		}
+		
+		FactoryBase factory = stat as FactoryBase;
+		
+		if (factory != null)
+		{
+			mmc.SetVisibilityStructure (stat.transform, stat.team, visibility);
+        }
 	}
 	
 	public void PlaySelectSound ()

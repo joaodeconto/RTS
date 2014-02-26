@@ -148,7 +148,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 		numberOfHousesMore = excessHousesIncrements = 0;
 		
-		InvokeRepeating ("EndMatch", 10f, 10f);
+//		InvokeRepeating ("EndMatch", 10f, 10f);
 	}
 	
 	/// <summary>
@@ -468,7 +468,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		Debug.LogError ("EndMatch");
 
-		Score.Save ();
+		/*Score.Save ();
 
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 
@@ -496,6 +496,6 @@ public class GameplayManager : Photon.MonoBehaviour
 						Debug.Log ("salvou playerBattle");
 				});
 			});
-		}
+		}*/
 	}
 }

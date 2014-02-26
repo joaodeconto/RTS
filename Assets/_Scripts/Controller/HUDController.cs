@@ -60,6 +60,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	public Transform mainTranformSelectedObjects;
 	public Transform trnsOptionsMenu;
 	public Transform trnsPanelInfoBox;
+	public Transform trnsPanelUnitStats;
 
 	public GameObject pref_button;
 	public Vector3 offesetFeedback;
@@ -173,7 +174,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
 	{
-		GameObject child = NGUITools.AddChild(HUDRoot.go, pref_healthBar);
+		GameObject child = NGUITools.AddChild(trnsPanelUnitStats.gameObject, pref_healthBar);
 
 		child.GetComponent<UISlider> ().foregroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
 		child.GetComponent<UISlider> ().foregroundWidget.height = 8;
@@ -254,7 +255,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		
 		if (!hasSelected)
 		{
-			foreach (Transform child in HUDRoot.go.transform)
+			foreach (Transform child in trnsPanelUnitStats)
 			{
 				if (child.GetComponent<HealthBar>())
 				{
@@ -289,7 +290,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			}
 		}
 
-		foreach (Transform child in HUDRoot.go.transform)
+		foreach (Transform child in trnsPanelUnitStats)
 		{
 			if (child.GetComponent<HealthBar>())
 			{

@@ -386,7 +386,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 		GetComponent<NavMeshObstacle> ().enabled = true;
 
-		statsController.AddStats (this);
+//		statsController.AddStats (this);
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);
@@ -396,7 +396,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 
-		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
+		if (gameplayManager.IsSameTeam (team)) model.SetActive (true);
 	}
 
 	public bool Construct (Worker worker)
