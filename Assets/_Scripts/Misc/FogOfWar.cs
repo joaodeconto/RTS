@@ -229,7 +229,7 @@ public class FogOfWar : MonoBehaviour
 			}
 			else
 			{
-//				Debug.LogError ("enemies: " + entity.name);
+				Debug.LogError ("enemies: " + entity.name);
 				enemies.Add(trnsEntity);
 				entityEnemies.Add(entity);
 			}
