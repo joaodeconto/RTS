@@ -10,14 +10,13 @@ GameObject:
   - 4: {fileID: 400000}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  - 111: {fileID: 11100000}
-  - 114: {fileID: 11400008}
-  m_Layer: 18
-  m_Name: ObeliskMesh
+  - 95: {fileID: 9500000}
+  m_Layer: 0
+  m_Name: Obelisk1
   m_TagString: Untagged
-  m_Icon: {fileID: -1500306622, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!1 &100002
 GameObject:
@@ -148,8 +147,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: -.640307605, y: -.300010294, z: -.300010353, w: .640307665}
-  m_LocalPosition: {x: -.0885696411, y: 1.32713467e-08, z: .293373108}
+  m_LocalRotation: {x: -.65328151, y: -.270598084, z: -.270598084, w: .65328151}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -160,7 +159,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 90.3656235, y: .00122070312, z: 76.5382614}
+  m_LocalPosition: {x: 116.277252, y: .00122070312, z: 113.423424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400018}
@@ -188,9 +187,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
-  m_LocalRotation: {x: 0, y: -.787579954, z: 0, w: .616212487}
-  m_LocalPosition: {x: 1.11811256, y: -.303974152, z: .244934082}
-  m_LocalScale: {x: .628737807, y: .628737807, z: .628737807}
+  m_LocalRotation: {x: 0, y: .641740561, z: 0, w: -.766921878}
+  m_LocalPosition: {x: 1.2297287, y: -.303974152, z: -.0252456665}
+  m_LocalScale: {x: .490587711, y: .490587711, z: .490587711}
   m_Children: []
   m_Father: {fileID: 400002}
 --- !u!4 &400012
@@ -201,7 +200,7 @@ Transform:
   m_GameObject: {fileID: 100012}
   m_LocalRotation: {x: .0998950973, y: 0, z: 0, w: .994997978}
   m_LocalPosition: {x: -.45634079, y: -.502212703, z: .798019409}
-  m_LocalScale: {x: .523107946, y: .523108065, z: .523107946}
+  m_LocalScale: {x: .366720438, y: .366720527, z: .366720438}
   m_Children: []
   m_Father: {fileID: 400002}
 --- !u!4 &400016
@@ -254,7 +253,7 @@ Renderer:
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 5
+  m_ScaleInLightmap: 1
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_SortingLayerID: 0
@@ -348,7 +347,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Mesh: {fileID: 4300000, guid: 0010b66f9058fb0458c7a76dbf3e4b7c, type: 3}
+  m_Mesh: {fileID: 4300000, guid: e684a78f1adc06a46b9ff7301f928047, type: 3}
 --- !u!33 &3300004
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -392,21 +391,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!111 &11100000
-Animation:
+--- !u!95 &9500000
+Animator:
+  serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
+  m_Avatar: {fileID: 9000000, guid: e684a78f1adc06a46b9ff7301f928047, type: 3}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_ApplyRootMotion: 1
   m_AnimatePhysics: 0
-  m_CullingType: 0
+  m_HasTransformHierarchy: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -426,7 +424,7 @@ MonoBehaviour:
   sizeOfSelected: 5
   sizeOfSelectedHealthBar: 9
   rendererTeamSubstanceColor:
-  - subMesh: {fileID: 400000}
+  - subMesh: {fileID: 0}
   movementActions: []
   pref_ParticleDamage: {fileID: 0}
   transformParticleDamageReference: {fileID: 0}
@@ -435,13 +433,13 @@ MonoBehaviour:
   costOfResources:
     NumberOfRocks: 50
     NumberOfMana: 50
-  model: {fileID: 100000}
+  model: {fileID: 0}
   unitsToCreate: []
   receiveResource: 2
   buildingObjects:
-    baseObject: {fileID: 100000}
-    unfinishedObject: {fileID: 100000}
-    finishedObject: {fileID: 100000}
+    baseObject: {fileID: 0}
+    unfinishedObject: {fileID: 0}
+    finishedObject: {fileID: 0}
     desactiveObjectsWhenInstance: []
   buttonName: Obelisk
   guiTextureName: Obelisk
@@ -492,17 +490,6 @@ MonoBehaviour:
   IsModifyingMesh: 1
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
---- !u!114 &11400008
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1
