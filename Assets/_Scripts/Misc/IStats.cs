@@ -458,13 +458,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public void NotifyHealthChange ()
 	{	
-		if (IsVisible && !hudController.HasSelected (this.transform))
-		{
-			hudController.CreateSubstanceHealthBar (this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
-			Invoke ("DestroySelectedHealthBar", 5.0f);
-		}
-		
-//		Debug.Log (this.name + " - healthObservers.Count: " + healthObservers.Count );
 		foreach (IHealthObserver o in healthObservers)
 		{
 			o.UpdateHealth (m_health);
@@ -472,12 +465,4 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	}
 
 	#endregion
-	
-	public void DestroySelectedHealthBar ()
-	{
-		if (!Selected)
-		{
-			hudController.DestroySelected (transform);
-		}
-	}
 }
