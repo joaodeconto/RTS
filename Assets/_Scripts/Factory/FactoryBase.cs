@@ -278,6 +278,8 @@ public class FactoryBase : IStats, IDeathObservable
 			newUnit = u.GetComponent<Unit> ();
 		}
 		
+		newUnit.SetTeam (gameplayManager.MyTeam, gameplayManager.Allies);
+		
 		//newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 
 		RallyPoint rallypoint = goRallypoint.GetComponent<RallyPoint> ();
@@ -287,11 +289,9 @@ public class FactoryBase : IStats, IDeathObservable
 			newUnit.Follow (rallypoint.observedUnit);
 		}
 		
-		newUnit.team = gameplayManager.MyTeam;
-		newUnit.ally = gameplayManager.Allies;
 		newUnit.Move (goRallypoint.position);
 		newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
-	}
+    }
 
 	public virtual IEnumerator OnDie ()
 	{
@@ -344,11 +344,13 @@ public class FactoryBase : IStats, IDeathObservable
 	}
 
 	[RPC]
-	public void InstanceOverdraw (int teamID)
+	public void InstanceOverdraw (int teamID, int allyID)
 	{
+		SetTeam (teamID, allyID);
+		
 		levelConstruct = Health = 1;
 		wasBuilt = false;
-		team = teamID;
+		
 		statsController.RemoveStats (GetComponent<FactoryBase> ());
 
 		GetComponent<NavMeshObstacle> ().enabled = false;

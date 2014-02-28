@@ -209,7 +209,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		
 		SubstanceHealthBar healthBar = selectObj.GetComponent<SubstanceHealthBar> ();
 		
-		healthBar.SetTarget (target);
+		healthBar.SetTarget (target, target.team);
 		
 		return healthBar;
 	}
