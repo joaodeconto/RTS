@@ -69,6 +69,8 @@ public class Login : IController
 			{
 				ConfigurationData.player = player;
 
+				Debug.Log ("player: " + player);
+
 				if (player == null)
 				{
 					LoginIndex index = GetView <LoginIndex> ("Index");
