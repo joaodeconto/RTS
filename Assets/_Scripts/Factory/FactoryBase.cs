@@ -279,6 +279,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 		
 		newUnit.SetTeam (gameplayManager.MyTeam, gameplayManager.Allies);
+		newUnit.Init ();
 		
 		//newUnit.Move (transform.position + (transform.forward * GetComponent<CapsuleCollider>().radius) * 2);
 
