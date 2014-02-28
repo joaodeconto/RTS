@@ -92,9 +92,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 					{
 						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
 							substance.SetProceduralColor(curProperty.name, teamColor);
-						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor1"))
+						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor_1"))
 							substance.SetProceduralColor(curProperty.name, teamColor1);
-						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor2"))
+						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor_2"))
 							substance.SetProceduralColor(curProperty.name, teamColor2);
 					}
 
