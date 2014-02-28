@@ -27,7 +27,7 @@ public class GhostFactory : MonoBehaviour
 		this.factoryConstruction = factoryConstruction;
 
 		thisFactory = GetComponent<FactoryBase>();
-		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team);
+		thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team, worker.ally);
 		
 		correctName = thisFactory.name;
 		thisFactory.name = "GhostFactory";

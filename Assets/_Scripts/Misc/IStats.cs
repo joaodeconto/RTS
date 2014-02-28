@@ -9,6 +9,8 @@ using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 {
+	public const int InvalidAlliance = 10000;
+
 	public static int UniversalEntityCounter = 0;
 
 	[System.Serializable]
@@ -199,8 +201,11 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public int Defense;
 
 	public int m_Team;
-	public int team { get { return m_Team; } set { Debug.LogError ("Changed team " + m_Team + " to " + value); m_Team = value; } }
-	public int ally;
+	public int team { get { return m_Team; } private set { m_Team = value; } }
+	
+	public int m_Ally;
+	public int ally { get { return m_Team; } private set { m_Team = value; } }
+	
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;
 	public float sizeOfSelectedHealthBar = 1f;
@@ -300,6 +305,12 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 //		{
 //			gameObject.AddComponent<FOWRenderers>();
 //		}
+	}
+	
+	public void SetTeam (int team, int ally)
+	{
+		this.team = team;
+		this.ally = ally;	
 	}
 	
 	public virtual void Select ()
@@ -446,11 +457,10 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	}
 	
 	public void NotifyHealthChange ()
-	{
-		if (!hudController.HasSelected (this.transform))
+	{	
+		if (IsVisible && !hudController.HasSelected (this.transform))
 		{
 			hudController.CreateSubstanceHealthBar (this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
-			
 			Invoke ("DestroySelectedHealthBar", 5.0f);
 		}
 		
