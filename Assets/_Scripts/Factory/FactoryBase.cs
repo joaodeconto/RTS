@@ -385,8 +385,7 @@ public class FactoryBase : IStats, IDeathObservable
 //		}
 
 		GetComponent<NavMeshObstacle> ().enabled = true;
-
-//		statsController.AddStats (this);
+		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);
@@ -429,7 +428,9 @@ public class FactoryBase : IStats, IDeathObservable
 					Debug.LogError("Eh necessario colocar um nome no buttonName.\nUtilizando nome padrao");
 					factoryName = this.name;
 				}
-
+	
+				Init ();
+					
 				eventManager.AddEvent("building finish", factoryName, this.guiTextureName);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 
