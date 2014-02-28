@@ -445,20 +445,21 @@ MonoBehaviour:
   mainTranformSelectedObjects: {fileID: 0}
   trnsOptionsMenu: {fileID: 0}
   trnsPanelInfoBox: {fileID: 0}
+  trnsPanelUnitStats: {fileID: 0}
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
-  offesetFeedback: {x: 0, y: .100000001, z: 0}
+  offesetFeedback: {x: 0, y: .200000003, z: 0}
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   pref_selfFeedback: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
-  pref_attackFeedback: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
+  pref_attackFeedback: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   sliders:
   - {fileID: 0}
   grids:
   - name: actions
-    rootPosition: {x: -287, y: 160, z: 0}
-    xPadding: 13
-    yPadding: 12
-    cellSizeX: 50
-    cellSizeY: 50
+    rootPosition: {x: -184, y: 92, z: 0}
+    xPadding: 1
+    yPadding: 1
+    cellSizeX: 92
+    cellSizeY: 92
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -475,11 +476,11 @@ MonoBehaviour:
   - queueName: Unit Group
     panel: {fileID: 0}
     rootPosition: {x: -5, y: 0}
-    cellSize: {x: 50, y: 50}
-    padding: {x: 5, y: 3}
+    cellSize: {x: 92, y: 92}
+    padding: {x: 1, y: 1}
     labelSize: 0
-    IsVerticalQueue: 0
-    maxPerLine: 10
+    IsVerticalQueue: 1
+    maxPerLine: 8
     maxItems: 100
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
@@ -487,9 +488,9 @@ MonoBehaviour:
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Factory
     panel: {fileID: 0}
-    rootPosition: {x: -10, y: 82}
-    cellSize: {x: 50, y: 50}
-    padding: {x: 6, y: 0}
+    rootPosition: {x: 40, y: 46}
+    cellSize: {x: 92, y: 92}
+    padding: {x: 1, y: 0}
     labelSize: 0
     IsVerticalQueue: 0
     maxPerLine: 5
@@ -592,7 +593,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111e42a9f574af1478996c9a5ee4404e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  idleButtonPosition: {x: -38, y: 36, z: 0}
+  idleButtonPosition: {x: -159, y: -66, z: 0}
+  idleWorkerButtonParent: {fileID: 0}
   myStats: []
   otherStats: []
 --- !u!114 &11400014
@@ -616,7 +618,7 @@ MonoBehaviour:
   mapTransform: {fileID: 0}
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
-  visualizationSize: {x: 32, y: 20, z: 0}
+  visualizationSize: {x: 42, y: 26, z: 0}
   visualizationPosition: {x: 0, y: 0, z: 0}
   MiniMapRefreshInterval: .5
 --- !u!114 &11400018
@@ -761,8 +763,8 @@ MonoBehaviour:
   - name: Time 1
     colors:
     - {r: 0, g: 0, b: 1, a: 1}
-    - {r: 1, g: 1, b: 1, a: 1}
-    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: .948529422, g: .93429184, b: .43241784, a: 1}
+    - {r: .162359431, g: .669117689, b: .354578108, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: Time 2
@@ -851,8 +853,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 1
-  targetFPS: 30
+  autoload: 0
+  targetFPS: 45
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
