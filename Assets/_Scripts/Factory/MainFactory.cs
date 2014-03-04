@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
-public class MainFactory : FactoryBase
+public class MainFactory : FactoryBase, IHouse
 {
-	public const int numberOfIncementUnits = 10;
+	public const int mainFactoryPopulation = 10;
 	
 	void OnInstanceFactory ()
 	{
@@ -18,7 +18,7 @@ public class MainFactory : FactoryBase
 		if (gameplayManager.ReachedMaxPopulation)
 			eventManager.AddEvent("reach max population");
 		else
-			gameplayManager.IncrementMaxOfUnits (numberOfIncementUnits);
+			gameplayManager.AddHouse (this);
 	}
 
 	public override IEnumerator OnDie ()
@@ -27,7 +27,7 @@ public class MainFactory : FactoryBase
 		{
 			if (wasBuilt)
 			{
-				gameplayManager.DecrementMaxOfUnits (numberOfIncementUnits);
+				gameplayManager.RemoveHouse (this);
 			}
 
 			gameplayManager.DecrementMainBase (team);
@@ -48,4 +48,13 @@ public class MainFactory : FactoryBase
 	{
 		base.SendRemove ();
 	}
+
+	#region IHouse implementation
+
+	public int GetHousePopulation ()
+	{
+		return mainFactoryPopulation;
+	}
+
+	#endregion
 }

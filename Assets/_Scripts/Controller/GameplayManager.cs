@@ -65,11 +65,12 @@ public class GameplayManager : Photon.MonoBehaviour
 	public Team[] teams;
 
 	public int numberOfUnits { get; protected set; }
-	public int maxOfUnits { get; protected set; }
-	protected int mainBasesIncrements;
+	public int TotalPopulation { get; protected set; }
+	protected int numberOfActiveMainBases;
 	protected int excessHousesIncrements;
 	protected int numberOfHousesMore;
 
+	private List<IHouse> houses = new List<IHouse> ();
 	protected List<AllyClass> alliesNumberOfStats = new List<AllyClass>();
 	protected int loserTeams;
 	protected int numberOfTeams;
@@ -147,8 +148,6 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiLostMainBaseObject.SetActive (false);
 
 		numberOfHousesMore = excessHousesIncrements = 0;
-		
-//		InvokeRepeating ("EndMatch", 10f, 10f);
 	}
 	
 	/// <summary>
@@ -277,7 +276,12 @@ public class GameplayManager : Photon.MonoBehaviour
 				{
 					beingAttacked = true;
 					Invoke ("BeingAttackedToFalse", 5f);
-					GetComponent<SoundSource> ().Play ("BeingAttacked");
+					
+					SoundSource ss = GetComponent<SoundSource> ();
+					if (ss)
+					{
+						ss.Play ("BeingAttacked");
+					}
 
 					return true;
 				}
@@ -296,7 +300,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		if (IsSameTeam (teamID))
 		{
-			mainBasesIncrements++;
+			numberOfActiveMainBases++;
 			hud.uiLostMainBaseObject.SetActive (false);
 			CancelInvoke ("NoMainBase");
 			CancelInvoke ("DecrementTime");
@@ -307,8 +311,8 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		if (IsSameTeam (teamID))
 		{
-			mainBasesIncrements--;
-			if (mainBasesIncrements == 0)
+			numberOfActiveMainBases--;
+			if (numberOfActiveMainBases == 0)
 			{
 				hud.uiLostMainBaseObject.SetActive (true);
 				currentTime = 40f;
@@ -329,40 +333,41 @@ public class GameplayManager : Photon.MonoBehaviour
 		if (IsSameTeam (teamID)) this.numberOfUnits -= numberOfUnits;
 	}
 
-	public void IncrementMaxOfUnits (int numberOfIncrementUnits)
+	public void AddHouse (IHouse house)
 	{
-		if (!ReachedMaxPopulation)
+		houses.Add (house);
+		VerifyPopulation ();
+	}
+		
+	private void VerifyPopulation ()
+	{	
+		int allowedPopulation = 0;
+		
+		foreach (IHouse house in houses)		
 		{
-			maxOfUnits += numberOfIncrementUnits;
-			if (maxOfUnits >= MAX_POPULATION_ALLOWED)
-			{
-				numberOfHousesMore = maxOfUnits - MAX_POPULATION_ALLOWED;
-				maxOfUnits -= numberOfHousesMore;
-			}
+			allowedPopulation += house.GetHousePopulation ();
+			allowedPopulation  = Mathf.Min (allowedPopulation, MAX_POPULATION_ALLOWED);
 		}
-		else ++excessHousesIncrements;
+		
+		TotalPopulation = allowedPopulation;
 	}
 
-	public void DecrementMaxOfUnits (int numberOfDecrementUnits)
+	public void RemoveHouse (IHouse house)
 	{
-		if (excessHousesIncrements == 0)
-		{
-			maxOfUnits -= numberOfDecrementUnits;
-			if (numberOfHousesMore != 0) maxOfUnits += numberOfHousesMore;
-		}
-		else --excessHousesIncrements;
+		houses.Remove (house);
+		VerifyPopulation ();
 	}
 
 	public bool NeedMoreHouses (int additionalUnits)
 	{
-		return (numberOfUnits + additionalUnits > maxOfUnits);
+		return (numberOfUnits + additionalUnits > TotalPopulation);
 	}
 
 	public bool ReachedMaxPopulation
 	{
 		get
 		{
-			return (maxOfUnits >= MAX_POPULATION_ALLOWED);
+			return (TotalPopulation >= MAX_POPULATION_ALLOWED);
 		}
 	}
 
@@ -447,7 +452,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		hud.labelMana.text = resources.NumberOfMana.ToString ();
 		hud.labelRocks.text = resources.NumberOfRocks.ToString ();
-		hud.labelUnits.text = numberOfUnits.ToString () + "/" + maxOfUnits.ToString ();
+		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
 
 		if (loseGame || winGame)
 		{
