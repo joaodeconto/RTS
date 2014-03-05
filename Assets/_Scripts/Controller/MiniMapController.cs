@@ -9,6 +9,9 @@ public class MiniMapController : MonoBehaviour
 	public GameObject pref_UnitMiniMap;
 	public GameObject pref_StructureMiniMap;
 
+	public Transform miniMapButton;
+	public Camera MapGUICamera;
+	
 	public GameObject miniMapPanel;
 	public UIRoot MiniMapRoot;
 
@@ -28,7 +31,6 @@ public class MiniMapController : MonoBehaviour
 
 	private Vector2 miniMapSize;
 
-
 	public Vector3 mapSize { get; private set; }
 
 	private List<Transform>[] structureList;
@@ -44,6 +46,9 @@ public class MiniMapController : MonoBehaviour
 	private bool WasInitialized;
 	
 	private FogOfWar fogOfWar;
+	private TouchController tc;
+
+	InteractionController ic;
 	
 	private UITexture textureFogOfWar;
 
@@ -84,16 +89,13 @@ public class MiniMapController : MonoBehaviour
 						MiniMapRefreshInterval,
 						MiniMapRefreshInterval);
 
-		mapSize = ComponentGetter.Get<FogOfWar>().terrain.terrainData.size;
-
-//		FogOfWar fogOfWar = ComponentGetter.Get<FogOfWar>();
-
-		UITexture ut;
-		
+		tc = ComponentGetter.Get <TouchController> ();
 		fogOfWar = ComponentGetter.Get<FogOfWar>();
 
-//		if (fogOfWar.UseFog)
-//		{
+		mapSize = fogOfWar.terrain.terrainData.size;
+
+		if (fogOfWar.UseFog)
+		{
 			textureFogOfWar = NGUITools.AddWidget<UITexture> (fogMiniMap);
 			textureFogOfWar.pivot = UIWidget.Pivot.BottomLeft;
 			textureFogOfWar.transform.localPosition    = new Vector2 (0,0);
@@ -106,8 +108,9 @@ public class MiniMapController : MonoBehaviour
 //			Texture t = FOWSystem.instance.texture0;
 //			Debug.Log ("Texture: " + (t != null));
 //			ut.material.mainTexture = t;
-//		}
+		}
 
+		UITexture ut;
 		ut = NGUITools.AddWidget<UITexture> (CamPositionMiniMap);
 		ut.transform.localPosition    = Vector3.forward * -1;
 		ut.transform.localScale   = visualizationSize;
@@ -116,7 +119,21 @@ public class MiniMapController : MonoBehaviour
 		ut.material.mainTexture = CamPositionTexture;
 
 		mainCameraGO = Camera.main.gameObject;
-
+		
+		DefaultCallbackButton dcb;
+		dcb = ComponentGetter.Get <DefaultCallbackButton> (miniMapButton, false);
+		
+		dcb.Init
+		(
+			null,
+			(Hashtable ht_dcb) => { UpdateCameraPosition (); },
+			null,
+			null,
+			null,
+			null,
+			(Hashtable ht_dcb, Vector2 delta) => { UpdateCameraPosition (); }
+		);
+		
 		RefreshMiniMapSize();
 
 		return this;
@@ -211,6 +228,10 @@ public class MiniMapController : MonoBehaviour
 
 	public void UpdateCameraPosition()
 	{
+		Debug.LogWarning ("TODO: UpdateCameraPosition ();");
+
+		return;
+		
 		CameraBounds camBounds = mainCameraGO.GetComponent<CameraBounds>();
 
 		Vector3 camBoundsSize = mapSize;
@@ -218,18 +239,53 @@ public class MiniMapController : MonoBehaviour
 											//(camBounds.scenario.y.max - camBounds.scenario.y.min),
 											//(camBounds.scenario.z.max - camBounds.scenario.z.min));
 
-		//Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
-		//Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
-		//Debug.Log("mapTransform.localPosition: " + mapTransform.localPosition);
-		//Debug.Log("miniMapSize: " + miniMapSize);
+//		Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
+//		Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
+//		Debug.Log("mapTransform.localPosition: " + mapTransform.localPosition);
+//		Debug.Log("miniMapSize: " + miniMapSize);
+				
+		float touchLocalPointX = MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x;
+		float touchLocalPointY = MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y;
+		
+		Vector3 vecTouchLocalPosition = Vector3.zero;
+		vecTouchLocalPosition.x = touchLocalPointX;
+		vecTouchLocalPosition.y = touchLocalPointY;
+		
+//		Debug.Log("b: touchLocalPointX: " + touchLocalPointX);
+//		Debug.Log("b: touchLocalPointY: " + touchLocalPointY);
+		
+//		Ray ray = UICamera.mainCamera.ScreenToWorldPoint (vecTouchLocalPosition);
+//		RaycastHit hit;
+//		
+//		if (Physics.Raycast (ray, out hit))
+//		{
+//			Debug.Log ("hit.point: " + hit.point);
+//			Debug.Log ("that's point: " + (hit.point - miniMapButton.position));
+//		}
+//		
+//		Debug.Log ("ray: " + ray.origin + " - " + ray.direction);
+		
+//		 MapGUICamera.WorldToScreenPoint (miniMapButton.position);//ray.origin;
+				
+		Vector3 vecScreen = MapGUICamera.WorldToScreenPoint (miniMapButton.position);
 
+		//Retirando posicao do mapa globalmente
+		touchLocalPointX -= (vecScreen.x);
+		touchLocalPointY -= (vecScreen.y);
+		
+		Debug.Log ("vecScreen: " + vecScreen);
+		
+		Debug.Log("a: touchLocalPointX: " + touchLocalPointX);
+		Debug.Log("a: touchLocalPointY: " + touchLocalPointY);
+				
 		Vector2 percentPos = new Vector2(((MiniMapRoot.pixelSizeAdjustment
-												* UICamera.lastTouchPosition.x) - mapTransform.localPosition.x),
+		                                 	* UICamera.lastTouchPosition.x) - mapTransform.localPosition.x),
 										 ((MiniMapRoot.pixelSizeAdjustment
-												* UICamera.lastTouchPosition.y) - mapTransform.localPosition.y));
+											* UICamera.lastTouchPosition.y) - mapTransform.localPosition.y));
 		percentPos.x /= miniMapSize.x;
 		percentPos.y /= miniMapSize.y;
-
+		
+//		Debug.Break ();
 		//Debug.Log("percentPos: " + percentPos);
 		//Debug.Log("mapSize: " + mapSize);
 

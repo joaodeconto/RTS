@@ -22,5 +22,15 @@ namespace DB {
 			ds.SzDetailedInformation = this.SzDetailedInformation;
 			return ds;
 		}
+		
+		public override string ToString ()
+		{	
+			return "IdDataScore: "           + IdDataScore           +
+				" - IdPlayer: "              + IdPlayer              +
+				" - IdBattle: "              + IdBattle              +
+				" - SzScoreName: "           + SzScoreName           +
+				" - SzDetailedInformation: " + SzDetailedInformation +
+				" - NrPoints: "              + NrPoints;
+		}
 	}
 }

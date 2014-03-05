@@ -1,4 +1,4 @@
-//#define DEBUG_DATABASE_CONNECTION
+#define DEBUG_DATABASE_CONNECTION
 
 using UnityEngine;
 

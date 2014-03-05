@@ -52,7 +52,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public BuildingState buildingState { get; set; }
 	protected int levelConstruct;
 
-	protected List<Unit> listedToCreate = new List<Unit>();
+	protected List<Unit> lUnitsToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected float timeToCreate;
 	protected float timer;
@@ -81,9 +81,9 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 	}
 
-	public bool OverLimitCreateUnit	{
+	public bool ReachedMaxEnqueuedUnits	{
 		get	{
-			return listedToCreate.Count >= MAX_NUMBER_OF_LISTED;
+			return lUnitsToCreate.Count >= MAX_NUMBER_OF_LISTED;
 		}
 	}
 	
@@ -148,10 +148,10 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		SyncAnimation ();
 
-		if (!wasBuilt || listedToCreate.Count == 0)
+		if (!wasBuilt || lUnitsToCreate.Count == 0)
 			return;
 
-		if (gameplayManager.NeedMoreHouses (listedToCreate[0].numberOfUnits))
+		if (gameplayManager.NeedMoreHouses (lUnitsToCreate[0].numberOfUnits))
 		{
 			if (!alreadyCheckedMaxPopulation)
 			{
@@ -165,8 +165,8 @@ public class FactoryBase : IStats, IDeathObservable
 
 		if (unitToCreate == null)
 		{
-			unitToCreate = listedToCreate[0];
-			timeToCreate = listedToCreate[0].timeToSpawn;
+			unitToCreate = lUnitsToCreate[0];
+			timeToCreate = lUnitsToCreate[0].timeToSpawn;
 			inUpgrade = true;
 
 			if (Selected) buildingSlider.gameObject.SetActive(true);
@@ -219,7 +219,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		buildingSlider.gameObject.SetActive(false);
 
-		listedToCreate.RemoveAt (0);
+		lUnitsToCreate.RemoveAt (0);
 
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 
@@ -252,10 +252,10 @@ public class FactoryBase : IStats, IDeathObservable
 
 			Debug.Log ("battle: " + battle);
 			//Score
-			Score.AddScorePoints ("Units created", 1);
-			Score.AddScorePoints ("Units created", 1, battle.IdBattle);
-			Score.AddScorePoints (unitName + " created", 1);
-			Score.AddScorePoints (unitName + " created", 1, battle.IdBattle);
+			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1);
+			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);
+			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
+			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1, battle.IdBattle);
 		}
 		if (!hasRallypoint) return;
 
@@ -328,17 +328,17 @@ public class FactoryBase : IStats, IDeathObservable
 			{
 				PhotonNetwork.Destroy(gameObject);
 
-				Score.AddScorePoints ("Buildings lost", 1);
-				Score.AddScorePoints ("Buildings lost", 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + " lost", 1);
-				Score.AddScorePoints (this.category + " lost", 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.BuildingsLost, 1);
+				Score.AddScorePoints (DataScoreEnum.BuildingsLost, 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
+				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
 			}
 			else
 			{
-				Score.AddScorePoints ("Destroyed buildings", 1);
-				Score.AddScorePoints ("Destroyed buildings", 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + " destroyed", 1);
-				Score.AddScorePoints (this.category + " destroyed", 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.DestroyedBuildings, 1);
+				Score.AddScorePoints (DataScoreEnum.DestroyedBuildings, 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, 1);
+				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, 1, battle.IdBattle);
 			}
 		}
 		else Destroy (gameObject);
@@ -440,10 +440,10 @@ public class FactoryBase : IStats, IDeathObservable
 				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 				Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
 
-				Score.AddScorePoints ("Buildings created", 1);
-				Score.AddScorePoints ("Buildings created", 1, battle.IdBattle);
-				Score.AddScorePoints (factoryName + " created", 1);
-				Score.AddScorePoints (factoryName + " created", 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1);
+				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
+				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1);
+				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1, battle.IdBattle);
 			}
 			return false;
 		}
@@ -522,18 +522,18 @@ public class FactoryBase : IStats, IDeathObservable
 															{
 																if (numberToCreate == -1)
 																{
-																	numberToCreate = factory.listedToCreate.Count;
+																	numberToCreate = factory.lUnitsToCreate.Count;
 																	factoryChoose = i;
 																}
-																else if (numberToCreate > factory.listedToCreate.Count)
+																else if (numberToCreate > factory.lUnitsToCreate.Count)
 																{
-																	numberToCreate = factory.listedToCreate.Count;
+																	numberToCreate = factory.lUnitsToCreate.Count;
 																	factoryChoose = i;
 																}
 																i++;
 															}
 
-															if (!factories[factoryChoose].OverLimitCreateUnit)
+															if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
 																factories[factoryChoose].EnqueueUnitToCreate (unitFactory.unit);
 															else
 																eventManager.AddEvent("reach enqueued units");
@@ -549,9 +549,9 @@ public class FactoryBase : IStats, IDeathObservable
 														});
 			}
 
-			for(int i = 0; i != listedToCreate.Count; ++i)
+			for(int i = 0; i != lUnitsToCreate.Count; ++i)
 			{
-				Unit unit = listedToCreate[i];
+				Unit unit = lUnitsToCreate[i];
 
 				Hashtable ht = new Hashtable ();
 				ht["unit"] = unit;
@@ -560,7 +560,7 @@ public class FactoryBase : IStats, IDeathObservable
 				hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
 																FactoryBase.FactoryQueueName,
 																ht,
-																listedToCreate[i].guiTextureName,
+																lUnitsToCreate[i].guiTextureName,
 																(hud_ht) =>
 																{
 																	DequeueUnit(hud_ht);
@@ -618,7 +618,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 		if (canBuy)
 		{
-			listedToCreate.Add (unit);
+			lUnitsToCreate.Add (unit);
 			Hashtable ht = new Hashtable();
 			ht["unit"] = unit;
 			ht["name"] = "button-" + Time.time;
@@ -652,7 +652,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 
 		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);
-		listedToCreate.Remove (unit);
+		lUnitsToCreate.Remove (unit);
 	}
 	
 	Unit CheckUnit (Unit unit)
