@@ -67,6 +67,7 @@ GameObject:
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
   - 95: {fileID: 9500000}
+  - 64: {fileID: 6400000}
   m_Layer: 18
   m_Name: Obelisk1
   m_TagString: Untagged
@@ -420,6 +421,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!64 &6400000
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_SmoothSphereCollisions: 0
+  m_Convex: 0
+  m_Mesh: {fileID: 4300000, guid: e684a78f1adc06a46b9ff7301f928047, type: 3}
 --- !u!95 &9500000
 Animator:
   serializedVersion: 2
@@ -428,7 +442,7 @@ Animator:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: e684a78f1adc06a46b9ff7301f928047, type: 3}
+  m_Avatar: {fileID: 9000000, guid: e1394ee713e309740a36afbe3d490c2e, type: 3}
   m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_ApplyRootMotion: 1
@@ -463,7 +477,7 @@ MonoBehaviour:
   maxHealth: 200
   Defense: 0
   m_Team: 0
-  ally: 0
+  m_Ally: 0
   fieldOfView: 15
   sizeOfSelected: 5
   sizeOfSelectedHealthBar: 9

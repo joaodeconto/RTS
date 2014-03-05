@@ -6,7 +6,6 @@
 
 class PostEffectsBase extends MonoBehaviour {	
 	protected var supportHDRTextures : boolean = true;
-	protected var supportDX11 : boolean = false;
 	protected var isSupported : boolean = true;
 	
 	function CheckShaderAndCreateMaterial (s : Shader, m2Create : Material) : Material {
@@ -21,7 +20,7 @@ class PostEffectsBase extends MonoBehaviour {
 		
 		if (!s.isSupported) {
 			NotSupported ();
-			Debug.Log("The shader " + s.ToString() + " on effect "+this.ToString()+" is not supported on this platform!");
+			Debug.LogError("The shader " + s.ToString() + " on effect "+this.ToString()+" is not supported on this platform!");
 			return null;
 		}
 		else {
@@ -58,6 +57,7 @@ class PostEffectsBase extends MonoBehaviour {
 		isSupported = true;
 	}	
 
+	// deprecated but needed for old effects to survive upgrade
 	function CheckSupport () : boolean {
 		return CheckSupport (false);
 	}
@@ -74,7 +74,6 @@ class PostEffectsBase extends MonoBehaviour {
 	function CheckSupport (needDepth : boolean) : boolean {
 		isSupported = true;
 		supportHDRTextures = SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf);
-		supportDX11 = SystemInfo.graphicsShaderLevel >= 50 && SystemInfo.supportsComputeShaders;
 		
 		if (!SystemInfo.supportsImageEffects || !SystemInfo.supportsRenderTextures) {
 			NotSupported ();
@@ -104,10 +103,6 @@ class PostEffectsBase extends MonoBehaviour {
 		return true;
 	}	
 	
-	function Dx11Support() : boolean {
-		return supportDX11;
-	}
-
 	function ReportAutoDisable () {
 		Debug.LogWarning ("The image effect " + this.ToString() + " has been disabled as it's not supported on the current platform.");
 	}

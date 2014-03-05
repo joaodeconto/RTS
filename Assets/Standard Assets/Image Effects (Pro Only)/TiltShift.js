@@ -27,6 +27,11 @@ class TiltShift extends PostEffectsBase {
 	private var end01 : float = 1.0f;
 	private var curve : float = 1.0f;
 		
+	function OnDisable()
+	{
+        if (tiltShiftMaterial)
+            DestroyImmediate(tiltShiftMaterial);
+	}
 	function CheckResources () : boolean {	
 		CheckSupport (true);	
 	

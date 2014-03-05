@@ -6,70 +6,60 @@
 @script AddComponentMenu ("Image Effects/Edge Detection (Geometry)")
 
 enum EdgeDetectMode {
-	TriangleDepthNormals = 0,
-	RobertsCrossDepthNormals = 1,
-	SobelDepth = 2,
-	SobelDepthThin = 3,
+	Thin = 0,
+	Thick = 1,	
 }
 
 class EdgeDetectEffectNormals extends PostEffectsBase {	
 
-	public var mode : EdgeDetectMode = EdgeDetectMode.SobelDepthThin;
-	public var sensitivityDepth : float = 1.0f;
-	public var sensitivityNormals : float = 1.0f;
-	public var edgeExp : float = 1.0f;
-	public var sampleDist : float = 1.0f;
-	public var edgesOnly : float = 0.0f;
+	public var mode : EdgeDetectMode = EdgeDetectMode.Thin;
+	public var sensitivityDepth : float = 1.0;
+	public var sensitivityNormals : float = 1.0;
+	
+	public var edgesOnly : float = 0.0;
 	public var edgesOnlyBgColor : Color = Color.white;
-
+	
 	public var edgeDetectShader : Shader;
 	private var edgeDetectMaterial : Material = null;
-	private var oldMode : EdgeDetectMode = EdgeDetectMode.SobelDepthThin;
 
+    function OnDisable()
+    {
+        if (edgeDetectMaterial)
+            DestroyImmediate(edgeDetectMaterial);
+    }
 	function CheckResources () : boolean {	
 		CheckSupport (true);
 	
 		edgeDetectMaterial = CheckShaderAndCreateMaterial (edgeDetectShader,edgeDetectMaterial);
-		if (mode != oldMode)
-			SetCameraFlag ();
-
-		oldMode = mode;
-
-		if (!isSupported)
+		
+		if(!isSupported)
 			ReportAutoDisable ();
 		return isSupported;				
-	}
-
-	function Start () {
-		oldMode	= mode;
-	}
-
-	function SetCameraFlag () {
-		if (mode>1)
-			camera.depthTextureMode |= DepthTextureMode.Depth;		
-		else
-			camera.depthTextureMode |= DepthTextureMode.DepthNormals;		
-	}
-
-	function OnEnable() {
-		SetCameraFlag();
 	}
 	
 	@ImageEffectOpaque
 	function OnRenderImage (source : RenderTexture, destination : RenderTexture) {	
-		if (CheckResources () == false) {
+		if(CheckResources()==false) {
 			Graphics.Blit (source, destination);
 			return;
 		}
 				
-		var sensitivity : Vector2 = Vector2 (sensitivityDepth, sensitivityNormals);		
-		edgeDetectMaterial.SetVector ("_Sensitivity", Vector4 (sensitivity.x, sensitivity.y, 1.0, sensitivity.y));		
-		edgeDetectMaterial.SetFloat ("_BgFade", edgesOnly);	
-		edgeDetectMaterial.SetFloat ("_SampleDistance", sampleDist);		
-		edgeDetectMaterial.SetVector ("_BgColor", edgesOnlyBgColor);	
-		edgeDetectMaterial.SetFloat ("_Exponent", edgeExp);	
+		var sensitivity : Vector2 = Vector2 (sensitivityDepth, sensitivityNormals);
+	
+		source.filterMode = FilterMode.Point;
 		
-		Graphics.Blit (source, destination, edgeDetectMaterial, mode);
+		edgeDetectMaterial.SetVector ("sensitivity", Vector4 (sensitivity.x, sensitivity.y, 1.0, sensitivity.y));		
+		edgeDetectMaterial.SetFloat ("_BgFade", edgesOnly);	
+		
+		var vecCol : Vector4 = edgesOnlyBgColor;
+		edgeDetectMaterial.SetVector ("_BgColor", vecCol);		
+		
+		if (mode == EdgeDetectMode.Thin) {
+			Graphics.Blit (source, destination, edgeDetectMaterial, 0);				
+		}
+		else {
+			Graphics.Blit (source, destination, edgeDetectMaterial, 1);
+		}
 	}
 }
 

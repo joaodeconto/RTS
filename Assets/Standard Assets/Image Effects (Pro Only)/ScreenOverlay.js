@@ -8,7 +8,7 @@
 class ScreenOverlay extends PostEffectsBase {
 	
 	enum OverlayBlendMode {
-		Additive = 0,
+		AddSub = 0,
 		ScreenBlend = 1,
 		Multiply = 2,
         Overlay = 3,
@@ -22,6 +22,12 @@ class ScreenOverlay extends PostEffectsBase {
 	public var overlayShader : Shader;
 	
 	private var overlayMaterial : Material = null;
+	
+	function OnDisable()
+	{
+	    if (overlayMaterial)
+	        DestroyImmediate(overlayMaterial);
+	}
 	
 	function CheckResources () : boolean {
 		CheckSupport (false);

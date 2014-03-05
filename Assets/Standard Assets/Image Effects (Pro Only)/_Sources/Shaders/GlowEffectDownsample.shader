@@ -1,13 +1,8 @@
-// Upgrade NOTE: replaced 'glstate.matrix.mvp' with 'UNITY_MATRIX_MVP'
-// Upgrade NOTE: replaced 'glstate.matrix.texture[0]' with 'UNITY_MATRIX_TEXTURE0'
-// Upgrade NOTE: replaced 'samplerRECT' with 'sampler2D'
-// Upgrade NOTE: replaced 'texRECT' with 'tex2D'
-
 Shader "Hidden/Glow Downsample" {
 
 Properties {
 	_Color ("Color", color) = (1,1,1,0)
-	_MainTex ("", RECT) = "white" {}
+	_MainTex ("", 2D) = "white" {}
 }
 
 CGINCLUDE
@@ -31,7 +26,7 @@ v2f vert (appdata_img v)
 	float offY = _MainTex_TexelSize.y;
 	
 	// Direct3D9 needs some texel offset!
-	#ifdef SHADER_API_D3D9
+	#ifdef UNITY_HALF_TEXEL_OFFSET
 	uv.x += offX * 2.0f;
 	uv.y += offY * 2.0f;
 	#endif
@@ -59,11 +54,11 @@ CGPROGRAM
 #pragma fragmentoption ARB_precision_hint_fastest
 
 sampler2D _MainTex;
-float4 _Color;
+fixed4 _Color;
 
-half4 frag( v2f i ) : COLOR
+fixed4 frag( v2f i ) : COLOR
 {
-	half4 c;
+	fixed4 c;
 	c  = tex2D( _MainTex, i.uv[0].xy );
 	c += tex2D( _MainTex, i.uv[1].xy );
 	c += tex2D( _MainTex, i.uv[2].xy );
@@ -87,9 +82,8 @@ ENDCG
 
 
 CGPROGRAM
-// Upgrade NOTE: excluded shader from OpenGL ES 2.0 because it does not contain a surface program or both vertex and fragment programs.
-#pragma exclude_renderers gles
 #pragma vertex vert
+#pragma exclude_renderers gles xbox360 ps3
 // use the same vertex program as in FP path
 ENDCG
 

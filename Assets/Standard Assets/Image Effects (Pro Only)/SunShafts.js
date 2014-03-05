@@ -37,6 +37,14 @@ class SunShafts extends PostEffectsBase
 	public var simpleClearShader : Shader;
 	private var simpleClearMaterial : Material;
 		
+    function OnDisable()
+    {
+		if (sunShaftsMaterial)
+		    DestroyImmediate(sunShaftsMaterial);
+		if (simpleClearMaterial)
+		    DestroyImmediate(simpleClearMaterial);
+    }
+    
 	function CheckResources () : boolean {	
 		CheckSupport (useDepthTexture);
 		

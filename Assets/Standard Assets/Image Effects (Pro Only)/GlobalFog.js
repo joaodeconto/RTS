@@ -31,6 +31,11 @@ class GlobalFog extends PostEffectsBase {
 	public var fogShader : Shader;
 	private var fogMaterial : Material = null;	
 	
+	function OnDisable()
+	{
+	    if (fogMaterial)
+	        DestroyImmediate(fogMaterial);
+	}
 	function CheckResources () : boolean {	
 		CheckSupport (true);
 	

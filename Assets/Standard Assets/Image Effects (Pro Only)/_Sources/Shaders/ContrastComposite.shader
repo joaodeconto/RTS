@@ -28,7 +28,7 @@ Shader "Hidden/ContrastComposite" {
 		
 		o.uv[0] = v.texcoord.xy;
 		o.uv[1] = v.texcoord.xy;
-		#if UNITY_UV_STARTS_AT_TOP
+		#if SHADER_API_D3D9
 		if (_MainTex_TexelSize.y < 0)
 			o.uv[0].y = 1-o.uv[0].y;
 		#endif			
