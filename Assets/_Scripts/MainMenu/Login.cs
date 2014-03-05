@@ -6,6 +6,7 @@ using Visiorama;
 public class Login : IController
 {
 	public bool UseRealLogin = true;
+	public int NumberOfCoinsNewPlayerStartsWith = 10;
 
 	public void Start ()
 	{
@@ -103,8 +104,10 @@ public class Login : IController
 		string password = (string)ht["password"];
 		string idFacebook = "";
 		string email    = (string)ht["email"];
-
-		ComponentGetter.Get<PlayerDAO>().CreatePlayer (username, password, idFacebook, email,
+		
+		PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
+		
+        playerDao.CreatePlayer (username, password, idFacebook, email,
 		(player, message) =>
 		{
 			if (player == null)
@@ -115,6 +118,15 @@ public class Login : IController
 			{
 				Debug.Log ("Novo DB.Player");
 
+				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+				
+				pw.SetPlayer (username, true);
+                pw.SetPropertyOnPlayer ("player", player.ToString ());
+
+				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, NumberOfCoinsNewPlayerStartsWith);
+				Score.SetScorePoints (DataScoreEnum.TotalCrystals,   NumberOfCoinsNewPlayerStartsWith);
+				Score.Save ();
+				
 				Index ();
 			}
 		});

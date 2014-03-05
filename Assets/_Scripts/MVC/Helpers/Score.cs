@@ -5,6 +5,22 @@ using System.Collections.Generic;
 
 using Visiorama;
 
+public struct DataScoreEnum
+{
+	public const string CurrentCrystals = "current-crystals";
+	public const string TotalCrystals = "total-crystals";
+	
+	public const string UnitsCreated = "units-created";
+	public const string BuildingsCreated = "units-created";
+	public const string XCreated = "-created"; //example use Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
+	
+	public const string BuildingsLost = "buildings-lost";
+	public const string XLost = "-lost"; //example of use Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
+	
+	public const string DestroyedBuildings = "destroyed-buildings";
+	public const string XDestroyed = " destroyed";
+}
+
 public class Score : MonoBehaviour
 {
 	private Dictionary <string, Model.DataScore> dicDataScore;
@@ -12,10 +28,11 @@ public class Score : MonoBehaviour
 	private Model.Player player;
 	private DataScoreDAO dataScoreDAO;
 	
-	public delegate void A (List <Model.DataScore> dicScore);
-	public A b;
+	public delegate void GetScoresCallback (List <Model.DataScore> listScore);
+	public delegate void GetDicScoresCallback (Dictionary <string, Model.DataScore> dicScore);
+	public GetScoresCallback getScoresCallback;
 
-	Score Init ()
+	private Score Init ()
 	{
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 		player = new Model.Player ((string)pw.GetPropertyOnPlayer ("player"));
@@ -73,17 +90,34 @@ public class Score : MonoBehaviour
 			dicDataScore[scoreKey].NrPoints = points;
 	}
 	
-	public void _LoadScore ()
+	private void _LoadScore (GetDicScoresCallback cb)
 	{
 		//TODO ler apenas scores totais, ou seja, sem que tenham IdBattle's
 		dataScoreDAO.LoadAllPlayerScores (player.ToDatabaseModel (),
 											(scores) =>
 											{
 												dicDataScore = scores;
+												
+												cb (dicDataScore);
 											});
 	}
 	
-	public void _LoadBattleScore (A b)
+	private Model.DataScore _GetDataScore (string scoreName, int idBattle)
+	{
+		string key = scoreName + " - " + idBattle;
+		
+		Model.DataScore ds = null;
+		
+		if (dicDataScore != null)
+		{
+			if (dicDataScore.ContainsKey (key))
+				ds = dicDataScore[key];
+		}
+		
+		return ds;
+	}
+	
+	private void _LoadBattleScore (GetScoresCallback b)
 	{
 		if (ConfigurationData.battle != null)
 		{
@@ -141,14 +175,19 @@ public class Score : MonoBehaviour
 		Instance._SetScorePoints (ScoreName, points, battleId);
 	}
 
-	public static void Load ()
+	public static void LoadScores (GetDicScoresCallback cb)
 	{
-		Instance._LoadScore ();
+		Instance._LoadScore (cb);
+	}
+
+	public static Model.DataScore GetDataScore (string scoreName, int idBattle = 0)
+	{
+		return Instance._GetDataScore (scoreName, idBattle);
 	}
 	
-	public static void LoadBattle (A b)
+	public static void LoadBattle (GetScoresCallback cb)
 	{
-		Instance._LoadBattleScore (b);
+		Instance._LoadBattleScore (cb);
 	}
 
 	public static void Save ()

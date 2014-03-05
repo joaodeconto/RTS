@@ -14,7 +14,7 @@ public class UnitCallbackButton : MonoBehaviour
 
 	void OnClick ()
 	{
-		if (!factory.OverLimitCreateUnit)
+		if (!factory.ReachedMaxEnqueuedUnits)
 			factory.EnqueueUnitToCreate (unit);
 	}
 }

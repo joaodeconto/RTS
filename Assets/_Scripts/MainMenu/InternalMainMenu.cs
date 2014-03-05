@@ -15,6 +15,11 @@ public class InternalMainMenu : MonoBehaviour
 
 	public GameObject goMainMenu;
 	public UILabel PlayerLabel;
+	
+	public UILabel CurrentCrystalsLabel;
+	public UILabel CreatedUnitsLabel;
+	public UILabel CreatedBuildingsLabel;
+	
 	public Transform options;
 	public Transform menus;
 
@@ -23,9 +28,11 @@ public class InternalMainMenu : MonoBehaviour
 
 	public void Init ()
 	{
-		Invoke ("InitScore", Random.value * 2.0f);
+		//Deixar primeiro carregar o jogador
+		Invoke ("InitScore", 0.5f);
 
 		this.player = ConfigurationData.player;
+		
 //		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 //
 //		dcb.Init(null, (ht_hud) =>
@@ -73,7 +80,20 @@ public class InternalMainMenu : MonoBehaviour
 
 	void InitScore ()
 	{
-		Score.Load ();
+		Score.LoadScores
+		(
+			(Dictionary<string, Model.DataScore> dicScore) => 
+			{
+				//nao tem score, coloca zero como default
+				Model.DataScore cc = Score.GetDataScore (DataScoreEnum.CurrentCrystals);
+				Model.DataScore uc = Score.GetDataScore (DataScoreEnum.UnitsCreated);
+				Model.DataScore bc = Score.GetDataScore (DataScoreEnum.BuildingsCreated);
+			
+				CurrentCrystalsLabel.text  = (cc == null) ? "" : cc.NrPoints.ToString ();
+				CreatedUnitsLabel.text     = (uc == null) ? "" : uc.NrPoints.ToString ();
+				CreatedBuildingsLabel.text = (bc == null) ? "" : bc.NrPoints.ToString ();
+			}
+		);
 	}
 
 	private void ShowMenu (string optionName)

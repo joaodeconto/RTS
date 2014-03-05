@@ -1,23 +1,23 @@
 using UnityEngine;
 using System.Collections;
 
-public class CottageFactory : FactoryBase
+public class CottageFactory : FactoryBase, IHouse
 {
-	public const int numberOfIncementUnits = 7;
+	public const int cottagePopulation = 7;
 	
 	void ConstructFinished ()
 	{
 		if (gameplayManager.ReachedMaxPopulation)
 			eventManager.AddEvent("reach max population");
 		else
-			gameplayManager.IncrementMaxOfUnits (numberOfIncementUnits);
+			gameplayManager.AddHouse (this);
 	}
 	
 	public override IEnumerator OnDie ()
 	{
 		if (wasBuilt)
 		{
-			if (photonView.isMine) gameplayManager.DecrementMaxOfUnits (numberOfIncementUnits);
+			if (photonView.isMine) gameplayManager.RemoveHouse (this);
 		}
 		
 		return base.OnDie ();
@@ -35,4 +35,13 @@ public class CottageFactory : FactoryBase
 	{
 		base.SendRemove ();
 	}
+
+	#region IHouse implementation
+
+	public int GetHousePopulation ()
+	{
+		return cottagePopulation;
+	}
+
+	#endregion
 }
