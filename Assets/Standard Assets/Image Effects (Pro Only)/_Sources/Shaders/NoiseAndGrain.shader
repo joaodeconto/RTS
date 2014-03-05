@@ -12,107 +12,78 @@ Shader "Hidden/NoiseAndGrain" {
 		sampler2D _NoiseTex;
 		float4 _NoiseTex_TexelSize;
 		
-		uniform float4 _MainTex_TexelSize;
+		#if SHADER_API_D3D9 || SHADER_API_XBOX360 || SHADER_API_D3D11
+			uniform half4 _MainTex_TexelSize;
+		#endif
 
-		uniform float3 _NoisePerChannel;
-		uniform float3 _NoiseTilingPerChannel;
-		uniform float3 _NoiseAmount;
-		uniform float3 _ThreshholdRGB;
-		uniform float3 _MidGrey;	
+		uniform half3 _NoisePerChannel;
+		uniform half3 _NoiseTilingPerChannel;
+		uniform half3 _NoiseAmount;
 		
-		struct v2f 
-		{
+		struct v2f {
 			float4 pos : SV_POSITION;
-			float2 uv_screen : TEXCOORD0;
-			float4 uvRg : TEXCOORD1;
-			float2 uvB : TEXCOORD2;
+			half2 uv : TEXCOORD0;
+			half2 uv2 : TEXCOORD1;
+			#if SHADER_API_D3D9 || SHADER_API_XBOX360 || SHADER_API_D3D11
+			half4 uv_screen : TEXCOORD2;	
+			#else 
+			half2 uv_screen : TEXCOORD2;
+			#endif		
 		};
 		
-		struct appdata_img2 
-		{
+		struct appdata_img2 {
 		    float4 vertex : POSITION;
-		    float2 texcoord : TEXCOORD0;
-		    float2 texcoord1 : TEXCOORD1;
+		    half2 texcoord : TEXCOORD0;
+		    half2 texcoord1 : TEXCOORD1;
 		};		
-
-		inline float3 Overlay(float3 m, float3 color) {
-			color = saturate(color);
-			float3 check = step(float3(0.5,0.5,0.5), color.rgb);
-			float3 result = check * (float3(1,1,1) - ((float3(1,1,1) - 2*(color.rgb-0.5)) * (1-m.rgb))); 
-			result += (1-check) * (2*color.rgb) * m.rgb;
-			return result;
-		}			
 						
 		v2f vert (appdata_img2 v)
 		{
 			v2f o;
 			
 			o.pos = mul (UNITY_MATRIX_MVP, v.vertex);	
+			o.uv = v.texcoord.xy;
+			o.uv2 = v.texcoord1.xy;
 			
-		#if UNITY_UV_STARTS_AT_TOP
+			#if SHADER_API_D3D9 || SHADER_API_XBOX360 || SHADER_API_D3D11
 			o.uv_screen = v.vertex.xyxy;
 			if (_MainTex_TexelSize.y < 0)
         		o.uv_screen.y = 1-o.uv_screen.y;
-		#else
+        		#else
         		o.uv_screen = v.vertex.xy;
-		#endif
+			#endif
 			
-			// different tiling for 3 channels
-			o.uvRg = v.texcoord.xyxy + v.texcoord1.xyxy * _NoiseTilingPerChannel.rrgg * _NoiseTex_TexelSize.xyxy;
-			o.uvB = v.texcoord.xy + v.texcoord1.xy * _NoiseTilingPerChannel.bb * _NoiseTex_TexelSize.xy;
-
 			return o; 
 		}
 
-		float4 frag ( v2f i ) : COLOR
+		half4 frag ( v2f i ) : COLOR
 		{	
-			float4 color = (tex2D (_MainTex, i.uv_screen.xy));
+			half4 color = tex2D (_MainTex, i.uv_screen.xy);
 			
-			// black & white intensities
-			float2 blackWhiteCurve = Luminance(color.rgb) - _MidGrey.x; // maybe tweak middle grey
-			blackWhiteCurve.xy = saturate(blackWhiteCurve.xy * _MidGrey.yz); //float2(1.0/0.8, -1.0/0.2));
-
-			float finalIntensity = _NoiseAmount.x + max(0.0f, dot(_NoiseAmount.zy, blackWhiteCurve.xy));
+			// curves
+			half2 blackWhiteCurve = half2(saturate(Luminance(color.rgb)), saturate(1.0-saturate(Luminance(color.rgb))));
+			blackWhiteCurve *= blackWhiteCurve;
+			half blackWhiteIntensity = _NoiseAmount.z * (blackWhiteCurve.x) + _NoiseAmount.y * saturate(blackWhiteCurve.y);
 			
-			// fetching & scaling noise (COMPILER BUG WORKAROUND)
-			float3 m = float3(0,0,0);
-			m += (tex2D(_NoiseTex, i.uvRg.xy) * float4(1,0,0,0)).rgb;
-			m += (tex2D(_NoiseTex, i.uvRg.zw) * float4(0,1,0,0)).rgb;
-			m += (tex2D(_NoiseTex, i.uvB.xy) * float4(0,0,1,0)).rgb;
-
-			m = saturate(lerp(float3(0.5,0.5,0.5), m, _NoisePerChannel.rgb * float3(finalIntensity,finalIntensity,finalIntensity) ));
-
-			return float4(Overlay(m, color.rgb), color.a);
+			// overlay noise mask
+			half3 m = half3(0.0, 0.0, 0.0);
+			
+			m.r = tex2D(_NoiseTex, i.uv.xy + i.uv2.xy*_NoiseTex_TexelSize.xy*_NoiseTilingPerChannel.r).r;
+			m.g = tex2D(_NoiseTex, i.uv.xy + i.uv2.xy*_NoiseTex_TexelSize.xy*_NoiseTilingPerChannel.g).g;
+			m.b = tex2D(_NoiseTex, i.uv.xy + i.uv2.xy*_NoiseTex_TexelSize.xy*_NoiseTilingPerChannel.b).b;
+			
+			m = m * 2 - 1;
+			m *= _NoisePerChannel.rgb * color.rgb * (_NoiseAmount.x) * blackWhiteIntensity;
+			m = m * 0.5 + 0.5;
+						
+			color.rgb = saturate(color.rgb) * 255.0;
+			m = saturate(m) * 255.0;
+			
+			// overlay blend mode
+			color.rgb = (color.rgb/255.0) * (color.rgb + ((2*m)/(255.0)) * (255.0-color.rgb));
+			color.rgb /= 255.0; 
+			return color;
 		} 
-
-		float4 fragTmp ( v2f i ) : COLOR
-		{	
-			float4 color = (tex2D (_MainTex, i.uv_screen.xy));
-			
-			// black & white intensities
-			float2 blackWhiteCurve = Luminance(color.rgb) - _MidGrey.x; // maybe tweak middle grey
-			blackWhiteCurve.xy = saturate(blackWhiteCurve.xy * _MidGrey.yz); //float2(1.0/0.8, -1.0/0.2));
-
-			float finalIntensity = _NoiseAmount.x + max(0.0f, dot(_NoiseAmount.zy, blackWhiteCurve.xy));
-			
-			// fetching & scaling noise (COMPILER BUG WORKAROUND)
-			float3 m = float3(0,0,0);
-			m += (tex2D(_NoiseTex, i.uvRg.xy) * float4(1,0,0,0)).rgb;
-			m += (tex2D(_NoiseTex, i.uvRg.zw) * float4(0,1,0,0)).rgb;
-			m += (tex2D(_NoiseTex, i.uvB.xy) * float4(0,0,1,0)).rgb;
-
-			m = saturate(lerp(float3(0.5,0.5,0.5), m, _NoisePerChannel.rgb * float3(finalIntensity,finalIntensity,finalIntensity)));
-
-			return float4(m.rgb, color.a);
-		} 			
-
-		float4 fragOverlayBlend	( v2f i ) : COLOR
-		{	
-			float4 color = tex2D(_MainTex, i.uv_screen.xy);
-			float4 m = tex2D(_NoiseTex, i.uv_screen.xy);
-			
-			return float4(Overlay(m, color.rgb), color.a);
-		}	
 	
 	ENDCG
 	
@@ -126,30 +97,6 @@ Shader "Hidden/NoiseAndGrain" {
 		
 		#pragma vertex vert
 		#pragma fragment frag
-		#pragma fragmentoption ARB_precision_hint_fastest 
-		
-		ENDCG
-		 
-		}	
-
-		Pass {
-	
-		CGPROGRAM
-		
-		#pragma vertex vert
-		#pragma fragment fragOverlayBlend
-		#pragma fragmentoption ARB_precision_hint_fastest 
-		
-		ENDCG
-		 
-		}	
-
-		Pass {
-	
-		CGPROGRAM
-		
-		#pragma vertex vert
-		#pragma fragment fragTmp
 		#pragma fragmentoption ARB_precision_hint_fastest 
 		
 		ENDCG

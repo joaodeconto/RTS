@@ -9,7 +9,7 @@ Material:
   m_Name: Water4Example
   m_Shader: {fileID: 4800000, guid: 475c4a4e617a8401b84ca7b32c7cc460, type: 3}
   m_ShaderKeywords: []
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -50,17 +50,17 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _ReflectiveColorCube
-        second:
-          m_Texture: {fileID: 8900000, guid: 0620bdf0302d84423be4aa15b82a0e11, type: 2}
-          m_Scale: {x: .150000006, y: .100000001}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: _Fresnel
         second:
           m_Texture: {fileID: 2800000, guid: 5b5c5575fd4c74abd9f7b30862fb76a3, type: 3}
           m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ReflectiveColorCube
+        second:
+          m_Texture: {fileID: 8900000, guid: 0620bdf0302d84423be4aa15b82a0e11, type: 2}
+          m_Scale: {x: .150000006, y: .100000001}
           m_Offset: {x: 0, y: 0}
       data:
         first:
@@ -156,20 +156,12 @@ Material:
     m_Floats:
       data:
         first:
+          name: _Shininess
+        second: 363
+      data:
+        first:
           name: _InvFade
         second: .628782988
-      data:
-        first:
-          name: _Shininess
-        second: 313.218384
-      data:
-        first:
-          name: _FresnelScale
-        second: .370000005
-      data:
-        first:
-          name: _GerstnerIntensity
-        second: 1.67142856
       data:
         first:
           name: _WaveScale
@@ -184,12 +176,20 @@ Material:
         second: 1.43932855
       data:
         first:
+          name: _FresnelScale
+        second: .657142818
+      data:
+        first:
           name: _HeightDisplacement
         second: 3.27225137
       data:
         first:
           name: _NormalsDisplacement
         second: 0
+      data:
+        first:
+          name: _GerstnerIntensity
+        second: 1.67142856
       data:
         first:
           name: _Displacement
@@ -257,84 +257,28 @@ Material:
         second: {r: 1, g: 1, b: 0, a: 0}
       data:
         first:
-          name: _ReflectionTex_ST
-        second: {r: 1, g: 1, b: 0, a: 0}
-      data:
-        first:
-          name: _DistortParams
-        second: {r: 1.66999996, g: .166999996, b: 4.78999996, a: -1.44000006}
-      data:
-        first:
-          name: _InvFadeParemeter
-        second: {r: .103, g: .123000003, b: .043103449, a: .340000004}
-      data:
-        first:
-          name: _AnimationTiling
-        second: {r: .0458255298, g: .0182000007, b: .0457144678, a: .0271296911}
-      data:
-        first:
-          name: _AnimationDirection
-        second: {r: 2, g: 4, b: 2, a: -1}
-      data:
-        first:
-          name: _BumpTiling
-        second: {r: .0898999944, g: .067900002, b: .0340000018, a: .0407000035}
-      data:
-        first:
-          name: _BumpDirection
-        second: {r: 5.03000021, g: 2.4000001, b: 29.7999992, a: -7.5}
-      data:
-        first:
-          name: _BaseColor
-        second: {r: .134868145, g: .201492548, b: .052628655, a: .68235296}
-      data:
-        first:
-          name: _ReflectionColor
-        second: {r: 1, g: 1, b: 1, a: .866666675}
-      data:
-        first:
-          name: _SpecularColor
-        second: {r: .917910457, g: .917910457, b: .917910457, a: 1}
-      data:
-        first:
-          name: _WorldLightDir
-        second: {r: -.0303751379, g: -.201390833, b: -.979039967, a: 0}
-      data:
-        first:
-          name: _GAmplitude
-        second: {r: 0, g: 0, b: 0, a: 0}
-      data:
-        first:
-          name: _GFrequency
-        second: {r: 0, g: 0, b: 0, a: 0}
-      data:
-        first:
-          name: _GSteepness
-        second: {r: 0, g: 0, b: 0, a: 0}
-      data:
-        first:
-          name: _GSpeed
-        second: {r: 0, g: 0, b: 0, a: 30}
-      data:
-        first:
-          name: _GDirectionAB
-        second: {r: 0, g: 0, b: 0, a: 0}
-      data:
-        first:
-          name: _GDirectionCD
-        second: {r: 0, g: 0, b: 0, a: 0}
+          name: WaveSpeed
+        second: {r: 1.08616495, g: 4.44057512, b: 12.1051464, a: -3.02064466}
       data:
         first:
           name: _RefrColor
         second: {r: .523390472, g: .947761178, b: .912149608, a: 1}
       data:
         first:
-          name: _Fresnel_ST
+          name: _HorizonColor
+        second: {r: .052907113, g: .244867355, b: .283582091, a: 1}
+      data:
+        first:
+          name: _ReflectionTex_ST
         second: {r: 1, g: 1, b: 0, a: 0}
       data:
         first:
-          name: WaveSpeed
-        second: {r: 1.08616495, g: 4.44057512, b: 12.1051464, a: -3.02064466}
+          name: _RefractionTex_ST
+        second: {r: 1, g: 1, b: 0, a: 0}
+      data:
+        first:
+          name: _Fresnel_ST
+        second: {r: 1, g: 1, b: 0, a: 0}
       data:
         first:
           name: _ReflectiveColor_ST
@@ -342,14 +286,6 @@ Material:
       data:
         first:
           name: _ReflectiveColorCube_ST
-        second: {r: 1, g: 1, b: 0, a: 0}
-      data:
-        first:
-          name: _HorizonColor
-        second: {r: .052907113, g: .244867355, b: .283582091, a: 1}
-      data:
-        first:
-          name: _RefractionTex_ST
         second: {r: 1, g: 1, b: 0, a: 0}
       data:
         first:
@@ -361,16 +297,80 @@ Material:
         second: {r: 1, g: 1, b: -.00999999978, a: -.00999999978}
       data:
         first:
-          name: _Foam
-        second: {r: .145999998, g: .238999993, b: 0, a: 0}
-      data:
-        first:
           name: _Displacement
         second: {r: 6.6371665, g: 20.3539829, b: -1, a: -.681415975}
       data:
         first:
           name: _ShoreTiling
         second: {r: 1, g: 1, b: .100000001, a: .100000001}
+      data:
+        first:
+          name: _DistortParams
+        second: {r: 1.43999994, g: .386000007, b: 1.85306406, a: -.531428456}
+      data:
+        first:
+          name: _InvFadeParemeter
+        second: {r: .44600001, g: .839999974, b: .043103449, a: .523999989}
+      data:
+        first:
+          name: _AnimationTiling
+        second: {r: .0458255298, g: .0182000007, b: .0457144678, a: .0271296911}
+      data:
+        first:
+          name: _AnimationDirection
+        second: {r: 2, g: 4, b: 2, a: -1}
+      data:
+        first:
+          name: _BumpTiling
+        second: {r: .119999997, g: .0350000001, b: .0799999982, a: .0299999993}
+      data:
+        first:
+          name: _BumpDirection
+        second: {r: 3, g: 3, b: -3, a: -3}
+      data:
+        first:
+          name: _BaseColor
+        second: {r: 0, g: .176470578, b: .015821455, a: 1}
+      data:
+        first:
+          name: _ReflectionColor
+        second: {r: .579416394, g: .684923828, b: .76119405, a: .431372553}
+      data:
+        first:
+          name: _SpecularColor
+        second: {r: .917910457, g: .917910457, b: .917910457, a: 1}
+      data:
+        first:
+          name: _WorldLightDir
+        second: {r: -.0303751379, g: -.201390833, b: -.979039967, a: 0}
+      data:
+        first:
+          name: _GAmplitude
+        second: {r: .00999999978, g: .00999999978, b: .00999999978, a: .00999999978}
+      data:
+        first:
+          name: _GFrequency
+        second: {r: 5, g: 5, b: 5, a: 5}
+      data:
+        first:
+          name: _GSteepness
+        second: {r: .100000001, g: .100000001, b: .100000001, a: .100000001}
+      data:
+        first:
+          name: _GSpeed
+        second: {r: -1, g: 1, b: -1, a: 1}
+      data:
+        first:
+          name: _GDirectionAB
+        second: {r: .100000001, g: .100000001, b: 4.19999981, a: .100000001}
+      data:
+        first:
+          name: _GDirectionCD
+        second: {r: .100000001, g: .100000001, b: .100000001, a: .100000001}
+      data:
+        first:
+          name: _Foam
+        second: {r: .460000008, g: .419999987, b: 0, a: 0}
       data:
         first:
           name: _DepthColor

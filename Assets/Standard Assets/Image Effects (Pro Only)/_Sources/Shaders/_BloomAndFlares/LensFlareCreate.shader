@@ -11,11 +11,13 @@ Shader "Hidden/LensFlareCreate" {
 		float4 pos : POSITION;
 		float2 uv[4] : TEXCOORD0;
 	};
-		
-	fixed4 colorA;
-	fixed4 colorB; 
-	fixed4 colorC; 
-	fixed4 colorD; 
+	
+	float4 resolution;
+	
+	float4 colorA;
+	float4 colorB; 
+	float4 colorC; 
+	float4 colorD; 
 	
 	sampler2D _MainTex;
 		
@@ -30,8 +32,8 @@ Shader "Hidden/LensFlareCreate" {
 		return o;
 	}
 	
-	fixed4 frag(v2f i) : COLOR {
-		fixed4 color = float4 (0,0,0,0);
+	half4 frag(v2f i) : COLOR {
+		half4 color = float4 (0,0,0,0);
 		color += tex2D(_MainTex, i.uv[0] ) * colorA;
 		color += tex2D(_MainTex, i.uv[1] ) * colorB;
 		color += tex2D(_MainTex, i.uv[2] ) * colorC;
