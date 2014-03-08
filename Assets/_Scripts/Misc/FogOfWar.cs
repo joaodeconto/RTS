@@ -223,13 +223,13 @@ public class FogOfWar : MonoBehaviour
 		{
 			if(ComponentGetter.Get<GameplayManager>().IsSameTeam(entity.team))
 			{
-				Debug.LogError ("allies: " + entity.name);
+//				Debug.LogError ("allies: " + entity.name);
 				allies.Add(trnsEntity);
 				entityAllies.Add(entity);
 			}
 			else
 			{
-				Debug.LogError ("enemies: " + entity.name);
+//				Debug.LogError ("enemies: " + entity.name);
 				enemies.Add(trnsEntity);
 				entityEnemies.Add(entity);
 			}

@@ -33,6 +33,8 @@ public class InternalMainMenu : MonoBehaviour
 
 		this.player = ConfigurationData.player;
 		
+		Debug.Log ("player: " + player);
+		
 //		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 //
 //		dcb.Init(null, (ht_hud) =>
@@ -89,9 +91,9 @@ public class InternalMainMenu : MonoBehaviour
 				Model.DataScore uc = Score.GetDataScore (DataScoreEnum.UnitsCreated);
 				Model.DataScore bc = Score.GetDataScore (DataScoreEnum.BuildingsCreated);
 			
-				CurrentCrystalsLabel.text  = (cc == null) ? "" : cc.NrPoints.ToString ();
-				CreatedUnitsLabel.text     = (uc == null) ? "" : uc.NrPoints.ToString ();
-				CreatedBuildingsLabel.text = (bc == null) ? "" : bc.NrPoints.ToString ();
+				CurrentCrystalsLabel.text  = (cc == null) ? "0" : cc.NrPoints.ToString ();
+				CreatedUnitsLabel.text     = (uc == null) ? "0" : uc.NrPoints.ToString ();
+				CreatedBuildingsLabel.text = (bc == null) ? "0" : bc.NrPoints.ToString ();
 			}
 		);
 	}

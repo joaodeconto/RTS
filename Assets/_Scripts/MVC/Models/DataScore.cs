@@ -13,9 +13,10 @@ namespace Model {
 
 		public DataScore () { }
 
-		public DataScore (int IdPlayer, string ScoreName, int points)
+		public DataScore (int idPlayer, int idBattle, string ScoreName, int points)
 		{
-			this.IdPlayer    = IdPlayer;
+			this.IdPlayer    = idPlayer;
+			this.IdBattle    = idBattle;
 			this.SzScoreName = ScoreName;
 			this.NrPoints    = points;
 		}

@@ -60,23 +60,25 @@ public class GameplayManager : Photon.MonoBehaviour
 	public static Mode mode;
 
 	public const int MAX_POPULATION_ALLOWED = 200;
-	public const int BOOT_TEAM = 8;
+	public const int BOT_TEAM = 8;
 
 	public Team[] teams;
 
 	public int numberOfUnits { get; protected set; }
 	public int TotalPopulation { get; protected set; }
 	protected int numberOfActiveMainBases;
-	protected int excessHousesIncrements;
-	protected int numberOfHousesMore;
 
 	private List<IHouse> houses = new List<IHouse> ();
+	private Model.PlayerBattle playerBattle;
+	
 	protected List<AllyClass> alliesNumberOfStats = new List<AllyClass>();
+	
 	protected int loserTeams;
 	protected int numberOfTeams;
+
 	protected bool loseGame = false;
 	protected bool winGame = false;
-	protected float currentTime;
+	protected float timeLeftToLoseTheGame;
 
 	protected bool beingAttacked = false;
 
@@ -146,8 +148,6 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiDefeatObject.SetActive (false);
 		hud.uiVictoryObject.SetActive (false);
 		hud.uiLostMainBaseObject.SetActive (false);
-
-		numberOfHousesMore = excessHousesIncrements = 0;
 	}
 	
 	/// <summary>
@@ -237,9 +237,9 @@ public class GameplayManager : Photon.MonoBehaviour
 		return stats.team == MyTeam;
 	}
 
-	public bool IsBoot (int team)
+	public bool IsBotTeam (IStats stats)
 	{
-		return team == BOOT_TEAM;
+		return stats.team == BOT_TEAM;
 	}
 
 	public bool IsAlly (int allyNumber)
@@ -252,7 +252,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		return stats.ally == Allies;
 	}
 
-	public bool SameEntity (int teamID, int ally)
+	public bool IsNotEnemy (int teamID, int ally)
 	{
 		if (GameplayManager.mode == Mode.Cooperative)
 		{
@@ -315,9 +315,9 @@ public class GameplayManager : Photon.MonoBehaviour
 			if (numberOfActiveMainBases == 0)
 			{
 				hud.uiLostMainBaseObject.SetActive (true);
-				currentTime = 40f;
-				hud.labelTime.text = currentTime.ToString () + "s";
-				Invoke ("NoMainBase", currentTime);
+				timeLeftToLoseTheGame = 40f;
+				hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
+				Invoke ("NoMainBase", timeLeftToLoseTheGame);
 				InvokeRepeating ("DecrementTime", 1f, 1f);
 			}
 		}
@@ -371,10 +371,31 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 	}
 
-	public void CheckCondition (int teamID, int ally)
+	void NoMainBase ()
 	{
-		teams[teamID].lose = true;
+		hud.uiLostMainBaseObject.SetActive (false);
 
+		CancelInvoke ("DecrementTime");
+		photonView.RPC ("Defeat", PhotonTargets.All, MyTeam, Allies);
+	}
+
+	void DecrementTime ()
+	{
+		timeLeftToLoseTheGame -= 1f;
+		hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
+	}
+
+	[RPC]
+	void Defeat (int teamID, int ally)
+	{
+		if (teams[teamID].lose) return;
+
+		StatsController sc = ComponentGetter.Get<StatsController> ();
+		
+		sc.DestroyAllStatsTeam (teamID);
+		
+		teams[teamID].lose = true;
+		
 		switch (GameplayManager.mode)
 		{
 		case Mode.Cooperative:
@@ -382,7 +403,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				alliesNumberOfStats[ally].teams.Remove (teamID);
 			}
-
+			
 			if (alliesNumberOfStats[ally].teams.Count == 0)
 			{
 				if (ally == Allies)
@@ -399,17 +420,17 @@ public class GameplayManager : Photon.MonoBehaviour
 				SendMessage ("EndMatch");
 			}
 			break;
-
+			
 		case Mode.Deathmatch:
 			loserTeams++;
-
+			
 			if (MyTeam == teamID)
 			{
 				loseGame = true;
 			}
-
-			if (loserTeams == numberOfTeams-1
-				&& !loseGame)
+			
+			//se o numero de times que perderam for o mesmo de times adversarios o jogador atual ganhou a partida
+			if (loserTeams == numberOfTeams - 1 && !loseGame)
 			{
 				winGame = true;
 			}
@@ -419,33 +440,10 @@ public class GameplayManager : Photon.MonoBehaviour
 				SendMessage ("EndMatch");
 			}
 			break;
-
+			
 		default:
 			break;
 		}
-	}
-
-	void NoMainBase ()
-	{
-		hud.uiLostMainBaseObject.SetActive (false);
-
-		CancelInvoke ("DecrementTime");
-		photonView.RPC ("Defeat", PhotonTargets.All, MyTeam, Allies);
-	}
-
-	void DecrementTime ()
-	{
-		currentTime -= 1f;
-		hud.labelTime.text = currentTime.ToString () + "s";
-	}
-
-	[RPC]
-	void Defeat (int teamID, int ally)
-	{
-		if (teams[teamID].lose) return;
-
-		ComponentGetter.Get<StatsController> ().DestroyAllStatsTeam (teamID);
-		CheckCondition (teamID, ally);
 	}
 
 	void Update ()
@@ -472,10 +470,16 @@ public class GameplayManager : Photon.MonoBehaviour
 	void EndMatch ()
 	{
 		Debug.LogError ("EndMatch");
-
-		/*Score.Save ();
-
+		
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
+		BidManager bm = ComponentGetter.Get <BidManager> ();
+		
+		if (winGame)
+		{
+			bm.WonTheGame ();			
+		}
+
+		Score.Save ();
 
 		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
 		string encodedPlayer = (string)pw.GetPropertyOnPlayer ("player");
@@ -501,6 +505,6 @@ public class GameplayManager : Photon.MonoBehaviour
 						Debug.Log ("salvou playerBattle");
 				});
 			});
-		}*/
+		}
 	}
 }

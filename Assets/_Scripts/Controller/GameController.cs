@@ -31,5 +31,18 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<FogOfWar> ().Init ();
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<EventManager> ().Init ();
+		
+		
+		Score.LoadScores (
+			(dicScore) => 
+			{
+//				foreach (System.Collections.Generic.KeyValuePair<string, Model.DataScore> de in dicScore)
+//				{
+//					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
+//				}
+				ComponentGetter.Get <BidManager> ().PayTheBid ();
+			}
+		);
+		
 	}
 }

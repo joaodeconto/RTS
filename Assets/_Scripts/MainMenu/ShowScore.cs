@@ -20,31 +20,31 @@ public class ShowScore : MonoBehaviour
 		
 		public void AddScorePlayer (string scoreName, int points)
 		{
-			if (scoreName.Equals ("Resources gathered"))
+			if (scoreName.Equals (DataScoreEnum.ResourcesGathered))
 			{
 				resourcesPoints += points;
 			}
-			else if (scoreName.Equals ("Units created"))
+			else if (scoreName.Equals (DataScoreEnum.UnitsCreated))
 			{
 				unitsPoints += points;
 			}
-			else if (scoreName.Equals ("Units killed"))
+			else if (scoreName.Equals (DataScoreEnum.UnitsKilled))
 			{
 				unitsPoints += points;
 			}
-			else if (scoreName.Equals ("Units lost"))
+			else if (scoreName.Equals (DataScoreEnum.UnitsLost))
 			{
 				unitsPoints -= points;
 			}
-			else if (scoreName.Equals ("Buildings created"))
+			else if (scoreName.Equals (DataScoreEnum.BuildingsCreated))
 			{
 				structurePoints += points;
 			}
-			else if (scoreName.Equals ("Destroyed buildings"))
+			else if (scoreName.Equals (DataScoreEnum.DestroyedBuildings))
 			{
 				structurePoints += points;
 			}
-			else if (scoreName.Equals ("Buildings lost"))
+			else if (scoreName.Equals (DataScoreEnum.BuildingsLost))
 			{
 				structurePoints -= points;
 			}
@@ -80,7 +80,7 @@ public class ShowScore : MonoBehaviour
 			ActiveScoreMenu (true);
 			
 			Dictionary<int, ScorePlayer> players = new Dictionary<int, ScorePlayer>();
-			
+			/*
 			Score.LoadBattle
 			(
 				(dicScore) =>
@@ -110,6 +110,7 @@ public class ShowScore : MonoBehaviour
 					}
 				}
 			);
+			*/
 			
 			DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init (null,

@@ -167,7 +167,7 @@ public class Unit : IStats, IMovementObservable,
 
 	void OnDestroy ()
 	{
-		if (gameplayManager.IsBoot (team)) return;
+		if (gameplayManager.IsBotTeam (this)) return;
 		
 		if (Selected && !playerUnit)
 		{
@@ -175,7 +175,7 @@ public class Unit : IStats, IMovementObservable,
 
 			Deselect ();
 		}
-		if (!IsRemoved && !playerUnit)
+		if (!WasRemoved && !playerUnit)
 		{
 			statsController.RemoveStats (this);
 		}
@@ -183,7 +183,7 @@ public class Unit : IStats, IMovementObservable,
 
 	public virtual void IAStep ()
 	{
-		if (gameplayManager.IsBoot (team))
+		if (gameplayManager.IsBotTeam (this))
 		{
 			if (!PhotonNetwork.isMasterClient)
 				return;
@@ -254,7 +254,7 @@ public class Unit : IStats, IMovementObservable,
 
 				if (TargetAttack != null)
 				{
-					if (TargetAttack.GetComponent<IStats>().IsRemoved)
+					if (TargetAttack.GetComponent<IStats>().WasRemoved)
 					{
 						TargetingEnemy (null);
 						IsAttacking = false;
@@ -544,7 +544,7 @@ public class Unit : IStats, IMovementObservable,
 	{
 		if (enemy != null)
 		{
-			if (!gameplayManager.IsBoot (enemy.GetComponent<IStats>().team))
+			if (!gameplayManager.IsBotTeam (enemy.GetComponent<IStats>()))
 			{
 				PhotonPlayer[] pp = (from pps in PhotonNetwork.playerList
 							         where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
@@ -650,51 +650,55 @@ public class Unit : IStats, IMovementObservable,
 		if (nearbyUnits.Length == 0) return;
 
 		GameObject enemyFound = null;
+		IStats cStats = null;
+		
         for (int i = 0; i != nearbyUnits.Length; i++)
 		{
-			if (nearbyUnits[i].GetComponent<IStats> ())
+			cStats = nearbyUnits[i].GetComponent<IStats> ();
+			if (cStats)
 			{
-				if (gameplayManager.IsBoot (team))
+				if (gameplayManager.IsBotTeam (this))
 				{
-					if (gameplayManager.IsBoot (nearbyUnits[i].GetComponent<IStats> ().team))
+					if (gameplayManager.IsBotTeam (cStats))
 						continue;
 					
 					if (enemyFound == null)
 					{
-						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
-							enemyFound = nearbyUnits[i].gameObject;
+						if (!cStats.WasRemoved)
+						{
+							enemyFound = cStats.gameObject;
+						}
 					}
 					else
 					{
-						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
+						if (!cStats.WasRemoved)
 						{
-							if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
+							if (Vector3.Distance (transform.position, cStats.transform.position) <
 								Vector3.Distance (transform.position, enemyFound.transform.position))
 							{
-								enemyFound = nearbyUnits[i].gameObject;
+								enemyFound = cStats.gameObject;
 							}
 						}
 					}
 				}
 				else
 				{
-					if (gameplayManager.SameEntity (nearbyUnits[i].GetComponent<IStats> ().team,
-													nearbyUnits[i].GetComponent<IStats> ().ally))
+					if (gameplayManager.IsNotEnemy (cStats.team, cStats.ally))
 						continue;
 					
 					if (enemyFound == null)
 					{
-						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
+						if (!cStats.WasRemoved)
 							enemyFound = nearbyUnits[i].gameObject;
 					}
 					else
 					{
-						if (!nearbyUnits[i].GetComponent<IStats> ().IsRemoved)
+						if (!cStats.WasRemoved)
 						{
-							if (Vector3.Distance (transform.position, nearbyUnits[i].transform.position) <
+							if (Vector3.Distance (transform.position, cStats.transform.position) <
 								Vector3.Distance (transform.position, enemyFound.transform.position))
 							{
-								enemyFound = nearbyUnits[i].gameObject;
+								enemyFound = cStats.gameObject;
 							}
 						}
 					}
@@ -702,8 +706,7 @@ public class Unit : IStats, IMovementObservable,
 			}
         }
 
-		if (enemyFound == null) return;
-		else
+		if (enemyFound != null)
 		{
 			TargetingEnemy (enemyFound);
 		}
@@ -764,17 +767,17 @@ public class Unit : IStats, IMovementObservable,
 			{
 				PhotonNetwork.Destroy(gameObject);
 
-				Score.AddScorePoints ("Units lost", 1);
-				Score.AddScorePoints ("Units lost", 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + " lost", 1);
-				Score.AddScorePoints (this.category + " lost", 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1);
+				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
+				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
 			}
 			else
 			{
-				Score.AddScorePoints ("Units killed", 1);
-				Score.AddScorePoints ("Units killed", 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + " killed", 1);
-				Score.AddScorePoints (this.category + " killed", 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1);
+				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1);
+				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1, battle.IdBattle);
 			}
 
 		}
