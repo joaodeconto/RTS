@@ -215,12 +215,6 @@ public class Worker : Unit
 
 					resourceId = -1;
 
-					PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-					Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
-
-					Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberMaxGetResources);
-					Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberMaxGetResources, battle.IdBattle);
-
 					ResetPathfindValue ();
 				}
 				break;
@@ -350,14 +344,14 @@ public class Worker : Unit
 			ht = new Hashtable();
 			ht["factory"] = fc;
 
-			if (fc.costOfResources.NumberOfRocks != 0)
+			if (fc.costOfResources.Rocks != 0)
 			{
-				ht["gold"] = fc.costOfResources.NumberOfRocks;
+				ht["gold"] = fc.costOfResources.Rocks;
 			}
 			
-			if (fc.costOfResources.NumberOfMana != 0)
+			if (fc.costOfResources.Mana != 0)
 			{
-				ht["mana"] = fc.costOfResources.NumberOfMana;
+				ht["mana"] = fc.costOfResources.Mana;
 			}
 
 			hudController.CreateButtonInInspector ( fc.factory.name,

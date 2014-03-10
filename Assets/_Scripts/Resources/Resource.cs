@@ -2,55 +2,95 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using Visiorama;
+
 [System.Serializable]
 public class ResourcesManager
 {
-	public int NumberOfRocks;
-	public int NumberOfMana;
+	public int m_mana;
+	public int m_rocks;
 
-	public ResourcesManager ()
+	public int Rocks {
+		get { return m_rocks; }
+		set {
+			m_rocks = value;
+
+			Model.Battle battle = GetCurrentBattle ();
+
+			if (battle != null)
+			{
+				Score.SetScorePoints (DataScoreEnum.ResourcesGathered, m_rocks);
+				Score.SetScorePoints (DataScoreEnum.ResourcesGathered, m_rocks, battle.IdBattle);
+			}
+
+			Score.Save ();
+		}
+	}
+
+	public int Mana {
+		get { return m_mana; }
+		set {
+			m_mana = value;
+			
+			Model.Battle battle = GetCurrentBattle ();
+			
+			if (battle != null)
+			{
+				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, m_mana);
+				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, m_mana, battle.IdBattle);
+			}
+			Score.Save ();
+		}
+	}
+	
+	private Model.Battle GetCurrentBattle  ()
 	{
-		NumberOfRocks = 50;
-		NumberOfMana = 50;
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+		Model.Battle battle = null;
+		if (pw.GetPropertyOnRoom ("battle") != null)
+		{
+			battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+		}
+		return battle;
 	}
 
 	public void Set (Resource.Type resourceType, int numberOfResources)
 	{
 		if (resourceType == Resource.Type.Rock)
 		{
-			NumberOfRocks += numberOfResources;
+			Rocks += numberOfResources;
 		}
 
 		if (resourceType == Resource.Type.Mana)
 		{
-			NumberOfMana += numberOfResources;
+			Mana += numberOfResources;
 		}
 	}
 
 	public bool CanBuy (ResourcesManager resourceCost, bool discount = true)
 	{
-		if (NumberOfRocks - resourceCost.NumberOfRocks < 0)
+		if (Rocks - resourceCost.Rocks < 0)
 		{
 			return false;
 		}
 
-		if (discount) NumberOfRocks -= resourceCost.NumberOfRocks;
+		if (discount) Rocks -= resourceCost.Rocks;
 		return true;
 
-		if (NumberOfMana - resourceCost.NumberOfMana < 0)
+		if (Mana - resourceCost.Mana < 0)
 		{
 			return false;
 		}
 		
-		if (discount) NumberOfMana -= resourceCost.NumberOfMana;
+		if (discount) Mana -= resourceCost.Mana;
 		return true;
 	}
 
 	public void ReturnResources (ResourcesManager resourceCost, float percent = 1f)
 	{
-		NumberOfRocks += Mathf.FloorToInt((float)resourceCost.NumberOfRocks * percent);
+		Rocks += Mathf.FloorToInt((float)resourceCost.Rocks * percent);
 
-		NumberOfMana += Mathf.FloorToInt((float)resourceCost.NumberOfMana * percent);
+		Mana += Mathf.FloorToInt((float)resourceCost.Mana * percent);
 	}
 }
 

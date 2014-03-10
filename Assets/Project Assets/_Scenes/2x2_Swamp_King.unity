@@ -328,8 +328,8 @@ MonoBehaviour:
   playerUnit: 0
   category: Raptor
   costOfResources:
-    NumberOfRocks: 100
-    NumberOfMana: 0
+    m_mana: 0
+    m_rocks: 0
   model: {fileID: 1106901130}
   force: 10
   distanceView: 9.39999962
@@ -650,7 +650,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 15329711}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .684410691, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1430138025}
@@ -12435,6 +12435,46 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
+--- !u!1 &294796128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 294796130}
+  - 114: {fileID: 294796129}
+  m_Layer: 0
+  m_Name: PhotonWrapper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &294796129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 294796128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 709020094301e1342baad06ecd512f24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RefreshingInterval: .200000003
+  menusDissapearWhenLogged: []
+--- !u!4 &294796130
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 294796128}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 757002615}
 --- !u!1 &296263347
 GameObject:
   m_ObjectHideFlags: 0
@@ -18352,6 +18392,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1791184224}
+  - {fileID: 753387697}
   m_Father: {fileID: 0}
 --- !u!1 &410059748
 GameObject:
@@ -18556,7 +18597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 1
+  autoload: 0
   targetFPS: 45
 --- !u!1 &416385570
 GameObject:
@@ -19027,8 +19068,8 @@ MonoBehaviour:
   playerUnit: 0
   category: Worker
   costOfResources:
-    NumberOfRocks: 50
-    NumberOfMana: 50
+    m_mana: 0
+    m_rocks: 0
   model: {fileID: 479395043}
   force: 2
   distanceView: 10
@@ -19074,43 +19115,43 @@ MonoBehaviour:
   factoryConstruction:
   - factory: {fileID: 11400000, guid: 74c85a2adc76ed644b091d367b2acdfc, type: 2}
     costOfResources:
-      NumberOfRocks: 400
-      NumberOfMana: 0
+      m_mana: 0
+      m_rocks: 0
     gridItemAttributes:
       gridXIndex: 0
       gridYIndex: 1
   - factory: {fileID: 11400004, guid: a77a63a079277ef4299d9bfed72091ab, type: 2}
     costOfResources:
-      NumberOfRocks: 300
-      NumberOfMana: 0
+      m_mana: 0
+      m_rocks: 0
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 2
   - factory: {fileID: 11400004, guid: bda9eea0154e54849a501374d7ba96d0, type: 2}
     costOfResources:
-      NumberOfRocks: 80
-      NumberOfMana: 0
+      m_mana: 0
+      m_rocks: 0
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 1
   - factory: {fileID: 11400004, guid: 5e1b63fa02d6b9b4fb77e80864c091dd, type: 2}
     costOfResources:
-      NumberOfRocks: 70
-      NumberOfMana: 0
+      m_mana: 0
+      m_rocks: 0
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 1
   - factory: {fileID: 11400004, guid: 1814a739a4bf72a4ab45559e209322db, type: 2}
     costOfResources:
-      NumberOfRocks: 90
-      NumberOfMana: 0
+      m_mana: 0
+      m_rocks: 0
     gridItemAttributes:
       gridXIndex: 0
       gridYIndex: 2
   - factory: {fileID: 11400008, guid: 5959741365e43614f99fc41eed01fd0a, type: 2}
     costOfResources:
-      NumberOfRocks: 200
-      NumberOfMana: 50
+      m_mana: 0
+      m_rocks: 0
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 2
@@ -23211,7 +23252,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 547710088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .684410691, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 77425637}
@@ -31802,7 +31843,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 746434021}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 522.205322, y: 0, z: 0}
+  m_LocalPosition: {x: 480, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 313903784}
@@ -31826,6 +31867,46 @@ MonoBehaviour:
   relativeOffset: {x: 0, y: 0}
   pixelOffset: {x: 0, y: 0}
   widgetContainer: {fileID: 0}
+--- !u!1 &753387696
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 753387697}
+  - 114: {fileID: 753387698}
+  m_Layer: 0
+  m_Name: PhotonWrapper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &753387697
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 753387696}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 406639595}
+--- !u!114 &753387698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 753387696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 709020094301e1342baad06ecd512f24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RefreshingInterval: .200000003
+  menusDissapearWhenLogged: []
 --- !u!1001 &753733833
 Prefab:
   m_ObjectHideFlags: 0
@@ -31926,6 +32007,33 @@ Prefab:
   m_RootGameObject: {fileID: 1265940130}
   m_IsPrefabParent: 0
   m_IsExploded: 1
+--- !u!1 &757002614
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 757002615}
+  m_Layer: 0
+  m_Name: Components
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &757002615
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 757002614}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 294796130}
+  m_Father: {fileID: 0}
 --- !u!1 &757719022
 GameObject:
   m_ObjectHideFlags: 0
@@ -34148,7 +34256,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 827083530}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 522.205322, y: -360, z: 0}
+  m_LocalPosition: {x: 480, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 852477438}
@@ -38849,7 +38957,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 910518395}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .684410691, y: 360, z: 0}
+  m_LocalPosition: {x: 0, y: 360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2075622739}
@@ -40743,7 +40851,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 937397908}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -522.205322, y: 360, z: 0}
+  m_LocalPosition: {x: -480, y: 360, z: 0}
   m_LocalScale: {x: 1.00012505, y: 1.00012505, z: 1.00012505}
   m_Children:
   - {fileID: 473881013}
@@ -42072,7 +42180,6 @@ GameObject:
   - 33: {fileID: 951990377}
   - 23: {fileID: 951990376}
   - 114: {fileID: 951990375}
-  - 114: {fileID: 951990374}
   m_Layer: 15
   m_Name: Rock_06
   m_TagString: Untagged
@@ -42091,30 +42198,6 @@ Transform:
   m_LocalScale: {x: 7.32708168, y: 6.856071, z: 6.856071}
   m_Children: []
   m_Father: {fileID: 2031275103}
---- !u!114 &951990374
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11400002, guid: f6058fb94f94ef94db0e4120cb48779e,
-    type: 2}
-  m_PrefabInternal: {fileID: 948927930}
-  m_GameObject: {fileID: 951990372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1374685535, guid: f22c2bae7d3934637aeece17197d22ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cruncherTargets:
-  - {fileID: 951990375}
-  cmc:
-    removeTJunctions: 1
-    removeTJunctionsThreshold: .100000001
-    joinVertices: 1
-    joinVerticesThreshold: 9.99999975e-05
-    joinUvs: 0
-    joinUvsThreshold: 9.99999975e-05
-    joinNormals: 0
-    joinNormalsThreshold: 60
-    recalculateNormals: 0
 --- !u!114 &951990375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42237,6 +42320,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabInstantiate: {fileID: 100000, guid: 097090cf2466e1b408f34f8b34778481, type: 2}
+--- !u!1 &965753678
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 965753680}
+  - 114: {fileID: 965753679}
+  m_Layer: 0
+  m_Name: PhotonWrapper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &965753679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 965753678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 709020094301e1342baad06ecd512f24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RefreshingInterval: .200000003
+  menusDissapearWhenLogged: []
+--- !u!4 &965753680
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 965753678}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1205014470}
 --- !u!1 &974848145
 GameObject:
   m_ObjectHideFlags: 0
@@ -43392,7 +43515,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1005052626}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -522.205322, y: -360, z: 0}
+  m_LocalPosition: {x: -480, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 646724040}
@@ -45173,7 +45296,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1041310879}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .684410691, y: -360, z: 0}
+  m_LocalPosition: {x: 0, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1570439998}
@@ -55420,6 +55543,33 @@ Transform:
   m_LocalScale: {x: .99999994, y: .99999994, z: .99999994}
   m_Children: []
   m_Father: {fileID: 1241309658}
+--- !u!1 &1205014469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1205014470}
+  m_Layer: 0
+  m_Name: Components
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1205014470
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1205014469}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 965753680}
+  m_Father: {fileID: 0}
 --- !u!1 &1205064522
 GameObject:
   m_ObjectHideFlags: 0
@@ -59334,7 +59484,6 @@ GameObject:
   - 33: {fileID: 1265940135}
   - 23: {fileID: 1265940134}
   - 114: {fileID: 1265940133}
-  - 114: {fileID: 1265940132}
   m_Layer: 15
   m_Name: Rock_06
   m_TagString: Untagged
@@ -59353,30 +59502,6 @@ Transform:
   m_LocalScale: {x: 3.79936337, y: 3.55512691, z: 3.55512691}
   m_Children: []
   m_Father: {fileID: 2031275103}
---- !u!114 &1265940132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11400002, guid: f6058fb94f94ef94db0e4120cb48779e,
-    type: 2}
-  m_PrefabInternal: {fileID: 753733833}
-  m_GameObject: {fileID: 1265940130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1374685535, guid: f22c2bae7d3934637aeece17197d22ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cruncherTargets:
-  - {fileID: 1265940133}
-  cmc:
-    removeTJunctions: 1
-    removeTJunctionsThreshold: .100000001
-    joinVertices: 1
-    joinVerticesThreshold: 9.99999975e-05
-    joinUvs: 0
-    joinUvsThreshold: 9.99999975e-05
-    joinNormals: 0
-    joinNormalsThreshold: 60
-    recalculateNormals: 0
 --- !u!114 &1265940133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61405,7 +61530,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400036, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: autoload
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11400020, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: zoomSettings.cameras.Array.data[2]
@@ -63376,8 +63501,8 @@ MonoBehaviour:
   playerUnit: 0
   category: Spearman
   costOfResources:
-    NumberOfRocks: 50
-    NumberOfMana: 50
+    m_mana: 0
+    m_rocks: 0
   model: {fileID: 875897747}
   force: 4
   distanceView: 20
@@ -72813,8 +72938,8 @@ MonoBehaviour:
   playerUnit: 0
   category: Raptor
   costOfResources:
-    NumberOfRocks: 150
-    NumberOfMana: 0
+    m_mana: 0
+    m_rocks: 0
   model: {fileID: 675423197}
   force: 6
   distanceView: 9.39999962
@@ -78785,7 +78910,6 @@ GameObject:
   - 33: {fileID: 1731736373}
   - 23: {fileID: 1731736372}
   - 114: {fileID: 1731736371}
-  - 114: {fileID: 1731736370}
   m_Layer: 15
   m_Name: Rock_06
   m_TagString: Untagged
@@ -78804,30 +78928,6 @@ Transform:
   m_LocalScale: {x: 3.24604845, y: 3.03738189, z: 3.03738236}
   m_Children: []
   m_Father: {fileID: 2031275103}
---- !u!114 &1731736370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11400002, guid: f6058fb94f94ef94db0e4120cb48779e,
-    type: 2}
-  m_PrefabInternal: {fileID: 1184951502}
-  m_GameObject: {fileID: 1731736368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1374685535, guid: f22c2bae7d3934637aeece17197d22ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cruncherTargets:
-  - {fileID: 1731736371}
-  cmc:
-    removeTJunctions: 1
-    removeTJunctionsThreshold: .100000001
-    joinVertices: 1
-    joinVerticesThreshold: 9.99999975e-05
-    joinUvs: 0
-    joinUvsThreshold: 9.99999975e-05
-    joinNormals: 0
-    joinNormalsThreshold: 60
-    recalculateNormals: 0
 --- !u!114 &1731736371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79053,7 +79153,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1754747040}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 522.205322, y: 360, z: 0}
+  m_LocalPosition: {x: 480, y: 360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1685659520}
@@ -79720,8 +79820,8 @@ MonoBehaviour:
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 940763748}
   resources:
-    NumberOfRocks: 600
-    NumberOfMana: 100
+    m_mana: 0
+    m_rocks: 0
   hud:
     labelRocks: {fileID: 2024853695}
     labelMana: {fileID: 996628}
@@ -81188,7 +81288,6 @@ GameObject:
   - 33: {fileID: 1797708922}
   - 23: {fileID: 1797708921}
   - 114: {fileID: 1797708920}
-  - 114: {fileID: 1797708919}
   m_Layer: 15
   m_Name: Rock_06
   m_TagString: Untagged
@@ -81207,30 +81306,6 @@ Transform:
   m_LocalScale: {x: 5.53568792, y: 5.17983484, z: 5.1798358}
   m_Children: []
   m_Father: {fileID: 2031275103}
---- !u!114 &1797708919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11400002, guid: f6058fb94f94ef94db0e4120cb48779e,
-    type: 2}
-  m_PrefabInternal: {fileID: 739403685}
-  m_GameObject: {fileID: 1797708917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1374685535, guid: f22c2bae7d3934637aeece17197d22ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cruncherTargets:
-  - {fileID: 1797708920}
-  cmc:
-    removeTJunctions: 1
-    removeTJunctionsThreshold: .100000001
-    joinVertices: 1
-    joinVerticesThreshold: 9.99999975e-05
-    joinUvs: 0
-    joinUvsThreshold: 9.99999975e-05
-    joinNormals: 0
-    joinNormalsThreshold: 60
-    recalculateNormals: 0
 --- !u!114 &1797708920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87494,8 +87569,8 @@ MonoBehaviour:
   playerUnit: 0
   category: Triceratops
   costOfResources:
-    NumberOfRocks: 200
-    NumberOfMana: 0
+    m_mana: 0
+    m_rocks: 0
   model: {fileID: 11670182}
   force: 8
   distanceView: 10
@@ -90909,7 +90984,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &1999008876
 Transform:
-  m_ObjectHideFlags: 10
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400016, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
   m_PrefabInternal: {fileID: 1354066746}
   m_GameObject: {fileID: 1999008875}
@@ -91252,8 +91327,8 @@ MonoBehaviour:
   playerUnit: 0
   category: Neanderthal
   costOfResources:
-    NumberOfRocks: 200
-    NumberOfMana: 0
+    m_mana: 0
+    m_rocks: 0
   model: {fileID: 1466649375}
   force: 7
   distanceView: 7
@@ -91788,7 +91863,6 @@ GameObject:
   - 33: {fileID: 2017132998}
   - 23: {fileID: 2017132997}
   - 114: {fileID: 2017132996}
-  - 114: {fileID: 2017132995}
   m_Layer: 15
   m_Name: Rock_06
   m_TagString: Untagged
@@ -91807,30 +91881,6 @@ Transform:
   m_LocalScale: {x: 3.24604797, y: 3.03738117, z: 3.03738141}
   m_Children: []
   m_Father: {fileID: 2031275103}
---- !u!114 &2017132995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11400002, guid: f6058fb94f94ef94db0e4120cb48779e,
-    type: 2}
-  m_PrefabInternal: {fileID: 1855068280}
-  m_GameObject: {fileID: 2017132993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1374685535, guid: f22c2bae7d3934637aeece17197d22ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cruncherTargets:
-  - {fileID: 2017132996}
-  cmc:
-    removeTJunctions: 1
-    removeTJunctionsThreshold: .100000001
-    joinVertices: 1
-    joinVerticesThreshold: 9.99999975e-05
-    joinUvs: 0
-    joinUvsThreshold: 9.99999975e-05
-    joinNormals: 0
-    joinNormalsThreshold: 60
-    recalculateNormals: 0
 --- !u!114 &2017132996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99135,8 +99185,8 @@ MonoBehaviour:
   playerUnit: 0
   category: Rex
   costOfResources:
-    NumberOfRocks: 300
-    NumberOfMana: 50
+    m_mana: 0
+    m_rocks: 0
   model: {fileID: 2128287808}
   force: 10
   distanceView: 12
