@@ -114,6 +114,13 @@ public class FogOfWar : MonoBehaviour
 		for (i = (allies.Count - 1); i != -1; --i)
 		{
 			trns = allies[i];
+			
+			if (trns == null)
+			{
+				allies.RemoveAt(i);
+				entityAllies.RemoveAt(i);
+				continue;
+			}
 
 			posX = (int)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
 			posY = (int)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
@@ -180,7 +187,6 @@ public class FogOfWar : MonoBehaviour
 			{
 					  enemies.RemoveAt(i);
 				entityEnemies.RemoveAt(i);
-				++i;
 				continue;
 			}
 
