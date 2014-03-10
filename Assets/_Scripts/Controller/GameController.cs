@@ -40,6 +40,15 @@ public class GameController : MonoBehaviour
 //				{
 //					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
 //				}
+				
+				int manaAmount = dicScore.ContainsKey (DataScoreEnum.CurrentCrystals)
+									? dicScore[DataScoreEnum.CurrentCrystals].NrPoints
+									: 0;
+				
+				ResourcesManager resourcesManager = ComponentGetter.Get<GameplayManager> ().resources;
+
+				resourcesManager.Mana = manaAmount;
+
 				ComponentGetter.Get <BidManager> ().PayTheBid ();
 			}
 		);

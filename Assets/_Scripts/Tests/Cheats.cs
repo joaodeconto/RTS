@@ -54,7 +54,7 @@ public class Cheats : MonoBehaviour
 		if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown (KeyCode.K))
 		{
 			GameplayManager gm = Visiorama.ComponentGetter.Get <GameplayManager> ();
-			gm.resources.NumberOfRocks += 100;
+			gm.resources.Rocks += 100;
 		}
 		#endif
 	}

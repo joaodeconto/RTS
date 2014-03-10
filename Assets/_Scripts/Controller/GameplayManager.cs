@@ -448,8 +448,8 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void Update ()
 	{
-		hud.labelMana.text = resources.NumberOfMana.ToString ();
-		hud.labelRocks.text = resources.NumberOfRocks.ToString ();
+		hud.labelMana.text = resources.Mana.ToString ();
+		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
 
 		if (loseGame || winGame)

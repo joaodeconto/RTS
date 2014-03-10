@@ -18,6 +18,9 @@ public class GhostFactory : MonoBehaviour
 	
 	private bool isCapsuleCollider;
 
+	private int terrainLayer = (1 << LayerMask.NameToLayer ("Terrain"));
+	private int navMeshLayer = (1 << NavMesh.GetNavMeshLayerFromName ("Default"));
+
 	public void Init (Worker worker, Worker.FactoryConstruction factoryConstruction)
 	{
 		GameObject oldGhost = GameObject.Find ("GhostFactory");
@@ -97,25 +100,34 @@ public class GhostFactory : MonoBehaviour
 		
 		Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit;
+		NavMeshHit navHit;
+		bool collideOnNavMeshLayer;
 
 		// Patch transform com hit.point
 		transform.position = Vector3.zero;
 		
-		Debug.Log (1 << LayerMask.NameToLayer ("Terrain"));
+		Debug.Log (terrainLayer);
 		
-		if (Physics.Raycast (ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer ("Terrain")))
+		if (Physics.Raycast (ray, out hit, Mathf.Infinity, terrainLayer))
 		{
 			transform.position = hit.point;
 		}
-
 		if (touchController.touchType == TouchController.TouchType.Ended)
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id0)
 			{
+				
+				collideOnNavMeshLayer = NavMesh.SamplePosition (hit.point, out navHit, 1f, 7);
+				
+				Debug.Log ("navHit: " + navHit.hit + " - collideOnNavMeshLayer: " + collideOnNavMeshLayer);
+				
+//				Debug.DrawRay (ray.origin,ray.direction * 10000f);
+				Debug.Break ();
+
 #if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
 				if (numberOfCollisions == 0)
 #else
-				if (numberOfCollisions == 0 && fogOfWar.IsKnownArea (transform))
+				if (numberOfCollisions == 0 && fogOfWar.IsKnownArea (transform) && collideOnNavMeshLayer)
 #endif
 				{
 					Apply ();

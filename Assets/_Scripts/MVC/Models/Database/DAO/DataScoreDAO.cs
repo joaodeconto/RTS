@@ -30,6 +30,7 @@ public class DataScoreDAO : MonoBehaviour
 			for (int i = lDataScore.Count - 1; i != -1; --i)
 			{
 				Debug.Log ("lDataScore[i]: " + lDataScore[i]);
+
 				dic.Add (lDataScore[i].SzScoreName + " - " + lDataScore[i].IdBattle, lDataScore[i].ToModel ());
 			}
 			

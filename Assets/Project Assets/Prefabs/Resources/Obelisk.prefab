@@ -66,8 +66,6 @@ GameObject:
   - 4: {fileID: 400006}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  - 95: {fileID: 9500000}
-  - 64: {fileID: 6400000}
   m_Layer: 18
   m_Name: Obelisk1
   m_TagString: Untagged
@@ -183,7 +181,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 57.6575508, y: .00122070312, z: 182.071671}
+  m_LocalPosition: {x: 38.8820534, y: -.00183105469, z: 36.8823395}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400018}
@@ -208,7 +206,7 @@ Transform:
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: -.65328151, y: -.270598084, z: -.270598084, w: .65328151}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children: []
   m_Father: {fileID: 400000}
 --- !u!4 &400008
@@ -362,7 +360,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: d8ed093bf59db4c449fc655cbb2097d3, type: 2}
+  - {fileID: 2100000, guid: d5941ea7f68ee9147a954c522adfa00e, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -377,7 +375,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
-  m_Mesh: {fileID: 4300000, guid: e684a78f1adc06a46b9ff7301f928047, type: 3}
+  m_Mesh: {fileID: 4300000, guid: b43cb5bf57b05449f9c76f3e4c825de5, type: 3}
 --- !u!33 &3300004
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -405,7 +403,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100020}
-  m_Mesh: {fileID: 4300000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
+  m_Mesh: {fileID: 4300000, guid: dbe7fffd058c014458c58c79f4b062ed, type: 2}
 --- !u!54 &5400000
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -421,33 +419,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!64 &6400000
-MeshCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100006}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_SmoothSphereCollisions: 0
-  m_Convex: 0
-  m_Mesh: {fileID: 4300000, guid: e684a78f1adc06a46b9ff7301f928047, type: 3}
---- !u!95 &9500000
-Animator:
-  serializedVersion: 2
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100006}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: e1394ee713e309740a36afbe3d490c2e, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_ApplyRootMotion: 1
-  m_AnimatePhysics: 0
-  m_HasTransformHierarchy: 1
 --- !u!111 &11100000
 Animation:
   m_ObjectHideFlags: 1
@@ -545,9 +516,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 0
+  IsModifyingMesh: 1
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
-  Settings: {fileID: 11400000, guid: 2f7751a6b36a55844ac030a69a71e150, type: 2}
+  Settings: {fileID: 11400000, guid: dbe7fffd058c014458c58c79f4b062ed, type: 2}
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
