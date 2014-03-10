@@ -72,7 +72,14 @@ public class DataScoreDAO : MonoBehaviour
 		db.Update (lScores, "save-list-datascore",
 		(response) =>
 		{
+			lScores = (List<Model.DataScore>)response;
+		
 			Debug.Log ("response save-list-datascore: " + response);
+			
+//			for (int i = lScores.Count - 1; i != -1; --i)
+//			{
+//				Debug.Log ("lScores[i]: " + lScores[i] + " - lScores[i].SzScoreName: " + lScores[i].SzScoreName + " - lScores[i].NrPoints":  + lScores[i].NrPoints);
+//			}
 		});
 	}
 }

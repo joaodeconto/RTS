@@ -218,8 +218,8 @@ public class Worker : Unit
 					PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 					Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
 
-					Score.AddScorePoints ("Resources gathered", numberMaxGetResources);
-					Score.AddScorePoints ("Resources gathered", numberMaxGetResources, battle.IdBattle);
+					Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberMaxGetResources);
+					Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberMaxGetResources, battle.IdBattle);
 
 					ResetPathfindValue ();
 				}
@@ -227,8 +227,7 @@ public class Worker : Unit
 			case WorkerState.Building:
 			case WorkerState.Repairing:
 			
-				if (!HasFactory () ||
-					factoryChoose != lastFactory)
+				if (!HasFactory () || factoryChoose != lastFactory)
 				{
 					// Patch para tirar travada ¬¬
 					Move (transform.position - transform.forward);
@@ -639,7 +638,7 @@ public class Worker : Unit
 		}
 		else if (factoryChoose != null)
 		{
-			if (factoryChoose.IsRemoved)
+			if (factoryChoose.WasRemoved)
 			{
 				factoryChoose = null;
 
@@ -656,7 +655,7 @@ public class Worker : Unit
 		if (factoryChoose == null)
 			return false;
 
-		if (factoryChoose.IsRemoved)
+		if (factoryChoose.WasRemoved)
 			return false;
 
 		return true;

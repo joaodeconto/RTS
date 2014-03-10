@@ -226,7 +226,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public bool Selected { get; protected set; }
 	public bool IsNetworkInstantiate { get; protected set; }
-	public bool IsRemoved { get; protected set; }
+	public bool WasRemoved { get; protected set; }
 	
 	internal int Group = -1;
 	
@@ -252,7 +252,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		
 		Health = MaxHealth;
 		
-		if (!gameplayManager.IsBoot (team))
+		if (!gameplayManager.IsBotTeam (this))
 		{
 			if (IsNetworkInstantiate)
 			{
@@ -266,7 +266,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 				}
 				else
 				{
-					team = GameplayManager.BOOT_TEAM;
+					team = GameplayManager.BOT_TEAM;
 				}
 			}
 		}
@@ -277,7 +277,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 		SetColorTeam ();
 		
-		IsRemoved = false;
+		WasRemoved = false;
 		
 		statsController.AddStats (this);
 
@@ -315,7 +315,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public virtual void Select ()
 	{
-		if (IsRemoved) return;
+		if (WasRemoved) return;
 		
 		if (!Selected) Selected = true;
 		else return;
@@ -348,7 +348,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			}
 		}
 
-		if (Health == 0 && !IsRemoved)
+		if (Health == 0 && !WasRemoved)
 		{
 			SendRemove ();
 			photonView.RPC ("SendRemove", PhotonTargets.Others);
@@ -374,7 +374,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public virtual void SendRemove ()
 	{
 		Health = 0;
-		IsRemoved = true;
+		WasRemoved = true;
 		
 		SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
 	}

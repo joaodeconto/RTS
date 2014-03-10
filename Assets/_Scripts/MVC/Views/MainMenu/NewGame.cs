@@ -38,6 +38,12 @@ public class NewGame : MonoBehaviour
 
 	public UILabel messageActiveGame;
 	public UILabel errorMessage;
+	
+	public UILabel bidLabel;
+	
+	private int CurrentBid {
+		get { return (bidLabel) ? int.Parse (bidLabel.text) : 1; }
+	}
 
 	float RefreshingInterval = 2.0f;
 	bool wasInitialized      = false;
@@ -46,7 +52,7 @@ public class NewGame : MonoBehaviour
 
 	public void Open ()
 	{
-		Debug.Log ("player na segunda cena: " + ComponentGetter.Get<PhotonWrapper> ().GetPropertyOnPlayer ("player"));
+//		Debug.Log ("player na segunda cena: " + ComponentGetter.Get<PhotonWrapper> ().GetPropertyOnPlayer ("player"));
 //		if (wasInitialized)
 //			return;
 
@@ -60,31 +66,31 @@ public class NewGame : MonoBehaviour
 		if (buttons.BtnTutorial)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.BtnTutorial, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, "Tutorial"); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, CurrentBid, "Tutorial"); } );
 		}
 		
 		if (buttons.Btn3P)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3P, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (3, "3P"); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (3, CurrentBid,"3P"); } );
 		}
 		
 		if (buttons.Btn4P)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4P, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (4, "4P"); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (4, CurrentBid,"4P"); } );
 		}
 		
 		if (buttons.Btn1x1)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1x1, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (2, "1x1"); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (2, CurrentBid,"1x1"); } );
 		}
 		
 		if (buttons.Btn2x2)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2x2, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (4, "2x2", GameplayManager.Mode.Cooperative); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (4, CurrentBid, "2x2", GameplayManager.Mode.Cooperative); } );
 		}
 		
 		if (buttons.BtnLeaveRoom)
@@ -114,14 +120,14 @@ public class NewGame : MonoBehaviour
 		buttons.BtnLeaveRoom.gameObject.SetActive (false);
 	}
 
-	private void CreateRoom (int maxPlayers, string battleTypeName, GameplayManager.Mode mode = GameplayManager.Mode.Deathmatch)
+	private void CreateRoom (int maxPlayers, int bid, string battleTypeName, GameplayManager.Mode mode = GameplayManager.Mode.Deathmatch)
 	{
 		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
 		PlayerDAO playerDao = ComponentGetter.Get <PlayerDAO> ();
 
 		//TODO refazer as battles
-		playerBattleDao.CreateBattle (battleTypeName, DateTime.Now, maxPlayers,
+		playerBattleDao.CreateBattle (battleTypeName, bid, DateTime.Now, maxPlayers,
 		(battle) =>
 		{
 //			Debug.Log ("message: " + message);
@@ -134,8 +140,9 @@ public class NewGame : MonoBehaviour
 			
 			Hashtable properties = new Hashtable ();
 			properties.Add ("battle", battle.ToString ());
-			pw.CreateRoom (roomName, isVisible, isOpen, maxPlayers, properties);
 
+			pw.CreateRoom (roomName, bid, isVisible, isOpen, maxPlayers, properties);
+			
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
 

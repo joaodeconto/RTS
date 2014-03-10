@@ -30,8 +30,7 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 				
 				enabled = !gm.IsSameTeam(unitScript);
 				
-				if (gm.IsBoot (unitScript.team) &&
-					PhotonNetwork.isMasterClient)
+				if (gm.IsBotTeam (unitScript) && PhotonNetwork.isMasterClient)
 				{
 					enabled = false;
 				}

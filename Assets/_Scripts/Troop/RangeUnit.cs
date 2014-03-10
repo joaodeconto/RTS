@@ -45,7 +45,7 @@ public class RangeUnit : Unit
 		{
 			followingTarget = true;
 
-			if (TargetAttack.GetComponent<IStats>().IsRemoved)
+			if (TargetAttack.GetComponent<IStats>().WasRemoved)
 			{
 				TargetingEnemy (null);
 				IsAttacking = false;

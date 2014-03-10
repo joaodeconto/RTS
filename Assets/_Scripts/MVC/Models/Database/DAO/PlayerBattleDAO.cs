@@ -52,7 +52,6 @@ public class PlayerBattleDAO : MonoBehaviour
 		db.Read (dbBattleType,
 		(response) =>
 		{
-		
 			Debug.Log ("Chegou");
 			
 			Model.BattleType battleType = null;
@@ -74,6 +73,7 @@ public class PlayerBattleDAO : MonoBehaviour
 	}
 
 	public void CreateBattle (string battleTypeName,
+							  int bid,
 							  DateTime dateBattle,
 							  int nrPlayers,
 							  BattleDAODelegate callback)
@@ -84,6 +84,7 @@ public class PlayerBattleDAO : MonoBehaviour
 			Debug.Log ("Criou battle type");
 			DB.Battle dbBattle = (new Model.Battle () { IdBattleType = battleType.IdBattleType,
 														battleType   = battleType,
+														Bid 		 = bid,
 														DtDateBattle = dateBattle,
 														NrPlayers    = nrPlayers
 													}).ToDatabaseModel ();

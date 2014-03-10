@@ -12,6 +12,8 @@ namespace Model {
 		public int IdBattleType;
 		public BattleType battleType;
 
+		public int Bid;
+
 		public DateTime DtDateBattle;
 		public int NrPlayers;
 
@@ -28,6 +30,8 @@ namespace Model {
 			this.IdBattleType = bb.IdBattleType;
 			this.battleType   = bb.battleType;
 
+			this.Bid 		  = bb.Bid;
+
 			this.DtDateBattle = bb.DtDateBattle;
 			this.NrPlayers    = bb.NrPlayers;
 		}
@@ -39,6 +43,8 @@ namespace Model {
 			battle.IdBattle     = this.IdBattle.ToString ();
 			battle.IdBattleType = this.IdBattleType.ToString ();
 			battle.battleType   = this.battleType.ToDatabaseModel ();
+			
+			battle.Bid 			= this.Bid.ToString ();
 
 			//Debug.Log ("DtDateBattle: " + this.DtDateBattle.ToString ("yyyy-MM-dd HH:mm:ss"));
 			battle.DtDateBattle = this.DtDateBattle.ToString ("yyyy-MM-dd HH:mm:ss");

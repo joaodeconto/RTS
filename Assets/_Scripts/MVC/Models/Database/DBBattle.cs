@@ -14,6 +14,9 @@ namespace DB {
 		public string IdBattleType;
 		[JsonProperty(PropertyName = "BattleType",Required=Required.Default)]
 		public DB.BattleType battleType;
+		
+		[JsonProperty(PropertyName = "NrBid",Required=Required.Default)]
+		public string Bid;
 
 		[JsonProperty(PropertyName = "DtDateBattle",Required=Required.Default)]
 		public string DtDateBattle;
@@ -26,6 +29,8 @@ namespace DB {
 			battle.IdBattle     = !string.IsNullOrEmpty(this.IdBattle) ? int.Parse(this.IdBattle) : -1;
 			battle.IdBattleType = int.Parse(this.IdBattleType);
 			battle.battleType   = this.battleType.ToModel ();
+			
+			battle.Bid 			= int.Parse (this.Bid);
 
 			battle.DtDateBattle = Convert.ToDateTime (this.DtDateBattle);
 			battle.NrPlayers    = int.Parse(this.NrPlayers);

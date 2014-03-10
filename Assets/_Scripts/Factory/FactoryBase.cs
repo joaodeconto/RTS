@@ -191,7 +191,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 	void OnDestroy ()
 	{
-		if (!IsRemoved && !playerUnit) statsController.RemoveStats (this);
+		if (!WasRemoved && !playerUnit) statsController.RemoveStats (this);
 	}
 
 	//void OnGUI ()
