@@ -354,6 +354,10 @@ public class Unit : IStats, IMovementObservable,
 
 			IsAttacking = true;
 
+			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
+			
+			SoundManager.PlaySFX(sfxAtk);
+
 			if (PhotonNetwork.offlineMode)
 			{
 				TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);

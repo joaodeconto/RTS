@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
-[System.Serializable]
-public class SoundConnection : ScriptableObject {
+[Serializable]
+public class SoundConnection {
 	public string level;
 	public bool isCustomLevel;
 	public List<AudioClip> soundsToPlay;
@@ -13,7 +14,7 @@ public class SoundConnection : ScriptableObject {
 	public float delay;
 	
 	/*Ties the level name to a list of AudioClips. It defaults to continuous play through with no delay between clips.*/
-	public void Initialize(string lvl, params AudioClip[] audioList)
+	public SoundConnection(string lvl, params AudioClip[] audioList)
 	{
 		level = lvl;
 		isCustomLevel = false;
@@ -31,7 +32,7 @@ public class SoundConnection : ScriptableObject {
 		}
 	}
 	
-	public void Initialize(string lvl, SoundManager.PlayMethod method, params AudioClip[] audioList)
+	public SoundConnection(string lvl, SoundManager.PlayMethod method, params AudioClip[] audioList)
 	{
 		level = lvl;
 		isCustomLevel = false;
@@ -59,7 +60,7 @@ public class SoundConnection : ScriptableObject {
 		}
 	}
 	
-	public void Initialize(string lvl, SoundManager.PlayMethod method, float delayPlay, params AudioClip[] audioList)
+	public SoundConnection(string lvl, SoundManager.PlayMethod method, float delayPlay, params AudioClip[] audioList)
 	{
 		level = lvl;
 		isCustomLevel = false;
@@ -77,7 +78,7 @@ public class SoundConnection : ScriptableObject {
 		}
 	}
 	
-	public void Initialize(string lvl, SoundManager.PlayMethod method, float minDelayPlay, float maxDelayPlay, params AudioClip[] audioList)
+	public SoundConnection(string lvl, SoundManager.PlayMethod method, float minDelayPlay, float maxDelayPlay, params AudioClip[] audioList)
 	{
 		level = lvl;
 		isCustomLevel = false;

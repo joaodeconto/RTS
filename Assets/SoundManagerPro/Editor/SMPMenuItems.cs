@@ -4,7 +4,7 @@ using UnityEditor;
 using System.IO;
 
 public class SMPMenuItems : MonoBehaviour {
-	[MenuItem ("Window/AntiLunchBox/Check For Updates", false, 100)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Check For Updates", false, 100)]
 	static void CheckForUpdates()
 	{
 		if(Application.internetReachability != NetworkReachability.NotReachable)
@@ -29,14 +29,14 @@ public class SMPMenuItems : MonoBehaviour {
 		}
 	}
 	
-	[MenuItem ("Window/AntiLunchBox/Create SoundManager", false, 101)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Create SoundManager", false, 101)]
 	static void CreateSoundManager()
 	{
 		if(SoundManager.Instance)
 			return;
 		Debug.Log("A SoundManager has been created or one already exists in the scene.");
 	}
-	[MenuItem ("Window/AntiLunchBox/Setup For JS", false, 102)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Setup For JS", false, 102)]
 	static void JSSetup()
 	{
 		string error1, error2;
@@ -48,7 +48,7 @@ public class SMPMenuItems : MonoBehaviour {
 		if(error2 != "")
 			Debug.LogError(error2 + "\nMove the 'SoundManagerPro/EditorHelper' folder to 'Plugins/SoundManagerPro/EditorHelper' yourself.");
 	}
-	[MenuItem ("Window/AntiLunchBox/NGUI Integration", false, 200)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/NGUI Integration", false, 200)]
 	static void IntegrateNGUI()
 	{
 		string csCheckLocation = Application.dataPath+"/SoundManagerPro/Scripts/Extensions/NGUI_SMPRO_INTEGRATION.unitypackage";
@@ -61,7 +61,7 @@ public class SMPMenuItems : MonoBehaviour {
 		else
 			Debug.LogError("Cannot find 'NGUI_SMPRO_INTEGRATION.unitypackage' that came with SoundManagerPro. Re-download it or import it yourself.");
 	}
-	[MenuItem ("Window/AntiLunchBox/PlayMaker Integration", false, 201)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/PlayMaker Integration", false, 201)]
 	static void IntegratePlayMaker()
 	{
 		string csCheckLocation = Application.dataPath+"/SoundManagerPro/Scripts/Extensions/PLAYMAKER_SMPRO_INTEGRATION.unitypackage";
@@ -74,7 +74,7 @@ public class SMPMenuItems : MonoBehaviour {
 		else
 			Debug.LogError("Cannot find 'PLAYMAKER_SMPRO_INTEGRATION.unitypackage' that came with SoundManagerPro. Re-download it or import it yourself.");
 	}
-	[MenuItem ("Window/AntiLunchBox/2D Toolkit Integration", false, 202)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/2D Toolkit Integration", false, 202)]
 	static void IntegrateTDTK()
 	{
 		string csCheckLocation = Application.dataPath+"/SoundManagerPro/Scripts/Extensions/TDTK_SMPRO_INTEGRATION.unitypackage";
@@ -87,17 +87,80 @@ public class SMPMenuItems : MonoBehaviour {
 		else
 			Debug.LogError("Cannot find 'TDTK_SMPRO_INTEGRATION.unitypackage' that came with SoundManagerPro. Re-download it or import it yourself.");
 	}
-	[MenuItem ("Window/AntiLunchBox/Documentation", false, 300)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/DF-GUI Integration", false, 202)]
+	static void IntegrateDFGUI()
+	{
+		string csCheckLocation = Application.dataPath+"/SoundManagerPro/Scripts/Extensions/DFGUI_SMPRO_INTEGRATION.unitypackage";
+		string jsCheckLocation = Application.dataPath+"/Plugins/SoundManagerPro/Scripts/Extensions/DFGUI_SMPRO_INTEGRATION.unitypackage";
+		
+		if(File.Exists(csCheckLocation))
+			AssetDatabase.ImportPackage(csCheckLocation, true);
+		else if(File.Exists(jsCheckLocation))
+			AssetDatabase.ImportPackage(jsCheckLocation, true);
+		else
+			Debug.LogError("Cannot find 'DFGUI_SMPRO_INTEGRATION.unitypackage' that came with SoundManagerPro. Re-download it or import it yourself.");
+	}
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/UFPS Integration", false, 202)]
+	static void IntegrateUFPS()
+	{
+		string csCheckLocation = Application.dataPath+"/SoundManagerPro/Scripts/Extensions/UFPS_SMPRO_INTEGRATION.unitypackage";
+		string jsCheckLocation = Application.dataPath+"/Plugins/SoundManagerPro/Scripts/Extensions/UFPS_SMPRO_INTEGRATION.unitypackage";
+		
+		if(File.Exists(csCheckLocation))
+			AssetDatabase.ImportPackage(csCheckLocation, true);
+		else if(File.Exists(jsCheckLocation))
+			AssetDatabase.ImportPackage(jsCheckLocation, true);
+		else
+			Debug.LogError("Cannot find 'UFPS_SMPRO_INTEGRATION.unitypackage' that came with SoundManagerPro. Re-download it or import it yourself.");
+	}
+	
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Turn Off Automatic Update Checks", false, 300)]
+	static void TurnOffAutomatic()
+	{
+		EditorPrefs.SetBool("SMPAutomaticUpdates", false);
+	}
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Turn Off Automatic Update Checks", true)]
+	static bool ValidateTurnOffAutomatic()
+	{
+		return EditorPrefs.GetBool("SMPAutomaticUpdates", true);
+	}
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Turn On Automatic Update Checks", false, 301)]
+	static void TurnOnAutomatic()
+	{
+		EditorPrefs.SetBool("SMPAutomaticUpdates", true);
+	}
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Turn On Automatic Update Checks", true)]
+	static bool ValidateTurnOnAutomatic()
+	{
+		return EditorPrefs.GetBool("SMPAutomaticUpdates", false);
+	}
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Low UnityEditor Impact", false, 302)]
+	static void DeleteImages()
+	{
+		bool deleted1, deleted2, deleted3;
+		deleted1 = AssetDatabase.DeleteAsset("Assets/Gizmos/AntiLunchBox Logo");
+		deleted2 = AssetDatabase.DeleteAsset("Assets/Gizmos/SoundManager Icon");
+		deleted3 = AssetDatabase.DeleteAsset("Assets/Gizmos/TitleBar");
+		
+		if(!deleted1)
+			Debug.LogError("Failed to delete: AntiLunchBox Logo. If it's already deleted, you're all set.");
+		if(!deleted2)
+			Debug.LogError("Failed to delete: SoundManager Icon. If it's already deleted, you're all set.");
+		if(!deleted3)
+			Debug.LogError("Failed to delete: TitleBar. If it's already deleted, you're all set.");
+	}
+	
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Documentation", false, 400)]
 	static void Documentation()
 	{
 		Application.OpenURL("http://antilunchbox.com/soundmanagerpro/soundmanagerpro-documentation/");
 	}
-	[MenuItem ("Window/AntiLunchBox/Forum", false, 301)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Forum", false, 401)]
 	static void Forum()
 	{
 		Application.OpenURL("http://forum.unity3d.com/threads/186067-RELEASED-SoundManagerPro-Easy-Game-Music-Plugin");
 	}
-	[MenuItem ("Window/AntiLunchBox/About", false, 302)]
+	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/About", false, 402)]
 	static void About()
 	{
 		Application.OpenURL("http://antilunchbox.com/soundmanagerpro/");
