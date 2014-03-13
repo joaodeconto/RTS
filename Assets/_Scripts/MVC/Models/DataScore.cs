@@ -15,6 +15,7 @@ namespace Model {
 
 		public DataScore (int idPlayer, int idBattle, string ScoreName, int points)
 		{
+			this.IdDataScore = -1;
 			this.IdPlayer    = idPlayer;
 			this.IdBattle    = idBattle;
 			this.SzScoreName = ScoreName;
@@ -24,6 +25,7 @@ namespace Model {
 		public DB.DataScore ToDatabaseModel ()
 		{
 			DB.DataScore ds = new DB.DataScore ();
+			
 			ds.IdDataScore           = this.IdDataScore.ToString ();
 			ds.IdPlayer              = this.IdPlayer.ToString ();
 			ds.IdBattle              = this.IdBattle.ToString ();

@@ -194,7 +194,7 @@ public class Worker : Unit
 
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius)
 				{
-					gameplayManager.resources.Set (resourceType, currentNumberOfResources);
+					gameplayManager.resources.DeliverResources (resourceType, currentNumberOfResources);
 
 					if (resource != null) SetResource (resource);
 					else

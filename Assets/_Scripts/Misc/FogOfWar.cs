@@ -187,7 +187,6 @@ public class FogOfWar : MonoBehaviour
 			{
 					  enemies.RemoveAt(i);
 				entityEnemies.RemoveAt(i);
-				++i;
 				continue;
 			}
 
