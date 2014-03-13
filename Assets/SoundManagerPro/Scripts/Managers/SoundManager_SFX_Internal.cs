@@ -1,24 +1,56 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using antilunchbox;
 
 public partial class SoundManager : Singleton<SoundManager> {
-
-    private void SetupSoundFX()
+	private void SetupSoundFX()
     {
 		SetupDictionary();
 		
-		ownedSFXObjects.Clear();
+		foreach(KeyValuePair<AudioClip, SFXPoolInfo> pair in ownedPools)
+			pair.Value.ownedAudioClipPool.Clear();
+		ownedPools.Clear();
 		unOwnedSFXObjects.Clear();
 		cappedSFXObjects.Clear();
 		
-		AddOwnedSFXObject();
-        mCurrentOwnedSFXObject = 0;
+		foreach(KeyValuePair<string, AudioClip> entry in allClips)
+			PrePoolClip(entry.Value, prepools[entry.Key]);
     }
 	
-	/* these functions have to be here for the editor to work with dictionaries */
+	private void PrePoolClip(AudioClip clip, int prepoolAmount)
+	{
+		for(int i =0; i<prepoolAmount; i++)
+			AddOwnedSFXObject(clip);
+	}
+	
+	private void RemoveSFXObject(SFXPoolInfo info, int index)
+	{
+		GameObject gO = info.ownedAudioClipPool[index];
+		info.ownedAudioClipPool.RemoveAt(index);
+		info.timesOfDeath.RemoveAt(index);
+		
+		if(info.currentIndexInPool >= index)
+			info.currentIndexInPool = 0;
+		
+		Destroy(gO);
+	}
+	
+	/* these functions convert the editor dictionaries to efficient dictionaries while in play */
 	private void SetupDictionary()
 	{
+		allClips.Clear();
+		prepools.Clear();
+		for(int i = 0; i < storedSFXs.Count; i++)
+		{
+			if(storedSFXs[i] == null) continue;
+			allClips.Add(storedSFXs[i].name, storedSFXs[i]);
+			prepools.Add(storedSFXs[i].name, sfxPrePoolAmounts[i]);
+		}		
+#if !UNITY_EDITOR
+		storedSFXs.Clear();	
+#endif
+		
 		if(clipToGroupKeys.Count != clipToGroupValues.Count) //this should never be the case, but in case they are out of sync, sync them.
 		{
 			if(clipToGroupKeys.Count > clipToGroupValues.Count)
@@ -26,48 +58,116 @@ public partial class SoundManager : Singleton<SoundManager> {
 			else if(clipToGroupValues.Count > clipToGroupKeys.Count)
 				clipToGroupValues.RemoveRange(clipToGroupKeys.Count, clipToGroupValues.Count - clipToGroupKeys.Count);
 		}
+		
+		clipsInGroups.Clear();
+		groups.Clear();
+		
+		for(int i = 0; i < clipToGroupValues.Count; i++)
+		{
+			if(!ClipNameIsValid(clipToGroupKeys[i]))
+				continue;
+			
+			// Set up clipsInGroups, which maps clip names to group names if they are in a group
+			clipsInGroups.Add(clipToGroupKeys[i], clipToGroupValues[i]);
+			
+			// Set up groups, which maps group names to SFXGroups and populates the clip lists
+			if(!groups.ContainsKey(clipToGroupValues[i]))
+				groups.Add(clipToGroupValues[i], new SFXGroup(clipToGroupValues[i], new AudioClip[]{Load(clipToGroupKeys[i])}));
+			else
+			{
+				if(groups[clipToGroupValues[i]] == null)
+					groups[clipToGroupValues[i]] = new SFXGroup(clipToGroupValues[i], new AudioClip[]{Load(clipToGroupKeys[i])});
+				else
+					groups[clipToGroupValues[i]].clips.Add(Load(clipToGroupKeys[i]));
+			}
+		}
+		
+		foreach(SFXGroup sfxGroup in sfxGroups)
+			if(sfxGroup != null && groups.ContainsKey(sfxGroup.groupName))
+				groups[sfxGroup.groupName].specificCapAmount = sfxGroup.specificCapAmount;
+#if !UNITY_EDITOR
+		sfxGroups.Clear();	
+#endif
 	}
 	
-	private void AddClipToGroup(string key, string val)
+	private void AddClipToGroup(string clipName, string groupName)
 	{
-		clipToGroupKeys.Add(key);
-		clipToGroupValues.Add(val);
+		// if the clips in a group, set the clip instead.
+		if(clipsInGroups.ContainsKey(clipName))
+		{
+			Debug.LogWarning("This AudioClip("+clipName+") is already assigned to a group: "+GetClipToGroup(clipName)+". It will be moved to the new group.");
+			SetClipToGroup(clipName, groupName);
+			return;
+		}
+		
+		// if group doesn't exist, create one and add the clip.  Otherwise, add it to the group's clip list.
+		SFXGroup grp = GetGroupByGroupName(groupName);
+		if(grp == null)
+			groups.Add(groupName, new SFXGroup(groupName, new AudioClip[]{Load(clipName)}));
+		else
+			grp.clips.Add(Load(clipName));
+		clipsInGroups.Add(clipName, groupName);
+		
+#if UNITY_EDITOR
+		clipToGroupKeys.Add(clipName);
+		clipToGroupValues.Add(groupName);
+		if(grp == null)
+			sfxGroups.Add(groups[groupName]);
+#endif
 	}
 	
-	private void SetClipToGroup(string key, string val)
+	private void SetClipToGroup(string clipName, string groupName)
 	{
-		int index = clipToGroupKeys.IndexOf(key);
-		clipToGroupValues[index] = val;
+		// if in a group, remove it from the group before adding it.
+		SFXGroup grp = GetGroupForClipName(clipName);
+		if(grp != null)
+			RemoveClipFromGroup(clipName);
+		AddClipToGroup(clipName, groupName);
 	}
 	
-	private void RemoveClipToGroup(string key)
+	private void RemoveClipFromGroup(string clipName)
 	{
-		int index = clipToGroupKeys.IndexOf(key);
+		// if not in a group, do nothing
+		SFXGroup grp = GetGroupForClipName(clipName);
+		if(grp == null)
+			return;
+		else
+		{
+			// if in a group, remove it
+			grp.clips.Remove(Load(clipName));
+			clipsInGroups.Remove(clipName);
+		}
+		
+#if UNITY_EDITOR
+		int index = clipToGroupKeys.IndexOf(clipName);
 		clipToGroupKeys.RemoveAt(index);
 		clipToGroupValues.RemoveAt(index);
+#endif
 	}
 	
-	private string GetClipToGroup(string key)
+	private string GetClipToGroup(string clipName)
 	{
-		int index = clipToGroupKeys.IndexOf(key);
-		return clipToGroupValues[index];
+		return clipsInGroups[clipName];
 	}
 	/* end of editor necessary functions */	
 
 	private void PSFX(bool pause)
 	{
-		foreach(GameObject ownedSFXObject in ownedSFXObjects)
+		foreach(KeyValuePair<AudioClip, SFXPoolInfo> pair in ownedPools)
 		{
+			foreach(GameObject ownedSFXObject in pair.Value.ownedAudioClipPool)
+			{
 #if UNITY_3_4 || UNITY_3_5
-			if(ownedSFXObject != null && ownedSFXObject.active)
+				if(ownedSFXObject != null && ownedSFXObject.active)
 #else
-			if(ownedSFXObject != null && ownedSFXObject.activeSelf)
+				if(ownedSFXObject != null && ownedSFXObject.activeSelf)
 #endif
-				if(ownedSFXObject.audio != null)
-					if(pause)
-						ownedSFXObject.audio.Pause();
-					else
-						ownedSFXObject.audio.Play();
+					if(ownedSFXObject.audio != null)
+						if(pause)
+							ownedSFXObject.audio.Pause();
+						else
+							ownedSFXObject.audio.Play();
+			}
 		}
 		foreach(GameObject unOwnedSFXObject in unOwnedSFXObjects)
 		{
@@ -89,26 +189,37 @@ public partial class SoundManager : Singleton<SoundManager> {
 		if(isPaused)
 			return;
 		
-        // Deactivate objects
-        for (int i=0; i<ownedSFXObjects.Count; ++i)
-        {
+		// Deactivate objects
+		foreach(KeyValuePair<AudioClip, SFXPoolInfo> pair in ownedPools)
+		{
+			for (int i=0; i< pair.Value.ownedAudioClipPool.Count; ++i)
+	        {
 #if UNITY_3_4 || UNITY_3_5
-            if (ownedSFXObjects[i].active)
+	            if (pair.Value.ownedAudioClipPool[i].active)
 #else
-			if(ownedSFXObjects[i].activeSelf)
+				if(pair.Value.ownedAudioClipPool[i].activeSelf)
 #endif
-                if (!ownedSFXObjects[i].audio.isPlaying)
-			    {
-					int instanceID = ownedSFXObjects[i].GetInstanceID();
-				    if(cappedSFXObjects.ContainsKey(instanceID))
-					     cappedSFXObjects.Remove(instanceID);
+				{
+	                if (!pair.Value.ownedAudioClipPool[i].audio.isPlaying)
+				    {
+						int instanceID = pair.Value.ownedAudioClipPool[i].GetInstanceID();
+					    if(cappedSFXObjects.ContainsKey(instanceID))
+						     cappedSFXObjects.Remove(instanceID);
 #if UNITY_3_4 || UNITY_3_5
-                    ownedSFXObjects[i].SetActiveRecursively(false);
+	                    pair.Value.ownedAudioClipPool[i].SetActiveRecursively(false);
 #else
-					ownedSFXObjects[i].SetActive(false);
+						pair.Value.ownedAudioClipPool[i].SetActive(false);
 #endif
-			    }
-        }
+						if(pair.Value.prepoolAmount <= i)
+							pair.Value.timesOfDeath[i] = Time.time+SFXObjectLifetime;
+				    }
+				}
+				else if(pair.Value.prepoolAmount <= i && Time.time > pair.Value.timesOfDeath[i])
+				{
+					RemoveSFXObject(pair.Value, i);
+				}
+	        }
+		}
 		
 		// Handle removing unowned audio sfx
 		for(int i = unOwnedSFXObjects.Count - 1; i >= 0; i--)
@@ -121,39 +232,55 @@ public partial class SoundManager : Singleton<SoundManager> {
 		}
     }
 
-    private GameObject GetNextInactiveSFXObject()
+    private GameObject GetNextInactiveSFXObject(AudioClip clip)
     {
-        for (int i = (mCurrentOwnedSFXObject + 1)% ownedSFXObjects.Count; i != mCurrentOwnedSFXObject; i = (i + 1) % ownedSFXObjects.Count)
+		if(!ownedPools.ContainsKey(clip) || ownedPools[clip].ownedAudioClipPool.Count == 0)
+			return AddOwnedSFXObject(clip);
+		SFXPoolInfo info = ownedPools[clip];
+        for (int i = (info.currentIndexInPool + 1)% info.ownedAudioClipPool.Count; i != info.currentIndexInPool; i = (i + 1) % info.ownedAudioClipPool.Count)
         {
 #if UNITY_3_4 || UNITY_3_5
-            if (!ownedSFXObjects[i].active)
+            if (!info.ownedAudioClipPool[i].active)
 #else
-			if (!ownedSFXObjects[i].activeSelf)
+			if (!info.ownedAudioClipPool[i].activeSelf)
 #endif
             {
-                mCurrentOwnedSFXObject = i;
-				ResetSFXObject(ownedSFXObjects[i]);
-                return ownedSFXObjects[i];
+                ownedPools[clip].currentIndexInPool = i;
+				ResetSFXObject(info.ownedAudioClipPool[i]);
+                return info.ownedAudioClipPool[i];
             }
         }
-        return AddOwnedSFXObject();
+        return AddOwnedSFXObject(clip);
     }
 	
-	private GameObject AddOwnedSFXObject()
+	private GameObject AddOwnedSFXObject(AudioClip clip)
 	{
-		GameObject SFXObject = new GameObject("SFX", typeof(AudioSource));
+		GameObject SFXObject = new GameObject("SFX-["+clip.name+"]", typeof(AudioSource));
 		SFXObject.name += "(" + SFXObject.GetInstanceID() + ")";
 		SFXObject.audio.playOnAwake = false;
 		GameObject.DontDestroyOnLoad(SFXObject);
-		ownedSFXObjects.Add(SFXObject);
+		
+		if(ownedPools.ContainsKey(clip))
+		{
+			ownedPools[clip].ownedAudioClipPool.Add(SFXObject);
+			ownedPools[clip].timesOfDeath.Add(0f);
+		}
+		else
+		{
+			int thisPrepoolAmount = 0;
+			if(allClips.ContainsKey(clip.name))
+				thisPrepoolAmount = prepools[clip.name];
+			ownedPools.Add(clip, new SFXPoolInfo(0,thisPrepoolAmount,new List<float>(){0f},new List<GameObject>(){SFXObject}));
+		}
 		ResetSFXObject(SFXObject);
+		SFXObject.audio.clip = clip;
 		return SFXObject;
 	}
 
     private AudioSource PlaySFXAt(AudioClip clip, float volume, float pitch, Vector3 location, bool capped, string cappedID)
     {
         
-        GameObject tempGO = GetNextInactiveSFXObject();
+        GameObject tempGO = GetNextInactiveSFXObject(clip);
         if (tempGO == null)
             return null;
 		
@@ -165,7 +292,6 @@ public partial class SoundManager : Singleton<SoundManager> {
 #endif
         AudioSource aSource = tempGO.audio;
         aSource.Stop();
-        aSource.clip = clip;
         aSource.pitch = pitch;
         aSource.volume = volume;
 		aSource.mute = mutedSFX;
@@ -206,14 +332,17 @@ public partial class SoundManager : Singleton<SoundManager> {
 	
 	private void _StopSFX()
 	{
-		foreach(GameObject ownedSFXObject in ownedSFXObjects)
+		foreach(KeyValuePair<AudioClip, SFXPoolInfo> pair in ownedPools)
+		{
+			foreach(GameObject ownedSFXObject in pair.Value.ownedAudioClipPool)
 #if UNITY_3_4 || UNITY_3_5
-			if(ownedSFXObject != null && ownedSFXObject.active)
+				if(ownedSFXObject != null && ownedSFXObject.active)
 #else
-			if(ownedSFXObject != null && ownedSFXObject.activeSelf)
+				if(ownedSFXObject != null && ownedSFXObject.activeSelf)
 #endif
-				if(ownedSFXObject.audio != null)
-					ownedSFXObject.audio.Stop();
+					if(ownedSFXObject.audio != null)
+						ownedSFXObject.audio.Stop();
+		}
 		
 		foreach(GameObject unOwnedSFXObject in unOwnedSFXObjects)
 #if UNITY_3_4 || UNITY_3_5
@@ -242,11 +371,11 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	private bool IsAtCapacity(string cappedID, string clipName)
 	{
-		int thisCapAmount = CAP_AMOUNT;
+		int thisCapAmount = capAmount;
 		
 		// Check if in a group and has a specific cap amount
 		SFXGroup grp = GetGroupForClipName(clipName);
-		if(grp)
+		if(grp != null)
 		{
 			if(grp.specificCapAmount == 0) // If no cap amount on this group
 				return false;
@@ -274,17 +403,15 @@ public partial class SoundManager : Singleton<SoundManager> {
 	
 	private SFXGroup GetGroupForClipName(string clipName)
 	{
-		if(clipToGroupKeys.Contains(clipName))
-			return sfxGroups.Find(delegate(SFXGroup grp) {
-				return grp.groupName == GetClipToGroup(clipName);
-			});
-		return null;
+		if(!clipsInGroups.ContainsKey(clipName))
+			return null;
+		return groups[clipsInGroups[clipName]];
 	}
 	
 	private SFXGroup GetGroupByGroupName(string grpName)
 	{
-		return sfxGroups.Find(delegate(SFXGroup grp) {
-			return grp.groupName == grpName;
-		});
+		if(!groups.ContainsKey(grpName))
+			return null;
+		return groups[grpName];
 	}
 }

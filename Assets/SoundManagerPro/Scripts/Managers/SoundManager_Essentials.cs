@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using antilunchbox;
 
 public partial class SoundManager : Singleton<SoundManager> {
 	

@@ -7,10 +7,11 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using antilunchbox;
 
 [AddComponentMenu("AntiLunchBox/SoundManager")]
 public partial class SoundManager : Singleton<SoundManager> {
-	
+	#region level load handling
 	// Handle SFX on update
 	void Update () 
 	{
@@ -47,6 +48,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 		else
 			ignoreFromLosingFocus = false;
 	}
+	#endregion
 	
 	/// <summary>
 	/// Adds the SoundConnection to the manager.  It will not add multiple SoundConnections to one level.  
@@ -137,6 +139,14 @@ public partial class SoundManager : Singleton<SoundManager> {
 	}
 	
 	/// <summary>
+	/// Determines whether this instance is music muted.
+	/// </summary>
+	public static bool IsMusicMuted()
+	{
+		return Instance.mutedMusic;
+	}
+	
+	/// <summary>
 	/// Mutes/Unmutes all sounds.  Returns a bool if it's muted or not, priority is given to the music mute
 	/// </summary>
 	/// <returns>
@@ -158,6 +168,14 @@ public partial class SoundManager : Singleton<SoundManager> {
 	public static bool Mute(bool toggle)
 	{
 		return MuteMusic(MuteSFX(toggle));
+	}
+	
+	/// <summary>
+	/// Determines whether this instance is muted.
+	/// </summary>
+	public static bool IsMuted()
+	{
+		return Instance.muted;
 	}
 	
 	/// <summary>
@@ -189,11 +207,27 @@ public partial class SoundManager : Singleton<SoundManager> {
 	}
 	
 	/// <summary>
+	/// Gets the music volume.
+	/// </summary>
+	public static float GetVolumeMusic()
+	{
+		return Instance.maxMusicVolume;
+	}
+	
+	/// <summary>
 	/// Sets the pitch of music in the game.
 	/// </summary>
 	public static void SetPitchMusic(float setPitch)
 	{
 		Instance.audios[0].pitch = Instance.audios[1].pitch = setPitch;
+	}
+	
+	/// <summary>
+	/// Gets the music pitch. Prioritizes music.
+	/// </summary>
+	public static float GetPitchMusic()
+	{
+		return Instance.audios[0].pitch;
 	}
 	
 	/// <summary>
@@ -219,12 +253,92 @@ public partial class SoundManager : Singleton<SoundManager> {
 	}
 	
 	/// <summary>
+	/// Gets the volume.
+	/// </summary>
+	public static float GetVolume()
+	{
+		return Instance.maxVolume;
+	}
+	
+	/// <summary>
 	/// Sets the pitch of all sound in the game.
 	/// </summary>
 	public static void SetPitch(float setPitch)
 	{
 		SetPitchMusic(setPitch);
 		SetPitchSFX(setPitch);
+	}
+	
+	/// <summary>
+	/// Gets the pitch. Prioritizes music.
+	/// </summary>
+	public static float GetPitch()
+	{
+		return GetPitchMusic();
+	}
+	
+	/// <summary>
+	/// Gets the duration of the bgm crossfade.
+	/// </summary>
+	public static float GetCrossDuration()
+	{
+		return Instance.crossDuration;
+	}
+	
+	/// <summary>
+	/// Sets the duration of the bgm crossfade.
+	/// </summary>
+	public static void SetCrossDuration(float duration)
+	{
+		Instance.crossDuration = duration;
+	}
+	
+	/// <summary>
+	/// Gets the default resources path
+	/// </summary>
+	public static string GetDefaultResourcesPath()
+	{
+		return Instance.resourcesPath;
+	}
+	
+	/// <summary>
+	/// Sets the default resources path
+	/// </summary>
+	public static void SetDefaultResourcesPath(string path)
+	{
+		Instance.resourcesPath = path;
+	}
+	
+	/// <summary>
+	/// Gets the current soundconnection
+	/// </summary>
+	public static SoundConnection GetCurrentSoundConnection()
+	{
+		return Instance.currentSoundConnection;
+	}
+	
+	/// <summary>
+	/// Sets the current soundconnection
+	/// </summary>
+	public static void SetCurrentSoundConnection(SoundConnection connection)
+	{
+		Instance.currentSoundConnection = connection;
+	}
+	
+	/// <summary>
+	/// Sets whether the background music is disabled
+	/// </summary>
+	public static void SetDisableBGM(bool disabled)
+	{
+		Instance.offTheBGM = disabled;
+	}
+	
+	/// <summary>
+	/// Sets whether the sfx is disabled
+	/// </summary>
+	public static void SetDisableSFX(bool disabled)
+	{
+		Instance.offTheSFX = disabled;
 	}
 	
 	/// <summary>
@@ -248,8 +362,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static SoundConnection CreateSoundConnection(string lvl, params AudioClip[] audioList)
 	{
-		SoundConnection sc = ScriptableObject.CreateInstance<SoundConnection>();
-		sc.Initialize(lvl, SoundManager.PlayMethod.ContinuousPlayThrough, audioList);
+		SoundConnection sc = new SoundConnection(lvl, SoundManager.PlayMethod.ContinuousPlayThrough, audioList);
 		if(!Application.CanStreamedLevelBeLoaded(lvl))
 			sc.SetToCustom();
 		return sc;
@@ -260,8 +373,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static SoundConnection CreateSoundConnection(string lvl, SoundManager.PlayMethod method, params AudioClip[] audioList)
 	{
-		SoundConnection sc = ScriptableObject.CreateInstance<SoundConnection>();
-		sc.Initialize(lvl, method, audioList);
+		SoundConnection sc = new SoundConnection(lvl, method, audioList);
 		if(!Application.CanStreamedLevelBeLoaded(lvl))
 			sc.SetToCustom();
 		return sc;
@@ -272,8 +384,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static SoundConnection CreateSoundConnection(string lvl, SoundManager.PlayMethod method, float delayPlay, params AudioClip[] audioList)
 	{
-		SoundConnection sc = ScriptableObject.CreateInstance<SoundConnection>();
-		sc.Initialize(lvl, method, delayPlay, audioList);
+		SoundConnection sc = new SoundConnection(lvl, method, delayPlay, audioList);
 		if(!Application.CanStreamedLevelBeLoaded(lvl))
 			sc.SetToCustom();
 		return sc;
@@ -284,8 +395,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static SoundConnection CreateSoundConnection(string lvl, SoundManager.PlayMethod method, float minDelayPlay, float maxDelayPlay, params AudioClip[] audioList)
 	{
-		SoundConnection sc = ScriptableObject.CreateInstance<SoundConnection>();
-		sc.Initialize(lvl, method, minDelayPlay, maxDelayPlay, audioList);
+		SoundConnection sc = new SoundConnection(lvl, method, minDelayPlay, maxDelayPlay, audioList);
 		if(!Application.CanStreamedLevelBeLoaded(lvl))
 			sc.SetToCustom();
 		return sc;
@@ -491,4 +601,23 @@ public partial class SoundManager : Singleton<SoundManager> {
 		Instance.skipAmount--;
 		Instance.skipSongs = true;
 	}
+	
+	/// <summary>
+	/// Checks if the clip name is valid.
+	/// </summary>
+	public static bool ClipNameIsValid(string clipName) 
+	{
+		if(string.IsNullOrEmpty(clipName)) return false;
+		return Instance.allClips.ContainsKey(clipName) && Instance.allClips[clipName] != null;
+	}
+	
+	/// <summary>
+	/// Checks if the group name is valid.
+	/// </summary>
+	public static bool GroupNameIsValid(string groupName)
+	{
+		if(string.IsNullOrEmpty(groupName)) return false;
+		return Instance.groups.ContainsKey(groupName) && Instance.groups[groupName] != null;
+	}
+
 }

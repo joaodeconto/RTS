@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using antilunchbox;
 
 public partial class SoundManager : Singleton<SoundManager> {
 	
@@ -58,9 +59,6 @@ public partial class SoundManager : Singleton<SoundManager> {
 			
 			currentPlaying = CheckWhosPlaying();
 		}
-		// DO NOT TOUCH.
-		if(Application.isPlaying && storage != null)
-			DestroyImmediate(storage);
 	}
 	
 	/// <summary>
@@ -207,11 +205,11 @@ public partial class SoundManager : Singleton<SoundManager> {
 		
 		StopMusicImmediately();
 		if(offTheBGM) return;
-		SoundConnection sc = ScriptableObject.CreateInstance<SoundConnection>();
+		SoundConnection sc;
 		if(loop)
-			sc.Initialize("",PlayMethod.ContinuousPlayThrough,clip2play);
+			sc = new SoundConnection("",PlayMethod.ContinuousPlayThrough,clip2play);
 		else
-			sc.Initialize("",PlayMethod.OncePlayThrough,clip2play);
+			sc = new SoundConnection("",PlayMethod.OncePlayThrough,clip2play);
 		PlayConnection(sc);
 	}
 	
@@ -261,11 +259,11 @@ public partial class SoundManager : Singleton<SoundManager> {
 			OnSongEnd = InternalCallback;
 		InternalCallback = runOnEndFunction;
 		
-		SoundConnection sc = ScriptableObject.CreateInstance<SoundConnection>();
+		SoundConnection sc;
 		if(loop)
-			sc.Initialize(Application.loadedLevelName,PlayMethod.ContinuousPlayThrough,clip2play);
+			sc = new SoundConnection(Application.loadedLevelName,PlayMethod.ContinuousPlayThrough,clip2play);
 		else
-			sc.Initialize(Application.loadedLevelName,PlayMethod.OncePlayThrough,clip2play);
+			sc = new SoundConnection(Application.loadedLevelName,PlayMethod.OncePlayThrough,clip2play);
 		PlayConnection(sc);
 	}
 	
@@ -787,10 +785,6 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// Plays the SoundConnection according to it's PlayMethod.
 	/// </summary>
 	private IEnumerator PlaySoundConnection(SoundConnection sc) {
-		if(InternalCallback != null)
-			OnSongEnd = InternalCallback;
-		InternalCallback = null;
-		
 		currentSoundConnection = sc;
 		if(sc.soundsToPlay.Count == 0) {
 			Debug.LogWarning("The SoundConnection for this level has no sounds to play.  Will cross out.");
