@@ -84,16 +84,34 @@ public class InternalMainMenu : MonoBehaviour
 	{
 		Score.LoadScores
 		(
-			(Dictionary<string, Model.DataScore> dicScore) => 
+			() => 
 			{
-				//nao tem score, coloca zero como default
-				Model.DataScore cc = Score.GetDataScore (DataScoreEnum.CurrentCrystals);
-				Model.DataScore uc = Score.GetDataScore (DataScoreEnum.UnitsCreated);
-				Model.DataScore bc = Score.GetDataScore (DataScoreEnum.BuildingsCreated);
-			
-				CurrentCrystalsLabel.text  = (cc == null) ? "0" : cc.NrPoints.ToString ();
-				CreatedUnitsLabel.text     = (uc == null) ? "0" : uc.NrPoints.ToString ();
-				CreatedBuildingsLabel.text = (bc == null) ? "0" : bc.NrPoints.ToString ();
+				Score.GetDataScore
+				(
+					DataScoreEnum.CurrentCrystals,
+					(currentCrystals) =>
+					{
+						CurrentCrystalsLabel.text  = currentCrystals.NrPoints.ToString ();
+					}
+				);
+				
+				Score.GetDataScore
+				(
+					DataScoreEnum.UnitsCreated,
+					(unitsCreated) =>
+					{
+						CreatedUnitsLabel.text = unitsCreated.NrPoints.ToString ();
+					}
+				);
+						
+				Score.GetDataScore
+				(
+					DataScoreEnum.BuildingsCreated,
+					(buildingsCreated) =>
+					{
+						CreatedBuildingsLabel.text = buildingsCreated.NrPoints.ToString ();
+					}
+				);
 			}
 		);
 	}

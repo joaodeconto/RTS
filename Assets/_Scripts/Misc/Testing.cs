@@ -5,9 +5,16 @@ using Visiorama;
 
 public class Testing : MonoBehaviour
 {
-	public string username = "matheus";
-	public string password = "123";
-	public string idFacebook = "";
+	[System.Serializable()]
+	public class FakeUser
+	{
+		public string username = "matheus";
+		public string password = "123";
+		public string idFacebook = "";
+	}
+	
+	public FakeUser[] users;
+	
 	public string errorMessage;
 
 	public string testNameValue = "test-data";
@@ -15,12 +22,24 @@ public class Testing : MonoBehaviour
 	public int testBattleId = -3;
 	
 	public bool test = true;
+	public bool isTesting = false;
+	public int testingIndex = 0;
 
-	void Update () {
-		if (test)
+	private bool testNextUser;
+
+	void Update ()
+	{
+		if (test || testNextUser)
 		{
-			test = false;	
+			test = false;
+			isTesting = true;
+			testNextUser = false;
+			
 			PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
+			
+			string username   = users[testingIndex].username;
+			string password   = users[testingIndex].password;
+			string idFacebook = users[testingIndex].idFacebook;
 			
 			playerDao.GetPlayer
 			(
@@ -42,13 +61,30 @@ public class Testing : MonoBehaviour
 						pw.SetPlayer (username, true);
 						pw.SetPropertyOnPlayer ("player", player.ToString ());
 						
-						Score.LoadScores (
-							(dicScore) => 
+						Score.LoadScores
+						(
+							() => 
 							{
 								Debug.Log ("chegou here");
+								
 								Score.AddScorePoints (testNameValue, testValue);
 								Score.AddScorePoints (testNameValue,  testValue, testBattleId);
-								Score.Save ();
+								
+//								Score.SubtractScorePoints (testNameValue, testValue);
+//								Score.SubtractScorePoints (testNameValue,  testValue, testBattleId);
+//								
+//								Score.SetScorePoints (testNameValue, testValue);
+//								Score.SetScorePoints (testNameValue,  testValue, testBattleId);
+								
+								if (++testingIndex == users.Length)
+								{
+									isTesting = false;
+									testingIndex = 0;
+								}
+								else
+								{
+									testNextUser = true;
+								}
 							}
 						);
 					}

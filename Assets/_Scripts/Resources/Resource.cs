@@ -10,27 +10,25 @@ public class ResourcesManager
 	public int m_mana;
 	public int m_rocks;
 
+	private static int vezes = 0;
 	public int Rocks {
 		get { return m_rocks; }
-		set {
-			m_rocks = value;
-
+		set { m_rocks = value;
+		
 			Model.Battle battle = GetCurrentBattle ();
-
+			
 			if (battle != null)
 			{
+				Debug.LogError ("vezes: " + (++vezes));
 				Score.SetScorePoints (DataScoreEnum.ResourcesGathered, m_rocks);
 				Score.SetScorePoints (DataScoreEnum.ResourcesGathered, m_rocks, battle.IdBattle);
 			}
-
-			Score.Save ();
 		}
 	}
 
 	public int Mana {
 		get { return m_mana; }
-		set {
-			m_mana = value;
+		set { m_mana = value;
 			
 			Model.Battle battle = GetCurrentBattle ();
 			
@@ -39,7 +37,6 @@ public class ResourcesManager
 				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, m_mana);
 				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, m_mana, battle.IdBattle);
 			}
-			Score.Save ();
 		}
 	}
 	
@@ -53,8 +50,8 @@ public class ResourcesManager
 		}
 		return battle;
 	}
-
-	public void Set (Resource.Type resourceType, int numberOfResources)
+	
+	public void DeliverResources (Resource.Type resourceType, int numberOfResources)
 	{
 		if (resourceType == Resource.Type.Rock)
 		{

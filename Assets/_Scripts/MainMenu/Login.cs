@@ -125,7 +125,6 @@ public class Login : IController
 
 				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, NumberOfCoinsNewPlayerStartsWith);
 				Score.SetScorePoints (DataScoreEnum.TotalCrystals,   NumberOfCoinsNewPlayerStartsWith);
-				Score.Save ();
 				
 				Index ();
 			}

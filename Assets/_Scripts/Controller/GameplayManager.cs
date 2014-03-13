@@ -479,8 +479,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			bm.WonTheGame ();			
 		}
 
-		Score.Save ();
-
 		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
 		string encodedPlayer = (string)pw.GetPropertyOnPlayer ("player");
 

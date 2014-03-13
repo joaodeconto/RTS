@@ -3,13 +3,16 @@ using UnityEngine;
 using System.Collections;
 using System.Linq;
 
+using Visiorama;
 using Visiorama.Audio;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class NetworkGUI : Photon.MonoBehaviour {
 
-	public string playerName = "";
+	public string playerName = "matheus";
+	public string playerPassword = "123";
+	
 	public bool automaticTestConnect;
 
 	protected bool checkingStatus = false;
@@ -382,19 +385,31 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 	void SetPlayer ()
 	{
-		Model.Player modelPlayer = new Model.Player () { IdPlayer		  = 5,
-														 SzName			  = "123",
-														 SzPassword		  = "123",
-														 IdFacebookAccount = "" };
-
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+		PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
 		
-//		PhotonNetwork.playerName = playerName;
-		PhotonPlayer player = PhotonNetwork.player;
-		
-		Hashtable someCustomPropertiesToSet = new Hashtable();
-		someCustomPropertiesToSet.Add ("player", modelPlayer.ToString ());
-		someCustomPropertiesToSet.Add ("ready", false);
-		player.SetCustomProperties (someCustomPropertiesToSet);
+		playerDao.GetPlayer (playerName, playerPassword, "",
+		(player, message) =>
+		{
+			ConfigurationData.player = player;
+			
+			Debug.Log ("player: " + player);
+			
+			if (player == null)
+			{
+				Debug.LogError ("wat?");
+			}
+			else
+			{				
+				PhotonNetwork.playerName = playerName;
+				PhotonPlayer photonPlayer = PhotonNetwork.player;
+				
+				Hashtable someCustomPropertiesToSet = new Hashtable();
+				someCustomPropertiesToSet.Add ("player", player.ToString ());
+				someCustomPropertiesToSet.Add ("ready", false);
+				photonPlayer.SetCustomProperties (someCustomPropertiesToSet);
+			}
+		});
 	}
 
 #if GUI

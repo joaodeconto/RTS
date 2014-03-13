@@ -13,7 +13,7 @@ public struct DataScoreEnum
 	public const string ResourcesGathered = "Resources gathered";
 	
 	public const string UnitsCreated = "units-created";
-	public const string BuildingsCreated = "units-created";
+	public const string BuildingsCreated = "buildings-created";
 	public const string XCreated = "-created"; //example use Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
 	
 	public const string UnitsLost = "units-lost";
@@ -32,68 +32,81 @@ public class Score : MonoBehaviour
 	private Model.Player player;
 	private DataScoreDAO dataScoreDAO;
 	
-	public delegate void GetScoresCallback (List <Model.DataScore> listScore);
-	public delegate void GetDicScoresCallback (Dictionary <string, Model.DataScore> dicScore);
-	public GetScoresCallback getScoresCallback;
+	public delegate void CallbackGetDataScore (Model.DataScore score);
+	public delegate void OnLoadScoreCallback ();
+	
+//	private delegate void GetScoresCallback (List <Model.DataScore> listScore);
+	
+	private bool wasInitialized = false;
+	private bool NeedToSave = false;
+	private bool isSaving = false;
+
+	public void Update ()
+	{
+		if (NeedToSave && !isSaving)
+		{
+			NeedToSave = false;
+			Invoke ("SaveScore", 1.0f);
+		}
+	}
+	
+	public void SaveScore ()
+	{
+		isSaving = true;
+		dataScoreDAO.SaveScores
+		(
+			dicDataScore,
+			(result) =>
+			{
+				dicDataScore = result;
+				isSaving = false;
+			}
+		);
+	}
 
 	private Score Init ()
 	{
-		DontDestroyOnLoad (this.gameObject);
-	
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 		player = new Model.Player ((string)pw.GetPropertyOnPlayer ("player"));
 
 		dataScoreDAO = ComponentGetter.Get <DataScoreDAO> ();
-		dicDataScore = new Dictionary <string, Model.DataScore> ();
 
 		return this;
 	}
 
-	void CreateDataScore (string ScoreName, int points, int battleId)
+	private Model.DataScore _GetDataScore (string ScoreName, int battleId)
 	{
-		Model.DataScore ds = new Model.DataScore (player.IdPlayer, battleId, ScoreName, points);
-
-		string scoreKey = GetScoreKey (ScoreName, battleId);
-
-		dicDataScore.Add (scoreKey, ds);
-	}
-
-	private string GetScoreKey (string ScoreName, int battleId)
-	{
-		return ScoreName + " - " + battleId;
+		string scoreKey = ScoreName + " - " + battleId;
+		if (!dicDataScore.ContainsKey (scoreKey))
+		{
+			dicDataScore.Add (scoreKey, new Model.DataScore (player.IdPlayer, battleId, ScoreName, 0));
+		}
+		
+		return dicDataScore[scoreKey];
 	}
 
 	private void _AddScorePoints (string ScoreName, int points, int battleId)
 	{
-		string scoreKey = GetScoreKey (ScoreName, battleId);
-
-		if(!dicDataScore.ContainsKey (scoreKey))
-			CreateDataScore (ScoreName, points, battleId);
-		else
-			dicDataScore[scoreKey].NrPoints += points;
+		Model.DataScore score = _GetDataScore (ScoreName, battleId);
+		score.NrPoints += points;
+		NeedToSave = true;
 	}
 
 	private void _SubtractScorePoints (string ScoreName, int points, int battleId)
 	{
-		string scoreKey = GetScoreKey (ScoreName, battleId);
-
-		if(!dicDataScore.ContainsKey (scoreKey))
-			CreateDataScore (ScoreName, points, battleId);
-		else
-			dicDataScore[scoreKey].NrPoints -= points;
+		Model.DataScore score = _GetDataScore (ScoreName, battleId);
+		score.NrPoints -= points;
+		NeedToSave = true;
 	}
 
 	private void _SetScorePoints (string ScoreName, int points, int battleId)
 	{
-		string scoreKey = GetScoreKey (ScoreName, battleId);
-
-		if(!dicDataScore.ContainsKey (scoreKey))
-			CreateDataScore (ScoreName, points, battleId);
-		else
-			dicDataScore[scoreKey].NrPoints = points;
+		Model.DataScore score = _GetDataScore (ScoreName, battleId);
+		score.NrPoints = points;
+		NeedToSave = true;
 	}
 	
-	private void _LoadScore (GetDicScoresCallback cb)
+	private void _LoadScore (OnLoadScoreCallback cb)
 	{
 		//TODO ler apenas scores totais, ou seja, sem que tenham IdBattle's
 		dataScoreDAO.LoadAllPlayerScores (player.ToDatabaseModel (),
@@ -103,47 +116,11 @@ public class Score : MonoBehaviour
 												
 												if (cb != null)
 												{
-													cb (dicDataScore);
+													cb ();
 												}
 											});
 	}
-	
-	private Model.DataScore _GetDataScore (string scoreName, int battleId)
-	{
-		string scoreKey = GetScoreKey (scoreName, battleId);
-		
-		Model.DataScore ds = null;
-		
-		if (dicDataScore != null)
-		{
-			if (dicDataScore.ContainsKey (scoreKey))
-			{
-				ds = dicDataScore[scoreKey];
-#if !DEBUG_SCORE
-			}
-		}
-		#else
-			Debug.Log ("scoreKey: " + scoreKey + " - ds: " + ds);
-		}
-		else
-			{
-				foreach (KeyValuePair<string, Model.DataScore> de in dicDataScore)
-				{
-					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
-				}
-			}			
-		}
-		else
-		{
-			Debug.LogError ("null!!");
-		}
-		
-		Debug.Break ();
-#endif
-		
-		return ds;
-	}
-	
+
 //	private void _LoadBattleScore (GetScoresCallback b)
 //	{
 //		if (ConfigurationData.battle != null)
@@ -161,14 +138,9 @@ public class Score : MonoBehaviour
 //			Debug.LogWarning ("ConfigurationData.battle is null!");
 //		}
 //	}
-
-	public void _SaveScore ()
-	{
-		dataScoreDAO.SaveScores (dicDataScore);
-	}
 	
 	/* Static */
-	private static Score instance;
+	private static Score instance = null;
 	private static Score Instance
 	{
 		get
@@ -197,18 +169,19 @@ public class Score : MonoBehaviour
 		Instance._SetScorePoints (ScoreName, points, battleId);
 	}
 
-	public static void LoadScores (GetDicScoresCallback cb = null)
+	public static void LoadScores (OnLoadScoreCallback cb = null)
 	{
 		Instance._LoadScore (cb);
 	}
-
-	public static Model.DataScore GetDataScore (string scoreName, int battleId = -1)
+	
+	public static void GetDataScore (string scoreName, CallbackGetDataScore callback)
 	{
-		return Instance._GetDataScore (scoreName, battleId);
+		GetDataScore (scoreName, -1, callback);
 	}
 	
-	public static void Save ()
+	public static void GetDataScore (string scoreName, int battleId, CallbackGetDataScore callback)
 	{
-		Instance._SaveScore ();
+		Model.DataScore score = Instance._GetDataScore (scoreName, battleId);
+		callback (score);
 	}
 }

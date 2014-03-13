@@ -32,24 +32,24 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<EventManager> ().Init ();
 		
-		
 		Score.LoadScores (
-			(dicScore) => 
+			() => 
 			{
 //				foreach (System.Collections.Generic.KeyValuePair<string, Model.DataScore> de in dicScore)
 //				{
 //					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
 //				}
-				
-				int manaAmount = dicScore.ContainsKey (DataScoreEnum.CurrentCrystals)
-									? dicScore[DataScoreEnum.CurrentCrystals].NrPoints
-									: 0;
-				
-				ResourcesManager resourcesManager = ComponentGetter.Get<GameplayManager> ().resources;
-
-				resourcesManager.Mana = manaAmount;
 
 				ComponentGetter.Get <BidManager> ().PayTheBid ();
+		
+				Score.GetDataScore
+				(
+					DataScoreEnum.CurrentCrystals,
+					(currentCrystals) =>
+					{
+						ComponentGetter.Get<GameplayManager> ().resources.Mana = currentCrystals.NrPoints;
+					}
+				);
 			}
 		);
 		

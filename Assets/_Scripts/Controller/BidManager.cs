@@ -28,14 +28,7 @@ public class BidManager : MonoBehaviour
 		
 		int currentBid = (int)pw.GetPropertyOnRoom ("bid");
 		
-		Model.DataScore currentCrystals = Score.GetDataScore (DataScoreEnum.CurrentCrystals);
-		
-		Debug.Log ("currentCrystals.NrPoints: " + currentCrystals.NrPoints + " - currentBid: " + currentBid);
-		currentCrystals.NrPoints -= currentBid;
-		
-		Score.SetScorePoints (DataScoreEnum.CurrentCrystals, currentCrystals.NrPoints);
-		
-		Score.Save ();
+		Score.SubtractScorePoints (DataScoreEnum.CurrentCrystals, currentBid);
 	}
 
 	public void WonTheGame ()
@@ -43,9 +36,7 @@ public class BidManager : MonoBehaviour
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 		
 		float currentBid = (int)pw.GetPropertyOnRoom ("bid");	
-		
-		Model.DataScore currentCrystals = Score.GetDataScore (DataScoreEnum.CurrentCrystals);
-		
+
 		if (WonPlayerGainsTheBidOfEachPlayerInTheGame)
 		{
 			Room room = pw.GetCurrentRoom ();
@@ -56,15 +47,9 @@ public class BidManager : MonoBehaviour
 			currentBid *= 2.0f;
 		}
 		
-		Debug.Log ("currentCrystals: " + currentCrystals);
-		Debug.Log ("currentCrystals.NrPoints: " + currentCrystals.NrPoints);
 		Debug.Log ("currentBid :" + currentBid);
 		Debug.Log ("TaxFactor: "  + TaxFactor);
 		
-		currentCrystals.NrPoints += (int)(currentBid * TaxFactor);
-		
-		Score.SetScorePoints (DataScoreEnum.CurrentCrystals, currentCrystals.NrPoints);
-		
-		Score.Save ();
+		Score.AddScorePoints (DataScoreEnum.CurrentCrystals, (int)(currentBid * TaxFactor));
 	}
 }
