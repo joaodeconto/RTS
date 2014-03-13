@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using antilunchbox;
 
 public partial class SoundManager : Singleton<SoundManager> {
 	
@@ -12,7 +13,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </param>
 	public static void SetSFXCap(int cap)
 	{
-		Instance.CAP_AMOUNT = cap;
+		Instance.capAmount = cap;
 	}
     
 	/// <summary>
@@ -99,6 +100,118 @@ public partial class SoundManager : Singleton<SoundManager> {
     }
 	
 	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlayCappedSFX(AudioSource aS, AudioClip clip, string cappedID, float volume, float pitch)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+        if (clip == null || aS == null)
+            return null;
+		
+		if(string.IsNullOrEmpty(cappedID))
+			return null;
+		
+		// Keep reference of unownedsfx objects
+		if(!Instance.unOwnedSFXObjects.Contains(aS.gameObject))
+			Instance.unOwnedSFXObjects.Add(aS.gameObject);
+        
+        // Play the clip if not at capacity
+		if(!Instance.IsAtCapacity(cappedID, clip.name))
+		{
+			aS.Stop();
+		    aS.pitch = pitch;
+		    aS.clip = clip;
+		    aS.volume = volume;
+			aS.mute = Instance.mutedSFX;
+		    aS.Play();
+			
+			return aS;
+		}
+		else
+			return null;
+    }
+	
+	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlayCappedSFX(AudioSource aS, AudioClip clip, string cappedID, float volume)
+    {
+        return PlayCappedSFX(aS, clip, cappedID, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlayCappedSFX(AudioSource aS, AudioClip clip, string cappedID)
+    {
+        return PlayCappedSFX(aS, clip, cappedID, Instance.volumeSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+    public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping, float volume, float pitch)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+        if ((clip == null) || (aS == null))
+            return null;
+		
+		// Keep reference of unownedsfx objects
+		if(!Instance.unOwnedSFXObjects.Contains(aS.gameObject))
+			Instance.unOwnedSFXObjects.Add(aS.gameObject);
+            
+        aS.Stop();
+        aS.pitch = pitch;
+        aS.clip = clip;
+        aS.loop = looping;
+        aS.volume = volume;
+		aS.mute = Instance.mutedSFX;
+        aS.Play();
+		
+		return aS;
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping, float volume)
+    {
+        return PlaySFX(aS, clip, looping, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping)
+    {
+        return PlaySFX(aS, clip, looping, Instance.volumeSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip)
+    {
+        return PlaySFX(aS, clip, false);
+    }
+	
+	/// <summary>
+	/// Stops the SFX on another audiosource
+	/// </summary>
+    public static void StopSFXObject(AudioSource aS)
+    {
+        if (aS == null)
+            return;
+            
+        if (aS.isPlaying)
+            aS.Stop();
+    }
+	
+	/// <summary>
 	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
 	/// </summary>
     public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping, float volume, float pitch)
@@ -112,19 +225,7 @@ public partial class SoundManager : Singleton<SoundManager> {
         if (gO.audio == null)
             gO.AddComponent<AudioSource>();
 		
-		// Keep reference of unownedsfx objects
-		if(!Instance.unOwnedSFXObjects.Contains(gO))
-			Instance.unOwnedSFXObjects.Add(gO);
-            
-        gO.audio.Stop();
-        gO.audio.pitch = pitch;
-        gO.audio.clip = clip;
-        gO.audio.loop = looping;
-        gO.audio.volume = volume;
-		gO.audio.mute = Instance.mutedSFX;
-        gO.audio.Play();
-		
-		return gO.audio;
+		return PlaySFX(gO.audio, clip, looping, volume, pitch);
     }
 	
 	/// <summary>
@@ -173,6 +274,74 @@ public partial class SoundManager : Singleton<SoundManager> {
 	{
 		Instance._StopSFX();
 	}
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+    public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip, bool tillDestroy, float volume, float pitch, float maxDuration)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+        if ((clip == null) || (aS == null))
+            return null;
+		
+		if(!Instance.unOwnedSFXObjects.Contains(aS.gameObject))
+			Instance.unOwnedSFXObjects.Add(aS.gameObject);
+		
+		aS.Stop();
+		aS.clip = clip;
+		aS.pitch = pitch;
+		aS.volume = volume;
+		aS.mute = Instance.mutedSFX;
+		aS.loop = true;
+		aS.Play();
+
+        Instance.StartCoroutine(Instance._PlaySFXLoopTillDestroy(aS.gameObject, aS, tillDestroy, maxDuration));
+		return aS;
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip, bool tillDestroy, float volume, float pitch)
+    {
+        return PlaySFXLoop(aS, clip, tillDestroy, volume, pitch, 0f);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip, bool tillDestroy, float volume)
+    {
+        return PlaySFXLoop(aS, clip, tillDestroy, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip, bool tillDestroy)
+    {
+        return PlaySFXLoop(aS, clip, tillDestroy, Instance.volumeSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip)
+    {
+        return PlaySFXLoop(aS, clip, true);
+    }
 	
 	/// <summary>
 	/// Plays the SFX in a loop on another gameObject of your choice.  This function is cattered more towards customizing a loop.
@@ -264,6 +433,14 @@ public partial class SoundManager : Singleton<SoundManager> {
     }
 	
 	/// <summary>
+	/// Determines whether this instance is SFX muted.
+	/// </summary>
+	public static bool IsSFXMuted()
+	{
+		return Instance.mutedSFX;
+	}
+	
+	/// <summary>
 	/// Sets the maximum volume of SFX in the game relative to the global volume.
 	/// </summary>
 	public static void SetVolumeSFX(float setVolume)
@@ -282,6 +459,14 @@ public partial class SoundManager : Singleton<SoundManager> {
 	}
 	
 	/// <summary>
+	/// Gets the volume SFX.
+	/// </summary>
+	public static float GetVolumeSFX()
+	{
+		return Instance.maxSFXVolume;
+	}
+	
+	/// <summary>
 	/// Sets the pitch of SFX in the game.
 	/// </summary>
 	public static void SetPitchSFX(float setPitch)
@@ -289,10 +474,18 @@ public partial class SoundManager : Singleton<SoundManager> {
 		Instance.pitchSFX = setPitch;
 	}
 	
+	/// <summary>
+	/// Gets the pitch SFX.
+	/// </summary>
+	public static float GetPitchSFX()
+	{
+		return Instance.pitchSFX;
+	}
+	
 	/////////////////////////////////////////////////////
 	
 	/// <summary>
-	/// Saves the SFX to the SoundManager prefab for easy access for frequently used SFX.  Will register the SFX to the group specified if it exists.
+	/// Saves the SFX to the SoundManager prefab for easy access for frequently used SFX.  Will register the SFX to the group.
 	/// </summary>
 	public static void SaveSFX(AudioClip clip, string grpName)
 	{
@@ -300,17 +493,11 @@ public partial class SoundManager : Singleton<SoundManager> {
 			return;
 		
 		SFXGroup grp = Instance.GetGroupByGroupName(grpName);
-		if(grp != null)
-		{
-			if(!Instance.clipToGroupKeys.Contains(clip.name))
-				Instance.AddClipToGroup(clip.name, grpName);
-			else
-				Debug.LogWarning("This AudioClip("+clip.name+") is already assigned to a group: "+Instance.GetClipToGroup(clip.name)+". You cannot add a clip to 2 groups.");
-		}
-		else
-			Debug.LogWarning("The SFX group, "+grpName+", does not exist.");
+		if(grp == null)
+			Debug.LogWarning("The SFXGroup, "+grpName+", does not exist. Creating it as a new group");
 		
 		SaveSFX(clip);
+		Instance.AddClipToGroup(clip.name, grpName);
 	}
 	
 	/// <summary>
@@ -323,15 +510,19 @@ public partial class SoundManager : Singleton<SoundManager> {
 		
 		if(grp != null)
 		{
-			if(!Instance.sfxGroups.Contains(grp))
+			if(!Instance.groups.ContainsKey(grp.groupName))
+			{
+				Instance.groups.Add(grp.groupName, grp);
+#if UNITY_EDITOR
 				Instance.sfxGroups.Add(grp);
-			if(!Instance.clipToGroupKeys.Contains(clip.name))
-				Instance.AddClipToGroup(clip.name, grp.groupName);
-			else
-				Debug.LogWarning("This AudioClip("+clip.name+") is already assigned to a group: "+Instance.GetClipToGroup(clip.name)+". You cannot add a clip to 2 groups.");
+#endif
+			}
+			else if(Instance.groups[grp.groupName] != grp)
+				Debug.LogWarning("The SFXGroup, "+grp.groupName+", already exists. This new group will not be added.");
 		}
 		
 		SaveSFX(clip);
+		Instance.AddClipToGroup(clip.name, grp.groupName);
 	}
 	
 	/// <summary>
@@ -342,7 +533,16 @@ public partial class SoundManager : Singleton<SoundManager> {
 		if(clip == null)
 			return;
 		
-		Instance.storedSFXs.Add(clip);
+		if(!Instance.allClips.ContainsKey(clip.name))
+		{
+			Instance.allClips.Add(clip.name, clip);
+			Instance.prepools.Add(clip.name, 0);
+#if UNITY_EDITOR
+			Instance.storedSFXs.Add(clip);
+			Instance.sfxPrePoolAmounts.Add(0);
+			Instance.showSFXDetails.Add(false);
+#endif
+		}
 	}
 	
 	/// <summary>
@@ -350,11 +550,13 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static SFXGroup CreateSFXGroup(string grpName, int capAmount)
 	{
-		SFXGroup grp = ScriptableObject.CreateInstance<SFXGroup>();
-		grp.Initialize(grpName, capAmount);
-		if(!Instance.sfxGroups.Contains(grp))
+		if(!Instance.groups.ContainsKey(grpName))
 		{
+			SFXGroup grp = new SFXGroup(grpName, capAmount);
+			Instance.groups.Add(grpName, grp);
+#if UNITY_EDITOR
 			Instance.sfxGroups.Add(grp);
+#endif
 			return grp;
 		}
 		Debug.LogWarning("This group already exists. Cannot add it.");
@@ -366,11 +568,13 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static SFXGroup CreateSFXGroup(string grpName)
 	{
-		SFXGroup grp = ScriptableObject.CreateInstance<SFXGroup>();
-		grp.Initialize(grpName);
-		if(!Instance.sfxGroups.Contains(grp))
+		if(!Instance.groups.ContainsKey(grpName))
 		{
+			SFXGroup grp = new SFXGroup(grpName);
+			Instance.groups.Add(grpName, grp);
+#if UNITY_EDITOR
 			Instance.sfxGroups.Add(grp);
+#endif
 			return grp;
 		}
 		Debug.LogWarning("This group already exists. Cannot add it.");
@@ -382,19 +586,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static void MoveToSFXGroup(string clipName, string newGroupName)
 	{
-		SFXGroup newGrp = Instance.GetGroupByGroupName(newGroupName);
-		if(!newGrp)
-			CreateSFXGroup(newGroupName);
-		
-		SFXGroup grp = Instance.GetGroupForClipName(clipName);
-		if(grp)
-		{
-			if(grp.groupName == newGroupName)
-				return;
-			Instance.SetClipToGroup(clipName, newGroupName);
-		} else {
-			Instance.AddClipToGroup(clipName, newGroupName);
-		}
+		Instance.SetClipToGroup(clipName, newGroupName);
 	}
 	
 	/// <summary>
@@ -402,34 +594,26 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioClip LoadFromGroup(string grpName)
 	{
-		if(!Instance.GetGroupByGroupName(grpName))
+		SFXGroup grp = Instance.GetGroupByGroupName(grpName);
+		if(grp == null)
 		{
-			Debug.LogError("There is no group by this name, "+grpName+".");
+			Debug.LogError("There is no group by this name: "+grpName+".");
 			return null;
 		}
 		
 		AudioClip result = null;
-		List<string> availableClipNames = new List<string>();
 		
-		// Get all clip names that match the group name
-		for(int i = 0; i < Instance.clipToGroupKeys.Count; i++)
-			if(Instance.clipToGroupValues[i] == grpName)
-				availableClipNames.Add(Instance.clipToGroupKeys[i]);
-		
-		if(availableClipNames.Count == 0)
+		// check if clips is empty
+		if(grp.clips.Count == 0)
 		{
-			Debug.LogWarning("There are no clips in this group.");
+			Debug.LogWarning("There are no clips in this group: " + grpName);
 			return null;
 		}
 		
-		// Get a random clip name of that list of available clip names
-		string clipNameToPlay = availableClipNames[Random.Range(0,availableClipNames.Count)];
+		// Get random clip from list
+		result = grp.clips[Random.Range(0, grp.clips.Count)];
 		
-		// Find it and return it
-		result = Instance.storedSFXs.Find(delegate(AudioClip clip) {
-			return clipNameToPlay == clip.name;
-		});
-
+		// return result
 		return result;
 	}
 	
@@ -438,37 +622,28 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioClip[] LoadAllFromGroup(string grpName)
 	{
-		if(!Instance.GetGroupByGroupName(grpName))
+		SFXGroup grp = Instance.GetGroupByGroupName(grpName);
+		if(grp == null)
 		{
 			Debug.LogError("There is no group by this name, "+grpName+".");
 			return null;
 		}
 		
-		List<string> availableClipNames = new List<string>();
-		
-		// Get all clip names that match the group name
-		for(int i = 0; i < Instance.clipToGroupKeys.Count; i++)
-			if(Instance.clipToGroupValues[i] == grpName)
-				availableClipNames.Add(Instance.clipToGroupKeys[i]);
-		
-		if(availableClipNames.Count == 0)
+		// check if group is empty
+		if(grp.clips.Count == 0)
 		{
-			Debug.LogWarning("There are no clips in this group.");
+			Debug.LogWarning("There are no clips in this group: " + grpName);
 			return null;
 		}
 		
-		// Find all clips
-		List<AudioClip> clips = Instance.storedSFXs.FindAll(delegate(AudioClip clip) {
-			return availableClipNames.Contains(clip.name);
-		});
-		
-		return clips.ToArray();
+		// return all clips in array
+		return grp.clips.ToArray();
 	}
 	
 	/// <summary>
-	/// Load the specified clipname, at a custom path if you do not want to use RESOURCES_PATH.
+	/// Load the specified clipname, at a custom path if you do not want to use resourcesPath.
 	/// If custompath fails or is empty/null, it will query the stored SFXs.  If that fails, it'll query the default
-	/// RESOURCES_PATH.  If all else fails, it'll return null.
+	/// resourcesPath.  If all else fails, it'll return null.
 	/// </summary>
 	/// <param name='clipname'>
 	/// Clipname.
@@ -491,22 +666,21 @@ public partial class SoundManager : Singleton<SoundManager> {
 			return result;
 		
 		// If custom path fails, attempt to find it in our stored SFXs
-		result = Instance.storedSFXs.Find(delegate(AudioClip clip) {
-			return clipname == clip.name;
-		});
+		if(Instance.allClips.ContainsKey(clipname))
+			result = Instance.allClips[clipname];
 		
 		if(result)
 			return result;
 		
 		// If it is not in our stored SFX, attempt to find it in our default resources path
-		result = (AudioClip)Resources.Load(Instance.RESOURCES_PATH + "/" + clipname);
+		result = (AudioClip)Resources.Load(Instance.resourcesPath + "/" + clipname);
 		
 		return result;
 	}
 	
 	/// <summary>
 	/// Load the specified clipname from the stored SFXs.  If that fails, it'll query the default
-	/// RESOURCES_PATH.  If all else fails, it'll return null.
+	/// resourcesPath.  If all else fails, it'll return null.
 	/// </summary>
 	/// <param name='clipname'>
 	/// Clipname.

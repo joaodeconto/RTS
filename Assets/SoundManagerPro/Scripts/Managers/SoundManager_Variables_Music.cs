@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using antilunchbox;
 
 public partial class SoundManager : Singleton<SoundManager> {
 
@@ -44,7 +45,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	private int currentSongIndex = -1;
 
 	private bool ignoreFromLosingFocus = false;
-	private bool ignoreLevelLoad = false;
+	public bool ignoreLevelLoad = false;
 
 	public float volume1 {
 		get {
@@ -108,9 +109,4 @@ public partial class SoundManager : Singleton<SoundManager> {
 			return (outCrossing[0] || outCrossing[1]);
 		}
 	}
-	
-	/// <summary>
-	/// EDITOR STORAGE. DO NOT TOUCH. WILL NOT BE INCLUDED IN BUILD, ONLY UNITY EDITOR.
-	/// </summary>
-	public EditorVariableStorage storage;
 }

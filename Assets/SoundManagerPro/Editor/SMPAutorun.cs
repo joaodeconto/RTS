@@ -16,7 +16,10 @@ public class SMPAutorun
 	
 	static void Reviews()
 	{
-		LookForUpdates();
+		if(EditorPrefs.GetBool("SMPAutomaticUpdates", true))
+			LookForUpdates();
+		else if(versionChecker != null)
+			versionChecker.GetComponent<EditorUpdateCheck>().DestroyMe();
 		EvaluateTimesOpened();
 		CheckPrompts();
 		EditorApplication.update -= Reviews;

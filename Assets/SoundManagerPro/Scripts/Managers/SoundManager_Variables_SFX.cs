@@ -1,17 +1,15 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using antilunchbox;
 
 public partial class SoundManager : Singleton<SoundManager> {
 
 	// Path to folder where SFX are held in resources
-	public string RESOURCES_PATH = "Sounds/SFX";
+	public string resourcesPath = "Sounds/SFX";
 
 	// List of local AudioClip SFXs added in inspector or through StoreSFX()
 	public List<AudioClip> storedSFXs = new List<AudioClip>();
-
-	// List of SFX Objects the SoundManager pools
-	public List<GameObject> ownedSFXObjects = new List<GameObject>();
 
 	// List of other gameobjects with SFX attached
 	public List<GameObject> unOwnedSFXObjects = new List<GameObject>();
@@ -25,20 +23,27 @@ public partial class SoundManager : Singleton<SoundManager> {
 	// Map of clip names to group names (dictionaries and hashtables are not supported for serialization)
 	public List<string> clipToGroupKeys = new List<string>();
 	public List<string> clipToGroupValues = new List<string>();
-
-	public int mCurrentOwnedSFXObject;
+	
+	private Dictionary<string, SFXGroup> groups = new Dictionary<string, SFXGroup>();
+	private Dictionary<string, string> clipsInGroups = new Dictionary<string, string>();
+	private Dictionary<string, AudioClip> allClips = new Dictionary<string, AudioClip>();
+	private Dictionary<string, int> prepools = new Dictionary<string, int>();
+	
 	public bool offTheSFX = false;
-	public int CAP_AMOUNT = 3;
+	public int capAmount = 3;
 
 	public float volumeSFX {
 		get{
 			return _volumeSFX;
 		} set {
-			foreach(GameObject ownedSFXObject in Instance.ownedSFXObjects)
+			foreach(KeyValuePair<AudioClip, SFXPoolInfo> pair in Instance.ownedPools)
 			{
-				if(ownedSFXObject != null)
-					if(ownedSFXObject.audio != null)
-						ownedSFXObject.audio.volume = value;
+				foreach(GameObject ownedSFXObject in pair.Value.ownedAudioClipPool)
+				{
+					if(ownedSFXObject != null)
+						if(ownedSFXObject.audio != null)
+							ownedSFXObject.audio.volume = value;
+				}
 			}
 			foreach(GameObject unOwnedSFXObject in Instance.unOwnedSFXObjects)
 			{
@@ -55,11 +60,14 @@ public partial class SoundManager : Singleton<SoundManager> {
 		get{
 			return _pitchSFX;
 		} set {
-			foreach(GameObject ownedSFXObject in Instance.ownedSFXObjects)
+			foreach(KeyValuePair<AudioClip, SFXPoolInfo> pair in Instance.ownedPools)
 			{
-				if(ownedSFXObject != null)
-					if(ownedSFXObject.audio != null)
-						ownedSFXObject.audio.pitch = value;
+				foreach(GameObject ownedSFXObject in pair.Value.ownedAudioClipPool)
+				{
+					if(ownedSFXObject != null)
+						if(ownedSFXObject.audio != null)
+							ownedSFXObject.audio.pitch = value;
+				}
 			}
 			foreach(GameObject unOwnedSFXObject in Instance.unOwnedSFXObjects)
 			{
@@ -85,15 +93,18 @@ public partial class SoundManager : Singleton<SoundManager> {
 		get {
 			return _mutedSFX;
 		} set {
-			foreach(GameObject ownedSFXObject in Instance.ownedSFXObjects)
+			foreach(KeyValuePair<AudioClip, SFXPoolInfo> pair in Instance.ownedPools)
 			{
-				if(ownedSFXObject != null)
-					if(ownedSFXObject.audio != null)
-						if(value)
-							ownedSFXObject.audio.mute = value;
-						else
-							if(Instance.offTheSFX)
+				foreach(GameObject ownedSFXObject in pair.Value.ownedAudioClipPool)
+				{
+					if(ownedSFXObject != null)
+						if(ownedSFXObject.audio != null)
+							if(value)
 								ownedSFXObject.audio.mute = value;
+							else
+								if(Instance.offTheSFX)
+									ownedSFXObject.audio.mute = value;
+				}
 			}
 			foreach(GameObject unOwnedSFXObject in Instance.unOwnedSFXObjects)
 			{
@@ -109,4 +120,8 @@ public partial class SoundManager : Singleton<SoundManager> {
 		}
 	}
 	private bool _mutedSFX = false;
+	
+	private Dictionary<AudioClip, SFXPoolInfo> ownedPools = new Dictionary<AudioClip, SFXPoolInfo>();
+	public List<int> sfxPrePoolAmounts = new List<int>();
+	public float SFXObjectLifetime = 10f;
 }

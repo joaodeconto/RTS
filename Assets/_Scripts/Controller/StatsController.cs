@@ -37,7 +37,7 @@ public class StatsController : MonoBehaviour
 	protected Vector3 centerOfTroop;
 
 	protected GameplayManager gameplayManager;
-	protected SoundManagerRTS soundManager;
+	protected SoundManager soundManager;
 	protected HUDController hudController;
 
 	protected List<Worker> idleWorkers;
@@ -48,7 +48,7 @@ public class StatsController : MonoBehaviour
 			Debug.LogError ("Botao do idle worker sera instanciado em relacao ao objeto: " + idleWorkerButtonParent.name + " e nao ao menu padrao");
 	
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-		soundManager    = ComponentGetter.Get<SoundManagerRTS> ();
+		soundManager    = ComponentGetter.Get<SoundManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 
 		selectedStats 	= new List<IStats> ();
@@ -109,8 +109,8 @@ public class StatsController : MonoBehaviour
 						k++;
 					}
 				}
-
-				unit.Move (newDestination);
+				 
+				unit.Move (newDestination); 
 				
 				feedback = true;
 
@@ -121,7 +121,10 @@ public class StatsController : MonoBehaviour
 		if (feedback)
 		{
 			hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f, gameplayManager.GetColorTeam ());
-			soundManager.PlayRandom ("ConfirmMov");
+
+			AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
+			
+			SoundManager.PlaySFX(sfxconfirm);
 		}
 	}
 
@@ -144,8 +147,10 @@ public class StatsController : MonoBehaviour
 		}
 		
 		if (feedback)
-		{
-			soundManager.PlayRandom ("Confirm");
+		{   
+			AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
+
+			SoundManager.PlaySFX(sfxconfirm);
 			
 			hudController.CreateFeedback (HUDController.Feedbacks.Attack,
 			                              allyUnit.transform,
@@ -173,7 +178,9 @@ public class StatsController : MonoBehaviour
 		
 		if (feedback)
 		{
-			soundManager.PlayRandom ("Confirm");
+			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
+			
+			SoundManager.PlaySFX(sfxAtk);
 			
 			IStats enemyStats = enemy.GetComponent<IStats> ();
 			
@@ -526,16 +533,27 @@ public class StatsController : MonoBehaviour
 			
 			if (IsUnit (statSelected))
 			{
-				soundManager.PlayRandom (statSelected.category);
+//				soundManager.PlayRandom (statSelected.category);
+
+				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
+				
+				SoundManager.PlaySFX(sfxSelect);
+
 			}
 			else
 			{
-				soundManager.PlayRandom ("BuildingSelected");
+//				soundManager.PlayRandom ("BuildingSelected");
+
+				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
+				
+				SoundManager.PlaySFX(sfxSelect);
 			}
 		}
 		else
 		{
-			soundManager.PlayRandom ("TroopSelected");
+			AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
+			
+			SoundManager.PlaySFX(sfxSelect);
 		}
 	}
 

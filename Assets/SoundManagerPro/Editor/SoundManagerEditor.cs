@@ -3,100 +3,69 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-public partial class SoundManagerEditor : Editor {
-	/* Serialized Object ( target ) */
-	private SerializedObject mObject;
+[CustomEditor(typeof(SoundManager))]
+public partial class SoundManagerEditor : Editor {	
 	private SoundManager script;
 	
-	/* Serialized Properties */
-	private SerializedProperty mSoundConnectionsCount;
+	#region editor variables
+	private List<AudioClip> soundsToAdd = new List<AudioClip>();
+	private string levelToAdd;
+	private int levelIndex = 0;
+	private bool isCustom;
+	private SoundManager.PlayMethod playMethodToAdd;
+	private float minDelayToAdd;
+	private float maxDelayToAdd;
+	private float delayToAdd;
+	private bool isEditing = false;
+	private AudioClip editAddClip;
+	private AudioClip editAddClipFromSelector;
+	private float minDelayToEdit;
+	private float maxDelayToEdit;
+	private float delayToEdit;
+	private Texture2D titleBar;
+	private Texture2D footer;
+	private Texture2D icon;
 	
-	private AudioSource mAudio1;
-	private AudioSource mAudio2;
-	
-	private SerializedProperty mCrossDuration;
-	
-	private SerializedProperty mShowDebug;
-	private SerializedProperty mOffBGM;
-	
-	/* Access Strings */
-	private static string mListCountPath = "soundConnections.Array.size";
-	private static string mListData = "soundConnections.Array.data[{0}]";
-	
-	private static string mAudioSourcesCountPath = "audios.Array.size";
-	private static string mAudioSourceData = "audios.Array.data[{0}]";
-	
-	private static string mSCLevel = "level";
-	private static string mSCIsCustomLevel = "isCustomLevel";
-	private static string mSCSoundToPlay = "soundsToPlay.Array.data[{0}]";
-	private static string mSCSoundSize = "soundsToPlay.Array.size";
-	private static string mSCPlayMethod = "playMethod";
-	private static string mSCMinDelay = "minDelay";
-	private static string mSCMaxDelay = "maxDelay";
-	private static string mSCDelay = "delay";
-	
-	/* Local Objects */	
 	private bool listeningForGuiChanges;
     private bool guiChanged;
 	
 	private Color softGreen = new Color(.67f,.89f,.67f,1f);
 	private Color hardGreen = Color.green;
-	
-	Editor proxy;
-	
-	bool enabled;
+	private Color inactiveColor = new Color(.65f,.65f,.65f);
 	
 	private string defaultName = "-enter name-";
 	private bool repaintNextFrame = false;
+	private bool indent4_3_up = false;
+	#endregion
 	
-	public void ProxyInitialize (Editor proxy)
+	private void OnEnable()
 	{
-		this.proxy = proxy;
+		script = target as SoundManager;
+		
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+		indent4_3_up = true;
+#endif
+		
+		HideTransform();
+
+		Init();
+		InitSFX();
+		
+		if(!titleBar)
+			titleBar = Resources.LoadAssetAtPath ("Assets/Gizmos/TitleBar.png", typeof(Texture2D)) as Texture2D;
+		if(!footer)
+			footer = Resources.LoadAssetAtPath ("Assets/Gizmos/AntiLunchBox Logo.png", typeof(Texture2D)) as Texture2D;
+		if(!icon)
+			icon = Resources.LoadAssetAtPath ("Assets/Gizmos/SoundManager Icon.png", typeof(Texture2D)) as Texture2D;
 	}
 	
-	public void Enable()
+	private void OnDisable()
 	{
-		enabled = (PrefabUtility.GetPrefabType(proxy.target) != PrefabType.Prefab);
-		
-		script = proxy.target as SoundManager;
-		mObject = new SerializedObject(proxy.target);
-		mCrossDuration = mObject.FindProperty("crossDuration");
-		mShowDebug = mObject.FindProperty("showDebug");
-		mOffBGM = mObject.FindProperty("offTheBGM");
-		mSoundConnectionsCount = mObject.FindProperty(mListCountPath);
-		
-		if(script.GetComponent<Transform>().hideFlags != HideFlags.HideInInspector)
-			script.GetComponent<Transform>().hideFlags = HideFlags.NotEditable | HideFlags.HideInInspector;
-		
-		if(script.storage == null)
-		{
-			script.storage = ScriptableObject.CreateInstance<EditorVariableStorage>();
-			script.storage.hideFlags = HideFlags.HideAndDontSave;
-		}
-		
-		CheckNullMonoBehaviours();
-		EnableSFX();
-		init();
-		
-		if(!script.storage.titleBar)
-			script.storage.titleBar = Resources.LoadAssetAtPath ("Assets/Gizmos/TitleBar.png", typeof(Texture2D)) as Texture2D;
-		if(!script.storage.footer)
-			script.storage.footer = Resources.LoadAssetAtPath ("Assets/Gizmos/AntiLunchBox Logo.png", typeof(Texture2D)) as Texture2D;
-		if(!script.storage.icon)
-			script.storage.icon = Resources.LoadAssetAtPath ("Assets/Gizmos/SoundManager Icon.png", typeof(Texture2D)) as Texture2D;
-		
-		HideVariables();
+		HideTransform();
 	}
 	
-	void HideVariables()
+	private void HideTransform()
 	{
-		if(script != null && script.storage)
-			script.storage.Hide();
-	}
-	
-	public void Disable()
-	{
-		HideVariables();
 		if(script != null)
 		{
 			if(script.GetComponent<Transform>().hideFlags != HideFlags.HideInInspector)
@@ -104,29 +73,59 @@ public partial class SoundManagerEditor : Editor {
 		}
 	}
 	
-	void CheckNullMonoBehaviours()
+	private void Init()
 	{
-		foreach (Component c in script.GetComponents(typeof(Component))) {
-            if (c == null)
-			{
-                DestroyImmediate(c);
-            }
-        }
-	}
-	
-	void init()
-	{
-		script.storage.isEditing = false;
-		for(int i = 0; i < mSoundConnectionsCount.intValue ; i++)
+		if(!Application.isPlaying)
 		{
-			SerializedObject sc = new SerializedObject(mObject.FindProperty(string.Format(mListData, i)).objectReferenceValue);
-			var levelName = sc.FindProperty(mSCLevel).stringValue;
-			if(!script.storage.songStatus.ContainsKey(levelName))
-				script.storage.songStatus.Add(levelName, EditorVariableStorage.HIDE);
+			if(script.audios == null)
+			{
+				if(script.GetComponents<AudioSource>().Length == 2)
+				{
+					script.audios = script.GetComponents<AudioSource>();
+				} 
+				else
+				{
+					script.audios = new AudioSource[2];
+					script.audios[0] = script.gameObject.AddComponent<AudioSource>(); 
+					script.audios[1] = script.gameObject.AddComponent<AudioSource>();
+				}
+			}
+			else
+			{
+				if(script.audios.Length != 2)
+				{
+					for(int i = 0; i < script.audios.Length; i++)
+					{
+						DestroyImmediate(script.audios[i]);
+					}
+					script.audios = new AudioSource[2];
+					script.audios[0] = script.gameObject.AddComponent<AudioSource>(); 
+					script.audios[1] = script.gameObject.AddComponent<AudioSource>();
+				}
+			}
+			
+			script.audios[0].hideFlags = HideFlags.HideInInspector;
+			script.audios[1].hideFlags = HideFlags.HideInInspector;
+			
+			SoundManagerTools.make2D(ref script.audios[0]);
+			SoundManagerTools.make2D(ref script.audios[1]);
+			
+			script.audios[0].volume = 0f;
+			script.audios[1].volume = 0f;
+			
+			script.audios[0].ignoreListenerVolume = true;
+			script.audios[1].ignoreListenerVolume = true;
+		}
+		
+		for(int i = 0; i < script.soundConnections.Count ; i++)
+		{
+			string levelName = script.soundConnections[i].level;
+			if(!script.songStatus.ContainsKey(levelName))
+				script.songStatus.Add(levelName, SoundManager.HIDE);
 		}
 	}
 	
-	public GUIStyle CreateFoldoutGUI()
+	private GUIStyle CreateFoldoutGUI()
 	{
 		GUIStyle myFoldoutStyle = new GUIStyle(EditorStyles.foldout);
 		Color myStyleColor = Color.white;
@@ -145,44 +144,47 @@ public partial class SoundManagerEditor : Editor {
 
 	public override void OnInspectorGUI()
 	{
-		mObject.Update();
-		GUI.enabled = enabled;
 		GUI.color = Color.white;
 		GUIStyle foldoutStyle = CreateFoldoutGUI();
-		Color inactiveColor = new Color(.65f,.65f,.65f);
+		
 		var expand = '\u2261'.ToString();
 		GUIContent expandContent = new GUIContent(expand, "Expand/Collapse");
-		if(enabled && (!script || !script.storage))
+		
+		if(!script)
 			return;
-		//base.OnInspectorGUI();
-		if(script.storage.titleBar != null)
+
+		if(titleBar != null)
 		{
 			GUILayout.BeginHorizontal();
 			{
 	    		GUILayout.FlexibleSpace();
 				{
-	    			GUILayout.Label(script.storage.titleBar);
+	    			GUILayout.Label(titleBar);
 				}
 	    		GUILayout.FlexibleSpace();
 			}
 			GUILayout.EndHorizontal();
 		}
-		//
-		if(script.storage.showInfo)
+
+		if(script.showInfo)
 			GUI.color = inactiveColor;
+		if(indent4_3_up)
+			EditorGUI.indentLevel++;
 		EditorGUILayout.BeginVertical(EditorStyles.objectFieldThumb, GUILayout.ExpandWidth(true));
 		{
 			EditorGUILayout.BeginHorizontal();
 			{
 				GUI.color = Color.white;
-				script.storage.showInfo = EditorGUILayout.Foldout(script.storage.showInfo, new GUIContent("Info", "Information about the current scene and tracks playing."), foldoutStyle);
-				script.storage.showInfo = GUILayout.Toggle(script.storage.showInfo, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
+				script.showInfo = EditorGUILayout.Foldout(script.showInfo, new GUIContent("Info", "Information about the current scene and tracks playing."), foldoutStyle);
+				script.showInfo = GUILayout.Toggle(script.showInfo, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
 			}
 			EditorGUILayout.EndHorizontal();
 		}
 		EditorGUILayout.EndVertical();
+		if(indent4_3_up)
+			EditorGUI.indentLevel--;
 		
-		if(script.storage.showInfo)
+		if(script.showInfo)
 		{
 			EditorGUILayout.BeginVertical();
 			{
@@ -191,22 +193,26 @@ public partial class SoundManagerEditor : Editor {
 			EditorGUILayout.EndVertical();
 		}
 		EditorGUILayout.Separator();
-		//
-		if(script.storage.showDev)
+
+		if(script.showDev)
 			GUI.color = inactiveColor;
+		if(indent4_3_up)
+			EditorGUI.indentLevel++;
 		EditorGUILayout.BeginVertical(EditorStyles.objectFieldThumb, GUILayout.ExpandWidth(true));
 		{
 			EditorGUILayout.BeginHorizontal();
 			{
 				GUI.color = Color.white;
-				script.storage.showDev = EditorGUILayout.Foldout(script.storage.showDev, new GUIContent("Developer Settings", "Settings to customize how SoundManager behaves."), foldoutStyle);
-				script.storage.showDev = GUILayout.Toggle(script.storage.showDev, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
+				script.showDev = EditorGUILayout.Foldout(script.showDev, new GUIContent("Developer Settings", "Settings to customize how SoundManager behaves."), foldoutStyle);
+				script.showDev = GUILayout.Toggle(script.showDev, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
 			}
 			EditorGUILayout.EndHorizontal();
 		}
 		EditorGUILayout.EndVertical();
+		if(indent4_3_up)
+			EditorGUI.indentLevel--;
 		
-		if(script.storage.showDev)
+		if(script.showDev)
 		{
 			EditorGUILayout.BeginVertical();
 			{
@@ -215,31 +221,35 @@ public partial class SoundManagerEditor : Editor {
 			EditorGUILayout.EndVertical();	
 		}
 		EditorGUILayout.Separator();
-		//
-		if(script.storage.showList)
+		
+		if(script.showList)
 			GUI.color = inactiveColor;
+		if(indent4_3_up)
+			EditorGUI.indentLevel++;
 		EditorGUILayout.BeginVertical(EditorStyles.objectFieldThumb, GUILayout.ExpandWidth(true));
 		{
 			EditorGUILayout.BeginHorizontal();
 			{
 				GUI.color = Color.white;
-				script.storage.showList = EditorGUILayout.Foldout(script.storage.showList, new GUIContent("SoundConnections", "List of existing SoundConnections that tie a group of clips, a play method, and various other variables to a scene."), foldoutStyle);	
+				script.showList = EditorGUILayout.Foldout(script.showList, new GUIContent("SoundConnections", "List of existing SoundConnections that tie a group of clips, a play method, and various other variables to a scene."), foldoutStyle);	
 				GUILayout.FlexibleSpace();
-				if(!script.storage.viewAll && GUILayout.Button(new GUIContent("view all", "show all SoundConnections"), EditorStyles.toolbarButton, GUILayout.Width(75f)))
+				if(!script.viewAll && GUILayout.Button(new GUIContent("view all", "show all SoundConnections"), EditorStyles.toolbarButton, GUILayout.Width(75f)))
 				{
-					script.storage.showList = true;
-					script.storage.viewAll = true;
-				} else if (script.storage.viewAll && GUILayout.Button(new GUIContent("hide all", "hide all SoundConnections"), EditorStyles.toolbarButton, GUILayout.Width(75f))) {
-					script.storage.viewAll = false;
+					script.showList = true;
+					script.viewAll = true;
+				} else if (script.viewAll && GUILayout.Button(new GUIContent("hide all", "hide all SoundConnections"), EditorStyles.toolbarButton, GUILayout.Width(75f))) {
+					script.viewAll = false;
 				}
 				EditorGUILayout.Space();
-				script.storage.showList = GUILayout.Toggle(script.storage.showList, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
+				script.showList = GUILayout.Toggle(script.showList, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
 			}
 			EditorGUILayout.EndHorizontal();		
 		}
 		EditorGUILayout.EndVertical();
+		if(indent4_3_up)
+			EditorGUI.indentLevel--;
 		
-		if(script.storage.showList)
+		if(script.showList)
 		{
 			EditorGUILayout.BeginVertical();
 			{
@@ -248,22 +258,26 @@ public partial class SoundManagerEditor : Editor {
 			EditorGUILayout.EndVertical();	
 		}
 		EditorGUILayout.Separator();
-		//
-		if(script.storage.showAdd)
+
+		if(script.showAdd)
 			GUI.color = inactiveColor;
+		if(indent4_3_up)
+			EditorGUI.indentLevel++;
 		EditorGUILayout.BeginVertical(EditorStyles.objectFieldThumb, GUILayout.ExpandWidth(true));
 		{
 			EditorGUILayout.BeginHorizontal();
 			{
 				GUI.color = Color.white;
-				script.storage.showAdd = EditorGUILayout.Foldout(script.storage.showAdd, new GUIContent("Add SoundConnection(s)", "Where SoundConnections are made."), foldoutStyle);
-				script.storage.showAdd = GUILayout.Toggle(script.storage.showAdd, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
+				script.showAdd = EditorGUILayout.Foldout(script.showAdd, new GUIContent("Add SoundConnection(s)", "Where SoundConnections are made."), foldoutStyle);
+				script.showAdd = GUILayout.Toggle(script.showAdd, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
 			}
 			EditorGUILayout.EndHorizontal();
 		}
 		EditorGUILayout.EndVertical();
+		if(indent4_3_up)
+			EditorGUI.indentLevel--;
 		
-		if(script.storage.showAdd)
+		if(script.showAdd)
 		{
 			EditorGUILayout.BeginVertical();
 			{
@@ -272,23 +286,26 @@ public partial class SoundManagerEditor : Editor {
 			EditorGUILayout.EndVertical();	
 		}
 		EditorGUILayout.Separator();
-		//
 
-		if(script.storage.showSFX)
+		if(script.showSFX)
 			GUI.color = inactiveColor;
+		if(indent4_3_up)
+			EditorGUI.indentLevel++;
 		EditorGUILayout.BeginVertical(EditorStyles.objectFieldThumb, GUILayout.ExpandWidth(true));
 		{
 			EditorGUILayout.BeginHorizontal();
 			{
 				GUI.color = Color.white;
-				script.storage.showSFX = EditorGUILayout.Foldout(script.storage.showSFX, new GUIContent("SFX", "Section for handling SFX and applying attributes to groups of SFX"), foldoutStyle);
-				script.storage.showSFX = GUILayout.Toggle(script.storage.showSFX, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
+				script.showSFX = EditorGUILayout.Foldout(script.showSFX, new GUIContent("SFX", "Section for handling SFX and applying attributes to groups of SFX"), foldoutStyle);
+				script.showSFX = GUILayout.Toggle(script.showSFX, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
 			}
 			EditorGUILayout.EndHorizontal();
 		}
 		EditorGUILayout.EndVertical();
+		if(indent4_3_up)
+			EditorGUI.indentLevel--;
 		
-		if(script.storage.showSFX)
+		if(script.showSFX)
 		{
 			EditorGUILayout.BeginVertical();
 			{
@@ -296,62 +313,68 @@ public partial class SoundManagerEditor : Editor {
 			}
 			EditorGUILayout.EndVertical();
 		}
-		//
-		if(script.storage.footer != null)
+		
+		if(footer != null)
 		{
 			GUILayout.BeginHorizontal();
 			{
 	    		GUILayout.FlexibleSpace();
 				{
-	    			GUILayout.Label(script.storage.footer, GUI.skin.label);
+	    			GUILayout.Label(footer, GUI.skin.label);
 				}
 	    		GUILayout.FlexibleSpace();
 			}
 			GUILayout.EndHorizontal();
 		}
-		
-		mObject.ApplyModifiedProperties();
 	}
 	
 	#region GUI functions
-	void ShowInfo()
+	private void ShowInfo()
 	{
 		EditorGUI.indentLevel++;
 		{
 			EditorGUILayout.LabelField("Current Scene:", Application.loadedLevelName);
-			mCrossDuration.floatValue = EditorGUILayout.FloatField("Cross Duration:",mCrossDuration.floatValue);
-			if(mCrossDuration.floatValue < 0) mCrossDuration.floatValue = 0;
 			
-			int audioSize = (mObject.FindProperty(mAudioSourcesCountPath).intValue);
-			if(audioSize != 0)
+			float crossDuration = script.crossDuration;
+			crossDuration = EditorGUILayout.FloatField("Cross Duration:",crossDuration);
+			if(crossDuration < 0) 
+				crossDuration = 0f;
+			if(crossDuration != script.crossDuration)
 			{
-				mAudio1 = (mObject.FindProperty(string.Format(mAudioSourceData, 0)).objectReferenceValue as AudioSource);
-				mAudio2 = (mObject.FindProperty(string.Format(mAudioSourceData, 1)).objectReferenceValue as AudioSource);
-				
-				string name1,name2;
+				SoundManagerEditorTools.RegisterObjectChange("Change Cross Duration", script);
+				script.crossDuration = crossDuration;
+				EditorUtility.SetDirty(script);
+			}
+			
+			int audioSize = 0;
+			if(script.audios != null && script.audios[0] != null && script.audios[1] != null)
+				audioSize = script.audios.Length;
+			if(audioSize != 0)
+			{			
+				string name1, name2;
 				name1 = name2 = "No Song";
 				
 				GUI.color = hardGreen;
-				if(mAudio1 && mAudio1.clip)
-					name1 = mAudio1.clip.name;
+				if(script.audios[0] && script.audios[0].clip)
+					name1 = script.audios[0].clip.name;
 				else
 					GUI.color = Color.red;
 				
 				Rect rect = GUILayoutUtility.GetRect (28, 28, "TextField");
 				if(name1 != "No Song")
-					name1 += "\n" + System.TimeSpan.FromSeconds(mAudio1.time).ToString().Split('.')[0] + "/" + System.TimeSpan.FromSeconds(mAudio1.clip.length).ToString().Split('.')[0];
-				EditorGUI.ProgressBar(rect,mAudio1.volume,name1);
+					name1 += "\n" + System.TimeSpan.FromSeconds(script.audios[0].time).ToString().Split('.')[0] + "/" + System.TimeSpan.FromSeconds(script.audios[0].clip.length).ToString().Split('.')[0];
+				EditorGUI.ProgressBar(rect,script.audios[0].volume,name1);
 				
 				GUI.color = hardGreen;
-				if(mAudio2 && mAudio2.clip)
-					name2 = mAudio2.clip.name;
+				if(script.audios[1] && script.audios[1].clip)
+					name2 = script.audios[1].clip.name;
 				else
 					GUI.color = Color.red;
 				
 				Rect rect2 = GUILayoutUtility.GetRect(28, 28, "TextField");
 				if(name2 != "No Song")
-					name2 += "\n" + System.TimeSpan.FromSeconds(mAudio2.time).ToString().Split('.')[0] + "/" + System.TimeSpan.FromSeconds(mAudio2.clip.length).ToString().Split('.')[0];
-				EditorGUI.ProgressBar(rect2,mAudio2.volume,name2);
+					name2 += "\n" + System.TimeSpan.FromSeconds(script.audios[1].time).ToString().Split('.')[0] + "/" + System.TimeSpan.FromSeconds(script.audios[1].clip.length).ToString().Split('.')[0];
+				EditorGUI.ProgressBar(rect2,script.audios[1].volume,name2);
 				
 				GUI.color = Color.white;
 				Repaint();
@@ -369,87 +392,89 @@ public partial class SoundManagerEditor : Editor {
 		EditorGUILayout.Space();
 	}
 	
-	void ShowSoundConnectionList()
+	private void ShowSoundConnectionList()
 	{
 		EditorGUI.indentLevel++;
-		for(int i = 0 ; i < mSoundConnectionsCount.intValue ; i++)
 		{
-			ShowSoundConnection(i);
+			for(int i = 0 ; i < script.soundConnections.Count ; i++)
+			{
+				ShowSoundConnection(i);
+			}
+			GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
 		}
-		GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
 		EditorGUI.indentLevel--;
 		EditorGUILayout.Space();
 	}
 	
-	void ShowSoundConnection(int index)
+	private void ShowSoundConnection(int index)
 	{
 		GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
 		
-		string status = EditorVariableStorage.HIDE;
-		SerializedObject sc = new SerializedObject(mObject.FindProperty(string.Format(mListData, index)).objectReferenceValue);
+		string status = SoundManager.HIDE;
+		SoundConnection sc = script.soundConnections[index];
+		
 		EditorGUILayout.BeginVertical();
 		{
 			EditorGUILayout.BeginHorizontal();
 			{
-				var levelName = "";
-					
-				levelName = sc.FindProperty(mSCLevel).stringValue;
-				status = script.storage.songStatus[levelName] as string;
-				if(status == EditorVariableStorage.HIDE) GUI.enabled = false;
-				if(script.storage.icon)
-					GUILayout.Label(script.storage.icon, GUILayout.ExpandWidth(false));
+				status = script.songStatus[sc.level] as string;
+				
+				if(status == SoundManager.HIDE) GUI.enabled = false;
+				if(icon)
+					GUILayout.Label(icon, GUILayout.ExpandWidth(false));
 				GUI.enabled = true;
 				
-				if(sc.FindProperty(mSCIsCustomLevel).boolValue)
-					EditorGUILayout.LabelField("<custom>"+levelName);
+				if(sc.isCustomLevel)
+					EditorGUILayout.LabelField("<custom>"+sc.level);
 				else
-					EditorGUILayout.LabelField(levelName);
+					EditorGUILayout.LabelField(sc.level);
 				
-				if( status == EditorVariableStorage.HIDE && GUILayout.Button("view", GUILayout.Width(40f)))
+				if(status == SoundManager.HIDE && GUILayout.Button("view", GUILayout.Width(40f)))
 				{
-					script.storage.songStatus[levelName] = EditorVariableStorage.VIEW;
-				} else if(status == EditorVariableStorage.VIEW) {
+					script.songStatus[sc.level] = SoundManager.VIEW;
+				} else if(status == SoundManager.VIEW) {
 					GUI.color = Color.white;
 					if(GUILayout.Button("hide", GUILayout.Width(40f)))
 					{
-						script.storage.songStatus[levelName] = EditorVariableStorage.HIDE;
+						script.songStatus[sc.level] = SoundManager.HIDE;
 					}
 				}
 				GUI.color = Color.cyan;
-				if(status != EditorVariableStorage.EDIT && script.storage.isEditing) GUI.enabled = false;
-				if( status == EditorVariableStorage.HIDE && GUILayout.Button("edit", GUILayout.Width(40f)))
+				if(status != SoundManager.EDIT && isEditing) GUI.enabled = false;
+				if(status == SoundManager.HIDE && GUILayout.Button("edit", GUILayout.Width(40f)))
 				{
-					script.storage.isEditing = true;
-					script.storage.songStatus[levelName] = EditorVariableStorage.EDIT;
-					script.storage.delayToEdit = sc.FindProperty(mSCDelay).floatValue;
-					script.storage.minDelayToEdit = sc.FindProperty(mSCMinDelay).floatValue;
-					script.storage.maxDelayToEdit = sc.FindProperty(mSCMaxDelay).floatValue;
-				} else if (status == EditorVariableStorage.EDIT) {
+					isEditing = true;
+					script.songStatus[sc.level] = SoundManager.EDIT;
+					delayToEdit = sc.delay;
+					minDelayToEdit = sc.minDelay;
+					maxDelayToEdit = sc.maxDelay;
+				} else if (status == SoundManager.EDIT) {
 					GUI.color = Color.white;
 					if(GUILayout.Button("done", GUILayout.Width(40f)))
 					{
-						script.storage.isEditing = false;
-						script.storage.songStatus[levelName] = EditorVariableStorage.HIDE;
+						isEditing = false;
+						script.songStatus[sc.level] = SoundManager.HIDE;
 					}
 				}
 				GUI.enabled = true;
 				GUI.color = Color.red;
-				if(status == EditorVariableStorage.HIDE && GUILayout.Button("X", GUILayout.Width(25f)))
+				if(status == SoundManager.HIDE && GUILayout.Button("X", GUILayout.Width(25f)))
 				{
 					RemoveSoundConnection(index);
+					return;
 				}
 				GUI.color = Color.white;
 			}
 			EditorGUILayout.EndHorizontal();
 			
-			if(status != EditorVariableStorage.HIDE)
+			if(status != SoundManager.HIDE)
 			{
 				EditorGUI.indentLevel++;
-				if(status == EditorVariableStorage.VIEW)
+				if(status == SoundManager.VIEW)
 				{
 					ShowSoundConnectionInfo(sc,false);	
 				}
-				else if (status == EditorVariableStorage.EDIT)
+				else if (status == SoundManager.EDIT)
 				{
 					ShowSoundConnectionInfo(sc,true);
 				}
@@ -459,35 +484,31 @@ public partial class SoundManagerEditor : Editor {
 		EditorGUILayout.EndVertical();
 	}
 	
-	void ShowSoundConnectionInfo(SerializedObject obj, bool editable)
+	private void ShowSoundConnectionInfo(SoundConnection obj, bool editable)
 	{
 		EditorGUILayout.BeginVertical();
 		{
-			SoundManager.PlayMethod method = (SoundManager.PlayMethod)obj.FindProperty(mSCPlayMethod).intValue;
+			SoundManager.PlayMethod playMethod = obj.playMethod;
 			if(!editable)
 			{
-				EditorGUILayout.LabelField("Play Method: ", method.ToString());
+				EditorGUILayout.LabelField("Play Method: ", playMethod.ToString());
 			} else {
-				int oldMethod = obj.FindProperty(mSCPlayMethod).intValue;
-				int newMethod = (int)(SoundManager.PlayMethod)EditorGUILayout.EnumPopup("Play Method:", (SoundManager.PlayMethod)obj.FindProperty(mSCPlayMethod).intValue, EditorStyles.popup);
-				if(oldMethod != newMethod)
-					#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-					Undo.RegisterSceneUndo("Change Play Method");
-					#else
-					Undo.RecordObject(script, "Change Play Method");
-					#endif
-				obj.FindProperty(mSCPlayMethod).intValue = newMethod;
-				if(GUI.changed)
-					obj.ApplyModifiedProperties();
+				playMethod = (SoundManager.PlayMethod)EditorGUILayout.EnumPopup("Play Method:", playMethod, EditorStyles.popup);
+				if(playMethod != obj.playMethod)
+				{
+					SoundManagerEditorTools.RegisterObjectChange("Change Play Method", script);
+					obj.playMethod = playMethod;
+					EditorUtility.SetDirty(script);
+				}
 			}
-			ShowMethodDetails(obj,editable,method);
-			EditorGUILayout.HelpBox(GetPlayMethodDescription(method), MessageType.Info);
+			ShowMethodDetails(obj, editable, playMethod);
+			EditorGUILayout.HelpBox(GetPlayMethodDescription(playMethod), MessageType.Info);
 			ShowSongList(obj,editable);
 		}
 		EditorGUILayout.EndVertical();
 	}
 	
-	void ShowMethodDetails(SerializedObject obj, bool editable, SoundManager.PlayMethod method)
+	private void ShowMethodDetails(SoundConnection obj, bool editable, SoundManager.PlayMethod method)
 	{
 		CheckUndo();
 		EditorGUI.indentLevel++;
@@ -501,23 +522,24 @@ public partial class SoundManagerEditor : Editor {
 		case SoundManager.PlayMethod.OncePlayThroughWithDelay:
 		case SoundManager.PlayMethod.ShufflePlayThroughWithDelay:
 			if(!editable)
-				EditorGUILayout.LabelField("Delay:" + obj.FindProperty(mSCDelay).floatValue + " second(s)");
+				EditorGUILayout.LabelField("Delay:" + obj.delay + " second(s)");
 			else {
-				script.storage.delayToEdit = obj.FindProperty(mSCDelay).floatValue;
-
+				delayToEdit = obj.delay;
 				#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
 				EditorGUI.BeginChangeCheck();
 				#endif
-				script.storage.delayToEdit = EditorGUILayout.FloatField("Delay:",script.storage.delayToEdit);
-				if(script.storage.delayToEdit < 0) script.storage.delayToEdit = 0;
+				delayToEdit = EditorGUILayout.FloatField("Delay:", delayToEdit);
+				if(delayToEdit < 0) 
+					delayToEdit = 0f;
 
 				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-				obj.FindProperty(mSCDelay).floatValue = script.storage.delayToEdit;
+				obj.delay = delayToEdit;
 				#else
 				if(EditorGUI.EndChangeCheck())
 				{
-					Undo.RecordObjects(new Object[]{script, script.storage}, "Modify Delay");
-					obj.FindProperty(mSCDelay).floatValue = script.storage.delayToEdit;
+					Undo.RecordObjects(new Object[]{script}, "Modify Delay");
+					obj.delay = delayToEdit;
+					EditorUtility.SetDirty(script);
 				}
 				#endif
 
@@ -530,7 +552,7 @@ public partial class SoundManagerEditor : Editor {
 						CheckUndo();
 					}
 					guiChanged = true;
-					obj.ApplyModifiedProperties();
+					EditorUtility.SetDirty(script);
 				}
 				#endif
 			}
@@ -540,40 +562,45 @@ public partial class SoundManagerEditor : Editor {
 		case SoundManager.PlayMethod.ShufflePlayThroughWithRandomDelayInRange:
 			if(!editable)
 			{
-				EditorGUILayout.LabelField("Min Delay:" + obj.FindProperty(mSCMinDelay).floatValue + " second(s)");
-				EditorGUILayout.LabelField("Max Delay:" + obj.FindProperty(mSCMaxDelay).floatValue + " second(s)");
+				EditorGUILayout.LabelField("Min Delay:" + obj.minDelay + " second(s)");
+				EditorGUILayout.LabelField("Max Delay:" + obj.maxDelay + " second(s)");
 			} else {
-				script.storage.minDelayToEdit = obj.FindProperty(mSCMinDelay).floatValue;
-				script.storage.maxDelayToEdit = obj.FindProperty(mSCMaxDelay).floatValue;
+				minDelayToEdit = obj.minDelay;
+				maxDelayToEdit = obj.maxDelay;
 
 				#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
 				EditorGUI.BeginChangeCheck();
 				#endif
 
-				script.storage.minDelayToEdit = EditorGUILayout.FloatField("Minimum Delay:",script.storage.minDelayToEdit);
-				if(script.storage.minDelayToEdit < 0) script.storage.minDelayToEdit = 0;
+				minDelayToEdit = EditorGUILayout.FloatField("Minimum Delay:",minDelayToEdit);
+				if(minDelayToEdit < 0) 
+					minDelayToEdit = 0f;
 
 				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-				obj.FindProperty(mSCMinDelay).floatValue = script.storage.minDelayToEdit;
+				obj.minDelay = minDelayToEdit;
 				#else
 				if(EditorGUI.EndChangeCheck())
 				{
-					Undo.RecordObjects(new Object[]{script, script.storage}, "Modify Minimum Delay");
-					obj.FindProperty(mSCMinDelay).floatValue = script.storage.minDelayToEdit;
+					Undo.RecordObjects(new Object[]{script}, "Modify Minimum Delay");
+					obj.minDelay = minDelayToEdit;
+					EditorUtility.SetDirty(script);
 				}
 				#endif
 				
-				if(script.storage.maxDelayToEdit < script.storage.minDelayToEdit) script.storage.maxDelayToEdit = script.storage.minDelayToEdit;
-				script.storage.maxDelayToEdit = EditorGUILayout.FloatField("Maximum Delay:",script.storage.maxDelayToEdit);
-				if(script.storage.maxDelayToEdit < 0) script.storage.maxDelayToEdit = 0;
+				if(maxDelayToEdit < minDelayToEdit) 
+					maxDelayToEdit = minDelayToEdit;
+				maxDelayToEdit = EditorGUILayout.FloatField("Maximum Delay:",maxDelayToEdit);
+				if(maxDelayToEdit < 0) 
+					maxDelayToEdit = 0f;
 
 				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-				obj.FindProperty(mSCMaxDelay).floatValue = script.storage.maxDelayToEdit;
+				obj.maxDelay = maxDelayToEdit;
 				#else
 				if(EditorGUI.EndChangeCheck())
 				{
-					Undo.RecordObjects(new Object[]{script, script.storage}, "Modify Maximum Delay");
-					obj.FindProperty(mSCMaxDelay).floatValue = script.storage.maxDelayToEdit;
+					Undo.RecordObjects(new Object[]{script}, "Modify Maximum Delay");
+					obj.maxDelay = maxDelayToEdit;
+					EditorUtility.SetDirty(script);
 				}
 				#endif
 
@@ -586,7 +613,7 @@ public partial class SoundManagerEditor : Editor {
 						CheckUndo();
 					}
 					guiChanged = true;
-					obj.ApplyModifiedProperties();
+					EditorUtility.SetDirty(script);
 				}
 				#endif
 			}
@@ -595,9 +622,9 @@ public partial class SoundManagerEditor : Editor {
 		EditorGUI.indentLevel--;
 	}
 	
-	void ShowSongList(SerializedObject obj, bool editable)
+	private void ShowSongList(SoundConnection obj, bool editable)
 	{
-		int size = obj.FindProperty(mSCSoundSize).intValue;
+		int size = obj.soundsToPlay.Count;
 		
 		EditorGUILayout.LabelField("Sound List:");
 		EditorGUI.indentLevel++;
@@ -610,44 +637,46 @@ public partial class SoundManagerEditor : Editor {
 				{
 					if(!editable)
 					{
-						AudioClip thisClip = obj.FindProperty(string.Format(mSCSoundToPlay, i)).objectReferenceValue as AudioClip;
-						EditorGUILayout.LabelField(thisClip.name);
+						EditorGUILayout.LabelField(obj.soundsToPlay[i].name);
 					} else {
-						if(obj.FindProperty(string.Format(mSCSoundToPlay, i)) == null) return;
-						Object newClip = EditorGUILayout.ObjectField(obj.FindProperty(string.Format(mSCSoundToPlay, i)).objectReferenceValue, typeof(AudioClip), false);
-						if(newClip != null && newClip.GetType() == typeof(AudioClip))
-							obj.FindProperty(string.Format(mSCSoundToPlay, i)).objectReferenceValue = newClip;
+						if(obj.soundsToPlay[i] == null) 
+							return;
+						
+						AudioClip newClip = (AudioClip)EditorGUILayout.ObjectField(obj.soundsToPlay[i], typeof(AudioClip), false);
+						if(newClip != null)
+							obj.soundsToPlay[i] = newClip;
 						
 						if(GUI.changed)
 						{
 							if(newClip == null)
-								RemoveSound(obj, mSCSoundToPlay, mSCSoundSize, i);
+							{
+								RemoveSound(obj, i);
+								return;
+							}
 						}
 						
 						bool oldEnabled = GUI.enabled;
 						if(i == 0) GUI.enabled = false;
 						if(GUILayout.Button("U", GUILayout.Width(35f)))
 						{
-							SwapSounds(obj, mSCSoundToPlay, i, i-1);
+							SwapSounds(obj, i, i-1);
 						}
 						GUI.enabled = oldEnabled;
 						
 						if(i == size-1) GUI.enabled = false;
 						if(GUILayout.Button("D", GUILayout.Width(35f)))
 						{
-							SwapSounds(obj, mSCSoundToPlay, i, i+1);
+							SwapSounds(obj, i, i+1);
 						}
 						GUI.enabled = oldEnabled;
 						
 						GUI.color = Color.red;
 						if(GUILayout.Button("-", GUILayout.Width(20f)))
 						{
-							RemoveSound(obj, mSCSoundToPlay, mSCSoundSize, i);
+							RemoveSound(obj, i);
+							return;
 						}
 						GUI.color = Color.white;
-						
-						if(GUI.changed)
-							obj.ApplyModifiedProperties();
 					}
 				}
 				EditorGUILayout.EndHorizontal();
@@ -660,16 +689,13 @@ public partial class SoundManagerEditor : Editor {
 			EditorGUILayout.BeginHorizontal();
 			{
 				EditorGUI.indentLevel++;
-				script.storage.editAddClip = EditorGUILayout.ObjectField("Add A Sound",script.storage.editAddClip, typeof(AudioClip), false) as AudioClip;
-				if(GUI.changed)
-					HideVariables();
+				editAddClip = EditorGUILayout.ObjectField("Add A Sound", editAddClip, typeof(AudioClip), false) as AudioClip;
 				
 				GUI.color = softGreen;
 				if(GUILayout.Button("add", GUILayout.Width(40f)))
 				{
-					AddSound(obj, mSCSoundToPlay, mSCSoundSize, script.storage.editAddClip);
-					script.storage.editAddClip = null;
-					HideVariables();
+					AddSound(obj, editAddClip);
+					editAddClip = null;
 				}
 				GUI.color = Color.white;
 				EditorGUI.indentLevel--;
@@ -679,36 +705,12 @@ public partial class SoundManagerEditor : Editor {
 		EditorGUI.indentLevel--;
 	}
 	
-	void ShowAddSoundConnection()
+	private void ShowAddSoundConnection()
 	{
-		/*if(script.storage.showNewSoundConnectionButton)
-		{
-			ShowNewSoundConnectionButton();
-		} else {
-			ShowAddSoundConnectionArea();
-		}*/
 		ShowAddSoundConnectionArea();
 	}
 	
-	void ShowNewSoundConnectionButton()
-	{
-		GUILayout.BeginHorizontal();
-		{
-			GUILayout.FlexibleSpace();
-			{
-				GUI.color = softGreen;
-				if(GUILayout.Button("New SoundConnection", GUILayout.MaxWidth(200f)))
-				{
-					script.storage.showNewSoundConnectionButton = false;
-				}
-				GUI.color = Color.white;
-			};
-			GUILayout.FlexibleSpace();
-		}
-		GUILayout.EndHorizontal();
-	}
-	
-	void ShowAddSoundConnectionArea()
+	private void ShowAddSoundConnectionArea()
 	{
 		bool full = ShowRequiredSoundConnectionInfo();
 		if(full)
@@ -720,39 +722,19 @@ public partial class SoundManagerEditor : Editor {
 			ShowAddClipSelector();
 		}
 		
-		if(!full) GUI.enabled = false;
+		if(!full) 
+			GUI.enabled = false;
 		ShowAddSoundConnectionButton();
-		GUI.enabled = enabled;
-		
-		//ShowCancelAddSoundConnectionButton();
+		GUI.enabled = true;
 	}
 	
-	void ShowCancelAddSoundConnectionButton()
-	{
-		GUILayout.BeginHorizontal();
-		{
-			GUILayout.FlexibleSpace();
-			{
-				GUI.color = Color.red;
-				if(GUILayout.Button("Cancel", GUILayout.MaxWidth(100f)))
-				{
-					script.storage.showNewSoundConnectionButton = true;
-				}
-				GUI.color = Color.white;
-			}
-			GUILayout.FlexibleSpace();
-		}
-		GUILayout.EndHorizontal();
-	}
-	
-	void ShowAddSongList()
+	private void ShowAddSongList()
 	{
 		int soundToRemove = -1;
 		EditorGUILayout.LabelField("Sound List:");
 		EditorGUI.indentLevel++;
-		if(script.storage != null)
 		{
-			foreach(AudioClip soundToAdd in script.storage.soundsToAdd)
+			foreach(AudioClip soundToAdd in soundsToAdd)
 			{
 				EditorGUILayout.BeginVertical();
 				{
@@ -760,24 +742,27 @@ public partial class SoundManagerEditor : Editor {
 					{
 						EditorGUILayout.LabelField(soundToAdd.name);
 						bool oldEnabled = GUI.enabled;
-						if(!SoundCanMoveUp(soundToAdd,script.storage.soundsToAdd)) GUI.enabled = false;
+						
+						if(!SoundCanMoveUp(soundToAdd, soundsToAdd)) 
+							GUI.enabled = false;
 						if(GUILayout.Button("U", GUILayout.Width(35f)))
 						{
-							int thisIndex = script.storage.soundsToAdd.IndexOf(soundToAdd);
-							SwapSounds(soundToAdd,script.storage.soundsToAdd[thisIndex-1],script.storage.soundsToAdd);
+							int thisIndex = soundsToAdd.IndexOf(soundToAdd);
+							SwapSounds(soundToAdd, soundsToAdd[thisIndex-1], soundsToAdd);
 						}
 						GUI.enabled = oldEnabled;
-						if(!SoundCanMoveDown(soundToAdd,script.storage.soundsToAdd)) GUI.enabled = false;
+						
+						if(!SoundCanMoveDown(soundToAdd, soundsToAdd)) GUI.enabled = false;
 						if(GUILayout.Button("D", GUILayout.Width(35f)))
 						{
-							int thisIndex = script.storage.soundsToAdd.IndexOf(soundToAdd);
-							SwapSounds(soundToAdd,script.storage.soundsToAdd[thisIndex+1],script.storage.soundsToAdd);
+							int thisIndex = soundsToAdd.IndexOf(soundToAdd);
+							SwapSounds(soundToAdd, soundsToAdd[thisIndex+1], soundsToAdd);
 						}
 						GUI.enabled = oldEnabled;
 						GUI.color = Color.red;
 						if(GUILayout.Button("-", GUILayout.Width(20f)))
 						{
-							soundToRemove = script.storage.soundsToAdd.IndexOf(soundToAdd);
+							soundToRemove = soundsToAdd.IndexOf(soundToAdd);
 						}
 						GUI.color = Color.white;
 					}
@@ -787,13 +772,14 @@ public partial class SoundManagerEditor : Editor {
 			}
 			if(soundToRemove >= 0)
 			{
-				script.storage.soundsToAdd.RemoveAt(soundToRemove);
+				soundsToAdd.RemoveAt(soundToRemove);
+				return;
 			}
 		}
 		EditorGUI.indentLevel--;
 	}
 	
-	bool ShowRequiredSoundConnectionInfo()
+	private bool ShowRequiredSoundConnectionInfo()
 	{
 		bool canMoveOn = true, forceRepaint = false;
 		if(canMoveOn)
@@ -803,38 +789,40 @@ public partial class SoundManagerEditor : Editor {
 			if(availableNames.Length == 1)
 			{
 				EditorGUILayout.LabelField("All enabled scenes have SoundConnections already.");
-				//return false;
 			}
-			if(script.storage.levelIndex >= availableNames.Length)
-				script.storage.levelIndex = availableNames.Length-1;
+			if(levelIndex >= availableNames.Length)
+				levelIndex = availableNames.Length-1;
 			
-			script.storage.levelIndex = EditorGUILayout.Popup("Choose Level:",script.storage.levelIndex, availableNames, EditorStyles.popup);
+			levelIndex = EditorGUILayout.Popup("Choose Level:", levelIndex, availableNames, EditorStyles.popup);
 			
-			if(script.storage.levelIndex == availableNames.Length-1) //must be custom
+			if(levelIndex == availableNames.Length-1) //must be custom
 			{
-				if(!script.storage.isCustom)
+				if(!isCustom)
 				{
-					if(script.storage.levelToAdd != defaultName)
+					if(levelToAdd != defaultName)
 					{
-						script.storage.levelToAdd = defaultName;
+						levelToAdd = defaultName;
 						forceRepaint = true;
 						GUIUtility.keyboardControl = 0;
 					}
 				}
-				script.storage.isCustom = true;
+				
+				isCustom = true;
 				bool isValidName = true, isEmptyName = false;
-				if(string.IsNullOrEmpty(script.storage.levelToAdd) || script.storage.levelToAdd == defaultName)
+				
+				if(string.IsNullOrEmpty(levelToAdd) || levelToAdd == defaultName)
 					isEmptyName = true;
-				if(isEmptyName || IsStringSceneName(script.storage.levelToAdd) || IsStringAlreadyTaken(script.storage.levelToAdd))
+				if(isEmptyName || IsStringSceneName(levelToAdd) || IsStringAlreadyTaken(levelToAdd))
 					isValidName = false;
 				
 				if(isValidName)
 					GUI.color = Color.green;
 				else if(!isEmptyName)
 					GUI.color = Color.red;
+				
 				EditorGUILayout.BeginHorizontal();
 				{
-					script.storage.levelToAdd = EditorGUILayout.TextField("Custom Level Name:",script.storage.levelToAdd, GUILayout.MinWidth(100), GUILayout.ExpandWidth(true));
+					levelToAdd = EditorGUILayout.TextField("Custom Level Name:", levelToAdd, GUILayout.MinWidth(100), GUILayout.ExpandWidth(true));
 					if(isValidName)
 						EditorGUILayout.LabelField("OK", GUILayout.Width(35));
 					else if(!isEmptyName)
@@ -846,26 +834,26 @@ public partial class SoundManagerEditor : Editor {
 			}
 			else
 			{
-				if(script.storage.isCustom)
+				if(isCustom)
 				{
 					forceRepaint = repaintNextFrame = true;
 					GUIUtility.keyboardControl = 0;
 				}
 					
-				script.storage.isCustom = false;
-				script.storage.levelToAdd = availableNames[script.storage.levelIndex];
+				isCustom = false;
+				levelToAdd = availableNames[levelIndex];
 				canMoveOn = true;
 			}
-			
 			
 			if(canMoveOn)
 			{
 				canMoveOn = false;
-				script.storage.playMethodToAdd = (SoundManager.PlayMethod)EditorGUILayout.EnumPopup("Play Method:", script.storage.playMethodToAdd, EditorStyles.popup);
+				playMethodToAdd = (SoundManager.PlayMethod)EditorGUILayout.EnumPopup("Play Method:", playMethodToAdd, EditorStyles.popup);
 				
-				canMoveOn = ShowPlayMethodParameters(script.storage.playMethodToAdd);
+				canMoveOn = ShowPlayMethodParameters(playMethodToAdd);
 			}
 		}
+		
 		if(forceRepaint)
 			SceneView.RepaintAll();
 		else if(repaintNextFrame)
@@ -876,7 +864,7 @@ public partial class SoundManagerEditor : Editor {
 		return canMoveOn;
 	}
 	
-	bool ShowPlayMethodParameters(SoundManager.PlayMethod method)
+	private bool ShowPlayMethodParameters(SoundManager.PlayMethod method)
 	{
 		bool canMoveOn = true;
 		switch (method)
@@ -889,26 +877,30 @@ public partial class SoundManagerEditor : Editor {
 		case SoundManager.PlayMethod.OncePlayThroughWithDelay:
 		case SoundManager.PlayMethod.ShufflePlayThroughWithDelay:
 			canMoveOn = false;
-			script.storage.delayToAdd = EditorGUILayout.FloatField("Delay:",script.storage.delayToAdd);
-			if(script.storage.delayToAdd < 0) script.storage.delayToAdd = 0;
+			delayToAdd = EditorGUILayout.FloatField("Delay:", delayToAdd);
+			if(delayToAdd < 0) 
+				delayToAdd = 0f;
 			canMoveOn = true;
 			break;
 		case SoundManager.PlayMethod.ContinuousPlayThroughWithRandomDelayInRange:
 		case SoundManager.PlayMethod.OncePlayThroughWithRandomDelayInRange:
 		case SoundManager.PlayMethod.ShufflePlayThroughWithRandomDelayInRange:
 			canMoveOn = false;
-			script.storage.minDelayToAdd = EditorGUILayout.FloatField("Minimum Delay:",script.storage.minDelayToAdd);
-			if(script.storage.minDelayToAdd < 0) script.storage.minDelayToAdd = 0;
-			if(script.storage.maxDelayToAdd < script.storage.minDelayToAdd) script.storage.maxDelayToAdd = script.storage.minDelayToAdd;
-			script.storage.maxDelayToAdd = EditorGUILayout.FloatField("Maximum Delay:",script.storage.maxDelayToAdd);
-			if(script.storage.maxDelayToAdd < 0) script.storage.maxDelayToAdd = 0;
+			minDelayToAdd = EditorGUILayout.FloatField("Minimum Delay:", minDelayToAdd);
+			if(minDelayToAdd < 0) 
+				minDelayToAdd = 0f;
+			if(maxDelayToAdd < minDelayToAdd) 
+				maxDelayToAdd = minDelayToAdd;
+			maxDelayToAdd = EditorGUILayout.FloatField("Maximum Delay:", maxDelayToAdd);
+			if(maxDelayToAdd < 0) 
+				maxDelayToAdd = 0f;
 			canMoveOn = true;
 			break;
 		}
 		return canMoveOn;
 	}
 	
-	void ShowAddSoundConnectionButton()
+	private void ShowAddSoundConnectionButton()
 	{
 		GUILayout.BeginHorizontal();
 		{
@@ -926,34 +918,93 @@ public partial class SoundManagerEditor : Editor {
 		GUILayout.EndHorizontal();
 	}
 	
-	void ShowDeveloperSettings()
+	private void ShowDeveloperSettings()
 	{
 		EditorGUI.indentLevel++;
-			mShowDebug.boolValue = EditorGUILayout.Toggle("Show Debug Info:" ,mShowDebug.boolValue);
-			mOffBGM.boolValue = EditorGUILayout.Toggle("Music Always Off:" , mOffBGM.boolValue);	
-			mOffSFX.boolValue = EditorGUILayout.Toggle("SFX Always Off:" , mOffSFX.boolValue);
-			mCapAmount.intValue = EditorGUILayout.IntField("SFX Cap Amount:", mCapAmount.intValue, GUILayout.Width(3f*Screen.width/4f));
-			if(mCapAmount.intValue < 0) mCapAmount.intValue = 0;
-			mResourcesPath.stringValue = EditorGUILayout.TextField("Default Load Path:", mResourcesPath.stringValue, GUILayout.Width(3f*Screen.width/4f));
+		{
+			bool showDebug = script.showDebug;
+			showDebug = EditorGUILayout.Toggle("Show Debug Info:" , showDebug);
+			if(showDebug != script.showDebug)
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Change Show Debug", script);
+				script.showDebug = showDebug;
+				EditorUtility.SetDirty(script);
+			}
+			
+			bool ignoreLevelLoad = script.ignoreLevelLoad;
+			ignoreLevelLoad = EditorGUILayout.Toggle("Ignore Level Load:" , ignoreLevelLoad);
+			if(ignoreLevelLoad != script.ignoreLevelLoad)
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Set Ignore Level Load", script);
+				script.ignoreLevelLoad = ignoreLevelLoad;
+				EditorUtility.SetDirty(script);
+			}
+		
+			bool offTheBGM = script.offTheBGM;
+			offTheBGM = EditorGUILayout.Toggle("Music Always Off:" , offTheBGM);
+			if(offTheBGM != script.offTheBGM)
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Toggle BGM", script);
+				script.offTheBGM = offTheBGM;
+				EditorUtility.SetDirty(script);
+			}
+		
+			bool offTheSFX = script.offTheSFX;
+			offTheSFX = EditorGUILayout.Toggle("SFX Always Off:" , offTheSFX);
+			if(offTheSFX != script.offTheSFX)
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Toggle SFX", script);
+				script.offTheSFX = offTheSFX;
+				EditorUtility.SetDirty(script);
+			}
+		
+			int capAmount = script.capAmount;
+			capAmount = EditorGUILayout.IntField("SFX Cap Amount:", capAmount, GUILayout.Width(3f*Screen.width/4f));
+			if(capAmount < 0) 
+				capAmount = 0;
+			if(capAmount != script.capAmount)
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Change SFX Cap Amount", script);
+				script.capAmount = capAmount;
+				EditorUtility.SetDirty(script);
+			}
+			
+			float SFXObjectLifetime = script.SFXObjectLifetime;
+			SFXObjectLifetime = EditorGUILayout.FloatField("SFX Object Lifetime:", SFXObjectLifetime, GUILayout.Width(3f*Screen.width/4f));
+			if(SFXObjectLifetime < 1f) 
+				SFXObjectLifetime = 1f;
+			if(SFXObjectLifetime != script.SFXObjectLifetime)
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Change SFX Object Lifetime", script);
+				script.SFXObjectLifetime = SFXObjectLifetime;
+				EditorUtility.SetDirty(script);
+			}
+		
+			string resourcesPath = script.resourcesPath;
+			resourcesPath = EditorGUILayout.TextField("Default Load Path:", resourcesPath, GUILayout.Width(3f*Screen.width/4f));
+			if(resourcesPath != script.resourcesPath)
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Change Default Load Path", script);
+				script.resourcesPath = resourcesPath;
+				EditorUtility.SetDirty(script);
+			}
+		}
 		EditorGUI.indentLevel--;
 		EditorGUILayout.Space();
 	}
 	
-	void ShowAddClipSelector()
+	private void ShowAddClipSelector()
 	{
 		EditorGUILayout.BeginHorizontal();
 		{
-			script.storage.editAddClipFromSelector = EditorGUILayout.ObjectField("Select An AudioClip:", script.storage.editAddClipFromSelector, typeof(AudioClip), false) as AudioClip;
-			if(GUI.changed)
-				HideVariables();
+			editAddClipFromSelector = EditorGUILayout.ObjectField("Select An AudioClip:", editAddClipFromSelector, typeof(AudioClip), false) as AudioClip;
 			GUI.color = softGreen;
 			if(GUILayout.Button("add", GUILayout.Width(40f)))
 			{
-				if(script.storage.editAddClipFromSelector != null)
+				if(editAddClipFromSelector != null)
 				{
-					script.storage.soundsToAdd.Add(script.storage.editAddClipFromSelector);
-					script.storage.editAddClipFromSelector = null;
-					HideVariables();
+					soundsToAdd.Add(editAddClipFromSelector);
+					editAddClipFromSelector = null;
 				}
 			}
 			GUI.color = Color.white;
@@ -963,7 +1014,7 @@ public partial class SoundManagerEditor : Editor {
 		EditorGUILayout.Space();
 	}
 	
-	void DropAreaGUI()
+	private void DropAreaGUI()
 	{
 		GUI.color = softGreen;
 		EditorGUILayout.BeginVertical();
@@ -993,9 +1044,8 @@ public partial class SoundManagerEditor : Editor {
 							continue;
 						
 						//Add audioclip to arsenal of SoundConnection
-						script.storage.soundsToAdd.Add(aC);
+						soundsToAdd.Add(aC);
 					}
-					HideVariables();
 				}
 				Event.current.Use();
 				break;
@@ -1008,99 +1058,66 @@ public partial class SoundManagerEditor : Editor {
 	
 	
 	#region Functional
-	void AddSoundConnection()
+	private void AddSoundConnection()
 	{
-		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-		Undo.RegisterSceneUndo("Add SoundConnection");
-		#else
-		Undo.RecordObject(script, "Add SoundConnection");
-		#endif
+		SoundManagerEditorTools.RegisterObjectChange("Add SoundConnection", script);
+		
 		SoundConnection sc = null;
-		switch (script.storage.playMethodToAdd)
+		switch (playMethodToAdd)
 		{
 		case SoundManager.PlayMethod.ContinuousPlayThrough:
 		case SoundManager.PlayMethod.OncePlayThrough:
 		case SoundManager.PlayMethod.ShufflePlayThrough:
-			sc = ScriptableObject.CreateInstance<SoundConnection>();
-			sc.Initialize(script.storage.levelToAdd,script.storage.playMethodToAdd,script.storage.soundsToAdd.ToArray());
+			sc = new SoundConnection(levelToAdd, playMethodToAdd, soundsToAdd.ToArray());
 			break;
 		case SoundManager.PlayMethod.ContinuousPlayThroughWithDelay:
 		case SoundManager.PlayMethod.OncePlayThroughWithDelay:
 		case SoundManager.PlayMethod.ShufflePlayThroughWithDelay:
-			sc = ScriptableObject.CreateInstance<SoundConnection>();
-			sc.Initialize(script.storage.levelToAdd,script.storage.playMethodToAdd,script.storage.delayToAdd,script.storage.soundsToAdd.ToArray());
+			sc = new SoundConnection(levelToAdd, playMethodToAdd, delayToAdd, soundsToAdd.ToArray());
 			break;
 		case SoundManager.PlayMethod.ContinuousPlayThroughWithRandomDelayInRange:
 		case SoundManager.PlayMethod.OncePlayThroughWithRandomDelayInRange:
 		case SoundManager.PlayMethod.ShufflePlayThroughWithRandomDelayInRange:
-			sc = ScriptableObject.CreateInstance<SoundConnection>();
-			sc.Initialize(script.storage.levelToAdd,script.storage.playMethodToAdd,script.storage.minDelayToAdd,script.storage.maxDelayToAdd,script.storage.soundsToAdd.ToArray());
+			sc = new SoundConnection(levelToAdd, playMethodToAdd, minDelayToAdd, maxDelayToAdd, soundsToAdd.ToArray());
 			break;
 		}
-		if(script.storage.isCustom)
+		
+		if(isCustom)
 		{
 			sc.SetToCustom();
-			script.storage.levelToAdd = defaultName;
+			levelToAdd = defaultName;
 			repaintNextFrame = true;
 		}
-		mSoundConnectionsCount.intValue++;
-		SetSoundConnection(mSoundConnectionsCount.intValue - 1, sc);
+		
+		script.soundConnections.Add(sc);
 		
 		RecalculateBools();
+		EditorUtility.SetDirty(script);
 		SceneView.RepaintAll();
 	}
 	
-	void RemoveSoundConnection(int index)
+	private void RemoveSoundConnection(int index)
 	{
-		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-		Undo.RegisterSceneUndo("Remove SoundConnection");
-		#else
-		Undo.RecordObject(script, "Remove SoundConnection");
-		#endif
-		for( int i = index; i < mSoundConnectionsCount.intValue - 1; i++)
-			SetSoundConnection(i, GetSoundConnection(i + 1));
-		
-		mSoundConnectionsCount.intValue--;
-		
+		SoundManagerEditorTools.RegisterObjectChange("Remove SoundConnection", script);
+		script.soundConnections.RemoveAt(index);
 		RecalculateBools();
+		EditorUtility.SetDirty(script);
 		SceneView.RepaintAll();
 	}
 	
-	void RecalculateBools()
+	private void RecalculateBools()
 	{
-		for(int i = 0; i < mSoundConnectionsCount.intValue ; i++)
+		for(int i = 0; i < script.soundConnections.Count ; i++)
 		{
-			SerializedObject sc = new SerializedObject(mObject.FindProperty(string.Format(mListData, i)).objectReferenceValue);
-			var levelName = sc.FindProperty(mSCLevel).stringValue;
-			
-			if(!script.storage.songStatus.ContainsKey(levelName))
+			string levelName = script.soundConnections[i].level;
+			if(!script.songStatus.ContainsKey(levelName))
 			{
-				script.storage.songStatus.Add(levelName,EditorVariableStorage.HIDE);
+				script.songStatus.Add(levelName, SoundManager.HIDE);
 			}
 		}
 	}
 	
-	List<SoundConnection> GetSoundConnectionList()
-	{
-		var listSC = new List<SoundConnection>();
-		for(int i = 0 ; i < mSoundConnectionsCount.intValue ; i++)
-		{
-			listSC.Add(GetSoundConnection(i));
-		}
-		return listSC;
-	}
-	
-	SoundConnection GetSoundConnection( int index )
-	{
-		return mObject.FindProperty(string.Format(mListData,index)).objectReferenceValue as SoundConnection;
-	}
-	
-	void SetSoundConnection ( int index, SoundConnection sc)
-	{
-		mObject.FindProperty(string.Format(mListData,index)).objectReferenceValue = sc;
-	}
-	
-	string[] GetAvailableLevelNamesForAddition()
+	private string[] GetAvailableLevelNamesForAddition()
 	{
 		List<string> availableScenes = new List<string>();
 		foreach ( EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
@@ -1108,7 +1125,7 @@ public partial class SoundManagerEditor : Editor {
 			if(scene.enabled)
 			{
 				string sceneNameBare = scene.path.Substring(scene.path.LastIndexOf('/') + 1, (scene.path.LastIndexOf('.') - scene.path.LastIndexOf('/')) - 1);
-				if(!GetSoundConnectionList().Find(delegate(SoundConnection obj) { return obj.level == sceneNameBare; }))
+				if(script.soundConnections.Find(delegate(SoundConnection obj) { return obj.level == sceneNameBare; }) == null)
 				{
 					availableScenes.Add(sceneNameBare);
 				}	
@@ -1118,7 +1135,7 @@ public partial class SoundManagerEditor : Editor {
 		return availableScenes.ToArray();
 	}
 	
-	bool IsStringSceneName(string nameToTest)
+	private bool IsStringSceneName(string nameToTest)
 	{
 		foreach ( EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
 		{
@@ -1132,16 +1149,16 @@ public partial class SoundManagerEditor : Editor {
 		return false;
 	}
 	
-	bool IsStringAlreadyTaken(string nameToTest)
+	private bool IsStringAlreadyTaken(string nameToTest)
 	{
-		if(GetSoundConnectionList().Find(delegate(SoundConnection obj) { return obj.level == nameToTest; }))
+		if(script.soundConnections.Find(delegate(SoundConnection obj) { return obj.level == nameToTest; }) != null)
 		{
 			return true;
 		}
 		return false;
 	}
 	
-	bool SoundCanMoveUp(AudioClip sound, List<AudioClip> list)
+	private bool SoundCanMoveUp(AudioClip sound, List<AudioClip> list)
 	{
 		if(!list.Contains(sound)) return false;
 		int index = list.IndexOf(sound);
@@ -1149,7 +1166,7 @@ public partial class SoundManagerEditor : Editor {
 		return true;
 	}
 	
-	bool SoundCanMoveDown(AudioClip sound, List<AudioClip> list)
+	private bool SoundCanMoveDown(AudioClip sound, List<AudioClip> list)
 	{
 		if(!list.Contains(sound)) return false;
 		int index = list.IndexOf(sound);
@@ -1157,7 +1174,7 @@ public partial class SoundManagerEditor : Editor {
 		return true;
 	}
 	
-	void SwapSounds(AudioClip sound1, AudioClip sound2, List<AudioClip> list)
+	private void SwapSounds(AudioClip sound1, AudioClip sound2, List<AudioClip> list)
 	{
 		if(!(list.Contains(sound1) && list.Contains(sound2))) return;
 		int index1 = list.IndexOf(sound1);
@@ -1166,81 +1183,42 @@ public partial class SoundManagerEditor : Editor {
 		list[index2] = sound1;
 	}
 	
-	/*bool SoundCanMoveUp(SerializedObject obj, string dataString, int index)
+	private void SwapSounds(SoundConnection obj, int index1, int index2)
 	{
-		if(!Contains(obj, dataString, index)) return false;
+		if(obj.soundsToPlay[index1] == null || obj.soundsToPlay[index2] == null)
+			return;
 		
-		int index = list.IndexOf(sound);
-		if(index == 0) return false;
-		return true;
-	}
-	
-	bool SoundCanMoveDown(SerializedObject obj, string dataString, int index)
-	{
-		if(!list.Contains(sound)) return false;
-		int index = list.IndexOf(sound);
-		if(index == list.Count-1) return false;
-		return true;
-	}*/
-	
-	void SwapSounds(SerializedObject obj, string dataString, int index1, int index2)
-	{
-		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-		Undo.RegisterSceneUndo("Move Sounds");
-		#else
-		Undo.RecordObject(script, "Move Sounds");
-		#endif
-		
-		if(!(Contains(obj,dataString,index1) && Contains(obj,dataString,index2))) return;
-		Object tempClip = obj.FindProperty(string.Format(dataString, index1)).objectReferenceValue;
-		obj.FindProperty(string.Format(dataString, index1)).objectReferenceValue = obj.FindProperty(string.Format(dataString, index2)).objectReferenceValue;
-		obj.FindProperty(string.Format(dataString, index2)).objectReferenceValue = tempClip;
-		
-		obj.ApplyModifiedProperties();
-	}
-	
-	void RemoveSound(SerializedObject obj, string dataString, string sizeString, int index)
-	{
-		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-		Undo.RegisterSceneUndo("Remove Sound");
-		#else
-		Undo.RecordObject(script, "Remove Sound");
-		#endif
-		
-		SerializedProperty sizeProp = obj.FindProperty(sizeString);
-		for( int i = index; i < sizeProp.intValue-1; i++)
-			obj.FindProperty(string.Format(dataString, i)).objectReferenceValue = obj.FindProperty(string.Format(dataString, i+1)).objectReferenceValue;
-		
-		sizeProp.intValue--;
-		
-		obj.ApplyModifiedProperties();
+		SoundManagerEditorTools.RegisterObjectChange("Move Sounds", script);
+		AudioClip tempClip = obj.soundsToPlay[index1];
+		obj.soundsToPlay[index1] = obj.soundsToPlay[index2];
+		obj.soundsToPlay[index2] = tempClip;
+		EditorUtility.SetDirty(script);
 		
 		SceneView.RepaintAll();
 	}
 	
-	void AddSound(SerializedObject obj, string dataString, string sizeString, AudioClip clip)
+	private void RemoveSound(SoundConnection obj, int index)
+	{
+		if(obj.soundsToPlay[index] == null)
+			return;
+		
+		SoundManagerEditorTools.RegisterObjectChange("Remove Sound", script);
+		obj.soundsToPlay.RemoveAt(index);
+		EditorUtility.SetDirty(script);
+		
+		SceneView.RepaintAll();
+	}
+	
+	private void AddSound(SoundConnection obj, AudioClip clip)
 	{
 		if(clip == null)
 			return;
 		
-		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-		Undo.RegisterSceneUndo("Add Sound");
-		#else
-		Undo.RecordObject(script, "Add Sound");
-		#endif
-		
-		SerializedProperty sizeProp = obj.FindProperty(sizeString);
-		sizeProp.intValue++;
-		obj.FindProperty(string.Format(dataString, sizeProp.intValue - 1)).objectReferenceValue = clip;
-			
-		obj.ApplyModifiedProperties();
+		SoundManagerEditorTools.RegisterObjectChange("Add Sound", script);
+		obj.soundsToPlay.Add(clip);
+		EditorUtility.SetDirty(script);
 		
 		SceneView.RepaintAll();
-	}
-	
-	bool Contains(SerializedObject obj, string dataString, int index)
-	{
-		return (obj.FindProperty(string.Format(mSCSoundToPlay, index)).objectReferenceValue != null);
 	}
 	
 	private void CheckUndo()
@@ -1249,7 +1227,7 @@ public partial class SoundManagerEditor : Editor {
         Event e = Event.current;
  
         if ( e.type == EventType.MouseDown && e.button == 0 || e.type == EventType.KeyUp && ( e.keyCode == KeyCode.Tab ) ) {
-            Undo.SetSnapshotTarget( new Object[]{proxy.target, this}, "Modify Delay" );
+            Undo.SetSnapshotTarget( new Object[]{target, this}, "Modify Delay" );
             Undo.CreateSnapshot();
             Undo.ClearSnapshotTarget();
             listeningForGuiChanges = true;
@@ -1257,7 +1235,7 @@ public partial class SoundManagerEditor : Editor {
         }
  
         if ( listeningForGuiChanges && guiChanged ) {
-            Undo.SetSnapshotTarget( new Object[]{proxy.target, this}, "Modify Delay" );
+            Undo.SetSnapshotTarget( new Object[]{target, this}, "Modify Delay" );
             Undo.RegisterSnapshot();
             Undo.ClearSnapshotTarget();
             listeningForGuiChanges = false;

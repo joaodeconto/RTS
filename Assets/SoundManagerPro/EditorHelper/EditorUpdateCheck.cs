@@ -3,9 +3,10 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
+[AddComponentMenu("")]
 [ExecuteInEditMode()]
 public class EditorUpdateCheck : MonoBehaviour {
-	int currentVersion = 280;
+	int currentVersion = 331;
 	public bool respondInAlerts = false;
 	public bool readyForAction = false;
 	public bool readyToDestroy = false;
@@ -44,6 +45,11 @@ public class EditorUpdateCheck : MonoBehaviour {
 				StopChecking();
 			}
 		}
+	}
+	
+	public void DestroyMe()
+	{
+		Destroy(gameObject);
 	}
 	
 	public void QueryUpdates(bool alerts)
