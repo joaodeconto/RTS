@@ -19,7 +19,7 @@ public class ResourcesManager
 			
 			if (battle != null)
 			{
-				Debug.LogError ("vezes: " + (++vezes));
+//				Debug.LogError ("vezes: " + (++vezes));
 				Score.SetScorePoints (DataScoreEnum.ResourcesGathered, m_rocks);
 				Score.SetScorePoints (DataScoreEnum.ResourcesGathered, m_rocks, battle.IdBattle);
 			}

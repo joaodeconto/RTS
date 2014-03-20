@@ -119,10 +119,10 @@ public class GhostFactory : MonoBehaviour
 				
 				collideOnNavMeshLayer = NavMesh.SamplePosition (hit.point, out navHit, 1f, 7);
 				
-				Debug.Log ("navHit: " + navHit.hit + " - collideOnNavMeshLayer: " + collideOnNavMeshLayer);
+//				Debug.Log ("navHit: " + navHit.hit + " - collideOnNavMeshLayer: " + collideOnNavMeshLayer);
 				
 //				Debug.DrawRay (ray.origin,ray.direction * 10000f);
-				Debug.Break ();
+//				Debug.Break ();
 
 #if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
 				if (numberOfCollisions == 0)

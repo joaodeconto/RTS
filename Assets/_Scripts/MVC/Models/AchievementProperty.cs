@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class AchievementProperty : MonoBehaviour
+[System.Serializable ()]
+public class AchievementProperty
 {
 	private string m_Name;
 	private int m_Value;
