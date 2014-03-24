@@ -574,7 +574,7 @@ public class StatsController : MonoBehaviour
 		{
 			Worker w = stat as Worker;
 
-			if ( (w == null) || (!gameplayManager.IsSameTeam(w.team)) || myStats.) continue;
+			if ( (w == null) || (!gameplayManager.IsSameTeam(w.team))) continue;
 
 			switch (w.workerState)
 			{
