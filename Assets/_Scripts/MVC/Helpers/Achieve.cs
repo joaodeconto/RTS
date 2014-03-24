@@ -45,7 +45,7 @@ public class Achieve
 	{
 		m_Properties[propertyName].Value = value;
 	}
-
+		
 	public void AddValue (List<string> properties, int value)
 	{
 		for (int i = 0; i != properties.Count; i++)
@@ -54,7 +54,16 @@ public class Achieve
 			SetValue(propertyName, GetValue(propertyName) + value);
 		}
 	}
-
+	
+	public void SetValue (List<string> properties, int value)
+	{
+		for (int i = 0; i != properties.Count; i++)
+		{
+			string propertyName = properties[i];
+			SetValue(propertyName, value);
+		}
+	}
+	
 	public List<Achievement> UnlockedAchievements
 	{
 		get

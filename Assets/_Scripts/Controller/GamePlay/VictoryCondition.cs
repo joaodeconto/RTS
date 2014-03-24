@@ -15,6 +15,8 @@ public class VictoryCondition
 		public string SecondProperty;
 	}
 	
+	public delegate void CallbackCheckVictory (bool hasWon);
+	
 	public Challenge[] ChallengesToWin;
 	
 	private Achieve GameAchievesToWin = new Achieve ();
@@ -35,8 +37,23 @@ public class VictoryCondition
 		}	
 	}
 	
-	public void CheckVictory ()
+	public void CheckVictory (CallbackCheckVictory cb)
 	{
-		//TODO continuar
+		Score.GetPlayerCurrentBattleScores
+		(
+			(listScore) => 
+			{
+				foreach (Model.DataScore ds in listScore)
+				{
+					foreach (Challenge ch in ChallengesToWin)
+					{
+						GameAchievesToWin.SetValue (new List<string> () { ds.SzScoreName }, ds.NrPoints);
+					}
+				}
+				
+				//Verificar se ganhou
+				cb (GameAchievesToWin.UnlockedAchievements.Count == ChallengesToWin.Length);
+			}
+		);
 	}
 }

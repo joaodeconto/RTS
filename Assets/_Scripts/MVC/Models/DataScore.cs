@@ -4,7 +4,7 @@ using System.Collections;
 namespace Model {
 	public class DataScore
 	{
-		public int IdDataScore;
+		public int IdDataScore = -1;
 		public int IdPlayer;
 		public int IdBattle;
 		public int NrPoints;
@@ -15,7 +15,6 @@ namespace Model {
 
 		public DataScore (int idPlayer, int idBattle, string ScoreName, int points)
 		{
-			this.IdDataScore = -1;
 			this.IdPlayer    = idPlayer;
 			this.IdBattle    = idBattle;
 			this.SzScoreName = ScoreName;

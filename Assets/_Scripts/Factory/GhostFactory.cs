@@ -181,11 +181,12 @@ public class GhostFactory : MonoBehaviour
 		ComponentGetter.Get<SelectionController> ().enabled = true;
 		ComponentGetter.Get<InteractionController> ().enabled = true;
 
-
-		bool canBuy = worker.CanConstruct (factoryConstruction);
+		bool canBuy = gameplayManager.resources.CanBuy (factoryConstruction.costOfResources);
 
 		if (canBuy)
 		{
+			gameplayManager.resources.UseResources (factoryConstruction.costOfResources);//. factoryConstruction.costOfResources);
+		
 			GameObject helperColliderGameObject;
 			
 			if (isCapsuleCollider)

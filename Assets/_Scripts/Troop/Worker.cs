@@ -380,7 +380,7 @@ public class Worker : Unit
 	{
 		FactoryConstruction factoryConstruct = (FactoryConstruction)ht["factory"];
 
-		if (CanConstruct (factoryConstruct, false))
+		if (gameplayManager.resources.CanBuy (factoryConstruct.costOfResources))
 		{
 			GameObject ghostFactory = null;
 
@@ -412,11 +412,6 @@ public class Worker : Unit
 
 			Move (position);
 		}
-	}
-
-	public bool CanConstruct (FactoryConstruction factory, bool discount = true)
-	{
-		return gameplayManager.resources.CanBuy (factory.costOfResources, discount);
 	}
 
 #region Funções que o Worker pode fazer

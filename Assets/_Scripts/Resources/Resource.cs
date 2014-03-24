@@ -10,34 +10,15 @@ public class ResourcesManager
 	public int m_mana;
 	public int m_rocks;
 
-	private static int vezes = 0;
+//	private static int vezes = 0;
 	public int Rocks {
 		get { return m_rocks; }
-		set { m_rocks = value;
-		
-			Model.Battle battle = GetCurrentBattle ();
-			
-			if (battle != null)
-			{
-//				Debug.LogError ("vezes: " + (++vezes));
-				Score.SetScorePoints (DataScoreEnum.ResourcesGathered, m_rocks);
-				Score.SetScorePoints (DataScoreEnum.ResourcesGathered, m_rocks, battle.IdBattle);
-			}
-		}
+		set { m_rocks = value;}
 	}
 
 	public int Mana {
 		get { return m_mana; }
-		set { m_mana = value;
-			
-			Model.Battle battle = GetCurrentBattle ();
-			
-			if (battle != null)
-			{
-				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, m_mana);
-				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, m_mana, battle.IdBattle);
-			}
-		}
+		set { m_mana = value;}
 	}
 	
 	private Model.Battle GetCurrentBattle  ()
@@ -53,41 +34,55 @@ public class ResourcesManager
 	
 	public void DeliverResources (Resource.Type resourceType, int numberOfResources)
 	{
+		Model.Battle battle = GetCurrentBattle ();
+		
 		if (resourceType == Resource.Type.Rock)
 		{
 			Rocks += numberOfResources;
+			
+			if (battle != null)
+			{
+				Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberOfResources);
+				Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberOfResources, battle.IdBattle);
+			}
 		}
 
 		if (resourceType == Resource.Type.Mana)
 		{
 			Mana += numberOfResources;
+			
+			if (battle != null)
+			{
+				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, m_mana);
+				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, m_mana, battle.IdBattle);
+			}
 		}
 	}
-
-	public bool CanBuy (ResourcesManager resourceCost, bool discount = true)
+	
+	public void UseResources (ResourcesManager resourceCost)
 	{
-		if (Rocks - resourceCost.Rocks < 0)
-		{
-			return false;
-		}
-
-		if (discount) Rocks -= resourceCost.Rocks;
-		return true;
-
-		if (Mana - resourceCost.Mana < 0)
-		{
-			return false;
-		}
+		Model.Battle battle = GetCurrentBattle ();
 		
-		if (discount) Mana -= resourceCost.Mana;
-		return true;
+		Rocks -= resourceCost.Rocks;
+		Mana  -= resourceCost.Mana;		
+		
+		Score.SubtractScorePoints (DataScoreEnum.ResourcesGathered, resourceCost.Rocks, battle.IdBattle);
+		Score.SubtractScorePoints (DataScoreEnum.CurrentCrystals, resourceCost.Mana, battle.IdBattle);
+	}
+
+	public bool CanBuy (ResourcesManager resourceCost)
+	{
+		Debug.Log ("Rocks: " + Rocks + " - resourceCost.Rocks: " + resourceCost.Rocks);
+		Debug.Log ("Mana: " + Mana + " - resourceCost.Mana: " + resourceCost.Mana);
+		
+		return ((Rocks - resourceCost.Rocks) >= 0 &&
+				(Mana  - resourceCost.Mana)  >= 0);
 	}
 
 	public void ReturnResources (ResourcesManager resourceCost, float percent = 1f)
 	{
-		Rocks += Mathf.FloorToInt((float)resourceCost.Rocks * percent);
-
-		Mana += Mathf.FloorToInt((float)resourceCost.Mana * percent);
+		DeliverResources(Resource.Type.Rock, Mathf.FloorToInt((float)resourceCost.Rocks * percent) );
+		DeliverResources(Resource.Type.Mana, Mathf.FloorToInt((float)resourceCost.Mana * percent) );
 	}
 }
 
@@ -99,7 +94,6 @@ public class Resource : Photon.MonoBehaviour
 		None,
 		Rock,
 		Mana,
-
 	}
 
 	public Type type;

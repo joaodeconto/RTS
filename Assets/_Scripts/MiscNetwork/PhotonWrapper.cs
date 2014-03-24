@@ -158,6 +158,12 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	public object GetPropertyOnRoom (string key)
 	{
+		if (PhotonNetwork.room == null)
+			return null;
+		
+		if (PhotonNetwork.room.customProperties == null)
+			return null;
+		
 		return PhotonNetwork.room.customProperties[key];
 	}
 
