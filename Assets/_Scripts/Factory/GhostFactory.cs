@@ -204,8 +204,6 @@ public class GhostFactory : MonoBehaviour
 			
 			Destroy (helperColliderGameObject.rigidbody);
 			Destroy (helperColliderGameObject.GetComponent<HelperColliderDetect> ());
-			
-			transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 
 			collider.isTrigger = false;
 			thisFactory.enabled = true;

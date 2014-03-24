@@ -49,8 +49,6 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 		IStats stats = prefab.GetComponent<IStats>();
 		stats.SetTeam (int.Parse (transform.parent.name), Random.Range (0, 9999));
 		stats.Init ();
-		
-		prefab.transform.parent = transform.parent;
 	}
 
 	void NetworkInstantiatePrefab ()
@@ -66,10 +64,5 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 			CancelInvoke ("NetworkInstantiatePrefab");
 			Destroy (this.gameObject);
 		}
-	}
-	
-	private void AdjustParent (int team)
-	{
-		transform.parent = GameObject.Find ("GamePlay/" + team).transform;
 	}
 }

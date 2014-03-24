@@ -574,15 +574,16 @@ public class StatsController : MonoBehaviour
 		{
 			Worker w = stat as Worker;
 
-			if ( (w == null) || (!gameplayManager.IsSameTeam(w.team)) ) continue;
+			if ( (w == null) || (!gameplayManager.IsSameTeam(w.team)) || myStats.) continue;
 
 			switch (w.workerState)
 			{
 				case Worker.WorkerState.None:
-					if (w.unitState == Unit.UnitState.Idle)
+					if (w.unitState == Unit.UnitState.Idle && !selectedStats.Contains(w))
 						idleWorkers.Add(w);
 					break;
 				case Worker.WorkerState.CarryingIdle:
+					if (!selectedStats.Contains(w))
 						idleWorkers.Add(w);
 					break;
 				default:
