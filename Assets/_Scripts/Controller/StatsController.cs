@@ -45,7 +45,6 @@ public class StatsController : MonoBehaviour
 	public void Init ()
 	{
 		if (idleWorkerButtonParent != null)
-			Debug.LogError ("Botao do idle worker sera instanciado em relacao ao objeto: " + idleWorkerButtonParent.name + " e nao ao menu padrao");
 	
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		soundManager    = ComponentGetter.Get<SoundManager> ();
@@ -124,7 +123,7 @@ public class StatsController : MonoBehaviour
 
 			AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
 			
-			SoundManager.PlaySFX(sfxconfirm);
+			SoundManager.PlayCappedSFX(sfxconfirm, "Confirm");
 		}
 	}
 
@@ -150,7 +149,7 @@ public class StatsController : MonoBehaviour
 		{   
 			AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
 
-			SoundManager.PlaySFX(sfxconfirm);
+			SoundManager.PlayCappedSFX(sfxconfirm,"Confirm");
 			
 			hudController.CreateFeedback (HUDController.Feedbacks.Attack,
 			                              allyUnit.transform,
@@ -180,7 +179,7 @@ public class StatsController : MonoBehaviour
 		{
 			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
 			
-			SoundManager.PlaySFX(sfxAtk);
+			SoundManager.PlayCappedSFX(sfxAtk,"Attack");
 			
 			IStats enemyStats = enemy.GetComponent<IStats> ();
 			
