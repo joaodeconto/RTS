@@ -30,9 +30,9 @@ public class DataScoreDAO : MonoBehaviour
 			for (int i = lDataScore.Count - 1; i != -1; --i)
 			{
 //				if (lDataScore[i].SzScoreName.Contains ("current"))
-//					Debug.Log ("lDataScore[i]: " + lDataScore[i]);
+				Debug.Log ("lDataScore[i]: " + lDataScore[i]);
 
-				dic.Add (lDataScore[i].SzScoreName + " - " + lDataScore[i].IdBattle, lDataScore[i].ToModel ());
+ 				dic.Add (lDataScore[i].SzScoreName + " - " + lDataScore[i].IdBattle, lDataScore[i].ToModel ());
 			}
 			
 			callback (dic);
@@ -66,17 +66,11 @@ public class DataScoreDAO : MonoBehaviour
 	{
 		List<Model.DataScore> lScores = new List<Model.DataScore> ();
 
+		Debug.Log ("Antes!");
 		foreach (KeyValuePair <string, Model.DataScore> de in scores)
 		{
 			Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
 			lScores.Add (de.Value);
-		}
-		
-		Debug.Log ("Antes!");
-		for (int i = lScores.Count - 1; i != -1; --i)
-		{
-			if (lScores[i].SzScoreName.Contains ("current"))
-				Debug.Log ("IdDataScore: " + lScores[i].IdDataScore + " - SzScoreName: " + lScores[i].SzScoreName + " - NrPoints: "  + lScores[i].NrPoints);
 		}
 
 		db.Update (lScores, "save-list-datascore",
@@ -88,12 +82,21 @@ public class DataScoreDAO : MonoBehaviour
 //			Debug.Log ("response save-list-datascore: " + response);
 			Debug.Log ("Depois!");
 			
-			for (int i = lScores.Count - 1; i != -1; --i)
+			if (lScores != null)
 			{
-				if (lScores[i].SzScoreName.Contains ("current"))
-					Debug.Log ("IdDataScore: " + lScores[i].IdDataScore + " - SzScoreName: " + lScores[i].SzScoreName + " - NrPoints: "  + lScores[i].NrPoints);
-				
-				scores.Add (lScores[i].SzScoreName + " - " + lScores[i].IdBattle, lScores[i]);
+				for (int i = lScores.Count - 1; i != -1; --i)
+				{
+//					if (lScores[i].SzScoreName.Contains ("current"))
+//						Debug.Log ("IdDataScore: " + lScores[i].IdDataScore + " - SzScoreName: " + lScores[i].SzScoreName + " - NrPoints: "  + lScores[i].NrPoints);
+					
+					scores.Add (lScores[i].SzScoreName + " - " + lScores[i].IdBattle, lScores[i]);
+				}
+			}
+			
+			foreach (KeyValuePair <string, Model.DataScore> de in scores)
+			{
+				Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
+				lScores.Add (de.Value);
 			}
 //			*/
 			callback (scores);

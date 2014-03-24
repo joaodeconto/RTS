@@ -30,12 +30,13 @@ public class Score : MonoBehaviour
 {
 	private Dictionary <string, Model.DataScore> dicDataScore;
 	private Model.Player player;
+	private Model.Battle battle;
 	private DataScoreDAO dataScoreDAO;
 	
 	public delegate void CallbackGetDataScore (Model.DataScore score);
 	public delegate void OnLoadScoreCallback ();
 	
-//	private delegate void GetScoresCallback (List <Model.DataScore> listScore);
+	public delegate void GetScoresCallback (List <Model.DataScore> listScore);
 	
 	private bool wasInitialized = false;
 	private bool NeedToSave = false;
@@ -58,7 +59,11 @@ public class Score : MonoBehaviour
 			dicDataScore,
 			(result) =>
 			{
-				dicDataScore = result;
+				if (result != null)
+				{
+					dicDataScore = result;
+				}
+				
 				isSaving = false;
 			}
 		);
@@ -67,7 +72,13 @@ public class Score : MonoBehaviour
 	private Score Init ()
 	{
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
+
 		player = new Model.Player ((string)pw.GetPropertyOnPlayer ("player"));
+		
+		if (pw.GetPropertyOnRoom ("battle") != null)
+		{
+			battle = new Model.Battle ((string)pw.GetPropertyOnRoom ("battle"));
+		}
 
 		dataScoreDAO = ComponentGetter.Get <DataScoreDAO> ();
 
@@ -83,6 +94,22 @@ public class Score : MonoBehaviour
 		}
 		
 		return dicDataScore[scoreKey];
+	}
+	
+	private void _GetPlayerCurrentBattleScores (GetScoresCallback cb)
+	{
+		List<Model.DataScore> list = new List<Model.DataScore> ();
+		
+		foreach (Model.DataScore model in dicDataScore.Values)
+		{
+			if (model.IdPlayer == player.IdPlayer &&
+			    model.IdBattle == battle.IdBattle)
+			{
+				list.Add (model);
+			}		
+		}
+		
+		cb (list);
 	}
 
 	private void _AddScorePoints (string ScoreName, int points, int battleId)
@@ -112,6 +139,7 @@ public class Score : MonoBehaviour
 		dataScoreDAO.LoadAllPlayerScores (player.ToDatabaseModel (),
 											(scores) =>
 											{
+												dicDataScore = null;
 												dicDataScore = scores;
 												
 												if (cb != null)
@@ -121,23 +149,24 @@ public class Score : MonoBehaviour
 											});
 	}
 
-//	private void _LoadBattleScore (GetScoresCallback b)
-//	{
-//		if (ConfigurationData.battle != null)
-//		{
-//			dataScoreDAO.LoadAllBattleScores (ConfigurationData.battle.ToDatabaseModel (),
-//												(scores) =>
-//												{
-//													dicCurrentBattleScore = scores;
-//				
-//													b (dicCurrentBattleScore);
-//												});
-//		}	
-//		else
-//		{
-//			Debug.LogWarning ("ConfigurationData.battle is null!");
-//		}
-//	}
+	private void _LoadBattleScore (GetScoresCallback cb)
+	{
+		if (ConfigurationData.battle != null)
+		{
+			dataScoreDAO.LoadAllBattleScores (ConfigurationData.battle.ToDatabaseModel (),
+												(scores) =>
+			                                  	{
+													if (cb != null)
+													{
+														cb (scores);
+													}
+												});
+		}	
+		else
+		{
+			Debug.LogWarning ("ConfigurationData.battle is null!");
+		}
+	}
 	
 	/* Static */
 	private static Score instance = null;
@@ -147,7 +176,7 @@ public class Score : MonoBehaviour
 		{
 			if (instance == null)
 			{
-				instance = ComponentGetter.Get <Score> ().Init ();
+				instance = ComponentGetter.Get <Score> ("$$$_Score").Init ();
 			}
 
 			return instance;
@@ -163,6 +192,22 @@ public class Score : MonoBehaviour
 	{
 		Instance._SubtractScorePoints (ScoreName, points, battleId);
 	}
+	
+	public static void GetDataScore (string scoreName, CallbackGetDataScore callback)
+	{
+		GetDataScore (scoreName, -1, callback);
+	}
+	
+	public static void GetDataScore (string scoreName, int battleId, CallbackGetDataScore callback)
+	{
+		Model.DataScore score = Instance._GetDataScore (scoreName, battleId);
+		callback (score);
+	}
+	
+	public static void GetPlayerCurrentBattleScores (GetScoresCallback cb)
+	{
+		Instance._GetPlayerCurrentBattleScores (cb);
+	}
 
 	public static void SetScorePoints (string ScoreName, int points, int battleId = -1)
 	{
@@ -174,14 +219,8 @@ public class Score : MonoBehaviour
 		Instance._LoadScore (cb);
 	}
 	
-	public static void GetDataScore (string scoreName, CallbackGetDataScore callback)
+	public static void LoadBattleScore (GetScoresCallback cb = null)
 	{
-		GetDataScore (scoreName, -1, callback);
-	}
-	
-	public static void GetDataScore (string scoreName, int battleId, CallbackGetDataScore callback)
-	{
-		Model.DataScore score = Instance._GetDataScore (scoreName, battleId);
-		callback (score);
+		Instance._LoadBattleScore (cb);
 	}
 }

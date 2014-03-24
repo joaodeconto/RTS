@@ -22,12 +22,32 @@ public class InternalMainMenu : MonoBehaviour
 	
 	public Transform options;
 	public Transform menus;
+	
+	public ShowScore score;
 
 	public Model.Player player { get; private set; }
 	private List<Transform> listChildOptions;
 
+	private bool WasInitialized = false;
+	
+	public void Awake ()
+	{
+		Init ();
+	}
+	
 	public void Init ()
 	{
+		if (WasInitialized || ConfigurationData.player == null)
+			return;
+	
+		//Se ja fez um jogo antes
+		if (ConfigurationData.Logged && ConfigurationData.InGame)
+		{
+			ConfigurationData.InGame = false;
+			score.Init ();
+			return;
+		}
+	
 		//Deixar primeiro carregar o jogador
 		Invoke ("InitScore", 0.5f);
 

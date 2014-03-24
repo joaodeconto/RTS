@@ -35,6 +35,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		public UILabel labelUnits;
 		public GameObject uiVictoryObject;
 		public GameObject uiDefeatObject;
+		public Transform buttonMatchScore;
+
 		public UILabel labelTime;
 		public GameObject uiLostMainBaseObject;
 	}
@@ -63,7 +65,12 @@ public class GameplayManager : Photon.MonoBehaviour
 	public const int BOT_TEAM = 8;
 
 	public Team[] teams;
-
+	
+	// Resources
+	public ResourcesManager resources;
+	
+	public HUD hud;
+	
 	public int numberOfUnits { get; protected set; }
 	public int TotalPopulation { get; protected set; }
 	protected int numberOfActiveMainBases;
@@ -85,10 +92,6 @@ public class GameplayManager : Photon.MonoBehaviour
 	public int MyTeam {get; protected set;}
 	public int Allies {get; protected set;}
 
-	// Resources
-	public ResourcesManager resources;
-
-	public HUD hud;
 
 	protected NetworkManager network;
 
@@ -452,18 +455,28 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
 
-		if (loseGame || winGame)
+		if ((loseGame || winGame) && !hud.buttonMatchScore.gameObject.activeInHierarchy)
 		{
-			if (winGame)
-			{
-				hud.uiVictoryObject.SetActive (true);
-				hud.uiDefeatObject.SetActive (false);
-			}
-			else
-			{
-				hud.uiVictoryObject.SetActive (false);
-				hud.uiDefeatObject.SetActive (true);
-			}
+			Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
+
+			hud.uiVictoryObject.SetActive (winGame);
+			hud.uiDefeatObject.SetActive (loseGame);
+		
+			hud.buttonMatchScore.gameObject.SetActive (true);
+			
+			DefaultCallbackButton dcb = ComponentGetter.Get <DefaultCallbackButton> (hud.buttonMatchScore.transform, false);
+			
+			dcb.Init
+			(
+				null,
+				(ht_dcb) => 
+				{
+					if (PhotonNetwork.room != null)
+						PhotonNetwork.LeaveRoom ();
+					
+					Application.LoadLevel (0);
+				}
+			);
 		}
 	}
 

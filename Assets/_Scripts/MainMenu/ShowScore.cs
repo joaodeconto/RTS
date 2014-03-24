@@ -7,54 +7,56 @@ public class ShowScore : MonoBehaviour
 {
 	public class ScorePlayer
 	{
-		public int resourcesPoints;
-		public int unitsPoints;
-		public int structurePoints;
+		public int ResourcesPoints { get; private set; }
+		public int UnitsPoints { get; private set; }
+		public int StructurePoints { get; private set; }
+		
+		public int Total { get { return ResourcesPoints + UnitsPoints +	StructurePoints; } }
 		
 		public ScorePlayer ()
 		{
-			resourcesPoints = 0;
-			unitsPoints = 0;
-			structurePoints = 0;
+			ResourcesPoints = 0;
+			UnitsPoints 	= 0;
+			StructurePoints = 0;
 		}
 		
 		public void AddScorePlayer (string scoreName, int points)
 		{
 			if (scoreName.Equals (DataScoreEnum.ResourcesGathered))
 			{
-				resourcesPoints += points;
+				ResourcesPoints += points;
 			}
 			else if (scoreName.Equals (DataScoreEnum.UnitsCreated))
 			{
-				unitsPoints += points;
+				UnitsPoints += points;
 			}
 			else if (scoreName.Equals (DataScoreEnum.UnitsKilled))
 			{
-				unitsPoints += points;
+				UnitsPoints += points;
 			}
 			else if (scoreName.Equals (DataScoreEnum.UnitsLost))
 			{
-				unitsPoints -= points;
+				UnitsPoints -= points;
 			}
 			else if (scoreName.Equals (DataScoreEnum.BuildingsCreated))
 			{
-				structurePoints += points;
+				StructurePoints += points;
 			}
 			else if (scoreName.Equals (DataScoreEnum.DestroyedBuildings))
 			{
-				structurePoints += points;
+				StructurePoints += points;
 			}
 			else if (scoreName.Equals (DataScoreEnum.BuildingsLost))
 			{
-				structurePoints -= points;
+				StructurePoints -= points;
 			}
 		}
 		
 		public string DebugPoints ()
 		{
-			return  "Resources: " + resourcesPoints.ToString () +
-					"\n - Units: " + unitsPoints.ToString () +
-					"\n - Structures: " + structurePoints.ToString ();
+			return  "Resources: " + ResourcesPoints.ToString () +
+					"\n - Units: " + UnitsPoints.ToString () +
+					"\n - Structures: " + StructurePoints.ToString ();
 		}
 	}
 	
@@ -67,64 +69,55 @@ public class ShowScore : MonoBehaviour
 	public float diferrenceBetweenLabels;
 	
 	// Use this for initialization
-	void Awake ()
+	public void Init ()
 	{
-		if (ConfigurationData.Logged &&
-			ConfigurationData.InGame)
-		{
-			ConfigurationData.InGame = false;
-			
-			LoginIndex index = login.GetComponentInChildren<LoginIndex> ();
-			index.SetActive (false);
-			
-			ActiveScoreMenu (true);
-			
-			Dictionary<int, ScorePlayer> players = new Dictionary<int, ScorePlayer>();
-			/*
-			Score.LoadBattle
-			(
-				(dicScore) =>
+		LoginIndex index = login.GetComponentInChildren<LoginIndex> ();
+		index.SetActive (false);
+		
+		ActiveScoreMenu (true);
+		
+		Dictionary<int, ScorePlayer> players = new Dictionary<int, ScorePlayer>();
+		
+		Score.LoadBattleScore
+		(
+			(dicScore) =>
+			{
+				for (int i = 0; i != dicScore.Count; i++)
 				{
-					for (int i = 0; i != dicScore.Count; i++)
+					if (!players.ContainsKey (dicScore[i].IdPlayer))
 					{
-						if (!players.ContainsKey (dicScore[i].IdPlayer))
-						{
-							players.Add (dicScore[i].IdPlayer, new ScorePlayer ());
-						}
-						
-						players[dicScore[i].IdPlayer].AddScorePlayer (dicScore[i].SzScoreName, dicScore[i].NrPoints);
+						players.Add (dicScore[i].IdPlayer, new ScorePlayer ());
 					}
 					
-					float positionYInitial = startLabelPoisition;
-					foreach (KeyValuePair<int, ScorePlayer> sp in players)
-					{
-						GameObject scorePlayerObject = NGUITools.AddChild (scoreMenuObject.gameObject, scorePlayerPrefab);
-						scorePlayerObject.transform.localPosition = Vector3.up * positionYInitial;
-						
-						scorePlayerObject.transform.FindChild ("Name").GetComponentInChildren<UILabel> ().text = sp.Key.ToString ();
-						scorePlayerObject.transform.FindChild ("Resources").GetComponentInChildren<UILabel> ().text = sp.Value.resourcesPoints.ToString ();
-						scorePlayerObject.transform.FindChild ("Units").GetComponentInChildren<UILabel> ().text = sp.Value.unitsPoints.ToString ();
-						scorePlayerObject.transform.FindChild ("Structures").GetComponentInChildren<UILabel> ().text = sp.Value.structurePoints.ToString ();
-						
-						positionYInitial -= diferrenceBetweenLabels;
-					}
+					players[dicScore[i].IdPlayer].AddScorePlayer (dicScore[i].SzScoreName, dicScore[i].NrPoints);
 				}
-			);
-			*/
-			
-			DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init (null,
-				(ht_dcb) =>
+				
+				float positionYInitial = startLabelPoisition;
+				foreach (KeyValuePair<int, ScorePlayer> sp in players)
 				{
-					ActiveScoreMenu (false);
-					imm.Init ();
+					GameObject scorePlayerObject = NGUITools.AddChild (scoreMenuObject.gameObject, scorePlayerPrefab);
+					scorePlayerObject.transform.localPosition = Vector3.up * positionYInitial;
+					
+					scorePlayerObject.transform.FindChild ("Name").GetComponentInChildren<UILabel> ().text 		 = sp.Key.ToString ();
+					scorePlayerObject.transform.FindChild ("Resources").GetComponentInChildren<UILabel> ().text  = sp.Value.ResourcesPoints.ToString ();
+					scorePlayerObject.transform.FindChild ("Units").GetComponentInChildren<UILabel> ().text 	 = sp.Value.UnitsPoints.ToString ();
+					scorePlayerObject.transform.FindChild ("Structures").GetComponentInChildren<UILabel> ().text = sp.Value.StructurePoints.ToString ();
+					scorePlayerObject.transform.FindChild ("Total").GetComponentInChildren<UILabel> ().text 	 = sp.Value.Total.ToString ();
+					
+					positionYInitial -= diferrenceBetweenLabels;
 				}
-			);
-		}
-		else
-		{
-			ActiveScoreMenu (false);
-		}
+			}
+		);
+		
+		
+		DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
+		dcb.Init (null,
+			(ht_dcb) =>
+			{
+				ActiveScoreMenu (false);
+				imm.Init ();
+			}
+		);
 	}
 	
 	protected void ActiveScoreMenu (bool boolean)
