@@ -422,9 +422,11 @@ public class StatsController : MonoBehaviour
 
 	public IStats FindMyStat (string name)
 	{
-		int i = 0;
-		foreach (IStats stat in myStats)
+		IStats stat;
+		
+		for (int i = myStats.Count - 1; i != -1; --i)
 		{
+			stat = myStats[i];
 			if (stat == null)
 			{
 				myStats.RemoveAt (i);
@@ -435,12 +437,11 @@ public class StatsController : MonoBehaviour
 			{
 				return stat;
 			}
-			i++;
 		}
 		
-		i = 0;
-		foreach (IStats stat in otherStats)
+		for (int i = otherStats.Count - 1; i != -1; --i)
 		{
+			stat = otherStats[i];
 			if (stat == null)
 			{
 				otherStats.RemoveAt (i);
@@ -451,8 +452,6 @@ public class StatsController : MonoBehaviour
 			{
 				return stat;
 			}
-			i++;
-
 		}
 
 		return null;
