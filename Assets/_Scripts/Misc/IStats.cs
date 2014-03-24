@@ -201,7 +201,10 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public int Defense;
 
 	public int m_Team;
-	public int team { get { return m_Team; } private set { m_Team = value; } }
+	public int team {
+		get { return m_Team; }
+		private set { m_Team = value; }
+	}
 	
 	public int m_Ally;
 	public int ally { get { return m_Team; } private set { m_Team = value; } }

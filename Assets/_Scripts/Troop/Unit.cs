@@ -771,17 +771,17 @@ public class Unit : IStats, IMovementObservable,
 			{
 				PhotonNetwork.Destroy(gameObject);
 
-				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1);
-				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
-				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
+//				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1);
+//				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1, battle.IdBattle);
+//				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
+//				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
 			}
 			else
 			{
-				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1);
-				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1);
-				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1, battle.IdBattle);
+//				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1);
+//				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1, battle.IdBattle);
+//				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1);
+//				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1, battle.IdBattle);
 			}
 
 		}

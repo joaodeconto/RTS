@@ -568,24 +568,22 @@ public class StatsController : MonoBehaviour
 	void CheckWorkersInIdle()
 	{
 		HUDController hud = ComponentGetter.Get<HUDController>();
-
+		
+		idleWorkers.Clear ();
+		
 		foreach (IStats stat in myStats)
 		{
 			Worker w = stat as Worker;
 
 			if ( (w == null) || (!gameplayManager.IsSameTeam(w.team)) ) continue;
 
-			idleWorkers.Remove(w);
-
 			switch (w.workerState)
 			{
 				case Worker.WorkerState.None:
-					if (w.unitState == Unit.UnitState.Idle &&
-						!selectedStats.Contains(w))
+					if (w.unitState == Unit.UnitState.Idle)
 						idleWorkers.Add(w);
 					break;
 				case Worker.WorkerState.CarryingIdle:
-					if (!selectedStats.Contains(w))
 						idleWorkers.Add(w);
 					break;
 				default:

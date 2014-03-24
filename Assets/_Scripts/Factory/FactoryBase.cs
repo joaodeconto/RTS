@@ -252,10 +252,10 @@ public class FactoryBase : IStats, IDeathObservable
 
 			Debug.Log ("battle: " + battle);
 			//Score
-			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1);
-			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);
-			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
-			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1, battle.IdBattle);
+//			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1);
+//			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);
+//			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
+//			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1, battle.IdBattle);
 		}
 		if (!hasRallypoint) return;
 
@@ -328,17 +328,17 @@ public class FactoryBase : IStats, IDeathObservable
 			{
 				PhotonNetwork.Destroy(gameObject);
 
-				Score.AddScorePoints (DataScoreEnum.BuildingsLost, 1);
-				Score.AddScorePoints (DataScoreEnum.BuildingsLost, 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
-				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
+//				Score.AddScorePoints (DataScoreEnum.BuildingsLost, 1);
+//				Score.AddScorePoints (DataScoreEnum.BuildingsLost, 1, battle.IdBattle);
+//				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
+//				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
 			}
 			else
 			{
-				Score.AddScorePoints (DataScoreEnum.DestroyedBuildings, 1);
-				Score.AddScorePoints (DataScoreEnum.DestroyedBuildings, 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, 1);
-				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, 1, battle.IdBattle);
+//				Score.AddScorePoints (DataScoreEnum.DestroyedBuildings, 1);
+//				Score.AddScorePoints (DataScoreEnum.DestroyedBuildings, 1, battle.IdBattle);
+//				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, 1);
+//				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, 1, battle.IdBattle);
 			}
 		}
 		else Destroy (gameObject);
@@ -440,10 +440,10 @@ public class FactoryBase : IStats, IDeathObservable
 				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 				Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
 
-				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1);
-				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
-				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1);
-				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1, battle.IdBattle);
+//				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1);
+//				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
+//				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1);
+//				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1, battle.IdBattle);
 			}
 			return false;
 		}
@@ -675,11 +675,11 @@ public class FactoryBase : IStats, IDeathObservable
 		if(isVisible)
 		{
 			model.transform.parent = this.transform;
+			model.SetActive(true);
 
 			if(!wasVisible)
 			{
 				wasVisible = true;
-				model.SetActive(true);
 			}
 		}
 		else

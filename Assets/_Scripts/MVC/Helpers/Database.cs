@@ -115,6 +115,11 @@ public class Database : MonoBehaviour
 		if (DatabaseCallStack.Count == 1)
 			StartCoroutine (_SendData ());
 	}
+	
+	public void Update ()
+	{
+		//Nothing
+	}
 
 	public void Update (object sendObj, CallbackDatabaseCall cdc)
 	{

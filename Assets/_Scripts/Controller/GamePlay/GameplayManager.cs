@@ -489,7 +489,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		
 		if (winGame)
 		{
-			bm.WonTheGame ();			
+			bm.WonTheGame ();
 		}
 
 		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
@@ -499,6 +499,17 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			Model.Battle battle = new Model.Battle (encodedBattle);
 			Model.Player player = new Model.Player(encodedPlayer);
+			
+			if (winGame)
+			{
+				Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.Victory, 1);
+			}
+			else
+			{
+				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
+			}
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
 

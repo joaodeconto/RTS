@@ -24,6 +24,9 @@ public struct DataScoreEnum
 	public const string XKilled = " killed";
 	public const string DestroyedBuildings = "destroyed-buildings";
 	public const string XDestroyed = " destroyed";
+	
+	public const string Victory = "victory";
+	public const string Defeat  = "defeat";
 }
 
 public class Score : MonoBehaviour

@@ -16,26 +16,30 @@ public class DataScoreDAO : MonoBehaviour
 	public delegate void DataScoreDAODelegateDictionary (Dictionary <string, Model.DataScore> scores);
 	public void LoadAllPlayerScores (DB.Player player, DataScoreDAODelegateDictionary callback)
 	{
-		List <DB.DataScore> lDataScore = new List <DB.DataScore> ();
-		db.Read (player, lDataScore.GetType (), "read-list-datascore",
+		List <DB.DataScore> lScores = new List <DB.DataScore> ();
+		db.Read (player, lScores.GetType (), "read-list-datascore",
 		(response) =>
 		{
 			if ((response as List <DB.DataScore>) != null)
 			{
-				lDataScore = (response as List <DB.DataScore>);
+				lScores = (response as List <DB.DataScore>);
 			}
 
-			Dictionary <string, Model.DataScore> dic = new Dictionary <string, Model.DataScore> ();
+			Dictionary <string, Model.DataScore> scores = new Dictionary <string, Model.DataScore> ();
 			
-			for (int i = lDataScore.Count - 1; i != -1; --i)
+			for (int i = lScores.Count - 1; i != -1; --i)
 			{
 //				if (lDataScore[i].SzScoreName.Contains ("current"))
-				Debug.Log ("lDataScore[i]: " + lDataScore[i]);
-
- 				dic.Add (lDataScore[i].SzScoreName + " - " + lDataScore[i].IdBattle, lDataScore[i].ToModel ());
+				Debug.Log ("lDataScore[i]: " + lScores[i]);
+				string key = lScores[i].SzScoreName + " - " + lScores[i].IdBattle;
+				
+				if (!scores.ContainsKey (key))
+					scores.Add (key, lScores[i].ToModel ());
+				else
+					scores[key] = lScores[i].ToModel ();
 			}
 			
-			callback (dic);
+			callback (scores);
 		});
 	}
 	
@@ -89,7 +93,11 @@ public class DataScoreDAO : MonoBehaviour
 //					if (lScores[i].SzScoreName.Contains ("current"))
 //						Debug.Log ("IdDataScore: " + lScores[i].IdDataScore + " - SzScoreName: " + lScores[i].SzScoreName + " - NrPoints: "  + lScores[i].NrPoints);
 					
-					scores.Add (lScores[i].SzScoreName + " - " + lScores[i].IdBattle, lScores[i]);
+					string key = lScores[i].SzScoreName + " - " + lScores[i].IdBattle;
+					if (!scores.ContainsKey (key))
+						scores.Add (key, lScores[i]);
+					else
+						scores[key] = lScores[i];
 				}
 			}
 			
