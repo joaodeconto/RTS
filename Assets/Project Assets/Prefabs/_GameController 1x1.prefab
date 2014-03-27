@@ -114,23 +114,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &100016
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400016}
-  - 114: {fileID: 11400028}
-  - 82: {fileID: 8200000}
-  m_Layer: 0
-  m_Name: SoundManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &100018
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,17 +273,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
---- !u!4 &400016
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100016}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400026}
 --- !u!4 &400018
 Transform:
   m_ObjectHideFlags: 1
@@ -359,7 +331,6 @@ Transform:
   - {fileID: 400024}
   - {fileID: 400004}
   - {fileID: 400020}
-  - {fileID: 400016}
   - {fileID: 400012}
   - {fileID: 400022}
   - {fileID: 400018}
@@ -368,64 +339,6 @@ Transform:
   - {fileID: 400008}
   - {fileID: 400002}
   m_Father: {fileID: 0}
---- !u!82 &8200000
-AudioSource:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100016}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: .699999988
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Priority: 255
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 1
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -502,11 +415,11 @@ MonoBehaviour:
   - queueName: Events
     panel: {fileID: 0}
     rootPosition: {x: 0, y: 0}
-    cellSize: {x: 40, y: 40}
-    padding: {x: 5, y: 12}
+    cellSize: {x: 92, y: 92}
+    padding: {x: 1, y: 1}
     labelSize: 24
     IsVerticalQueue: 1
-    maxPerLine: 10
+    maxPerLine: 8
     maxItems: 10
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
@@ -640,22 +553,22 @@ MonoBehaviour:
     spriteName: 
   - Name: out of funds
     Message: Insufficient resources
-    spriteName: 
+    spriteName: cross-option
   - Name: reach enqueued units
-    Message: training queue is full
-    spriteName: 
+    Message: Training queue is full
+    spriteName: cross-option
   - Name: need more houses
     Message: 'need more houses '
-    spriteName: 
+    spriteName: cross-option
   - Name: reach max population
     Message: max population reached
-    spriteName: 
+    spriteName: cross-option
   - Name: create unit
     Message: '{0} train complete'
     spriteName: 
   - Name: being attacked
     Message: we are under attack
-    spriteName: 
+    spriteName: Atk
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -719,37 +632,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d62791e632805b4ca9182894b3f5c41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11400028
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f7dd739c8ba2a84dacc153422b40126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundConnections: []
-  audios: []
-  currentLevel: 
-  currentSoundConnection: {fileID: 0}
-  crossDuration: 5
-  showDebug: 1
-  offTheBGM: 0
-  isPaused: 0
-  movingOnFromSong: 0
-  storage: {fileID: 0}
-  RESOURCES_PATH: Sounds/SFX
-  storedSFXs: []
-  ownedSFXObjects: []
-  unOwnedSFXObjects: []
-  sfxGroups: []
-  clipToGroupKeys: []
-  clipToGroupValues: []
-  mCurrentOwnedSFXObject: 0
-  offTheSFX: 0
-  CAP_AMOUNT: 3
 --- !u!114 &11400030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -765,15 +647,15 @@ MonoBehaviour:
   - name: Time 1
     colors:
     - {r: 0, g: 0, b: 1, a: 1}
-    - {r: .948529422, g: .93429184, b: .43241784, a: 1}
-    - {r: .162359431, g: .669117689, b: .354578108, a: 1}
+    - {r: .477941155, g: .130028114, b: .130028114, a: 1}
+    - {r: .558823526, g: .47857058, b: .460207611, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: Time 2
     colors:
     - {r: 1, g: 0, b: 0, a: 1}
-    - {r: 1, g: 1, b: 1, a: 1}
-    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: .345588207, g: .304475129, b: .21599263, a: 1}
+    - {r: .742647052, g: .742647052, b: .742647052, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   - name: Time 3
@@ -814,14 +696,15 @@ MonoBehaviour:
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   resources:
-    NumberOfRocks: 600
-    NumberOfMana: 100
+    m_mana: 0
+    m_rocks: 600
   hud:
     labelRocks: {fileID: 0}
     labelMana: {fileID: 0}
     labelUnits: {fileID: 0}
     uiVictoryObject: {fileID: 0}
     uiDefeatObject: {fileID: 0}
+    buttonMatchScore: {fileID: 0}
     labelTime: {fileID: 0}
     uiLostMainBaseObject: {fileID: 0}
 --- !u!114 &11400032
@@ -855,7 +738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 1
+  autoload: 0
   targetFPS: 45
 --- !u!1001 &100100000
 Prefab:
