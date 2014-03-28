@@ -30,7 +30,6 @@ public class TemporizedMessageQueue : MessageQueue
 		this.Padding         = padding;
 		this.LabelSize       = labelSize;
 		this.uiGrid.maxPerLine = maxPerLine;
-		this.uiGrid.sorted       = true;
 		this.uiGrid.hideInactive = false;
 		this.timeToFadeout = timeToFadeout;
 		this.fadeColor     = fadeColor;

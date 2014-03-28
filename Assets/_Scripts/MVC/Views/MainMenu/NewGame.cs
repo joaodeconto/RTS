@@ -39,11 +39,12 @@ public class NewGame : MonoBehaviour
 	public UILabel messageActiveGame;
 	public UILabel errorMessage;
 	
-	public UILabel bidLabel;
+	public UIInput bidInput;
 	
 	private int CurrentBid {
-		get { return (bidLabel) ? int.Parse (bidLabel.text) : 1; }
+		get { return (bidInput) ? int.Parse (bidInput.text) : 1; }
 	}
+
 
 	float RefreshingInterval = 2.0f;
 	bool wasInitialized      = false;
@@ -151,7 +152,7 @@ public class NewGame : MonoBehaviour
 			GameplayManager.mode = mode;
 
 			messageActiveGame.enabled = true;
-			messageActiveGame.text = "Waiting For Other Players...";
+			messageActiveGame.text = "Game Created";
 
 			foreach (Transform button in buttons.Iterate)
 			{
@@ -181,7 +182,7 @@ public class NewGame : MonoBehaviour
 			},
 			(playersReady, nMaxPlayers) =>
 			{
-				messageActiveGame.text = "Waiting For Other Players - " + playersReady + "/" + nMaxPlayers;
+				messageActiveGame.text = "Waiting Players " + playersReady + "/" + nMaxPlayers;
 			});
 		});
 	}

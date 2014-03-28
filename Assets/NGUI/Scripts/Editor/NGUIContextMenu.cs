@@ -106,6 +106,15 @@ public static class NGUIContextMenu
 	[MenuItem("CONTEXT/UIPanel/Help")]
 	static void ShowHelp27 (MenuCommand command) { NGUIHelp.Show(typeof(UIPanel)); }
 
+	[MenuItem("CONTEXT/UILocalize/Help")]
+	static void ShowHelp28 (MenuCommand command) { NGUIHelp.Show(typeof(UILocalize)); }
+
+	[MenuItem("CONTEXT/Localization/Help")]
+	static void ShowHelp29 (MenuCommand command) { NGUIHelp.Show(typeof(Localization)); }
+
+	[MenuItem("CONTEXT/UIKeyNavigation/Help")]
+	static void ShowHelp30 (MenuCommand command) { NGUIHelp.Show(typeof(UIKeyNavigation)); }
+
 	public delegate UIWidget AddFunc (GameObject go);
 
 	static BetterList<string> mEntries = new BetterList<string>();
@@ -345,7 +354,8 @@ public static class NGUIContextMenu
 				AddItem("Attach/Input Field Script", false, delegate(object obj) { target.AddComponent<UIInput>(); }, null);
 				NGUIContextMenu.AddSeparator("Attach/");
 				
-				if (target.GetComponent<UIDragResize>() == null) AddItem("Attach/Drag Resize Script", false, delegate(object obj) { target.AddComponent<UIDragResize>(); }, null);
+				if (target.GetComponent<UIDragResize>() == null)
+					AddItem("Attach/Drag Resize Script", false, delegate(object obj) { target.AddComponent<UIDragResize>(); }, null);
 
 				if (target.GetComponent<UIDragScrollView>() == null)
 				{
@@ -367,12 +377,18 @@ public static class NGUIContextMenu
 
 				AddItem("Attach/Key Binding Script", false, delegate(object obj) { target.AddComponent<UIKeyBinding>(); }, null);
 
+				if (target.GetComponent<UIKeyNavigation>() == null)
+					AddItem("Attach/Key Navigation Script", false, delegate(object obj) { target.AddComponent<UIKeyNavigation>(); }, null);
+
 				NGUIContextMenu.AddSeparator("Attach/");
 
 				AddItem("Attach/Play Tween Script", false, delegate(object obj) { target.AddComponent<UIPlayTween>(); }, null);
 				AddItem("Attach/Play Animation Script", false, delegate(object obj) { target.AddComponent<UIPlayAnimation>(); }, null);
 				AddItem("Attach/Play Sound Script", false, delegate(object obj) { target.AddComponent<UIPlaySound>(); }, null);
 			}
+
+			if (target.GetComponent<UILocalize>() == null)
+				AddItem("Attach/Localization Script", false, delegate(object obj) { target.AddComponent<UILocalize>(); }, null);
 
 			if (widget != null)
 			{

@@ -27,7 +27,6 @@ public class DefaultMessageQueue : MessageQueue
 		this.LabelSize       = labelSize;
 
 		this.uiGrid.maxPerLine = maxPerLine;
-		this.uiGrid.sorted       = true;
 		this.uiGrid.hideInactive = false;
 	
 		return this;
