@@ -30,6 +30,7 @@ public static class SoundManagerTools {
 		theAudioSource.panLevel = 1f;
 	}
 	
+#if !(UNITY_WP8 || UNITY_METRO)
 	/// <summary>
 	/// Returns all instance fields on an object, including inherited fields
 	/// http://stackoverflow.com/a/1155549/154165
@@ -50,4 +51,5 @@ public static class SoundManagerTools {
 			.Where(f => !f.IsDefined(typeof(HideInInspector), true))
 			.ToArray();
 	}
+#endif
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="@drawable/everyplay_video_bg_bottombar" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal" >
+             
+        <Button
+            android:id="@+id/videoQualityButtonBarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/everyplay_video_buttonbar_button"
+            android:textColor="@android:color/white"
+            android:textColorLink="@android:color/white" />
+        
+        <Button
+            android:id="@+id/everyplayButtonBarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/everyplay_video_buttonbar_button"
+            android:gravity="center_vertical|left"
+            android:text=""
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/commentButtonBarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/everyplay_video_buttonbar_button"
+            android:gravity="center_vertical|left"
+            android:text="0"
+            android:textColor="#bbbbbb" 
+            android:textSize="13dp" />
+
+        <Button
+            android:id="@+id/likeButtonBarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/everyplay_video_buttonbar_button"
+            android:gravity="center_vertical|left"
+            android:text="0"
+            android:textColor="#bbbbbb" 
+            android:textSize="13dp" />
+
+        <Button
+            android:id="@+id/shareButtonBarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/everyplay_video_buttonbar_button"
+            android:gravity="center_vertical|left"
+            android:text=""
+            android:textColor="#bbbbbb" 
+            android:textSize="13dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

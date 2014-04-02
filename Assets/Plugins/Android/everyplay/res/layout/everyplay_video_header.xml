@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/videoPlayerHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/everyplay_video_header_bg"
+    android:orientation="horizontal"
+    android:padding="10dp" >
+
+    <com.everyplay.Everyplay.view.EveryplayImageButton
+        android:id="@+id/userAvatarButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:id="@+id/videoDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/installButton"
+        android:layout_toRightOf="@+id/userAvatarButton"
+        android:maxLines="1"
+        android:text="Video description"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/videoUploaderUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/videoDescription"
+        android:layout_below="@+id/videoDescription"
+        android:layout_toLeftOf="@+id/installButton"
+        android:text="By username"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/installButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/videoUploaderUsername"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/videoDescription"
+        android:background="@drawable/everyplay_video_header_install_button"
+        android:text="Install Game"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>

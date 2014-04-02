@@ -6,7 +6,7 @@ using System.Collections;
 [AddComponentMenu("")]
 [ExecuteInEditMode()]
 public class EditorUpdateCheck : MonoBehaviour {
-	int currentVersion = 331;
+	int currentVersion = 332;
 	public bool respondInAlerts = false;
 	public bool readyForAction = false;
 	public bool readyToDestroy = false;

@@ -45,7 +45,7 @@ public class AudioSubscription {
 	{
 		if(isBound || isStandardEvent || sourceComponent == null)
 			return;
-		
+#if !(UNITY_WP8 || UNITY_METRO)		
 		owner = sourcePro;
 
 		if(!componentIsValid)
@@ -80,7 +80,9 @@ public class AudioSubscription {
 		
 		var combinedDelegate = Delegate.Combine( eventDelegate, (Delegate)eventField.GetValue( sourceComponent ) );
 		eventField.SetValue( sourceComponent, combinedDelegate );
-		
+#else
+		Debug.LogError("Windows Store and Windows Phone apps don't support automatic custom binding. You must do it yourself in code.");
+#endif
 		isBound = true;
 	}
 	
@@ -90,7 +92,7 @@ public class AudioSubscription {
 			return;
 
 		isBound = false;
-		
+#if !(UNITY_WP8 || UNITY_METRO)		
 		var currentDelegate = (Delegate)eventField.GetValue(sourceComponent);
 		var newDelegate = Delegate.Remove(currentDelegate, eventDelegate);
 		eventField.SetValue(sourceComponent, newDelegate);
@@ -100,6 +102,7 @@ public class AudioSubscription {
 		handlerProxy = null;
 
 		targetComponent = null;
+#endif
 	}
 	
 	public bool componentIsValid {
@@ -130,7 +133,7 @@ public class AudioSubscription {
 			return false;
 		}
 	}
-	
+#if !(UNITY_WP8 || UNITY_METRO)	
 	private FieldInfo getField(Component sourceComponent, string fieldName)
 	{
 		return sourceComponent.GetType()
@@ -138,7 +141,7 @@ public class AudioSubscription {
 			.Where(f => f.Name == fieldName)
 			.FirstOrDefault();
 	}
-	
+#endif	
 	private bool signatureIsCompatible(ParameterInfo[] lhs, ParameterInfo[] rhs)
 	{
 		if(lhs == null || rhs == null)
