@@ -27376,7 +27376,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: soundConnections.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: soundConnections.Array.data[0].soundsToPlay.Array.size
@@ -27424,19 +27424,19 @@ Prefab:
       objectReference: {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: soundConnections.Array.data[1].level
-      value: 2x2_Swamp_King
+      value: main_menu
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: soundConnections.Array.data[1].soundsToPlay.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
+      objectReference: {fileID: 8300000, guid: fe403fd12ba51eb47a3a7e46fd6d75a9, type: 3}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: soundConnections.Array.data[1].soundsToPlay.Array.data[1]
       value: 
       objectReference: {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: soundConnections.Array.data[1].playMethod
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8200000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: m_audioClip
@@ -60753,7 +60753,7 @@ GameObject:
   m_IsActive: 1
 --- !u!82 &1861470076
 AudioSource:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_PrefabParentObject: {fileID: 8200002, guid: a26582d8ae3fb574383eacbd5ffefa56,
     type: 2}
   m_PrefabInternal: {fileID: 795832256}
@@ -60812,7 +60812,7 @@ AudioSource:
     m_PostInfinity: 2
 --- !u!82 &1861470077
 AudioSource:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_PrefabParentObject: {fileID: 8200004, guid: a26582d8ae3fb574383eacbd5ffefa56,
     type: 2}
   m_PrefabInternal: {fileID: 795832256}
@@ -60959,6 +60959,14 @@ MonoBehaviour:
     minDelay: 0
     maxDelay: 0
     delay: 0
+  - level: main_menu
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: fe403fd12ba51eb47a3a7e46fd6d75a9, type: 3}
+    playMethod: 0
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
   audios:
   - {fileID: 1861470077}
   - {fileID: 1861470076}
@@ -61052,7 +61060,7 @@ MonoBehaviour:
   SFXObjectLifetime: 10
 --- !u!4 &1861470080
 Transform:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 10
   m_PrefabParentObject: {fileID: 400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
   m_PrefabInternal: {fileID: 795832256}
   m_GameObject: {fileID: 1861470075}
