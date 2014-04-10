@@ -24,7 +24,9 @@ public class MiniMapController : MonoBehaviour
 
 	public GameObject beingAttackedMiniMap;
 
-	public Vector3 visualizationSize;
+	public UIAtlas minimapAtlas;
+	
+    public Vector3 visualizationSize;
 	public Vector3 visualizationPosition;
 
 	public float MiniMapRefreshInterval = 0.4f;
@@ -51,7 +53,7 @@ public class MiniMapController : MonoBehaviour
 	InteractionController ic;
 	
 	private UITexture textureFogOfWar;
-
+	
 	public MiniMapController Init()
 	{
 		if (WasInitialized)
@@ -100,9 +102,9 @@ public class MiniMapController : MonoBehaviour
 			textureFogOfWar.pivot = UIWidget.Pivot.BottomLeft;
 			textureFogOfWar.transform.localPosition    = new Vector2 (0,0);
 		    textureFogOfWar.height = mapTransform.GetComponent<UISprite>().width;
-		    textureFogOfWar.width =  mapTransform.GetComponent<UISprite>().width;
-		    textureFogOfWar.depth = 5;
-			textureFogOfWar.transform.localEulerAngles = Vector3.forward * 90f;
+		    textureFogOfWar.width =  mapTransform.GetComponent<UISprite>().height;
+//		    textureFogOfWar.depth = 5;
+//			textureFogOfWar.transform.localEulerAngles = Vector3.forward * 90f;
 			textureFogOfWar.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
 			textureFogOfWar.material.mainTexture = fogOfWar.FogTexture;
 //			Texture t = FOWSystem.instance.texture0;
@@ -110,13 +112,19 @@ public class MiniMapController : MonoBehaviour
 //			ut.material.mainTexture = t;
 		}
 
-		UITexture ut;
-		ut = NGUITools.AddWidget<UITexture> (CamPositionMiniMap);
-		ut.transform.localPosition    = Vector3.forward * -1;
-		ut.transform.localScale   = visualizationSize;
-		ut.transform.localEulerAngles = Vector3.forward * 90f;
-		ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
-		ut.material.mainTexture = CamPositionTexture;
+		UISprite us;
+		us = NGUITools.AddWidget<UISprite> (CamPositionMiniMap);
+		us.atlas = minimapAtlas;
+		us.spriteName = "camera-mini-mapa";
+        //ut.transform.localPosition = Vector3.forward * -1;
+        us.depth = 10;
+		us.width = (int)visualizationSize.x;
+		us.height = (int)visualizationSize.y;
+		us.type = UISprite.Type.Sliced;
+		//ut.transform.parent.localScale = Vector3.one;
+        //ut.transform.localEulerAngles = Vector3.forward * 90f;
+		//ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
+		//ut.material.mainTexture = CamPositionTexture;
 
 		mainCameraGO = Camera.main.gameObject;
 		
@@ -151,13 +159,13 @@ public class MiniMapController : MonoBehaviour
 		newScale.y *= mapTransform.localScale.y;
 		newScale.z *= mapTransform.localScale.z;
 		
-		CamPositionMiniMap.transform.localScale = newScale;
+		//CamPositionMiniMap.transform.localScale = newScale;
 	}
 
 	void UpdateMiniMap()
 	{
 #if UNITY_EDITOR
-		RefreshMiniMapSize();
+		//RefreshMiniMapSize();
 #endif
 //		Debug.Log(FOWSystem.instance.texture1.width);
 		
@@ -228,11 +236,23 @@ public class MiniMapController : MonoBehaviour
 
 	public void UpdateCameraPosition()
 	{
-		Debug.LogWarning ("TODO: UpdateCameraPosition ();");
-
-		return;
+//		Debug.LogWarning ("TODO: UpdateCameraPosition ();");
 		
-		CameraBounds camBounds = mainCameraGO.GetComponent<CameraBounds>();
+//		float touchLocalPointX = Screen.width - MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x;
+//		float touchLocalPointY = Screen.height - MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y;
+		/*float touchLocalPointX = UICamera.lastTouchPosition.x - CamPositionMiniMap.transform.position.x;
+		float touchLocalPointY = UICamera.lastTouchPosition.y - CamPositionMiniMap.transform.position.y;
+        
+		Debug.Log("touchLocalPointX: " + touchLocalPointX + " = " + UICamera.lastTouchPosition.x + " - " + CamPositionMiniMap.transform.position.x);
+		Debug.Log("touchLocalPointY: " + touchLocalPointY + " = " + UICamera.lastTouchPosition.y + " - " + CamPositionMiniMap.transform.position.y);
+        
+		Vector2 touchPosition = mapSizeComponent.GetPositon(new Vector2(touchLocalPointX, touchLocalPointY));
+        
+		mainCameraGO.transform.position = new Vector3(touchPosition.x, mainCameraGO.transform.position.y, touchPosition.y);*/
+        
+//        return;
+        
+        CameraBounds camBounds = mainCameraGO.GetComponent<CameraBounds>();
 
 		Vector3 camBoundsSize = mapSize;
 								//new Vector3((camBounds.scenario.x.max - camBounds.scenario.x.min),
@@ -265,9 +285,9 @@ public class MiniMapController : MonoBehaviour
 //		
 //		Debug.Log ("ray: " + ray.origin + " - " + ray.direction);
 		
-//		 MapGUICamera.WorldToScreenPoint (miniMapButton.position);//ray.origin;
+//		MapGUICamera.WorldToScreenPoint (miniMapButton.position);//ray.origin;
 				
-		Vector3 vecScreen = MapGUICamera.WorldToScreenPoint (miniMapButton.position);
+		Vector3 vecScreen = MapGUICamera.WorldToScreenPoint (miniMapPanel.transform.position);
 
 		//Retirando posicao do mapa globalmente
 		touchLocalPointX -= (vecScreen.x);
@@ -277,17 +297,20 @@ public class MiniMapController : MonoBehaviour
 		
 		Debug.Log("a: touchLocalPointX: " + touchLocalPointX);
 		Debug.Log("a: touchLocalPointY: " + touchLocalPointY);
-				
+		
 		Vector2 percentPos = new Vector2(((MiniMapRoot.pixelSizeAdjustment
-		                                 	* UICamera.lastTouchPosition.x) - mapTransform.localPosition.x),
+		                                 	* UICamera.lastTouchPosition.x) - mapTransform.position.x),
 										 ((MiniMapRoot.pixelSizeAdjustment
-											* UICamera.lastTouchPosition.y) - mapTransform.localPosition.y));
+											* UICamera.lastTouchPosition.y) - mapTransform.position.y));
 		percentPos.x /= miniMapSize.x;
 		percentPos.y /= miniMapSize.y;
 		
+//		percentPos.x -= 7.1f;
+//		percentPos.y -= 2.9f;
+        
 //		Debug.Break ();
-		//Debug.Log("percentPos: " + percentPos);
-		//Debug.Log("mapSize: " + mapSize);
+		Debug.Log("percentPos: " + percentPos);
+		Debug.Log("mapSize: " + mapSize);
 
 		Vector3 newCameraPosition = new Vector3((camBoundsSize.x * percentPos.x)         - (visualizationPosition.x),
 											    (mainCameraGO.transform.localPosition.y) - (visualizationPosition.y),
