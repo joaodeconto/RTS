@@ -19,5 +19,7 @@ public class MiniMapButtonHandler : MonoBehaviour
 		ComponentGetter
 			.Get<MiniMapController>()
 				.UpdateCameraPosition();
+				
+		// SOH PRA TER COMMIT, DEPOIS APAGAR
 	}
 }
