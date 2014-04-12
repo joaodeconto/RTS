@@ -12,11 +12,6 @@ class Fisheye extends PostEffectsBase {
 	public var fishEyeShader : Shader = null;
 	private var fisheyeMaterial : Material = null;	
 	
-	function OnDisable()
-	{
-	    if (fisheyeMaterial)
-	        DestroyImmediate(fisheyeMaterial);
-	}
 	function CheckResources () : boolean {	
 		CheckSupport (false);
 		fisheyeMaterial = CheckShaderAndCreateMaterial(fishEyeShader,fisheyeMaterial);

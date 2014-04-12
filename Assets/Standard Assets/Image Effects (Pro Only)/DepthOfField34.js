@@ -105,13 +105,6 @@ class DepthOfField34 extends PostEffectsBase {
 
 	function OnDisable () {
 		Quads.Cleanup ();	
-		
-		if (dofBlurMaterial)
-		    DestroyImmediate(dofBlurMaterial);
-		if (dofMaterial)
-		    DestroyImmediate(dofMaterial);
-		if (bokehMaterial)
-		    DestroyImmediate(bokehMaterial);		
 	}
 
 	function OnEnable() {
