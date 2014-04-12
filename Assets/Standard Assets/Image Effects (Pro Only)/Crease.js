@@ -19,15 +19,6 @@ class Crease extends PostEffectsBase {
 	public var creaseApplyShader : Shader;
 	private var creaseApplyMaterial : Material = null;	
 	
-	function OnDisable()
-	{
-		if (blurMaterial)
-		    DestroyImmediate(blurMaterial);
-		if (depthFetchMaterial)
-		    DestroyImmediate(depthFetchMaterial);
-		if (creaseApplyMaterial)
-		    DestroyImmediate(creaseApplyMaterial);
-	}
 	function CheckResources () : boolean {	
 		CheckSupport (true);
 		

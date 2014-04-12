@@ -17,13 +17,6 @@ class ContrastEnhance extends PostEffectsBase {
 	public var separableBlurShader : Shader = null;
 	public var contrastCompositeShader : Shader = null;
 
-    function OnDisable()
-    {
-		if (contrastCompositeMaterial)
-		    DestroyImmediate(contrastCompositeMaterial);
-		if (separableBlurMaterial)
-		    DestroyImmediate(separableBlurMaterial);
-    }
 	function CheckResources () : boolean {	
 		CheckSupport (false);
 		
