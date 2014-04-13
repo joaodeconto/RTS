@@ -348,6 +348,12 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 				eventManager.AddEvent("being attacked");
 						
 				Visiorama.ComponentGetter.Get<MiniMapController> ().InstantiatePositionBeingAttacked (transform);
+
+				//GameObject u = unit.gameObject;
+				
+				AudioClip sfxbeingattacked = SoundManager.Load("being_attacked");
+				
+				SoundManager.PlaySFX(sfxbeingattacked);
 			}
 		}
 
