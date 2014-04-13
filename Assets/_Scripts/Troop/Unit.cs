@@ -355,8 +355,10 @@ public class Unit : IStats, IMovementObservable,
 			IsAttacking = true;
 
 			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
+
+			Vector3 u = this.transform.position;
 			
-			SoundManager.PlaySFX(sfxAtk);
+			SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
 
 			if (PhotonNetwork.offlineMode)
 			{

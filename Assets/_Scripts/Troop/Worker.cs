@@ -297,6 +297,7 @@ public class Worker : Unit
 						resourceWorker[resourceId].extractingObject.SetActive (true);
 						resourceWorker[resourceId].carryingObject.SetActive (false);
 						lastResourceId = resourceId;
+				    				    
 					}
 					break;
 
@@ -457,6 +458,12 @@ public class Worker : Unit
 
 		if (resource != null) resource.ExtractResource (this);
 		else workerState = WorkerState.None;
+
+		AudioClip sfxmining = SoundManager.Load("mining");
+		
+		Vector3 u = this.transform.position;
+		
+		SoundManager.PlayCappedSFX (sfxmining, "mining", 1f, 1f, u);
 
 		IsExtracting = false;
 	}

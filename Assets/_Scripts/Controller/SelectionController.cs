@@ -70,6 +70,7 @@ public class SelectionController : MonoBehaviour
 			}
 
 			foreach (IStats stat in statsController.myStats)
+
 			{
 				FactoryBase factory = stat as FactoryBase;
 				

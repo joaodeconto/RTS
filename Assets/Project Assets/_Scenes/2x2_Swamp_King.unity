@@ -2052,7 +2052,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -7077,7 +7077,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -11724,7 +11724,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -17247,7 +17247,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -17679,24 +17679,28 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: sfxGroups.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: storedSFXs.Array.size
-      value: 20
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: showSFXDetails.Array.size
-      value: 20
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: clipToGroupKeys.Array.size
-      value: 19
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: clipToGroupValues.Array.size
-      value: 19
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: sfxPrePoolAmounts.Array.size
-      value: 20
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: m_LocalPosition.x
@@ -17769,6 +17773,86 @@ Prefab:
     - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
       propertyPath: clipToGroupValues.Array.data[18]
       value: Confirm
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: MinDistance
+      value: 1.04999995
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: MaxDistance
+      value: 30.0599995
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: showAdd
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: storedSFXs.Array.data[20]
+      value: 
+      objectReference: {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: showSFXDetails.Array.data[20]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: sfxGroups.Array.data[4].groupName
+      value: Structures
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: sfxGroups.Array.data[4].specificCapAmount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: storedSFXs.Array.data[21]
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f6ad43210456ca43b4f9e04e12fed1c, type: 3}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: clipToGroupKeys.Array.data[19]
+      value: drums_buildings
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: clipToGroupValues.Array.data[19]
+      value: Structures
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: storedSFXs.Array.data[22]
+      value: 
+      objectReference: {fileID: 8300000, guid: a7d499e89f728b2469f551401db790a6, type: 3}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: clipToGroupKeys.Array.data[20]
+      value: tum
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: clipToGroupValues.Array.data[20]
+      value: Structures
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: storedSFXs.Array.data[23]
+      value: 
+      objectReference: {fileID: 8300000, guid: c7ac946ca172d4d4499d904f48503f2f, type: 3}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: clipToGroupKeys.Array.data[21]
+      value: troop_select
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: clipToGroupValues.Array.data[21]
+      value: Structures
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: storedSFXs.Array.data[24]
+      value: 
+      objectReference: {fileID: 8300000, guid: 3a620befb956c494b9dd63d38d77a762, type: 3}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: clipToGroupKeys.Array.data[22]
+      value: Fast_Atk
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: clipToGroupValues.Array.data[22]
+      value: Attack
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
+      propertyPath: capAmount
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
@@ -23188,7 +23272,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -24542,7 +24626,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -26870,7 +26954,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 0
+  autoload: 1
   targetFPS: 45
 --- !u!1 &416385570
 GameObject:
@@ -29250,7 +29334,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -32529,7 +32613,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -33378,7 +33462,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -36369,7 +36453,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -41777,7 +41861,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -45926,7 +46010,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 746434021}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: 0, z: 0}
+  m_LocalPosition: {x: 560, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 313903784}
@@ -47634,7 +47718,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -49772,7 +49856,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 827083530}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: -360, z: 0}
+  m_LocalPosition: {x: 560, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 852477438}
@@ -51478,7 +51562,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -54103,7 +54187,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -54554,7 +54638,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -56623,7 +56707,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 937397908}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -640, y: 360, z: 0}
+  m_LocalPosition: {x: -560, y: 360, z: 0}
   m_LocalScale: {x: 1.00012505, y: 1.00012505, z: 1.00012505}
   m_Children:
   - {fileID: 473881013}
@@ -56701,43 +56785,43 @@ Transform:
   m_LocalPosition: {x: 130, y: 0, z: 130}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 670096684}
-  - {fileID: 918163711}
-  - {fileID: 455770767}
-  - {fileID: 2009128121}
-  - {fileID: 546308088}
-  - {fileID: 1942976038}
-  - {fileID: 2139463717}
-  - {fileID: 786653518}
-  - {fileID: 335689261}
-  - {fileID: 913110384}
-  - {fileID: 1028990747}
-  - {fileID: 1534857214}
   - {fileID: 360817139}
-  - {fileID: 1956123641}
-  - {fileID: 1654395678}
-  - {fileID: 1906784803}
-  - {fileID: 1141393396}
-  - {fileID: 529692075}
-  - {fileID: 1551910008}
-  - {fileID: 1787614261}
+  - {fileID: 546308088}
+  - {fileID: 918163711}
   - {fileID: 90736462}
-  - {fileID: 210246106}
-  - {fileID: 1538601927}
-  - {fileID: 278639214}
-  - {fileID: 2105068676}
-  - {fileID: 577747146}
-  - {fileID: 1802725628}
-  - {fileID: 1031497706}
-  - {fileID: 17594469}
-  - {fileID: 1035924071}
-  - {fileID: 1756078046}
+  - {fileID: 1956123641}
+  - {fileID: 913110384}
   - {fileID: 2001959276}
-  - {fileID: 1113895820}
-  - {fileID: 2127240405}
+  - {fileID: 1942976038}
+  - {fileID: 577747146}
+  - {fileID: 1551910008}
   - {fileID: 870418589}
-  - {fileID: 1023533229}
+  - {fileID: 1534857214}
+  - {fileID: 2127240405}
+  - {fileID: 2009128121}
+  - {fileID: 1538601927}
+  - {fileID: 1028990747}
+  - {fileID: 1031497706}
+  - {fileID: 1756078046}
+  - {fileID: 2105068676}
+  - {fileID: 278639214}
+  - {fileID: 455770767}
+  - {fileID: 529692075}
   - {fileID: 1769163263}
+  - {fileID: 1035924071}
+  - {fileID: 335689261}
+  - {fileID: 786653518}
+  - {fileID: 17594469}
+  - {fileID: 670096684}
+  - {fileID: 1906784803}
+  - {fileID: 1802725628}
+  - {fileID: 210246106}
+  - {fileID: 2139463717}
+  - {fileID: 1787614261}
+  - {fileID: 1113895820}
+  - {fileID: 1141393396}
+  - {fileID: 1023533229}
+  - {fileID: 1654395678}
   m_Father: {fileID: 745090814}
 --- !u!1 &945550642
 GameObject:
@@ -60704,7 +60788,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400036, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: autoload
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11400036, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: targetFPS
@@ -60792,7 +60876,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1005052626}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -640, y: -360, z: 0}
+  m_LocalPosition: {x: -560, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 646724040}
@@ -63090,7 +63174,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -63627,7 +63711,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -63884,7 +63968,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -64247,7 +64331,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -64788,6 +64872,91 @@ Transform:
   m_Children:
   - {fileID: 1608728168}
   m_Father: {fileID: 1499014814}
+--- !u!1 &1043643017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1043643019}
+  - 82: {fileID: 1043643018}
+  m_Layer: 0
+  m_Name: Ambient SFX Wind
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &1043643018
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1043643017}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_audioClip: {fileID: 8300000, guid: abb9b77d8e6ef734f9ba589608fdef51, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 10
+  MaxDistance: 24.8257446
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+--- !u!4 &1043643019
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1043643017}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 61.6524124, y: 5.68478394, z: 93.5317307}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1 &1044596052
 GameObject:
   m_ObjectHideFlags: 0
@@ -70181,7 +70350,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -71790,7 +71959,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -89527,7 +89696,7 @@ GameObject:
   - 23: {fileID: 1387261292}
   - 65: {fileID: 1387261293}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Not Walkable Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
@@ -99680,7 +99849,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -100404,7 +100573,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -101182,7 +101351,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -102040,6 +102209,91 @@ Transform:
   m_Children:
   - {fileID: 1654107314}
   m_Father: {fileID: 786308313}
+--- !u!1 &1571122793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1571122795}
+  - 82: {fileID: 1571122794}
+  m_Layer: 0
+  m_Name: Ambient SFX Jungle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &1571122794
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1571122793}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_audioClip: {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 10
+  MaxDistance: 20.0602722
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+--- !u!4 &1571122795
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1571122793}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 108.0737, y: 5.68478394, z: 76.553566}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1 &1572857791
 GameObject:
   m_ObjectHideFlags: 0
@@ -106853,7 +107107,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -112607,7 +112861,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1754747040}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: 360, z: 0}
+  m_LocalPosition: {x: 560, y: 360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1100477060}
@@ -112723,7 +112977,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -113443,7 +113697,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -114089,7 +114343,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -116172,7 +116426,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -121465,7 +121719,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -125858,7 +126112,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -126724,7 +126978,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -130018,7 +130272,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &1999008876
 Transform:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 10
   m_PrefabParentObject: {fileID: 400000, guid: a26582d8ae3fb574383eacbd5ffefa56, type: 2}
   m_PrefabInternal: {fileID: 291121201}
   m_GameObject: {fileID: 1999008875}
@@ -130044,8 +130298,8 @@ AudioSource:
   Mute: 0
   Priority: 255
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 50
+  MinDistance: 1.04999995
+  MaxDistance: 30.0599995
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -130102,9 +130356,9 @@ MonoBehaviour:
   showInfo: 1
   showDev: 1
   showList: 1
-  showAdd: 1
+  showAdd: 0
   showSFX: 1
-  showSFXDetails: 0101010101010101010101010101010101010100
+  showSFXDetails: 01010101010101010101010101010101010101000100000000
   groupAddIndex: 3
   autoPrepoolAmount: 0
   showAsGrouped: 1
@@ -130149,6 +130403,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d583c5c0a6edf6a4eb2b6d2557ab872e, type: 3}
   - {fileID: 8300000, guid: 709b9680e98cb8c4e88ed6ad172815ff, type: 3}
   - {fileID: 8300000, guid: ded7a26b35179d646b87dd2185df2ef7, type: 3}
+  - {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
+  - {fileID: 8300000, guid: 6f6ad43210456ca43b4f9e04e12fed1c, type: 3}
+  - {fileID: 8300000, guid: a7d499e89f728b2469f551401db790a6, type: 3}
+  - {fileID: 8300000, guid: c7ac946ca172d4d4499d904f48503f2f, type: 3}
+  - {fileID: 8300000, guid: 3a620befb956c494b9dd63d38d77a762, type: 3}
   unOwnedSFXObjects: []
   sfxGroups:
   - groupName: Select
@@ -130161,6 +130420,9 @@ MonoBehaviour:
     specificCapAmount: 3
     clips: []
   - groupName: Death
+    specificCapAmount: 3
+    clips: []
+  - groupName: Structures
     specificCapAmount: 3
     clips: []
   clipToGroupKeys:
@@ -130183,6 +130445,10 @@ MonoBehaviour:
   - T_Rex_AtkDouble
   - 'Bear Growl #2'
   - Nean_Grunt
+  - drums_buildings
+  - tum
+  - troop_select
+  - Fast_Atk
   clipToGroupValues:
   - Select
   - Death
@@ -130203,13 +130469,17 @@ MonoBehaviour:
   - Attack
   - Attack
   - Confirm
+  - Structures
+  - Structures
+  - Structures
+  - Attack
   offTheSFX: 0
-  capAmount: 2
-  sfxPrePoolAmounts: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  capAmount: 3
+  sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   SFXObjectLifetime: 10
 --- !u!82 &1999008879
 AudioSource:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_PrefabParentObject: {fileID: 8200002, guid: a26582d8ae3fb574383eacbd5ffefa56,
     type: 2}
   m_PrefabInternal: {fileID: 291121201}
@@ -130268,7 +130538,7 @@ AudioSource:
     m_PostInfinity: 2
 --- !u!82 &1999008880
 AudioSource:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_PrefabParentObject: {fileID: 8200004, guid: a26582d8ae3fb574383eacbd5ffefa56,
     type: 2}
   m_PrefabInternal: {fileID: 291121201}
@@ -130588,7 +130858,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -131070,7 +131340,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -136797,7 +137067,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -141086,7 +141356,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -141805,7 +142075,7 @@ AudioSource:
   MinDistance: 5
   MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

@@ -42,6 +42,7 @@ public class StatsController : MonoBehaviour
 
 	protected List<Worker> idleWorkers;
 
+
 	public void Init ()
 	{
 		if (idleWorkerButtonParent != null)
@@ -113,6 +114,12 @@ public class StatsController : MonoBehaviour
 				
 				feedback = true;
 
+				GameObject u = unit.gameObject;
+
+				AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
+				
+				SoundManager.PlaySFX(u, sfxconfirm);
+
 				i++;
 			}
 		}
@@ -121,9 +128,7 @@ public class StatsController : MonoBehaviour
 		{
 			hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f, gameplayManager.GetColorTeam ());
 
-			AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
-			
-			SoundManager.PlayCappedSFX(sfxconfirm, "Confirm");
+
 		}
 	}
 
@@ -143,14 +148,17 @@ public class StatsController : MonoBehaviour
 			unit.Follow (allyUnit);
 			
 			feedback = true;
+
+			AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
+
+			GameObject u = unit.gameObject;
+			
+			SoundManager.PlaySFX(u, sfxconfirm);
 		}
 		
 		if (feedback)
 		{   
-			AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
-
-			SoundManager.PlayCappedSFX(sfxconfirm,"Confirm");
-			
+					
 			hudController.CreateFeedback (HUDController.Feedbacks.Attack,
 			                              allyUnit.transform,
 			                              allyUnit.sizeOfSelected,
@@ -173,13 +181,17 @@ public class StatsController : MonoBehaviour
 			unit.TargetingEnemy (enemy);
 			
 			feedback = true;
+
+			GameObject u = unit.gameObject;
+
+			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
+			
+			SoundManager.PlaySFX(u,sfxAtk);
 		}
 		
 		if (feedback)
 		{
-			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
-			
-			SoundManager.PlayCappedSFX(sfxAtk,"Attack");
+
 			
 			IStats enemyStats = enemy.GetComponent<IStats> ();
 			
@@ -494,6 +506,12 @@ public class StatsController : MonoBehaviour
 				{
 					w.SetMoveToFactory(factory);
 					feedback = true;
+
+					AudioClip sfxmining = SoundManager.Load("mining");
+					
+					GameObject u = w.gameObject;
+					
+					SoundManager.PlaySFX(u, sfxmining);
 				}
 			}
 		}
@@ -525,34 +543,38 @@ public class StatsController : MonoBehaviour
 	
 	public void PlaySelectSound ()
 	{
-		if (selectedStats.Count == 1)
-		{
+//		if (selectedStats.Count == 1)
+//		{
 			IStats statSelected = selectedStats[0];
 			
 			if (IsUnit (statSelected))
 			{
 //				soundManager.PlayRandom (statSelected.category);
-
-				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
 				
-				SoundManager.PlaySFX(sfxSelect);
+		    	GameObject u = statSelected.gameObject;
+			
+				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
+
+				SoundManager.PlaySFX(u,sfxSelect);
 
 			}
 			else
 			{
 //				soundManager.PlayRandom ("BuildingSelected");
 
-				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
-				
-				SoundManager.PlaySFX(sfxSelect);
-			}
-		}
-		else
-		{
-			AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
+		     	GameObject u = statSelected.gameObject;
 			
-			SoundManager.PlaySFX(sfxSelect);
-		}
+			    AudioClip sfxStructures = SoundManager.LoadFromGroup("Structures");
+
+				SoundManager.PlaySFX(sfxStructures);
+			}
+//		}
+//		else
+//		{
+//			AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
+//			
+//			SoundManager.PlaySFX(sfxSelect);
+//		}
 	}
 
 	void OrganizeUnits()
