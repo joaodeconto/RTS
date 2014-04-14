@@ -21,7 +21,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &400000
 Transform:
-  m_ObjectHideFlags: 10
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
@@ -46,10 +46,10 @@ AudioSource:
   Mute: 0
   Priority: 255
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 50
+  MinDistance: 1.04999995
+  MaxDistance: 30.0599995
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -90,7 +90,7 @@ AudioSource:
     m_PostInfinity: 2
 --- !u!82 &8200002
 AudioSource:
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
@@ -148,7 +148,7 @@ AudioSource:
     m_PostInfinity: 2
 --- !u!82 &8200004
 AudioSource:
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
@@ -219,13 +219,21 @@ MonoBehaviour:
   showInfo: 1
   showDev: 1
   showList: 1
-  showAdd: 1
+  showAdd: 0
   showSFX: 1
-  showSFXDetails: 01010101010101010101010101010101010101
-  groupAddIndex: 0
+  showSFXDetails: 01010101010101010101010101010101010101000100000000
+  groupAddIndex: 3
   autoPrepoolAmount: 0
   showAsGrouped: 1
-  soundConnections: []
+  soundConnections:
+  - level: main_menu
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: fe403fd12ba51eb47a3a7e46fd6d75a9, type: 3}
+    playMethod: 0
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
   audios:
   - {fileID: 8200004}
   - {fileID: 8200002}
@@ -265,6 +273,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5257049f7fdaa004e91980821c5fafb5, type: 3}
   - {fileID: 8300000, guid: d583c5c0a6edf6a4eb2b6d2557ab872e, type: 3}
   - {fileID: 8300000, guid: 709b9680e98cb8c4e88ed6ad172815ff, type: 3}
+  - {fileID: 8300000, guid: ded7a26b35179d646b87dd2185df2ef7, type: 3}
+  - {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
+  - {fileID: 8300000, guid: 6f6ad43210456ca43b4f9e04e12fed1c, type: 3}
+  - {fileID: 8300000, guid: a7d499e89f728b2469f551401db790a6, type: 3}
+  - {fileID: 8300000, guid: c7ac946ca172d4d4499d904f48503f2f, type: 3}
+  - {fileID: 8300000, guid: 3a620befb956c494b9dd63d38d77a762, type: 3}
   unOwnedSFXObjects: []
   sfxGroups:
   - groupName: Select
@@ -277,6 +291,9 @@ MonoBehaviour:
     specificCapAmount: 3
     clips: []
   - groupName: Death
+    specificCapAmount: 3
+    clips: []
+  - groupName: Structures
     specificCapAmount: 3
     clips: []
   clipToGroupKeys:
@@ -296,6 +313,13 @@ MonoBehaviour:
   - Nean_Beat
   - Hunter_Hurt
   - T_Rex_Atk
+  - T_Rex_AtkDouble
+  - 'Bear Growl #2'
+  - Nean_Grunt
+  - drums_buildings
+  - tum
+  - troop_select
+  - Fast_Atk
   clipToGroupValues:
   - Select
   - Death
@@ -313,9 +337,16 @@ MonoBehaviour:
   - Attack
   - Death
   - Attack
+  - Attack
+  - Attack
+  - Confirm
+  - Structures
+  - Structures
+  - Structures
+  - Attack
   offTheSFX: 0
-  capAmount: 2
-  sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  capAmount: 3
+  sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   SFXObjectLifetime: 10
 --- !u!1001 &100100000
 Prefab:
