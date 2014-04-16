@@ -355,8 +355,16 @@ public class Unit : IStats, IMovementObservable,
 			IsAttacking = true;
 
 			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
+
+			Vector3 u = this.transform.position;
+
+			AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
 			
-			SoundManager.PlaySFX(sfxAtk);
+			smas.dopplerLevel = 0.0f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 20.0f;
+			
+//			SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
 
 			if (PhotonNetwork.offlineMode)
 			{
@@ -720,6 +728,19 @@ public class Unit : IStats, IMovementObservable,
 	{
 		IsDead = true;
 
+		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");
+
+		Vector3 u = this.transform.position;
+
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
+
+		smas.dopplerLevel = 0.0f;
+		smas.minDistance = 3.0f;
+		smas.maxDistance = 20.0f;
+//		smas.rolloffMode = "Linear";
+		
+//		SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
+		
 		Pathfind.Stop ();
 
 		unitState = UnitState.Die;

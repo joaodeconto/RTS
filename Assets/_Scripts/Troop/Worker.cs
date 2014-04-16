@@ -297,6 +297,7 @@ public class Worker : Unit
 						resourceWorker[resourceId].extractingObject.SetActive (true);
 						resourceWorker[resourceId].carryingObject.SetActive (false);
 						lastResourceId = resourceId;
+				    				    
 					}
 					break;
 
@@ -360,7 +361,7 @@ public class Worker : Unit
 													fc.factory.guiTextureName,
 													(ht_hud) =>
 													{
-//														FactoryConstruction factory = (FactoryConstruction)ht_hud["factory"];
+														FactoryConstruction factory = (FactoryConstruction)ht_hud["factory"];
 //														InstanceGhostFactory (factory);
 														InstanceGhostFactory (ht_hud);
 													});
@@ -457,6 +458,29 @@ public class Worker : Unit
 
 		if (resource != null) resource.ExtractResource (this);
 		else workerState = WorkerState.None;
+
+
+
+		AudioClip sfxmining = SoundManager.Load("mining");
+		
+		Vector3 u = this.transform.position;
+
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxmining, "Mining", 1f, 1f, u);
+		
+		smas.dopplerLevel = 0.0f;
+		smas.minDistance = 3.0f;
+		smas.maxDistance = 20.0f;
+	
+
+//		AudioSource a = SoundManager.Instance();
+//
+//		a.dopplerLevel(0f);
+		
+//		SoundManager.PlayCappedSFX (sfxmining, "mining", 1f, 1f, u);
+
+	
+
+
 
 		IsExtracting = false;
 	}
