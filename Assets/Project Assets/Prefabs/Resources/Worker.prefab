@@ -1269,9 +1269,16 @@ MonoBehaviour:
   - actionType: 4
     buttonAttributes:
       name: Attack
-      spriteName: double-circle
+      spriteName: Atk
       gridItemAttributes:
         gridXIndex: 2
+        gridYIndex: 0
+  - actionType: 2
+    buttonAttributes:
+      name: Cancel
+      spriteName: cross-option
+      gridItemAttributes:
+        gridXIndex: 3
         gridYIndex: 0
   pref_ParticleDamage: {fileID: 100004, guid: 20747cbb589a10f418c2fd1d67647962, type: 2}
   transformParticleDamageReference: {fileID: 400002}
@@ -1284,7 +1291,7 @@ MonoBehaviour:
   force: 2
   distanceView: 14
   attackRange: 2
-  attackDuration: 1
+  attackDuration: 0
   probeRange: 1
   turnSpeedAvoidance: 180
   numberOfUnits: 1
@@ -1296,11 +1303,11 @@ MonoBehaviour:
     Attack: {fileID: 7400004, guid: 2f37d0dfb54c9d94580877ac55fc3ee9, type: 3}
     DieAnimation: {fileID: 7400010, guid: 2f37d0dfb54c9d94580877ac55fc3ee9, type: 3}
     SpecialAttack: []
-  timeToSpawn: 8
+  timeToSpawn: 10
   ControllerAnimation: {fileID: 11100000}
   forceToExtract: 2
   numberMaxGetResources: 10
-  distanceToExtract: 1.5
+  distanceToExtract: .5
   resourceWorker:
   - type: 1
     extractingObject: {fileID: 100068}
@@ -1332,7 +1339,7 @@ MonoBehaviour:
       gridYIndex: 1
   - factory: {fileID: 11400004, guid: a77a63a079277ef4299d9bfed72091ab, type: 2}
     costOfResources:
-      m_mana: 1
+      m_mana: 0
       m_rocks: 200
     gridItemAttributes:
       gridXIndex: 1

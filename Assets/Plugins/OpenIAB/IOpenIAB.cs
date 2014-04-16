@@ -11,7 +11,7 @@ namespace OnePF {
 		void unbindService();
 		bool areSubscriptionsSupported();
         void queryInventory();
-		void queryInventory(string[] skus);
+        void queryInventory(string[] inAppSkus);
 		void purchaseProduct(string sku, string developerPayload="");
 		void purchaseSubscription(string sku, string developerPayload="");
 		void consumeProduct(Purchase purchase);

@@ -470,6 +470,7 @@ public class Worker : Unit
 		smas.dopplerLevel = 0.0f;
 		smas.minDistance = 3.0f;
 		smas.maxDistance = 20.0f;
+		smas.rolloffMode =AudioRolloffMode.Custom;
 	
 
 //		AudioSource a = SoundManager.Instance();

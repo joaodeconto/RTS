@@ -80,21 +80,21 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 			//Monkey patch: Min = 0.5 Max = 1.0
 			percentHealth = 0.5f + percentHealth * 0.5f;
 	
-			foreach (ProceduralPropertyDescription curProperty in curProperties)
-			{
-				if (curProperty.type == ProceduralPropertyType.Float)
-				{
-					substance.SetProceduralFloat(curProperty.name, percentHealth);
-				}
-				else
-				{
-					int teamID = this.TargetTeamID;
-					Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
-					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
-						substance.SetProceduralColor(curProperty.name, teamColor);
-				}
-			}
-			substance.RebuildTextures ();
+//			foreach (ProceduralPropertyDescription curProperty in curProperties)
+//			{
+//				if (curProperty.type == ProceduralPropertyType.Float)
+//				{
+//					substance.SetProceduralFloat(curProperty.name, percentHealth);
+//				}
+//				else
+//				{
+//					int teamID = this.TargetTeamID;
+//					Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
+//					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
+//						substance.SetProceduralColor(curProperty.name, teamColor);
+//				}
+//			}
+//			substance.RebuildTextures ();
 		}
 	}
 	
