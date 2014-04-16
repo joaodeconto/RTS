@@ -101,7 +101,7 @@ public class AudioOptions : MonoBehaviour
 //			VolumeController.voiceOn = checkedValue;
 		});
 		
-		Transform close = this.transform.FindChild ("Menu").FindChild ("Close");
+		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
 		
 		if (close != null)
 		{

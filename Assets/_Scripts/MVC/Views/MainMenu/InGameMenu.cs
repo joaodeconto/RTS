@@ -10,6 +10,7 @@ public class InGameMenu : MonoBehaviour
 	public GameObject audioOptionPanel;
 	public GameObject surrenderPanel;
 
+
 	
 	public void OnEnable ()
 	{
@@ -77,7 +78,7 @@ public class InGameMenu : MonoBehaviour
 		
 
 		
-		Transform close = this.transform.FindChild ("Resume Game");
+		Transform close = this.transform.FindChild ("Resume");
 		
 		if (close != null)
 		{
