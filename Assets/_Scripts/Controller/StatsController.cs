@@ -182,11 +182,11 @@ public class StatsController : MonoBehaviour
 			
 			feedback = true;
 
-			GameObject u = unit.gameObject;
+			Vector3 u = unit.transform.position;
 
-			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
-			
-			SoundManager.PlaySFX(u,sfxAtk);
+			AudioClip sfxCharge = SoundManager.LoadFromGroup("Charge");
+
+			SoundManager.PlayCappedSFX (sfxCharge, "Charge", 1f, 1f, u);
 		}
 		
 		if (feedback)
@@ -551,12 +551,18 @@ public class StatsController : MonoBehaviour
 			{
 //				soundManager.PlayRandom (statSelected.category);
 				
-		    	GameObject u = statSelected.gameObject;
+		    	Vector3 u = statSelected.transform.position;
 			
 				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
 
-				SoundManager.PlaySFX(u,sfxSelect);
-
+//				SoundManager.PlaySFX(u,sfxSelect);
+				
+				AudioSource smas = SoundManager.PlayCappedSFX (sfxSelect, "Select", 1f, 1f, u);
+			
+				smas.dopplerLevel = 0f;
+				smas.minDistance = 3.0f;
+				smas.maxDistance = 20.0f;
+				
 			}
 			else
 			{

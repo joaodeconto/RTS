@@ -343,18 +343,18 @@ public class Unit : IStats, IMovementObservable,
 	}
 	#endregion
 
-//	public void SfxAtk (Unit unit)
-//	{
-//		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
-//		
-//		Vector3 u = this.transform.position;
-//		
-//		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
-//		
-//		smas.dopplerLevel = 0.0f;
-//		smas.minDistance = 3.0f;
-//		smas.maxDistance = 20.0f;
-//	}
+	public void SfxAtk ()
+	{
+		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
+		
+		Vector3 u = this.transform.position;
+		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
+
+		smas.dopplerLevel = 0f;
+		smas.minDistance = 3.0f;
+		smas.maxDistance = 20.0f;
+	}
 		
 		//			SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
 		
@@ -363,15 +363,17 @@ public class Unit : IStats, IMovementObservable,
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
 
-		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
-		
-		Vector3 u = this.transform.position;
-		
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
-		
-		smas.dopplerLevel = 0.0f;
-		smas.minDistance = 3.0f;
-		smas.maxDistance = 20.0f;
+//		AudioClip sfxAtk = SoundManager.LoadFromGroup(this.category ("") + "Attack");
+//		
+//		Vector3 u = this.transform.position;
+//		
+//		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
+//		
+//		smas.dopplerLevel = 0.0f;
+//		smas.minDistance = 3.0f;
+//		smas.maxDistance = 20.0f;
+
+		SfxAtk();
 
 
 		if (unitAnimation.Attack)

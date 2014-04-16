@@ -461,16 +461,21 @@ public class Worker : Unit
 
 
 
-		AudioClip sfxmining = SoundManager.Load("mining");
+		AudioClip sfxmining = SoundManager.LoadFromGroup("Mining");
 		
 		Vector3 u = this.transform.position;
 
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxmining, "Mining", 1f, 1f, u);
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxmining, "Mining", 0.7f, 1f, u);
+
+		if (smas.isPlaying == true)
+		{
 		
 		smas.dopplerLevel = 0.0f;
 		smas.minDistance = 3.0f;
 		smas.maxDistance = 20.0f;
 		smas.rolloffMode =AudioRolloffMode.Custom;
+		
+		}
 	
 
 //		AudioSource a = SoundManager.Instance();
