@@ -343,28 +343,42 @@ public class Unit : IStats, IMovementObservable,
 	}
 	#endregion
 
+//	public void SfxAtk (Unit unit)
+//	{
+//		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
+//		
+//		Vector3 u = this.transform.position;
+//		
+//		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
+//		
+//		smas.dopplerLevel = 0.0f;
+//		smas.minDistance = 3.0f;
+//		smas.maxDistance = 20.0f;
+//	}
+		
+		//			SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
+		
 	private IEnumerator Attack ()
 	{
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
+
+		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
+		
+		Vector3 u = this.transform.position;
+		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
+		
+		smas.dopplerLevel = 0.0f;
+		smas.minDistance = 3.0f;
+		smas.maxDistance = 20.0f;
+
 
 		if (unitAnimation.Attack)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
 
 			IsAttacking = true;
-
-			AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
-
-			Vector3 u = this.transform.position;
-
-			AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
-			
-			smas.dopplerLevel = 0.0f;
-			smas.minDistance = 3.0f;
-			smas.maxDistance = 20.0f;
-			
-//			SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
 
 			if (PhotonNetwork.offlineMode)
 			{
@@ -780,7 +794,7 @@ public class Unit : IStats, IMovementObservable,
 		if (unitAnimation.DieAnimation)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
-			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
+			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 3f));
 		}
 
 		if (IsNetworkInstantiate)
@@ -920,6 +934,7 @@ public class Unit : IStats, IMovementObservable,
 			return;
 
 		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 1.2f;
+
 		
 		Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized * 2.0f))
 								* minDistanceBetweenFollowedUnit;
@@ -1029,6 +1044,7 @@ public class Unit : IStats, IMovementObservable,
 	public override void InstantiatParticleDamage ()
 	{
 		base.InstantiatParticleDamage ();
+
 	}
 
 	[RPC]

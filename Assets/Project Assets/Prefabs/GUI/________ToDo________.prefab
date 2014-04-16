@@ -430,7 +430,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &100052
 GameObject:
   m_ObjectHideFlags: 0
@@ -864,6 +864,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100104
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400104}
+  - 114: {fileID: 11400140}
+  m_Layer: 8
+  m_Name: Objectives
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -1169,18 +1185,17 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 400052}
+  m_Father: {fileID: 400104}
 --- !u!4 &400052
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100052}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -126.18, y: 188.812515, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 400050}
+  m_LocalRotation: {x: 4.37113847e-08, y: 1, z: 4.37113847e-08, w: -8.74227766e-08}
+  m_LocalPosition: {x: -75.4023438, y: -168.838257, z: -3.22763153e-05}
+  m_LocalScale: {x: .657479048, y: .657479048, z: .657479048}
+  m_Children: []
   m_Father: {fileID: 400058}
 --- !u!4 &400054
 Transform:
@@ -1211,9 +1226,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100058}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -176.670288, y: -249.171875, z: 0}
-  m_LocalScale: {x: 1.50018764, y: 1.50018764, z: 1.50018764}
+  m_LocalPosition: {x: 623.31543, y: 134.951874, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 400104}
   - {fileID: 400052}
   - {fileID: 400082}
   - {fileID: 400096}
@@ -1487,6 +1503,18 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400070}
+--- !u!4 &400104
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100104}
+  m_LocalRotation: {x: 1, y: 0, z: 0, w: -4.37113883e-08}
+  m_LocalPosition: {x: -75.4023438, y: -168.84375, z: -3.22763553e-05}
+  m_LocalScale: {x: .657479048, y: .657479048, z: .657479048}
+  m_Children:
+  - {fileID: 400050}
+  m_Father: {fileID: 400058}
 --- !u!54 &5400000
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -1587,8 +1615,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 189.899994, y: 53.0999985, z: 0}
-  m_Center: {x: -126.699997, y: 190.690002, z: 0}
+  m_Size: {x: 61.2000008, y: 53.0999985, z: 0}
+  m_Center: {x: -75.3000031, y: -169.800003, z: 0}
 --- !u!65 &6500012
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -1703,7 +1731,7 @@ MonoBehaviour:
   mFont: {fileID: 11400000, guid: 0f5e030a8cdc292438f880d3ec49ef64, type: 2}
   mText: Ajustar os menus ingame de acordo com o layout proposto, vale uma estrlinha
     *
-  mFontSize: 18
+  mFontSize: 22
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -1760,7 +1788,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 13.8999996
+  aspectRatio: 9.89999962
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -2171,7 +2199,7 @@ MonoBehaviour:
   mText: "Ajustar Chat usando ngui, uma boa id\xE9ia seria poder trocar entre enviar
     para todos, time ou destin\xE1rio espec\xEDfico. Se precisar de layout \xE9 s\xF3
     apontar"
-  mFontSize: 18
+  mFontSize: 22
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -2436,7 +2464,7 @@ MonoBehaviour:
   mFont: {fileID: 11400000, guid: 0f5e030a8cdc292438f880d3ec49ef64, type: 2}
   mText: Tornar resources selecionaveis novamente, mostrar quantidade de resource
     em forma de energia ao selecionar
-  mFontSize: 18
+  mFontSize: 22
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -2537,7 +2565,7 @@ MonoBehaviour:
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 11400000, guid: 0f5e030a8cdc292438f880d3ec49ef64, type: 2}
   mText: Adicionar Being Attacked ao minimapa
-  mFontSize: 18
+  mFontSize: 22
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -2926,7 +2954,7 @@ MonoBehaviour:
   mFont: {fileID: 11400000, guid: 0f5e030a8cdc292438f880d3ec49ef64, type: 2}
   mText: "Ao acabarem uma constru\xE7\xE3o, alguns workers ficam presos em uma anima\xE7\xE3o
     sem entrar em idle"
-  mFontSize: 18
+  mFontSize: 22
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -3076,17 +3104,17 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: .852941155, g: .705557883, b: .263408303, a: 1}
   mPivot: 4
-  mWidth: 177
-  mHeight: 44
-  mDepth: 14
+  mWidth: 62
+  mHeight: 43
+  mDepth: 11
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
-  keepAspectRatio: 0
-  aspectRatio: 4.02272749
+  keepAspectRatio: 1
+  aspectRatio: 1.44117641
   mAtlas: {fileID: 11400000, guid: f4a23cec399fa7045aa83d1db18e9378, type: 2}
-  mSpriteName: menu-bar
+  mSpriteName: Arrow
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -3263,7 +3291,7 @@ MonoBehaviour:
   mPivot: 4
   mWidth: 428
   mHeight: 298
-  mDepth: 7
+  mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -3403,12 +3431,12 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3007
+  startingRenderQueue: 3008
   mAlpha: 1
   mClipping: 3
   mClipRange: {x: 0, y: 0, z: 420, w: 290}
   mClipSoftness: {x: 8, y: 8}
-  mDepth: 2
+  mDepth: 26
   mSortingOrder: 0
   mClipOffset: {x: 0, y: 0}
 --- !u!114 &11400096
@@ -3492,7 +3520,7 @@ MonoBehaviour:
   mFont: {fileID: 11400000, guid: 0f5e030a8cdc292438f880d3ec49ef64, type: 2}
   mText: "Unidades mortas n\xE3o est\xE3o liberando o n\xFAmero de casas, as vezes
     \xE9 poss\xEDvel construir unidades al\xE9m da quantidade m\xE1xima."
-  mFontSize: 18
+  mFontSize: 22
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -3645,7 +3673,7 @@ MonoBehaviour:
   mPivot: 0
   mWidth: 198
   mHeight: 20
-  mDepth: 14
+  mDepth: 15
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -3720,7 +3748,7 @@ MonoBehaviour:
     mesmo apliquei este terrain deformer... com certeza existe uma forma de fazer
     isso com mais efic\xE1cia.\n\nConstru\xE7\xF5es n\xE3o s\xE3o ativadas no modo
     multiplayer"
-  mFontSize: 20
+  mFontSize: 22
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -3783,7 +3811,7 @@ MonoBehaviour:
   mFont: {fileID: 11400000, guid: 0f5e030a8cdc292438f880d3ec49ef64, type: 2}
   mText: "Copiar o RandomPosition aplicado na extra\xE7\xE3o e aplicar na constru\xE7\xE3o
     de estruturas"
-  mFontSize: 18
+  mFontSize: 22
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -4262,6 +4290,56 @@ MonoBehaviour:
   mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
+--- !u!114 &11400140
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  updateAnchors: 1
+  mColor: {r: 0, g: 0, b: 0, a: 1}
+  mPivot: 4
+  mWidth: 126
+  mHeight: 126
+  mDepth: 11
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
+  keepAspectRatio: 1
+  aspectRatio: 1
+  mAtlas: {fileID: 11400000, guid: f4a23cec399fa7045aa83d1db18e9378, type: 2}
+  mSpriteName: simpleFlash
+  mType: 1
+  mFillDirection: 4
+  mFillAmount: 1
+  mInvert: 0
+  mFlip: 0
+  mFillCenter: 1
+  centerType: 1
+  leftType: 1
+  rightType: 1
+  bottomType: 1
+  topType: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
