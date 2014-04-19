@@ -93,7 +93,7 @@ public class RangeUnit : Unit
 							 trnsInstantiateLocalPrefab.rotation) as GameObject;
 			}
 			
-			pRange.GetComponent<RangeObject> ().Init (TargetAttack, 5f,
+			pRange.GetComponent<RangeObject> ().Init (TargetAttack, 3f,
 			(ht) => 
 			{
 				if (TargetAttack != null)

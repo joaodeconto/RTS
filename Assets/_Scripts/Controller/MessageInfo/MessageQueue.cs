@@ -212,7 +212,7 @@ public abstract class MessageQueue : MonoBehaviour
 	
 	protected void ChangeToGroupMessageInfo ()
 	{
-		for (int i = 0; i != uiGrid.transform.GetChildCount (); ++i)
+		for (int i = 0; i != uiGrid.transform.childCount; ++i)
 		{
 			uiGrid.transform.GetChild (i).name = RegexClone (uiGrid.transform.GetChild (i).name);
 			for (int k = 0; k != i; ++k)
@@ -231,7 +231,7 @@ public abstract class MessageQueue : MonoBehaviour
 	
 	protected bool CheckExistMessageInfo (string name)
 	{
-		for (int i = 0; i != uiGrid.transform.GetChildCount (); ++i)
+		for (int i = 0; i != uiGrid.transform.childCount; ++i)
 		{
 			if (uiGrid.transform.GetChild (i).name.Equals (name))
 			{

@@ -30,7 +30,7 @@ public class SelectionController : MonoBehaviour
 		bool leftShift = Input.GetKey (KeyCode.LeftShift);
 		bool leftCtrl = Input.GetKey (KeyCode.LeftControl);
 		
-		ComponentGetter.Get<HUDController> ().CloseInfoBox ();
+//		ComponentGetter.Get<HUDController> ().CloseInfoBox ();
 		
 		if (touchController.DragOn)
 		{
@@ -62,10 +62,10 @@ public class SelectionController : MonoBehaviour
 			if (statsController.selectedStats.Count != 0)
 			{
 				statsController.PlaySelectSound ();
-				if (statsController.selectedStats.Count == 1)
-				{
-					ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit);
-				}
+//				if (statsController.selectedStats.Count == 1)
+//				{
+//					ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit);
+//				}
 				return true;
 			}
 
@@ -187,7 +187,7 @@ public class SelectionController : MonoBehaviour
 							
 							lastStatClick = selectedUnit;
 							
-							ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (selectedUnit);
+//							ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (selectedUnit);
 
 						}
 					}
@@ -344,7 +344,7 @@ public class SelectionController : MonoBehaviour
 
 						
 						lastStatClick = factorySelected;
-						ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (statsController.selectedStats[0] as FactoryBase);
+//						ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (statsController.selectedStats[0] as FactoryBase);
 					}
 					return true;
 				}
@@ -399,7 +399,7 @@ public class SelectionController : MonoBehaviour
 					statsController.PlaySelectSound ();
 					if (statsController.selectedStats.Count == 1)
 					{
-						ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit);
+//						ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit);
 					}
 					return true;
 				}
@@ -452,7 +452,7 @@ public class SelectionController : MonoBehaviour
 							else
 								statsController.DeselectAllStats ();
 							
-							return true;
+//							return true;
 						}
 					}
 				}
@@ -635,7 +635,7 @@ public class SelectionController : MonoBehaviour
 
 	Plane[] CalculateRect (Rect r)
 	{
-		var c = Camera.mainCamera;
+		var c = Camera.main;
 
 		// Project the rectangle into world space
 		var c0 = c.ScreenToWorldPoint(new Vector3(r.xMin, r.yMin, c.nearClipPlane));

@@ -16,6 +16,7 @@ public class FactoryBase : IStats, IDeathObservable
 		public Unit unit;
 		public string buttonName;
 		public IStats.GridItemAttributes gridItemAttributes;
+		public ResourcesManager costOfResources;
 	}
 
 	[System.Serializable]
@@ -62,7 +63,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 	public bool wasBuilt { get; private set; }
 
-	protected HUDController hudController;
+//	protected HUDController hudController;
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;
 
@@ -70,8 +71,6 @@ public class FactoryBase : IStats, IDeathObservable
 	public bool wasVisible = false;
 	[HideInInspector]
 	public bool alreadyCheckedMaxPopulation = false;
-//	[HideInInspector]
-//	public ResourcesManager costOfResources;
 
 	protected float realRangeView;
 
@@ -126,7 +125,7 @@ public class FactoryBase : IStats, IDeathObservable
 		playerUnit = gameplayManager.IsSameTeam (this);
 
 		this.gameObject.tag   = "Factory";
-		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
+		this.gameObject.layer = LayerMask.NameToLayer ("Buildings");
 
 		inUpgrade = false;
 		wasBuilt  = true;
@@ -184,7 +183,7 @@ public class FactoryBase : IStats, IDeathObservable
 			else
 			{
 				timer += Time.deltaTime;
-				buildingSlider.sliderValue = (timer / timeToCreate);
+				buildingSlider.value = (timer / timeToCreate);
 			}
 		}
 	}
@@ -480,7 +479,7 @@ public class FactoryBase : IStats, IDeathObservable
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		
 		if(unitToCreate != null)
-			buildingSlider.gameObject.SetActiveRecursively(true);
+			buildingSlider.gameObject.SetActive(true);
 
 		if (!playerUnit) return;
 
@@ -496,7 +495,18 @@ public class FactoryBase : IStats, IDeathObservable
 			{
 				Hashtable ht = new Hashtable();
 				ht["unitFactory"] = uf;
-				ht["price"]       = uf.unit.costOfResources.Rocks;
+
+
+				if (uf.costOfResources.Rocks != 0)
+				{
+					ht["gold"] = uf.costOfResources.Rocks;
+				}
+				
+				if (uf.costOfResources.Mana != 0)
+				{
+					ht["mana"] = uf.costOfResources.Mana;
+				}
+
 
 				hudController.CreateButtonInInspector ( uf.buttonName,
 														uf.gridItemAttributes.Position,
@@ -570,8 +580,8 @@ public class FactoryBase : IStats, IDeathObservable
 		else
 		{
 			IStats.GridItemAttributes gia = new GridItemAttributes();
-			gia.gridXIndex = 0;
-			gia.gridYIndex = 0;
+			gia.gridXIndex = 3;
+			gia.gridYIndex = 2;
 
 			Hashtable ht = new Hashtable();
 			ht["actionType"] = "cancel";
@@ -618,6 +628,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 		if (canBuy)
 		{
+			gameplayManager.resources.UseResources (unit.costOfResources);
 			lUnitsToCreate.Add (unit);
 			Hashtable ht = new Hashtable();
 			ht["unit"] = unit;
@@ -634,7 +645,7 @@ public class FactoryBase : IStats, IDeathObservable
 															});
 		}
 		else
-			eventManager.AddEvent("out of founds", unit.name);
+			eventManager.AddEvent("out of funds", unit.name);
 	}
 
 	private void DequeueUnit(Hashtable ht)

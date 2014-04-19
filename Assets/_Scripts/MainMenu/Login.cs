@@ -6,7 +6,7 @@ using Visiorama;
 public class Login : IController
 {
 	public bool UseRealLogin = true;
-	public int NumberOfCoinsNewPlayerStartsWith = 10;
+	public int NumberOfCoinsNewPlayerStartsWith = 100;
 
 	public void Start ()
 	{
@@ -123,8 +123,10 @@ public class Login : IController
 				pw.SetPlayer (username, true);
                 pw.SetPropertyOnPlayer ("player", player.ToString ());
 
-				Score.SetScorePoints (DataScoreEnum.CurrentCrystals, NumberOfCoinsNewPlayerStartsWith);
-				Score.SetScorePoints (DataScoreEnum.TotalCrystals,   NumberOfCoinsNewPlayerStartsWith);
+
+
+				//Score.SetScorePoints (player,DataScoreEnum.TotalCrystals,   NumberOfCoinsNewPlayerStartsWith, 0);
+				//Score.AddScorePoints (DataScoreEnum.CurrentCrystals, NumberOfCoinsNewPlayerStartsWith, 0);
 				
 				Index ();
 			}

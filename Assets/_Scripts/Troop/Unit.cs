@@ -1,5 +1,4 @@
 using UnityEngine;
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,8 +64,8 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 
-    private Transform obstacleInPath; 	// we found something!
-    private bool obstacleAvoid = false; // internal var
+//    private Transform obstacleInPath; 	// we found something!
+//    private bool obstacleAvoid = false; // internal var
 
 	protected PhotonPlayer playerTargetAttack;
 
@@ -107,7 +106,7 @@ public class Unit : IStats, IMovementObservable,
 	private Vector3 m_pathFindTarget;
 	private Vector3 m_lastSavedPosition;
 
-	protected HUDController hudController;
+//	protected HUDController hudController;
 	protected InteractionController interactionController;
 
 	protected float normalAcceleration;
@@ -351,9 +350,16 @@ public class Unit : IStats, IMovementObservable,
 		
 		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
 
-		smas.dopplerLevel = 0f;
-		smas.minDistance = 3.0f;
-		smas.maxDistance = 20.0f;
+		if (smas != null)
+		{
+
+			smas.dopplerLevel = 0f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 20.0f;
+			smas.rolloffMode = AudioRolloffMode.Custom;
+		
+		}
+		
 	}
 		
 		//			SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
@@ -362,16 +368,6 @@ public class Unit : IStats, IMovementObservable,
 	{
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
-
-//		AudioClip sfxAtk = SoundManager.LoadFromGroup(this.category ("") + "Attack");
-//		
-//		Vector3 u = this.transform.position;
-//		
-//		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
-//		
-//		smas.dopplerLevel = 0.0f;
-//		smas.minDistance = 3.0f;
-//		smas.maxDistance = 20.0f;
 
 		SfxAtk();
 
@@ -559,7 +555,7 @@ public class Unit : IStats, IMovementObservable,
 	}
 
 //	bool start = false;
-	public bool MoveComplete ()
+	public bool MoveCompleted ()
 	{
 //		if (pathfind.desiredVelocity.sqrMagnitude < 0.001f) start = !start;
 //		return pathfind.desiredVelocity.sqrMagnitude < 0.001f || !start;
@@ -645,7 +641,7 @@ public class Unit : IStats, IMovementObservable,
 	{
 		if (!invokeCheckEnemy)
 		{
-			InvokeRepeating ("CheckEnemyIsClose", 0.3f, 0.3f);
+			InvokeRepeating ("CheckEnemyIsClose", 0.3f, 0.1f);
 			invokeCheckEnemy = true;
 		}
 	}
@@ -750,13 +746,16 @@ public class Unit : IStats, IMovementObservable,
 
 		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
 
-		smas.dopplerLevel = 0.0f;
-		smas.minDistance = 3.0f;
-		smas.maxDistance = 20.0f;
-//		smas.rolloffMode = "Linear";
-		
-//		SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
-		
+		if (smas != null)
+		{
+			smas.dopplerLevel = 0.0f;
+			smas.spread = 0.3f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 30.0f;
+			smas.rolloffMode =AudioRolloffMode.Custom;
+
+		}
+
 		Pathfind.Stop ();
 
 		unitState = UnitState.Die;
@@ -788,10 +787,8 @@ public class Unit : IStats, IMovementObservable,
 
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
 
-		if (Selected)
-		{
-			Deselect ();
-		}
+		Deselect ();
+
 
 		if (unitAnimation.DieAnimation)
 		{
@@ -834,13 +831,13 @@ public class Unit : IStats, IMovementObservable,
 
 	public override void DrawGizmosSelected ()
 	{
-//		base.DrawGizmosSelected ();
+		base.DrawGizmosSelected ();
 
-//		Gizmos.color = Color.cyan;
-//		Gizmos.DrawWireSphere (this.transform.position, distanceView);
+		Gizmos.color = Color.cyan;
+		Gizmos.DrawWireSphere (this.transform.position, distanceView);
 
-//		Gizmos.color = Color.red;
-//		Gizmos.DrawWireSphere (this.transform.position, attackRange);
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere (this.transform.position, attackRange);
 
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));

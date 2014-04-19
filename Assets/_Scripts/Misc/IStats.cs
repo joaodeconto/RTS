@@ -114,7 +114,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 //			}
 			subMesh.renderer.sharedMaterials = pms as Material[];
 
-			Debug.Log ("Substance materials count: " + unitTeamMaterials.Count);	
+//			Debug.Log ("Substance materials count: " + unitTeamMaterials.Count);	
 		}
 	}
 
@@ -349,8 +349,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 						
 				Visiorama.ComponentGetter.Get<MiniMapController> ().InstantiatePositionBeingAttacked (transform);
 
-				//GameObject u = unit.gameObject;
-				
 				AudioClip sfxbeingattacked = SoundManager.Load("being_attacked");
 				
 				SoundManager.PlaySFX(sfxbeingattacked);

@@ -43,13 +43,13 @@ public class LoginIndex : IView
 			(ht_hud) =>
 			{
 				//TODO lógica de login do jogo
-				if (string.IsNullOrEmpty(username.text) ||
-					string.IsNullOrEmpty(password.text))
+				if (string.IsNullOrEmpty(username.value) ||
+					string.IsNullOrEmpty(password.value))
 					return;
 
 				Hashtable ht = new Hashtable ();
-				ht["username"] = username.text;
-				ht["password"] = password.text;
+					ht["username"] = username.value;
+					ht["password"] = password.value;
 
 				controller.SendMessage ("DoLogin", ht, SendMessageOptions.DontRequireReceiver );
 			});
@@ -70,14 +70,14 @@ public class LoginIndex : IView
 	{
 		errorMessage.enabled = true;
 		errorMessage.text = "Fez login no facebook!";
-		Invoke ("CloseErrorMessage", 20.0f);
+		Invoke ("CloseErrorMessage", 5.0f);
 		return true;
 	}
 
 	public void ShowErrorMessage ()
 	{
 		errorMessage.enabled = true;
-		errorMessage.text = "Wrong password or login";
+		errorMessage.text = "Incorrect User or Password";
 		Invoke ("CloseErrorMessage", 5.0f);
 	}
 
