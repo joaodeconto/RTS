@@ -71,7 +71,7 @@ public class TouchController : MonoBehaviour
 	
 	public void Init ()
 	{
-		if (mainCamera == null) mainCamera = Camera.mainCamera;
+		if (mainCamera == null) mainCamera = Camera.main;
 		touchType = TouchType.None;
 		DragOn = false;
 		camerasUI = new Camera[layersToIgnore.Length];

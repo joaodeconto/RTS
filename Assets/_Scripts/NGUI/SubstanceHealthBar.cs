@@ -41,8 +41,6 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 	
 	public void SetTarget (IHealthObservable target, int teamID)
 	{
-		Debug.LogWarning ("SetTarget");
-
 		if (substance == null)
 			Awake ();
 		
@@ -67,7 +65,7 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 	{		
 		if (Target == null)
 		{
-			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
+//			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
 		}
 		
 		//so mostra o submesh da substance healthbar se tiver vida, se nao nao

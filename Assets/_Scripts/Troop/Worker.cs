@@ -1,8 +1,11 @@
 using UnityEngine;
+
 using System.Collections;
-using Visiorama;
-using Visiorama.Utils;
+using System.Collections.Generic;
+using System.Linq;
+
 using Visiorama.Extension;
+using Visiorama;
 
 public class Worker : Unit
 {
@@ -158,7 +161,7 @@ public class Worker : Unit
 					}
 				}
 
-				if (!MoveComplete ())
+				if (!MoveCompleted ())
 				{
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
@@ -224,7 +227,7 @@ public class Worker : Unit
 				if (!HasFactory () || factoryChoose != lastFactory)
 				{
 					// Patch para tirar travada ¬¬
-					Move (transform.position - transform.forward);
+			//		Move (transform.position - transform.forward);
 
 					Move (PathfindTarget);
 
@@ -340,6 +343,7 @@ public class Worker : Unit
 		if (!playerUnit) return;
 
 		Hashtable ht = null;
+
 		foreach (FactoryConstruction fc in factoryConstruction)
 		{
 			ht = new Hashtable();
@@ -420,8 +424,24 @@ public class Worker : Unit
 	{
 		IsBuilding = true;
 
+		AudioClip sfxBuilding = SoundManager.LoadFromGroup("Building");
+		
+		Vector3 u = this.transform.position;
+		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxBuilding, "Building", 0.7f, 1f, u);
+		
+		if (smas !=null)
+		{
+			
+			smas.dopplerLevel = 0.0f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 30.0f;
+			smas.rolloffMode =AudioRolloffMode.Custom;
+		}
+
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
+
 
 		if (HasFactory () && !factoryChoose.Construct (this))
 		{
@@ -435,8 +455,26 @@ public class Worker : Unit
 	{
 		IsRepairing = true;
 
+		AudioClip sfxBuilding = SoundManager.LoadFromGroup("Building");
+		
+		Vector3 u = this.transform.position;
+		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxBuilding, "Building", 0.7f, 1f, u);
+		
+		if (smas !=null)
+		{
+			
+			smas.dopplerLevel = 0.0f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 30.0f;
+			smas.rolloffMode =AudioRolloffMode.Custom;
+		}
+
+
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
+
+
 
 		if (HasFactory ())
 		{
@@ -453,37 +491,27 @@ public class Worker : Unit
 	{
 		IsExtracting = true;
 
+		AudioClip sfxmining = SoundManager.LoadFromGroup("Mining");
+		
+		Vector3 u = this.transform.position;
+		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxmining, "Mining", 0.7f, 1f, u);
+		
+		if (smas !=null)
+		{
+			
+			smas.dopplerLevel = 0.0f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 30.0f;
+			smas.rolloffMode =AudioRolloffMode.Custom;
+		}
+
+
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 
 		if (resource != null) resource.ExtractResource (this);
 		else workerState = WorkerState.None;
-
-
-
-		AudioClip sfxmining = SoundManager.LoadFromGroup("Mining");
-		
-		Vector3 u = this.transform.position;
-
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxmining, "Mining", 0.7f, 1f, u);
-
-		smas.dopplerLevel = 0.0f;
-		smas.minDistance = 3.0f;
-		smas.maxDistance = 20.0f;
-		smas.rolloffMode =AudioRolloffMode.Custom;
-		
-
-	
-
-//		AudioSource a = SoundManager.Instance();
-//
-//		a.dopplerLevel(0f);
-		
-//		SoundManager.PlayCappedSFX (sfxmining, "mining", 1f, 1f, u);
-
-	
-
-
 
 		IsExtracting = false;
 	}
@@ -664,6 +692,7 @@ public class Worker : Unit
 				isMovingToFactory = false;
 			}
 		}
+
 	}
 
 	public bool HasFactory ()
@@ -755,8 +784,8 @@ public class Worker : Unit
 	{
 		base.DrawGizmosSelected ();
 
-//		Gizmos.color = Color.green;
-//		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
+		Gizmos.color = Color.green;
+		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
 		
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));

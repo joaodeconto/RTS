@@ -470,8 +470,8 @@ MonoBehaviour:
       name: Follow
       spriteName: right-arrow
       gridItemAttributes:
-        gridXIndex: 0
-        gridYIndex: 0
+        gridXIndex: 3
+        gridYIndex: 2
   pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
   transformParticleDamageReference: {fileID: 400012}
   playerUnit: 1
@@ -486,11 +486,17 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 1
+    costOfResources:
+      m_mana: 0
+      m_rocks: 100
   - unit: {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     buttonName: Speraman
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
+    costOfResources:
+      m_mana: 0
+      m_rocks: 150
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100010}
@@ -501,6 +507,9 @@ MonoBehaviour:
   guiTextureName: main-building
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
+  costOfResources:
+    m_mana: 0
+    m_rocks: 200
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2666,7 +2675,7 @@ NavMeshObstacle:
   m_Radius: 2.6400001
   m_Height: 2
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

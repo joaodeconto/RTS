@@ -114,11 +114,21 @@ public class StatsController : MonoBehaviour
 				
 				feedback = true;
 
-				GameObject u = unit.gameObject;
-
-				AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
+				Vector3 u = unit.transform.position;
 				
-				SoundManager.PlaySFX(u, sfxconfirm);
+				AudioClip sfxConfirm = SoundManager.LoadFromGroup("Confirm");
+				
+				AudioSource smas = SoundManager.PlayCappedSFX (sfxConfirm, "Confirm", 1f, 1f, u);
+				
+				if (smas != null)
+				{
+					
+					smas.dopplerLevel = 0f;
+					smas.minDistance = 3.0f;
+					smas.maxDistance = 30.0f;
+					smas.rolloffMode = AudioRolloffMode.Linear;
+					
+				}
 
 				i++;
 			}
@@ -149,11 +159,21 @@ public class StatsController : MonoBehaviour
 			
 			feedback = true;
 
-			AudioClip sfxconfirm = SoundManager.LoadFromGroup("Confirm");
-
-			GameObject u = unit.gameObject;
+			Vector3 u = unit.transform.position;
 			
-			SoundManager.PlaySFX(u, sfxconfirm);
+			AudioClip sfxConfirm = SoundManager.LoadFromGroup("Confirm");
+			
+			AudioSource smas = SoundManager.PlayCappedSFX (sfxConfirm, "Confirm", 1f, 1f, u);
+			
+			if (smas != null)
+			{
+				
+				smas.dopplerLevel = 0f;
+				smas.minDistance = 3.0f;
+				smas.maxDistance = 30.0f;
+				smas.rolloffMode = AudioRolloffMode.Linear;
+				
+			}
 		}
 		
 		if (feedback)
@@ -185,22 +205,34 @@ public class StatsController : MonoBehaviour
 			Vector3 u = unit.transform.position;
 
 			AudioClip sfxCharge = SoundManager.LoadFromGroup("Charge");
+			
+			AudioSource smas = SoundManager.PlayCappedSFX (sfxCharge, "Charge", 1f, 1f, u);
+			
+				if (smas != null)
+				{
+					
+					smas.dopplerLevel = 0f;
+					smas.minDistance = 3.0f;
+					smas.maxDistance = 30.0f;
+					smas.rolloffMode = AudioRolloffMode.Linear;
 
-			SoundManager.PlayCappedSFX (sfxCharge, "Charge", 1f, 1f, u);
-		}
+				}
+			}
+
 		
-		if (feedback)
-		{
+			if (feedback)
+			{
 
 			
-			IStats enemyStats = enemy.GetComponent<IStats> ();
+				IStats enemyStats = enemy.GetComponent<IStats> ();
 			
-			hudController.CreateFeedback (HUDController.Feedbacks.Attack,
+				hudController.CreateFeedback (HUDController.Feedbacks.Attack,
 			                              enemy.transform,
 			                              enemyStats.sizeOfSelected,
 			                              gameplayManager.GetColorTeam(enemyStats.team));
-		}
+			}
 	}
+ 	
 
 	public void AddStats (IStats stat)
 	{
@@ -249,6 +281,8 @@ public class StatsController : MonoBehaviour
 			
 			ComponentGetter.Get<MiniMapController> ().RemoveUnit (unit.transform, unit.team);
 			gameplayManager.DecrementUnit (unit.team, unit.numberOfUnits);
+			hudController.DestroyInspector ("unit");
+
 		}
 		else
 		{
@@ -400,7 +434,7 @@ public class StatsController : MonoBehaviour
 				statsGroups[numberGroup].Add (stat);
 			}
 		}
-		else VDebug.LogError ("Hasn't unit selected.");
+		else VDebug.LogError ("No units selected.");
 	}
 
 	public bool SelectGroup (int numberGroup)
@@ -418,7 +452,7 @@ public class StatsController : MonoBehaviour
 					SelectStat (stat, true);
 				}
 				return true;
-				break;
+//				break;
 			}
 		}
 
@@ -507,11 +541,6 @@ public class StatsController : MonoBehaviour
 					w.SetMoveToFactory(factory);
 					feedback = true;
 
-					AudioClip sfxmining = SoundManager.Load("mining");
-					
-					GameObject u = w.gameObject;
-					
-					SoundManager.PlaySFX(u, sfxmining);
 				}
 			}
 		}
@@ -543,45 +572,100 @@ public class StatsController : MonoBehaviour
 	
 	public void PlaySelectSound ()
 	{
-//		if (selectedStats.Count == 1)
-//		{
+		if (selectedStats.Count == 1)
+		{
 			IStats statSelected = selectedStats[0];
 			
 			if (IsUnit (statSelected))
 			{
 //				soundManager.PlayRandom (statSelected.category);
-				
+										
 		    	Vector3 u = statSelected.transform.position;
 			
 				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
 
-//				SoundManager.PlaySFX(u,sfxSelect);
-				
 				AudioSource smas = SoundManager.PlayCappedSFX (sfxSelect, "Select", 1f, 1f, u);
+
+					if (smas != null)
+					{
 			
-				smas.dopplerLevel = 0f;
-				smas.minDistance = 3.0f;
-				smas.maxDistance = 20.0f;
+						smas.dopplerLevel = 0f;
+						smas.minDistance = 3.0f;
+						smas.maxDistance = 30.0f;
+						smas.rolloffMode = AudioRolloffMode.Linear;
+				  				    
+					}
 				
 			}
+
+
 			else
 			{
-//				soundManager.PlayRandom ("BuildingSelected");
 
-		     	GameObject u = statSelected.gameObject;
+
+
+				Vector3 u = statSelected.transform.position;
 			
-			    AudioClip sfxStructures = SoundManager.LoadFromGroup("Structures");
+				AudioClip sfxStructures = SoundManager.LoadFromGroup("Structures");
 
-				SoundManager.PlaySFX(sfxStructures);
+			AudioSource smas = SoundManager.PlayCappedSFX (sfxStructures, "Structures", 1f, 1f, u);
+
+					if (smas != null)
+					{
+				
+						smas.dopplerLevel = 0f;
+						smas.minDistance = 3.0f;
+						smas.maxDistance = 30.0f;
+						smas.rolloffMode = AudioRolloffMode.Linear;
+					  				    
+					}
+
 			}
-//		}
-//		else
-//		{
-//			AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
-//			
-//			SoundManager.PlaySFX(sfxSelect);
-//		}
+		}
+
+		else
+		{	
+		
+			foreach (IStats statSelected in selectedStats)
+			{
+				Vector3 u = statSelected.transform.position;
+				
+				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
+				
+				AudioSource smas = SoundManager.PlayCappedSFX (sfxSelect, "Select", 1f, 1f, u);
+				
+				if (smas != null)
+				{
+					
+					smas.dopplerLevel = 0f;
+					smas.minDistance = 3.0f;
+					smas.maxDistance = 30.0f;
+					smas.rolloffMode = AudioRolloffMode.Linear;
+					
+				}
+			}
+		}
 	}
+
+//	public void SfxSelected ( vectorTarget )
+//	{
+//		Vector3 u = vectorTarget.transform.position;
+//		
+//		AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
+//		
+//		AudioSource smas = SoundManager.PlayCappedSFX (sfxSelect, "Select", 1f, 1f, u);
+//		
+//		if (smas != null)
+//		{
+//			
+//			smas.dopplerLevel = 0f;
+//			smas.minDistance = 3.0f;
+//			smas.maxDistance = 30.0f;
+//			smas.rolloffMode = AudioRolloffMode.Linear;
+//			
+//		}
+//		
+//	}
 
 	void OrganizeUnits()
 	{

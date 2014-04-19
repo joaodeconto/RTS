@@ -424,21 +424,33 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
+    costOfResources:
+      m_mana: 0
+      m_rocks: 200
   - unit: {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
     buttonName: Triceratops
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 1
+    costOfResources:
+      m_mana: 0
+      m_rocks: 250
   - unit: {fileID: 11400000, guid: 1d3e301ff447d644a90dcabff9dfc493, type: 2}
     buttonName: T-Rex
     gridItemAttributes:
       gridXIndex: 0
       gridYIndex: 1
+    costOfResources:
+      m_mana: 0
+      m_rocks: 350
   - unit: {fileID: 11400010, guid: 0718c2afed22e534e808d3ea1ffd9b8c, type: 2}
     buttonName: Parasauro
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 1
+    costOfResources:
+      m_mana: 0
+      m_rocks: 200
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100000}
@@ -449,6 +461,9 @@ MonoBehaviour:
   guiTextureName: LizardAras
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
+  costOfResources:
+    m_mana: 0
+    m_rocks: 0
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -472,7 +487,7 @@ NavMeshObstacle:
   m_Radius: 2.6400001
   m_Height: 2
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

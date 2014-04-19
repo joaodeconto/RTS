@@ -400,6 +400,9 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 0
       gridYIndex: 1
+    costOfResources:
+      m_mana: 0
+      m_rocks: 50
   receiveResource: 1
   buildingObjects:
     baseObject: {fileID: 100010}
@@ -410,6 +413,9 @@ MonoBehaviour:
   guiTextureName: TribeMarket
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
+  costOfResources:
+    m_mana: 1
+    m_rocks: 400
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -488,7 +494,7 @@ NavMeshObstacle:
   m_Radius: 3.04999995
   m_Height: 1.96000004
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
