@@ -33,15 +33,15 @@ using System.Linq;
 
 [CustomEditor(typeof(iTweenEvent))]
 public class iTweenEventDataEditor : Editor {
-		
+	List<string> trueFalseOptions = new List<string>() {"True", "False"};
 	Dictionary<string, object> values;
 	Dictionary<string, bool> propertiesEnabled = new Dictionary<string, bool>();
 	iTweenEvent.TweenType previousType;
 	
 	[MenuItem("Component/iTween/iTweenEvent")]
     static void AddiTweenEvent () {
-		if(UnityEditor.Selection.activeGameObject != null) {
-			UnityEditor.Selection.activeGameObject.AddComponent(typeof(iTweenEvent));
+		if(Selection.activeGameObject != null) {
+			Selection.activeGameObject.AddComponent(typeof(iTweenEvent));
 		}
     }
 	
@@ -65,6 +65,11 @@ public class iTweenEventDataEditor : Editor {
 		else {
 			EditorUtility.DisplayDialog("Can't move files", "Your files have already been moved", "Ok");
 		}
+	}
+	
+	[MenuItem("Component/iTween/Donate to support the Visual Editor")]
+	static void Donate() {
+		Application.OpenURL("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WD3GQ6HHD257C");
 	}
 	
 	public void OnEnable() {
@@ -192,7 +197,12 @@ public class iTweenEventDataEditor : Editor {
 					values[key] = EditorGUILayout.IntField(values.ContainsKey(key) ? (int)values[key] : 0);
 				}
 				else if(typeof(bool) == pair.Value) {
-					values[key] = propertiesEnabled[key];
+					GUILayout.BeginHorizontal();
+					var currentValueString = (values.ContainsKey(key) ? (bool)values[key] : false).ToString();
+					currentValueString = currentValueString.Substring(0, 1).ToUpper() + currentValueString.Substring(1);					
+					var index = EditorGUILayout.Popup(trueFalseOptions.IndexOf(currentValueString), trueFalseOptions.ToArray());
+					GUILayout.EndHorizontal();
+					values[key] = bool.Parse(trueFalseOptions[index]);
 				}
 				else if(typeof(GameObject) == pair.Value) {
 					values[key] = EditorGUILayout.ObjectField(values.ContainsKey(key) ? (GameObject)values[key] : null, typeof(GameObject), true);
