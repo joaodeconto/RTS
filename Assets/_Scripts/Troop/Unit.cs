@@ -787,8 +787,12 @@ public class Unit : IStats, IMovementObservable,
 
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
 
-		Deselect ();
+		if (Selected)
+		{
 
+			Deselect ();
+
+		}
 
 		if (unitAnimation.DieAnimation)
 		{

@@ -48830,7 +48830,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 746434021}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: 0, z: 0}
+  m_LocalPosition: {x: 576, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 313903784}
@@ -52603,7 +52603,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 827083530}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: -360, z: 0}
+  m_LocalPosition: {x: 576, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 852477438}
@@ -59543,7 +59543,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 937397908}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -640, y: 360, z: 0}
+  m_LocalPosition: {x: -576, y: 360, z: 0}
   m_LocalScale: {x: 1.00012505, y: 1.00012505, z: 1.00012505}
   m_Children:
   - {fileID: 1015483653}
@@ -63707,6 +63707,22 @@ Prefab:
       propertyPath: pref_attackFeedback
       value: 
       objectReference: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
+    - target: {fileID: 11400014, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: MiniMapAnchor
+      value: 
+      objectReference: {fileID: 1754747042}
+    - target: {fileID: 11400014, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: visualizationPosition.z
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400014, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: miniMapAnchor
+      value: 
+      objectReference: {fileID: 1754747041}
+    - target: {fileID: 11400014, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: minimapAnchor
+      value: 
+      objectReference: {fileID: 1754747042}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
   m_RootGameObject: {fileID: 414667814}
@@ -63789,7 +63805,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1005052626}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -640, y: -360, z: 0}
+  m_LocalPosition: {x: -576, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1816119204}
@@ -68730,6 +68746,7 @@ MonoBehaviour:
   MapGUICamera: {fileID: 163113280}
   miniMapPanel: {fileID: 1685659519}
   MiniMapRoot: {fileID: 832481681}
+  minimapAnchor: {fileID: 1754747042}
   CamPositionMiniMap: {fileID: 1831268234}
   CamPositionTexture: {fileID: 2800000, guid: f92f0095c09765246a81892919654288, type: 3}
   mapTransform: {fileID: 6659016}
@@ -68737,7 +68754,7 @@ MonoBehaviour:
   beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
   minimapAtlas: {fileID: 11400000, guid: 1ad367796a1accb419f17d3ea071ca02, type: 2}
   visualizationSize: {x: 42, y: 26, z: 0}
-  visualizationPosition: {x: 0, y: 0, z: 0}
+  visualizationPosition: {x: 0, y: 0, z: 60}
   MiniMapRefreshInterval: .5
 --- !u!1 &1075071549
 GameObject:
@@ -117980,7 +117997,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1754747040}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 640, y: 360, z: 0}
+  m_LocalPosition: {x: 576, y: 360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1685659520}
@@ -118001,7 +118018,7 @@ MonoBehaviour:
   uiCamera: {fileID: 163113280}
   container: {fileID: 1586158904}
   side: 4
-  runOnlyOnce: 0
+  runOnlyOnce: 1
   relativeOffset: {x: 0, y: 0}
   pixelOffset: {x: 0, y: 0}
   widgetContainer: {fileID: 0}

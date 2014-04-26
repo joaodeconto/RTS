@@ -14,6 +14,7 @@ public class MiniMapController : MonoBehaviour
 	
 	public GameObject miniMapPanel;
 	public UIRoot MiniMapRoot;
+	public UIAnchor minimapAnchor;
 
 	public GameObject CamPositionMiniMap;
 	public Texture2D CamPositionTexture;
@@ -292,16 +293,15 @@ public class MiniMapController : MonoBehaviour
 		//Retirando posicao do mapa globalmente
 		touchLocalPointX -= (vecScreen.x);
 		touchLocalPointY -= (vecScreen.y);
-		
+
 		Debug.Log ("vecScreen: " + vecScreen);
 		
 		Debug.Log("a: touchLocalPointX: " + touchLocalPointX);
 		Debug.Log("a: touchLocalPointY: " + touchLocalPointY);
 		
 		Vector2 percentPos = new Vector2(((MiniMapRoot.pixelSizeAdjustment
-		                                 	* UICamera.lastTouchPosition.x) - mapTransform.position.x),
-										 ((MiniMapRoot.pixelSizeAdjustment
-											* UICamera.lastTouchPosition.y) - mapTransform.position.y));
+		                                   * UICamera.lastTouchPosition.x) - Screen.width + miniMapPanel.transform.localPosition.x),
+		                                 ((MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y) - minimapAnchor.transform.localPosition.y + miniMapPanel.transform.localPosition.y));
 		percentPos.x /= miniMapSize.x;
 		percentPos.y /= miniMapSize.y;
 		
