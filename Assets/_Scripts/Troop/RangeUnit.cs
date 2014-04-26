@@ -9,8 +9,46 @@ public class RangeUnit : Unit
 	public Transform trnsInstantiateLocalPrefab;
 	public float highRangeAttack;
 	public AnimationClip highRangeAnimation;
+	public float projectileAnimationSync;
 	
 	public bool inHighRange {get; set;}
+
+	public void ProjectileSync ()
+	{
+		GameObject pRange;
+		
+		if (!PhotonNetwork.offlineMode)
+		{
+			pRange = PhotonNetwork.Instantiate  (prefabRange.name, 
+			                                     trnsInstantiateLocalPrefab.position,
+			                                     trnsInstantiateLocalPrefab.rotation,
+			                                     0, null);
+		}
+		else
+		{
+			pRange = Instantiate (prefabRange, 
+			                      trnsInstantiateLocalPrefab.position,
+			                      trnsInstantiateLocalPrefab.rotation) as GameObject;
+		}
+		
+		pRange.GetComponent<RangeObject> ().Init (TargetAttack, 3f,
+		                                          (ht) => 
+		                                          {
+			if (TargetAttack != null)
+			{
+				if (!PhotonNetwork.offlineMode)
+				{
+					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
+				}
+				else
+				{
+					TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+				}
+			}
+		}
+		);
+
+	}
 	
 	public override void Init ()
 	{
@@ -76,39 +114,8 @@ public class RangeUnit : Unit
 			ControllerAnimation.PlayCrossFade (highRangeAnimation, WrapMode.Once);
 
 			IsAttacking = true;
-			
-			GameObject pRange;
-			
-			if (!PhotonNetwork.offlineMode)
-			{
-				 pRange = PhotonNetwork.Instantiate  (prefabRange.name, 
-													  trnsInstantiateLocalPrefab.position,
-													  trnsInstantiateLocalPrefab.rotation,
-													  0, null);
-			}
-			else
-			{
-				 pRange = Instantiate (prefabRange, 
-							 trnsInstantiateLocalPrefab.position,
-							 trnsInstantiateLocalPrefab.rotation) as GameObject;
-			}
-			
-			pRange.GetComponent<RangeObject> ().Init (TargetAttack, 3f,
-			(ht) => 
-			{
-				if (TargetAttack != null)
-				{
-					if (!PhotonNetwork.offlineMode)
-					{
-						photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
-					}
-					else
-					{
-						TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
-					}
-				}
-			}
-			);
+
+			Invoke ("ProjectileSync", projectileAnimationSync);
 
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
 

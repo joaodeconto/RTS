@@ -14,7 +14,7 @@ public class RangeObject : MonoBehaviour {
 			
 	protected GameObject target;
 	protected Vector3 targetPosition;
-	protected float time;
+	protected float time = 2f;
 	
 	public void Init (GameObject target, float timeToDestroyWhenCollide, RangeHitDelegate rhd, Hashtable ht = null)
 	{

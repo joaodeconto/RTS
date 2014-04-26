@@ -14,22 +14,22 @@ ModelImporter:
     100016: Finger1_R
     100018: Finger2_L
     100020: Finger2_R
-    100022: Group19303
-    100024: Group19303_001
-    100026: Hand_L
-    100028: Hand_R
-    100030: Head
-    100032: Leg1_L
-    100034: Leg1_R
-    100036: Leg2_L
-    100038: Leg2_L_001
-    100040: Leg2_L_002
-    100042: Leg2_R
-    100044: Leg2_R_001
-    100046: Leg2_R_002
-    100048: neck
-    100050: Pelvis
-    100052: Pevis_IK
+    100022: Hand_L
+    100024: Hand_R
+    100026: Head
+    100028: Hunter
+    100030: Leg1_L
+    100032: Leg1_R
+    100034: Leg2_L
+    100036: Leg2_L_001
+    100038: Leg2_L_002
+    100040: Leg2_R
+    100042: Leg2_R_001
+    100044: Leg2_R_002
+    100046: neck
+    100048: Pelvis
+    100050: Pevis_IK
+    100052: Spear
     100054: Spine1
     100056: Spine2
     100058: Spine3
@@ -38,9 +38,6 @@ ModelImporter:
     100064: Thoe2_L
     100066: Thoe2_R
     100068: //RootNode
-    100070: Hunter
-    100072: Spear
-    100074: Spear_Backpack
     400000: Arm1_L
     400002: Arm1_R
     400004: Arm2_L
@@ -52,22 +49,22 @@ ModelImporter:
     400016: Finger1_R
     400018: Finger2_L
     400020: Finger2_R
-    400022: Group19303
-    400024: Group19303_001
-    400026: Hand_L
-    400028: Hand_R
-    400030: Head
-    400032: Leg1_L
-    400034: Leg1_R
-    400036: Leg2_L
-    400038: Leg2_L_001
-    400040: Leg2_L_002
-    400042: Leg2_R
-    400044: Leg2_R_001
-    400046: Leg2_R_002
-    400048: neck
-    400050: Pelvis
-    400052: Pevis_IK
+    400022: Hand_L
+    400024: Hand_R
+    400026: Head
+    400028: Hunter
+    400030: Leg1_L
+    400032: Leg1_R
+    400034: Leg2_L
+    400036: Leg2_L_001
+    400038: Leg2_L_002
+    400040: Leg2_R
+    400042: Leg2_R_001
+    400044: Leg2_R_002
+    400046: neck
+    400048: Pelvis
+    400050: Pevis_IK
+    400052: Spear
     400054: Spine1
     400056: Spine2
     400058: Spine3
@@ -76,30 +73,18 @@ ModelImporter:
     400064: Thoe2_L
     400066: Thoe2_R
     400068: //RootNode
-    400070: Hunter
-    400072: Spear
-    400074: Spear_Backpack
-    2300000: Group19303_001
-    3300000: Group19303_001
-    4300000: Group19303_001
-    4300002: Group19303
-    4300004: Spear_Backpack
-    4300006: Hunter
-    4300008: Spear
+    4300000: Hunter
+    4300002: Spear
     7400000: Default Take
-    7400002: Spearman_shortAttack
-    7400004: Action
-    7400006: Hunter_Attack
-    7400008: Hunter_Death
-    7400010: Hunter_Idle
-    7400012: Hunter_Run
-    7400014: Hunter_RunWithLance
+    7400002: Hunter_Death
+    7400004: Hunter_Idle
+    7400006: Hunter_RangeAtk
+    7400008: Hunter_Run
+    7400010: Hunter_RunWithLance
     9500000: //RootNode
     11100000: //RootNode
-    13700000: Group19303
-    13700002: Hunter
-    13700004: Spear
-    13700006: Spear_Backpack
+    13700000: Hunter
+    13700002: Spear
   materials:
     importMaterials: 1
     materialName: 0
@@ -116,10 +101,10 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Hunter_Attack
-      takeName: Hunter_Attack
-      firstFrame: -1
-      lastFrame: 49
+      name: Default Take
+      takeName: Default Take
+      firstFrame: 0
+      lastFrame: 42
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -214,7 +199,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Hunter_Death
       takeName: Hunter_Death
-      firstFrame: -1
+      firstFrame: 0
       lastFrame: 28
       wrapMode: 0
       orientationOffsetY: 0
@@ -310,13 +295,109 @@ ModelImporter:
     - serializedVersion: 16
       name: Hunter_Idle
       takeName: Hunter_Idle
-      firstFrame: -1
-      lastFrame: 99
+      firstFrame: 0
+      lastFrame: 96
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Pevis_IK
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_L/Leg2_L/Leg2_L_001/Leg2_L_002
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001
+        weight: 1
+      - path: Armature/Pevis_IK/Pelvis/Leg1_R/Leg2_R/Leg2_R_001/Leg2_R_002
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Finger1_L/Finger2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_L/Arm1_L/Arm2_L/Hand_L/Thoe1_L/Thoe2_L
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Finger1_R/Finger2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/Clavi2_R/Arm1_R/Arm2_R/Hand_R/Thoe1_R/Thoe2_R
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck
+        weight: 1
+      - path: Armature/Pevis_IK/Spine1/Spine2/Spine3/neck/Head
+        weight: 1
+      - path: Hunter
+        weight: 1
+      - path: Spear
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Hunter_RangeAtk
+      takeName: Hunter_RangeAtk
+      firstFrame: 0
+      lastFrame: 43
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -406,13 +487,13 @@ ModelImporter:
     - serializedVersion: 16
       name: Hunter_Run
       takeName: Hunter_Run
-      firstFrame: -1
+      firstFrame: 0
       lastFrame: 19
       wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
-      loop: 0
+      loop: 1
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -502,13 +583,13 @@ ModelImporter:
     - serializedVersion: 16
       name: Hunter_RunWithLance
       takeName: Hunter_RunWithLance
-      firstFrame: -1
+      firstFrame: 0
       lastFrame: 19
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
-      loop: 0
+      loop: 1
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -631,5 +712,5 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 1
-  additionalBone: 1
+  additionalBone: 0
   userData: 

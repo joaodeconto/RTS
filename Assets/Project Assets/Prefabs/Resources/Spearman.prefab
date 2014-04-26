@@ -1299,13 +1299,13 @@ Animation:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 7400006, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
+  m_Animation: {fileID: 7400004, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
   m_Animations:
   - {fileID: 7400006, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
   - {fileID: 7400008, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
   - {fileID: 7400010, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
-  - {fileID: 7400012, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
-  - {fileID: 7400014, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
+  - {fileID: 7400004, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
+  - {fileID: 7400002, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
@@ -1400,25 +1400,26 @@ MonoBehaviour:
   model: {fileID: 100000}
   force: 4
   distanceView: 18
-  attackRange: 0
+  attackRange: 15
   attackDuration: 1
   probeRange: 1
   turnSpeedAvoidance: 100
   numberOfUnits: 1
   guiTextureName: spearman
   unitAnimation:
-    Idle: {fileID: 7400010, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
-    Walk: {fileID: 7400014, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
-    walkSpeed: 1
-    Attack: {fileID: 7400006, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
-    DieAnimation: {fileID: 7400008, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
+    Idle: {fileID: 7400004, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
+    Walk: {fileID: 7400008, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
+    walkSpeed: 1.10000002
+    Attack: {fileID: 7400006, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
+    DieAnimation: {fileID: 7400002, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
     SpecialAttack: []
   timeToSpawn: 7
   ControllerAnimation: {fileID: 11100000}
   prefabRange: {fileID: 100000, guid: dfd1f7a7a5268ae48944b261b8977985, type: 2}
   trnsInstantiateLocalPrefab: {fileID: 400008}
-  highRangeAttack: 18
-  highRangeAnimation: {fileID: 7400006, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
+  highRangeAttack: 15
+  highRangeAnimation: {fileID: 7400006, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
+  projectileAnimationSync: .800000012
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1550,11 +1551,11 @@ NavMeshAgent:
   m_GameObject: {fileID: 100142}
   m_Enabled: 1
   m_Radius: .800000012
-  m_Speed: 6
+  m_Speed: 4
   m_Acceleration: 10
   avoidancePriority: 0
   m_AngularSpeed: 150
-  m_StoppingDistance: .300000012
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
