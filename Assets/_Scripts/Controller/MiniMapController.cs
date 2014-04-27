@@ -300,7 +300,7 @@ public class MiniMapController : MonoBehaviour
 		Debug.Log("a: touchLocalPointY: " + touchLocalPointY);
 		
 		Vector2 percentPos = new Vector2(((MiniMapRoot.pixelSizeAdjustment
-		                                   * UICamera.lastTouchPosition.x) - Screen.width + miniMapPanel.transform.localPosition.x),
+		                                   * UICamera.lastTouchPosition.x) - (2*minimapAnchor.transform.localPosition.x) -  (2* miniMapPanel.transform.localPosition.x)),
 		                                 ((MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y) - minimapAnchor.transform.localPosition.y + miniMapPanel.transform.localPosition.y));
 		percentPos.x /= miniMapSize.x;
 		percentPos.y /= miniMapSize.y;
