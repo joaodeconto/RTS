@@ -21,7 +21,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &400000
 Transform:
-  m_ObjectHideFlags: 10
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
@@ -90,7 +90,7 @@ AudioSource:
     m_PostInfinity: 2
 --- !u!82 &8200002
 AudioSource:
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
@@ -148,7 +148,7 @@ AudioSource:
     m_PostInfinity: 2
 --- !u!82 &8200004
 AudioSource:
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
@@ -221,8 +221,8 @@ MonoBehaviour:
   showList: 1
   showAdd: 0
   showSFX: 1
-  showSFXDetails: 00000000000000000000000000000000000000000000000000000000000000
-  groupAddIndex: 4
+  showSFXDetails: 00000000000000000000000000000000000000000000000000000000000000000000
+  groupAddIndex: 0
   autoPrepoolAmount: 0
   showAsGrouped: 1
   soundConnections:
@@ -262,7 +262,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6c6ac58a969bc7f4d9255f3ece2ce382, type: 3}
   - {fileID: 8300000, guid: f5a8302c6ac4eae41821e349ee00123c, type: 3}
   - {fileID: 8300000, guid: 2909b53d26470cc499e3044a50d304f1, type: 3}
-  - {fileID: 8300000, guid: 2cb94dcf7c0ad6148a4a60ae734e57df, type: 3}
   - {fileID: 8300000, guid: 764db8f6e7d4a284a924513dce0794de, type: 3}
   - {fileID: 8300000, guid: 6a054a65daa324e498cfb685352a992d, type: 3}
   - {fileID: 8300000, guid: 5257049f7fdaa004e91980821c5fafb5, type: 3}
@@ -285,6 +284,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9c5776d93fd4c294d83c7fa7ddbe4289, type: 3}
   - {fileID: 8300000, guid: 06a9435a1a7f9b548ba2c5c8052b1ee3, type: 3}
   - {fileID: 8300000, guid: 1f71a9f921b2a314ca0b2a72b02ff27f, type: 3}
+  - {fileID: 8300000, guid: 950e68107299cdc4f823f823c7d8ae72, type: 3}
+  - {fileID: 8300000, guid: 52751d399cb09754f8e568a1a2bba58e, type: 3}
+  - {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
+  - {fileID: 8300000, guid: abb9b77d8e6ef734f9ba589608fdef51, type: 3}
   unOwnedSFXObjects: []
   sfxGroups:
   - groupName: Select
@@ -306,7 +309,10 @@ MonoBehaviour:
     specificCapAmount: 4
     clips: []
   - groupName: Mining
-    specificCapAmount: 4
+    specificCapAmount: 3
+    clips: []
+  - groupName: Building
+    specificCapAmount: 2
     clips: []
   clipToGroupKeys:
   - T_Rex_Fala
@@ -317,7 +323,6 @@ MonoBehaviour:
   - Nean_Fala
   - Nean_Nao
   - Nean_Sarava
-  - Tricera_Varum
   - Nean_Beat
   - Hunter_Hurt
   - T_Rex_Atk
@@ -339,6 +344,8 @@ MonoBehaviour:
   - Parassa_Breath1
   - Worker_Cakitu
   - Parassa_Breath
+  - Worker_Saw
+  - Worker_Hammer
   clipToGroupValues:
   - Select
   - Death
@@ -348,7 +355,6 @@ MonoBehaviour:
   - Select
   - Death
   - Death
-  - Select
   - Attack
   - Death
   - Attack
@@ -370,10 +376,12 @@ MonoBehaviour:
   - Death
   - Confirm
   - Death
+  - Building
+  - Building
   offTheSFX: 0
   capAmount: 4
-  sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  SFXObjectLifetime: 10
+  sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  SFXObjectLifetime: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
