@@ -736,6 +736,7 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 
+
 	public virtual IEnumerator OnDie ()
 	{
 		IsDead = true;
@@ -773,10 +774,15 @@ public class Unit : IStats, IMovementObservable,
 		{
 			UnRegisterAttackObserver (IAOobservers[c]);
 		}
+
+
+		ComponentGetter.Get<MiniMapController> ().RemoveUnit (this.transform, this.team);
+		gameplayManager.DecrementUnit (this.team, this.numberOfUnits);
 		
 		//IDeathObservable
 		NotifyDeath ();
-		
+
+			
 		c = IDOobservers.Count;
 		while (--c != -1)
 		{
@@ -784,6 +790,7 @@ public class Unit : IStats, IMovementObservable,
 		}
 		
 		statsController.RemoveStats(this);
+
 
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
 

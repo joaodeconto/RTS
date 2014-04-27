@@ -379,6 +379,8 @@ public class Worker : Unit
 		Pathfind.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 
 		return base.OnDie ();
+
+		Debug.Log ("mortificou Worker");
 	}
 
 	public void InstanceGhostFactory (Hashtable ht)

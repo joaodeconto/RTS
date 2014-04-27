@@ -279,8 +279,8 @@ public class StatsController : MonoBehaviour
 		{
 			Unit unit = stat as Unit;
 			
-			ComponentGetter.Get<MiniMapController> ().RemoveUnit (unit.transform, unit.team);
-			gameplayManager.DecrementUnit (unit.team, unit.numberOfUnits);
+			//ComponentGetter.Get<MiniMapController> ().RemoveUnit (unit.transform, unit.team);
+			//gameplayManager.DecrementUnit (unit.team, unit.numberOfUnits);
 //			hudController.DestroyInspector ("unit");
 
 		}

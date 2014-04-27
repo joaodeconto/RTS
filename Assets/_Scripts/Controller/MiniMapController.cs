@@ -221,7 +221,7 @@ public class MiniMapController : MonoBehaviour
 																 (-18));
 	}
 
-	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns, float transformZ = 20f)
+	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns, float transformZ = 0)
 	{
 		Vector3 percentPos = new Vector3(referenceTrns.position.x / mapSize.x,
 										 referenceTrns.position.z / mapSize.z,
@@ -237,33 +237,12 @@ public class MiniMapController : MonoBehaviour
 
 	public void UpdateCameraPosition()
 	{
-//		Debug.LogWarning ("TODO: UpdateCameraPosition ();");
-		
-//		float touchLocalPointX = Screen.width - MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x;
-//		float touchLocalPointY = Screen.height - MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y;
-		/*float touchLocalPointX = UICamera.lastTouchPosition.x - CamPositionMiniMap.transform.position.x;
-		float touchLocalPointY = UICamera.lastTouchPosition.y - CamPositionMiniMap.transform.position.y;
-        
-		Debug.Log("touchLocalPointX: " + touchLocalPointX + " = " + UICamera.lastTouchPosition.x + " - " + CamPositionMiniMap.transform.position.x);
-		Debug.Log("touchLocalPointY: " + touchLocalPointY + " = " + UICamera.lastTouchPosition.y + " - " + CamPositionMiniMap.transform.position.y);
-        
-		Vector2 touchPosition = mapSizeComponent.GetPositon(new Vector2(touchLocalPointX, touchLocalPointY));
-        
-		mainCameraGO.transform.position = new Vector3(touchPosition.x, mainCameraGO.transform.position.y, touchPosition.y);*/
-        
-//        return;
+
         
         CameraBounds camBounds = mainCameraGO.GetComponent<CameraBounds>();
 
 		Vector3 camBoundsSize = mapSize;
-								//new Vector3((camBounds.scenario.x.max - camBounds.scenario.x.min),
-											//(camBounds.scenario.y.max - camBounds.scenario.y.min),
-											//(camBounds.scenario.z.max - camBounds.scenario.z.min));
-
-//		Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
-//		Debug.Log("UICamera.lastTouchPosition: " + UICamera.lastTouchPosition * MiniMapRoot.pixelSizeAdjustment);
-//		Debug.Log("mapTransform.localPosition: " + mapTransform.localPosition);
-//		Debug.Log("miniMapSize: " + miniMapSize);
+								
 				
 		float touchLocalPointX = MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.x;
 		float touchLocalPointY = MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y;
@@ -272,25 +251,8 @@ public class MiniMapController : MonoBehaviour
 		vecTouchLocalPosition.x = touchLocalPointX;
 		vecTouchLocalPosition.y = touchLocalPointY;
 		
-//		Debug.Log("b: touchLocalPointX: " + touchLocalPointX);
-//		Debug.Log("b: touchLocalPointY: " + touchLocalPointY);
-		
-//		Ray ray = UICamera.mainCamera.ScreenToWorldPoint (vecTouchLocalPosition);
-//		RaycastHit hit;
-//		
-//		if (Physics.Raycast (ray, out hit))
-//		{
-//			Debug.Log ("hit.point: " + hit.point);
-//			Debug.Log ("that's point: " + (hit.point - miniMapButton.position));
-//		}
-//		
-//		Debug.Log ("ray: " + ray.origin + " - " + ray.direction);
-		
-//		MapGUICamera.WorldToScreenPoint (miniMapButton.position);//ray.origin;
-				
 		Vector3 vecScreen = MapGUICamera.WorldToScreenPoint (miniMapPanel.transform.position);
 
-		//Retirando posicao do mapa globalmente
 		touchLocalPointX -= (vecScreen.x);
 		touchLocalPointY -= (vecScreen.y);
 
@@ -298,19 +260,14 @@ public class MiniMapController : MonoBehaviour
 		
 		Debug.Log("a: touchLocalPointX: " + touchLocalPointX);
 		Debug.Log("a: touchLocalPointY: " + touchLocalPointY);
-		
+
+		//-Anchor *2 e seus filhos. 
 		Vector2 percentPos = new Vector2(((MiniMapRoot.pixelSizeAdjustment
 		                                   * UICamera.lastTouchPosition.x) - (2*minimapAnchor.transform.localPosition.x) - mapTransform.localPosition.x - miniMapPanel.transform.localPosition.x),
 		                                 ((MiniMapRoot.pixelSizeAdjustment * UICamera.lastTouchPosition.y) - minimapAnchor.transform.localPosition.y + mapTransform.localPosition.y));
 		percentPos.x /= miniMapSize.x;
 		percentPos.y /= miniMapSize.y;
 		
-//		percentPos.x -= 7.1f;
-//		percentPos.y -= 2.9f;
-        
-//		Debug.Break ();
-		Debug.Log("percentPos: " + percentPos);
-		Debug.Log("mapSize: " + mapSize);
 
 		Vector3 newCameraPosition = new Vector3((camBoundsSize.x * percentPos.x)         - (visualizationPosition.x),
 											    (mainCameraGO.transform.localPosition.y) - (visualizationPosition.y),
@@ -318,21 +275,22 @@ public class MiniMapController : MonoBehaviour
 
 		mainCameraGO.transform.position = mainCameraGO.GetComponent<CameraBounds>().ClampScenario(newCameraPosition);
 
-		Debug.Log("mainCameraGO.transform.localPosition: " + mainCameraGO.transform.localPosition);
 	}
+
 
 	public void InstantiatePositionBeingAttacked (Transform target)
 	{
 		GameObject miniMapObject = Instantiate (beingAttackedMiniMap) as GameObject;
 
 		miniMapObject.transform.parent     = miniMapPanel.transform;
+		miniMapObject.transform.localScale = new Vector3 (1,1,1);
 		miniMapObject.GetComponent <UISprite>().height = beingAttackedMiniMap.GetComponent <UISprite>().height;
 		miniMapObject.GetComponent <UISprite>().width = beingAttackedMiniMap.GetComponent <UISprite>().width;
 
 		miniMapObject.GetComponent<TweenHeight> ().Play (true);
 		miniMapObject.GetComponent<TweenWidth> ().Play (true);
 
-		miniMapObject.GetComponent<UISprite> ().depth = 10;
+		miniMapObject.GetComponent<UISprite> ().depth = 60;
 
 		UpdatePosition (miniMapObject, target);
 	}
