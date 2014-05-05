@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 using Visiorama;
@@ -62,10 +63,7 @@ public class SelectionController : MonoBehaviour
 			if (statsController.selectedStats.Count != 0)
 			{
 				statsController.PlaySelectSound ();
-//				if (statsController.selectedStats.Count == 1)
-//				{
-//					ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit);
-//				}
+
 				return true;
 			}
 
@@ -120,6 +118,20 @@ public class SelectionController : MonoBehaviour
 			{
 				return false;			
 			}
+
+			if (hit.transform.CompareTag ("Resource"))
+			{
+				
+				Resource selectedResource = hit.transform.GetComponent<Resource>();
+				statsController.DeselectAllStats ();
+				statsController.SelectStat (selectedResource, true);
+								
+				return true;
+				
+			}
+
+
+
 
 			if (hit.transform.CompareTag ("Unit")) // return true
 			{
@@ -348,7 +360,7 @@ public class SelectionController : MonoBehaviour
 					}
 					return true;
 				}
-				return true;
+
 			}
 		}
 		return false;
@@ -432,6 +444,20 @@ public class SelectionController : MonoBehaviour
 							return true;
 						}
 					}
+
+					if (hit.transform.CompareTag ("Resource"))
+					{
+
+						Resource selectedResource = hit.transform.GetComponent<Resource>();
+						statsController.DeselectAllStats ();
+						statsController.SelectStat (selectedResource, true);
+						statsController.PlaySelectSound ();
+
+
+						return true;
+						
+					}
+
 
 //					if(!interactionController.HaveCallbacksForTouchId(TouchController.IdTouch.Id0))
 //						troopController.DeselectAllSoldiers ();
@@ -629,6 +655,8 @@ public class SelectionController : MonoBehaviour
 	{
 		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
 		{
+
+
 			GUI.Box (touchController.GetDragRect (), "");
 		}
 	}

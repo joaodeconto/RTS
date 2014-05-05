@@ -114,7 +114,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 //			}
 			subMesh.renderer.sharedMaterials = pms as Material[];
 
-//			Debug.Log ("Substance materials count: " + unitTeamMaterials.Count);	
 		}
 	}
 
@@ -454,7 +453,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public void RegisterHealthObserver (IHealthObserver observer)
 	{
-//		Debug.LogError (this.name + " - RegisterHealthObserver");
 		healthObservers.Add (observer);
 	}
 	
@@ -470,6 +468,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			o.UpdateHealth (m_health);
 		}
 	}
+
 
 	#endregion
 }

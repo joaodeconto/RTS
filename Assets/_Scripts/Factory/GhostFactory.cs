@@ -106,8 +106,6 @@ public class GhostFactory : MonoBehaviour
 		// Patch transform com hit.point
 		transform.position = Vector3.zero;
 		
-		Debug.Log (terrainLayer);
-		
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, terrainLayer))
 		{
 			transform.position = hit.point;
@@ -134,7 +132,7 @@ public class GhostFactory : MonoBehaviour
 				}
 				else
 				{
-					Debug.Log (numberOfCollisions);
+
 				}
 			}
 			else
@@ -153,8 +151,7 @@ public class GhostFactory : MonoBehaviour
 			numberOfCollisions++;
 		}
 
-		Debug.Log ("ENTER: " + numberOfCollisions);
-		
+			
 		if (numberOfCollisions != 0)
 		{
 			SetColorOverdraw (new Color (0.75f, 0.25f, 0.25f));
@@ -168,8 +165,7 @@ public class GhostFactory : MonoBehaviour
 			numberOfCollisions--;
 		}
 
-		Debug.Log ("EXIT: " + numberOfCollisions);
-		
+
 		if (numberOfCollisions == 0)
 		{
 			SetColorOverdraw (new Color (0.25f, 0.75f, 0.25f));

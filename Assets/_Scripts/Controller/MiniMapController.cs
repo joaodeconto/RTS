@@ -256,10 +256,10 @@ public class MiniMapController : MonoBehaviour
 		touchLocalPointX -= (vecScreen.x);
 		touchLocalPointY -= (vecScreen.y);
 
-		Debug.Log ("vecScreen: " + vecScreen);
-		
-		Debug.Log("a: touchLocalPointX: " + touchLocalPointX);
-		Debug.Log("a: touchLocalPointY: " + touchLocalPointY);
+//		Debug.Log ("vecScreen: " + vecScreen);
+//		
+//		Debug.Log("a: touchLocalPointX: " + touchLocalPointX);
+//		Debug.Log("a: touchLocalPointY: " + touchLocalPointY);
 
 		//-Anchor *2 e seus filhos. 
 		Vector2 percentPos = new Vector2(((MiniMapRoot.pixelSizeAdjustment

@@ -3,9 +3,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using Visiorama.Extension;
 using Visiorama;
+using Visiorama.Utils;
 
 public class Worker : Unit
 {
@@ -27,6 +27,7 @@ public class Worker : Unit
 		public AnimationClip Extracting;
 		public AnimationClip CarryingIdle;
 		public AnimationClip Carrying;
+		public float carryingAnimSpeed = 0.7f;
 	}
 
 	[System.Serializable]
@@ -55,7 +56,7 @@ public class Worker : Unit
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
 
-	public WorkerState workerState;// {get; set;}
+	public WorkerState workerState; //{get; set;}
 
 	public bool IsExtracting {get; protected set;}
 	public bool IsRepairing {get; protected set;}
@@ -165,7 +166,7 @@ public class Worker : Unit
 				{
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
-						ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(Pathfind.velocity.sqrMagnitude, 0f, 1f);
+					ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = resourceWorker[resourceId].workerAnimation.carryingAnimSpeed * Mathf.Clamp(Pathfind.velocity.sqrMagnitude, 0f, 1f);
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying, WrapMode.Loop);
 					}
 
@@ -193,7 +194,6 @@ public class Worker : Unit
 					return;
 				}
 
-//				Debug.Log (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius);
 
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius)
 				{
@@ -227,7 +227,7 @@ public class Worker : Unit
 				if (!HasFactory () || factoryChoose != lastFactory)
 				{
 					// Patch para tirar travada ¬¬
-			//		Move (transform.position - transform.forward);
+					Move (transform.position - transform.forward);
 
 					Move (PathfindTarget);
 
@@ -256,11 +256,18 @@ public class Worker : Unit
 					if (!IsRepairing) StartCoroutine (StartRepair ());
 				}
 				break;
-			case WorkerState.None:
+
+		case WorkerState.None:
 			
 				CheckConstructFactory ();
 
 				CheckResource ();
+
+				if (MoveCompleted())
+
+					{		
+						unitState = UnitState.Idle;	
+					}
 
 				base.IAStep ();
 				break;
@@ -322,8 +329,12 @@ public class Worker : Unit
 					
 					bool isAttacking = (unitState == Unit.UnitState.Attack);
 
-					resourceWorker[0].extractingObject.SetActive (isAttacking);
-		
+					if (isAttacking)
+					{
+						resourceWorker[0].extractingObject.SetActive (true);
+					}
+
+
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
@@ -376,11 +387,8 @@ public class Worker : Unit
 	{
 		workerState = WorkerState.None;
 
-		Pathfind.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-
 		return base.OnDie ();
 
-		Debug.Log ("mortificou Worker");
 	}
 
 	public void InstanceGhostFactory (Hashtable ht)
@@ -412,8 +420,6 @@ public class Worker : Unit
 
 			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
 
-//			Debug.Log ("SetResource - randomVector: " + randomVector);
-
 			Vector3 position = resource.transform.position - randomVector;
 			position.y = resource.transform.position.y;
 
@@ -438,7 +444,7 @@ public class Worker : Unit
 			smas.dopplerLevel = 0.0f;
 			smas.minDistance = 3.0f;
 			smas.maxDistance = 30.0f;
-			smas.rolloffMode =AudioRolloffMode.Custom;
+			smas.rolloffMode =AudioRolloffMode.Linear;
 		}
 
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
@@ -469,7 +475,7 @@ public class Worker : Unit
 			smas.dopplerLevel = 0.0f;
 			smas.minDistance = 3.0f;
 			smas.maxDistance = 30.0f;
-			smas.rolloffMode =AudioRolloffMode.Custom;
+			smas.rolloffMode =AudioRolloffMode.Linear;
 		}
 
 
@@ -497,7 +503,7 @@ public class Worker : Unit
 		
 		Vector3 u = this.transform.position;
 		
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxmining, "Mining", 0.7f, 1f, u);
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxmining, "Mining", 0.6f, 1f, u);
 		
 		if (smas !=null)
 		{
@@ -505,7 +511,7 @@ public class Worker : Unit
 			smas.dopplerLevel = 0.0f;
 			smas.minDistance = 3.0f;
 			smas.maxDistance = 30.0f;
-			smas.rolloffMode =AudioRolloffMode.Custom;
+			smas.rolloffMode =AudioRolloffMode.Linear;
 		}
 
 
@@ -553,7 +559,16 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			Move (factoryChoose.transform.position);
+			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
+			
+			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
+			
+			Vector3 position = factoryChoose.transform.position - randomVector;
+
+			position.y = factoryChoose.transform.position.y;
+			
+			Move (position);
+
 			isMovingToFactory = true;
 		}
 		else
@@ -568,7 +583,15 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			Move (factoryChoose.transform.position);
+			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
+			
+			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
+			
+			Vector3 position = factoryChoose.transform.position - randomVector;
+			position.y = factoryChoose.transform.position.y;
+			
+			Move (position);
+
 			isMovingToFactory = true;
 		}
 	}
@@ -579,7 +602,15 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			Move (factoryChoose.transform.position);
+			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
+			
+			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
+			
+			Vector3 position = factoryChoose.transform.position - randomVector;
+			position.y = factoryChoose.transform.position.y;
+			
+			Move (position);
+
 			isMovingToFactory = true;
 		}
 	}
@@ -651,13 +682,17 @@ public class Worker : Unit
 	{
 		if (HasFactory ())
 		{
+
 			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius)
 			{
+
 				if (!factoryChoose.wasBuilt)
 				{
 					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Building;
 				}
+
+
 				else if (factoryChoose.IsNeededRepair)
 				{
 					resourceWorker[0].extractingObject.SetActive (true);
@@ -667,12 +702,16 @@ public class Worker : Unit
 				lastFactory = factoryChoose;
 			}
 			else
+
 			{
 				if (!factoryChoose.wasBuilt ||
 					factoryChoose.IsNeededRepair)
-				{
+				{   
+														
 					Move (factoryChoose.transform.position);
+
 				}
+
 				else
 				{
 					Pathfind.Stop ();

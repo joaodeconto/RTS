@@ -16,7 +16,8 @@ public class StatsController : MonoBehaviour
 	{
 		None,
 		Unit,
-		Factory
+		Factory,
+		Resource
 	}
 
 	public StatsTypeSelected statsTypeSelected {get; protected set;}
@@ -124,9 +125,9 @@ public class StatsController : MonoBehaviour
 				{
 					
 					smas.dopplerLevel = 0f;
-					smas.minDistance = 3.0f;
-					smas.maxDistance = 30.0f;
-					smas.rolloffMode = AudioRolloffMode.Linear;
+					smas.minDistance = 6.0f;
+					smas.maxDistance = 60.0f;
+					smas.rolloffMode = AudioRolloffMode.Logarithmic;
 					
 				}
 
@@ -137,7 +138,6 @@ public class StatsController : MonoBehaviour
 		if (feedback)
 		{
 			hudController.CreateFeedback (HUDController.Feedbacks.Move, destination, 1f, gameplayManager.GetColorTeam ());
-
 
 		}
 	}
@@ -169,9 +169,9 @@ public class StatsController : MonoBehaviour
 			{
 				
 				smas.dopplerLevel = 0f;
-				smas.minDistance = 3.0f;
-				smas.maxDistance = 30.0f;
-				smas.rolloffMode = AudioRolloffMode.Linear;
+				smas.minDistance = 6.0f;
+				smas.maxDistance = 50.0f;
+				smas.rolloffMode = AudioRolloffMode.Logarithmic;
 				
 			}
 		}
@@ -212,9 +212,9 @@ public class StatsController : MonoBehaviour
 				{
 					
 					smas.dopplerLevel = 0f;
-					smas.minDistance = 3.0f;
-					smas.maxDistance = 30.0f;
-					smas.rolloffMode = AudioRolloffMode.Linear;
+					smas.minDistance = 6.0f;
+					smas.maxDistance = 50.0f;
+					smas.rolloffMode = AudioRolloffMode.Logarithmic;
 
 				}
 			}
@@ -263,7 +263,7 @@ public class StatsController : MonoBehaviour
 		{
 			ComponentGetter.Get<MiniMapController> ().AddStructure (stat.transform, stat.team);
 		}
-			
+							
 		ComponentGetter.Get<FogOfWar> ().AddEntity (stat.transform, stat);
 	}
 
@@ -329,6 +329,14 @@ public class StatsController : MonoBehaviour
 
 	public void SelectStat (IStats stat, bool select)
 	{
+		Resource resource = stat as Resource;
+		
+		if (resource != null)
+		{
+			statsTypeSelected = StatsTypeSelected.Resource;
+			
+		}
+
 		if(!stat.IsVisible)
 			return;
 
@@ -343,15 +351,20 @@ public class StatsController : MonoBehaviour
 				!otherSelected)
 			{
 				Unit unit = stat as Unit;
+				FactoryBase factory = stat as FactoryBase;
+
 				
 				if (unit != null)
 				{
 					statsTypeSelected = StatsTypeSelected.Unit;
 				}
-				else
+
+				if (factory != null)
 				{
 					statsTypeSelected = StatsTypeSelected.Factory;
 				}
+
+
 			}
 			
 			stat.Select ();
@@ -590,8 +603,8 @@ public class StatsController : MonoBehaviour
 					{
 			
 						smas.dopplerLevel = 0f;
-						smas.minDistance = 3.0f;
-						smas.maxDistance = 30.0f;
+						smas.minDistance = 6.0f;
+						smas.maxDistance = 50.0f;
 						smas.rolloffMode = AudioRolloffMode.Linear;
 				  				    
 					}
@@ -602,21 +615,19 @@ public class StatsController : MonoBehaviour
 			else
 			{
 
-
-
 				Vector3 u = statSelected.transform.position;
 			
 				AudioClip sfxStructures = SoundManager.LoadFromGroup("Structures");
 
-			AudioSource smas = SoundManager.PlayCappedSFX (sfxStructures, "Structures", 1f, 1f, u);
+			AudioSource smas = SoundManager.PlayCappedSFX (sfxStructures, "Structures", 0.8f, 1f, u);
 
 					if (smas != null)
 					{
 				
 						smas.dopplerLevel = 0f;
 						smas.minDistance = 3.0f;
-						smas.maxDistance = 30.0f;
-						smas.rolloffMode = AudioRolloffMode.Linear;
+						smas.maxDistance = 40.0f;
+						smas.rolloffMode = AudioRolloffMode.Logarithmic;
 					  				    
 					}
 
@@ -638,8 +649,8 @@ public class StatsController : MonoBehaviour
 				{
 					
 					smas.dopplerLevel = 0f;
-					smas.minDistance = 3.0f;
-					smas.maxDistance = 30.0f;
+					smas.minDistance = 6.0f;
+					smas.maxDistance = 50.0f;
 					smas.rolloffMode = AudioRolloffMode.Linear;
 					
 				}
@@ -693,6 +704,14 @@ public class StatsController : MonoBehaviour
 					if (w.unitState == Unit.UnitState.Idle && !selectedStats.Contains(w))
 						idleWorkers.Add(w);
 					break;
+
+	
+				//idle patch!
+//			case Worker.WorkerState.None:
+//				if (!selectedStats.Contains(w))
+//					idleWorkers.Add(w);
+//				break;
+
 				case Worker.WorkerState.CarryingIdle:
 					if (!selectedStats.Contains(w))
 						idleWorkers.Add(w);

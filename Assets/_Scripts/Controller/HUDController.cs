@@ -55,6 +55,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public GameObject pref_healthBar;
 	public GameObject pref_SubstanceHealthBar;
+	public GameObject pref_SubstanceResourceBar;
 	public GameObject pref_selectedObject;
 
 	public UIRoot uiRoot;
@@ -189,6 +190,30 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		healthBar.SetTarget (target);
 
 		return healthBar;
+	}
+
+	public SubstanceResourceBar  CreateSubstanceResourceBar (IStats target, float size, int maxResource)
+	{
+		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
+		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
+		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
+		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
+		
+		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
+		refTransform.referenceObject = target.transform;
+		refTransform.positionX = true;
+		refTransform.positionY = true;
+		refTransform.positionZ = true;
+		refTransform.destroyObjectWhenLoseReference = true;
+		refTransform.offsetPosition += Vector3.up * 0.1f;
+		
+		selectObj.transform.parent = mainTranformSelectedObjects;
+		
+		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
+			      	
+		//healthBar.SetTarget (target, target.team);
+		
+		return resourceBar;
 	}
 	
 	public SubstanceHealthBar CreateSubstanceHealthBar (IStats target, float size, int maxHealth, string referenceChild)

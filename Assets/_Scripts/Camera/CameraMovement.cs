@@ -69,7 +69,7 @@ public class CameraMovement : MonoBehaviour
 			Vector3 cameraPosition = thisCamera.transform.position;
 			Vector3 impulse = thisCamera.transform.forward.normalized * movementForceDirection;
 			
-			CameraBounds bounds = GetComponent<CameraBounds> ();
+
 			
 			if ((movementForceDirection > 0 && ((impulse + cameraPosition).y > scenario.y.min)) ||
 			    (movementForceDirection < 0 && ((impulse + cameraPosition).y < scenario.y.max)))

@@ -13,12 +13,15 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 	public Texture2D lineTexture;
 	public float start = 1.0f; 
 	public float end = 1.0f;
-	public string[] AllowedLayersToFollow = new string[2] { "Terrain", "Unit" };//Layers de objetos que podem ser seguidos 
+	public string[] AllowedLayersToFollow = new string[3] { "Terrain", "Unit","Resources" };//Layers de objetos que podem ser seguidos 
 
 	public Transform subMesh;
 
 	protected TouchController touchController;
 	protected LineRenderer lineRenderer;
+	protected HUDController hudController;
+	protected GameplayManager gameplayManager;
+	protected InteractionController interactionController;
 
 	public Unit observedUnit { get; private set; }
 	private IMovementObservable observed { get; set; }
@@ -30,6 +33,8 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 	public void Init (Vector3 initialPosition, int team)
 	{
 		touchController = ComponentGetter.Get<TouchController> ();
+		gameplayManager = ComponentGetter.Get<GameplayManager> ();
+		hudController   = ComponentGetter.Get<HUDController> ();
 		
 		lineRenderer = gameObject.AddComponent<LineRenderer>();
 		//lineRenderer.SetColors (Color.white, Color.white);
@@ -88,12 +93,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		
 		//Associando na unidade os materiais corretos
 		ProceduralMaterial[] pms = rallypointMaterials[keyRallypointMaterial];
-		//			List<Material> mms = new List<Material> ();
-		//
-		//			foreach (ProceduralMaterial pm in pms)
-		//			{
-		//				mms.Add (pm)
-		//			}
+
 		subMesh.renderer.sharedMaterials = pms as Material[];
 	}
 	
@@ -140,12 +140,19 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		{
 			GameObject goHit = hit.transform.gameObject;
 
-//			Debug.Log ("hit: " + LayerMask.LayerToName(goHit.layer) + " - " + goHit.name);
-
 			//Testar se a layer do hit esta disponivel para ser usada como referencia para o rallypoint
 			if ((goHit.layer & layerMask) != 0)
 			{
 				UpdatePosition (hit.point);
+
+				if (goHit.name == "Resource")
+				{
+					Resource resourceStats = goHit.GetComponent<Resource>();
+					hudController.CreateSubstanceResourceBar (resourceStats, resourceStats.sizeOfSelectedHealthBar, resourceStats.maxResources);
+					hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.transform.localPosition,
+					                              1f,
+					                              gameplayManager.GetColorTeam ());
+				}
 
 				if (observed != null)
 				{
@@ -154,6 +161,8 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 				}
 
 				Unit unit = goHit.GetComponent<Unit> ();
+
+
 
 				if (unit == null)
 				{
@@ -187,6 +196,8 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		
 		CalculateLine ();
 	}
+
+
 
 	#region IMovementObserver implementation
 
@@ -225,7 +236,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 //		Vector3 center = Math.CenterOfObjects (nodes.ToArray ());
 //		nodes.Insert (1, center);
 		
-		IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 10, false);
+		IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 5, false);
 		
 		int i = 0;
 		foreach (Vector3 segment in sequence)

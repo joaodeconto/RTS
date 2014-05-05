@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using Visiorama;
 
+
 [System.Serializable]
 public class ResourcesManager
 {
@@ -86,7 +87,7 @@ public class ResourcesManager
 	}
 }
 
-public class Resource : Photon.MonoBehaviour
+public class Resource : IStats
 {
 
 	public enum Type
@@ -97,12 +98,18 @@ public class Resource : Photon.MonoBehaviour
 	}
 
 	public Type type;
-	public int numberOfResources = 200;
+	public int maxResources;
+	public int numberOfResources;
+
+	
 	public int resistance = 5;
 	public int limitWorkers = 20;
 
+
+
 	// Passa o Worker, sendo o int a Resistência Atual
 	public Dictionary<Worker, int> WorkersResistance {get; protected set;}
+
 
 	public bool IsLimitWorkers {
 		get
@@ -115,8 +122,10 @@ public class Resource : Photon.MonoBehaviour
 
 	void Awake ()
 	{
-		WorkersResistance = new Dictionary<Worker, int>();
-		capsuleCollider   = GetComponent<CapsuleCollider> ();
+
+		hudController         = ComponentGetter.Get<HUDController> ();
+		WorkersResistance	  = new Dictionary<Worker, int>();
+		capsuleCollider  	  = GetComponent<CapsuleCollider> ();
 	}
 
 	public void ExtractResource (Worker worker)
@@ -141,6 +150,7 @@ public class Resource : Photon.MonoBehaviour
 					worker.GetResource ();
 				}
 				WorkersResistance[worker] = resistance;
+		    	
 			}
 
 	}
@@ -149,8 +159,11 @@ public class Resource : Photon.MonoBehaviour
 	void DiscountResources (int numberMaxGetResources)
 	{
 		numberOfResources = Mathf.Max (0, numberOfResources - numberMaxGetResources);
+
+
 		if (numberOfResources == 0) Destroy (gameObject);
 	}
+
 
 	public bool AddWorker (Worker worker)
 	{
@@ -179,4 +192,56 @@ public class Resource : Photon.MonoBehaviour
 		return false;
 	}
 
+	public override void SetVisible(bool isVisible)
+	{		
+		statsController.ChangeVisibility (this, isVisible);
+		
+		if(isVisible)
+		{
+			model.transform.parent = this.transform;
+			model.SetActive(true);
+					
+		}
+		else
+		{
+			model.transform.parent = null;
+					
+		}
+	}
+
+	public override bool IsVisible
+	{
+		get
+		{
+			return model.transform.parent != null;
+		}
+	}
+
+	public override void Select ()
+	{
+		base.Select ();
+		
+		hudController.CreateSelected (this.transform, sizeOfSelected, Color.yellow);
+	
+
+	}
+
+	public override void Deselect ()
+	{
+		base.Deselect ();
+		
+		hudController.DestroySelected (this.transform);
+		
+
+	}
+
+	public void NotifyResourceChange ()
+	{	
+
+				
+	}
+
+
+
 }
+

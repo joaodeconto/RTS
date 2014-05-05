@@ -174,15 +174,14 @@ public class InteractionController : MonoBehaviour
 				worker.SetResource (hit.GetComponent<Resource> ());
 
 				feedback = true;
+
 			}
 
 			if (feedback)
-			{
-				hudController.CreateFeedback (HUDController.Feedbacks.Self,
-											  hit.position,
-											  hit.GetComponent<Resource>().capsuleCollider.radius * hit.localScale.x * 2f,
+							
+			{  // hudController.CreateSubstanceHealthBar (this, 6, Resource, "Health Reference");
+				hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.position, 2f,
 											  gameplayManager.GetColorTeam ());
-
 
 			}
 			return;
@@ -207,8 +206,12 @@ public class InteractionController : MonoBehaviour
 					worker.SetMoveToFactory (null);
 				}
 			}
+
+			Debug.Log ("else");
 		}
 		
 		statsController.MoveTroop (touchController.GetFinalPoint);
+
+		Debug.Log ("move");
 	}
 }
