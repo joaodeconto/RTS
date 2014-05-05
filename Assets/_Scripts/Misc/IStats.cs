@@ -463,6 +463,15 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public void NotifyHealthChange ()
 	{	
+		if (IsVisible && !hudController.HasSelected(this.transform))
+		{
+			hudController.CreateSubstanceHealthBar(this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
+			Invoke ("DestroySelected", 5.0f);
+
+		}
+
+//		if (!team
+
 		foreach (IHealthObserver o in healthObservers)
 		{
 			o.UpdateHealth (m_health);
