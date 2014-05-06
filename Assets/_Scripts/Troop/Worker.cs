@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Visiorama.Extension;
 using Visiorama;
-using Visiorama.Utils;
+
 
 public class Worker : Unit
 {
@@ -329,12 +329,8 @@ public class Worker : Unit
 					
 					bool isAttacking = (unitState == Unit.UnitState.Attack);
 
-					if (isAttacking)
-					{
-						resourceWorker[0].extractingObject.SetActive (true);
-					}
-
-
+					resourceWorker[0].extractingObject.SetActive (true);
+					
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
