@@ -148,7 +148,6 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 				if (goHit.name == "Resource")
 				{
 					Resource resourceStats = goHit.GetComponent<Resource>();
-					hudController.CreateSubstanceResourceBar (resourceStats, resourceStats.sizeOfSelectedHealthBar, resourceStats.maxResources);
 					hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.transform.localPosition,
 					                              1f,
 					                              gameplayManager.GetColorTeam ());

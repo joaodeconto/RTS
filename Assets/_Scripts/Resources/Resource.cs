@@ -219,9 +219,12 @@ public class Resource : IStats
 
 	public override void Select ()
 	{
+
+
 		base.Select ();
 		
-		hudController.CreateSelected (this.transform, sizeOfSelected, Color.yellow);
+//		hudController.CreateSelected (this.transform, sizeOfSelected, Color.yellow);
+		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, maxResources);
 	
 
 	}

@@ -348,7 +348,7 @@ Animation:
   m_WrapMode: 0
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
-  m_CullingType: 0
+  m_CullingType: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -377,7 +377,7 @@ MonoBehaviour:
       name: Follow
       spriteName: right-arrow
       gridItemAttributes:
-        gridXIndex: 0
+        gridXIndex: 4
         gridYIndex: 2
   - actionType: 2
     buttonAttributes:
@@ -388,17 +388,17 @@ MonoBehaviour:
         gridYIndex: 2
   pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
   transformParticleDamageReference: {fileID: 400056}
-  playerUnit: 1
+  playerUnit: 0
   category: Main Base
   costOfResources:
-    m_mana: 1
+    m_mana: 0
     m_rocks: 400
   model: {fileID: 100016}
   unitsToCreate:
   - unit: {fileID: 11400000, guid: 097090cf2466e1b408f34f8b34778481, type: 2}
     buttonName: Worker
     gridItemAttributes:
-      gridXIndex: 0
+      gridXIndex: 3
       gridYIndex: 1
     costOfResources:
       m_mana: 0
@@ -413,9 +413,6 @@ MonoBehaviour:
   guiTextureName: TribeMarket
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
-  costOfResources:
-    m_mana: 1
-    m_rocks: 400
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1

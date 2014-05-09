@@ -32,7 +32,7 @@ public class CameraMovement : MonoBehaviour
 		
 		foreach (Camera camera in touchController.zoomSettings.cameras)
 		{
-			camera.fieldOfView = thisCamera.fieldOfView;
+			camera.orthographicSize = thisCamera.orthographicSize;
 		}
 	}
 
@@ -53,44 +53,39 @@ public class CameraMovement : MonoBehaviour
 		
 		if (Input.GetAxis ("Mouse ScrollWheel") != 0)
 		{
-//			float size = thisCamera.fieldOfView;
+			float size = thisCamera.orthographicSize;
+			
+			size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
+			
+			thisCamera.orthographicSize = Mathf.Clamp (size, zoom.min, zoom.max);
+						
+		
+//			float movementForceDirection = Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
+//			Vector3 cameraPosition = thisCamera.transform.position;
+//			Vector3 impulse = thisCamera.transform.forward.normalized * movementForceDirection;
 //			
-//			size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
+//
 //			
-//			thisCamera.fieldOfView = Mathf.Clamp (size, zoom.min, zoom.max);
-//			
-//			
-//			foreach (Camera camera in touchController.zoomSettings.cameras)
+//			if ((movementForceDirection > 0 && ((impulse + cameraPosition).y > scenario.y.min)) ||
+//			    (movementForceDirection < 0 && ((impulse + cameraPosition).y < scenario.y.max)))
 //			{
-//				camera.fieldOfView = thisCamera.fieldOfView;
+//				cameraPosition += impulse;
+//				
+//				float screenRatio = (float)Screen.width / (float)Screen.height;
+//				float angleRatio = thisCamera.transform.eulerAngles.x / 180f; 
+//				float fieldOfViewRatio = (thisCamera.orthographicSize / 150f);
+//				
+//				scenario.x.min -= movementForceDirection * fieldOfViewRatio * screenRatio;
+//				scenario.x.max += movementForceDirection * fieldOfViewRatio * screenRatio;
+//				scenario.z.min += 2f * movementForceDirection * (1f / angleRatio) * fieldOfViewRatio * (1f / screenRatio);
+//				scenario.z.max += 2f * movementForceDirection * (1f / angleRatio) * fieldOfViewRatio * (1f / screenRatio);
+//			
+//				thisCamera.transform.position = cameraPosition;
+//				foreach (Camera camera in touchController.zoomSettings.cameras)
+//				{
+//					camera.transform.position = cameraPosition;
+//				}
 //			}
-
-			float movementForceDirection = Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
-			Vector3 cameraPosition = thisCamera.transform.position;
-			Vector3 impulse = thisCamera.transform.forward.normalized * movementForceDirection;
-			
-
-			
-			if ((movementForceDirection > 0 && ((impulse + cameraPosition).y > scenario.y.min)) ||
-			    (movementForceDirection < 0 && ((impulse + cameraPosition).y < scenario.y.max)))
-			{
-				cameraPosition += impulse;
-				
-				float screenRatio = (float)Screen.width / (float)Screen.height;
-				float angleRatio = thisCamera.transform.eulerAngles.x / 180f; 
-				float fieldOfViewRatio = (thisCamera.fieldOfView / 150f);
-				
-				scenario.x.min -= movementForceDirection * fieldOfViewRatio * screenRatio;
-				scenario.x.max += movementForceDirection * fieldOfViewRatio * screenRatio;
-				scenario.z.min += 2f * movementForceDirection * (1f / angleRatio) * fieldOfViewRatio * (1f / screenRatio);
-				scenario.z.max += 2f * movementForceDirection * (1f / angleRatio) * fieldOfViewRatio * (1f / screenRatio);
-			
-				thisCamera.transform.position = cameraPosition;
-				foreach (Camera camera in touchController.zoomSettings.cameras)
-				{
-					camera.transform.position = cameraPosition;
-				}
-			}
 		}
 
 		if (touchController.RelativePosition.x <= minimum.x && touchController.RelativePosition.x >= 0f)

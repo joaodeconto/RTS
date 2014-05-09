@@ -489,7 +489,6 @@ public class FactoryBase : IStats, IDeathObservable
 			goRallypoint.gameObject.SetActive (true);
 			if (!goRallypoint.gameObject.activeSelf)
 				goRallypoint.gameObject.SetActive (true);
-
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				Hashtable ht = new Hashtable();

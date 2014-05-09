@@ -789,7 +789,7 @@ public class Unit : IStats, IMovementObservable,
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
 		
-		statsController.RemoveStats(this);
+//		statsController.RemoveStats(this);
 
 
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
