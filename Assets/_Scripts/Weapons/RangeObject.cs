@@ -22,7 +22,10 @@ public class RangeObject : MonoBehaviour {
 		
 		rangeHitDelegate = rhd;
 		hashtable = ht;
+		if (target != (null))
+		{
 		targetPosition = target.transform.position;
+		}
 		this.target = target;
 		time = timeToDestroyWhenCollide;
 		
