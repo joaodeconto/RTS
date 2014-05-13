@@ -200,8 +200,18 @@ public partial class SoundManager : Singleton<SoundManager> {
 				if(pair.Value.ownedAudioClipPool[i].activeSelf)
 #endif
 				{
-	                if (!pair.Value.ownedAudioClipPool[i].audio.isPlaying)
+					AudioSource thisAudio = pair.Value.ownedAudioClipPool[i].audio;
+	                if (!thisAudio.isPlaying) // if not playing
 				    {
+						if(delayedAudioSources.ContainsKey(thisAudio)) // skip if delayed still
+							continue;
+						
+						if(runOnEndFunctions.ContainsKey(thisAudio) && runOnEndFunctions[thisAudio] != null) // call run on end for sfx if its there
+						{
+							runOnEndFunctions[thisAudio]();
+							runOnEndFunctions.Remove(thisAudio);
+						}
+
 						int instanceID = pair.Value.ownedAudioClipPool[i].GetInstanceID();
 					    if(cappedSFXObjects.ContainsKey(instanceID))
 						     cappedSFXObjects.Remove(instanceID);
@@ -209,10 +219,15 @@ public partial class SoundManager : Singleton<SoundManager> {
 	                    pair.Value.ownedAudioClipPool[i].SetActiveRecursively(false);
 #else
 						pair.Value.ownedAudioClipPool[i].SetActive(false);
-#endif
+#endif						
 						if(pair.Value.prepoolAmount <= i)
 							pair.Value.timesOfDeath[i] = Time.time+SFXObjectLifetime;
 				    }
+					else // if it playing or muted and palying
+					{
+						if(delayedAudioSources.ContainsKey(thisAudio))// if delayed but is playign now, remove from delayed list
+							delayedAudioSources.Remove(thisAudio);
+					}
 				}
 				else if(pair.Value.prepoolAmount <= i && Time.time > pair.Value.timesOfDeath[i])
 				{
@@ -225,9 +240,29 @@ public partial class SoundManager : Singleton<SoundManager> {
 		for(int i = unOwnedSFXObjects.Count - 1; i >= 0; i--)
 		{
 			if(unOwnedSFXObjects[i] != null)
+			{
 				if(unOwnedSFXObjects[i].audio != null)
-					if(unOwnedSFXObjects[i].audio.isPlaying || unOwnedSFXObjects[i].audio.mute)
-						continue;
+				{
+					AudioSource thisAudio = unOwnedSFXObjects[i].audio;
+					if(thisAudio.isPlaying) // if playign or muted and playing
+					{
+						if(delayedAudioSources.ContainsKey(thisAudio)) // if delayed but is playign now, remove from delayed list
+							delayedAudioSources.Remove(thisAudio);
+						continue; // dont remove
+					}
+					else // if not playing
+					{
+						if(delayedAudioSources.ContainsKey(thisAudio)) // skip if delayed still
+							continue;
+						
+						if(runOnEndFunctions.ContainsKey(thisAudio) && runOnEndFunctions[thisAudio] != null) // call run on end for sfx if its there
+						{
+							runOnEndFunctions[thisAudio]();
+							runOnEndFunctions.Remove(thisAudio);
+						}
+					}
+				}
+			}
 			unOwnedSFXObjects.RemoveAt(i);
 		}
     }
@@ -277,45 +312,96 @@ public partial class SoundManager : Singleton<SoundManager> {
 		return SFXObject;
 	}
 
-    private AudioSource PlaySFXAt(AudioClip clip, float volume, float pitch, Vector3 location, bool capped, string cappedID)
-    {
-        
-        GameObject tempGO = GetNextInactiveSFXObject(clip);
+    private AudioSource PlaySFXAt(AudioClip clip, float volume, float pitch, Vector3 location=default(Vector3), bool capped=false, string cappedID="", bool looping=false, float delay=0f, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+    {		
+		GameObject tempGO = GetNextInactiveSFXObject(clip);
         if (tempGO == null)
             return null;
 		
-		tempGO.transform.position = location;
+		AudioSource aSource = tempGO.audio;
+		
+		aSource.transform.position = location;
 #if UNITY_3_4 || UNITY_3_5
-        tempGO.SetActiveRecursively(true);
+        aSource.gameObject.SetActiveRecursively(true);
 #else
-		tempGO.SetActive(true);
-#endif
-        AudioSource aSource = tempGO.audio;
+		aSource.gameObject.SetActive(true);
+#endif		
+        return PlaySFXBase(aSource, clip, volume, pitch, capped, cappedID, looping, delay, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
+    }
+	
+	private AudioSource PlaySFXOn(AudioSource aSource, AudioClip clip, float volume, float pitch, bool capped=false, string cappedID="", bool looping=false, float delay=0f, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+    {		
+		aSource.clip = clip;
+		
+		return PlaySFXBase(aSource, clip, volume, pitch, capped, cappedID, looping, delay, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
+    }
+	
+	private AudioSource PlaySFXBase(AudioSource aSource, AudioClip clip, float volume, float pitch, bool capped=false, string cappedID="", bool looping=false, float delay=0f, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+    {		
         aSource.Stop();
         aSource.pitch = pitch;
         aSource.volume = volume;
+		if(!capped)
+			aSource.loop = looping;
 		aSource.mute = mutedSFX;
-        aSource.Play();
+		
+		if(delay <= 0f)
+        	aSource.Play();
+		else
+		{
+			if(!delayedAudioSources.ContainsKey(aSource))
+				delayedAudioSources.Add(aSource, delay);
+			else
+				delayedAudioSources[aSource] = delay;
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1
+			aSource.Play((ulong)(44100f*delay));
+#else
+			aSource.PlayDelayed(delay);
+#endif
+		}
+		
+		if(runOnEndFunction != null)
+		{
+			if(runOnEndFunctions.ContainsKey(aSource))
+				runOnEndFunctions[aSource] = runOnEndFunction;
+			else
+				runOnEndFunctions.Add(aSource, runOnEndFunction);
+		}
+		
+		Duck(duckingSetting, duckVolume, duckPitch, volume, pitch, aSource);
 		
 		if(capped && !string.IsNullOrEmpty(cappedID))
-			cappedSFXObjects.Add(tempGO.GetInstanceID(), cappedID);
+			cappedSFXObjects.Add(aSource.gameObject.GetInstanceID(), cappedID);
 		
         return aSource;
     }
 	
-	private AudioSource PlaySFXAt(AudioClip clip, float volume, float pitch, Vector3 location)
-    {
-        return PlaySFXAt(clip, volume, pitch, location, false, "");
-    }
-	
-	private AudioSource PlaySFXAt(AudioClip clip, float volume, float pitch)
-    {
-        return PlaySFXAt(clip, volume, pitch, Vector3.zero);
-    }
+	private AudioSource PlaySFXLoopOn(AudioSource source, AudioClip clip, bool tillDestroy, float volume, float pitch, float maxDuration, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+	{
+		source.Stop();
+		source.clip = clip;
+		source.pitch = pitch;
+		source.volume = volume;
+		source.mute = Instance.mutedSFX;
+		source.loop = true;
+		source.Play();
+		
+		if(runOnEndFunction != null)
+		{
+			if(runOnEndFunctions.ContainsKey(source))
+				runOnEndFunctions[source] = runOnEndFunction;
+			else
+				runOnEndFunctions.Add(source, runOnEndFunction);
+		}
+		
+		Duck(duckingSetting, duckVolume, duckPitch, volume, pitch, source);
+
+        Instance.StartCoroutine(Instance._PlaySFXLoopTillDestroy(source.gameObject, source, tillDestroy, maxDuration));
+		return source;
+	}
 
 	private IEnumerator _PlaySFXLoopTillDestroy(GameObject gO, AudioSource source, bool tillDestroy, float maxDuration)
 	{
-		
 		bool trackEndTime = false;
 		float endTime = Time.time + maxDuration;
 		if(!tillDestroy || maxDuration > 0.0f)
@@ -328,6 +414,12 @@ public partial class SoundManager : Singleton<SoundManager> {
 		}
 		
 		source.Stop();
+	}
+	
+	private void CheckInsertionIntoUnownedSFXObjects(AudioSource aSource)
+	{
+		if(!IsOwnedSFXObject(aSource) && !unOwnedSFXObjects.Contains(aSource.gameObject))
+			Instance.unOwnedSFXObjects.Add(aSource.gameObject);
 	}
 	
 	private void _StopSFX()
@@ -352,6 +444,8 @@ public partial class SoundManager : Singleton<SoundManager> {
 #endif
 				if(unOwnedSFXObject.audio != null)
 					unOwnedSFXObject.audio.Stop();
+		
+		delayedAudioSources.Clear();
 	}
 	
 	private bool ShouldContinueLoop(GameObject gO, bool trackEndTime, float endTime)
@@ -401,6 +495,34 @@ public partial class SoundManager : Singleton<SoundManager> {
 		return false;
 	}
 	
+	private bool IsOwnedSFXObject(AudioSource aSource)
+	{
+		if(aSource.clip == null) //not common occurence here at ALL
+		{
+			if(aSource.gameObject.name.StartsWith("SFX-["))
+			{
+				foreach(KeyValuePair<AudioClip, SFXPoolInfo> pair in ownedPools)
+				{
+					foreach(GameObject ownedSFXObject in pair.Value.ownedAudioClipPool)
+						if(ownedSFXObject == aSource.gameObject)
+							return true;
+				}
+			}
+			return false;
+		}
+		else
+		{
+			if(ownedPools.ContainsKey(aSource.clip))
+				return ownedPools[aSource.clip].ownedAudioClipPool.Contains(aSource.gameObject);
+			return false;
+		}
+	}
+	
+	private bool IsOwnedSFXObject(GameObject obj)
+	{
+		return IsOwnedSFXObject(obj.audio);
+	}
+	
 	private SFXGroup GetGroupForClipName(string clipName)
 	{
 		if(!clipsInGroups.ContainsKey(clipName))
@@ -413,5 +535,397 @@ public partial class SoundManager : Singleton<SoundManager> {
 		if(!groups.ContainsKey(grpName))
 			return null;
 		return groups[grpName];
+	}
+	
+	private IEnumerator XFade(float duration, AudioSource a1, AudioSource a2, SongCallBack runOnEndFunction)
+	{		
+		var startTime = Time.realtimeSinceStartup;
+	    var endTime = startTime + duration;
+		if(!a2.isPlaying) a2.Play();
+		float a1StartVolume = a1.volume, a2StartVolume = a2.volume, deltaPercent = 0f, a1DeltaVolume = 0f, a2DeltaVolume = 0f, startMaxMusicVolume = a2.volume, volumePercent = 1f;
+	    while (Time.realtimeSinceStartup < endTime) {
+			volumePercent = 1f;
+			
+			if(endTime - Time.realtimeSinceStartup > duration)
+			{
+				startTime = Time.realtimeSinceStartup;
+	    		endTime = startTime + duration;
+			}			
+	        deltaPercent = ((Time.realtimeSinceStartup - startTime) / duration);
+			a1DeltaVolume = deltaPercent * a1StartVolume;
+			a2DeltaVolume = deltaPercent * (startMaxMusicVolume - a2StartVolume);
+	
+	        a1.volume = Mathf.Clamp01((a1StartVolume - a1DeltaVolume) * volumePercent);
+	        a2.volume = Mathf.Clamp01((a2DeltaVolume + a2StartVolume) * volumePercent);
+	       	yield return null;
+	    }
+		a1.volume = 0f;
+		a2.volume = a2StartVolume;
+		a1.Stop();
+		
+		if(runOnEndFunction != null)
+		{
+			runOnEndFunction();
+		}
+	}
+	
+	private IEnumerator XOut(float duration, AudioSource a1, SongCallBack runOnEndFunction)
+	{
+	    var startTime = Time.realtimeSinceStartup;
+	    var endTime = startTime + duration;
+		float maxVolume = a1.volume, deltaVolume = 0f, volumePercent = 1f;
+	    while (Time.realtimeSinceStartup < endTime) {
+			volumePercent = 1f;
+			
+	        if(endTime - Time.realtimeSinceStartup > duration)
+			{
+				startTime = Time.realtimeSinceStartup;
+	    		endTime = startTime + duration;
+			}
+			deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * maxVolume;
+	
+	        a1.volume = Mathf.Clamp01((maxVolume - deltaVolume) * volumePercent);
+	       	yield return null;
+	    }
+		a1.volume = 0f;
+		a1.Stop();
+		
+		if(runOnEndFunction != null)
+		{
+			runOnEndFunction();
+		}
+	}
+		
+	/// <summary>
+	/// Crossin from a1 for duration.
+	/// </summary>
+	private IEnumerator XIn(float duration, AudioSource a1, SongCallBack runOnEndFunction)
+	{
+		var startTime = Time.realtimeSinceStartup;
+	    var endTime = startTime + duration;
+		float a1StartVolume = 0f, startMaxMusicVolume = a1.volume, volumePercent = 1f;
+		a1.volume = a1StartVolume;
+		if(!a1.isPlaying)
+		{
+			a1.Play();
+		}
+		float deltaVolume = 0f;
+	    while (Time.realtimeSinceStartup < endTime) {
+			volumePercent = 1f;
+			
+	        if(endTime - Time.realtimeSinceStartup > duration)
+			{
+				startTime = Time.realtimeSinceStartup;
+	    		endTime = startTime + duration;
+			}
+			deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * (startMaxMusicVolume - a1StartVolume);
+	
+	        a1.volume = Mathf.Clamp01((deltaVolume + a1StartVolume) * volumePercent);
+	       	yield return null;
+	    }
+		a1.volume = startMaxMusicVolume;
+		
+		if(runOnEndFunction != null)
+		{
+			runOnEndFunction();
+		}
+	}
+	
+	private void Duck(SoundDuckingSetting duckingSetting, float duckVolume, float duckPitch, float unDuckedVolume, float unDuckedPitch, params AudioSource[] exceptions)
+	{
+		if(exceptions.Length <= 0 || duckingSetting == SoundDuckingSetting.DoNotDuck)
+			return;
+		
+		if(!isDucking)
+		{
+			isDucking = true;
+			preDuckVolume = maxVolume;
+			preDuckVolumeMusic = maxMusicVolume;
+			preDuckVolumeSFX = maxSFXVolume;
+			preDuckPitch = GetPitch();
+			preDuckPitchMusic = GetPitchMusic();
+			preDuckPitchSFX = GetPitchSFX();
+		}
+		else
+		{
+			duckNumber++;
+		}
+
+		duckSource = exceptions[0];
+		
+		StartCoroutine(DuckTheTrack(duckingSetting, duckVolume, duckPitch, unDuckedVolume, unDuckedPitch, exceptions));
+	}
+	
+	private IEnumerator DuckTheTrack(SoundDuckingSetting duckingSetting, float duckVolume, float duckPitch, float unDuckedVolume, float unDuckedPitch, AudioSource[] exceptions)
+	{
+		int thisNumber = duckNumber;
+		
+		/* crossfade in */
+		var startTime = Time.realtimeSinceStartup;
+	    var endTime = startTime + duckStartSpeed;
+		
+		float startMaxVolume = 0f;
+		float duckStartVolume = 0f;
+		float startMaxPitch = 1f;
+		float duckStartPitch = 1f;
+		switch(duckingSetting)
+		{
+		case SoundDuckingSetting.DuckAll:
+			duckStartVolume = startMaxVolume = maxVolume;
+			duckStartPitch = startMaxPitch = GetPitch();
+			break;
+		case SoundDuckingSetting.OnlyDuckMusic:
+			duckStartVolume = startMaxVolume = maxMusicVolume;
+			duckStartPitch = startMaxPitch = GetPitchMusic();
+			break;
+		case SoundDuckingSetting.OnlyDuckSFX:
+			duckStartVolume = startMaxVolume = maxSFXVolume;
+			duckStartPitch = startMaxPitch = GetPitchSFX();
+			break;
+		case SoundDuckingSetting.DoNotDuck:
+		default:
+			yield break;
+		}
+		float unDuckStartVolume = 0f;
+		float deltaPercent = 0f;
+		float duckDeltaVolume = 0f;
+		float unDuckDeltaVolume = 0f; 
+		float volumePercent = 1f;
+		
+		float unDuckStartPitch = 1f;
+		float duckDeltaPitch = 0f;
+		float unDuckDeltaPitch = 0f;
+		
+	    while (Time.realtimeSinceStartup < endTime) {
+			
+			if(thisNumber != duckNumber)
+				yield break;
+			
+			float maxSoundVolume = 1f;
+			switch(duckingSetting)
+			{
+			case SoundDuckingSetting.DuckAll:
+				maxSoundVolume = maxVolume;
+				break;
+			case SoundDuckingSetting.OnlyDuckMusic:
+				maxSoundVolume = maxMusicVolume;
+				break;
+			case SoundDuckingSetting.OnlyDuckSFX:
+				maxSoundVolume = maxSFXVolume;
+				break;
+			case SoundDuckingSetting.DoNotDuck:
+			default:
+				yield break;
+			}
+			
+			if(startMaxVolume == 0f)
+				volumePercent = 1f;
+			else
+				volumePercent = maxSoundVolume / startMaxVolume;
+			
+			if(endTime - Time.realtimeSinceStartup > duckStartSpeed)
+			{
+				startTime = Time.realtimeSinceStartup;
+	    		endTime = startTime + duckStartSpeed;
+			}
+			deltaPercent = ((Time.realtimeSinceStartup - startTime) / duckStartSpeed);
+			duckDeltaVolume = deltaPercent * (duckStartVolume - duckVolume);
+			unDuckDeltaVolume = deltaPercent * (startMaxVolume - unDuckStartVolume);
+			duckDeltaPitch = deltaPercent * (duckStartPitch - duckPitch);
+			unDuckDeltaPitch = deltaPercent * (startMaxPitch - unDuckStartPitch);
+			
+			switch(duckingSetting)
+			{
+			case SoundDuckingSetting.DuckAll:
+				SetVolume(Mathf.Clamp01((duckStartVolume - duckDeltaVolume) * volumePercent));
+				SetPitch(Mathf.Clamp01((duckStartPitch - duckDeltaPitch) * volumePercent));
+				foreach(AudioSource exception in exceptions)
+				{
+					SetVolumeSFX(Mathf.Clamp01((unDuckDeltaVolume + unDuckStartVolume) * volumePercent), true, exception);
+					SetPitchSFX(Mathf.Clamp01((unDuckDeltaPitch + unDuckStartPitch) * volumePercent), exception);
+				}
+				break;
+			case SoundDuckingSetting.OnlyDuckMusic:
+				SetVolumeMusic(Mathf.Clamp01((duckStartVolume - duckDeltaVolume) * volumePercent));
+				SetPitchMusic(Mathf.Clamp01((duckStartPitch - duckDeltaPitch) * volumePercent));
+				foreach(AudioSource exception in exceptions)
+				{
+					SetVolumeSFX(Mathf.Clamp01((unDuckDeltaVolume + unDuckStartVolume) * volumePercent), true, exception);
+					SetPitchSFX(Mathf.Clamp01((unDuckDeltaPitch + unDuckStartPitch) * volumePercent), exception);
+				}
+				break;
+			case SoundDuckingSetting.OnlyDuckSFX:
+				SetVolumeSFX(Mathf.Clamp01((duckStartVolume - duckDeltaVolume) * volumePercent));
+				SetPitchSFX(Mathf.Clamp01((duckStartPitch - duckDeltaPitch) * volumePercent));
+				foreach(AudioSource exception in exceptions)
+				{
+					SetVolumeSFX(Mathf.Clamp01((unDuckDeltaVolume + unDuckStartVolume) * volumePercent), true, exception);
+					SetPitchSFX(Mathf.Clamp01((unDuckDeltaPitch + unDuckStartPitch) * volumePercent), exception);
+				}
+				break;
+			case SoundDuckingSetting.DoNotDuck:
+			default:
+				yield break;
+			}
+			yield return null;
+		}
+		
+		switch(duckingSetting)
+		{
+		case SoundDuckingSetting.DuckAll:
+			SetVolume(duckVolume);
+			SetPitch(duckPitch);
+			foreach(AudioSource exception in exceptions)
+			{
+				SetVolumeSFX(unDuckedVolume, true, exception);
+				SetPitchSFX(unDuckedPitch, exception);
+			}
+			break;
+		case SoundDuckingSetting.OnlyDuckMusic:
+			SetVolumeMusic(duckVolume);
+			SetPitchMusic(duckPitch);
+			foreach(AudioSource exception in exceptions)
+			{
+				SetVolumeSFX(unDuckedVolume, true, exception);
+				SetPitchSFX(unDuckedPitch, exception);
+			}
+			break;
+		case SoundDuckingSetting.OnlyDuckSFX:
+			SetVolumeSFX(duckVolume);
+			SetPitchSFX(duckPitch);
+			foreach(AudioSource exception in exceptions)
+			{
+				SetVolumeSFX(unDuckedVolume, true, exception);
+				SetPitchSFX(unDuckedPitch, exception);
+			}
+			break;
+		case SoundDuckingSetting.DoNotDuck:
+		default:
+			yield break;
+		}
+		/* end crossfade in */
+		
+		/* wait for clip to stop playing */
+		while(exceptions[0].isPlaying)
+		{
+			
+			if(thisNumber != duckNumber)
+				yield break;
+			
+			yield return null;
+		}
+		/* cross rest back in and call run on end */
+		startTime = Time.realtimeSinceStartup;
+	    endTime = startTime + duckEndSpeed;
+		
+		switch(duckingSetting)
+		{
+		case SoundDuckingSetting.DuckAll:
+			duckStartVolume = maxVolume;
+			startMaxVolume = preDuckVolume;
+			duckStartPitch = GetPitch();
+			startMaxPitch = preDuckPitch;
+			break;
+		case SoundDuckingSetting.OnlyDuckMusic:
+			duckStartVolume = maxMusicVolume;
+			startMaxVolume = preDuckVolumeMusic;
+			duckStartPitch = GetPitchMusic();
+			startMaxPitch = preDuckPitchMusic;
+			break;
+		case SoundDuckingSetting.OnlyDuckSFX:
+			duckStartVolume = maxSFXVolume;
+			startMaxVolume = preDuckVolumeSFX;
+			duckStartPitch = GetPitchSFX();
+			startMaxPitch = preDuckPitchSFX;
+			break;
+		case SoundDuckingSetting.DoNotDuck:
+		default:
+			yield break;
+		}
+		
+		volumePercent = 1f;
+		deltaPercent = 0f;
+		
+	    while (Time.realtimeSinceStartup < endTime) {
+			
+			if(thisNumber != duckNumber)
+				yield break;
+			
+			float maxSoundVolume = 1f;
+			switch(duckingSetting)
+			{
+			case SoundDuckingSetting.DuckAll:
+				maxSoundVolume = preDuckVolume;
+				break;
+			case SoundDuckingSetting.OnlyDuckMusic:
+				maxSoundVolume = preDuckVolumeMusic;
+				break;
+			case SoundDuckingSetting.OnlyDuckSFX:
+				maxSoundVolume = preDuckVolumeSFX;
+				break;
+			case SoundDuckingSetting.DoNotDuck:
+			default:
+				yield break;
+			}
+			
+			if(startMaxVolume == 0f)
+				volumePercent = 1f;
+			else
+				volumePercent = maxSoundVolume / startMaxVolume;			
+			
+	        if(endTime - Time.realtimeSinceStartup > duckEndSpeed)
+			{
+				startTime = Time.realtimeSinceStartup;
+	    		endTime = startTime + duckEndSpeed;
+			}
+			deltaPercent = ((Time.realtimeSinceStartup - startTime) / duckEndSpeed) * (startMaxVolume - duckStartVolume);
+			
+			switch(duckingSetting)
+			{
+			case SoundDuckingSetting.DuckAll:
+				SetVolume(Mathf.Clamp01((deltaPercent + duckStartVolume) * volumePercent));
+				SetPitch(Mathf.Clamp01((deltaPercent + duckStartPitch) * volumePercent));
+				break;
+			case SoundDuckingSetting.OnlyDuckMusic:
+				SetVolumeMusic(Mathf.Clamp01((deltaPercent + duckStartVolume) * volumePercent));
+				SetPitchMusic(Mathf.Clamp01((deltaPercent + duckStartPitch) * volumePercent));
+				break;
+			case SoundDuckingSetting.OnlyDuckSFX:
+				SetVolumeSFX(Mathf.Clamp01((deltaPercent + duckStartVolume) * volumePercent));
+				SetPitchSFX(Mathf.Clamp01((deltaPercent + duckStartPitch) * volumePercent));
+				break;
+			case SoundDuckingSetting.DoNotDuck:
+			default:
+				yield break;
+			}
+	       	yield return null;
+	    }
+		
+		switch(duckingSetting)
+		{
+		case SoundDuckingSetting.DuckAll:
+			SetVolume(preDuckVolume);
+			SetPitch(preDuckPitch);
+			break;
+		case SoundDuckingSetting.OnlyDuckMusic:
+			SetVolumeMusic(preDuckVolumeMusic);
+			SetPitchMusic(preDuckPitchMusic);
+			break;
+		case SoundDuckingSetting.OnlyDuckSFX:
+			SetVolumeSFX(preDuckVolumeSFX);
+			SetPitchSFX(preDuckPitchSFX);
+			break;
+		case SoundDuckingSetting.DoNotDuck:
+		default:
+			yield break;
+		}
+		
+		if(thisNumber != duckNumber)
+			yield break;
+		
+		duckNumber = 0;
+		
+		if(isDucking)
+			isDucking = false;
 	}
 }

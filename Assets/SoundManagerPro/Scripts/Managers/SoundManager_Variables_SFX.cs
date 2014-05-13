@@ -17,6 +17,26 @@ public partial class SoundManager : Singleton<SoundManager> {
 	// Dictionary of instance ID to cappedID to keep track of capped SFX
 	public Dictionary<int, string> cappedSFXObjects = new Dictionary<int, string>();
 	
+	// Dictionary of delayed audiosources
+	public Dictionary<AudioSource, float> delayedAudioSources = new Dictionary<AudioSource, float>();
+	
+	// Dictionary of sfx with runonendfunctions
+	public Dictionary<AudioSource, SongCallBack> runOnEndFunctions = new Dictionary<AudioSource, SongCallBack>();
+	
+	private AudioSource duckSource;
+	private SongCallBack duckFunction;
+	private bool isDucking = false;
+	private int duckNumber = 0;
+	private float preDuckVolume = 1f;
+	private float preDuckVolumeMusic = 1f;
+	private float preDuckVolumeSFX = 1f;
+	private float preDuckPitch = 1f;
+	private float preDuckPitchMusic = 1f;
+	private float preDuckPitchSFX = 1f;
+	
+	public static float duckStartSpeed = .1f;
+	public static float duckEndSpeed = .5f;
+	
 	// List of SFX groups
 	public List<SFXGroup> sfxGroups = new List<SFXGroup>();
 	
@@ -41,14 +61,14 @@ public partial class SoundManager : Singleton<SoundManager> {
 				foreach(GameObject ownedSFXObject in pair.Value.ownedAudioClipPool)
 				{
 					if(ownedSFXObject != null)
-						if(ownedSFXObject.audio != null)
+						if(ownedSFXObject.audio != null && (!isDucking || ownedSFXObject.audio != duckSource))
 							ownedSFXObject.audio.volume = value;
 				}
 			}
 			foreach(GameObject unOwnedSFXObject in Instance.unOwnedSFXObjects)
 			{
 				if(unOwnedSFXObject != null)
-					if(unOwnedSFXObject.audio != null)
+					if(unOwnedSFXObject.audio != null && (!isDucking || unOwnedSFXObject.audio != duckSource))
 						unOwnedSFXObject.audio.volume = value;
 			}
 			_volumeSFX = value;
@@ -65,14 +85,14 @@ public partial class SoundManager : Singleton<SoundManager> {
 				foreach(GameObject ownedSFXObject in pair.Value.ownedAudioClipPool)
 				{
 					if(ownedSFXObject != null)
-						if(ownedSFXObject.audio != null)
+						if(ownedSFXObject.audio != null && (!isDucking || ownedSFXObject.audio != duckSource))
 							ownedSFXObject.audio.pitch = value;
 				}
 			}
 			foreach(GameObject unOwnedSFXObject in Instance.unOwnedSFXObjects)
 			{
 				if(unOwnedSFXObject != null)
-					if(unOwnedSFXObject.audio != null)
+					if(unOwnedSFXObject.audio != null && (!isDucking || unOwnedSFXObject.audio != duckSource))
 						unOwnedSFXObject.audio.pitch = value;
 			}
 			_pitchSFX = value;
@@ -102,7 +122,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 							if(value)
 								ownedSFXObject.audio.mute = value;
 							else
-								if(Instance.offTheSFX)
+								if(!Instance.offTheSFX)
 									ownedSFXObject.audio.mute = value;
 				}
 			}
@@ -113,7 +133,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 						if(value)
 							unOwnedSFXObject.audio.mute = value;
 						else
-							if(Instance.offTheSFX)
+							if(!Instance.offTheSFX)
 								unOwnedSFXObject.audio.mute = value;
 			}
 			_mutedSFX = value;

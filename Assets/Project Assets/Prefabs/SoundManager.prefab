@@ -38,7 +38,7 @@ AudioSource:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   serializedVersion: 3
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: fe403fd12ba51eb47a3a7e46fd6d75a9, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -215,21 +215,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617da7e6dc6c82f43988a70b1b7fd69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  helpOn: 0
+  helpOn: 1
   showInfo: 1
   showDev: 1
   showList: 1
   showAdd: 0
   showSFX: 1
-  showSFXDetails: 00000000000000000000000000000000000000000000000000000000000000000000
+  showSFXDetails: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   groupAddIndex: 0
   autoPrepoolAmount: 0
   showAsGrouped: 1
   soundConnections:
+  - level: 2x2_Swamp_King
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
+    playMethod: 5
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
   - level: main_menu
     isCustomLevel: 0
     soundsToPlay:
     - {fileID: 8300000, guid: fe403fd12ba51eb47a3a7e46fd6d75a9, type: 3}
+    playMethod: 0
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
+  - level: 1x1_Medium_TheLivingDesert
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    playMethod: 3
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
+  - level: autoload_main_menu
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: 03a2c95c0951b40499bf5a2df255caae, type: 3}
     playMethod: 0
     minDelay: 0
     maxDelay: 0
@@ -246,7 +270,7 @@ MonoBehaviour:
     minDelay: 0
     maxDelay: 0
     delay: 0
-  crossDuration: 0
+  crossDuration: 1
   showDebug: 1
   offTheBGM: 0
   isPaused: 0
@@ -254,14 +278,11 @@ MonoBehaviour:
   ignoreLevelLoad: 0
   resourcesPath: Sounds/SFX
   storedSFXs:
-  - {fileID: 8300000, guid: 2e806d8075447554ba96aa602c48c2b6, type: 3}
   - {fileID: 8300000, guid: 73ca32c0bf4877e478024223ef9b40be, type: 3}
-  - {fileID: 8300000, guid: 6b580fd0115d2dd4a9b1cfdb73cea8f1, type: 3}
   - {fileID: 8300000, guid: 96036e7288a524b4b8360d37e964c0b0, type: 3}
   - {fileID: 8300000, guid: a7a17999a186508489c7b866c00889d6, type: 3}
   - {fileID: 8300000, guid: 6c6ac58a969bc7f4d9255f3ece2ce382, type: 3}
   - {fileID: 8300000, guid: f5a8302c6ac4eae41821e349ee00123c, type: 3}
-  - {fileID: 8300000, guid: 2909b53d26470cc499e3044a50d304f1, type: 3}
   - {fileID: 8300000, guid: 764db8f6e7d4a284a924513dce0794de, type: 3}
   - {fileID: 8300000, guid: 6a054a65daa324e498cfb685352a992d, type: 3}
   - {fileID: 8300000, guid: 5257049f7fdaa004e91980821c5fafb5, type: 3}
@@ -278,51 +299,96 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b34f0c5f4eb798f42b3c02a86cf0530e, type: 3}
   - {fileID: 8300000, guid: 8ebefed03f7f60744930183f962e619a, type: 3}
   - {fileID: 8300000, guid: 806ed8704588b2240bdbb6215537e714, type: 3}
-  - {fileID: 8300000, guid: f0d27889d2e054440852313919f2f457, type: 3}
   - {fileID: 8300000, guid: 394962629db919e49a6d94208e68e1d6, type: 3}
-  - {fileID: 8300000, guid: 20671ac804bd0924cba023bb492f6099, type: 3}
   - {fileID: 8300000, guid: 9c5776d93fd4c294d83c7fa7ddbe4289, type: 3}
-  - {fileID: 8300000, guid: 06a9435a1a7f9b548ba2c5c8052b1ee3, type: 3}
   - {fileID: 8300000, guid: 1f71a9f921b2a314ca0b2a72b02ff27f, type: 3}
   - {fileID: 8300000, guid: 950e68107299cdc4f823f823c7d8ae72, type: 3}
   - {fileID: 8300000, guid: 52751d399cb09754f8e568a1a2bba58e, type: 3}
   - {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
   - {fileID: 8300000, guid: abb9b77d8e6ef734f9ba589608fdef51, type: 3}
+  - {fileID: 8300000, guid: 6cba2095361979e4daf2ba3c8b8dbb45, type: 3}
+  - {fileID: 8300000, guid: a9e6cc645f7bf4949b2ad4579aa098a8, type: 3}
+  - {fileID: 8300000, guid: 86fb9d8aaaf93ec4d8288fbd7262ca0e, type: 3}
+  - {fileID: 8300000, guid: a71e21e806294f14f8055b0c3c9d81b0, type: 3}
+  - {fileID: 8300000, guid: 0a8a6838bde934d4080e2c5c95f756b9, type: 3}
+  - {fileID: 8300000, guid: 0e810f772b793ae459f1a3e0fcbc5003, type: 3}
+  - {fileID: 8300000, guid: 2ce0f6d18f6f321489978698f73bdaf5, type: 3}
+  - {fileID: 8300000, guid: 6b580fd0115d2dd4a9b1cfdb73cea8f1, type: 3}
+  - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+  - {fileID: 8300000, guid: 1ddb9feb0ae17cc4f80c98d8ea490dbe, type: 3}
+  - {fileID: 8300000, guid: 2e806d8075447554ba96aa602c48c2b6, type: 3}
+  - {fileID: 8300000, guid: 62c5c4450d5b0dc4b97cdb2fbcb4d8d1, type: 3}
   unOwnedSFXObjects: []
   sfxGroups:
   - groupName: Select
-    specificCapAmount: 3
+    specificCapAmount: 6
     clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
   - groupName: Confirm
-    specificCapAmount: 3
+    specificCapAmount: 6
     clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
   - groupName: Attack
-    specificCapAmount: 4
+    specificCapAmount: 8
     clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
   - groupName: Death
-    specificCapAmount: 3
+    specificCapAmount: 8
     clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
   - groupName: Structures
     specificCapAmount: 3
     clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
   - groupName: Charge
-    specificCapAmount: 4
+    specificCapAmount: 8
     clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
   - groupName: Mining
     specificCapAmount: 3
     clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
   - groupName: Building
     specificCapAmount: 2
     clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Building_Ambient
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 1
+    pitch: 1
   clipToGroupKeys:
   - T_Rex_Fala
   - Tricera_Death
-  - Nean_Cross
-  - Nean_Varum
   - Nean_Ja
   - Nean_Fala
   - Nean_Nao
-  - Nean_Sarava
   - Nean_Beat
   - Hunter_Hurt
   - T_Rex_Atk
@@ -338,22 +404,27 @@ MonoBehaviour:
   - Nean_Gorn
   - Nean_Tesurra
   - Nean_Vamoluta
-  - mining
   - mining_Edt
-  - Worker_Catungui
   - Parassa_Breath1
-  - Worker_Cakitu
   - Parassa_Breath
   - Worker_Saw
   - Worker_Hammer
+  - mining_2
+  - mining_4
+  - mining_3
+  - Man_Yes
+  - Parassa_Woman_Confirm
+  - Parassa_Woman_Death
+  - Parassa_Woman_Yes
+  - Nean_Varum
+  - Ritual
+  - MainBase_BG
+  - Nean_Cross
   clipToGroupValues:
   - Select
   - Death
   - Confirm
   - Select
-  - Confirm
-  - Select
-  - Death
   - Death
   - Attack
   - Death
@@ -371,16 +442,24 @@ MonoBehaviour:
   - Charge
   - Charge
   - Mining
+  - Death
+  - Death
+  - Building
+  - Building
+  - Mining
+  - Mining
   - Mining
   - Confirm
-  - Death
   - Confirm
   - Death
-  - Building
-  - Building
+  - Select
+  - Confirm
+  - Building_Ambient
+  - Building_Ambient
+  - Select
   offTheSFX: 0
   capAmount: 4
-  sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   SFXObjectLifetime: 2
 --- !u!1001 &100100000
 Prefab:

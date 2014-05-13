@@ -19,7 +19,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// <summary>
 	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
 	/// </summary>
-    public static AudioSource PlaySFX(AudioClip clip, float volume, float pitch, Vector3 location)
+    public static AudioSource PlaySFX(AudioClip clip, bool looping, float delay, float volume, float pitch, Vector3 location=default(Vector3), SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
     {
         if (Instance.offTheSFX)
             return null;
@@ -27,37 +27,91 @@ public partial class SoundManager : Singleton<SoundManager> {
         if (clip == null)
             return null;
         
-        return Instance.PlaySFXAt(clip, volume, pitch, location);
+        return Instance.PlaySFXAt(clip, volume, pitch, location, false, "", looping, delay, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
     }
 	
 	/// <summary>
 	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
 	/// </summary>
-	public static AudioSource PlaySFX(AudioClip clip, float volume, float pitch)
+	public static AudioSource PlaySFX(AudioClip clip, bool looping, float delay, float volume)
     {
-        return PlaySFX(clip, volume, pitch, Vector3.zero);
+        return PlaySFX(clip, looping, delay, volume, Instance.pitchSFX);
     }
 	
 	/// <summary>
 	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
 	/// </summary>
-	public static AudioSource PlaySFX(AudioClip clip, float volume)
-    {
-        return PlaySFX(clip, volume, Instance.pitchSFX);
-    }
+	public static AudioSource PlaySFX(AudioClip clip, bool looping, float delay)
+	{
+		return PlaySFX(clip, looping, delay, Instance.volumeSFX);
+	}
+	
+	/// <summary>
+	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioClip clip, bool looping)
+	{
+		return PlaySFX(clip, looping, 0f);
+	}
 	
 	/// <summary>
 	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
 	/// </summary>
 	public static AudioSource PlaySFX(AudioClip clip)
     {
-        return PlaySFX(clip, Instance.volumeSFX);
+        return PlaySFX(clip, false);
+    }
+	
+	/// <summary>
+	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+    public static AudioSource PlaySFX(string clipName, bool looping, float delay, float volume, float pitch, Vector3 location=default(Vector3), SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+		if (!SoundManager.ClipNameIsValid(clipName))
+            return null;
+        
+        return Instance.PlaySFXAt(SoundManager.Load(clipName), volume, pitch, location, false, "", looping, delay, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
+    }
+	
+	/// <summary>
+	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(string clipName, bool looping, float delay, float volume)
+    {
+        return PlaySFX(SoundManager.Load(clipName), looping, delay, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(string clipName, bool looping, float delay)
+	{
+		return PlaySFX(SoundManager.Load(clipName), looping, delay, Instance.volumeSFX);
+	}
+	
+	/// <summary>
+	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(string clipName, bool looping)
+	{
+		return PlaySFX(SoundManager.Load(clipName), looping, 0f);
+	}
+	
+	/// <summary>
+	/// Plays the SFX on an owned object, will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(string clipName)
+    {
+        return PlaySFX(SoundManager.Load(clipName), false);
     }
 	
 	/// <summary>
 	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
 	/// </summary>
-    public static AudioSource PlayCappedSFX(AudioClip clip, string cappedID, float volume, float pitch, Vector3 location)
+    public static AudioSource PlayCappedSFX(AudioClip clip, string cappedID, float volume, float pitch, Vector3 location=default(Vector3))
     {
         if (Instance.offTheSFX)
             return null;
@@ -78,14 +132,6 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// <summary>
 	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
 	/// </summary>
-	public static AudioSource PlayCappedSFX(AudioClip clip, string cappedID, float volume, float pitch)
-    {
-        return PlayCappedSFX(clip, cappedID, volume, pitch, Vector3.zero);
-    }
-	
-	/// <summary>
-	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
-	/// </summary>
 	public static AudioSource PlayCappedSFX(AudioClip clip, string cappedID, float volume)
     {
         return PlayCappedSFX(clip, cappedID, volume, Instance.pitchSFX);
@@ -97,6 +143,43 @@ public partial class SoundManager : Singleton<SoundManager> {
 	public static AudioSource PlayCappedSFX(AudioClip clip, string cappedID)
     {
         return PlayCappedSFX(clip, cappedID, Instance.volumeSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+    public static AudioSource PlayCappedSFX(string clipName, string cappedID, float volume, float pitch, Vector3 location=default(Vector3))
+    {
+        if (Instance.offTheSFX)
+            return null;
+		
+		if (!SoundManager.ClipNameIsValid(clipName))
+            return null;
+		
+		if(string.IsNullOrEmpty(cappedID))
+			return null;
+        
+        // Play the clip if not at capacity
+		if(!Instance.IsAtCapacity(cappedID, clipName))
+            return Instance.PlaySFXAt(SoundManager.Load(clipName), volume, pitch, location, true, cappedID);
+		else
+			return null;
+    }
+	
+	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlayCappedSFX(string clipName, string cappedID, float volume)
+    {
+        return PlayCappedSFX(SoundManager.Load(clipName), cappedID, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlayCappedSFX(string clipName, string cappedID)
+    {
+        return PlayCappedSFX(SoundManager.Load(clipName), cappedID, Instance.volumeSFX);
     }
 	
 	/// <summary>
@@ -113,21 +196,13 @@ public partial class SoundManager : Singleton<SoundManager> {
 		if(string.IsNullOrEmpty(cappedID))
 			return null;
 		
-		// Keep reference of unownedsfx objects
-		if(!Instance.unOwnedSFXObjects.Contains(aS.gameObject))
-			Instance.unOwnedSFXObjects.Add(aS.gameObject);
-        
-        // Play the clip if not at capacity
+		// Play the clip if not at capacity
 		if(!Instance.IsAtCapacity(cappedID, clip.name))
 		{
-			aS.Stop();
-		    aS.pitch = pitch;
-		    aS.clip = clip;
-		    aS.volume = volume;
-			aS.mute = Instance.mutedSFX;
-		    aS.Play();
+			// Keep reference of unownedsfx objects
+			Instance.CheckInsertionIntoUnownedSFXObjects(aS);
 			
-			return aS;
+            return Instance.PlaySFXOn(aS, clip, volume, pitch, true, cappedID);
 		}
 		else
 			return null;
@@ -150,9 +225,51 @@ public partial class SoundManager : Singleton<SoundManager> {
     }
 	
 	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlayCappedSFX(AudioSource aS, string clipName, string cappedID, float volume, float pitch)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+        if (!SoundManager.ClipNameIsValid(clipName) || aS == null)
+            return null;
+		
+		if(string.IsNullOrEmpty(cappedID))
+			return null;
+		
+		// Play the clip if not at capacity
+		if(!Instance.IsAtCapacity(cappedID, clipName))
+		{
+			// Keep reference of unownedsfx objects
+			Instance.CheckInsertionIntoUnownedSFXObjects(aS);
+			
+            return Instance.PlaySFXOn(aS, SoundManager.Load(clipName), volume, pitch, true, cappedID);
+		}
+		else
+			return null;
+    }
+	
+	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlayCappedSFX(AudioSource aS, string clipName, string cappedID, float volume)
+    {
+        return PlayCappedSFX(aS, SoundManager.Load(clipName), cappedID, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX IFF other SFX with the same cappedID are not over the cap limit. Will default the location to (0,0,0), pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlayCappedSFX(AudioSource aS, string clipName, string cappedID)
+    {
+        return PlayCappedSFX(aS, SoundManager.Load(clipName), cappedID, Instance.volumeSFX);
+    }
+	
+	/// <summary>
 	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
 	/// </summary>
-    public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping, float volume, float pitch)
+    public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping, float delay, float volume, float pitch, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
     {
         if (Instance.offTheSFX)
             return null;
@@ -161,26 +278,25 @@ public partial class SoundManager : Singleton<SoundManager> {
             return null;
 		
 		// Keep reference of unownedsfx objects
-		if(!Instance.unOwnedSFXObjects.Contains(aS.gameObject))
-			Instance.unOwnedSFXObjects.Add(aS.gameObject);
-            
-        aS.Stop();
-        aS.pitch = pitch;
-        aS.clip = clip;
-        aS.loop = looping;
-        aS.volume = volume;
-		aS.mute = Instance.mutedSFX;
-        aS.Play();
-		
-		return aS;
+		Instance.CheckInsertionIntoUnownedSFXObjects(aS);
+        
+		return Instance.PlaySFXOn(aS, clip, volume, pitch, false, "", looping, delay, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
     }
 	
 	/// <summary>
 	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
 	/// </summary>
-	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping, float volume)
+	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping, float delay, float volume)
     {
-        return PlaySFX(aS, clip, looping, volume, Instance.pitchSFX);
+        return PlaySFX(aS, clip, looping, delay, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping, float delay)
+    {
+        return PlaySFX(aS, clip, looping, delay, Instance.volumeSFX);
     }
 	
 	/// <summary>
@@ -188,7 +304,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping)
     {
-        return PlaySFX(aS, clip, looping, Instance.volumeSFX);
+        return PlaySFX(aS, clip, looping, 0f);
     }
 	
 	/// <summary>
@@ -197,6 +313,55 @@ public partial class SoundManager : Singleton<SoundManager> {
 	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip)
     {
         return PlaySFX(aS, clip, false);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+    public static AudioSource PlaySFX(AudioSource aS, string clipName, bool looping, float delay, float volume, float pitch, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+        if ((!SoundManager.ClipNameIsValid(clipName)) || (aS == null))
+            return null;
+		
+		// Keep reference of unownedsfx objects
+		Instance.CheckInsertionIntoUnownedSFXObjects(aS);
+        
+		return Instance.PlaySFXOn(aS, SoundManager.Load(clipName), volume, pitch, false, "", looping, delay, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioSource aS, string clipName, bool looping, float delay, float volume)
+    {
+        return PlaySFX(aS, SoundManager.Load(clipName), looping, delay, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioSource aS, string clipName, bool looping, float delay)
+    {
+        return PlaySFX(aS, SoundManager.Load(clipName), looping, delay, Instance.volumeSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioSource aS, string clipName, bool looping)
+    {
+        return PlaySFX(aS, SoundManager.Load(clipName), looping, 0f);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another audiosource of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(AudioSource aS, string clipName)
+    {
+        return PlaySFX(aS, SoundManager.Load(clipName), false);
     }
 	
 	/// <summary>
@@ -209,12 +374,15 @@ public partial class SoundManager : Singleton<SoundManager> {
             
         if (aS.isPlaying)
             aS.Stop();
+		
+		if(Instance.delayedAudioSources.ContainsKey(aS))
+			Instance.delayedAudioSources.Remove(aS);
     }
 	
 	/// <summary>
 	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
 	/// </summary>
-    public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping, float volume, float pitch)
+    public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping, float delay, float volume, float pitch, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
     {
         if (Instance.offTheSFX)
             return null;
@@ -225,15 +393,23 @@ public partial class SoundManager : Singleton<SoundManager> {
         if (gO.audio == null)
             gO.AddComponent<AudioSource>();
 		
-		return PlaySFX(gO.audio, clip, looping, volume, pitch);
+		return PlaySFX(gO.audio, clip, looping, delay, volume, pitch, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
     }
 	
 	/// <summary>
 	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
 	/// </summary>
-	public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping, float volume)
+	public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping, float delay, float volume)
     {
-        return PlaySFX(gO, clip, looping, volume, Instance.pitchSFX);
+        return PlaySFX(gO, clip, looping, delay, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping, float delay)
+    {
+        return PlaySFX(gO, clip, looping, delay, Instance.volumeSFX);
     }
 	
 	/// <summary>
@@ -241,7 +417,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping)
     {
-        return PlaySFX(gO, clip, looping, Instance.volumeSFX);
+        return PlaySFX(gO, clip, looping, 0f);
     }
 	
 	/// <summary>
@@ -253,6 +429,55 @@ public partial class SoundManager : Singleton<SoundManager> {
     }
 	
 	/// <summary>
+	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+    public static AudioSource PlaySFX(GameObject gO, string clipName, bool looping, float delay, float volume, float pitch, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+        if ((!SoundManager.ClipNameIsValid(clipName)) || (gO == null))
+            return null;
+        
+        if (gO.audio == null)
+            gO.AddComponent<AudioSource>();
+		
+		return PlaySFX(gO.audio, SoundManager.Load(clipName), looping, delay, volume, pitch, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(GameObject gO, string clipName, bool looping, float delay, float volume)
+    {
+        return PlaySFX(gO, SoundManager.Load(clipName), looping, delay, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(GameObject gO, string clipName, bool looping, float delay)
+    {
+        return PlaySFX(gO, SoundManager.Load(clipName), looping, delay, Instance.volumeSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(GameObject gO, string clipName, bool looping)
+    {
+        return PlaySFX(gO, SoundManager.Load(clipName), looping, 0f);
+    }
+	
+	/// <summary>
+	/// Plays the SFX another gameObject of your choice, will default the looping to false, pitch to 1f, volume to 1f
+	/// </summary>
+	public static AudioSource PlaySFX(GameObject gO, string clipName)
+    {
+        return PlaySFX(gO, SoundManager.Load(clipName), false);
+    }
+	
+	/// <summary>
 	/// Stops the SFX on another gameObject
 	/// </summary>
     public static void StopSFXObject(GameObject gO)
@@ -260,11 +485,7 @@ public partial class SoundManager : Singleton<SoundManager> {
         if (gO == null)
             return;
         
-        if (gO.audio == null)
-            return;
-            
-        if (gO.audio.isPlaying)
-            gO.audio.Stop();
+        StopSFXObject(gO.audio);
     }
 	
 	/// <summary>
@@ -280,7 +501,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
 	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
 	/// </summary>
-    public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip, bool tillDestroy, float volume, float pitch, float maxDuration)
+    public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip, bool tillDestroy, float volume, float pitch, float maxDuration, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
     {
         if (Instance.offTheSFX)
             return null;
@@ -288,19 +509,9 @@ public partial class SoundManager : Singleton<SoundManager> {
         if ((clip == null) || (aS == null))
             return null;
 		
-		if(!Instance.unOwnedSFXObjects.Contains(aS.gameObject))
-			Instance.unOwnedSFXObjects.Add(aS.gameObject);
+		Instance.CheckInsertionIntoUnownedSFXObjects(aS);
 		
-		aS.Stop();
-		aS.clip = clip;
-		aS.pitch = pitch;
-		aS.volume = volume;
-		aS.mute = Instance.mutedSFX;
-		aS.loop = true;
-		aS.Play();
-
-        Instance.StartCoroutine(Instance._PlaySFXLoopTillDestroy(aS.gameObject, aS, tillDestroy, maxDuration));
-		return aS;
+		return Instance.PlaySFXLoopOn(aS, clip, tillDestroy, volume, pitch, maxDuration, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
     }
 	
 	/// <summary>
@@ -344,11 +555,69 @@ public partial class SoundManager : Singleton<SoundManager> {
     }
 	
 	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+    public static AudioSource PlaySFXLoop(AudioSource aS, string clipName, bool tillDestroy, float volume, float pitch, float maxDuration, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+        if ((!SoundManager.ClipNameIsValid(clipName)) || (aS == null))
+            return null;
+		
+		Instance.CheckInsertionIntoUnownedSFXObjects(aS);
+		
+		return Instance.PlaySFXLoopOn(aS, SoundManager.Load(clipName), tillDestroy, volume, pitch, maxDuration, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(AudioSource aS, string clipName, bool tillDestroy, float volume, float pitch)
+    {
+        return PlaySFXLoop(aS, SoundManager.Load(clipName), tillDestroy, volume, pitch, 0f);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(AudioSource aS, string clipName, bool tillDestroy, float volume)
+    {
+        return PlaySFXLoop(aS, SoundManager.Load(clipName), tillDestroy, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(AudioSource aS, string clipName, bool tillDestroy)
+    {
+        return PlaySFXLoop(aS, SoundManager.Load(clipName), tillDestroy, Instance.volumeSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another audiosource of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(AudioSource aS, string clipName)
+    {
+        return PlaySFXLoop(aS, SoundManager.Load(clipName), true);
+    }
+	
+	/// <summary>
 	/// Plays the SFX in a loop on another gameObject of your choice.  This function is cattered more towards customizing a loop.
 	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
 	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
 	/// </summary>
-    public static AudioSource PlaySFXLoop(GameObject gO, AudioClip clip, bool tillDestroy, float volume, float pitch, float maxDuration)
+    public static AudioSource PlaySFXLoop(GameObject gO, AudioClip clip, bool tillDestroy, float volume, float pitch, float maxDuration, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
     {
         if (Instance.offTheSFX)
             return null;
@@ -359,20 +628,9 @@ public partial class SoundManager : Singleton<SoundManager> {
 		if (gO.audio == null)
             gO.AddComponent<AudioSource>();
 		
-		if(!Instance.unOwnedSFXObjects.Contains(gO))
-			Instance.unOwnedSFXObjects.Add(gO);
+		Instance.CheckInsertionIntoUnownedSFXObjects(gO.audio);
 		
-		AudioSource aSource = gO.audio;
-		aSource.Stop();
-		aSource.clip = clip;
-		aSource.pitch = pitch;
-		aSource.volume = volume;
-		aSource.mute = Instance.mutedSFX;
-		aSource.loop = true;
-		aSource.Play();
-
-        Instance.StartCoroutine(Instance._PlaySFXLoopTillDestroy(gO, aSource, tillDestroy, maxDuration));
-		return aSource;
+		return Instance.PlaySFXLoopOn(gO.audio, clip, tillDestroy, volume, pitch, maxDuration, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
     }
 	
 	/// <summary>
@@ -413,6 +671,67 @@ public partial class SoundManager : Singleton<SoundManager> {
 	public static AudioSource PlaySFXLoop(GameObject gO, AudioClip clip)
     {
         return PlaySFXLoop(gO, clip, true);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another gameObject of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+    public static AudioSource PlaySFXLoop(GameObject gO, string clipName, bool tillDestroy, float volume, float pitch, float maxDuration, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
+    {
+        if (Instance.offTheSFX)
+            return null;
+            
+        if ((!SoundManager.ClipNameIsValid(clipName)) || (gO == null))
+            return null;
+		
+		if (gO.audio == null)
+            gO.AddComponent<AudioSource>();
+		
+		Instance.CheckInsertionIntoUnownedSFXObjects(gO.audio);
+		
+		return Instance.PlaySFXLoopOn(gO.audio, SoundManager.Load(clipName), tillDestroy, volume, pitch, maxDuration, runOnEndFunction, duckingSetting, duckVolume, duckPitch);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another gameObject of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(GameObject gO, string clipName, bool tillDestroy, float volume, float pitch)
+    {
+        return PlaySFXLoop(gO, SoundManager.Load(clipName), tillDestroy, volume, pitch, 0f);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another gameObject of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(GameObject gO, string clipName, bool tillDestroy, float volume)
+    {
+        return PlaySFXLoop(gO, SoundManager.Load(clipName), tillDestroy, volume, Instance.pitchSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another gameObject of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(GameObject gO, string clipName, bool tillDestroy)
+    {
+        return PlaySFXLoop(gO, SoundManager.Load(clipName), tillDestroy, Instance.volumeSFX);
+    }
+	
+	/// <summary>
+	/// Plays the SFX in a loop on another gameObject of your choice.  This function is cattered more towards customizing a loop.
+	/// You can set the loop to end when the object dies or a maximum duration, whichever comes first.
+	/// tillDestroy defaults to true, volume to 1f, pitch to 1f, maxDuration to 0f
+	/// </summary>
+	public static AudioSource PlaySFXLoop(GameObject gO, string clipName)
+    {
+        return PlaySFXLoop(gO, SoundManager.Load(clipName), true);
     }
 	
 	/// <summary>
@@ -457,6 +776,29 @@ public partial class SoundManager : Singleton<SoundManager> {
 		
 		Instance.volumeSFX = Instance.maxSFXVolume * currentPercentageOfVolume;
 	}
+	/* COMING SOON
+	public static void SetVolumeSFX(float setVolume, string groupName)
+	{
+		
+	}
+	*/
+	public static void SetVolumeSFX(float setVolume, bool ignoreMaxSFXVolume, params AudioSource[] audioSources)
+	{
+		setVolume = Mathf.Clamp01(setVolume);
+		float newVolume = ignoreMaxSFXVolume ? setVolume : (setVolume * Instance.maxSFXVolume);
+		
+		foreach(AudioSource audioSource in audioSources)
+			audioSource.volume = newVolume;
+	}
+	
+	public static void SetVolumeSFX(float setVolume, bool ignoreMaxSFXVolume, params GameObject[] sfxObjects)
+	{
+		setVolume = Mathf.Clamp01(setVolume);
+		float newVolume = ignoreMaxSFXVolume ? setVolume : (setVolume * Instance.maxSFXVolume);
+		
+		foreach(GameObject sfxObject in sfxObjects)
+			sfxObject.audio.volume = newVolume;
+	}
 	
 	/// <summary>
 	/// Gets the volume SFX.
@@ -472,6 +814,23 @@ public partial class SoundManager : Singleton<SoundManager> {
 	public static void SetPitchSFX(float setPitch)
 	{
 		Instance.pitchSFX = setPitch;
+	}
+	/* COMING SOON
+	public static void SetPitchSFX(float setPitch, string groupName)
+	{
+		
+	}
+	*/
+	public static void SetPitchSFX(float setPitch, params AudioSource[] audioSources)
+	{
+		foreach(AudioSource audioSource in audioSources)
+			audioSource.pitch = setPitch;
+	}
+	
+	public static void SetPitchSFX(float setPitch, params GameObject[] sfxObjects)
+	{
+		foreach(GameObject sfxObject in sfxObjects)
+			sfxObject.audio.pitch = setPitch;
 	}
 	
 	/// <summary>
@@ -528,20 +887,69 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// <summary>
 	/// Saves the SFX to the SoundManager prefab for easy access for frequently used SFX.
 	/// </summary>
-	public static void SaveSFX(AudioClip clip)
+	public static void SaveSFX(params AudioClip[] clips)
 	{
-		if(clip == null)
-			return;
-		
-		if(!Instance.allClips.ContainsKey(clip.name))
+		foreach(AudioClip clip in clips)
 		{
-			Instance.allClips.Add(clip.name, clip);
-			Instance.prepools.Add(clip.name, 0);
+			if(clip == null)
+				continue;
+			
+			if(!Instance.allClips.ContainsKey(clip.name))
+			{
+				Instance.allClips.Add(clip.name, clip);
+				Instance.prepools.Add(clip.name, 0);
 #if UNITY_EDITOR
-			Instance.storedSFXs.Add(clip);
-			Instance.sfxPrePoolAmounts.Add(0);
-			Instance.showSFXDetails.Add(false);
+				Instance.storedSFXs.Add(clip);
+				Instance.sfxPrePoolAmounts.Add(0);
+				Instance.showSFXDetails.Add(false);
 #endif
+			}
+		}
+	}
+	
+	public static void DeleteSFX(params AudioClip[] clips)
+	{
+		foreach(AudioClip clip in clips)
+		{
+			if(clip == null)
+				continue;
+			
+			if(!Instance.allClips.ContainsKey(clip.name))
+			{
+				Instance.allClips.Remove(clip.name);
+				Instance.prepools.Remove(clip.name);
+#if UNITY_EDITOR
+				int index = Instance.storedSFXs.IndexOf(clip);
+				if(index == -1) continue;
+				Instance.storedSFXs.RemoveAt(index);
+				Instance.sfxPrePoolAmounts.RemoveAt(index);
+				Instance.showSFXDetails.RemoveAt(index);
+#endif
+			}
+		}
+	}
+	
+	public static void DeleteSFX(params string[] clipNames)
+	{
+		foreach(string clipName in clipNames)
+		{
+			if(string.IsNullOrEmpty(clipName))
+				continue;
+			
+			if(!Instance.allClips.ContainsKey(clipName))
+			{
+				AudioClip clip = Instance.allClips[clipName];
+				Instance.allClips.Remove(clipName);
+				Instance.prepools.Remove(clipName);
+#if UNITY_EDITOR
+				if(clip == null) continue;
+				int index = Instance.storedSFXs.IndexOf(clip);
+				if(index == -1) continue;
+				Instance.storedSFXs.RemoveAt(index);
+				Instance.sfxPrePoolAmounts.RemoveAt(index);
+				Instance.showSFXDetails.RemoveAt(index);
+#endif
+			}
 		}
 	}
 	
@@ -587,6 +995,11 @@ public partial class SoundManager : Singleton<SoundManager> {
 	public static void MoveToSFXGroup(string clipName, string newGroupName)
 	{
 		Instance.SetClipToGroup(clipName, newGroupName);
+	}
+	
+	public static void RemoveFromSFXGroup(string clipName)
+	{
+		Instance.RemoveClipFromGroup(clipName);
 	}
 	
 	/// <summary>
@@ -715,5 +1128,35 @@ public partial class SoundManager : Singleton<SoundManager> {
 		sfxObj.audio.maxDistance = 500f;
 		
 		sfxObj.audio.pan = 0f;
+	}
+	
+	public static void Crossfade(float duration, AudioSource fromSource, AudioSource toSource, SongCallBack runOnEndFunction=null)
+	{
+		Instance.StartCoroutine(Instance.XFade(duration, fromSource, toSource, runOnEndFunction));
+	}
+	
+	public static void Crossfade(float duration, GameObject fromSFXObject, GameObject toSFXObject, SongCallBack runOnEndFunction=null)
+	{
+		Crossfade(duration, fromSFXObject.audio, toSFXObject.audio, runOnEndFunction);
+	}
+	
+	public static void CrossIn(float duration, AudioSource source, SongCallBack runOnEndFunction=null)
+	{
+		Instance.StartCoroutine(Instance.XIn(duration, source, runOnEndFunction));
+	}
+	
+	public static void CrossIn(float duration, GameObject sfxObject, SongCallBack runOnEndFunction=null)
+	{
+		CrossIn(duration, sfxObject.audio, runOnEndFunction);
+	}
+	
+	public static void CrossOut(float duration, AudioSource source, SongCallBack runOnEndFunction=null)
+	{
+		Instance.StartCoroutine(Instance.XOut(duration, source, runOnEndFunction));
+	}
+	
+	public static void CrossOut(float duration, GameObject sfxObject, SongCallBack runOnEndFunction=null)
+	{
+		CrossOut(duration, sfxObject.audio, runOnEndFunction);
 	}
 }

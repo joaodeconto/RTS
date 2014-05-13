@@ -35,7 +35,9 @@ public class AudioSubscription {
 	public List<string> allNames = new List<string>();
 	
 	// event info
+#if !(UNITY_WP8 || UNITY_METRO)
 	private Component targetComponent;
+#endif
 	private FieldInfo eventField;
 	private Delegate eventDelegate;
 	private MethodInfo handlerProxy;
@@ -169,7 +171,7 @@ public class AudioSubscription {
 		
 		return false;
 	}
-	
+#if !(UNITY_WP8 || UNITY_METRO)	
 	[ProxyEvent]
 	private void CallbackProxy()
 	{
@@ -273,4 +275,5 @@ public class AudioSubscription {
 		}
 		return methodinfo;
 	}
+#endif
 }

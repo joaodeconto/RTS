@@ -153,7 +153,7 @@ public class SMPMenuItems : MonoBehaviour {
 	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Documentation", false, 400)]
 	static void Documentation()
 	{
-		Application.OpenURL("http://antilunchbox.com/soundmanagerpro/soundmanagerpro-documentation/");
+		Application.OpenURL("http://antilunchbox.com/htmldocs/smp/index.html");
 	}
 	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Forum", false, 401)]
 	static void Forum()

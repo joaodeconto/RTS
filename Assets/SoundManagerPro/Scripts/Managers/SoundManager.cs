@@ -415,34 +415,9 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// <param name='loop'>
 	/// Whether the clip should loop
 	/// </param>
-	public static void PlayImmediately(AudioClip clip2play, bool loop, SongCallBack runOnEndFunction)
+	public static void PlayImmediately(AudioClip clip2play, bool loop=false, SongCallBack runOnEndFunction=null)
 	{
 		Instance._PlayImmediately(clip2play, loop, runOnEndFunction);
-	}
-	
-	/// <summary>
-	/// Plays the clip immediately regardless of a playing SoundConnection, with an option to loop.  It will not resume on it's own.
-	/// </summary>
-	/// <param name='clip2play'>
-	/// The clip to play.
-	/// </param>
-	/// <param name='loop'>
-	/// Whether the clip should loop
-	/// </param>
-	public static void PlayImmediately(AudioClip clip2play, bool loop)
-	{
-		Instance._PlayImmediately(clip2play, loop);
-	}
-	
-	/// <summary>
-	/// Plays the clip immediately regardless of a playing SoundConnection.  It will not resume on it's own.
-	/// </summary>
-	/// <param name='clip2play'>
-	/// The clip to play.
-	/// </param>
-	public static void PlayImmediately(AudioClip clip2play)
-	{
-		Instance._PlayImmediately(clip2play);
 	}
 	
 	/// <summary>
@@ -459,34 +434,9 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// <param name='loop'>
 	/// Whether the clip should loop
 	/// </param>
-	public static void Play(AudioClip clip2play, bool loop, SongCallBack runOnEndFunction)
+	public static void Play(AudioClip clip2play, bool loop=false, SongCallBack runOnEndFunction=null)
 	{
 		Instance._Play(clip2play, loop, runOnEndFunction);
-	}
-	
-	/// <summary>
-	/// Plays the clip by crossing out what's currently playing regardless of a playing SoundConnection, with an option to loop.  It will not resume on it's own.
-	/// </summary>
-	/// <param name='clip2play'>
-	/// The clip to play.
-	/// </param>
-	/// <param name='loop'>
-	/// Whether the clip should loop
-	/// </param>
-	public static void Play(AudioClip clip2play, bool loop)
-	{
-		Instance._Play(clip2play, loop);
-	}
-	
-	/// <summary>
-	/// Plays the clip by crossing out what's currently playing regardless of a playing SoundConnection.  It will not resume on it's own.
-	/// </summary>
-	/// <param name='clip2play'>
-	/// The clip to play.
-	/// </param>
-	public static void Play(AudioClip clip2play)
-	{
-		Instance._Play(clip2play);
 	}
 	
 	/// <summary>
@@ -619,5 +569,12 @@ public partial class SoundManager : Singleton<SoundManager> {
 		if(string.IsNullOrEmpty(groupName)) return false;
 		return Instance.groups.ContainsKey(groupName) && Instance.groups[groupName] != null;
 	}
+}
 
+public enum SoundDuckingSetting
+{
+	DoNotDuck,
+	OnlyDuckSFX,
+	OnlyDuckMusic,
+	DuckAll
 }

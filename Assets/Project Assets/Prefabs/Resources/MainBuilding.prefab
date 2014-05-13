@@ -83,6 +83,7 @@ GameObject:
   - 114: {fileID: 11400006}
   - 54: {fileID: 5400000}
   - 114: {fileID: 11400002}
+  - 114: {fileID: 11400008}
   - 82: {fileID: 8200000}
   m_Layer: 18
   m_Name: MainBuilding
@@ -278,7 +279,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!82 &8200000
 AudioSource:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 10
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100032}
@@ -288,14 +289,14 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
-  Mute: 0
+  Loop: 1
+  Mute: 1
   Priority: 128
-  DopplerLevel: 1
-  MinDistance: 5
-  MaxDistance: 30
+  DopplerLevel: 0
+  MinDistance: 3
+  MaxDistance: 28.2999992
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -328,7 +329,7 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - time: 0
-      value: 0
+      value: .0727777779
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -457,6 +458,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintSize: 10
   terrainName: Terrain
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca8ae34729948b84ca8698a29b32c385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 8200000}
+  clipType: 2
+  actionType: 0
+  clipName: Tribe_
+  groupName: Building_Ambient
+  OnStartActivated: 0
+  OnVisibleActivated: 0
+  OnInvisibleActivated: 0
+  OnCollisionEnterActivated: 0
+  OnCollisionExitActivated: 0
+  OnTriggerEnterActivated: 0
+  OnTriggerExitActivated: 0
+  OnMouseEnterActivated: 0
+  OnMouseClickActivated: 0
+  OnEnableActivated: 0
+  OnDisableActivated: 0
+  OnCollision2dEnterActivated: 0
+  OnCollision2dExitActivated: 0
+  OnTriggerEnter2dActivated: 0
+  OnTriggerExit2dActivated: 0
+  OnParticleCollisionActivated: 0
+  ShowEditor3D: 1
+  ShowEditor2D: 0
+  ShowEventTriggers: 1
+  numSubscriptions: 0
+  audioSubscriptions: []
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -15,7 +15,7 @@ public partial class SoundManagerEditor : Editor {
 	private void InitSFX()
 	{
 		clipsByGroup.Clear();
-		for(int i = 0; i < script.clipToGroupValues.Count; i++)
+		for(int i = script.clipToGroupValues.Count-1; i >= 0; i--)
 		{
 			if(i >= script.clipToGroupKeys.Count)
 				continue;
@@ -24,6 +24,13 @@ public partial class SoundManagerEditor : Editor {
 			string clipName = script.clipToGroupKeys[i];
 			int clipIndex = IndexOfClip(clipName);
 			int groupIndex = IndexOfGroup(groupName);
+			
+			if(clipIndex < 0)
+			{
+				script.clipToGroupValues.RemoveAt(i);
+				script.clipToGroupKeys.RemoveAt(i);
+				continue;
+			}
 			
 			if(clipsByGroup.ContainsKey(groupIndex))
 			{
@@ -217,7 +224,7 @@ public partial class SoundManagerEditor : Editor {
 				EditorGUI.indentLevel++;
 				for(int i = 0 ; i < script.storedSFXs.Count ; i++)
 				{
-					if(script.storedSFXs[i] != null)
+					if(i < script.storedSFXs.Count && script.storedSFXs[i] != null)
 						ShowIndividualSFXAtIndex(i, groups, expandContent);
 					else
 						RemoveSFX(i);
@@ -241,7 +248,7 @@ public partial class SoundManagerEditor : Editor {
 						for(int i = 0; i < pair.Value.Count; i++)
 						{
 							int index = pair.Value[i];
-							if(script.storedSFXs[index] != null)
+							if(index >= 0 && index < script.storedSFXs.Count && script.storedSFXs[index] != null)
 								ShowIndividualSFXAtIndex(index, groups, expandContent);
 							else
 								RemoveSFX(index);
@@ -254,7 +261,7 @@ public partial class SoundManagerEditor : Editor {
 				for(int i = 0; i < script.storedSFXs.Count; i++)
 				{
 					EditorGUI.indentLevel+=2;
-					if(script.storedSFXs[i] != null && !script.clipToGroupKeys.Contains(script.storedSFXs[i].name))
+					if(i < script.storedSFXs.Count && script.storedSFXs[i] != null && !script.clipToGroupKeys.Contains(script.storedSFXs[i].name))
 						ShowIndividualSFXAtIndex(i, groups, expandContent);
 					else if (script.storedSFXs[i] == null)
 						RemoveSFX(i);

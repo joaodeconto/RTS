@@ -856,7 +856,7 @@ public class AudioSourcePro : MonoBehaviour {
 	
 	public static void PlayClipAtPoint(AudioClip clip, Vector3 position, float volume=1f)
 	{
-		SoundManager.PlaySFX(clip, volume, 1f, position);
+		SoundManager.PlaySFX(clip, false, 0f, volume, 1f, position);
 	}
 	#endregion
 	

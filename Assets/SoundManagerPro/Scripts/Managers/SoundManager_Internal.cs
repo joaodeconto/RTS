@@ -844,7 +844,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
+				
 				// While the clip is playing, wait until the song is done before moving on with the delay
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
@@ -874,7 +874,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
+				
 				// While the clip is playing, wait until the song is done before moving on with the delay
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
@@ -905,7 +905,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				int response = PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
+				
 				// Get the real song length using time samples, especially in the case where the song is already playing.
 				float realSongLength;
 				if(response != SOUNDMANAGER_FALSE)
@@ -953,7 +953,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
+				
 				// While the clip is playing, wait until the song is done before moving on with the delay
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
@@ -986,7 +986,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
+				
 				// While the clip is playing, wait until the song is done before moving on with the delay
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
@@ -1021,7 +1021,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				int response = PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
+				
 				// Get the real song length using time samples, especially in the c already playing.
 				float realSongLength;
 				if(response != SOUNDMANAGER_FALSE)
@@ -1069,7 +1069,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
+				
 				// While the clip is playing, wait until the song is done before moving on with the delay
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
@@ -1102,7 +1102,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
+				
 				// While the clip is playing, wait until the song is done before moving on with the delay
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
