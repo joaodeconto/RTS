@@ -51,8 +51,7 @@ public class VersusScreen : MonoBehaviour
 
 		// LOAD GAMEPLAY!
 
-		Invoke ("InstanceGame", timeToWait+1);
-		InvokeRepeating ("DescountTime", 1f, 1f);
+
 
 		int totalPlayers = PhotonNetwork.playerList.Length;
 		
@@ -108,6 +107,8 @@ public class VersusScreen : MonoBehaviour
 				i++;
 			}
 		}
+		Invoke ("InstanceGame",0.5f);
+		InvokeRepeating ("DescountTime", 1f, 1f);
 	}
 	
 	void DescountTime ()

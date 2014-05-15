@@ -119,9 +119,9 @@ public class SelectionController : MonoBehaviour
 				return false;			
 			}
 
-			if (hit.transform.CompareTag ("Resource"))
+			if (hit.transform.CompareTag ("Resource") && statsController.selectedStats.Count == 0)
 			{
-				
+
 				Resource selectedResource = hit.transform.GetComponent<Resource>();
 				statsController.DeselectAllStats ();
 				statsController.SelectStat (selectedResource, true);

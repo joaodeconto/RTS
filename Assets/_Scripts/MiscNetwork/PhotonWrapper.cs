@@ -14,6 +14,10 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	public GameObject[] menusDissapearWhenLogged;
 
+	public UISlider progBar;
+
+	private int loadProgress = 0;
+
 	protected bool checkingStatus = false;
 
 	private string playerName = "";
@@ -397,19 +401,37 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	private IEnumerator YieldStartGame ()
     {
-        while (PhotonNetwork.room == null)
-        {
-            yield return 0;
-        }
+        
 
-        // Temporary disable processing of futher network messages
-        PhotonNetwork.isMessageQueueRunning = false;
-		if (GameplayManager.mode == GameplayManager.Mode.Deathmatch)
-			Application.LoadLevel(1);
-		else
-			Application.LoadLevel(2);
+		//Tentativa Async
+		progBar.value = loadProgress;
+		
+		AsyncOperation async = Application.LoadLevelAsync(1);
+		
+		while(!async.isDone){
+			
+			loadProgress = (int) (async.progress * 100);
+			progBar.value = async.progress;
+			
+			yield return 0;
+			
+		}
+
+//		while (PhotonNetwork.room == null)
+//		{
+//			yield return 0;
+//		}
+//
+//        // Temporary disable processing of futher network messages
+//        PhotonNetwork.isMessageQueueRunning = false;
+//		if (GameplayManager.mode == GameplayManager.Mode.Deathmatch)
+//			Application.LoadLevel(1);
+//		else
+//			Application.LoadLevel(2);
     }
 
+		
+				
 	// RPCS
 
 	[RPC]

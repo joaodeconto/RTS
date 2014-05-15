@@ -89,8 +89,17 @@ public class Score : MonoBehaviour
 	}
 
 	private Model.DataScore _GetDataScore (string ScoreName, int battleId)
-	{
+	{	
+		if (battleId == null)
+		{
+			battleId = 0;
+		}
+
+
 		string scoreKey = ScoreName + " - " + battleId;
+
+	
+		
 		if (!dicDataScore.ContainsKey (scoreKey))
 		{
 			dicDataScore.Add (scoreKey, new Model.DataScore (player.IdPlayer, battleId, ScoreName, 0));
