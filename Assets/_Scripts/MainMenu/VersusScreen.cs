@@ -17,6 +17,8 @@ public class VersusScreen : MonoBehaviour
 	public GameObject gameObjectPlayerL;
 	public GameObject gameObjectPlayerR;
 
+	public UISlider progBar;
+	
 	public UILabel timeLabel;
 	public UILabel mapName;
 	public UILabel battleMode;
@@ -42,6 +44,7 @@ public class VersusScreen : MonoBehaviour
 		pw = ComponentGetter.Get<PhotonWrapper> ();
 		
 		pw.SetStartGame (() => Init ());
+
 	}
 	
 	public void Init ()
@@ -50,8 +53,6 @@ public class VersusScreen : MonoBehaviour
 		goVersusScreen.SetActive (true);
 
 		// LOAD GAMEPLAY!
-
-
 
 		int totalPlayers = PhotonNetwork.playerList.Length;
 		
@@ -107,8 +108,9 @@ public class VersusScreen : MonoBehaviour
 				i++;
 			}
 		}
-		Invoke ("InstanceGame",0.5f);
 		InvokeRepeating ("DescountTime", 1f, 1f);
+		Invoke ("InstanceGame",2);
+
 	}
 	
 	void DescountTime ()
@@ -150,5 +152,22 @@ public class VersusScreen : MonoBehaviour
 	void InstanceGame ()
 	{
 		pw.StartGame ();
+		StartCoroutine (LoadingScene ());
 	}
+
+	private IEnumerator LoadingScene ()
+	{
+
+		AsyncOperation async = Application.LoadLevelAsync(pw.cena);
+
+		while (!async.isDone)
+		{
+
+			progBar.value = async.progress + 0.2f;
+
+			yield return null;
+		}
+	}
+			
+
 }
