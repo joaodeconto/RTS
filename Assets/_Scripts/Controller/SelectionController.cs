@@ -121,6 +121,7 @@ public class SelectionController : MonoBehaviour
 
 			if (hit.transform.CompareTag ("Resource") && statsController.selectedStats.Count == 0)
 			{
+				Debug.Log(statsController.selectedStats.Count);
 
 				Resource selectedResource = hit.transform.GetComponent<Resource>();
 				statsController.DeselectAllStats ();
