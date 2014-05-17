@@ -139,7 +139,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 400020}
   - 114: {fileID: 11400020}
-  - 114: {fileID: 11400024}
   m_Layer: 0
   m_Name: TouchController
   m_TagString: Untagged
@@ -438,8 +437,8 @@ MonoBehaviour:
     maxItems: 5
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 5
-      fadeColor: {r: 0, g: 0, b: 0, a: 0}
+      timeToFadeout: 4
+      fadeColor: {r: 1, g: 1, b: 1, a: 0}
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -479,8 +478,8 @@ MonoBehaviour:
   ownerId: 0
   group: 0
   prefixBackup: -1
-  observed: {fileID: 0}
-  synchronization: 2
+  observed: {fileID: 11400006}
+  synchronization: 3
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   instantiationId: 0
@@ -607,24 +606,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc2c23cce6f520d45994a435e2a82774, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11400024
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba13a7c7f20708b40a1eb94f6329f6e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds:
-  - name: Click
-    is3d: 0
-    soundType: 0
-    soundsClip:
-    - {fileID: 8300000, guid: 7bb4933e9760faf47a89560d2394dded, type: 3}
-  soundType: 1
 --- !u!114 &11400026
 MonoBehaviour:
   m_ObjectHideFlags: 1
