@@ -382,7 +382,7 @@ public class Worker : Unit
 	public override IEnumerator OnDie ()
 	{
 		workerState = WorkerState.None;
-
+		Deselect ();
 		return base.OnDie ();
 
 	}

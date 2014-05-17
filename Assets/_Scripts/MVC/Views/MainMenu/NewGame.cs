@@ -13,22 +13,22 @@ public class NewGame : MonoBehaviour
 	[System.Serializable ()]
 	public class NewGameMenuButtons
 	{
-		public Transform BtnTutorial;
-		public Transform Btn3P;
-		public Transform Btn4P;
-		public Transform Btn1x1;
-		public Transform Btn2x2;
+		public Transform Btn0;
+		public Transform Btn1;
+		public Transform Btn2;
+		public Transform Btn3;
+		public Transform Btn4;
 		public Transform BtnLeaveRoom;
 
 		public IEnumerable<Transform> Iterate
 		{
 			get
 			{
-				yield return BtnTutorial;
-				yield return Btn3P;
-				yield return Btn4P;
-				yield return Btn1x1;
-				yield return Btn2x2;
+				yield return Btn0;
+				yield return Btn1;
+				yield return Btn2;
+				yield return Btn3;
+				yield return Btn4;
 				yield return BtnLeaveRoom;
 			}
 		}
@@ -41,7 +41,7 @@ public class NewGame : MonoBehaviour
 	
 	public UIInput bidInput;
 	
-	private int CurrentBid {
+	public int CurrentBid {
 		get { return (bidInput) ? int.Parse (bidInput.text) : 1; }
 	}
 
@@ -64,34 +64,34 @@ public class NewGame : MonoBehaviour
 
 		DefaultCallbackButton dcb;
 
-		if (buttons.BtnTutorial)
+		if (buttons.Btn0)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.BtnTutorial, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, CurrentBid, "Tutorial"); } );
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn0, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "FreePlay"); } );
 		}
 		
-		if (buttons.Btn3P)
+		if (buttons.Btn1)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3P, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (3, CurrentBid,"3P"); } );
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (2, CurrentBid,"2P"); } );
 		}
 		
-		if (buttons.Btn4P)
+		if (buttons.Btn2)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4P, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (4, CurrentBid,"4P"); } );
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (4, CurrentBid,"DeathMatch"); } );
 		}
 		
-		if (buttons.Btn1x1)
+		if (buttons.Btn3)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1x1, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (2, CurrentBid,"1x1"); } );
-		}
-		
-		if (buttons.Btn2x2)
-		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2x2, false);
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3, false);
 			dcb.Init ( null, (ht_hud) => { CreateRoom (4, CurrentBid, "2x2", GameplayManager.Mode.Cooperative); } );
+		}
+		
+		if (buttons.Btn4)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, CurrentBid,"1x1"); } );
 		}
 		
 		if (buttons.BtnLeaveRoom)
@@ -147,7 +147,7 @@ public class NewGame : MonoBehaviour
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
 
-			VDebug.Log ("battle: " + properties["battle"]);
+		//	VDebug.Log ("battle: " + properties["battle"]);
 
 			GameplayManager.mode = mode;
 
@@ -176,7 +176,7 @@ public class NewGame : MonoBehaviour
 
 //				buttons.gameObject.SetActive (true);
 
-				errorMessage.enabled = true;
+				errorMessage.enabled = false;
 
 				Invoke ("CloseErrorMessage", 5.0f);
 			},

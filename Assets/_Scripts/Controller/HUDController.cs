@@ -192,7 +192,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		return healthBar;
 	}
 
-	public SubstanceResourceBar  CreateSubstanceResourceBar (IStats target, float size, int maxResource)
+	public SubstanceResourceBar  CreateSubstanceResourceBar (IStats target, float size, float maxResource)
 	{
 		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);

@@ -155,7 +155,7 @@ public class InteractionController : MonoBehaviour
 				}
 			}
 		}
-		else if (hit.GetComponent<Resource> () != null)
+		else if (hit.CompareTag ("Resource"))
 		{
 			bool feedback = false;
 
@@ -207,11 +207,10 @@ public class InteractionController : MonoBehaviour
 				}
 			}
 
-			Debug.Log ("else");
+
 		}
 		
 		statsController.MoveTroop (touchController.GetFinalPoint);
 
-		Debug.Log ("move");
 	}
 }

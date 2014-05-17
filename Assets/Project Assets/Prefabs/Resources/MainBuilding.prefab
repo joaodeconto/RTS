@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400010}
   - 33: {fileID: 3300006}
   - 23: {fileID: 2300006}
-  m_Layer: 18
+  m_Layer: 10
   m_Name: TribeMarket_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ GameObject:
   - 4: {fileID: 400012}
   - 33: {fileID: 3300008}
   - 23: {fileID: 2300008}
-  m_Layer: 18
+  m_Layer: 10
   m_Name: TribeMarket_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - 4: {fileID: 400014}
   - 33: {fileID: 3300010}
   - 23: {fileID: 2300010}
-  m_Layer: 18
+  m_Layer: 10
   m_Name: TribeMarket_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ GameObject:
   - 4: {fileID: 400016}
   - 111: {fileID: 11100002}
   - 114: {fileID: 11400010}
-  m_Layer: 18
+  m_Layer: 10
   m_Name: TribeMarket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77,16 +77,15 @@ GameObject:
   m_Component:
   - 4: {fileID: 400032}
   - 208: {fileID: 20800000}
-  - 114: {fileID: 11400000}
   - 114: {fileID: 11400004}
+  - 114: {fileID: 11400000}
   - 136: {fileID: 13600000}
   - 114: {fileID: 11400006}
   - 54: {fileID: 5400000}
   - 114: {fileID: 11400002}
-  - 114: {fileID: 11400008}
+  - 114: {fileID: 0}
   - 82: {fileID: 8200000}
-  - 82: {fileID: 8200002}
-  m_Layer: 18
+  m_Layer: 10
   m_Name: MainBuilding
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -101,7 +100,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400056}
-  m_Layer: 18
+  m_Layer: 10
   m_Name: Health Reference
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +174,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100056}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .685146809, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400032}
@@ -336,64 +335,6 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
---- !u!82 &8200002
-AudioSource:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100032}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
 --- !u!111 &11100002
 Animation:
   m_ObjectHideFlags: 1
@@ -471,6 +412,8 @@ MonoBehaviour:
     desactiveObjectsWhenInstance: []
   buttonName: Main Building
   guiTextureName: TribeMarket
+  timeToCreate: 0
+  timer: 0
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400002
@@ -500,7 +443,7 @@ MonoBehaviour:
   group: 0
   prefixBackup: -1
   observed: {fileID: 11400002}
-  synchronization: 1
+  synchronization: 3
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   instantiationId: -1
@@ -517,61 +460,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintSize: 10
   terrainName: Terrain
---- !u!114 &11400008
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca8ae34729948b84ca8698a29b32c385, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 8200000}
-  clipType: 2
-  actionType: 0
-  clipName: Tribe_
-  groupName: Building_Ambient
-  OnStartActivated: 0
-  OnVisibleActivated: 0
-  OnInvisibleActivated: 0
-  OnCollisionEnterActivated: 1
-  OnCollisionExitActivated: 0
-  OnTriggerEnterActivated: 0
-  OnTriggerExitActivated: 0
-  OnMouseEnterActivated: 0
-  OnMouseClickActivated: 0
-  OnEnableActivated: 0
-  OnDisableActivated: 0
-  OnCollision2dEnterActivated: 0
-  OnCollision2dExitActivated: 0
-  OnTriggerEnter2dActivated: 0
-  OnTriggerExit2dActivated: 0
-  OnParticleCollisionActivated: 0
-  ShowEditor3D: 1
-  ShowEditor2D: 0
-  ShowEventTriggers: 1
-  numSubscriptions: 1
-  audioSubscriptions:
-  - owner: {fileID: 0}
-    isStandardEvent: 1
-    standardEvent: 3
-    sourceComponent: {fileID: 13600000}
-    methodName: OnCollisionEnter
-    actionType: 1
-    cappedName: 
-    filterLayers: 0
-    filterTags: 0
-    filterNames: 0
-    layerMask: 0
-    tagMask: 0
-    nameMask: 0
-    nameToAdd: 
-    tags:
-    - Default
-    names: []
-    allNames: []
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -590,7 +478,7 @@ CapsuleCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100032}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 4.03000021
   m_Height: 4.80999994

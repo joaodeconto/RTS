@@ -55,8 +55,8 @@ public class FactoryBase : IStats, IDeathObservable
 
 	protected List<Unit> lUnitsToCreate = new List<Unit>();
 	protected Unit unitToCreate;
-	protected float timeToCreate;
-	protected float timer;
+	public float timeToCreate;
+	public float timer;
 	protected bool inUpgrade;
 
 	public Animation ControllerAnimation { get; private set; }
@@ -125,7 +125,7 @@ public class FactoryBase : IStats, IDeathObservable
 		playerUnit = gameplayManager.IsSameTeam (this);
 
 		this.gameObject.tag   = "Factory";
-		this.gameObject.layer = LayerMask.NameToLayer ("Buildings");
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 
 		inUpgrade = false;
 		wasBuilt  = true;
@@ -155,7 +155,7 @@ public class FactoryBase : IStats, IDeathObservable
 			if (!alreadyCheckedMaxPopulation)
 			{
 				alreadyCheckedMaxPopulation = true;
-				eventManager.AddEvent("need more houses");
+				eventManager.AddEvent("build more houses");
 			}
 			return;
 		}
@@ -386,6 +386,8 @@ public class FactoryBase : IStats, IDeathObservable
 //		}
 
 		GetComponent<NavMeshObstacle> ().enabled = true;
+
+		statsController.AddStats(this);
 		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
@@ -396,14 +398,18 @@ public class FactoryBase : IStats, IDeathObservable
 
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 
-		if (gameplayManager.IsSameTeam (team)) model.SetActive (true);
+		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
 	}
 
 	public bool Construct (Worker worker)
 	{
 		if (levelConstruct < (MaxHealth / 2))
 		{
-			buildingState = BuildingState.Base;
+		
+		
+
+		
+						buildingState = BuildingState.Base;
 		}
 		else if (levelConstruct < MaxHealth)
 		{
@@ -473,7 +479,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		base.Select ();
 		
-//		hudController.CreateHealthBar (this, MaxHealth, "Health Reference");
+		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar*0.7f, timer);
 		hudController.CreateSubstanceHealthBar (this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		
@@ -679,6 +685,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 	public override void SetVisible(bool isVisible)
 	{
+
 		statsController.ChangeVisibility (this, isVisible);
 
 		if(isVisible)
@@ -689,6 +696,7 @@ public class FactoryBase : IStats, IDeathObservable
 			if(!wasVisible)
 			{
 				wasVisible = true;
+				model.SetActive(true);
 			}
 		}
 		else
@@ -728,7 +736,7 @@ public class FactoryBase : IStats, IDeathObservable
 			o.OnObservableDie (this.gameObject);
 		}
 	}
-	
+	////
 	#endregion
 
 	// RPCs

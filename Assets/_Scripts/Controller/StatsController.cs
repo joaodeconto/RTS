@@ -281,8 +281,7 @@ public class StatsController : MonoBehaviour
 			
 			ComponentGetter.Get<MiniMapController> ().RemoveUnit (unit.transform, unit.team);
 			gameplayManager.DecrementUnit (unit.team, unit.numberOfUnits);
-			hudController.DestroyInspector ("unit");
-
+			
 		}
 		else
 		{
@@ -465,7 +464,7 @@ public class StatsController : MonoBehaviour
 					SelectStat (stat, true);
 				}
 				return true;
-//				break;
+				break;
 			}
 		}
 

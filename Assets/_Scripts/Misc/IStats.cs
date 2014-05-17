@@ -281,7 +281,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		
 		WasRemoved = false;
 
-		NotifyHealthChange ();
+		//NotifyHealthChange ();
 
 		statsController.AddStats (this);
 

@@ -64,8 +64,8 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 
-//    private Transform obstacleInPath; 	// we found something!
-//    private bool obstacleAvoid = false; // internal var
+    private Transform obstacleInPath; 	// we found something!
+    private bool obstacleAvoid = false; // internal var
 
 	protected PhotonPlayer playerTargetAttack;
 
@@ -641,7 +641,7 @@ public class Unit : IStats, IMovementObservable,
 	{
 		if (!invokeCheckEnemy)
 		{
-			InvokeRepeating ("CheckEnemyIsClose", 0.3f, 0.1f);
+			InvokeRepeating ("CheckEnemyIsClose", 0.3f, 0.2f);
 			invokeCheckEnemy = true;
 		}
 	}
@@ -789,7 +789,7 @@ public class Unit : IStats, IMovementObservable,
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
 		
-//		statsController.RemoveStats(this);
+		statsController.RemoveStats(this);
 
 
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
@@ -804,7 +804,7 @@ public class Unit : IStats, IMovementObservable,
 		if (unitAnimation.DieAnimation)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
-			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 3f));
+			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
 
 		if (IsNetworkInstantiate)

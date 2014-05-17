@@ -86,6 +86,8 @@ public class ActiveGames : MonoBehaviour
 				trns.FindChild ("Players").GetComponent<UILabel>().text = room.playerCount + "/" + room.maxPlayers;
 				trns.FindChild ("Status").GetComponent<UILabel>().text  = isRoomClosed ? "Closed" : "Open";
 
+				//TODO Adicionar Label de Bid, conferir o prefab. 
+
 				GameObject join = trns.FindChild ("Join").gameObject;
 
 				if (isRoomClosed)
@@ -132,14 +134,14 @@ public class ActiveGames : MonoBehaviour
 
 													messageActiveGame.enabled = true;
 
-													errorMessage.enabled = true;
+													errorMessage.enabled = false;
 
 													Invoke ("CloseErrorMessage", 5.0f);
 													InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
 												},
 												(playersReady, maxPlayers) =>
 												{
-													messageActiveGame.text = "Wating For Other Players - "
+													messageActiveGame.text = "Searching for Other Players - "
 																				+ playersReady + "/" + maxPlayers;
 
 												});
