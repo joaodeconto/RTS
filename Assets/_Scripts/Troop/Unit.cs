@@ -427,10 +427,8 @@ public class Unit : IStats, IMovementObservable,
 
 		ht["observableHealth"] = this;
 		
-//		hudController.CreateHealthBar (this, MaxHealth, "Health Reference");
 		hudController.CreateSubstanceHealthBar (this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
-//		hudController.CreateSelected (transform, gameplayManager.GetColorTeam (team));
 		hudController.CreateEnqueuedButtonInInspector ( this.name,
 														Unit.UnitGroupQueueName,
 														ht,
@@ -775,9 +773,9 @@ public class Unit : IStats, IMovementObservable,
 			UnRegisterAttackObserver (IAOobservers[c]);
 		}
 
-
-		ComponentGetter.Get<MiniMapController> ().RemoveUnit (this.transform, this.team);
-		gameplayManager.DecrementUnit (this.team, this.numberOfUnits);
+		statsController.RemoveStats(this);
+		//ComponentGetter.Get<MiniMapController> ().RemoveUnit (this.transform, this.team);
+		//gameplayManager.DecrementUnit (this.team, this.numberOfUnits);
 		
 		//IDeathObservable
 		NotifyDeath ();
@@ -789,7 +787,7 @@ public class Unit : IStats, IMovementObservable,
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
 		
-		statsController.RemoveStats(this);
+
 
 
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
@@ -943,7 +941,7 @@ public class Unit : IStats, IMovementObservable,
 		if (TargetAttack != null)
 			return;
 
-		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 1.2f;
+		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 3f;
 
 		
 		Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized * 2.0f))
