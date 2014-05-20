@@ -455,7 +455,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
 
-		if ((loseGame || winGame) && !hud.buttonMatchScore.gameObject.activeInHierarchy)
+		if ((loseGame || winGame))
 		{
 			Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
 
