@@ -19,7 +19,7 @@ public class EndGameHUD : MonoBehaviour {
 		});
 		
 		option = transform.FindChild ("Victory").
-				 transform.FindChild ("Main Menu").gameObject;
+				 transform.FindChild ("End Game").gameObject;
 		
 		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
 		defaultCallbackButton.Init (null,
