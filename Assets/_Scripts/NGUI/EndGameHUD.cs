@@ -8,7 +8,7 @@ public class EndGameHUD : MonoBehaviour {
 		DefaultCallbackButton defaultCallbackButton;
 		
 		GameObject option = transform.FindChild ("Defeat").
-							transform.FindChild ("Main Menu").gameObject;
+							transform.FindChild ("End Game").gameObject;
 		
 		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
 		defaultCallbackButton.Init (null,
@@ -17,6 +17,17 @@ public class EndGameHUD : MonoBehaviour {
 			if (!PhotonNetwork.offlineMode) PhotonNetwork.LeaveRoom ();
 			Application.LoadLevel (0);
 		});
+
+		option = transform.FindChild ("Defeat").
+			transform.FindChild ("Back to game").gameObject;
+		
+		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
+		defaultCallbackButton.Init (null,
+		                            (ht_dcb) =>
+		                            {
+			gameObject.SetActive (false);
+		});
+
 		
 		option = transform.FindChild ("Victory").
 				 transform.FindChild ("End Game").gameObject;

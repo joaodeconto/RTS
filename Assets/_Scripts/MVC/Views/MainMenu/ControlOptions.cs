@@ -5,6 +5,8 @@ using Visiorama;
 public class ControlOptions : MonoBehaviour
 {
 	private bool wasInitialized = false;
+	public Camera mainCamera;
+
 
 	public void OnEnable ()
 	{
@@ -24,6 +26,21 @@ public class ControlOptions : MonoBehaviour
 		wasInitialized = true;
 
 		DefaultCallbackButton dcb;
+
+				Transform touch = this.transform.FindChild ("Menu").FindChild ("Touch");
+				
+				slider = sound.FindChild ("Slider");
+				
+				slider.GetComponent<UISlider> ().sliderValue = mainCamera.cameraMovement;
+
+				dcb = slider.gameObject.AddComponent<DefaultCallbackButton> ();
+				dcb.Init(null, null, null,
+				(ht_dcb, sliderValue) => 
+				{
+					mainCamera.cameraMovement.speedMobile (sliderValue);
+					mainCamera.cameraMovement.speed (sliderValue);
+				});
+
 //		
 //		Transform slider;
 //		Transform checkbox;
