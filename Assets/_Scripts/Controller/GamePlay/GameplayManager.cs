@@ -35,7 +35,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		public UILabel labelUnits;
 		public GameObject uiVictoryObject;
 		public GameObject uiDefeatObject;
-		public Transform buttonMatchScore;
+//		public Transform buttonMatchScore;
 
 		public UILabel labelTime;
 		public GameObject uiLostMainBaseObject;
@@ -462,21 +462,21 @@ public class GameplayManager : Photon.MonoBehaviour
 			hud.uiVictoryObject.SetActive (winGame);
 			hud.uiDefeatObject.SetActive (loseGame);
 		
-			hud.buttonMatchScore.gameObject.SetActive (true);
-			
-			DefaultCallbackButton dcb = ComponentGetter.Get <DefaultCallbackButton> (hud.buttonMatchScore.transform, false);
-			
-			dcb.Init
-			(
-				null,
-				(ht_dcb) => 
-				{
-					if (PhotonNetwork.room != null)
-						PhotonNetwork.LeaveRoom ();
-					
-					Application.LoadLevel (0);
-				}
-			);
+//			hud.buttonMatchScore.gameObject.SetActive (true);
+//			
+//			DefaultCallbackButton dcb = ComponentGetter.Get <DefaultCallbackButton> (hud.buttonMatchScore.transform, false);
+//			
+//			dcb.Init
+//			(
+//				null,
+//				(ht_dcb) => 
+//				{
+//					if (PhotonNetwork.room != null)
+//						PhotonNetwork.LeaveRoom ();
+//					
+//					Application.LoadLevel (0);
+//				}
+//			);
 		}
 	}
 
