@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections;
 using Visiorama;
+using Visiorama.Utils;
 
 public class ControlOptions : MonoBehaviour
 {
 	private bool wasInitialized = false;
 	public Camera mainCamera;
+
 
 
 	public void OnEnable ()
@@ -27,18 +29,27 @@ public class ControlOptions : MonoBehaviour
 
 		DefaultCallbackButton dcb;
 
-				Transform touch = this.transform.FindChild ("Menu").FindChild ("Touch");
+		Transform slider;
 				
-				slider = sound.FindChild ("Slider");
+		Transform cheackBox;
+
+		Transform touch = this.transform.FindChild ("Menu").FindChild ("Touch");
 				
-				slider.GetComponent<UISlider> ().sliderValue = mainCamera.cameraMovement;
+		slider = touch.FindChild ("Slider");
+
+
+		float speedMobile = mainCamera.GetComponent<CameraMovement>().speed;
+
+	
+				
+		slider.GetComponent<UISlider> ().value = speedMobile;
 
 				dcb = slider.gameObject.AddComponent<DefaultCallbackButton> ();
 				dcb.Init(null, null, null,
 				(ht_dcb, sliderValue) => 
 				{
-					mainCamera.cameraMovement.speedMobile (sliderValue);
-					mainCamera.cameraMovement.speed (sliderValue);
+					speedMobile = sliderValue;
+					
 				});
 
 //		
