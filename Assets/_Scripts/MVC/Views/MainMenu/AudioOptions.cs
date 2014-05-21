@@ -5,7 +5,8 @@ using Visiorama;
 public class AudioOptions : MonoBehaviour
 {
 	private bool wasInitialized = false;
-	
+
+		
 	public void OnEnable ()
 	{
 		Open ();
@@ -15,6 +16,36 @@ public class AudioOptions : MonoBehaviour
 	{
 		Close ();
 	}
+//
+//	public void MuteVolume (bool check)
+//	{
+//		SoundManager.Mute (check);
+//	}
+//	
+//	public void SetVolume (float sliderVolume)
+//	{
+//		SoundManager.SetVolume (sliderVolume);
+//	}
+//
+//	public void SetMusicVolume (float sliderVolume)
+//	{
+//		SoundManager.SetVolumeMusic (sliderVolume);
+//	}
+//
+//	public void SetSFXVolume (float sliderVolume)
+//	{
+//		SoundManager.SetVolumeSFX (sliderVolume);
+//	}
+//
+//	public void MuteMusicVolume (bool check)
+//	{
+//		SoundManager.MuteMusic (check);
+//	}
+//
+//	public void MuteSFXVolume (bool check)
+//	{
+//		SoundManager.MuteSFX (check);
+//	}
 
 	public void Open ()
 	{
@@ -23,27 +54,32 @@ public class AudioOptions : MonoBehaviour
 
 		wasInitialized = true;
 
+
+      //  soundManager = ComponentGetter.Get<SoundManager> ().maxVolume;
+
 		DefaultCallbackButton dcb;
 		
 		Transform slider;
 		Transform checkbox;
-		
+
+
 		Transform music = this.transform.FindChild ("Menu").FindChild ("Music");
 		
 		slider = music.FindChild ("Slider");
 		
-		slider.GetComponent<UISlider> ().value = SoundManager.GetVolumeMusic ();
+		slider.GetComponent<UISlider> ().value = SoundManager.GetVolumeMusic();
 		
 		dcb = slider.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null,
 		(ht_dcb, sliderValue) => 
 		{
+
 			SoundManager.SetVolumeMusic (sliderValue);
 		});
 		
 		checkbox = music.FindChild ("CheckBox");
 
-		checkbox.GetComponent<UIToggle> ().value = SoundManager.IsMusicMuted ();
+		checkbox.GetComponent<UIToggle> ().value = SoundManager.IsMuted ();
 		
 		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null, null,
@@ -67,7 +103,7 @@ public class AudioOptions : MonoBehaviour
 		
 		checkbox = sound.FindChild ("CheckBox");
 
-		checkbox.GetComponent<UIToggle> ().value = SoundManager.IsSFXMuted ();
+		checkbox.GetComponent<UIToggle> ().value = !SoundManager.IsSFXMuted ();
 		
 		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null, null,
@@ -80,25 +116,24 @@ public class AudioOptions : MonoBehaviour
 		
 		slider = voice.FindChild ("Slider");
 		
-		slider.GetComponent<UISlider> ().value = VolumeController.voiceVolume;
+		slider.GetComponent<UISlider> ().value = SoundManager.GetVolume();;
 
 		dcb = slider.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null,
 		(ht_dcb, sliderValue) => 
 		{
-			Debug.Log ("HERE: Voice");
+			SoundManager.SetVolume( sliderValue);
 		});
 		
 		checkbox = voice.FindChild ("CheckBox");
 
-		checkbox.GetComponent<UIToggle> ().value = VolumeController.voiceOn;
+		checkbox.GetComponent<UIToggle> ().value = SoundManager.IsMuted();
 		
 		dcb = checkbox.gameObject.AddComponent<DefaultCallbackButton> ();
 		dcb.Init(null, null, null, null,
 		(ht_dcb, checkedValue) => 
 		{
-			Debug.Log ("HERE: Voice");
-//			VolumeController.voiceOn = checkedValue;
+			SoundManager.Mute (!checkedValue);
 		});
 		
 		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");

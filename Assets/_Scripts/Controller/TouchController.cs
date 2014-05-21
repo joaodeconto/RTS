@@ -33,6 +33,7 @@ public class TouchController : MonoBehaviour
 	public Camera mainCamera;
 	public string[] layersToIgnore;
 	public ZoomSettings zoomSettings;
+	public float doubleClickSpeed = 1f;
 	
 	protected Camera[] camerasUI;
 	
@@ -170,7 +171,7 @@ public class TouchController : MonoBehaviour
 			
 			VerifyTouchID ();
 			
-			DoubleClick = GetDoubleClick (0.3f);
+			DoubleClick = GetDoubleClick (doubleClickSpeed);
 			
 			touchType = TouchType.Ended;
 		}
@@ -283,4 +284,10 @@ public class TouchController : MonoBehaviour
 			idTouch = IdTouch.Id1;
 		#endif
 	}
+
+	public void SetDoubleClick (float dc)
+	{
+			doubleClickSpeed = dc*2;
+	}
+
 }

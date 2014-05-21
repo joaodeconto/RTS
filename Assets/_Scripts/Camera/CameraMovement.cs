@@ -39,10 +39,12 @@ public class CameraMovement : MonoBehaviour
 	void Update ()
 	{
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
+
 		if (touchController.touchType == TouchController.TouchType.Press)
 		{
 			transform.position -= (touchController.RelativeTwoFingersPosition * speedMobile);
 		}
+
 #else
 		float v = Input.GetAxis ("Vertical");
 		float h = Input.GetAxis ("Horizontal");
@@ -97,6 +99,13 @@ public class CameraMovement : MonoBehaviour
 		if (touchController.RelativePosition.y >= maximum.y-0.01f && touchController.RelativePosition.y <= 1f)
 			PanCamera (speed * touchController.RelativePosition.y, 0f);
 #endif
+	}
+
+	public void SetSpeed (float sliderSpeedValue) 
+
+	{
+		speed = sliderSpeedValue;
+		Debug.Log(sliderSpeedValue);
 	}
 
 	// Adicionar metodo na biblioteca
