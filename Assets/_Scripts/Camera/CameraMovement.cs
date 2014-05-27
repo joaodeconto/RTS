@@ -6,8 +6,8 @@ using Visiorama.Utils;
 
 public class CameraMovement : MonoBehaviour
 {
-	public float speedMobile = PlayerPrefs.GetFloat("TouchSense");
-	public float speed = PlayerPrefs.GetFloat("TouchSense");
+	public float speedMobile;
+	public float speed;
 	public Vector2 minimum = Vector2.one * 0.01f;
 	public Vector2 maximum = Vector2.one * 0.99f;
 	
@@ -25,6 +25,9 @@ public class CameraMovement : MonoBehaviour
 	{
 		touchController = ComponentGetter.Get<TouchController>();
 		bounds = GetComponent<CameraBounds> ();
+
+		speedMobile = PlayerPrefs.GetFloat("TouchSense");
+		speed = PlayerPrefs.GetFloat("TouchSense");
 		
 		scenario = bounds.scenario;
 		
