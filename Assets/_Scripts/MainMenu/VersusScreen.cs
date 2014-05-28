@@ -54,6 +54,8 @@ public class VersusScreen : MonoBehaviour
 	
 	public void Init ()
 	{
+		cena = (int)pw.GetPropertyOnRoom("map");
+		cenaSelection();
 		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
 
@@ -119,24 +121,30 @@ public class VersusScreen : MonoBehaviour
 
 	}
 
-	public void SceneSelection (string popSelect)
+	public void cenaSelection ()
 	{
-		mapName.text = popSelect;
-		mapSprite.spriteName = popSelect;
 
-		if (popSelect == "Swamp King")
+		if (cena == 1 )
 		{
-			cena = 1;
+			mapName.text = "Swamp King";
+			mapSprite.spriteName = "Swamp King";
 
 		}
-		if (popSelect == "Living Desert")
+
+		if (cena == 2 )
 		{
-			cena = 2;
+			mapName.text = "Living Desert";
+			mapSprite.spriteName = "Living Desert";
+			
 		}
-		if (popSelect == "Dementia Forest")
+
+		if (cena == 3 )
 		{
-			cena = 3;
+			mapName.text = "Dementia Forest";
+			mapSprite.spriteName = "Dementia Forest";
+			
 		}
+
 	}
 	
 	

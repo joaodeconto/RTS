@@ -106,7 +106,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	public void CreateTestRoom ()
 	{
-		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1) + (Random.value * 10000), 1, true, true, 1);
+		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1) + (Random.value * 10000), 1, true, true, 1, 1);
 
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
@@ -114,13 +114,14 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		}
 	}
 
-	public void CreateRoom (string roomName, int bid, bool isVisible, bool isOpen, int maxPlayers, Hashtable customProperties = null)
+	public void CreateRoom (string roomName, int bid, bool isVisible, bool isOpen, int maxPlayers, int map,  Hashtable customProperties = null)
 	{
 		if (customProperties == null)
 			customProperties = new Hashtable ();
 
 		customProperties.Add ("closeRoom", false);
 		customProperties.Add ("bid", bid);
+		customProperties.Add ("map", map);
 		
 		string[] roomPropsInLobby = { "closeRoom", "bool", "bid", "int" };
 

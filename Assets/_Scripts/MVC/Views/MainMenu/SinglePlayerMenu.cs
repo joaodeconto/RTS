@@ -20,6 +20,7 @@ public class SinglePlayerMenu : MonoBehaviour
 	
 
 	private int players;
+	private int mapScene;
 		
 	private string battleMode;
 	private string battleName;
@@ -70,7 +71,7 @@ public class SinglePlayerMenu : MonoBehaviour
 			          {
 				
 
-					CreateRoom (players, 0, battleName, battleMode);
+					CreateRoom (players, 0, battleName, battleMode, mapScene);
 					createRoom.gameObject.SetActive (false);
 								
 				
@@ -125,7 +126,7 @@ public class SinglePlayerMenu : MonoBehaviour
 	}
 	
 	
-	private void CreateRoom (int maxPlayers, int bid, string battleTypeName, string bMode)
+	private void CreateRoom (int maxPlayers, int bid, string battleTypeName, string bMode, int map)
 	{
 		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
@@ -164,7 +165,7 @@ public class SinglePlayerMenu : MonoBehaviour
 			Hashtable properties = new Hashtable ();
 			properties.Add ("battle", battle.ToString ());
 			
-			pw.CreateRoom (roomName, bid, isVisible, isOpen, maxPlayers, properties);
+			pw.CreateRoom (roomName, bid, isVisible, isOpen, maxPlayers, map, properties);
 			
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
@@ -205,5 +206,24 @@ public class SinglePlayerMenu : MonoBehaviour
 		errorMessage.gameObject.SetActive (false);
 		createRoom.gameObject.SetActive (true);
 		
+	}
+
+	public void SceneSelection (string popSelect)
+	{
+		
+		if (popSelect == "Swamp King")
+		{
+			mapScene = 1;
+		}
+		
+		if (popSelect == "Living Desert")
+		{
+			mapScene = 2;
+		}
+		
+		if (popSelect == "Dementia Forest")
+		{
+			mapScene = 3;
+		}
 	}
 }

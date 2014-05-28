@@ -36,6 +36,8 @@ public class TutorialMenu : MonoBehaviour
 	public UILabel messageActiveGame;
 	public UILabel errorMessage;
 
+	private int mapScene = 4;
+
 
 	bool wasInitialized      = false;
 	
@@ -69,25 +71,25 @@ public class TutorialMenu : MonoBehaviour
 		if (buttons.Btn0)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn0, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "Basics", "Tutorial"); Debug.LogWarning("hithithithit"); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "Basics", "Tutorial", 4);  } );
 		}
 		
 		if (buttons.Btn1)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Combat", "Tutorial"); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Combat", "Tutorial", 5); } );
 		}
 		
 		if (buttons.Btn2)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Favor", "Tutorial"); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Favor", "Tutorial", 6); } );
 		}
 		
 		if (buttons.Btn3)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (2, 0, "Online", "DeathMatch"); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (2, 0, "Online", "DeathMatch", 1); } );
 		}
 		
 				
@@ -124,7 +126,7 @@ public class TutorialMenu : MonoBehaviour
 	}
 	
 	
-	private void CreateRoom (int maxPlayers, int bid, string battleTypeName, string bMode)
+	private void CreateRoom (int maxPlayers, int bid, string battleTypeName, string bMode, int map)
 	{
 		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
@@ -167,7 +169,7 @@ public class TutorialMenu : MonoBehaviour
 			Hashtable properties = new Hashtable ();
 			properties.Add ("battle", battle.ToString ());
 			
-			pw.CreateRoom (roomName, bid, isVisible, isOpen, maxPlayers, properties);
+			pw.CreateRoom (roomName, bid, isVisible, isOpen, maxPlayers, map, properties);
 			
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
