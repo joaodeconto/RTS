@@ -137,8 +137,41 @@ public class Login : IController
 
 	public void LoadPlayerPrefabs ()
 	{
-		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
+		float _all = PlayerPrefs.GetFloat("AllVolume");
+		float _mus = PlayerPrefs.GetFloat("MusicVolume");
+		float _sfx = PlayerPrefs.GetFloat("SFXVolume");
+		float _sense = PlayerPrefs.GetFloat("TouchSense");
+		float _click = PlayerPrefs.GetFloat("DoubleClickSpeed");
+
+		if (_all == null)
+		{
+			PlayerPrefs.SetFloat("AllVolume", 1f);
+		}
+
+		if (_mus == null)
+		{
+			PlayerPrefs.SetFloat("MusicVolume", 1f);
+		}
+
+		if (_sfx == null)
+		{
+			PlayerPrefs.SetFloat("SFXVolume", 1f);
+		}
+
+
+		if (_sense == null)
+		{
+			PlayerPrefs.SetFloat("TouchSense", .5f);
+		}
+
+		if (_click == null)
+		{
+			PlayerPrefs.SetFloat("DoubleClickSpeed", .5f);
+		}
+
+
 		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));
+		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
 		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));
 
 		QualitySettings.SetQualityLevel (PlayerPrefs.GetInt("GraphicQuality"));

@@ -151,9 +151,9 @@ public class VersusScreen : MonoBehaviour
 
 	void SetPlayer (Vector3 position, PhotonPlayer pp)
 	{
-		int teamGet = (int)pw.GetPropertyOnPlayer("team");
+
 	
-		if (teamGet == 0 || teamGet == 2)
+		if (position.x <= 0)
 		{
 
 			GameObject button = NGUITools.AddChild (gameObjectPlayerL, prefabPlayerLeft);
@@ -165,7 +165,7 @@ public class VersusScreen : MonoBehaviour
 
 		}
 
-		if (teamGet == 1 || teamGet == 3)
+		else
 		{
 			GameObject button = NGUITools.AddChild (gameObjectPlayerR, prefabPlayerRight);
 						
