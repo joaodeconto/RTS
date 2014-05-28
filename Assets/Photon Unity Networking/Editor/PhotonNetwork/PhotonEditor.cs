@@ -32,8 +32,8 @@ public class Text
     public string AccountWebsiteButton = "Open account website";
     public string SelfHostLabel = "I want to host my own server. Let me set it up.";
     public string SelfHostSettingsButton = "Open self-hosting settings";
-    public string MobileExportNoteLabel = "Note: Export to mobile will require iOS Pro / Android Pro.";
-    public string MobilePunPlusExportNoteLabel = "PUN+ will use native sockets in iOS/Android exports.";
+    public string MobileExportNoteLabel = "Build for mobiles impossible. Get PUN+ or Unity Pro for mobile.";
+    public string MobilePunPlusExportNoteLabel = "PUN+ available. Using native sockets for iOS/Android.";
     public string EmailInUseLabel = "The provided e-mail-address has already been registered.";
     public string KnownAppIdLabel = "Ah, I know my Application ID. Get me to setup.";
     public string SeeMyAccountLabel = "Mh, see my account page";
@@ -115,17 +115,17 @@ public class PhotonEditor : EditorWindow
 
     protected static string DocumentationLocation = "Assets/Photon Unity Networking/PhotonNetwork-Documentation.pdf";
 
-    protected static string UrlFreeLicense = "http://www.exitgames.com/Download/Photon";
+    protected static string UrlFreeLicense = "https://www.exitgames.com/en/OnPremise/Dashboard";
 
-    protected static string UrlDevNet = "http://doc.exitgames.com/photon-cloud";
+    protected static string UrlDevNet = "http://doc.exitgames.com/en/pun/current/getting-started/pun-overview";
 
     protected static string UrlForum = "http://forum.exitgames.com";
 
-    protected static string UrlCompare = "http://doc.exitgames.com/photon-cloud/PhotonCloudvsServer";
+    protected static string UrlCompare = "http://doc.exitgames.com/en/realtime/current/getting-started/onpremise-or-saas";
 
-    protected static string UrlHowToSetup = "http://doc.exitgames.com/photon-server/PhotonIn5Min";
+    protected static string UrlHowToSetup = "http://doc.exitgames.com/en/onpremise/current/getting-started/photon-server-in-5min";
 
-    protected static string UrlAppIDExplained = "http://doc.exitgames.com/photon-cloud/PhotonDashboard";
+    protected static string UrlAppIDExplained = "http://doc.exitgames.com/en/realtime/current/getting-started/obtain-your-app-id";
 
     protected static string UrlAccountPage = "https://www.exitgames.com/Account/SignIn?email="; // opened in browser
 
@@ -226,12 +226,13 @@ public class PhotonEditor : EditorWindow
 
         // detect optional packages
         PhotonEditor.CheckPunPlus();
+
     }
 
     static void CheckPunPlus()
     {
         androidLibExists = File.Exists("Assets/Plugins/Android/libPhotonSocketPlugin.so");
-        iphoneLibExists = File.Exists("Assets/Plugins/IPhone/libPhotonSocketPlugin.so");
+        iphoneLibExists = File.Exists("Assets/Plugins/IPhone/libPhotonSocketPlugin.a");
 
         isPunPlus = androidLibExists || iphoneLibExists;
     }
@@ -243,7 +244,7 @@ public class PhotonEditor : EditorWindow
             return; // don't import while compiling
         }
 
-        #if UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5
+        #if UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_5
         const string win8Package = "Assets/Plugins/Photon3Unity3D-Win8.unitypackage";
 
         bool win8LibsExist = File.Exists("Assets/Plugins/WP8/Photon3Unity3D.dll") && File.Exists("Assets/Plugins/Metro/Photon3Unity3D.dll");
@@ -254,7 +255,7 @@ public class PhotonEditor : EditorWindow
         #endif
     }
 
-    [MenuItem("Window/Photon Unity Networking &p")]
+    [MenuItem("Window/Photon Unity Networking/PUN Wizard &p")]
     protected static void Init()
     {
         PhotonEditor win = GetWindow(WindowType, false, CurrentLang.WindowTitle, true) as PhotonEditor;
@@ -301,10 +302,13 @@ public class PhotonEditor : EditorWindow
         // after a compile, check RPCs to create a cache-list
         if (!postCompileActionsDone && !EditorApplication.isCompiling && !EditorApplication.isPlayingOrWillChangePlaymode)
         {
-            postCompileActionsDone = true;  // on compile, this falls back to false (without actively doing anything)
+            #if UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_5
+            if (EditorApplication.isUpdating) return;
+            #endif
 
+            postCompileActionsDone = true;  // on compile, this falls back to false (without actively doing anything)
             PhotonEditor.UpdateRpcList();
-            #if UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5
+            #if UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_5
             PhotonEditor.ImportWin8Support();
             #endif
         }
@@ -530,16 +534,13 @@ public class PhotonEditor : EditorWindow
         EditorGUILayout.Separator();
 
         GUILayout.Label(CurrentLang.PUNWizardLabel, EditorStyles.boldLabel);
-        if (!InternalEditorUtility.HasAdvancedLicenseOnBuildTarget(BuildTarget.Android) || !InternalEditorUtility.HasAdvancedLicenseOnBuildTarget(BuildTarget.iPhone))
+        if (isPunPlus)
         {
-            if (isPunPlus)
-            {
-                GUILayout.Label(CurrentLang.MobilePunPlusExportNoteLabel);
-            }
-            else
-            {
-                GUILayout.Label(CurrentLang.MobileExportNoteLabel);
-            }
+            GUILayout.Label(CurrentLang.MobilePunPlusExportNoteLabel);
+        }
+        else if (!InternalEditorUtility.HasAdvancedLicenseOnBuildTarget(BuildTarget.Android) || !InternalEditorUtility.HasAdvancedLicenseOnBuildTarget(BuildTarget.iPhone))
+        {
+            GUILayout.Label(CurrentLang.MobileExportNoteLabel);
         }
         EditorGUILayout.Separator();
 

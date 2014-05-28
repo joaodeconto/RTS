@@ -13,6 +13,18 @@
             As far as Photon is concerned, the substitution is sufficiently precise.
             </remarks>
         </member>
+        <member name="M:ExitGames.Client.Photon.Hashtable.Clone">
+            <summary>
+            Creates a shallow copy of the Hashtable.
+            </summary>
+            <remarks>
+            A shallow copy of a collection copies only the elements of the collection, whether they are 
+            reference types or value types, but it does not copy the objects that the references refer 
+            to. The references in the new collection point to the same objects that the references in 
+            the original collection point to.
+            </remarks>
+            <returns>Shallow copy of the Hashtable.</returns>
+        </member>
         <member name="M:Photon.SocketServer.Security.DiffieHellmanCryptoProvider.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Photon.SocketServer.Security.DiffieHellmanCryptoProvider"/> class.
@@ -68,6 +80,12 @@
             This creates one package per go in UDP.
             </summary>
             <returns>If commands are not sent, cause they didn't fit into the package that's sent.</returns>
+        </member>
+        <member name="M:ExitGames.Client.Photon.PeerBase.SerializeMessageToMessage(System.Object,System.Boolean,System.Byte[],System.Boolean)">
+            <summary> Returns the UDP Payload starting with Magic Number for binary protocol </summary>
+        </member>
+        <member name="M:ExitGames.Client.Photon.PeerBase.SerializeRawMessageToMessage(System.Byte[],System.Boolean,System.Byte[],System.Boolean)">
+            <summary> Returns the UDP Payload starting with Magic Number for binary protocol </summary>
         </member>
         <member name="F:ExitGames.Client.Photon.PeerBase.mtu">
             <summary> Maximum Transfer Unit to be used for UDP+TCP</summary>
@@ -383,6 +401,9 @@
         <member name="F:ExitGames.Client.Photon.Lite.LiteEventCode.PropertiesChanged">
             <summary>(253) Event PropertiesChanged</summary>
         </member>
+        <member name="F:ExitGames.Client.Photon.Lite.LiteEventCode.Disconnect">
+            <summary>(252) Event Disconnect</summary>
+        </member>
         <member name="T:ExitGames.Client.Photon.Lite.LiteEventKey">
             <summary>
             Lite - Keys of event-parameters that are defined by the Lite application logic.
@@ -568,7 +589,7 @@
             <summary>Removes this event (by eventCode) from the cache.</summary>
         </member>
         <member name="F:ExitGames.Client.Photon.Lite.EventCaching.AddToRoomCache">
-            <summary>Adds an event to the room's cache.</summary>
+            <summary>Adds an event to the room's cache</summary>
         </member>
         <member name="F:ExitGames.Client.Photon.Lite.EventCaching.AddToRoomCacheGlobal">
             <summary>Adds this event to the cache for actor 0 (becoming a "globally owned" event in the cache).</summary>
@@ -578,6 +599,18 @@
         </member>
         <member name="F:ExitGames.Client.Photon.Lite.EventCaching.RemoveFromRoomCacheForActorsLeft">
             <summary>Removes events of players who already left the room (cleaning up).</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.Lite.EventCaching.SliceIncreaseIndex">
+            <summary>Increase the index of the sliced cache.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.Lite.EventCaching.SliceSetIndex">
+            <summary>Set the index of the sliced cache. You must set RaiseEventOptions.CacheSliceIndex for this.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.Lite.EventCaching.SlicePurgeIndex">
+            <summary>Purge cache slice with index. Exactly one slice is removed from cache. You must set RaiseEventOptions.CacheSliceIndex for this.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.Lite.EventCaching.SlicePurgeUpToIndex">
+            <summary>Purge cache slices with specified index and anything lower than that. You must set RaiseEventOptions.CacheSliceIndex for this.</summary>
         </member>
         <member name="T:ExitGames.Client.Photon.Lite.ReceiverGroup">
             <summary>
@@ -618,6 +651,9 @@
             An application can use more than one PhotonPeer instance, which are treated as separate users on the
             server. Each should have its own listener instance, to separate the operations, callbacks and events.
             </remarks>
+        </member>
+        <member name="F:ExitGames.Client.Photon.PhotonPeer.NoSocket">
+            <summary>False if this library build contains C# Socket code. If true, you must set some type as SocketImplementation before connecting.</summary>
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.TrafficStatsReset">
             <summary>
@@ -1469,6 +1505,8 @@
             Gets all properties of the game and each actor.
             </summary>
             <remarks>
+            The server returns only actor properties of players who are in the room when the
+            operation executes (players might join or leave while the operation is on it's way).
             Please read the general description of <see cref="!:Properties on Photon"/>.
             </remarks>
             <param name="channelId">Number of channel to use (starting with 0).</param>
@@ -1479,6 +1517,8 @@
             Gets selected properties of an actor.
             </summary>
             <remarks>
+            The server returns only actor properties of players who are in the room when the
+            operation executes (players might join or leave while the operation is on it's way).
             Please read the general description of <see cref="!:Properties on Photon"/>.
             </remarks>
             <param name="properties">optional, array of property keys to fetch</param>
@@ -1491,6 +1531,8 @@
             Gets selected properties of some actors.
             </summary>
             <remarks>
+            The server returns only actor properties of players who are in the room when the
+            operation executes (players might join or leave while the operation is on it's way).
             Please read the general description of <see cref="!:Properties on Photon"/>.
             </remarks>
             <param name="properties">array of property keys to fetch. optional (can be null).</param>

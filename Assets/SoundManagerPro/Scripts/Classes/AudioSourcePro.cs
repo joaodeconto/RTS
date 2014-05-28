@@ -5,6 +5,7 @@ using System.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using antilunchbox;
 
 [AddComponentMenu( "AntiLunchBox/AudioSourcePro" )]
 [Serializable]
@@ -227,7 +228,7 @@ public class AudioSourcePro : MonoBehaviour {
 	/// </summary>
 	void PlayLoopHandler()
 	{
-		SoundManager.PlaySFX(audioSource, clip, true, volume, pitch);
+		SoundManager.PlaySFX(audioSource, clip, true, 0f, volume, pitch);
 	}
 	
 	/// <summary>
@@ -743,7 +744,7 @@ public class AudioSourcePro : MonoBehaviour {
 		{
 		case ClipType.ClipFromSoundManager:
 		case ClipType.ClipFromGroup:
-			SoundManager.PlaySFX(audioSource, clip, loop, volume, pitch);
+			SoundManager.PlaySFX(audioSource, clip, loop, Convert.ToSingle(delay), volume, pitch);
 			break;
 		case ClipType.AudioClip:
 		default:
@@ -776,10 +777,10 @@ public class AudioSourcePro : MonoBehaviour {
 		switch(clipType)
 		{
 		case ClipType.ClipFromSoundManager:
-			SoundManager.PlaySFX(audioSource, SoundManager.Load(nameValue), loop, volume, pitch);
+			SoundManager.PlaySFX(audioSource, SoundManager.Load(nameValue), loop, 0f, volume, pitch);
 			break;
 		case ClipType.ClipFromGroup:
-			SoundManager.PlaySFX(audioSource, SoundManager.LoadFromGroup(nameValue), loop, volume, pitch);
+			SoundManager.PlaySFX(audioSource, SoundManager.LoadFromGroup(nameValue), loop, 0f, volume, pitch);
 			break;
 		default:
 			break;
@@ -856,7 +857,7 @@ public class AudioSourcePro : MonoBehaviour {
 	
 	public static void PlayClipAtPoint(AudioClip clip, Vector3 position, float volume=1f)
 	{
-		SoundManager.PlaySFX(clip, false, 0f, volume, 1f, position);
+		SoundManager.PlaySFX(clip, false, 0f, volume, SoundManager.GetPitchSFX(), position);
 	}
 	#endregion
 	
@@ -869,38 +870,41 @@ public class AudioSourcePro : MonoBehaviour {
 	#endregion
 }
 
-public enum ClipType
+namespace antilunchbox
 {
-	AudioClip,
-	ClipFromSoundManager,
-	ClipFromGroup
-}
-
-public enum AudioSourceAction
-{
-	None,
-	Play,
-	PlayLoop,
-	PlayCapped,
-	Stop
-}
-
-public enum AudioSourceStandardEvent
-{
-	OnStart,
-	OnVisible,
-	OnInvisible,
-	OnCollisionEnter,
-	OnCollisionExit,
-	OnTriggerEnter,
-	OnTriggerExit,
-	OnMouseEnter,
-	OnMouseClick,
-	OnEnable,
-	OnDisable,
-	OnCollisionEnter2D,
-	OnCollisionExit2D,
-	OnTriggerEnter2D,
-	OnTriggerExit2D,
-	OnParticleCollision
+	public enum ClipType
+	{
+		AudioClip,
+		ClipFromSoundManager,
+		ClipFromGroup
+	}
+	
+	public enum AudioSourceAction
+	{
+		None,
+		Play,
+		PlayLoop,
+		PlayCapped,
+		Stop
+	}
+	
+	public enum AudioSourceStandardEvent
+	{
+		OnStart,
+		OnVisible,
+		OnInvisible,
+		OnCollisionEnter,
+		OnCollisionExit,
+		OnTriggerEnter,
+		OnTriggerExit,
+		OnMouseEnter,
+		OnMouseClick,
+		OnEnable,
+		OnDisable,
+		OnCollisionEnter2D,
+		OnCollisionExit2D,
+		OnTriggerEnter2D,
+		OnTriggerExit2D,
+		OnParticleCollision
+	}
 }

@@ -45,8 +45,8 @@ internal class PhotonHandler : Photon.MonoBehaviour, IPhotonPeerListener
     /// <summary>Called by Unity when the application is closed. Tries to disconnect.</summary>
     protected void OnApplicationQuit()
     {
-        PhotonNetwork.Disconnect();
         PhotonHandler.StopFallbackSendAckThread();
+        PhotonNetwork.Disconnect();
     }
 
     protected void Update()
@@ -105,34 +105,17 @@ internal class PhotonHandler : Photon.MonoBehaviour, IPhotonPeerListener
     protected void OnLevelWasLoaded(int level)
     {
         PhotonNetwork.networkingPeer.NewSceneLoaded();
-
-        if (PhotonNetwork.automaticallySyncScene)
-        {
-            this.SetSceneInProps();
-        }
+        PhotonNetwork.networkingPeer.SetLevelInPropsIfSynced(Application.loadedLevelName);
     }
 
     protected void OnJoinedRoom()
     {
-        PhotonNetwork.networkingPeer.AutomaticallySyncScene();
+        PhotonNetwork.networkingPeer.LoadLevelIfSynced();
     }
 
     protected void OnCreatedRoom()
     {
-        if (PhotonNetwork.automaticallySyncScene)
-        {
-            this.SetSceneInProps();
-        }
-    }
-
-    protected internal void SetSceneInProps()
-    {
-        if (PhotonNetwork.isMasterClient)
-        {
-            Hashtable setScene = new Hashtable();
-            setScene[NetworkingPeer.CurrentSceneProperty] = Application.loadedLevelName;
-            PhotonNetwork.room.SetCustomProperties(setScene);
-        }
+        PhotonNetwork.networkingPeer.SetLevelInPropsIfSynced(Application.loadedLevelName);
     }
 
     public static void StartFallbackSendAckThread()

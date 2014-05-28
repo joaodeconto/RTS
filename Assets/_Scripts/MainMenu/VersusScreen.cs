@@ -18,10 +18,15 @@ public class VersusScreen : MonoBehaviour
 	public GameObject gameObjectPlayerR;
 
 	public UISlider progBar;
+
+	public UISprite mapSprite;
 	
 	public UILabel timeLabel;
 	public UILabel mapName;
 	public UILabel battleMode;
+	public int cena;
+
+
 
 	
 	public GameObject prefabPlayerRight;
@@ -51,6 +56,7 @@ public class VersusScreen : MonoBehaviour
 	{
 		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
+
 
 		// LOAD GAMEPLAY!
 
@@ -112,6 +118,27 @@ public class VersusScreen : MonoBehaviour
 		Invoke ("InstanceGame",2);
 
 	}
+
+	public void SceneSelection (string popSelect)
+	{
+		mapName.text = popSelect;
+		mapSprite.spriteName = popSelect;
+
+		if (popSelect == "Swamp King")
+		{
+			cena = 1;
+
+		}
+		if (popSelect == "Living Desert")
+		{
+			cena = 2;
+		}
+		if (popSelect == "Dementia Forest")
+		{
+			cena = 3;
+		}
+	}
+	
 	
 	void DescountTime ()
 	{
@@ -120,12 +147,13 @@ public class VersusScreen : MonoBehaviour
 		
 		if (timeCount == 0) CancelInvoke ("DescountTime");
 	}
-		
+
+
 	void SetPlayer (Vector3 position, PhotonPlayer pp)
 	{
-
+		int teamGet = (int)pw.GetPropertyOnPlayer("team");
 	
-		if (position.x <= 0)
+		if (teamGet == 0 || teamGet == 2)
 		{
 
 			GameObject button = NGUITools.AddChild (gameObjectPlayerL, prefabPlayerLeft);
@@ -137,7 +165,7 @@ public class VersusScreen : MonoBehaviour
 
 		}
 
-		else
+		if (teamGet == 1 || teamGet == 3)
 		{
 			GameObject button = NGUITools.AddChild (gameObjectPlayerR, prefabPlayerRight);
 						
@@ -158,12 +186,12 @@ public class VersusScreen : MonoBehaviour
 	private IEnumerator LoadingScene ()
 	{
 
-		AsyncOperation async = Application.LoadLevelAsync(pw.cena);
+		AsyncOperation async = Application.LoadLevelAsync(cena);
 
 		while (!async.isDone)
 		{
 
-			progBar.value = async.progress + 0.2f;
+			progBar.value = async.progress + 0.1f;
 
 			yield return null;
 		}

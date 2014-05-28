@@ -11,7 +11,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	public delegate void PlayerReadyCallback (int nPlayersReady, int nPlayers);
 
 	public float RefreshingInterval = 0.2f;
-	public int cena = 1;
 
 	public GameObject[] menusDissapearWhenLogged;
 	
@@ -46,10 +45,10 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
         {
-			PhotonNetwork.Connect ( PhotonNetwork.PhotonServerSettings.ServerAddress,
-									PhotonNetwork.PhotonServerSettings.ServerPort,
-									PhotonNetwork.PhotonServerSettings.AppID,
-									ConfigurationData.VERSION);
+			PhotonNetwork.ConnectToMaster ( PhotonNetwork.PhotonServerSettings.ServerAddress,
+											PhotonNetwork.PhotonServerSettings.ServerPort,
+											PhotonNetwork.PhotonServerSettings.AppID,
+											ConfigurationData.VERSION);
 		}
 		
 //		Debug.Log ("PhotonNetwork.connectionState:" + PhotonNetwork.connectionState);
@@ -182,12 +181,12 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		PeerState peerState = PhotonNetwork.connectionStateDetailed;
 
 		// Verificando conexão
-		if (peerState == PeerState.Connecting)
+		if (peerState == PeerState.ConnectingToMasterserver)
 		{
 			return "Checking connection";
 		}
 		// Conectado
-		else if (peerState == PeerState.Connected)
+		else if (peerState == PeerState.ConnectedToMaster)
 		{
 			return "Connected";
 		}
@@ -405,10 +404,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		}
 		
 		PhotonNetwork.isMessageQueueRunning = false;
-		if (GameplayManager.mode == GameplayManager.Mode.Deathmatch)
-			cena = 1;
-		else
-			cena = 1;
 
     }
 
@@ -434,6 +429,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			break;
 		case 1:
 			GameplayManager.mode = GameplayManager.Mode.Cooperative;
+			break;
+		case 2:
+			GameplayManager.mode = GameplayManager.Mode.Survival;
 			break;
 		default:
 			// do nothing

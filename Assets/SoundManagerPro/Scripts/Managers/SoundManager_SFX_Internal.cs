@@ -562,6 +562,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 		a1.volume = 0f;
 		a2.volume = a2StartVolume;
 		a1.Stop();
+		a1.timeSamples = 0;
 		
 		if(runOnEndFunction != null)
 		{
@@ -589,6 +590,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	    }
 		a1.volume = 0f;
 		a1.Stop();
+		a1.timeSamples = 0;
 		
 		if(runOnEndFunction != null)
 		{

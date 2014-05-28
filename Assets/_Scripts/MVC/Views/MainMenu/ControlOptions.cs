@@ -26,9 +26,21 @@ public class ControlOptions : MonoBehaviour
 
 		wasInitialized = true;
 
-
+		Transform slider;
 
 		DefaultCallbackButton dcb;
+		
+		Transform touch = this.transform.FindChild ("Menu").FindChild ("TouchSense");
+		
+		slider = touch.FindChild ("Slider");
+		
+		slider.GetComponent<UISlider>().value = PlayerPrefs.GetFloat("TouchSense") - 0.1f;
+
+		Transform doubleClick = this.transform.FindChild ("Menu").FindChild ("DoubleClick");
+		
+		slider = doubleClick.FindChild ("Slider");
+		
+		slider.GetComponent<UISlider>().value = PlayerPrefs.GetFloat("DoubleClickSpeed") - 0.1f;
 
 		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
 		
@@ -41,6 +53,16 @@ public class ControlOptions : MonoBehaviour
 				gameObject.SetActive (false);
 			});
 		}
+	}
+
+	public void SetPlayerTouchSense (float touchSense)
+	{
+		PlayerPrefs.SetFloat("TouchSense", touchSense + 0.1f);
+	}
+
+	public void SetPlayerDoubleClickSpeed (float doubleClick)
+	{
+		PlayerPrefs.SetFloat("DoubleClickSpeed", doubleClick + 0.1f);
 	}
 
 	public void Close ()

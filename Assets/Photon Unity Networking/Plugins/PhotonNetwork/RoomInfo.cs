@@ -40,7 +40,7 @@ public class RoomInfo
     protected bool visibleField = true;
 
     /// <summary>Backing field for property. False unless the GameProperty is set to true (else it's not sent).</summary>
-    protected bool autoCleanUpField = false;
+    protected bool autoCleanUpField = PhotonNetwork.autoCleanUpPlayerObjects;
 
     /// <summary>Backing field for property.</summary>
     protected string nameField;

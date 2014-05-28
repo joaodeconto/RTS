@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using System.Net;
-using System.Net.Sockets;
 using UnityEngine;
 
 /// <summary>
@@ -14,60 +13,51 @@ using UnityEngine;
 /// </summary>
 public class PingCloudRegions : MonoBehaviour
 {
-
-
-    public static CloudServerRegion closestRegion = CloudServerRegion.US;
-    static public PingCloudRegions SP;
+    public static string ClosestRegion;
+    public static bool ClosestRegionAvailable { get { return !string.IsNullOrEmpty(ClosestRegion); } }
+    
+    public static PingCloudRegions Instance;
 
     private bool isPinging = false;
     private int lowestRegionAverage = -1;
-    private const string playerPrefsKey = "PUNCloudBestRegion";
+    private const string PlayerPrefsKey = "PUNCloudBestRegion";
 
-
-    void Awake()
+    public void Awake()
     {
-        SP = this;
+        Instance = this;
 
-        // load settings and ping only if none available
-        if (PlayerPrefs.GetString(playerPrefsKey, "") != "")
+        // load settings and ping only if none available AND if we should ping on Awake
+        bool loadedRegion = LoadRegion(out ClosestRegion);  // this sets ClosestRegion. no need to set it on success!
+        if (!loadedRegion && PhotonNetwork.PhotonServerSettings.PingCloudServersOnAwake)
         {
-            string reg = PlayerPrefs.GetString(playerPrefsKey, "");
-            closestRegion = (CloudServerRegion)Enum.Parse(typeof(CloudServerRegion), reg, true);
-            return;
+            RefreshCloudServerRating();
         }
-        StartCoroutine(PingAllRegions());
     }
-
-
-    public static void OverrideRegion(CloudServerRegion region)
-    {
-        SetRegion(region);
-    }
-
 
     public static void RefreshCloudServerRating()
     {
-        if (SP != null)
+        if (Instance != null)
         {
-            SP.StartCoroutine(SP.PingAllRegions());
+            if (Instance.isPinging)
+            {
+                Debug.Log("RefreshCloudServerRating already in process. Skipping this call.");
+                return;
+            }
+
+            Instance.StartCoroutine(Instance.PingAllRegions());
         }
     }
 
-
-    public static void ConnectToBestRegion(string gameVersion)
-    {
-        SP.StartCoroutine(SP.ConnectToBestRegionInternal(gameVersion));
-    }
-
-
     // Ping all PUN cloud regions (unless offline mode)
-    public IEnumerator PingAllRegions()
+    private IEnumerator PingAllRegions()
     {
         ServerSettings settings = (ServerSettings)Resources.Load(PhotonNetwork.serverSettingsAssetFile, typeof(ServerSettings));
         if (settings.HostType == ServerSettings.HostingOption.OfflineMode)
             yield break;
 
+        ClosestRegion = null;
         isPinging = true;
+        lowestRegionAverage = -1;
         foreach (CloudServerRegion region in System.Enum.GetValues(typeof(CloudServerRegion)))
         {
             yield return StartCoroutine(PingRegion(region));
@@ -75,7 +65,11 @@ public class PingCloudRegions : MonoBehaviour
         isPinging = false;
     }
 
-    
+    /// <summary>
+    /// Pings a server several times to get an average RTT. If that's lower than the current best, the region becomes closestRegion.
+    /// </summary>
+    /// <param name="region"></param>
+    /// <returns></returns>
     IEnumerator PingRegion(CloudServerRegion region)
     {
         string hostname = ServerSettings.FindServerAddressForRegion(region);
@@ -87,24 +81,24 @@ public class PingCloudRegions : MonoBehaviour
             yield break;
         }
 
-        int averagePing = 0;
+        int pingSum = 0;
         int tries = 3;
         int skipped = 0;
-        float timeout = 0.500f; // 500 milliseconds is our max, after this we assume a timeout.
+        float timeout = 0.700f; // 700 milliseconds is our max, after this we assume a timeout.
         for (int i = 0; i < tries; i++)
         {
             float startTime = Time.time;
             Ping ping = new Ping(regionIp);
             while (!ping.isDone && Time.time < startTime + timeout)
             { 
-                // Timeout after 500ms: sometimes Unity ping never returns
+                // sometimes Unity ping never returns, so we use a timeout here
                 yield return 0;
             }
             if (ping.time == -1)
             {
                 if (skipped > 5)
                 {
-                    averagePing += (int)(timeout * 1000) * tries;
+                    pingSum += (int)(timeout * 1000) * tries;
                     break;
                 }
                 else
@@ -115,60 +109,105 @@ public class PingCloudRegions : MonoBehaviour
                 }
             }
 
-            averagePing += ping.time;
+            pingSum += ping.time;
         }
 
-        int regionAverage = averagePing / tries;
+        int pingAverage = pingSum / tries;
         //Debug.LogWarning (hostname + ": " + regionAverage + "ms");
-
-        if (regionAverage < lowestRegionAverage || lowestRegionAverage == -1)
+        if (pingAverage < lowestRegionAverage || lowestRegionAverage == -1)
         {
-            lowestRegionAverage = regionAverage;
-            SetRegion(region);
+            lowestRegionAverage = pingAverage;
+            SaveAndSetRegion(region.ToString());
         }
     }
 
-    private static void SetRegion(CloudServerRegion region)
+    public static void ConnectToBestRegion()
     {
-        closestRegion = region;
-        PlayerPrefs.SetString(playerPrefsKey, region.ToString());
+        Instance.StartCoroutine(Instance.ConnectToBestRegionInternal());
     }
 
-    IEnumerator ConnectToBestRegionInternal(string gameVersion)
+    IEnumerator ConnectToBestRegionInternal()
     {
+        CloudServerRegion bestRegion;
+        if (!ClosestRegionAvailable || !ServerSettings.TryParseCloudServerRegion(ClosestRegion, out bestRegion))
+        {
+            RefreshCloudServerRating();
+        }
+
         while (isPinging)
         {
             yield return 0; // wait until pinging finished (offline mode won't ping)
         }
 
-        ServerSettings settings = (ServerSettings)Resources.Load(PhotonNetwork.serverSettingsAssetFile, typeof(ServerSettings));
-        if (settings.HostType == ServerSettings.HostingOption.OfflineMode)
+        ServerSettings.TryParseCloudServerRegion(ClosestRegion, out bestRegion);
+        string bestServerAddress = ServerSettings.FindServerAddressForRegion(bestRegion);
+        string bestServerFullAddress = bestServerAddress + ":" + ServerSettings.DefaultMasterPort;
+
+        PhotonNetwork.networkingPeer.MasterServerAddress = bestServerFullAddress;
+        PhotonNetwork.networkingPeer.Connect(bestServerFullAddress, ServerConnection.MasterServer);
+    }
+
+    /// <summary>
+    /// Loads the region shortcut from PlayerPrefs or initializes the region as empty string.
+    /// </summary>
+    /// <returns>True of any player pref was set and loaded.</returns>
+    private static bool LoadRegion(out string region)
+    {
+        region = PlayerPrefs.GetString(PlayerPrefsKey, "");
+        return !string.IsNullOrEmpty(region);
+    }
+
+    /// <summary>Sets ClosestRegion and saves it in a PlayerPref setting.</summary>
+    private static void SaveAndSetRegion(string region)
+    {
+        ClosestRegion = region;
+        PlayerPrefs.SetString(PlayerPrefsKey, region);
+    }
+
+    /// <summary>Removes the PlayerPref setting for "best region".</summary>
+    public static void DeleteRegionPref()
+    {
+        if (Instance != null && Instance.isPinging)
         {
-            PhotonNetwork.ConnectUsingSettings(gameVersion);
+            Debug.LogWarning("DeleteRegionPref can't delete region while pining is going on.");
+            return;
         }
-        else
-        {
-            PhotonNetwork.Connect(ServerSettings.FindServerAddressForRegion(closestRegion), settings.ServerPort, settings.AppID, gameVersion);
-        }
+
+        ClosestRegion = null;
+        PlayerPrefs.DeleteKey(PlayerPrefsKey);
+    }
+
+    public static void OverrideRegion(CloudServerRegion region)
+    {
+        SaveAndSetRegion(region.ToString());
     }
 
     /// <summary>
     /// Attempts to resolve a hostname into an IP string or returns empty string if that fails.
     /// </summary>
-    /// <param name="hostString">Hostname to resolve.</param>
+    /// <param name="hostName">Hostname to resolve.</param>
     /// <returns>IP string or empty string if resolution fails</returns>
-    public static string ResolveHost(string hostString)
+    public static string ResolveHost(string hostName)
     {
         try
         {
-            IPAddress[] address = Dns.GetHostAddresses(hostString);
+            IPAddress[] address = Dns.GetHostAddresses(hostName);
+            if (address.Length == 1) 
+            {
+                return address[0].ToString();
+            }
 
+            // if we got more addresses, try to pick a IPv4 one
             for (int index = 0; index < address.Length; index++)
             {
                 IPAddress ipAddress = address[index];
-                if (ipAddress != null && ipAddress.AddressFamily == AddressFamily.InterNetwork)
+                if (ipAddress != null)
                 {
-                    return ipAddress.ToString();
+                    string ipString = ipAddress.ToString();
+                    if (ipString.IndexOf('.') >= 0)
+                    {
+                        return ipString;
+                    }
                 }
             }
         }

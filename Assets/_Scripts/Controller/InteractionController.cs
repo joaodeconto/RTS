@@ -14,7 +14,8 @@ public class InteractionController : MonoBehaviour
 	protected StatsController statsController;
 	protected GameplayManager gameplayManager;
 	protected HUDController hudController;
-	protected SoundManager soundManager;
+
+
 
 	private Stack<InteractionCallback> stackInteractionCallbacks;
 
@@ -24,7 +25,7 @@ public class InteractionController : MonoBehaviour
 		statsController = ComponentGetter.Get<StatsController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
-		soundManager    = ComponentGetter.Get<SoundManager> ();
+
 
 		stackInteractionCallbacks = new Stack<InteractionCallback>();
 	}

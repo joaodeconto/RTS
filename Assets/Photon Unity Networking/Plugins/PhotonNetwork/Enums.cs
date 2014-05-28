@@ -10,6 +10,14 @@
 
 using ExitGames.Client.Photon;
 
+/// <summary>Available server (types) for internally used field: server.</summary>
+public enum ServerConnection
+{
+    MasterServer,
+    GameServer,
+    NameServer
+}
+
 /// <summary>
 /// High level connection state of the client. Better use the more detailed <see cref="PeerState"/>.
 /// </summary>
@@ -36,14 +44,6 @@ public enum PeerState
 
     /// <summary>Created and available to connect.</summary>
     PeerCreated,
-
-    /// <summary>Working to establish the initial connection to the master server (until this process is finished, no operations can be sent).</summary>
-    /// <remarks>(will-change)</remarks>
-    Connecting,
-
-    /// <summary>Connection is setup, now PUN will exchange keys for encryption or authenticate.</summary>
-    /// <remarks>(will-change)</remarks>
-    Connected,
 
     /// <summary>Not used at the moment.</summary>
     Queued,
@@ -87,10 +87,6 @@ public enum PeerState
     /// <remarks>(will-change)</remarks>
     ConnectingToMasterserver,
 
-    /// <summary>Same as Connected but coming from game server.</summary>
-    /// <remarks>(will-change)</remarks>
-    ConnectedComingFromGameserver,
-
     /// <summary>Same Queued but coming from game server.</summary>
     /// <remarks>(will-change)</remarks>
     QueuedComingFromGameserver,
@@ -103,7 +99,21 @@ public enum PeerState
     Disconnected,
 
     /// <summary>Final state for connecting to master without joining the lobby (AutoJoinLobby is false).</summary>
-    ConnectedToMaster
+    ConnectedToMaster,
+
+    /// <summary>Client connects to the NameServer. This process includes low level connecting and setting up encryption. When done, state becomes ConnectedToNameServer.</summary>
+    ConnectingToNameServer,
+
+    /// <summary>Client is connected to the NameServer and established enctryption already. You should call OpGetRegions or ConnectToRegionMaster.</summary>
+    ConnectedToNameServer,
+
+    /// <summary>When disconnecting from a Photon NameServer.</summary>
+    /// <remarks>(will-change)</remarks>
+    DisconnectingFromNameServer,
+
+    /// <summary>When connecting to a Photon Server, this state is intermediate before you can call any operations.</summary>
+    /// <remarks>(will-change)</remarks>
+    Authenticating
 }
 
 /// <summary>
@@ -171,11 +181,11 @@ public enum PhotonNetworkingMessage
     OnCreatedRoom,
 
     /// <summary>
-    /// Called on entering the Master Server's lobby. Client can create/join rooms but room list is not available until OnReceivedRoomListUpdate is called!
+    /// Called on entering the Master Server's lobby. The actual room-list updates will call OnReceivedRoomListUpdate.
     /// Example: void OnJoinedLobby(){ ... }
     /// </summary>
     /// <remarks>
-    /// Note: When PhotonNetwork.autoJoinLobby is false, OnConnectedToMaster will be called instead and the room list won't be available.
+    /// Note: When PhotonNetwork.autoJoinLobby is false, OnConnectedToMaster will be called instead and the room list won't become available.
     /// While in the lobby, the roomlist is automatically updated in fixed intervals (which you can't modify).
     /// </remarks>
     OnJoinedLobby,
@@ -243,6 +253,7 @@ public enum PhotonNetworkingMessage
     /// If AutoJoinLobby is false, the list of available rooms won't become available but you could join (random or by name) and create rooms anyways.
     /// Example: void OnConnectedToMaster(){ ... }
     /// </summary>
+    /// <remarks>If you set PhotonNetwork.AutoJoinLobby to true, OnJoinedLobby will be called instead of this.</remarks>
     OnConnectedToMaster,
 
     /// <summary>
@@ -269,18 +280,31 @@ public enum PhotonNetworkingMessage
     OnPhotonMaxCccuReached,
 	
 	/// <summary>
-    /// Called when inside a room when its custom properties have changed. This is ALSO called for room property changes by the local players.
+    /// Called when a room's custom properties changed. The propertiesThatChanged contains all that was set via Room.SetCustomProperties.
     /// </summary>
     /// <remarks>
-    /// Example: void OnPhotonCustomRoomPropertiesChanged(){ ... }
+    /// Since v1.25 this method has one parameter Hashtable propertiesThatChanged.
+    /// Changing properties must be done by Room.SetCustomProperties, which causes this callback locally, too.
+    /// Example: void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged){ ... }
     /// </remarks>
 	OnPhotonCustomRoomPropertiesChanged,
 	
 	/// <summary>
-    /// Called when inside a room when a players custom properties change.
+    /// Called when custom player-properties are changed. Player and the changed properties are passed as object[].
     /// </summary>
     /// <remarks>
-    /// Example: void OnPhotonPlayerPropertiesChanged(PhotonPlayer player){ ... }
+    /// Since v1.25 this method has one parameter object[], which contains two entries:
+    /// [0] is the affected PhotonPlayer.
+    /// [1] is the Hashtable of properties that changed.
+    /// We are using a object[] due to limitations of Unity's GameObject.SendMessage (which has only one optional parameter)
+    /// 
+    /// Changing properties must be done by PhotonPlayer.SetCustomProperties, which causes this callback locally, too.
+    /// Example: 
+    /// void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps) { 
+    ///     PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
+    ///     Hashtable props = playerAndUpdatedProps[1] as Hashtable;
+    ///     //...
+    /// }
     /// </remarks>
 	OnPhotonPlayerPropertiesChanged,
 
@@ -360,4 +384,7 @@ public enum DisconnectCause
 
     /// <summary>(32757) Authorization on the Photon Cloud failed because the concurrent users (CCU) limit of the app's subscription is reached.</summary>
     MaxCcuReached = ErrorCode.MaxCcuReached,
+    
+    /// <summary>(32767) The Photon Cloud rejected the sent AppId. Check your Dashboard and make sure the AppId you use is complete and correct.</summary>
+    InvalidAuthentication = ErrorCode.InvalidAuthentication,
 }

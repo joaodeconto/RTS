@@ -3,14 +3,19 @@ using System.Collections;
 
 public static class AudioSourceTools {
 
-	public static void PlaySFX ( ref AudioSource theAudioSource, bool fromGroup, string clipOrGroup_Name, bool loop, float volume, float pitch)
+	public static void PlaySFX ( ref AudioSource theAudioSource, bool fromGroup, string clipOrGroup_Name, bool loop, float delay, float volume, float pitch)
     {
-        SoundManager.PlaySFX(theAudioSource, fromGroup ? SoundManager.LoadFromGroup(clipOrGroup_Name) : SoundManager.Load(clipOrGroup_Name), loop, volume, pitch);
+        SoundManager.PlaySFX(theAudioSource, fromGroup ? SoundManager.LoadFromGroup(clipOrGroup_Name) : SoundManager.Load(clipOrGroup_Name), loop, delay, volume, pitch);
     }
 	
-	public static void PlaySFX ( ref AudioSource theAudioSource, bool fromGroup, string clipOrGroup_Name, bool loop, float volume)
+	public static void PlaySFX ( ref AudioSource theAudioSource, bool fromGroup, string clipOrGroup_Name, bool loop, float delay, float volume)
     {
-        SoundManager.PlaySFX(theAudioSource, fromGroup ? SoundManager.LoadFromGroup(clipOrGroup_Name) : SoundManager.Load(clipOrGroup_Name), loop, volume);
+        SoundManager.PlaySFX(theAudioSource, fromGroup ? SoundManager.LoadFromGroup(clipOrGroup_Name) : SoundManager.Load(clipOrGroup_Name), loop, delay, volume);
+    }
+	
+	public static void PlaySFX ( ref AudioSource theAudioSource, bool fromGroup, string clipOrGroup_Name, bool loop, float delay)
+    {
+        SoundManager.PlaySFX(theAudioSource, fromGroup ? SoundManager.LoadFromGroup(clipOrGroup_Name) : SoundManager.Load(clipOrGroup_Name), loop, delay);
     }
 	
 	public static void PlaySFX ( ref AudioSource theAudioSource, bool fromGroup, string clipOrGroup_Name, bool loop)
@@ -23,14 +28,19 @@ public static class AudioSourceTools {
         SoundManager.PlaySFX(theAudioSource, fromGroup ? SoundManager.LoadFromGroup(clipOrGroup_Name) : SoundManager.Load(clipOrGroup_Name));
     }
 	
-	public static void PlaySFX ( ref AudioSource theAudioSource, AudioClip clip, bool loop, float volume, float pitch)
+	public static void PlaySFX ( ref AudioSource theAudioSource, AudioClip clip, bool loop, float delay, float volume, float pitch)
     {
-        SoundManager.PlaySFX(theAudioSource, clip, loop, volume, pitch);
+        SoundManager.PlaySFX(theAudioSource, clip, loop, delay, volume, pitch);
     }
 	
-	public static void PlaySFX ( ref AudioSource theAudioSource, AudioClip clip, bool loop, float volume)
+	public static void PlaySFX ( ref AudioSource theAudioSource, AudioClip clip, bool loop, float delay, float volume)
     {
-        SoundManager.PlaySFX(theAudioSource, clip, loop, volume);
+        SoundManager.PlaySFX(theAudioSource, clip, loop, delay, volume);
+    }
+	
+	public static void PlaySFX ( ref AudioSource theAudioSource, AudioClip clip, bool loop, float delay)
+    {
+        SoundManager.PlaySFX(theAudioSource, clip, loop, delay);
     }
 	
 	public static void PlaySFX ( ref AudioSource theAudioSource, AudioClip clip, bool loop)

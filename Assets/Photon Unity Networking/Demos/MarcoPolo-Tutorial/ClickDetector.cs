@@ -27,7 +27,13 @@ public class ClickDetector : MonoBehaviour
     private GameObject RaycastObject(Vector2 screenPos)
     {
         RaycastHit info;
-        if (Physics.Raycast(Camera.mainCamera.ScreenPointToRay(screenPos), out info, 200))
+        #if UNITY_3_5
+        Camera cam = Camera.mainCamera;
+        #else
+        Camera cam = Camera.main;
+        #endif
+
+        if (Physics.Raycast(cam.ScreenPointToRay(screenPos), out info, 200))
         {
             return info.collider.gameObject;
         }

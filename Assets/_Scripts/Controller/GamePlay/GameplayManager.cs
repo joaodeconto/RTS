@@ -19,7 +19,7 @@ public class Team
 	{
 		colorTexture = new Texture2D(1, 1);
 		
-		colorTexture.SetPixel (0, 0, Color.blue);
+		colorTexture.SetPixel (0, 0, Color.white);
 		
 		colorTexture.Apply ();
 	}
@@ -56,7 +56,9 @@ public class GameplayManager : Photon.MonoBehaviour
 	public enum Mode
 	{
 		Deathmatch,
-		Cooperative
+		Cooperative,
+		Survival,
+		Tutorial
 	}
 
 	public static Mode mode;
@@ -457,7 +459,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 		if ((loseGame || winGame))
 		{
-			Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
+			//Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
 
 			hud.uiVictoryObject.SetActive (winGame);
 			hud.uiDefeatObject.SetActive (loseGame);

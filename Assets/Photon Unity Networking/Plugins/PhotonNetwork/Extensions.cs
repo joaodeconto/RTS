@@ -139,7 +139,12 @@ public static class Extensions
     public static void StripKeysWithNullValues(this IDictionary original)
     {
         object[] keys = new object[original.Count];
-        original.Keys.CopyTo(keys, 0);
+        //original.Keys.CopyTo(keys, 0);
+        int i = 0;
+        foreach (object k in original.Keys)
+        {
+            keys[i++] = k;
+        }
 
         for (int index = 0; index < keys.Length; index++)
         {

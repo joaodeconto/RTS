@@ -33,7 +33,7 @@ public class TouchController : MonoBehaviour
 	public Camera mainCamera;
 	public string[] layersToIgnore;
 	public ZoomSettings zoomSettings;
-	public float doubleClickSpeed = 1f;
+	public float doubleClickSpeed = PlayerPrefs.GetFloat("DoubleClickSpeed");
 	
 	protected Camera[] camerasUI;
 	

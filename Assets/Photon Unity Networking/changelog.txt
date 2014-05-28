@@ -1,3 +1,66 @@
+v1.25.2 (03. April 2014)
+Fixed: ConnectToBestRegion now sets the found best region's address and automatically return to it when leaving a room. This fixes an issue where the server's address becomes empty.
+Added: Option to switch protocol while offline: SwitchToProtocol(ConnectionProtocol cp)
+
+v1.25.1 (26. March 2014)
+Fixed: Custom Authentication was failing in v1.25. This version is again compatible with the currently deployed servers in the Photon Cloud. 
+Note: This version is compatible with v1.25 clients, so no new versionPUN string.
+
+v1.25 (25. March 2014)
+Fixed: Coroutines (IENumerators) are now called via their own script instance instead of the PhotonHandler monobehaviour. This fixes an issue where the IENumerators would continue running even after the script was destroyed.
+Fixed: The Demo Worker controller no longer makes the character shake wildly when colliding with others. It was some issue with the grounded flag. This makes movement finally smooth-ish.
+Changed: When using JoinRoom with the option to create a room (on demand), it will call OnJoinedRoom in all cases. It will call OnCreatedRoom (only) if it actually created the room.
+Changed: PingCloudRegions no longer needs the Socket class. It checks for IPv4 addresses (which we prefer over IPv6 ones) by looking up a '.' in the address. This makes it usable in PUN+.
+Changed: NetworkingPeer constructor will set a SocketImplementation when the "no-socket" (PUN+) assembly is in the project. This allows the same code to run with either PUN Free or PUN+.
+Changed: The "player comparisons" to check for same ID, not same object (just a bit cheaper).
+Removed: Some surplus debug logs from PUN.
+Updated: Compatibility with Unity 4 by working around some features that are obselete (but needed in Unity 3.5).
+Internal: Renamed AuthValues to CustomAuthenticationValues.
+Changed: PeerState (in Enums.cs) no longer has a Connecting and Connected value. Instead we use ConnectingTo*server. Also gone: ConnectedComingFromGameserver. New: ConnectingToNameServer and ConnectedToNameServer.
+Changed: In OfflineMode, the PhotonNetwork.connectionStateDetailed is now PeerState.ConnectedToMaster and PeerState.Joined when in a Room (after join, before leave). Before it was: "Connected".
+Added: Compatibility with "NameServer", which will be contacted by clients to find a suitable MasterServer. This will allow the Photon Cloud to dynamically put applications on separate MasterServers. Self-hosted Photon instances will not have a NameServer soon, so this step is optional.
+Added: PhotonNetwork.UseNameServer, which is false by default for now. It activates using the NameServer for ConnectUsingSetting().
+Added: Internally used NetworkingPeer.GetRegions method. It gets a list of regions from the NameServer (to be able to ping them). NetworkingPeer.AvailableRegions and .AvailableRegionsServers will store the result of that.
+Added: PhotonNetwork.Server. The ServerConnection enum lets you know which type of server the client is connected to.
+Changed: PhotonNetwork.Connect is now .ConnectToMaster and explicitly skips the NameServer to connect to a specific address.
+Changed: Internal code of PhotonNetwork and NetworkingPeer due to some refactoring and the new states needed for NameServer.
+Added: PhotonNetwork.JoinLobby and PhotonNetwork.LeaveLobby, which were lpong overdue to leave/join the lobby on demand. Make use of PhotonNetwork.autoJoinLobby, too!
+Fixed: When authentication failed, the state Disconnected could not be reached and the client could not re-connect anymore. It could get stuck being 'Disconnecting'.
+Changed: PingCloudRegions according to changes with connect process and using settings.
+Changed: PhotonNetwork.connected is now true even while the client is switching servers! Only if you are disconnected or not yet connected, this is false. This should be what you want to know in most cases, when you just need a "yes/no".
+Added: PhotonNetwork.connecting which is true until you successfully connected to any Photon server when you called ConnectUsingSetting (or one of it's alternatives).
+Added: PhotonNetwork.connectedAndReady which is true when you can call operations like Join, Leave, etc. Note: You can call most operations only on a specific type of server, so even when connectedAndReady is true, you can't call Join while in a room on the GameServer.
+Changed: PhotonNetwork.countOfRooms is always returning the statistic value we get from the Master Server (before: it returned the number of listed rooms in lobby).
+Added: OnFailedToConnectToPhoton(DisconnectCause cause) is now also called when the AppId wasn't ok. DisconnectCause is then: InvalidAuthentication.
+Changed: PunStartup script will do a "demo setup" only once in any Editor, saving the success in EditorPrefs. Still, it only runs if no (saved) scene was loaded and the build-setup is empty. If so, we load the hub scene and setup the build settings, so you can test all demos. This should be less annoying than before. If you don't want this at all: Delete PunStartup.cs.
+Changed: The "Windows" menu "Photon Unity Networking" is now a submenu. This allows you to setup your project build settings and open the "Hub Scene" anytime you want. The PUN Wizard is also still opened from here (or ALT+p).
+Changed: The callback OnPhotonPlayerPropertiesChanged now has an object[] as parameter! This way, we can also give you the properties that were changed. Due to limitations in GameObject.SendMessage, we are using a object[] instead of two parameters. Please adjust your code accordingly. If you implemented this method, it will now break until you fix it. See description in Enums.cs, enum PhotonNetworkingMessage, OnPhotonPlayerPropertiesChanged.
+Changed: The callback OnPhotonCustomRoomPropertiesChanged now has an optional parameter: Hashtable propsThatChanged which contains the key-values that you set by calling SetCustomProperties. If you implemented this method before, it will still be called but without the new propsThatChanged (obviously).
+Internal: When destroying a GO locally, we don't check for a valid instantiationID anymore. This improves the cleanup. Changed in RemoveInstantiatedGO.
+Changed: Instantiate will now check if you are in a room and fail if you are not. In offline mode, you can also "join" a room. The reason for this check: Anything instantiated outside of a room is not going to by synced later on or might even conflict with networked objects in the room. The bool value PhotonNetwork.InstantiateInRoomOnly can be set to false, to skip this check.
+Internal: Private method VerifyCanUseNetwork is simpler now. The property connected checks everything that was (also) checked in VerifyCanUseNetwork.
+Added: New value PingCloudServersOnAwake to PhotonServerSettings. Only if this is true, a client will automatically ping our Photon Cloud regions on start and find the best regions (even before you call PhotonNetwork.ConnectToBestCloudServer). The result is saved in a player preference but not used when the client connects to a specific region anyways. Due to that, the default setting is now "disabled" (false). ConnectToBestCloudServer will simply start pinging when you need it.
+Changed: Many PhotonNetwork methods now return a bool which tells you if the action (Photon-term: operation) will be send or not. A returned true value usually only means that some operation was sent to the server and doesn't guarantee that it will be executed successfully on that machine. So: Callbacks are as important as before but you can detect more easily if you (e.g.) tried to JoinRandomRoom when you actually can't at that moment. PhotonNetwork.connectedAndReady can be checked before you simply try to send operations.
+Changed: PhotonNetwork.Destroy to enable you to destroy GameObjects while not in a room. By default GameObjects of one room get destroyed when you leave it. Useful if you disabled autoCleanUpPlayerObjects.
+Added: PhotonNetwork.CrcCheckEnabled and PhotonNetwork.PacketLossByCrcCheck. The first makes PUN use a CRC checksum per package, which is overhead but adds security against broken datagram data. The latter counts how many packages this client got and rejected, because the content-checksum wasn't correct. This prevents issues in some cases, where hardware or software errors corrupt UDP data coming from the server to the client. You can switch while not connected and the server will also check a CRC (but you can't get access the counter for packages dropped by server).
+Added: PhotonNetwork.MaxResendsBeforeDisconnect. Defines the number of times a reliable message can be resent before not getting an ACK for it will trigger a disconnect. Default: 5. It's limited to 10 but you should not really need to go higher than 6.
+Added: Initial support for RaiseEvent. This offers something similar to RPCs but is independent of PhotonViews. The events only contain what you send! To get those events, you need to register a callback method (it's not using SendMessage). Some advanced features are not yet exposed fully (like Interest Groups).
+Added: Documentation of PhotonTargets values (used in RPCs).
+Added: New options for RPCs. When you want all clients to execute an RPC, it's usually sent to everyone else and executed locally instantly. With PhotonTargets.AllViaServer you can actually send the RPC to yourself through the server. This makes sure that those RPCs are executed in the same order on all clients. It's the order in which they arrive on the server (which is still depending on timing and ping, of course). This also works with buffered events. You should use this where needed only, as it causes extra traffic.
+Added: "Typed Lobby" and "SQL Lobby" support. You can now create multiple lobbies and split room-listings according to your own needs. The default lobby (empty name and type "default") still works as before.
+Note: The lobby type defines how a lobby behaves and which options it provides. There are only 2 types currently. The new SQL-Lobby provides more options for filtering in JoinRandomRoom. The "default lobby type" is what was used so far and works with a Hashtable of key-values that a room must match.
+Changed: PUN will now store the lobby that is in use or was used last as PhotonNetwork.lobby. If you join a lobby "map1" and create a room, this room usually gets attached to the "map1"-lobby (unless you call CreateRoom with another lobby). PhotonNetwork.lobby can have a value, even if you are not joined/active in a lobby! It only changes when you set PhotonNetwork.lobby directly or use JoinLobby(typedLobby).
+Added: Parameter "typedLobby" to JoinLobby, JoinRandomRoom and CreateRoom. If this parameter is null, the current lobby is not changed. If you never used any lobby explicitly, then the default lobby is used.
+Added: Classes TypedLobby (a combination of lobby name and lobby type) and enum LobbyType, which contains the two currently possible types. TypedLobby.Default points to the default lobby (no name, default-type).
+Added: JoinRandomRoom has a new parameter sqlLobbyFilter. This parameter is a sql-like string which allows more fine grained filtering with pre-defined properties.
+Changed: When autoJoinLobby is used, it will now return to the lobby that was used last (for creating or joining a room). Of course, this joins the default lobby as before, if no other lobby was used explicitly.
+Added: PhotonNetwork.OnEventCall to get a callback when your custom events are received and executed. Custom event codes must be below 200. Implement your method as EventCallback delegate.
+Added: New class RoomOptions. This wraps up some of the options that a room commonly needs to be set. Visible, closed, MaxPlayers and some others no longer need to be individual parameters of CreateRoom and JoinOrCreateRoom.
+Changed: JoinRoom(name, createIfNotExists) is now JoinOrCreateRoom(string roomName, RoomOptions options, TypedLobby lobby). The "createIfNotExists" is set implicitly and you now have the room options and can set a lobby. The latter 2 parameters are used only if you create a new game! This means: Only player ID 1 sets room props with JoinOrCreateRoom (player 2 and up just join).
+Changed: If you set automaticallySyncScene = true and call PhotonNetwork.LoadLevel on the Master Client, PUN syncs the level-id before loading the level locally. If loading takes a while, you might notice that everyone else starts loading a bit earlier.
+Added: Documentation as Compiled HTML Help (.chm) as well. The PDF might be removed in later updates.
+
+
 v1.24 (18. October 2013)
 Changed: CustomTypes is now endianness independent and also streamlined
 Added: New synchronization mode "Unreliable On Change". It's basically a mixed mode which uses unreliable when things change. When the data doesn't change, it's sent a last time in a reliable mode, so everyone gets the final state for sure. Then, similar updates will be skipped. This can be applied to anything observed: Transforms, Rigidbodies and even scripts.
@@ -8,7 +71,6 @@ Changed: JoinRoom calls OnCreatedRoom() if the room was created due to JoinRoom(
 Added: Room.SetPropertiesListedInLobby() to set the list of properties sent to a lobby. This is useful when createIfNotExists creates a new room and you want specific properties shown in the room listing.
 Changed: PingCloudRegions and RPC class conditional compilation to: #if !(UNITY_WINRT || UNITY_WP8 || UNITY_PS3 || UNITY_WIIU)
 Updated: To new Photon assembly v3.2.2.1.
-
 
 v1.23.1 (7. October 2013)
 Fixed: PhotonHandler nullreference crash on mobiles when using offlinemode
@@ -40,7 +102,7 @@ v1.22.1 (13. August 2013)
 Fixed: M2H Demos. They were missing a change from callback OnReceivedRoomList() to OnReceivedRoomListUpdate().
 Removed: PhotonServerSettings.asset which contained an appid. Will be disabled soon.
 Changed: Worker Demo now has two scenes and uses PhotonNetwork.LoadLevel(). Mind the PhotonNetwork.automaticallySyncScene = true in Awake() to enable this feature!
-Changed: Descriptin in Hub scene minimally.
+Changed: Description in Hub scene minimally.
 Changed: InRoomChat to have a "Send" button, as mobile clients (e.g.) don't have a proper "enter". (Despite this, the Demos are not optimized for mobile)
 
 v1.22 (08. August 2013)

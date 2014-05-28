@@ -130,7 +130,7 @@ public class PhotonView : Photon.MonoBehaviour
     /// <remarks>
     /// Scene objects are not owned by a particular player but belong to the scene. Thus they don't get destroyed when their 
     /// creator leaves the game and the current Master Client can control them (whoever that is).
-    /// The ownerIs is 0 (player IDs are 1 and up).
+    /// The ownerId is 0 (player IDs are 1 and up).
     /// </remarks>
     public bool isSceneView
     {
@@ -148,10 +148,13 @@ public class PhotonView : Photon.MonoBehaviour
     }
 
     /// <summary>
-    /// Is this photonView mine?
-    /// True in case the owner matches the local PhotonPlayer
-    /// ALSO true if this is a scene photonview on the Master client
+    /// True if the PhotonView is "mine" and can be controlled by this client.
     /// </summary>
+    /// <remarks>
+    /// PUN has an ownership concept that defines who can control and destroy each PhotonView.
+    /// True in case the owner matches the local PhotonPlayer.
+    /// True if this is a scene photonview on the Master client.
+    /// </remarks>
     public bool isMine
     {
         get
@@ -225,22 +228,22 @@ public class PhotonView : Photon.MonoBehaviour
 
     internal protected void ExecuteOnSerialize(PhotonStream pStream, PhotonMessageInfo info)
     {
-        if (failedToFindOnSerialize)
+        if (this.failedToFindOnSerialize)
         {
             return;
         }
 
-        if (OnSerializeMethodInfo == null)
+        if (this.OnSerializeMethodInfo == null)
         {
-            if (!NetworkingPeer.GetMethod(this.observed as MonoBehaviour, PhotonNetworkingMessage.OnPhotonSerializeView.ToString(), out OnSerializeMethodInfo))
+            if (!NetworkingPeer.GetMethod(this.observed as MonoBehaviour, PhotonNetworkingMessage.OnPhotonSerializeView.ToString(), out this.OnSerializeMethodInfo))
             {
-                Debug.LogError("The observed monobehaviour (" + this.observed.name + ") of this PhotonView does not implement OnPhotonSerialize()!");
-                failedToFindOnSerialize = true;
+                Debug.LogError("The observed monobehaviour (" + this.observed.name + ") of this PhotonView does not implement OnPhotonSerializeView()!");
+                this.failedToFindOnSerialize = true;
                 return;
             }
         }
 
-        OnSerializeMethodInfo.Invoke((object)this.observed, new object[] { pStream, info });
+        this.OnSerializeMethodInfo.Invoke((object)this.observed, new object[] { pStream, info });
     }
 
     public void RPC(string methodName, PhotonTargets target, params object[] parameters)
@@ -277,6 +280,6 @@ public class PhotonView : Photon.MonoBehaviour
 
     public override string ToString()
     {
-        return string.Format("View ({3}){0} on {1} {2}", this.viewID, this.gameObject.name, (this.isSceneView) ? "(scene)" : string.Empty, this.prefix);
+        return string.Format("View ({3}){0} on {1} {2}", this.viewID, (this.gameObject != null) ? this.gameObject.name : "GO==null", (this.isSceneView) ? "(scene)" : string.Empty, this.prefix);
     }
 }

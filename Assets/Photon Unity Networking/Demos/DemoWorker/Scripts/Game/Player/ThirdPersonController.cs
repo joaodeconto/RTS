@@ -392,12 +392,13 @@ public class ThirdPersonController : MonoBehaviour
         }
         else
         {
-            Vector3 xzMove = velocity;
+            /* This causes choppy behaviour when colliding with SIDES
+             * Vector3 xzMove = velocity;
             xzMove.y = 0;
             if (xzMove.sqrMagnitude > 0.001f)
             {
                 transform.rotation = Quaternion.LookRotation(xzMove);
-            }
+            }*/
         }
 
         // We are in jump mode but just became grounded

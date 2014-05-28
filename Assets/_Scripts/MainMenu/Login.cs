@@ -16,7 +16,9 @@ public class Login : IController
 	public void Init ()
 	{
 		if (ConfigurationData.Logged) return;
-		
+				
+		LoadPlayerPrefabs ();
+
 		ComponentGetter.Get<PhotonWrapper> ().Init ();
 
 		CheckAllViews ();
@@ -131,5 +133,15 @@ public class Login : IController
 				Index ();
 			}
 		});
+	}
+
+	public void LoadPlayerPrefabs ()
+	{
+		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
+		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));
+		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));
+
+		QualitySettings.SetQualityLevel (PlayerPrefs.GetInt("GraphicQuality"));
+
 	}
 }

@@ -40,10 +40,10 @@ public class NetworkGUI : Photon.MonoBehaviour {
 	{
 		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
         {
-			PhotonNetwork.Connect ( PhotonNetwork.PhotonServerSettings.ServerAddress,
-									PhotonNetwork.PhotonServerSettings.ServerPort,
-									PhotonNetwork.PhotonServerSettings.AppID,
-									ConfigurationData.VERSION);
+			PhotonNetwork.ConnectToMaster ( PhotonNetwork.PhotonServerSettings.ServerAddress,
+											PhotonNetwork.PhotonServerSettings.ServerPort,
+											PhotonNetwork.PhotonServerSettings.AppID,
+											ConfigurationData.VERSION);
 		}
 
 		if (automaticTestConnect)
@@ -54,7 +54,7 @@ public class NetworkGUI : Photon.MonoBehaviour {
 
 				CreateTestRoom ();
 			}
-			else if (PhotonNetwork.connectionStateDetailed == PeerState.Connecting)
+			else if (PhotonNetwork.connectionStateDetailed == PeerState.ConnectingToMasterserver)
 			{
 				CurrentGUI = CheckingStatusGUI;
 			}
@@ -480,12 +480,12 @@ public class NetworkGUI : Photon.MonoBehaviour {
 		PeerState peerState = PhotonNetwork.connectionStateDetailed;
 
 		// Verificando conexão
-		if (peerState == PeerState.Connecting)
+		if (peerState == PeerState.ConnectingToMasterserver)
 		{
 			return "Checking connection";
 		}
 		// Conectado
-		else if (peerState == PeerState.Connected)
+		else if (peerState == PeerState.ConnectingToMasterserver)
 		{
 			return "Connected";
 		}

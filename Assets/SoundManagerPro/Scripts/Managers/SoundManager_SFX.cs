@@ -43,7 +43,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioClip clip, bool looping, float delay)
 	{
-		return PlaySFX(clip, looping, delay, Instance.volumeSFX);
+		return PlaySFX(clip, looping, delay, Instance.volumeSFX, Instance.pitchSFX);
 	}
 	
 	/// <summary>
@@ -51,7 +51,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioClip clip, bool looping)
 	{
-		return PlaySFX(clip, looping, 0f);
+		return PlaySFX(clip, looping, 0f, Instance.volumeSFX, Instance.pitchSFX);
 	}
 	
 	/// <summary>
@@ -59,7 +59,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioClip clip)
     {
-        return PlaySFX(clip, false);
+        return PlaySFX(clip, false, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -89,7 +89,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(string clipName, bool looping, float delay)
 	{
-		return PlaySFX(SoundManager.Load(clipName), looping, delay, Instance.volumeSFX);
+		return PlaySFX(SoundManager.Load(clipName), looping, delay, Instance.volumeSFX, Instance.pitchSFX);
 	}
 	
 	/// <summary>
@@ -97,7 +97,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(string clipName, bool looping)
 	{
-		return PlaySFX(SoundManager.Load(clipName), looping, 0f);
+		return PlaySFX(SoundManager.Load(clipName), looping, 0f, Instance.volumeSFX, Instance.pitchSFX);
 	}
 	
 	/// <summary>
@@ -105,7 +105,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(string clipName)
     {
-        return PlaySFX(SoundManager.Load(clipName), false);
+        return PlaySFX(SoundManager.Load(clipName), false, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -142,7 +142,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlayCappedSFX(AudioClip clip, string cappedID)
     {
-        return PlayCappedSFX(clip, cappedID, Instance.volumeSFX);
+        return PlayCappedSFX(clip, cappedID, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -179,7 +179,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlayCappedSFX(string clipName, string cappedID)
     {
-        return PlayCappedSFX(SoundManager.Load(clipName), cappedID, Instance.volumeSFX);
+        return PlayCappedSFX(SoundManager.Load(clipName), cappedID, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -221,7 +221,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlayCappedSFX(AudioSource aS, AudioClip clip, string cappedID)
     {
-        return PlayCappedSFX(aS, clip, cappedID, Instance.volumeSFX);
+        return PlayCappedSFX(aS, clip, cappedID, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -263,7 +263,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlayCappedSFX(AudioSource aS, string clipName, string cappedID)
     {
-        return PlayCappedSFX(aS, SoundManager.Load(clipName), cappedID, Instance.volumeSFX);
+        return PlayCappedSFX(aS, SoundManager.Load(clipName), cappedID, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -296,7 +296,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping, float delay)
     {
-        return PlaySFX(aS, clip, looping, delay, Instance.volumeSFX);
+        return PlaySFX(aS, clip, looping, delay, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -304,7 +304,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip, bool looping)
     {
-        return PlaySFX(aS, clip, looping, 0f);
+        return PlaySFX(aS, clip, looping, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -312,7 +312,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioSource aS, AudioClip clip)
     {
-        return PlaySFX(aS, clip, false);
+        return PlaySFX(aS, clip, false, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -345,7 +345,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioSource aS, string clipName, bool looping, float delay)
     {
-        return PlaySFX(aS, SoundManager.Load(clipName), looping, delay, Instance.volumeSFX);
+        return PlaySFX(aS, SoundManager.Load(clipName), looping, delay, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -353,7 +353,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioSource aS, string clipName, bool looping)
     {
-        return PlaySFX(aS, SoundManager.Load(clipName), looping, 0f);
+        return PlaySFX(aS, SoundManager.Load(clipName), looping, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -361,7 +361,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(AudioSource aS, string clipName)
     {
-        return PlaySFX(aS, SoundManager.Load(clipName), false);
+        return PlaySFX(aS, SoundManager.Load(clipName), false, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -409,7 +409,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping, float delay)
     {
-        return PlaySFX(gO, clip, looping, delay, Instance.volumeSFX);
+        return PlaySFX(gO, clip, looping, delay, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -417,7 +417,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(GameObject gO, AudioClip clip, bool looping)
     {
-        return PlaySFX(gO, clip, looping, 0f);
+        return PlaySFX(gO, clip, looping, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -425,7 +425,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(GameObject gO, AudioClip clip)
     {
-        return PlaySFX(gO, clip, false);
+        return PlaySFX(gO, clip, false, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -458,7 +458,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(GameObject gO, string clipName, bool looping, float delay)
     {
-        return PlaySFX(gO, SoundManager.Load(clipName), looping, delay, Instance.volumeSFX);
+        return PlaySFX(gO, SoundManager.Load(clipName), looping, delay, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -466,7 +466,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(GameObject gO, string clipName, bool looping)
     {
-        return PlaySFX(gO, SoundManager.Load(clipName), looping, 0f);
+        return PlaySFX(gO, SoundManager.Load(clipName), looping, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -474,7 +474,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFX(GameObject gO, string clipName)
     {
-        return PlaySFX(gO, SoundManager.Load(clipName), false);
+        return PlaySFX(gO, SoundManager.Load(clipName), false, 0f, Instance.volumeSFX, Instance.pitchSFX);
     }
 	
 	/// <summary>
@@ -531,7 +531,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip, bool tillDestroy, float volume)
     {
-        return PlaySFXLoop(aS, clip, tillDestroy, volume, Instance.pitchSFX);
+        return PlaySFXLoop(aS, clip, tillDestroy, volume, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -541,7 +541,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip, bool tillDestroy)
     {
-        return PlaySFXLoop(aS, clip, tillDestroy, Instance.volumeSFX);
+        return PlaySFXLoop(aS, clip, tillDestroy, Instance.volumeSFX, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -551,7 +551,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(AudioSource aS, AudioClip clip)
     {
-        return PlaySFXLoop(aS, clip, true);
+        return PlaySFXLoop(aS, clip, true, Instance.volumeSFX, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -589,7 +589,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(AudioSource aS, string clipName, bool tillDestroy, float volume)
     {
-        return PlaySFXLoop(aS, SoundManager.Load(clipName), tillDestroy, volume, Instance.pitchSFX);
+        return PlaySFXLoop(aS, SoundManager.Load(clipName), tillDestroy, volume, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -599,7 +599,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(AudioSource aS, string clipName, bool tillDestroy)
     {
-        return PlaySFXLoop(aS, SoundManager.Load(clipName), tillDestroy, Instance.volumeSFX);
+        return PlaySFXLoop(aS, SoundManager.Load(clipName), tillDestroy, Instance.volumeSFX, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -609,7 +609,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(AudioSource aS, string clipName)
     {
-        return PlaySFXLoop(aS, SoundManager.Load(clipName), true);
+        return PlaySFXLoop(aS, SoundManager.Load(clipName), true, Instance.volumeSFX, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -650,7 +650,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(GameObject gO, AudioClip clip, bool tillDestroy, float volume)
     {
-        return PlaySFXLoop(gO, clip, tillDestroy, volume, Instance.pitchSFX);
+        return PlaySFXLoop(gO, clip, tillDestroy, volume, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -660,7 +660,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(GameObject gO, AudioClip clip, bool tillDestroy)
     {
-        return PlaySFXLoop(gO, clip, tillDestroy, Instance.volumeSFX);
+        return PlaySFXLoop(gO, clip, tillDestroy, Instance.volumeSFX, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -670,7 +670,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(GameObject gO, AudioClip clip)
     {
-        return PlaySFXLoop(gO, clip, true);
+        return PlaySFXLoop(gO, clip, true, Instance.volumeSFX, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -711,7 +711,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(GameObject gO, string clipName, bool tillDestroy, float volume)
     {
-        return PlaySFXLoop(gO, SoundManager.Load(clipName), tillDestroy, volume, Instance.pitchSFX);
+        return PlaySFXLoop(gO, SoundManager.Load(clipName), tillDestroy, volume, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -721,7 +721,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(GameObject gO, string clipName, bool tillDestroy)
     {
-        return PlaySFXLoop(gO, SoundManager.Load(clipName), tillDestroy, Instance.volumeSFX);
+        return PlaySFXLoop(gO, SoundManager.Load(clipName), tillDestroy, Instance.volumeSFX, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>
@@ -731,7 +731,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// </summary>
 	public static AudioSource PlaySFXLoop(GameObject gO, string clipName)
     {
-        return PlaySFXLoop(gO, SoundManager.Load(clipName), true);
+        return PlaySFXLoop(gO, SoundManager.Load(clipName), true, Instance.volumeSFX, Instance.pitchSFX, 0f);
     }
 	
 	/// <summary>

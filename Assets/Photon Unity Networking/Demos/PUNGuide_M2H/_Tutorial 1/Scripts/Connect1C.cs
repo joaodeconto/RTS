@@ -21,10 +21,10 @@ public class Connect1C : Photon.MonoBehaviour
     void OnGUI()
     {
         //Check connection state..
-        if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
+        if (!PhotonNetwork.connected && !PhotonNetwork.connecting)
         {
             //We are currently disconnected
-            GUILayout.Label("Connection status: Disconnected");
+            GUILayout.Label("Connection status: " + PhotonNetwork.connectionStateDetailed);
 
             GUILayout.BeginVertical();
             if (GUILayout.Button("Connect"))
@@ -37,27 +37,20 @@ public class Connect1C : Photon.MonoBehaviour
         else
         {
             //We're connected!
-            if (PhotonNetwork.connectionState == ConnectionState.Connected)
+            GUILayout.Label("Connection status: " + PhotonNetwork.connectionStateDetailed);
+            if (PhotonNetwork.room != null)
             {
-                GUILayout.Label("Connection status: Connected");
-                if (PhotonNetwork.room != null)
-                {
-                    GUILayout.Label("Room: " + PhotonNetwork.room.name);
-                    GUILayout.Label("Players: " + PhotonNetwork.room.playerCount + "/" + PhotonNetwork.room.maxPlayers);
+                GUILayout.Label("Room: " + PhotonNetwork.room.name);
+                GUILayout.Label("Players: " + PhotonNetwork.room.playerCount + "/" + PhotonNetwork.room.maxPlayers);
 
-                }
-                else
-                {
-                    GUILayout.Label("Not inside any room");
-                }
-
-                GUILayout.Label("Ping to server: " + PhotonNetwork.GetPing());
             }
             else
             {
-                //Connecting...
-                GUILayout.Label("Connection status: " + PhotonNetwork.connectionState);
+                GUILayout.Label("Not inside any room");
             }
+
+            GUILayout.Label("Ping to server: " + PhotonNetwork.GetPing());
+            
         }
     }
 
@@ -94,7 +87,7 @@ public class Connect1C : Photon.MonoBehaviour
         //We still didn't join any room: create one
         if (PhotonNetwork.room == null){
             string roomName = "TestRoom"+Application.loadedLevelName;
-            PhotonNetwork.CreateRoom(roomName, true, true, 4);
+            PhotonNetwork.CreateRoom(roomName, new RoomOptions() {maxPlayers = 4}, null);
         }
     }
     

@@ -14,8 +14,15 @@ namespace UnityEditor.FacebookEditor
         public const string ERROR_NO_OPENSSL = "no_openssl";
         public const string ERROR_KEYTOOL_ERROR = "java_keytool_error";
 
-        private static string debugKeyHash;
+		private static string playerSettingsKeyHash;
+        //private static string debugKeyHash;
         private static string setupError;
+
+		// Call to reset the playerSettingsKeyhash as it may change.
+		public static void refresh()
+		{
+			playerSettingsKeyHash = null;
+		}
 
         public static bool IsSetupProperly()
         {
@@ -26,7 +33,7 @@ namespace UnityEditor.FacebookEditor
         {
             get
             {
-                if (debugKeyHash == null)
+				if ( playerSettingsKeyHash == null )
                 {
                     if (!HasAndroidSDK())
                     {
@@ -48,12 +55,18 @@ namespace UnityEditor.FacebookEditor
                         setupError = ERROR_NO_KEYTOOL;
                         return null;
                     }
-                    debugKeyHash = GetKeyHash("androiddebugkey", DebugKeyStorePath, "android");
+					
+					// Using the user defined keystore values instead of the debug one.
+					playerSettingsKeyHash = GetKeyHash( PlayerSettings.Android.keyaliasName, PlayerSettings.Android.keystoreName, PlayerSettings.Android.keyaliasPass, PlayerSettings.Android.keystorePass );
+
+                    //debugKeyHash = GetKeyHash("androiddebugkey", DebugKeyStorePath, "android");
                 }
-                return debugKeyHash;
+                //return debugKeyHash;
+				return playerSettingsKeyHash;
             }
         }
 
+		/*
         private static string DebugKeyStorePath
         {
             get
@@ -62,12 +75,12 @@ namespace UnityEditor.FacebookEditor
                     System.Environment.GetEnvironmentVariable("HOMEPATH") + @"\.android\debug.keystore" : 
                     System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal) + @"/.android/debug.keystore";
             }
-        }
+        }*/
 
-        private static string GetKeyHash(string alias, string keyStore, string password)
+        private static string GetKeyHash(string alias, string keyStore, string keyPass, string storePass )
         {
             var proc = new Process();
-            var arguments = @"""keytool -storepass {0} -keypass {1} -exportcert -alias {2} -keystore {3} | openssl sha1 -binary | openssl base64""";
+            var arguments = @"""keytool -storepass {0} -keypass {1} -exportcert -alias {2} -keystore ""{3}"" | openssl sha1 -binary | openssl base64""";
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
                 proc.StartInfo.FileName = "cmd";
@@ -78,7 +91,8 @@ namespace UnityEditor.FacebookEditor
                 proc.StartInfo.FileName = "bash";
                 arguments = @"-c " + arguments;
             }
-            proc.StartInfo.Arguments = string.Format(arguments, password, password, alias, keyStore);
+
+			proc.StartInfo.Arguments = string.Format( arguments, storePass, keyPass, alias, keyStore );
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.RedirectStandardOutput = true;
@@ -112,7 +126,9 @@ namespace UnityEditor.FacebookEditor
 
         public static bool HasAndroidKeystoreFile()
         {
-		    return System.IO.File.Exists(DebugKeyStorePath);
+		    //return System.IO.File.Exists(DebugKeyStorePath);
+		    // keystoreName returns the user specified keystore path as well as the filename.
+			return System.IO.File.Exists( PlayerSettings.Android.keystoreName );
         }
 
 

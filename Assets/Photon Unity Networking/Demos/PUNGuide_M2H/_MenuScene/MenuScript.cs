@@ -24,6 +24,8 @@ public class MenuScript : Photon.MonoBehaviour
 
 
         GUILayout.BeginVertical();
+        GUILayout.Label("In this package:");
+        GUILayout.Space(10);
         if (GUILayout.Button("Tutorial 1A - Connect"))
         {
             Application.LoadLevel("Tutorial_1A");
@@ -57,6 +59,14 @@ public class MenuScript : Photon.MonoBehaviour
 
         GUILayout.Space(10);
 
+        GUILayout.EndVertical();
+
+        GUILayout.Space(30);
+
+        GUILayout.BeginVertical();
+        GUILayout.Label("In the full guide:");
+        GUILayout.Space(10);
+
         if (GUILayout.Button("Tutorial 3 - Authoritative server"))
         {
             Application.LoadLevel("Tutorial_3");
@@ -66,11 +76,6 @@ public class MenuScript : Photon.MonoBehaviour
         {
             Application.LoadLevel("Tutorial_4");
         }
-        GUILayout.EndVertical();
-
-        GUILayout.Space(30);
-
-        GUILayout.BeginVertical();
         if (GUILayout.Button("Example 1 - Chat"))
         {
             Application.LoadLevel("Example1_Chat");

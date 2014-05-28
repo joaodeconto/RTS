@@ -46,20 +46,19 @@ public class WorkerMenu : MonoBehaviour
     {
         if (!PhotonNetwork.connected)
         {
-            if (PhotonNetwork.connectionState == ConnectionState.Connecting)
+            if (PhotonNetwork.connecting)
             {
-                GUILayout.Label("Connecting " + PhotonNetwork.ServerAddress);
-                GUILayout.Label(Time.time.ToString());
+                GUILayout.Label("Connecting to: " + PhotonNetwork.ServerAddress);
             }
             else
             {
-                GUILayout.Label("Not connected. Check console output.");
+                GUILayout.Label("Not connected. Check console output. Detailed connection state: " + PhotonNetwork.connectionStateDetailed + " Server: " + PhotonNetwork.ServerAddress);
             }
-
+            
             if (this.connectFailed)
             {
                 GUILayout.Label("Connection failed. Check setup and use Setup Wizard to fix configuration.");
-                GUILayout.Label(String.Format("Server: {0}:{1}", new object[] {PhotonNetwork.ServerAddress, PhotonNetwork.PhotonServerSettings.ServerPort}));
+                GUILayout.Label(String.Format("Server: {0}", new object[] {PhotonNetwork.ServerAddress}));
                 GUILayout.Label("AppId: " + PhotonNetwork.PhotonServerSettings.AppID);
                 
                 if (GUILayout.Button("Try Again", GUILayout.Width(100)))
@@ -100,7 +99,7 @@ public class WorkerMenu : MonoBehaviour
         
         if (GUILayout.Button("Create Room", GUILayout.Width(100)))
         {
-            PhotonNetwork.CreateRoom(this.roomName, true, true, 10);
+            PhotonNetwork.CreateRoom(this.roomName, new RoomOptions() { maxPlayers = 10 }, null);
         }
 
         GUILayout.EndHorizontal();
@@ -174,7 +173,6 @@ public class WorkerMenu : MonoBehaviour
         PhotonNetwork.LoadLevel(SceneNameGame);
     }
 
-
     public void OnDisconnectedFromPhoton()
     {
         Debug.Log("Disconnected from Photon.");
@@ -183,6 +181,6 @@ public class WorkerMenu : MonoBehaviour
     public void OnFailedToConnectToPhoton(object parameters)
     {
         this.connectFailed = true;
-        Debug.Log("OnFailedToConnectToPhoton. StatusCode: " + parameters);
+        Debug.Log("OnFailedToConnectToPhoton. StatusCode: " + parameters + " ServerAddress: " + PhotonNetwork.networkingPeer.ServerAddress);
     }
 }

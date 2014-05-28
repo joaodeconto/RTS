@@ -27,7 +27,7 @@ public class IELdemo : MonoBehaviour
     // This is one of the callback/event methods called by PUN (read more in PhotonNetworkingMessage enumeration)
     public void OnPhotonRandomJoinFailed()
     {
-        PhotonNetwork.CreateRoom(null, true, true, 4);
+        PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);
     }
 
     // This is one of the callback/event methods called by PUN (read more in PhotonNetworkingMessage enumeration)

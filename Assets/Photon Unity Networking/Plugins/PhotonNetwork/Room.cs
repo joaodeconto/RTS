@@ -8,6 +8,7 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
 using ExitGames.Client.Photon;
 using UnityEngine;
 
@@ -65,12 +66,12 @@ public class Room : RoomInfo
         {
             if (!this.Equals(PhotonNetwork.room))
             {
-                PhotonNetwork.networkingPeer.DebugReturn(DebugLevel.WARNING, "Can't set room properties when not in that room.");
+                UnityEngine.Debug.LogWarning("Can't set maxPlayers when not in that room.");
             }
 
             if (value > 255)
             {
-                UnityEngine.Debug.LogError("Error: room.maxPlayers called with value " + value + ". This has been reverted to the max of 255 players, because internally a 'byte' is used.");
+                UnityEngine.Debug.LogWarning("Can't set Room.maxPlayers to: " + value + ". Using max value: 255.");
                 value = 255;
             }
 
@@ -102,7 +103,7 @@ public class Room : RoomInfo
         {
             if (!this.Equals(PhotonNetwork.room))
             {
-                PhotonNetwork.networkingPeer.DebugReturn(DebugLevel.WARNING, "Can't set room properties when not in that room.");
+                UnityEngine.Debug.LogWarning("Can't set open when not in that room.");
             }
 
             if (value != this.openField && !PhotonNetwork.offlineMode)
@@ -130,7 +131,7 @@ public class Room : RoomInfo
         {
             if (!this.Equals(PhotonNetwork.room))
             {
-                PhotonNetwork.networkingPeer.DebugReturn(DebugLevel.WARNING, "Can't set room properties when not in that room.");
+                UnityEngine.Debug.LogWarning("Can't set visible when not in that room.");
             }
 
             if (value != this.visibleField && !PhotonNetwork.offlineMode)
@@ -157,34 +158,21 @@ public class Room : RoomInfo
             return this.autoCleanUpField;
         }
     }
-
-    internal Room(string roomName, Hashtable properties) : base(roomName, properties)
+    
+    internal Room(string roomName, RoomOptions options) : base(roomName, null)
     {
-        this.propertiesListedInLobby = new string[0];
-    }
-
-    internal Room(string roomName, Hashtable properties, bool isVisible, bool isOpen, int maxPlayers, bool autoCleanUp, string[] propsListedInLobby) : base(roomName, properties)
-    {
-        this.visibleField = isVisible;
-        this.openField = isOpen;
-        this.autoCleanUpField = autoCleanUp;
-
-        if (maxPlayers > 255)
+        if (options == null)
         {
-            UnityEngine.Debug.LogError("Error: Room() called with " + maxPlayers + " maxplayers. This has been reverted to the max of 255 players, because internally a 'byte' is used.");
-            maxPlayers = 255;
+            options = new RoomOptions();
         }
 
-        this.maxPlayersField = (byte)maxPlayers;
+        this.visibleField = options.isVisible;
+        this.openField = options.isOpen;
+        this.maxPlayersField = (byte)options.maxPlayers;
+        this.autoCleanUpField = options.cleanupCacheOnLeave;
 
-        if (propsListedInLobby != null)
-        {
-            this.propertiesListedInLobby = propsListedInLobby;
-        }
-        else
-        {
-            this.propertiesListedInLobby = new string[0];
-        }
+        this.CacheProperties(options.customRoomProperties);
+        this.propertiesListedInLobby = options.customRoomPropertiesForLobby;
     }
 
     /// <summary>
@@ -195,13 +183,14 @@ public class Room : RoomInfo
     /// until the last player leaves the room.
     /// Access them by: Room.CustomProperties (read-only!).
     /// 
+    /// To reduce network traffic, set only values that actually changed.
+    /// 
     /// New properties are added, existing values are updated.
     /// Other values will not be changed, so only provide values that changed or are new.
     /// To delete a named (custom) property of this room, use null as value.
     /// Only string-typed keys are applied (everything else is ignored).
     /// 
     /// Local cache is updated immediately, other clients are updated through Photon with a fitting operation.
-    /// To reduce network traffic, set only values that actually changed.
     /// </remarks>
     /// <param name="propertiesToSet">Hashtable of props to udpate, set and sync. See description.</param>
     public void SetCustomProperties(Hashtable propertiesToSet)
@@ -218,7 +207,7 @@ public class Room : RoomInfo
         // send (sync) these new values
         Hashtable customProps = propertiesToSet.StripToStringKeys() as Hashtable;
 		PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfRoom(customProps, true, 0);
-		NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonCustomRoomPropertiesChanged);
+		NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonCustomRoomPropertiesChanged, propertiesToSet);
     }
 
     /// <summary>

@@ -5,9 +5,9 @@ using System.Collections;
 [RequireComponent(typeof(PhotonView))]
 public class TestGuiInstantiate : Photon.MonoBehaviour
 {
-    public string PrefabToInstantiate = "BoxPrefab";
+    public string PrefabToInstantiate = "TestPrefab";
     public bool HideUI = false;
-    public int GuiSpace = 0;
+    public int GuiSpace = 0;    // inspector value
 
     private GameObject lastInstantiateMine;
     private GameObject lastInstantiateScene;
@@ -23,7 +23,7 @@ public class TestGuiInstantiate : Photon.MonoBehaviour
 
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
 
-        if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
+        if (!PhotonNetwork.connected)
         {
             if (GUILayout.Button("Connect"))
             {

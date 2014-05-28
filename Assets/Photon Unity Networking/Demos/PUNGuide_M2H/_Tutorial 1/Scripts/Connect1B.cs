@@ -50,7 +50,7 @@ public class Connect1B : MonoBehaviour
 
     void GUI_Disconnected()
     {
-        if (PhotonNetwork.connectionState == ConnectionState.Connecting)
+        if (PhotonNetwork.connecting)
         {
             GUILayout.Label("Connecting...");
         }
@@ -62,7 +62,7 @@ public class Connect1B : MonoBehaviour
         if (this.connectFailed)
         {
             GUILayout.Label("Connection failed. Check setup and use Setup Wizard to fix configuration.");
-            GUILayout.Label(string.Format("Server: {0}:{1}", PhotonNetwork.PhotonServerSettings.ServerAddress, PhotonNetwork.PhotonServerSettings.ServerPort));
+            GUILayout.Label(string.Format("Server: {0}", PhotonNetwork.PhotonServerSettings.ServerAddress));
             GUILayout.Label(string.Format("AppId: {0}", PhotonNetwork.PhotonServerSettings.AppID));
 
             if (GUILayout.Button("Try Again", GUILayout.Width(100)))
@@ -109,7 +109,7 @@ public class Connect1B : MonoBehaviour
         this.roomName = GUILayout.TextField(this.roomName);
         if (GUILayout.Button("GO"))
         {
-            PhotonNetwork.CreateRoom(this.roomName, true, true, 10);
+            PhotonNetwork.CreateRoom(this.roomName, new RoomOptions() { maxPlayers = 10}, null);
         }
 
         GUILayout.EndHorizontal();

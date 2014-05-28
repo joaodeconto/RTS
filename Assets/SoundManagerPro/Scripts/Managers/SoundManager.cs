@@ -344,17 +344,61 @@ public partial class SoundManager : Singleton<SoundManager> {
 	/// <summary>
 	/// Plays the SoundConnection right then, regardless of what you put at the level parameter of the SoundConnection.
 	/// </summary>
-	public static void PlayConnection(SoundConnection sc)
+	public static void PlayConnection(SoundConnection sc, bool syncPlaybackTime=false, int trackNumber=0)
 	{
+		int currentTimeSamples = 0;
+		AudioSource currentSource = null;
+		if(syncPlaybackTime)
+		{
+			currentSource = GetCurrentAudioSource();
+			if(currentSource != null)
+				currentTimeSamples = currentSource.timeSamples;
+		}
+		
+		for(int i = 0; i < trackNumber; i++)
+			Next();
 		Instance._PlayConnection(sc);
+		
+		if(syncPlaybackTime)
+		{
+			currentSource = GetCurrentAudioSource();
+			if(currentTimeSamples > currentSource.clip.samples)
+			{
+				Debug.LogWarning("Your clips are not of equal length. SyncPlayback has restarted the new track");
+				currentTimeSamples = 0;
+			}
+			currentSource.timeSamples = currentTimeSamples;
+		}
 	}
 	
 	/// <summary>
 	/// Plays a SoundConnection on SoundManager that matches the level name.
 	/// </summary>
-	public static void PlayConnection(string levelName)
+	public static void PlayConnection(string levelName, bool syncPlaybackTime=false, int trackNumber=0)
 	{
+		int currentTimeSamples = 0;
+		AudioSource currentSource = null;
+		if(syncPlaybackTime)
+		{
+			currentSource = GetCurrentAudioSource();
+			if(currentSource != null)
+				currentTimeSamples = currentSource.timeSamples;
+		}
+		
+		for(int i = 0; i < trackNumber; i++)
+			Next();
 		Instance._PlayConnection(levelName);
+		
+		if(syncPlaybackTime)
+		{
+			currentSource = GetCurrentAudioSource();
+			if(currentTimeSamples > currentSource.clip.samples)
+			{
+				Debug.LogWarning("Your clips are not of equal length. SyncPlayback has restarted the new track");
+				currentTimeSamples = 0;
+			}
+			currentSource.timeSamples = currentTimeSamples;
+		}
 	}
 	
 	/// <summary>
@@ -568,6 +612,22 @@ public partial class SoundManager : Singleton<SoundManager> {
 	{
 		if(string.IsNullOrEmpty(groupName)) return false;
 		return Instance.groups.ContainsKey(groupName) && Instance.groups[groupName] != null;
+	}
+	
+	/// <summary>
+	/// Gets the current audio source playing BGM. Will return null if not playing anything at all.
+	/// </summary>
+	public static AudioSource GetCurrentAudioSource()
+	{
+		return Instance.IsPlaying(GetCurrentSong());
+	}
+	
+	/// <summary>
+	/// Gets the track number in the playlist. Otherwise returns -1 if not in playlist.
+	/// </summary>
+	public static int GetTrackNumber(AudioClip clip)
+	{
+		return GetCurrentSongList().IndexOf(clip);
 	}
 }
 

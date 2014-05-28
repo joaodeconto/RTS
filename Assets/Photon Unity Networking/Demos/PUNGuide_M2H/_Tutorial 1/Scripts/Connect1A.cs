@@ -14,7 +14,7 @@ public class Connect1A : Photon.MonoBehaviour
     {
         
         //Check connection state..
-        if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
+        if (!PhotonNetwork.connected && !PhotonNetwork.connecting)
         {
             //We are currently disconnected
             GUILayout.Label("Connection status: Disconnected");
@@ -29,8 +29,8 @@ public class Connect1A : Photon.MonoBehaviour
         }
         else
         {
-            //We're connected!
-            if (PhotonNetwork.connectionState == ConnectionState.Connected)
+            //We're connected or connecting!
+            if (PhotonNetwork.connected)
             {
                 GUILayout.Label("Connection status: Connected");
                 GUILayout.Label("Ping to server: " + PhotonNetwork.GetPing());

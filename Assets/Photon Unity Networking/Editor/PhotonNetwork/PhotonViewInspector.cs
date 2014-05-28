@@ -17,7 +17,9 @@ public class PhotonViewInspector : Editor
 {
     public override void OnInspectorGUI()
     {
+        #if UNITY_3_5
         EditorGUIUtility.LookLikeInspector();
+        #endif
         EditorGUI.indentLevel = 1;
 
         PhotonView mp = (PhotonView)this.target;

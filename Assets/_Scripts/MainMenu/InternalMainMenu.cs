@@ -15,6 +15,7 @@ public class InternalMainMenu : MonoBehaviour
 
 	public GameObject goMainMenu;
 	public UILabel PlayerLabel;
+	public UISprite avatarImg;
 	
 	public UILabel CurrentCrystalsLabel;
 	public UILabel CreatedUnitsLabel;
@@ -47,6 +48,10 @@ public class InternalMainMenu : MonoBehaviour
 			score.Init ();
 			return;
 		}
+
+		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
+
+		avatarImg.spriteName = PlayerPrefs.GetString("Avatar");
 	
 		//Deixar primeiro carregar o jogador
 		Invoke ("InitScore", 0.5f);

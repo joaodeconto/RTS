@@ -2576,7 +2576,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400312}
   m_Layer: 8
-  m_Name: Touch
+  m_Name: TouchSense
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3846,7 +3846,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400466}
   m_Layer: 8
-  m_Name: ClickSpeed
+  m_Name: DoubleClick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7338,7 +7338,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100022}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 480, y: -360, z: 0}
+  m_LocalPosition: {x: 555, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400072}
@@ -7361,7 +7361,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100026}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -480, y: 360, z: 0}
+  m_LocalPosition: {x: -555, y: 360, z: 0}
   m_LocalScale: {x: 1.00012505, y: 1.00012505, z: 1.00012505}
   m_Children:
   - {fileID: 400766}
@@ -7635,7 +7635,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100070}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -480, y: -360, z: 0}
+  m_LocalPosition: {x: -555, y: -360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400090}
@@ -7785,7 +7785,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100096}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 480, y: 0, z: 0}
+  m_LocalPosition: {x: 555, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400336}
@@ -8203,7 +8203,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100164}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 480, y: 360, z: 0}
+  m_LocalPosition: {x: 555, y: 360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400016}
@@ -21249,6 +21249,12 @@ MonoBehaviour:
     mMethodName: SetCurrentPercent
     mParameters: []
     oneShot: 0
+  - mTarget: {fileID: 11400866}
+    mMethodName: SetPlayerDoubleClickSpeed
+    mParameters:
+    - obj: {fileID: 11400384}
+      field: 
+    oneShot: 0
   foreground: {fileID: 0}
   rawValue: 1
   direction: 2
@@ -24016,6 +24022,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886f94a64c1cef84795461accfb77674, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allVolume: {fileID: 0}
+  sfxVolume: {fileID: 0}
+  musicVolume: {fileID: 0}
 --- !u!114 &11400520
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -24543,8 +24552,8 @@ MonoBehaviour:
     mMethodName: SetCurrentPercent
     mParameters: []
     oneShot: 0
-  - mTarget: {fileID: 0}
-    mMethodName: SetSpeed
+  - mTarget: {fileID: 11400866}
+    mMethodName: SetPlayerTouchSense
     mParameters:
     - obj: {fileID: 11400546}
       field: value
@@ -30913,7 +30922,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3000
+  startingRenderQueue: 3002
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}

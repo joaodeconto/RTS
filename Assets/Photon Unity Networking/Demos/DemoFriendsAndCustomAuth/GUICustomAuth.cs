@@ -62,7 +62,7 @@ public class GUICustomAuth : MonoBehaviour
             GUILayout.Label("Custom Authentication");
             GUILayout.Label("Photon Cloud can be setup to use an external service to verify players.");
             GUILayout.Label("By default, Photon Cloud allows anonymous connects. In the Dashboard, Custom Authentication can be made mandatory.");
-            GUILayout.Label("Set PhotonNetwork.AuthValues before you call PhotonNetwork.ConnectUsingSetting().");
+            GUILayout.Label("Set PhotonNetwork.CustomAuthenticationValues before you call PhotonNetwork.ConnectUsingSetting().");
             GUILayout.Label("The demo service logs you in for: name == token.");
             GUILayout.Label("The script GUIFriendFinding will set a random username (independent from Custom Authentication).");
         }

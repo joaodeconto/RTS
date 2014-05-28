@@ -520,6 +520,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 		a1.volume = 0f;
 		a2.volume = maxMusicVolume;
 		a1.Stop();
+		a1.timeSamples = 0;
 		lastPlaying = currentPlaying;
 		currentPlaying = CheckWhosPlaying();
 		
@@ -587,6 +588,7 @@ public partial class SoundManager : Singleton<SoundManager> {
 	    }
 		a1.volume = 0f;
 		a1.Stop();
+		a1.timeSamples = 0;
 		lastPlaying = currentPlaying;
 		currentPlaying = CheckWhosPlaying();
 		
@@ -643,6 +645,8 @@ public partial class SoundManager : Singleton<SoundManager> {
 		volume1 = volume2 = 0f;
 		audios[0].Stop();
 		audios[1].Stop();
+		audios[0].timeSamples = 0;
+		audios[1].timeSamples = 0;
 		lastPlaying = currentPlaying;
 		currentPlaying = CheckWhosPlaying();
 		
@@ -792,6 +796,14 @@ public partial class SoundManager : Singleton<SoundManager> {
 			yield break;
 		}
 		int songPlaying = 0;
+		if(skipSongs)
+		{
+			songPlaying = (songPlaying+skipAmount) % sc.soundsToPlay.Count;
+			if(songPlaying < 0) songPlaying += sc.soundsToPlay.Count;
+			skipSongs = false;
+			skipAmount = 0;
+		}
+			
 		switch(sc.playMethod)
 		{
 			case PlayMethod.ContinuousPlayThrough:
@@ -799,7 +811,6 @@ public partial class SoundManager : Singleton<SoundManager> {
 				currentSongIndex = songPlaying;
 				int response = PlayClip(sc.soundsToPlay[songPlaying]);
 				movingOnFromSong = false;
-
 				// Get the real song length using time samples, especially in the case where the song is already playing.
 				float realSongLength;
 				if(response != SOUNDMANAGER_FALSE)

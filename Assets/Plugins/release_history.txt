@@ -3,10 +3,38 @@
   (C) 2013 Exit Games GmbH, http://www.exitgames.com
 
 Questions? Visit:
-    http://www.exitgamescloud.com
+    http://cloud.exitgames.com
     http://doc.exitgames.com/photon-cloud
     http://forum.exitgames.com
 
+
+*** Version 3.2.2.4 (21. March 2014 - rev2519)
+    Internal: For Unity, the classes that handle native sockets can now be compiled in a variant that does not actually reference the native-socket-libs. The dll for PUN+ uses native sockets and need the native libs. Any regular dll will have the (not used and empty) classes for build-compatibility reasons.
+    Added: Values to enum EventCaching: SliceIncreaseIndex, SliceSetIndex, SlicePurgeIndex and SlicePurgeUpToIndex. They are in Lite but used in LoadBalancing. This is likely to be cleaned up in the next major release.
+	Changed: EventCaching MergeCache, ReplaceCache and RemoveCache as they belong to an outdated form of caching. The "RoomCache" is the better option in any case.
+LoadBalancing:
+	Added: RaiseEventOptions class. It's used for OpRaiseEvent to avoid further parameter- and overload-clutter for this operation. While it's still not optimal for all cases, the fields in the RaiseEventOptions class are hopefully more clear how to use. Maybe some constructors will be added soon.
+	Changed: All OpRaiseEvent variants, except the one with RaiseEventOptions is now obsolete.
+	Added: Event Cache Slicing. Cached events can now be organized into "slices" which allows you to handle them in chunks. You can purge events in specific slices (e.g. get rid of the previous game-rounds events).
+Turnbased:
+	Added: RaiseEventOptions.ForwardToWebhook which allows you to forward an event to a webhook (to be defined in Dashboard). Use this rarely, as it has an impact on (server) performance!
+
+
+*** Version 3.2.2.3 (18. February 2013 - rev2493)
+	Added: const PhotonPeer.NoSocket, so programs using our assemblies can detect if they must provide an external SocketImplementation. Some builds avoid using the Socket class (cause Unity Free doesn't support it on all platforms).
+    Added: PhotonPeer.SendMessage method in order to send any serializable object to server.
+	Added: IPhotonPeerListener.OnMessage in order to be notified about getting message from server.
+	Added: new 'Connect' method, which accepts as third parameter any serializable object. You may use this object on server before creating peer.
+	Added: OnMessage callback to samples
+	Changed: TCP and UDP both set the socket to null explicitly in Disconnect(). Hopefully this fixes a misbehaviour in Unity Editor which locked up often.
+	Changed: SocketTCP  now has a syncer object and locks in Disconnect(), so only one Disconnect call can be made anytime.
+    Fixed: Nullreference when calling DispatchIncomingCommands() before Connect(). This was due to a (new) use of the socket wrapper. Commented this out until needed.
+    Fixed: Nullreference when calling SendAcksOnly() before Connect() with a new non-null check.
+    Fixed: breaking issue in Hashtable replacement class. Enumerators used in 2 "foreach" loops were breaking with a nullreference. Fix: No caching of enumerator.
+    Changed: AutoJoinLobby now uses this.CurrentLobbyName and this.CurrentLobbyType to join a specified lobby.
+    Changed: EnetPeer.StopConnection will always reset the state to be able to re-connect.
+    Changed: Disconnect() in SocketTcp and SocketUdp sets this.socket = null, even if socket.Close() caused an exception. This is what was expected.
+    Added: SocketUdpNativeDynamic and SocketUdpNativeStatic to "regular" Unity Lib, to improve compatibility in Unity for different export platforms (with and without native sockets).
 
 *** Version 3.2.2.1 (17. October 2013 - rev2335)
     Note: This lib contains a lot of breaking changes and socket handling has been refactored. By now, this is well tested and confirmed working.
@@ -22,7 +50,6 @@ LoadBalancing API
 	Added: OpJoinRoom now optionally creates a room if parameter "createIfNotExists" is set to true and the room didn't exist. Room properties can't be set "on create" this way. LocalPlayer.IsMasterClient will be true.
     Added: When OpJoinRoom can create a room, it also won't define which properties go into the lobby. You can use the new Room.SetPropertiesListedInLobby().
     Added: You can pass a actorNumber to OpJoinRoom when you re-enter a room and want to reclaim a specific actorNumber in that room. In best case, the client can re-join after a disconnect/crash and seamlessly go on playing.
-
 
 *** Version 3.2.1.6 (15. August 2013 - rev2272)
     Changed: The library for Unity now contains a ExitGames.Client.Photon.Hashtable to be compatible with Win 8 exports. This must be used from now on!

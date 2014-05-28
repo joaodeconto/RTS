@@ -148,8 +148,9 @@ public class FacebookSettingsEditor : Editor
                         msg = "You don't have the Android SDK setup!  Go to " + (Application.platform == RuntimePlatform.OSXEditor ? "Unity" : "Edit") + "->Preferences... and set your Android SDK Location under External Tools";
                         break;
                     case FacebookAndroidUtil.ERROR_NO_KEYSTORE:
-                        msg = "Your android debug keystore file is missing! You can create new one by creating and building empty Android project in Ecplise.";
-                        break;
+                       // msg = "Your android debug keystore file is missing! You can create new one by creating and building empty Android project in Ecplise.";
+						msg = "Your keystore file is missing! You can create one by going into Unity's Build Settings->Android->Publish Settings.";
+						break;
                     case FacebookAndroidUtil.ERROR_NO_KEYTOOL:
                         msg = "Keytool not found. Make sure that Java is installed, and that Java tools are in your path.";
                         break;
@@ -164,19 +165,35 @@ public class FacebookSettingsEditor : Editor
             }
             EditorGUILayout.HelpBox("Copy and Paste these into your \"Native Android App\" Settings on developers.facebook.com/apps", MessageType.None);
             SelectableLabelField(packageNameLabel, PlayerSettings.bundleIdentifier);
-            SelectableLabelField(classNameLabel, ManifestMod.ActivityName);
+            SelectableLabelField(classNameLabel, ManifestMod.DeepLinkingActivityName);
             SelectableLabelField(debugAndroidKeyLabel, FacebookAndroidUtil.DebugKeyHash);
 
+			if ( GUILayout.Button("Refresh Keyhash"))
+			{
+				FacebookAndroidUtil.refresh();
+			}
+
+            if (GUILayout.Button("Regenerate Android Manifest"))
+            {
+                ManifestMod.GenerateManifest();
+            }
         }
         EditorGUILayout.Space();
     }
 
     private void AboutGUI()
     {
-        var versionAttribute = FBBuildVersionAttribute.GetVersionAttributeOfType(typeof(IFacebook));
-        EditorGUILayout.HelpBox("About the Facebook SDK", MessageType.None);
-        SelectableLabelField(sdkVersion, versionAttribute.Version);
-        SelectableLabelField(buildVersion, versionAttribute.ToString());
+        var versionInfo = FBBuildVersionAttribute.GetVersionAttributeOfType(typeof(IFacebook));
+        if (versionInfo == null)
+        {
+            EditorGUILayout.HelpBox("Cannot find version info on the Facebook SDK!", MessageType.Warning);
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("About the Facebook SDK", MessageType.None);
+            SelectableLabelField(sdkVersion, versionInfo.SdkVersion);
+            SelectableLabelField(buildVersion, versionInfo.BuildVersion);
+        }
         EditorGUILayout.Space();
     }
 

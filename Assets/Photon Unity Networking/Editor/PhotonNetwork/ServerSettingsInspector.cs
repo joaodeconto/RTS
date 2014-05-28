@@ -23,7 +23,9 @@ public class ServerSettingsInspector : Editor
 
     public override void OnInspectorGUI()
     {
+        #if UNITY_3_5
         EditorGUIUtility.LookLikeInspector();
+        #endif
         DrawDefaultInspector();
 
         GUILayout.BeginHorizontal();
