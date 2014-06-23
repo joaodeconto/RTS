@@ -39,6 +39,17 @@ public abstract class UIRect : MonoBehaviour
 		}
 
 		/// <summary>
+		/// Convenience function that sets the anchor's values.
+		/// </summary>
+
+		public void Set (Transform target, float relative, float absolute)
+		{
+			this.target = target;
+			this.relative = relative;
+			this.absolute = Mathf.FloorToInt(absolute + 0.5f);
+		}
+
+		/// <summary>
 		/// Set the anchor's value to the nearest of the 3 possible choices of (left, center, right) or (bottom, center, top).
 		/// </summary>
 
@@ -350,9 +361,13 @@ public abstract class UIRect : MonoBehaviour
 	protected virtual void OnEnable ()
 	{
 		mAnchorsCached = false;
+		mUpdateFrame = -1;
 		if (updateAnchors == AnchorUpdate.OnEnable)
 			mUpdateAnchors = true;
 		if (mStarted) OnInit();
+#if UNITY_EDITOR
+		OnValidate();
+#endif
 	}
 
 	/// <summary>
@@ -402,9 +417,15 @@ public abstract class UIRect : MonoBehaviour
 
 		int frame = Time.frameCount;
 
+#if UNITY_EDITOR
+		if (mUpdateFrame != frame || !Application.isPlaying)
+#else
 		if (mUpdateFrame != frame)
+#endif
 		{
-#if !UNITY_EDITOR
+#if UNITY_EDITOR
+			if (updateAnchors == AnchorUpdate.OnUpdate || mUpdateAnchors || !Application.isPlaying)
+#else
 			if (updateAnchors == AnchorUpdate.OnUpdate || mUpdateAnchors)
 #endif
 			{
@@ -545,6 +566,12 @@ public abstract class UIRect : MonoBehaviour
 
 		mUpdateAnchors = true;
 	}
+
+	/// <summary>
+	/// Set the rectangle manually.
+	/// </summary>
+
+	public abstract void SetRect (float x, float y, float width, float height);
 
 	/// <summary>
 	/// Helper function -- attempt to find the camera responsible for the specified anchor.

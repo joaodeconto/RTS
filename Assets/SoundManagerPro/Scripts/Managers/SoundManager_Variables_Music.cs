@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using antilunchbox;
 
-public partial class SoundManager : Singleton<SoundManager> {
+public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 
 	// List of soundconnections
 	public List<SoundConnection> soundConnections = new List<SoundConnection>();

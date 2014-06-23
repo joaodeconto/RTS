@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using antilunchbox;
 
-public partial class SoundManager : Singleton<SoundManager> {
+public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	
 	// Singleton required initialization
 	public static SoundManager Instance {

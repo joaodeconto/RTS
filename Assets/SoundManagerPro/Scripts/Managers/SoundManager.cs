@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using antilunchbox;
 
 [AddComponentMenu("AntiLunchBox/SoundManager")]
-public partial class SoundManager : Singleton<SoundManager> {
+public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	#region level load handling
 	// Handle SFX on update
 	void Update () 

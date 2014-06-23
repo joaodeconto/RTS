@@ -22,7 +22,7 @@ public class RankedBattle : MonoBehaviour
 	public Transform createRoom;
 
 	public int minimumBet = 1;
-	private int players;
+	private int players = 2;
 	private int mapScene;
 	private int orichals {
 

@@ -15,7 +15,8 @@ public struct DataScoreEnum
 	public const string UnitsCreated = "units-created";
 	public const string BuildingsCreated = "buildings-created";
 	public const string XCreated = "-created"; //example use Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
-	
+
+
 	public const string UnitsLost = "units-lost";
 	public const string BuildingsLost = "buildings-lost";
 	public const string XLost = "-lost"; //example of use Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
@@ -90,16 +91,10 @@ public class Score : MonoBehaviour
 
 	private Model.DataScore _GetDataScore (string ScoreName, int battleId)
 	{	
-		if (battleId == null)
-		{
-			battleId = 0;
-		}
-
 
 		string scoreKey = ScoreName + " - " + battleId;
 
-	
-		
+
 		if (!dicDataScore.ContainsKey (scoreKey))
 		{
 			dicDataScore.Add (scoreKey, new Model.DataScore (player.IdPlayer, battleId, ScoreName, 0));

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using antilunchbox;
 
-public partial class SoundManager : Singleton<SoundManager> {
+public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// EDITOR variables. DO NOT TOUCH.
 	public bool viewAll {
 		get {

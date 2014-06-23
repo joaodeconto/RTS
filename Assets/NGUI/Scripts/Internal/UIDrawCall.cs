@@ -242,6 +242,9 @@ public class UIDrawCall : MonoBehaviour
 
 	void CreateMaterial ()
 	{
+		mLegacyShader = false;
+		mClipCount = panel.clipCount;
+
 		string shaderName = (mShader != null) ? mShader.name :
 			((mMaterial != null) ? mMaterial.shader.name : "Unlit/Transparent Colored");
 
@@ -257,21 +260,16 @@ public class UIDrawCall : MonoBehaviour
 			}
 		}
 
-		if (shaderName.StartsWith("HIDDEN/"))
+		if (shaderName.StartsWith("Hidden/"))
 			shaderName = shaderName.Substring(7);
 
 		// Legacy functionality
 		const string soft = " (SoftClip)";
 		shaderName = shaderName.Replace(soft, "");
 
-		// Try to find the new shader
-		Shader shader;
-		mLegacyShader = false;
-		mClipCount = panel.clipCount;
-
 		if (mClipCount != 0)
 		{
-			shader = Shader.Find("HIDDEN/" + shaderName + " " + mClipCount);
+			shader = Shader.Find("Hidden/" + shaderName + " " + mClipCount);
 			if (shader == null) Shader.Find(shaderName + " " + mClipCount);
 
 			// Legacy functionality
@@ -288,19 +286,26 @@ public class UIDrawCall : MonoBehaviour
 			mDynamicMat = new Material(mMaterial);
 			mDynamicMat.hideFlags = HideFlags.DontSave | HideFlags.NotEditable;
 			mDynamicMat.CopyPropertiesFromMaterial(mMaterial);
+#if !UNITY_FLASH
+			string[] keywords = mMaterial.shaderKeywords;
+			for (int i = 0; i < keywords.Length; ++i)
+				mDynamicMat.EnableKeyword(keywords[i]);
+#endif
+			// If there is a valid shader, assign it to the custom material
+			if (shader != null)
+			{
+				mDynamicMat.shader = shader;
+			}
+			else if (mClipCount != 0)
+			{
+				Debug.LogError(shaderName + " shader doesn't have a clipped shader version for " + mClipCount + " clip regions");
+			}
 		}
 		else
 		{
 			mDynamicMat = new Material(shader);
 			mDynamicMat.hideFlags = HideFlags.DontSave | HideFlags.NotEditable;
 		}
-
-		// If there is a valid shader, assign it to the custom material
-		if (shader != null)
-		{
-			mDynamicMat.shader = shader;
-		}
-		else Debug.LogError(shaderName + " shader doesn't have a clipped shader version for " + mClipCount + " clip regions");
 	}
 
 	/// <summary>
@@ -372,9 +377,7 @@ public class UIDrawCall : MonoBehaviour
 					mMesh = new Mesh();
 					mMesh.hideFlags = HideFlags.DontSave;
 					mMesh.name = (mMaterial != null) ? mMaterial.name : "Mesh";
-#if !UNITY_3_5
 					mMesh.MarkDynamic();
-#endif
 					setIndices = true;
 				}
 #if !UNITY_FLASH
@@ -388,9 +391,13 @@ public class UIDrawCall : MonoBehaviour
 				if (!trim && panel.renderQueue != UIPanel.RenderQueue.Automatic)
 					trim = (mMesh == null || mMesh.vertexCount != verts.buffer.Length);
 
+				// NOTE: Apparently there is a bug with Adreno devices:
+				// http://www.tasharen.com/forum/index.php?topic=8415.0
+				// According to version notes it's fixed in 4.5 rc5.
+#if !UNITY_4_3 || !UNITY_ANDROID
 				// If the number of vertices in the buffer is less than half of the full buffer, trim it
 				if (!trim && (verts.size << 1) < verts.buffer.Length) trim = true;
-
+#endif
 				mTriangles = (verts.size >> 1);
 
 				if (trim || verts.buffer.Length > 65000)
@@ -646,6 +653,8 @@ public class UIDrawCall : MonoBehaviour
 
 		NGUITools.DestroyImmediate(mDynamicMat);
 		mDynamicMat = null;
+		if (mRenderer != null)
+			mRenderer.sharedMaterials = new Material[] {};
 	}
 
 	/// <summary>

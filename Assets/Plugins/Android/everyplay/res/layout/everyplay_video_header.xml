@@ -23,8 +23,8 @@
         android:layout_toLeftOf="@+id/installButton"
         android:layout_toRightOf="@+id/userAvatarButton"
         android:maxLines="1"
-        android:text="Video description"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/everyplay_video_description_text" />
 
     <TextView
         android:id="@+id/videoUploaderUsername"
@@ -33,8 +33,8 @@
         android:layout_alignLeft="@+id/videoDescription"
         android:layout_below="@+id/videoDescription"
         android:layout_toLeftOf="@+id/installButton"
-        android:text="By username"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/everyplay_by_username_text" />
 
     <Button
         android:id="@+id/installButton"
@@ -44,7 +44,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/videoDescription"
         android:background="@drawable/everyplay_video_header_install_button"
-        android:text="Install Game"
-        android:textColor="@android:color/white" />
-
+        android:textColor="@android:color/white"
+        android:text="@string/everyplay_install_game_text" />
 </RelativeLayout>

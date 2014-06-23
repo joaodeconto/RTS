@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Text.RegularExpressions;
+using Visiorama;
 
 public class NewAccount : IView
 {
@@ -17,22 +18,29 @@ public class NewAccount : IView
 
 	public GameObject VerifyAccountNameButton;
 	public GameObject CreateAccountButton;
+	public int NumberOfCoinsNewPlayerStartsWith = 500;
 
-	private bool AccountAlreadyExists;
+	public bool AccountAlreadyExists;
+
 
 	public NewAccount Init ()
 	{
+
+		Login login = ComponentGetter.Get<Login>();
+
 		CreateAccountButton
 			.AddComponent<DefaultCallbackButton> ()
 			.Init (null,
 			(ht_dcb) =>
 			{
-				if (AccountAlreadyExists)
-				{
-					wUser.SetActive (true);
-						Invoke ("CloseErrorMessage", 5.0f);
-					Debug.Log("AccountAlreadyExists");//TODO mostrar que conta já existe
-				}
+					if (AccountAlreadyExists)
+					{
+						wUser.SetActive (true);
+							Invoke ("CloseErrorMessage", 5.0f);
+						Debug.Log("AccountAlreadyExists");//TODO mostrar que conta já existe
+
+						return;
+					}
 
 					if (string.IsNullOrEmpty (password.value))
 					{
@@ -62,41 +70,84 @@ public class NewAccount : IView
 						wEmail.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
 						Debug.Log("invalid email");//TODO mostrar que conta já existe
+						return;
+
 					}
 
 					if (AcceptedTerms.value != true)
+
 					{
 						wTerm.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
 						Debug.Log("Must Accept Terms");
-
+						return;
 					}
 
+					else 
+					{
+								
+						Hashtable ht = new Hashtable ();
+						ht["username"]              = username.value;
+						ht["password"]              = password.value;
+						ht["email"]                 = email.value;
 
-				
-				Hashtable ht = new Hashtable ();
-					ht["username"]              = username.value;
-					ht["password"]              = password.value;
-					ht["email"]                 = email.value;
+						DoNewAccount(ht);
 
-				controller.SendMessage ("DoNewAccount", ht, SendMessageOptions.DontRequireReceiver );
+						login.DoLogin(ht);
+
+
+
+					}
 				
 			});
 
-		VerifyAccountNameButton
-			.AddComponent<DefaultCallbackButton> ()
-			.Init (null,
-			(ht_dcb) =>
-			{
-				//TODO fazer verificação
-//				AccountAlreadyExists = (Random.value % 2 == 1) ? true : false;
-
-				if (AccountAlreadyExists)
-					Debug.Log("AccountAlreadyExists");//TODO mostrar que conta já existe
-			});
+//		VerifyAccountNameButton
+//			.AddComponent<DefaultCallbackButton> ()
+//			.Init (null,
+//			(ht_dcb) =>
+//			{
+//							
+//					Debug.Log("AccountAlreadyExists");//TODO mostrar que conta já existe
+//			});
 
 		return this;
 	}
+
+
+	public void DoNewAccount (Hashtable ht)
+	{
+		string username = (string)ht["username"];
+		string password = (string)ht["password"];
+		string idFacebook = "";
+		string email    = (string)ht["email"];
+
+		AccountAlreadyExists = false;
+		
+		PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
+				
+		playerDao.CreatePlayer (username, password, idFacebook, email,
+		                        (player, message) =>
+		                        {
+			if (player == null)
+			{
+				AccountAlreadyExists = true;
+			}
+			else
+			{
+				Debug.Log ("Novo DB.Player");
+				
+				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+				
+				pw.SetPlayer (username, true);
+				pw.SetPropertyOnPlayer ("player", player.ToString ());
+								
+
+				
+
+			}
+		});
+	}
+
 
 
 //	public void ShowErrorMessage ()
@@ -113,4 +164,13 @@ public class NewAccount : IView
 		wEmail.SetActive(false);
 		wTerm.SetActive(false);
 	}
+
+//	public void Index ()
+//	{
+//		HideAllViews ();
+//		
+//		LoginIndex index = GetView <LoginIndex> ("Index");
+//		index.SetActive (true);
+//		index.Init ();
+//	}
 }

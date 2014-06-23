@@ -3,10 +3,6 @@
 // Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
-#if UNITY_FLASH || UNITY_WP8 || UNITY_METRO
-#define USE_SIMPLE_DICTIONARY
-#endif
-
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -136,9 +132,8 @@ public class UIPanel : UIRect
 	[HideInInspector][SerializeField] Vector4 mClipRange = new Vector4(0f, 0f, 300f, 200f);
 	[HideInInspector][SerializeField] Vector2 mClipSoftness = new Vector2(4f, 4f);
 	[HideInInspector][SerializeField] int mDepth = 0;
-#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_1 && !UNITY_4_2
 	[HideInInspector][SerializeField] int mSortingOrder = 0;
-#endif
+
 	// Whether a full rebuild of geometry buffers is required
 	bool mRebuild = false;
 	bool mResized = false;
@@ -158,6 +153,7 @@ public class UIPanel : UIRect
 	Vector2 mMax = Vector2.zero;
 	bool mHalfPixelOffset = false;
 	bool mSortWidgets = false;
+	bool mUpdateScroll = false;
 
 	/// <summary>
 	/// Helper property that returns the first unused depth value.
@@ -227,7 +223,6 @@ public class UIPanel : UIRect
 		}
 	}
 
-#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_1 && !UNITY_4_2
 	/// <summary>
 	/// Sorting order value for the panel's draw calls, to be used with Unity's 2D system.
 	/// </summary>
@@ -250,7 +245,6 @@ public class UIPanel : UIRect
 			}
 		}
 	}
-#endif
 
 	/// <summary>
 	/// Function that can be used to depth-sort panels.
@@ -393,10 +387,8 @@ public class UIPanel : UIRect
 			if (Mathf.Abs(mClipOffset.x - value.x) > 0.001f ||
 				Mathf.Abs(mClipOffset.y - value.y) > 0.001f)
 			{
-				mResized = true;
-				mCullTime = (mCullTime == 0f) ? 0.001f : RealTime.time + 0.15f;
 				mClipOffset = value;
-				mMatrixFrame = -1;
+				InvalidateClipping();
 
 				// Call the event delegate
 				if (onClipMove != null) onClipMove(this);
@@ -404,6 +396,24 @@ public class UIPanel : UIRect
 				if (!Application.isPlaying) UpdateDrawCalls();
 #endif
 			}
+		}
+	}
+
+	/// <summary>
+	/// Invalidate the panel's clipping, calling child panels in turn.
+	/// </summary>
+
+	void InvalidateClipping ()
+	{
+		mResized = true;
+		mMatrixFrame = -1;
+		mCullTime = (mCullTime == 0f) ? 0.001f : RealTime.time + 0.15f;
+
+		for (int i = 0; i < list.size; ++i)
+		{
+			UIPanel p = list[i];
+			if (p != this && p.parentPanel == this)
+				p.InvalidateClipping();
 		}
 	}
 
@@ -653,13 +663,53 @@ public class UIPanel : UIRect
 
 	public override float CalculateFinalAlpha (int frameID)
 	{
+#if UNITY_EDITOR
+		if (mAlphaFrameID != frameID || !Application.isPlaying)
+#else
 		if (mAlphaFrameID != frameID)
+#endif
 		{
 			mAlphaFrameID = frameID;
 			UIRect pt = parent;
 			finalAlpha = (parent != null) ? pt.CalculateFinalAlpha(frameID) * mAlpha : mAlpha;
 		}
 		return finalAlpha;
+	}
+
+	/// <summary>
+	/// Set the panel's rectangle.
+	/// </summary>
+
+	public override void SetRect (float x, float y, float width, float height)
+	{
+		int finalWidth = Mathf.FloorToInt(width + 0.5f);
+		int finalHeight = Mathf.FloorToInt(height + 0.5f);
+
+		finalWidth = ((finalWidth >> 1) << 1);
+		finalHeight = ((finalHeight >> 1) << 1);
+
+		Transform t = cachedTransform;
+		Vector3 pos = t.localPosition;
+		pos.x = Mathf.Floor(x + 0.5f);
+		pos.y = Mathf.Floor(y + 0.5f);
+
+		if (finalWidth < 2) finalWidth = 2;
+		if (finalHeight < 2) finalHeight = 2;
+
+		baseClipRegion = new Vector4(pos.x, pos.y, finalWidth, finalHeight);
+
+		if (isAnchored)
+		{
+			t = t.parent;
+
+			if (leftAnchor.target) leftAnchor.SetHorizontal(t, x);
+			if (rightAnchor.target) rightAnchor.SetHorizontal(t, x + width);
+			if (bottomAnchor.target) bottomAnchor.SetVertical(t, y);
+			if (topAnchor.target) topAnchor.SetVertical(t, y + height);
+#if UNITY_EDITOR
+			NGUITools.SetDirty(this);
+#endif
+		}
 	}
 
 	/// <summary>
@@ -726,17 +776,19 @@ public class UIPanel : UIRect
 
 	public bool IsVisible (UIWidget w)
 	{
-		if ((mClipping == UIDrawCall.Clipping.None || mClipping == UIDrawCall.Clipping.ConstrainButDontClip) && !w.hideIfOffScreen)
-		{
-			if (mParentPanel == null || clipCount == 0) return true;
-		}
-
 		UIPanel p = this;
-		Vector3[] corners = w.worldCorners;
+		Vector3[] corners = null;
 
 		while (p != null)
 		{
-			if (!IsVisible(corners[0], corners[1], corners[2], corners[3])) return false;
+			if ((p.mClipping == UIDrawCall.Clipping.None || p.mClipping == UIDrawCall.Clipping.ConstrainButDontClip) && !w.hideIfOffScreen)
+			{
+				p = p.mParentPanel;
+				continue;
+			}
+
+			if (corners == null) corners = w.worldCorners;
+			if (!p.IsVisible(corners[0], corners[1], corners[2], corners[3])) return false;
 			p = p.mParentPanel;
 		}
 		return true;
@@ -802,12 +854,11 @@ public class UIPanel : UIRect
 	}
 
 	/// <summary>
-	/// Remember the parent panel, if any.
+	/// Find the parent panel, if we have one.
 	/// </summary>
 
-	protected override void OnEnable ()
+	void FindParent ()
 	{
-		base.OnEnable();
 		Transform parent = cachedTransform.parent;
 		mParentPanel = (parent != null) ? NGUITools.FindInParents<UIPanel>(parent.gameObject) : null;
 	}
@@ -819,8 +870,7 @@ public class UIPanel : UIRect
 	public override void ParentHasChanged ()
 	{
 		base.ParentHasChanged();
-		Transform parent = cachedTransform.parent;
-		mParentPanel = (parent != null) ? NGUITools.FindInParents<UIPanel>(parent.gameObject) : null;
+		FindParent();
 	}
 
 	/// <summary>
@@ -835,6 +885,18 @@ public class UIPanel : UIRect
 	}
 
 	/// <summary>
+	/// Reset the frame IDs.
+	/// </summary>
+
+	protected override void OnEnable ()
+	{
+		mRebuild = true;
+		mAlphaFrameID = -1;
+		mMatrixFrame = -1;
+		base.OnEnable();
+	}
+
+	/// <summary>
 	/// Mark all widgets as having been changed so the draw calls get re-created.
 	/// </summary>
 
@@ -845,11 +907,27 @@ public class UIPanel : UIRect
 		// Apparently having a rigidbody helps
 		if (rigidbody == null)
 		{
-			Rigidbody rb = gameObject.AddComponent<Rigidbody>();
-			rb.isKinematic = true;
-			rb.useGravity = false;
+			UICamera uic = (mCam != null) ? mCam.GetComponent<UICamera>() : null;
+
+			if (uic != null)
+			{
+				if (uic.eventType == UICamera.EventType.UI_3D || uic.eventType == UICamera.EventType.World_3D)
+				{
+					Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+					rb.isKinematic = true;
+					rb.useGravity = false;
+				}
+				// It's unclear if this helps 2D physics or not, so leaving it disabled for now.
+				// Note that when enabling this, the 'if (rigidbody == null)' statement above should be adjusted as well.
+				//else
+				//{
+				//    Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
+				//    rb.isKinematic = true;
+				//}
+			}
 		}
 
+		FindParent();
 		mRebuild = true;
 		mAlphaFrameID = -1;
 		mMatrixFrame = -1;
@@ -1029,8 +1107,8 @@ public class UIPanel : UIRect
 		float w = rt - lt;
 		float h = tt - bt;
 
-		float minx = Mathf.Max(20f, mClipSoftness.x);
-		float miny = Mathf.Max(20f, mClipSoftness.y);
+		float minx = Mathf.Max(2f, mClipSoftness.x);
+		float miny = Mathf.Max(2f, mClipSoftness.y);
 
 		if (w < minx) w = minx;
 		if (h < miny) h = miny;
@@ -1047,7 +1125,11 @@ public class UIPanel : UIRect
 
 	void LateUpdate ()
 	{
+#if UNITY_EDITOR
+		if (mUpdateFrame != Time.frameCount || !Application.isPlaying)
+#else
 		if (mUpdateFrame != Time.frameCount)
+#endif
 		{
 			mUpdateFrame = Time.frameCount;
 
@@ -1115,6 +1197,13 @@ public class UIPanel : UIRect
 				}
 				++i;
 			}
+		}
+
+		if (mUpdateScroll)
+		{
+			mUpdateScroll = false;
+			UIScrollView sv = GetComponent<UIScrollView>();
+			if (sv != null) sv.UpdateScrollbars();
 		}
 	}
 
@@ -1313,9 +1402,7 @@ public class UIPanel : UIRect
 			dc.renderQueue = (renderQueue == RenderQueue.Explicit) ? startingRenderQueue : startingRenderQueue + i;
 			dc.alwaysOnScreen = alwaysOnScreen &&
 				(mClipping == UIDrawCall.Clipping.None || mClipping == UIDrawCall.Clipping.ConstrainButDontClip);
-#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_1 && !UNITY_4_2
 			dc.sortingOrder = mSortingOrder;
-#endif
 		}
 	}
 
@@ -1483,6 +1570,8 @@ public class UIPanel : UIRect
 
 	public void AddWidget (UIWidget w)
 	{
+		mUpdateScroll = true;
+
 		if (widgets.size == 0)
 		{
 			widgets.Add(w);
@@ -1671,7 +1760,6 @@ public class UIPanel : UIRect
 	}
 
 #if UNITY_EDITOR
-
 	static int mSizeFrame = -1;
 	static System.Reflection.MethodInfo s_GetSizeOfMainGameView;
 	static Vector2 mGameSize = Vector2.one;
@@ -1684,7 +1772,7 @@ public class UIPanel : UIRect
 	{
 		int frame = Time.frameCount;
 
-		if (mSizeFrame != frame)
+		if (mSizeFrame != frame || !Application.isPlaying)
 		{
 			mSizeFrame = frame;
 
@@ -1754,5 +1842,5 @@ public class UIPanel : UIRect
 			}
 		}
 	}
-#endif
+#endif // UNITY_EDITOR
 }
