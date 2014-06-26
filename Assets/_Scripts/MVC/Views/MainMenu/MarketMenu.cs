@@ -1,11 +1,43 @@
 ﻿using UnityEngine;
 using OnePF;
+using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
 
 public class MarketMenu : MonoBehaviour
 {
+
+
 	private bool wasInitialized = false;
+
+	void Awake()
+	{
+		
+		DefaultCallbackButton defaultCallbackButton;
+		
+		GameObject option = transform.FindChild ("Menu").transform.FindChild ("Button (Facebook)").gameObject;
+		
+		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
+		defaultCallbackButton.Init (null,
+		                            (ht_dcb) =>
+		                            {
+			if (FB.IsLoggedIn)
+			{
+				
+				FB.Feed(
+					link: "https://www.facebook.com/RexTribalS",
+					linkName: "Join Rex Tribal Society!",
+					linkCaption: " 'Hail ya, can you say the word of our salvation? '",
+					linkDescription: " Join RTS, Alpha testing with free gameplay and coins!", 
+					picture: "https://scontent-b-gru.xx.fbcdn.net/hphotos-xpf1/t1.0-9/10462920_334632973356004_6602741597610783962_n.png"
+					
+					
+					);
+			}
+			
+		});
+	}
+
 
 	#if UNITY_ANDROID
 	const string STORE_CUSTOM = "store";
@@ -181,4 +213,10 @@ public class MarketMenu : MonoBehaviour
 		
 	}
 	#endif
+
+
+		
+		
+		
+		
 }
