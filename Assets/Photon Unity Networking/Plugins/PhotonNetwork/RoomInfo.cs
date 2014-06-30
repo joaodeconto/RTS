@@ -45,6 +45,9 @@ public class RoomInfo
     /// <summary>Backing field for property.</summary>
     protected string nameField;
 
+	/// <summary>Backing field for property.</summary>
+	protected string betField;
+
     /// <summary>Read-only "cache" of custom properties of a room. Set via Room.SetCustomProperties (not available for RoomInfo class!).</summary>
     /// <remarks>All keys are string-typed and the values depend on the game/application.</remarks>
     public Hashtable customProperties
@@ -63,6 +66,14 @@ public class RoomInfo
             return this.nameField;
         }
     }
+	/// <summary>The name of a room. Unique identifier (per Loadbalancing group) for a room/match.</summary>
+	public string bet
+	{
+		get
+		{
+			return this.betField;
+		}
+	}
 
     /// <summary>
     /// Only used internally in lobby, to display number of players in room (while you're not in).
@@ -161,7 +172,7 @@ public class RoomInfo
     /// <returns>String showing the RoomInfo.</returns>
     public override string ToString()
     {
-        return string.Format("Room: '{0}' visible: {1} open: {2} max: {3} count: {4}\ncustomProps: {5}", this.nameField, this.visibleField, this.openField, this.maxPlayersField, this.playerCount, this.customPropertiesField.ToStringFull());
+        return string.Format("Room: '{0}' visible: {1} open: {2} max: {3} count: {4}\ncustomProps: {5}", this.betField, this.nameField, this.visibleField, this.openField, this.maxPlayersField, this.playerCount, this.customPropertiesField.ToStringFull());
     }
 
     /// <summary>Copies "well known" properties to fields (isVisible, etc) and caches the custom properties (string-keys only) in a local hashtable.</summary>
