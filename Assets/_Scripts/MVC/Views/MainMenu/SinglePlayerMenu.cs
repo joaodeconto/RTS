@@ -55,7 +55,7 @@ public class SinglePlayerMenu : MonoBehaviour
 		if (playerMode == "2x2")
 		{
 			players = 1;
-			battleMode = "Cooperative";
+			battleMode = "DeathMatch";
 			battleName = "2x2";
 		}
 		
@@ -213,17 +213,17 @@ public class SinglePlayerMenu : MonoBehaviour
 		
 		if (popSelect == "Swamp King")
 		{
-			mapScene = 1;
+			mapScene = 4;
 		}
 		
 		if (popSelect == "Living Desert")
 		{
-			mapScene = 2;
+			mapScene = 5;
 		}
 		
 		if (popSelect == "Dementia Forest")
 		{
-			mapScene = 3;
+			mapScene = 6;
 		}
 	}
 }

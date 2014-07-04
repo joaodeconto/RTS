@@ -373,6 +373,7 @@ public class FactoryBase : IStats, IDeathObservable
 //			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
 //			fowr.range = new Vector2(0, 0);
 //		}
+
 	}
 
 	[RPC]

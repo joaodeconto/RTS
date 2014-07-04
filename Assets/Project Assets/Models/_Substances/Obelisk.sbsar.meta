@@ -3,10 +3,10 @@ guid: 1f037fc4c01cfc0448e2ae042f6f4809
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
-  - serializedVersion: 10
+  - serializedVersion: 12
     name: Obelisk
     prototypeName: Obelisk
-    shaderName: Mobile/Bumped Specular (1 Directional Light)
+    shader: {fileID: 10706, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
@@ -26,6 +26,7 @@ SubstanceImporter:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
+      generateMipmaps: 1
       generateAllOutputs: 0
       animationUpdateRate: 42
     materialProperties:
@@ -79,6 +80,15 @@ SubstanceImporter:
       filterMode: 1
       aniso: 1
       wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 2683271516
+    - shaderProp:
+        name: _BumpMap
+      material: {instanceID: 0}
+      baseUID: 2683271514
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 

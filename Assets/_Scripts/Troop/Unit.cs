@@ -774,8 +774,9 @@ public class Unit : IStats, IMovementObservable,
 		}
 
 		statsController.RemoveStats(this);
-		//ComponentGetter.Get<MiniMapController> ().RemoveUnit (this.transform, this.team);
-		//gameplayManager.DecrementUnit (this.team, this.numberOfUnits);
+
+		ComponentGetter.Get<MiniMapController> ().RemoveUnit (this.transform, this.team);
+		gameplayManager.DecrementUnit (this.team, this.numberOfUnits);
 		
 		//IDeathObservable
 		NotifyDeath ();

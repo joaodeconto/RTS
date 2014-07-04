@@ -75,8 +75,6 @@ public class ActiveGames : MonoBehaviour
 
 				r.name = "Row" + (++counter);
 
-				//room.bet = pw.GetPropertyOnRoom ("bid");
-
 				Transform trns = r.transform;
 
 				trns.parent = rowsContainer;
@@ -86,7 +84,6 @@ public class ActiveGames : MonoBehaviour
 
 				trns.FindChild ("Name").GetComponent<UILabel>().text    = room.name;
 				trns.FindChild ("Players").GetComponent<UILabel>().text = room.playerCount + "/" + room.maxPlayers;
-				trns.FindChild ("Bet").GetComponent<UILabel>().text    = pw.GetPropertyOnRoom ("bid").ToString();
 				trns.FindChild ("Status").GetComponent<UILabel>().text  = isRoomClosed ? "Closed" : "Open";
 
 				//TODO Adicionar Label de Bid, conferir o prefab. 

@@ -45,7 +45,6 @@ GameObject:
   - 124: {fileID: 12400000}
   - 114: {fileID: 11400000}
   - 114: {fileID: 11400002}
-  - 114: {fileID: 11400004}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -114,6 +113,7 @@ Transform:
   m_LocalScale: {x: 48, y: 42, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
+  m_RootOrder: 1
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -125,6 +125,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
+  m_RootOrder: 0
 --- !u!4 &400004
 Transform:
   m_ObjectHideFlags: 1
@@ -141,6 +142,7 @@ Transform:
   - {fileID: 400008}
   - {fileID: 400010}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!4 &400006
 Transform:
   m_ObjectHideFlags: 1
@@ -152,6 +154,7 @@ Transform:
   m_LocalScale: {x: 48, y: 30, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
+  m_RootOrder: 2
 --- !u!4 &400008
 Transform:
   m_ObjectHideFlags: 1
@@ -163,6 +166,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
+  m_RootOrder: 3
 --- !u!4 &400010
 Transform:
   m_ObjectHideFlags: 1
@@ -174,6 +178,7 @@ Transform:
   m_LocalScale: {x: 48, y: 42, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
+  m_RootOrder: 4
 --- !u!20 &2000000
 Camera:
   m_ObjectHideFlags: 1
@@ -201,8 +206,11 @@ Camera:
     m_Bits: 4096
   m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
   m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!20 &2000002
 Camera:
   m_ObjectHideFlags: 1
@@ -230,8 +238,11 @@ Camera:
     m_Bits: 4294962431
   m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
   m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!20 &2000004
 Camera:
   m_ObjectHideFlags: 1
@@ -259,8 +270,11 @@ Camera:
     m_Bits: 16384
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
   m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -279,9 +293,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
   m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!23 &2300002
 Renderer:
   m_ObjectHideFlags: 1
@@ -300,9 +313,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
   m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!33 &3300000
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -363,31 +375,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scenario:
     x:
-      min: 50
-      max: 210
+      min: 46.7000008
+      max: 89.8000031
     y:
-      min: 0
-      max: 30
+      min: 10
+      max: 60
     z:
-      min: -14
-      max: 190
-  height: 40
+      min: -37.2000008
+      max: 42
+  height: 60
   relativeSize: 15
---- !u!114 &11400004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c0d02b39c7ba8449a6d3fc9e2d72c8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: e2d2b5a643c600d49b42ee8d15a57e5a, type: 3}
-  shaderMobile: {fileID: 0}
-  unexploredColor: {r: .0500000007, g: .0500000007, b: .0500000007, a: 1}
-  exploredColor: {r: .200000003, g: .200000003, b: .200000003, a: 1}
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1

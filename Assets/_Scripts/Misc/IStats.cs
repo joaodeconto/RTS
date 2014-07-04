@@ -240,13 +240,20 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	//IHealthObserver
 	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
 
+	private bool wasInitialized = false;
+
 	void Awake ()
 	{
 		Init ();
 	}
 
 	public virtual void Init ()
-	{		
+	{
+		if (wasInitialized)
+			return;
+
+		wasInitialized = true;
+
 		statsController = ComponentGetter.Get<StatsController> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
