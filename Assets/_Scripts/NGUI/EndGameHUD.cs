@@ -61,11 +61,11 @@ public class EndGameHUD : MonoBehaviour {
 			{
 
 			FB.Feed(
-					link: "https://www.facebook.com/RexTribalS",
+					link: "https://play.google.com/store/apps/details?id=com.Visiorama.RTS",
 					linkName: "Victory!",
 					linkCaption: " 'Almighty leader, the enemy was defeated!'",
 					linkDescription: " 'Let us prepare the ritual, gather the gold for the blessing of the gods!..'", 
-					picture: "https://www.facebook.com/photo.php?fbid=181734578645845&set=pb.181504285335541.-2207520000.1400530680.&type=3&theater"
+					picture: "http://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png"
 		
 				
 				);

@@ -18,6 +18,8 @@ public class NewAccount : IView
 
 	public GameObject VerifyAccountNameButton;
 	public GameObject CreateAccountButton;
+	public GameObject AvatarButton;
+	public GameObject AvatarMenu;
 	public int NumberOfCoinsNewPlayerStartsWith = 500;
 
 	public bool AccountAlreadyExists;
@@ -27,6 +29,19 @@ public class NewAccount : IView
 	{
 
 		Login login = ComponentGetter.Get<Login>();
+
+		AvatarButton
+			.AddComponent<DefaultCallbackButton> ()
+				.Init (null,
+				       (ht_dcb) =>
+				       {
+					AvatarMenu.SetActive (true);
+
+				}
+				
+				);
+	
+
 
 		CreateAccountButton
 			.AddComponent<DefaultCallbackButton> ()

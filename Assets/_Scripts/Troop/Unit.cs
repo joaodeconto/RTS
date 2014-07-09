@@ -427,7 +427,7 @@ public class Unit : IStats, IMovementObservable,
 
 		ht["observableHealth"] = this;
 		
-		hudController.CreateSubstanceHealthBar (this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
+		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		hudController.CreateEnqueuedButtonInInspector ( this.name,
 														Unit.UnitGroupQueueName,
@@ -517,14 +517,19 @@ public class Unit : IStats, IMovementObservable,
 
 	public override void Deselect ()
 	{
+		if (statsController.selectedStats.Count == 1) 
+		{
+			hudController.DestroyOptionsBtns ();
+		}
+
 		base.Deselect ();
-		
+
 		int c = IDOobservers.Count;
 		while (--c != -1)
 		{
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
-		
+
 		hudController.DestroySelected (transform);
 	}
 
@@ -788,10 +793,8 @@ public class Unit : IStats, IMovementObservable,
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
 		
-
-
-
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
+
 
 		if (Selected)
 		{

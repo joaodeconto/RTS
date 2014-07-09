@@ -11,12 +11,14 @@ public class LoginIndex : IView
 	public GameObject FacebookButton;
 	public GameObject SubmitButton;
 	public GameObject NewAccountButton;
-	
+		
 	private FacebookLoginHandler fh;
 
 	// Use this for initialization
 	public void Init ()
 	{
+		LoadRePrefs();
+
 		errorMessage.enabled = false;
 		
 		FacebookButton
@@ -69,7 +71,7 @@ public class LoginIndex : IView
 	public bool Yupy ()
 	{
 		errorMessage.enabled = true;
-		errorMessage.text = "Fez login no facebook!";
+		errorMessage.text = "Facebook Authorized";
 		Invoke ("CloseErrorMessage", 5.0f);
 		return true;
 	}
@@ -84,5 +86,11 @@ public class LoginIndex : IView
 	private void CloseErrorMessage ()
 	{
 		errorMessage.enabled = false;
+	}
+
+	public void LoadRePrefs ()
+	{
+		username.value = PlayerPrefs.GetString("ReUser");
+		password.value = PlayerPrefs.GetString("RePassword");
 	}
 }

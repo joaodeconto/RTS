@@ -25,11 +25,11 @@ public class MarketMenu : MonoBehaviour
 			{
 				
 				FB.Feed(
-					link: "https://www.facebook.com/RexTribalS",
+					link: "https://play.google.com/store/apps/details?id=com.Visiorama.RTS",
 					linkName: "Join Rex Tribal Society!",
-					linkCaption: " 'Hail ya, can you say the word of our salvation? '",
+					linkCaption: " 'Gruuuarhhh!!!, can you SAY the word of our salvation? '",
 					linkDescription: " Join RTS, Alpha testing with free gameplay and coins!", 
-					picture: "https://scontent-b-gru.xx.fbcdn.net/hphotos-xpf1/t1.0-9/10462920_334632973356004_6602741597610783962_n.png"
+					picture: "http://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png"
 					
 					
 					);

@@ -6,6 +6,7 @@ using Visiorama;
 public class Login : IController
 {
 	public bool UseRealLogin = true;
+	public UIToggle rememberUser;
 	
 	public void Start ()
 	{
@@ -81,9 +82,22 @@ public class Login : IController
 				}
 				else
 				{
+					if ( rememberUser.value == true)
+					{
+						PlayerPrefs.SetString("ReUser", username);
+						PlayerPrefs.SetString("RePassword", password);
+					}
+
+					else
+					{
+						PlayerPrefs.SetString("ReUser", null);
+						PlayerPrefs.SetString("RePassword", null);
+
+					}
+
 					pw.SetPlayer (username, true);
 					pw.SetPropertyOnPlayer ("player", player.ToString ());
-					
+							
 					EnterInternalMainMenu (username);
 				}
 			});
@@ -162,7 +176,7 @@ public class Login : IController
 		
 		if (!PlayerPrefs.HasKey("GraphicQuality"))
 		{
-			QualitySettings.SetQualityLevel(2);
+			QualitySettings.SetQualityLevel(3);
 		}
 		
 		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));
@@ -170,6 +184,6 @@ public class Login : IController
 		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));
 		
 		QualitySettings.SetQualityLevel (PlayerPrefs.GetInt("GraphicQuality"));
-		
+
 	}
 }

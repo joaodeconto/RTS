@@ -275,14 +275,14 @@ public class StatsController : MonoBehaviour
 			selectedStats.Remove (stat);
 		}
 		
-		if (stat.GetType() == typeof(Unit))
-		{
-			Unit unit = stat as Unit;
-			
-			ComponentGetter.Get<MiniMapController> ().RemoveUnit (unit.transform, unit.team);
-			gameplayManager.DecrementUnit (unit.team, unit.numberOfUnits);
-			
-		}
+//		if (stat.GetType() == typeof(Unit))
+//		{
+//			Unit unit = stat as Unit;
+//			
+//			ComponentGetter.Get<MiniMapController> ().RemoveUnit (unit.transform, unit.team);
+//			gameplayManager.DecrementUnit (unit.team, unit.numberOfUnits);
+//			
+//		}
 		else
 		{
 			ComponentGetter.Get<MiniMapController> ().RemoveStructure (stat.transform, stat.team);
@@ -395,6 +395,7 @@ public class StatsController : MonoBehaviour
 		}
 		
 		hudController.DestroyInspector ("all");
+		hudController.DestroyOptionsBtns();
 
 		selectedStats.Clear ();
 		
@@ -687,8 +688,7 @@ public class StatsController : MonoBehaviour
 
 	void CheckWorkersInIdle()
 	{
-		HUDController hud = ComponentGetter.Get<HUDController>();
-		
+				
 		idleWorkers.Clear ();
 		
 		foreach (IStats stat in myStats)
@@ -722,7 +722,7 @@ public class StatsController : MonoBehaviour
 
 		if(idleWorkers.Count == 0)
 		{
-			hud.RemoveButtonInInspector (buttonIdleWorkersName, idleWorkerButtonParent);
+			hudController.RemoveButtonInInspector (buttonIdleWorkersName, idleWorkerButtonParent);
 		}
 		else
 		{
@@ -737,7 +737,7 @@ public class StatsController : MonoBehaviour
 				ht["parent"] = idleWorkerButtonParent;
 			}
 
-			hud.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
+			hudController.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
 												idleButtonPosition,
 												ht,
 												idleWorkers[0].guiTextureName,

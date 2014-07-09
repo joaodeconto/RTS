@@ -1,10 +1,29 @@
 using UnityEngine;
 using System.Collections;
 
-public class ExitGame : MonoBehaviour {
-	
-	void Awake ()
+public class ExitGame : MonoBehaviour 
 	{
+
+
+	private bool wasInitialized = false;
+
+	public void OnEnable ()
+	{
+		Open ();
+	}
+	
+	public void OnDisable ()
+	{
+		Close ();
+	}
+	
+	public void Open ()
+	{
+		if (wasInitialized)
+			return;
+		
+		wasInitialized = true;
+
 		DefaultCallbackButton dcb;
 		
 		Transform yes = transform.FindChild ("Yes");
@@ -37,5 +56,10 @@ public class ExitGame : MonoBehaviour {
 		}
 		
 		gameObject.SetActive (false);
+	}
+
+	public void Close ()
+	{
+		
 	}
 }

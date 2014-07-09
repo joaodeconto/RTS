@@ -192,7 +192,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		return healthBar;
 	}
 
-	public SubstanceResourceBar  CreateSubstanceResourceBar (IStats target, float size, float maxResource)
+	public SubstanceResourceBar CreateSubstanceResourceBar (IStats target, float size, float maxResource)
 	{
 		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
@@ -233,11 +233,12 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		
 		selectObj.transform.parent = mainTranformSelectedObjects;
 		
-		SubstanceHealthBar healthBar = selectObj.GetComponent<SubstanceHealthBar> ();
+		SubstanceHealthBar subHealthBar = selectObj.GetComponent<SubstanceHealthBar> ();
 		
-		healthBar.SetTarget (target, target.team);
-		
-		return healthBar;
+		subHealthBar.SetTarget (target, target.team);
+
+				
+		return subHealthBar;
 	}
 
 	public void CreateSelected (Transform target, float size, Color color)
@@ -326,13 +327,13 @@ public class HUDController : MonoBehaviour, IDeathObserver
 				}
 			}
 			
-			if (child.GetComponent<SubstanceHealthBar>())
-			{
-				if (child.GetComponent<SubstanceHealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
-				{
-					Destroy (child.gameObject);
-				}
-			}
+//			if (child.GetComponent<SubstanceHealthBar>())
+//			{
+//				if (child.GetComponent<SubstanceHealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+//				{
+//					Destroy (child.gameObject);
+//				}
+//			}
 		}
 	}
 
@@ -494,15 +495,23 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		}
 	}
 
+	public void DestroyOptionsBtns ()
+
+	{
+		IsDestroying = true;
+
+		foreach (Transform child in trnsOptionsMenu)
+		{
+				Destroy (child.gameObject);
+		}
+
+
+	}
+
 	public void DestroyInspector (string type)
 	{
 		IsDestroying = true;
-		foreach (Transform child in trnsOptionsMenu)
-		{
-			if (!child.gameObject.name.Contains(PERSIST_STRING))
-				Destroy (child.gameObject);
-		}
-		
+
 		if (type.ToLower ().Equals ("factory"))
 			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
 		else if (type.ToLower ().Equals ("unit"))

@@ -84,7 +84,7 @@ public class SubstanceResourceBar : MonoBehaviour
 			{
 
 				Color resourceColor = Color.yellow;
-				resourceColor.a = 1f;
+				resourceColor.a = 0.5f;
 				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
 					substance.SetProceduralColor(curProperty.name, resourceColor);
 			}

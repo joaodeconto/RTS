@@ -276,10 +276,11 @@ public class FactoryBase : IStats, IDeathObservable
 	        GameObject u = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
 			newUnit = u.GetComponent<Unit> ();
 		}
-		
-		newUnit.SetTeam (gameplayManager.MyTeam, gameplayManager.Allies);
+
+		Debug.Log(newUnit.team + " " + " " + gameplayManager.MyTeam);
+
 		newUnit.Init ();
-		
+	
 
 		RallyPoint rallypoint = goRallypoint.GetComponent<RallyPoint> ();
 
@@ -301,6 +302,7 @@ public class FactoryBase : IStats, IDeathObservable
 		if (Selected)
 		{
 			hudController.DestroyInspector ("factory");
+			hudController.DestroyOptionsBtns();
 
 			Deselect ();
 		}
@@ -480,8 +482,8 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		base.Select ();
 		
-		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar*0.7f, timer);
-		hudController.CreateSubstanceHealthBar (this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
+		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, timer);
+		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		
 		if(unitToCreate != null)
@@ -737,7 +739,7 @@ public class FactoryBase : IStats, IDeathObservable
 			o.OnObservableDie (this.gameObject);
 		}
 	}
-	////
+	
 	#endregion
 
 	// RPCs

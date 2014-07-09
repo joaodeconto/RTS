@@ -86,6 +86,6 @@ public class AvatarMenu : MonoBehaviour
 	
 	public void Close ()
 	{
-		
+		this.gameObject.SetActive(false);
 	}
 }

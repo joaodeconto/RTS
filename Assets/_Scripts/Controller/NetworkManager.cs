@@ -44,10 +44,10 @@ public class NetworkManager : Photon.MonoBehaviour {
     {
         Debug.Log("OnPlayerDisconnected: " + player);
 		
-        if (PhotonNetwork.connected)
-        {
-            photonView.RPC("SendChatMessage", PhotonNetwork.player, "Player Disconnected: " + player.name);
-        }
+//        if (PhotonNetwork.connected)
+//        {
+//            photonView.RPC("SendChatMessage", PhotonNetwork.player, "Player Disconnected: " + player.name);
+//        }
 		
 		GameplayManager gameplayManager = Visiorama.ComponentGetter.Get<GameplayManager> ();
 		if (GameplayManager.mode == GameplayManager.Mode.Cooperative)

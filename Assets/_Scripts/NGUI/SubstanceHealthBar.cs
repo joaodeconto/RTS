@@ -30,8 +30,6 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		substance 	  = mMaterial;
 		curProperties = substance.GetProceduralPropertyDescriptions();
 		
-		//Começando sem vida, dae depois altera pro valor correto
-//		UpdateHealth (0);
 	}
 	
 	void OnDestroy ()
@@ -65,7 +63,7 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 	{		
 		if (Target == null)
 		{
-//			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
+			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
 		}
 		
 		//so mostra o submesh da substance healthbar se tiver vida, se nao nao
@@ -73,16 +71,16 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		
 		if (subMeshRenderer.enabled)
 		{
-			float percentHealth = (float)currentHealth / (float)Target.MaxHealth;
+			float percentHealth = (float)currentHealth * (3.14f/(float)Target.MaxHealth);
 	
-			//Monkey patch: Min = 0.5 Max = 1.0
-			percentHealth = 0.5f + percentHealth * 0.5f;
+			//Monkey patch: Min = -3.14f Max = 0f
+//			percentHealth = 0.5f + percentHealth * 0.5f;
 	
 			foreach (ProceduralPropertyDescription curProperty in curProperties)
 			{
 				if (curProperty.type == ProceduralPropertyType.Float)
 				{
-					substance.SetProceduralFloat(curProperty.name, percentHealth);
+					substance.SetProceduralFloat(curProperty.name, (percentHealth-3.14f));
 				}
 				else
 				{
@@ -92,9 +90,12 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 						substance.SetProceduralColor(curProperty.name, teamColor);
 				}
 			}
-			substance.RebuildTextures ();
+
 		}
+
+		substance.RebuildTextures ();
 	}
+
 	
 #endregion
 }

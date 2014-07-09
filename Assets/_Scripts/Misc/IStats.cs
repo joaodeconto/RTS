@@ -240,7 +240,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	//IHealthObserver
 	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
 
-	private bool wasInitialized = false;
+	public bool wasInitialized = false;
 
 	void Awake ()
 	{
@@ -288,7 +288,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		
 		WasRemoved = false;
 
-		//NotifyHealthChange ();
+//		NotifyHealthChange ();
 
 		statsController.AddStats (this);
 
