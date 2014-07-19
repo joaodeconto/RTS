@@ -2,15 +2,28 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using System.Reflection;
 using System.Linq;
+using antilunchbox;
 
-public partial class SoundManagerEditor : Editor {
+[CustomEditor(typeof(SoundPocket))]
+public class SoundPocketEditor : Editor {
+	private SoundPocket script;
+	
 	#region editor variables
 	private AudioClip editAddSFX;
-	private string groupToAdd = "";
 	private Dictionary<int, List<int>> clipsByGroup = new Dictionary<int, List<int>>();
-	private bool debugDict = false;
+	
+	private Color softGreen = new Color(.67f,.89f,.67f,1f);
 	#endregion
+	
+	private void OnEnable()
+	{
+		script = target as SoundPocket;
+		
+		InitSFX();
+	}
 	
 	private void InitSFX()
 	{
@@ -47,18 +60,20 @@ public partial class SoundManagerEditor : Editor {
 			script.sfxVolumeVariations.Add(0f);
 		while(script.sfxPrePoolAmounts.Count > script.sfxPitchVariations.Count)
 			script.sfxPitchVariations.Add(0f);
-		QueryDict("InitSFX");
 	}
 	
-	private void ShowSoundFX()
+	public override void OnInspectorGUI()
 	{
-		ShowSoundFXGroupsTitle();
-		
-		ShowSoundFXGroupsList();
-		
+		EditorGUILayout.Space();
+		ShowPocketName();
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
-		
+		ShowPocketType();
+		EditorGUILayout.Space();
+		EditorGUILayout.Space();
+		ShowSFXGroupNames();
+		EditorGUILayout.Space();
+		EditorGUILayout.Space();
 		ShowSoundFXTitle();
 		
 		ShowSoundFXList();
@@ -68,155 +83,79 @@ public partial class SoundManagerEditor : Editor {
 		ShowAddSoundFX();
 	}
 	
+	private void ShowPocketName()
+	{
+		EditorGUILayout.LabelField(new GUIContent("Pocket Name", "Name of the SoundPocket. If a SoundPocket already exists on the SoundManager, it will not be readded."), EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+		
+		string pocketName = script.pocketName;
+		pocketName = EditorGUILayout.TextField(pocketName);
+		if(pocketName != script.pocketName)
+		{
+			SoundManagerEditorTools.RegisterObjectChange("Change Pocket Name", script);
+			script.pocketName = pocketName;
+			EditorUtility.SetDirty(script);
+		}
+	}
+	
+	private void ShowPocketType()
+	{
+		EditorGUILayout.LabelField(new GUIContent("Pocket Type", "Determines how this pocket will be added to the SoundManager once the SoundPocket is loaded. If additive, these SFX will be added to the SoundManager. If subtractive, the SFX currently on the SoundManager will be removed before these are added."), EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+		
+		SoundPocketType pocketType = script.pocketType;
+		pocketType = (SoundPocketType)EditorGUILayout.EnumPopup(pocketType);
+		if(pocketType != script.pocketType)
+		{
+			SoundManagerEditorTools.RegisterObjectChange("Change Pocket Type", script);
+			script.pocketType = pocketType;
+			EditorUtility.SetDirty(script);
+		}
+	}
+	
+	private void ShowSFXGroupNames()
+	{
+		EditorGUILayout.LabelField(new GUIContent("SFXGroup Names", "These are possible group names for SFXs to be applied to. If the group exists on the SoundManager, it'll be added to that group. Otherwise, a new group will be created."), EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+		
+		for(int i = 0; i < script.sfxGroups.Count; i++)
+		{
+			string grpName = script.sfxGroups[i];
+			grpName = EditorGUILayout.TextField(grpName);
+			if(grpName != script.sfxGroups[i])
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Change Pocket Group Name", script);
+				script.sfxGroups[i] = grpName;
+				EditorUtility.SetDirty(script);
+			}
+		}
+		EditorGUILayout.BeginHorizontal();
+		{
+			if(GUILayout.Button("+"))
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Add Pocket Group Name", script);
+				script.sfxGroups.Add("");
+				EditorUtility.SetDirty(script);
+			}
+			if(script.sfxGroups.Count <= 0)
+				GUI.enabled = false;
+			if(GUILayout.Button("-"))
+			{
+				SoundManagerEditorTools.RegisterObjectChange("Remove Pocket Group Name", script);
+				script.sfxGroups.RemoveAt(script.sfxGroups.Count-1);
+				EditorUtility.SetDirty(script);
+			}
+			GUI.enabled = true;
+		}
+		EditorGUILayout.EndHorizontal();
+	}
+	
 	string[] toolbarStrings = new string[]{"Sort By Time Added", "Sort By Group"};
 	private void ShowSoundFXTitle()
 	{
 		int toolbarInt = script.showAsGrouped ? 1 : 0;
-		EditorGUILayout.LabelField(new GUIContent("Stored SFX", "These are SFX saved on the SoundManager. Each SFX has its own set of attributes that you can access by opening their drop downs. At the bottom, you can automatically set these attributes as you add SFX in the 'auto' section."), EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+		EditorGUILayout.LabelField(new GUIContent("Pocket SFX", "These are SFX saved in this pocket. Each SFX has its own set of attributes that you can access by opening their drop downs. At the bottom, you can automatically set these attributes as you add SFX in the 'auto' section."), EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
 		toolbarInt = GUILayout.Toolbar (toolbarInt, toolbarStrings, EditorStyles.toolbarButton, GUILayout.ExpandWidth(true));
 		script.showAsGrouped = (toolbarInt == 0) ? false : true;
 	}
-	
-	private void ShowSoundFXGroupsTitle()
-	{
-		EditorGUILayout.LabelField(new GUIContent("SFX Groups", "SFX Groups let you randomly load a clip from them and they can have their own personalized SFX Cap Amount for capped sounds. Click the '?' to know more."), EditorStyles.boldLabel);
-	}
 
-	private void ShowSoundFXGroupsList()
-	{
-		EditorGUILayout.BeginVertical();
-		{
-			EditorGUI.indentLevel++;
-			if(script.helpOn)
-				EditorGUILayout.HelpBox("SFX Groups are used to:\n1. Access random clips in a set.\n2. Apply specific cap amounts to clips when using SoundManager.PlayCappedSFX." +
-					"\n\n-Setting the cap amount to -1 will make a group use the default SFX Cap Amount\n\n-Setting the cap amount to 0 will make a group not use a cap at all.",MessageType.Info);
-			EditorGUILayout.BeginHorizontal();
-			{
-				EditorGUILayout.LabelField("Group Name:", GUILayout.ExpandWidth(true));
-				EditorGUILayout.LabelField("Cap:", GUILayout.Width(40f));
-				bool helpOn = script.helpOn;
-				helpOn = GUILayout.Toggle(helpOn, "?", GUI.skin.button, GUILayout.Width(35f));
-				if(helpOn != script.helpOn)
-				{
-					SoundManagerEditorTools.RegisterObjectChange("Change SFXGroup Help", script);
-					script.helpOn = helpOn;
-					EditorUtility.SetDirty(script);
-				}
-			}
-			EditorGUILayout.EndHorizontal();
-			
-			EditorGUILayout.BeginHorizontal();
-			{
-				EditorGUILayout.LabelField("", GUILayout.Width(10f));
-				GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
-			}
-			EditorGUILayout.EndHorizontal();
-			
-			for(int i = 0 ; i < script.sfxGroups.Count; i++)
-			{
-				EditorGUILayout.BeginHorizontal();
-				{
-					SFXGroup grp = script.sfxGroups[i];
-					
-					if(grp != null)
-					{					
-						EditorGUILayout.LabelField(grp.groupName, GUILayout.ExpandWidth(true));
-						int specificCapAmount = grp.specificCapAmount;
-						bool isAuto = false, isNo = false;
-						
-						if(specificCapAmount == -1)
-							isAuto = true;
-						else if(specificCapAmount == 0)
-							isNo = true;
-						
-						bool newAuto = GUILayout.Toggle(isAuto, "Auto Cap", GUI.skin.button, GUILayout.ExpandWidth(false));
-						bool newNo = GUILayout.Toggle(isNo, "No Cap", GUI.skin.button, GUILayout.ExpandWidth(false));
-						
-						if(newAuto != isAuto && newAuto)
-						{
-							specificCapAmount = -1;
-						}
-						if(newNo != isNo && newNo)
-						{
-							specificCapAmount = 0;
-						}
-						
-						specificCapAmount = EditorGUILayout.IntField(specificCapAmount, GUILayout.Width(40f));
-						if(specificCapAmount < -1) specificCapAmount = -1;
-						
-						if(specificCapAmount != grp.specificCapAmount)
-						{
-							SoundManagerEditorTools.RegisterObjectChange("Change Group Cap", script);
-							grp.specificCapAmount = specificCapAmount;
-							EditorUtility.SetDirty(script);
-						}
-
-						EditorGUILayout.LabelField("", GUILayout.Width(10f));
-						GUI.color = Color.red;
-						if(GUILayout.Button("X", GUILayout.Width(20f)))
-						{
-							RemoveGroup(i);
-							return;
-						}
-						GUI.color = Color.white;
-					}
-				}
-				EditorGUILayout.EndHorizontal();				
-			}
-			ShowAddGroup();
-			EditorGUI.indentLevel--;
-			EditorGUILayout.Space();
-		}
-		EditorGUILayout.EndVertical();
-	}
-	
-	private void ShowAddGroup()
-	{
-		EditorGUI.indentLevel += 2;
-		EditorGUILayout.BeginHorizontal();
-		{
-			EditorGUILayout.LabelField("Add a Group:");
-			groupToAdd = EditorGUILayout.TextField(groupToAdd, GUILayout.ExpandWidth(true));
-			GUI.color = softGreen;
-			if(GUILayout.Button("add", GUILayout.Width(40f)))
-			{
-				AddGroup(groupToAdd, -1);
-				groupToAdd = "";
-				GUIUtility.keyboardControl = 0;
-			}
-			GUI.color = Color.white;
-		}
-		EditorGUILayout.EndHorizontal();
-		EditorGUI.indentLevel -= 2;
-	}
-	
-	private void QueryDict(string comingfrom)
-	{
-		if(!debugDict) return;
-		string result = comingfrom + "\n";
-		
-		for(int i = 0; i < clipsByGroup.Count; i++)
-		{
-			KeyValuePair<int, List<int>> pair = clipsByGroup.ElementAt(i);
-			result += pair.Key + ":";
-			if(script.sfxGroups.Count > pair.Key)
-				result += script.sfxGroups[pair.Key].groupName;
-			else
-				result += "ERR";
-			result += "\n";
-			for(int j = 0; j < pair.Value.Count; j++)
-			{
-				result += "    ";
-				result += pair.Value[j] + ":";
-				if(script.storedSFXs.Count > pair.Value[j])
-					result += script.storedSFXs[pair.Value[j]].name + "\n";
-				else
-					result += "ERR";
-			}
-		}
-		Debug.Log(result);
-	}
-	
 	private void ShowSoundFXList()
 	{
 		var expand = '\u2261'.ToString();
@@ -228,9 +167,9 @@ public partial class SoundManagerEditor : Editor {
 			if(!script.showAsGrouped)
 			{
 				EditorGUI.indentLevel++;
-				for(int i = 0 ; i < script.storedSFXs.Count ; i++)
+				for(int i = 0 ; i < script.pocketClips.Count ; i++)
 				{
-					if(i < script.storedSFXs.Count && script.storedSFXs[i] != null)
+					if(i < script.pocketClips.Count && script.pocketClips[i] != null)
 						ShowIndividualSFXAtIndex(i, groups, expandContent);
 					else
 						RemoveSFX(i);
@@ -245,16 +184,16 @@ public partial class SoundManagerEditor : Editor {
 				for(int j = 0; j < clipsByGroup.Count; j++)
 				{
 					KeyValuePair<int, List<int>> pair = clipsByGroup.ElementAt(j);
-					if(pair.Key >= script.sfxGroups.Count || script.sfxGroups[pair.Key] == null)
+					if(pair.Key >= script.sfxGroups.Count || string.IsNullOrEmpty(script.sfxGroups[pair.Key]))
 						continue;
-					EditorGUILayout.LabelField(script.sfxGroups[pair.Key].groupName + ":");
+					EditorGUILayout.LabelField(script.sfxGroups[pair.Key] + ":");
 					EditorGUI.indentLevel+=2;
 					
 					{
 						for(int i = 0; i < pair.Value.Count; i++)
 						{
 							int index = pair.Value[i];
-							if(index >= 0 && index < script.storedSFXs.Count && script.storedSFXs[index] != null)
+							if(index >= 0 && index < script.pocketClips.Count && script.pocketClips[index] != null)
 								ShowIndividualSFXAtIndex(index, groups, expandContent);
 							else
 								RemoveSFX(index);
@@ -264,12 +203,12 @@ public partial class SoundManagerEditor : Editor {
 				}
 				
 				EditorGUILayout.LabelField("Not Grouped:");
-				for(int i = 0; i < script.storedSFXs.Count; i++)
+				for(int i = 0; i < script.pocketClips.Count; i++)
 				{
 					EditorGUI.indentLevel+=2;
-					if(i < script.storedSFXs.Count && script.storedSFXs[i] != null && !script.clipToGroupKeys.Contains(script.storedSFXs[i].name))
+					if(i < script.pocketClips.Count && script.pocketClips[i] != null && !script.clipToGroupKeys.Contains(script.pocketClips[i].name))
 						ShowIndividualSFXAtIndex(i, groups, expandContent);
-					else if (script.storedSFXs[i] == null)
+					else if (script.pocketClips[i] == null)
 						RemoveSFX(i);
 					EditorGUI.indentLevel-=2;
 				}
@@ -282,8 +221,8 @@ public partial class SoundManagerEditor : Editor {
 	
 	private void ShowIndividualSFXAtIndex(int i, string[] groups, GUIContent expandContent)
 	{
-		if(i >= script.storedSFXs.Count) return;
-		AudioClip obj = script.storedSFXs[i];
+		if(i >= script.pocketClips.Count) return;
+		AudioClip obj = script.pocketClips[i];
 		if(obj != null)
 		{
 			EditorGUILayout.BeginHorizontal();
@@ -324,7 +263,16 @@ public partial class SoundManagerEditor : Editor {
 				string clipName = obj.name;
 				int oldIndex = IndexOfKey(clipName);
 				if(oldIndex >= 0) // if in a group, find index
+				{
+					int clipIndex = oldIndex;
 					oldIndex = IndexOfGroup(script.clipToGroupValues[oldIndex]);
+					if(oldIndex < 0) // if group no longer exists as it was, set it to none
+					{
+						oldIndex = 0;
+						script.clipToGroupKeys.RemoveAt(clipIndex);
+						script.clipToGroupValues.RemoveAt(clipIndex);
+					}
+				}
 				if(oldIndex < 0) // if not in a group, set it to none
 					oldIndex = 0;
 				else //if in a group, add 1 to index to cover for None group type
@@ -495,7 +443,7 @@ public partial class SoundManagerEditor : Editor {
 		if(clip == null) 
 			return;
 		SoundManagerEditorTools.RegisterObjectChange("Add SFX", script);
-		script.storedSFXs.Add(clip);
+		script.pocketClips.Add(clip);
 		script.sfxPrePoolAmounts.Add(prepoolAmount);
 		script.sfxBaseVolumes.Add(baseVolume);
 		script.sfxVolumeVariations.Add(volumeVariation);
@@ -509,16 +457,15 @@ public partial class SoundManagerEditor : Editor {
 		
 			SceneView.RepaintAll();
 		}
-		QueryDict("AddSFX");
 	}
 	
 	private void RemoveSFX(int index)
 	{
 		SoundManagerEditorTools.RegisterObjectChange("Remove SFX", script);
 		string clipName = "";
-		if(script.storedSFXs[index] != null)
-			clipName = script.storedSFXs[index].name;
-		script.storedSFXs.RemoveAt(index);
+		if(script.pocketClips[index] != null)
+			clipName = script.pocketClips[index].name;
+		script.pocketClips.RemoveAt(index);
 		script.sfxPrePoolAmounts.RemoveAt(index);
 		script.sfxBaseVolumes.RemoveAt(index);
 		script.sfxVolumeVariations.RemoveAt(index);
@@ -537,7 +484,6 @@ public partial class SoundManagerEditor : Editor {
 		EditorUtility.SetDirty(script);
 		
 		SceneView.RepaintAll();
-		QueryDict("RemoveSFX");
 	}
 	
 	private void RemoveTracesOfIndex(int index)
@@ -547,7 +493,7 @@ public partial class SoundManagerEditor : Editor {
 		{
 			if(pair.Value.Contains(index))
 			{
-				groupName = script.sfxGroups[pair.Key].groupName;
+				groupName = script.sfxGroups[pair.Key];
 				pair.Value.Remove(index);
 				break;
 			}
@@ -568,53 +514,12 @@ public partial class SoundManagerEditor : Editor {
 		}
 	}
 	
-	private void AddGroup(string groupName, int capAmount)
-	{
-		if(AlreadyContainsGroup(groupName))
-			return;
-		
-		SoundManagerEditorTools.RegisterObjectChange("Add Group", script);
-		script.sfxGroups.Add(new SFXGroup(groupName, capAmount));
-		if(!clipsByGroup.ContainsKey(script.sfxGroups.Count-1))
-		{
-			clipsByGroup.Add(script.sfxGroups.Count-1, new List<int>());
-		}
-
-		EditorUtility.SetDirty(script);
-		
-		SceneView.RepaintAll();
-		QueryDict("AddGroup");
-	}
-	
-	private void RemoveGroup(int index)
-	{
-		SoundManagerEditorTools.RegisterObjectChange("Remove Group", script);
-		string groupName = script.sfxGroups[index].groupName;
-		RemoveAllInGroup(groupName);
-		script.sfxGroups.RemoveAt(index);
-		if(clipsByGroup.ContainsKey(index))
-			clipsByGroup.Remove(index);
-		InitSFX();
-		EditorUtility.SetDirty(script);
-		SceneView.RepaintAll();
-		QueryDict("RemoveGroup");
-	}
-	
-	private void RemoveAllInGroup(string groupName)
-	{
-		for( int i = script.clipToGroupKeys.Count-1; i >= 0; i--)
-		{
-			if(script.clipToGroupValues[i] == groupName)
-				RemoveFromGroup(script.clipToGroupKeys[i]);
-		}
-	}
-	
 	private string[] GetAvailableGroups()
 	{
 		List<string> result = new List<string>();
 		result.Add("None");
 		for( int i = 0; i < script.sfxGroups.Count; i++)
-			result.Add(script.sfxGroups[i].groupName);
+			result.Add(script.sfxGroups[i]);
 		return result.ToArray();
 	}
 	
@@ -636,18 +541,15 @@ public partial class SoundManagerEditor : Editor {
 	
 	private int IndexOfClip(string clipname)
 	{
-		for( int i = 0; i < script.storedSFXs.Count; i++)
-			if(script.storedSFXs[i] != null && script.storedSFXs[i].name == clipname)
+		for( int i = 0; i < script.pocketClips.Count; i++)
+			if(script.pocketClips[i] != null && script.pocketClips[i].name == clipname)
 				return i;
 		return -1;
 	}
 	
 	private int IndexOfGroup(string groupname)
 	{
-		for( int i = 0; i < script.sfxGroups.Count; i++)
-			if(script.sfxGroups[i].groupName == groupname)
-				return i;
-		return -1;
+		return script.sfxGroups.IndexOf(groupname);
 	}
 	
 	private void ChangeGroup(string clipName, int previousIndex, int nextIndex, string groupName)
@@ -682,7 +584,7 @@ public partial class SoundManagerEditor : Editor {
 			
 			EditorUtility.SetDirty(script);
 		}
-		QueryDict("ChangeGroup");
+		InitSFX();
 	}
 	
 	private void AddToGroup(string clipName, string groupName)
@@ -704,7 +606,6 @@ public partial class SoundManagerEditor : Editor {
 		EditorUtility.SetDirty(script);
 		
 		SceneView.RepaintAll();
-		QueryDict("AddToGroup");
 	}
 	
 	private void RemoveFromGroup(string clipName)
@@ -724,14 +625,13 @@ public partial class SoundManagerEditor : Editor {
 		EditorUtility.SetDirty(script);
 		
 		SceneView.RepaintAll();
-		QueryDict("RemoveFromGroup");
 	}
 	
 	private bool AlreadyContainsSFX(AudioClip clip)
 	{
-		for(int i = 0 ; i < script.storedSFXs.Count ; i++)
+		for(int i = 0 ; i < script.pocketClips.Count ; i++)
 		{
-			AudioClip obj = script.storedSFXs[i];
+			AudioClip obj = script.pocketClips[i];
 		
 			if(obj == null) continue;
 			if(obj.name == clip.name || obj == clip)
@@ -742,14 +642,6 @@ public partial class SoundManagerEditor : Editor {
 	
 	private bool AlreadyContainsGroup(string grpName)
 	{
-		for(int i = 0 ; i < script.sfxGroups.Count ; i++)
-		{
-			SFXGroup grp = script.sfxGroups[i];
-		
-			if(grp == null) continue;
-			if(grp.groupName == grpName)
-				return true;
-		}
-		return false;
+		return script.sfxGroups.Contains(grpName);
 	}
 }

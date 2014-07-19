@@ -3,10 +3,10 @@ guid: a8df6d2f75d0e9546a917e4e327e1f31
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
-  - serializedVersion: 10
+  - serializedVersion: 12
     name: SUB_Triceratops
     prototypeName: SUB_Triceratops
-    shaderName: Mobile/Bumped Diffuse
+    shader: {fileID: 4, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
@@ -33,6 +33,7 @@ SubstanceImporter:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
+      generateMipmaps: 1
       generateAllOutputs: 0
       animationUpdateRate: 42
     materialProperties:
@@ -82,6 +83,15 @@ SubstanceImporter:
       filterMode: 1
       aniso: 1
       wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 1112811557
+    - shaderProp:
+        name: _BumpMap
+      material: {instanceID: 0}
+      baseUID: 1112813450
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 

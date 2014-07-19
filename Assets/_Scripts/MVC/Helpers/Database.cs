@@ -1,4 +1,4 @@
-//#define DEBUG_DATABASE_CONNECTION
+#define DEBUG_DATABASE_CONNECTION
 
 using UnityEngine;
 
@@ -243,6 +243,9 @@ public class Database : MonoBehaviour
 				Debug.LogError (ex.Message);
 				obj = www.text as object;
 			}
+
+			www.Dispose ();
+			www = null;
 
 			//if (dc.cdc == null) { Debug.Log ("cdc é nulo?"); }
 

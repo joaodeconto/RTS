@@ -3,10 +3,10 @@ guid: a678cf72294e0ea4985f9aa6d5c8616a
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
-  - serializedVersion: 10
+  - serializedVersion: 12
     name: SUB_Worker
     prototypeName: SUB_Worker
-    shaderName: Mobile/Bumped Diffuse
+    shader: {fileID: 10704, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
@@ -33,6 +33,7 @@ SubstanceImporter:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
+      generateMipmaps: 1
       generateAllOutputs: 0
       animationUpdateRate: 0
     materialProperties:
@@ -82,6 +83,15 @@ SubstanceImporter:
       filterMode: 1
       aniso: 1
       wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 436207898
+    - shaderProp:
+        name: _BumpMap
+      material: {instanceID: 0}
+      baseUID: 436209333
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 
@@ -95,5 +105,11 @@ SubstanceImporter:
       textureHeight: 512
       textureFormat: 0
       loadingBehavior: 0
+    - serializedVersion: 2
+      buildTarget: Web
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 2
   deletedPrototypes: []
   userData: 

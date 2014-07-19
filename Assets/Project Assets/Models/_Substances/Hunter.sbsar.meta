@@ -3,10 +3,10 @@ guid: ead455a3c9f90d145bdb4581ee0639af
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
-  - serializedVersion: 10
+  - serializedVersion: 12
     name: SUB_Hunter
     prototypeName: SUB_Hunter
-    shaderName: Mobile/Bumped Diffuse
+    shader: {fileID: 2, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
@@ -33,6 +33,7 @@ SubstanceImporter:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
+      generateMipmaps: 1
       generateAllOutputs: 0
       animationUpdateRate: 42
     materialProperties:
@@ -82,6 +83,15 @@ SubstanceImporter:
       filterMode: 1
       aniso: 1
       wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 1787413634
+    - shaderProp:
+        name: _BumpMap
+      material: {instanceID: 0}
+      baseUID: 1787413293
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 
@@ -93,6 +103,12 @@ SubstanceImporter:
       buildTarget: Android
       textureWidth: 512
       textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 1
+    - serializedVersion: 2
+      buildTarget: Web
+      textureWidth: 1024
+      textureHeight: 1024
       textureFormat: 0
       loadingBehavior: 1
   deletedPrototypes: []

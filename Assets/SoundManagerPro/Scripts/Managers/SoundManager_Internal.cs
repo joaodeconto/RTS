@@ -348,7 +348,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <returns>
 	/// The index of the new audiosource if the clip is already being played, otherwise SOUNDMANAGER_FALSE
 	/// </returns>
-	private int PlayClip(AudioClip clip2play)
+	private int PlayClip(AudioClip clip2play, float clipVolume=1f)
 	{
 		if(showDebug)Debug.Log ("Playing: " + clip2play.name);
 		currentPlaying = CheckWhosPlaying();
@@ -365,13 +365,13 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 						StopAllNonSoundConnectionCoroutines();
 						if(showDebug)Debug.Log("In the process of crossing out, so that is being changed to cross in now.");
 						outCrossing[currentPlaying] = false;
-						StartCoroutine("Crossin", new object[]{audios[currentPlaying],crossDuration});
+						StartCoroutine("Crossin", new object[]{audios[currentPlaying],crossDuration,clipVolume});
 						return currentPlaying;
 					} else if (movingOnFromSong) {
 						if(showDebug)Debug.Log("Current song is actually done, so crossfading to another instance of it.");
 						if(audios[notPlaying] == null || audios[notPlaying].clip == null || !audios[notPlaying].clip.Equals(clip2play))
 							audios[notPlaying].clip = clip2play;
-						StartCoroutine("Crossfade", new object[]{audios[currentPlaying],audios[notPlaying],crossDuration});
+						StartCoroutine("Crossfade", new object[]{audios[currentPlaying],audios[notPlaying],crossDuration,clipVolume});
 						return notPlaying;
 					}
 					return currentPlaying;
@@ -381,12 +381,13 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 					StopAllNonSoundConnectionCoroutines();
 					if(showDebug)Debug.Log("Playing another track, crossfading to that.");
 					audios[notPlaying].clip = clip2play;
-					StartCoroutine("Crossfade", new object[]{audios[currentPlaying],audios[notPlaying],crossDuration});
+					StartCoroutine("Crossfade", new object[]{audios[currentPlaying],audios[notPlaying],crossDuration,clipVolume});
 					return notPlaying;
 				}
 			}
 			else //If both AudioSources are playing...
 			{
+				int lastPlaying = GetActualCurrentPlayingIndex();
 				if(showDebug)Debug.Log("Both are playing (crossfade situation).");
 				if(clip2play.Equals(audios[0].clip) && clip2play.Equals(audios[1].clip))
 				{
@@ -400,15 +401,30 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 				}
 				else if(clip2play.Equals(audios[0].clip)) //If the clip is the same clip playing in source1...
 				{
-					if(showDebug)Debug.Log("If clip == clip in audio1, then just switch them.");
+					bool switcheroo = false;
+					if(outCrossing[0] && ((audios[0].clip.samples - audios[0].timeSamples)*1f) / (audios[0].clip.frequency*1f) <= crossDuration) // If the clip is crossing out though, cross in the new track started over.
+					{
+						if(showDebug)Debug.Log("Clip == clip in audio1, but it's crossing out so cross it in from the beginning.");
+						audios[1].clip = clip2play;
+						audios[1].timeSamples = 0;
+						switcheroo = true;
+					}
+					else if(showDebug)Debug.Log("If clip == clip in audio1, then just switch them.");
+					
 					int swapIn = (lastPlaying == 0) ? 0 : 1;
 					int swapOut = (swapIn == 0) ? 1 : 0;
 					StopAllNonSoundConnectionCoroutines();
-					if(swapIn != 0) //If the source crossing out is not the clip, just continue with crossfade
+					if(switcheroo) // Perform the switch if needed
 					{
-						StartCoroutine("Crossfade", new object[]{audios[swapIn],audios[swapOut],crossDuration});
+						int tempSwap = swapIn;
+						swapIn = swapOut;
+						swapOut = tempSwap;
+					}
+					if(swapIn != 0 || (switcheroo && swapIn != 1)) //If the source crossing out is not the clip OR it is but is crossing out, just continue with crossfade
+					{
+						StartCoroutine("Crossfade", new object[]{audios[swapIn],audios[swapOut],crossDuration,clipVolume});
 					} else { //If the source crossing out is the clip, swap them so that it's now crossing in
-						StartCoroutine("Crossfade", new object[]{audios[swapOut],audios[swapIn],crossDuration});
+						StartCoroutine("Crossfade", new object[]{audios[swapOut],audios[swapIn],crossDuration,clipVolume});
 					}
 					if(!audios[0].isPlaying)audios[0].Play();
 					if(!audios[1].isPlaying)audios[1].Play();
@@ -418,15 +434,30 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 				}
 				else if(clip2play.Equals(audios[1].clip)) //If the clip is the same clip playing in source2...
 				{
-					if(showDebug)Debug.Log("If clip == clip in audio2, then just switch them.");
+					bool switcheroo = false;
+					if(outCrossing[1] && ((audios[1].clip.samples - audios[1].timeSamples)*1f) / (audios[1].clip.frequency*1f) <= crossDuration) // If the clip is crossing out though, cross in the new track started over.
+					{
+						if(showDebug)Debug.Log("Clip == clip in audio2, but it's crossing out so cross it in from the beginning.");
+						audios[0].clip = clip2play;
+						audios[0].timeSamples = 0;
+						switcheroo = true;
+					}
+					else if(showDebug)Debug.Log("If clip == clip in audio2, then just switch them.");
+					
 					int swapIn = (lastPlaying == 0) ? 0 : 1;
 					int swapOut = (swapIn == 0) ? 1 : 0;
 					StopAllNonSoundConnectionCoroutines();
-					if(swapIn != 1) //If the source crossing out is not the clip, just continue with crossfade
+					if(switcheroo) // Perform the switch if needed
 					{
-						StartCoroutine("Crossfade", new object[]{audios[swapIn],audios[swapOut],crossDuration});
+						int tempSwap = swapIn;
+						swapIn = swapOut;
+						swapOut = tempSwap;
+					}
+					if(swapIn != 1 || (switcheroo && swapIn != 0)) //If the source crossing out is not the clip, just continue with crossfade
+					{
+						StartCoroutine("Crossfade", new object[]{audios[swapIn],audios[swapOut],crossDuration,clipVolume});
 					} else { //If the source crossing out is the clip, swap them so that it's now crossing in
-						StartCoroutine("Crossfade", new object[]{audios[swapOut],audios[swapIn],crossDuration});
+						StartCoroutine("Crossfade", new object[]{audios[swapOut],audios[swapIn],crossDuration,clipVolume});
 					};
 					if(!audios[0].isPlaying)audios[0].Play();
 					if(!audios[1].isPlaying)audios[1].Play();
@@ -441,13 +472,13 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 					if(audios[0].volume > audios[1].volume) //If source1 is louder than source2, then crossfade from source1.
 					{
 						audios[1].clip = clip2play;
-						StartCoroutine("Crossfade", new object[]{audios[0],audios[1],crossDuration});
+						StartCoroutine("Crossfade", new object[]{audios[0],audios[1],crossDuration,clipVolume});
 						return 1;
 					}
 					else //If source2 is louder than source1, then crossfade from source2.
 					{
 						audios[0].clip = clip2play;
-						StartCoroutine("Crossfade", new object[]{audios[1],audios[0],crossDuration});
+						StartCoroutine("Crossfade", new object[]{audios[1],audios[0],crossDuration,clipVolume});
 						return 0;
 					}
 				}
@@ -457,7 +488,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		{
 			if(showDebug)Debug.Log("Wasn't playing anything, crossing in.");
 			audios[notPlaying].clip = clip2play;
-			StartCoroutine("Crossin", new object[]{audios[notPlaying],crossDuration});
+			StartCoroutine("Crossin", new object[]{audios[notPlaying],crossDuration,clipVolume});
 		}
 		return SOUNDMANAGER_FALSE;
 	}
@@ -482,6 +513,15 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		int index2 = GetAudioSourceIndex(a2);
 		
 		float duration = (float)param[2];
+		float realSongLength = ((a2.clip.samples - a2.timeSamples)*1f) / (a2.clip.frequency*1f);
+		if(duration - (realSongLength/2f) > .1f)
+		{
+			duration = Mathf.Floor((realSongLength/2f) * 100f) / 100f;
+			Debug.LogWarning("Had to reduce the cross duration to " + duration + " for this transition as the cross duration is longer than half the track length.");
+		}
+		modifiedCrossDuration = duration;
+		
+		float clipVolume = (float)param[3];
 		
 		if(OnSongBegin != null)
 			OnSongBegin();
@@ -514,14 +554,14 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			a2DeltaVolume = deltaPercent * (startMaxMusicVolume - a2StartVolume);
 	
 	        a1.volume = Mathf.Clamp01((a1StartVolume - a1DeltaVolume) * volumePercent);
-	        a2.volume = Mathf.Clamp01((a2DeltaVolume + a2StartVolume) * volumePercent);
+	        a2.volume = Mathf.Clamp01((a2DeltaVolume + a2StartVolume) * volumePercent * clipVolume);
 	       	yield return null;
 	    }
 		a1.volume = 0f;
-		a2.volume = maxMusicVolume;
+		a2.volume = maxMusicVolume * clipVolume;
 		a1.Stop();
 		a1.timeSamples = 0;
-		lastPlaying = currentPlaying;
+		modifiedCrossDuration = crossDuration;
 		currentPlaying = CheckWhosPlaying();
 		
 		outCrossing[index1] = false;
@@ -559,6 +599,13 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		
 		AudioSource a1 = param[0] as AudioSource;
 		float duration = (float)param[1];
+		float realSongLength = ((a1.clip.samples - a1.timeSamples)*1f) / (a1.clip.frequency*1f);
+		if(duration - (realSongLength/2f) > .1f)
+		{
+			duration = Mathf.Floor((realSongLength/2f) * 100f) / 100f;
+			Debug.LogWarning("Had to reduce the cross duration to " + duration + " for this transition as the cross duration is longer than half the track length.");
+		}
+		modifiedCrossDuration = duration;
 		
 		int index1 = GetAudioSourceIndex(a1);
 		
@@ -589,7 +636,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		a1.volume = 0f;
 		a1.Stop();
 		a1.timeSamples = 0;
-		lastPlaying = currentPlaying;
+		modifiedCrossDuration = crossDuration;
 		currentPlaying = CheckWhosPlaying();
 		
 		outCrossing[index1] = true;
@@ -618,6 +665,13 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		outCrossing[1] = true;
 		inCrossing[0] = false;
 		inCrossing[1] = false;
+		float realSongLength = Mathf.Max(((audios[0].clip.samples - audios[0].timeSamples)*1f) / (audios[0].clip.frequency*1f), ((audios[1].clip.samples - audios[1].timeSamples)*1f) / (audios[1].clip.frequency*1f));
+		if(duration - (realSongLength/2f) > .1f)
+		{
+			duration = Mathf.Floor((realSongLength/2f) * 100f) / 100f;
+			Debug.LogWarning("Had to reduce the cross duration to " + duration + " for this transition as the cross duration is longer than half the track length.");
+		}
+		modifiedCrossDuration = duration;
 		
 		var startTime = Time.realtimeSinceStartup;
 	    var endTime = Time.realtimeSinceStartup + duration;
@@ -647,7 +701,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		audios[1].Stop();
 		audios[0].timeSamples = 0;
 		audios[1].timeSamples = 0;
-		lastPlaying = currentPlaying;
+		modifiedCrossDuration = crossDuration;
 		currentPlaying = CheckWhosPlaying();
 		
 		outCrossing[0] = false;
@@ -672,7 +726,17 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		OnCrossInBegin = null;
 		
 		AudioSource a1 = param[0] as AudioSource;
+		
 		float duration = (float)param[1];
+		float realSongLength = (a1.clip.samples*1f) / (a1.clip.frequency*1f);
+		if(duration - (realSongLength/2f) > .1f)
+		{
+			duration = Mathf.Floor((realSongLength/2f) * 100f) / 100f;
+			Debug.LogWarning("Had to reduce the cross duration to " + duration + " for this transition as the cross duration is longer than half the track length.");
+		}
+		modifiedCrossDuration = duration;
+		
+		float clipVolume = (float)param[2];
 		
 		int index1 = GetAudioSourceIndex(a1);
 		
@@ -703,11 +767,11 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			}
 			deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * (startMaxMusicVolume - a1StartVolume);
 	
-	        a1.volume = Mathf.Clamp01((deltaVolume + a1StartVolume) * volumePercent);
+	        a1.volume = Mathf.Clamp01((deltaVolume + a1StartVolume) * volumePercent * clipVolume);
 	       	yield return null;
 	    }
-		a1.volume = maxMusicVolume;
-		lastPlaying = currentPlaying;
+		a1.volume = maxMusicVolume * clipVolume;
+		modifiedCrossDuration = crossDuration;
 		currentPlaying = CheckWhosPlaying();
 		
 		inCrossing[index1] = false;
@@ -784,6 +848,26 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		StopCoroutine("Crossin");
 		StopCoroutine("CrossoutAll");
 	}
+	
+	private int GetActualCurrentPlayingIndex()
+	{
+		if(audios[0].isPlaying && audios[1].isPlaying)
+		{
+			//Both are playing, so figure out whos going to be playing when its over.
+			if(inCrossing[0] && inCrossing[1])
+				return SOUNDMANAGER_FALSE; //not possible!
+			else if(inCrossing[0])
+				return 0;
+			else if(inCrossing[1])
+				return 1;
+			else
+				return SOUNDMANAGER_FALSE; // not possible!
+		}
+		for(int i = 0; i < audios.Length; i++)
+			if(audios[i].isPlaying)
+				return i;
+		return SOUNDMANAGER_FALSE;
+	}
 
 	/// <summary>
 	/// Plays the SoundConnection according to it's PlayMethod.
@@ -804,29 +888,16 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			skipAmount = 0;
 		}
 			
+		
 		switch(sc.playMethod)
 		{
 			case PlayMethod.ContinuousPlayThrough:
 			while(Application.isPlaying) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				int response = PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
-				// Get the real song length using time samples, especially in the case where the song is already playing.
-				float realSongLength;
-				if(response != SOUNDMANAGER_FALSE)
-					realSongLength = ((sc.soundsToPlay[songPlaying].samples - audios[response].timeSamples)*1f) / (sc.soundsToPlay[songPlaying].frequency*1f);
-				else
-					realSongLength = (sc.soundsToPlay[songPlaying].samples*1f) / (sc.soundsToPlay[songPlaying].frequency*1f);
 				
-				// If the cross duration is greater than the length of the song, error and stop [ EDIT ]
-				float modifiedCrossDuration = crossDuration;
-				if(modifiedCrossDuration > realSongLength)
-				{
-					Debug.LogError("The cross duration is longer than the track length! Stopping the SoundConnection. TO FIX: Change the cross duration beforehand.");
-					StopMusicImmediately();
-					yield break;
-				}
-
 				// While the clip is playing, wait until the time left is less than the cross duration
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
@@ -852,8 +923,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			break;
 			case PlayMethod.ContinuousPlayThroughWithDelay:
 			while(Application.isPlaying) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
 				
 				// While the clip is playing, wait until the song is done before moving on with the delay
@@ -882,8 +954,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			break;
 			case PlayMethod.ContinuousPlayThroughWithRandomDelayInRange:
 			while(Application.isPlaying) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
 				
 				// While the clip is playing, wait until the song is done before moving on with the delay
@@ -913,26 +986,11 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			break;
 			case PlayMethod.OncePlayThrough:
 			while(songPlaying < sc.soundsToPlay.Count) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				int response = PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
 				
-				// Get the real song length using time samples, especially in the case where the song is already playing.
-				float realSongLength;
-				if(response != SOUNDMANAGER_FALSE)
-					realSongLength = ((sc.soundsToPlay[songPlaying].samples - audios[response].timeSamples)*1f) / (sc.soundsToPlay[songPlaying].frequency*1f);
-				else
-					realSongLength = (sc.soundsToPlay[songPlaying].samples*1f) / (sc.soundsToPlay[songPlaying].frequency*1f);
-
-				// If the cross duration is greater than the length of the song, error and stop [ EDIT ]
-				float modifiedCrossDuration = crossDuration;
-				if(modifiedCrossDuration > realSongLength)
-				{
-					Debug.LogError("The cross duration is longer than the track length! Stopping the SoundConnection. TO FIX: Change the cross duration beforehand.");
-					StopMusicImmediately();
-					yield break;
-				}
-
 				// While the clip is playing, wait until the time left is less than the cross duration
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
@@ -961,8 +1019,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			break;
 			case PlayMethod.OncePlayThroughWithDelay:
 			while(songPlaying < sc.soundsToPlay.Count) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
 				
 				// While the clip is playing, wait until the song is done before moving on with the delay
@@ -994,8 +1053,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			break;
 			case PlayMethod.OncePlayThroughWithRandomDelayInRange:
 			while(songPlaying < sc.soundsToPlay.Count) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
 				
 				// While the clip is playing, wait until the song is done before moving on with the delay
@@ -1027,28 +1087,13 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			}
 			break;
 			case PlayMethod.ShufflePlayThrough:
-			SoundManagerTools.Shuffle<AudioClip>(ref sc.soundsToPlay);
+			SoundManagerTools.ShuffleTwo<AudioClip, float>(ref sc.soundsToPlay, ref sc.baseVolumes);
 			while(Application.isPlaying) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				int response = PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
 				
-				// Get the real song length using time samples, especially in the c already playing.
-				float realSongLength;
-				if(response != SOUNDMANAGER_FALSE)
-					realSongLength = ((sc.soundsToPlay[songPlaying].samples - audios[response].timeSamples)*1f) / (sc.soundsToPlay[songPlaying].frequency*1f);
-				else
-					realSongLength = (sc.soundsToPlay[songPlaying].samples*1f) / (sc.soundsToPlay[songPlaying].frequency*1f);
-
-				// If the cross duration is greater than the length of the song, error and stop [ EDIT ]
-				float modifiedCrossDuration = crossDuration;
-				if(modifiedCrossDuration > realSongLength)
-				{
-					Debug.LogError("The cross duration is longer than the track length! Stopping the SoundConnection. TO FIX: Change the cross duration beforehand.");
-					StopMusicImmediately();
-					yield break;
-				}
-
 				// While the clip is playing, wait until the time left is less than the cross duration
 				currentSource = IsPlaying(sc.soundsToPlay[songPlaying], false);
 				if(currentSource != null)
@@ -1071,14 +1116,15 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 					skipAmount = 0;
 				}
 				if(songPlaying == 0)
-					SoundManagerTools.Shuffle<AudioClip>(ref sc.soundsToPlay);
+					SoundManagerTools.ShuffleTwo<AudioClip, float>(ref sc.soundsToPlay, ref sc.baseVolumes);
 			}
 			break;
 			case PlayMethod.ShufflePlayThroughWithDelay:
-			SoundManagerTools.Shuffle<AudioClip>(ref sc.soundsToPlay);
+			SoundManagerTools.ShuffleTwo<AudioClip, float>(ref sc.soundsToPlay, ref sc.baseVolumes);
 			while(Application.isPlaying) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
 				
 				// While the clip is playing, wait until the song is done before moving on with the delay
@@ -1104,14 +1150,15 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 					skipAmount = 0;
 				}
 				if(songPlaying == 0)
-					SoundManagerTools.Shuffle<AudioClip>(ref sc.soundsToPlay);
+					SoundManagerTools.ShuffleTwo<AudioClip, float>(ref sc.soundsToPlay, ref sc.baseVolumes);
 			}
 			break;
 			case PlayMethod.ShufflePlayThroughWithRandomDelayInRange:
-			SoundManagerTools.Shuffle<AudioClip>(ref sc.soundsToPlay);
+			SoundManagerTools.ShuffleTwo<AudioClip, float>(ref sc.soundsToPlay, ref sc.baseVolumes);
 			while(Application.isPlaying) {
+				modifiedCrossDuration = crossDuration;
 				currentSongIndex = songPlaying;
-				PlayClip(sc.soundsToPlay[songPlaying]);
+				PlayClip(sc.soundsToPlay[songPlaying], sc.baseVolumes[songPlaying]);
 				movingOnFromSong = false;
 				
 				// While the clip is playing, wait until the song is done before moving on with the delay
@@ -1138,7 +1185,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 					skipAmount = 0;
 				}
 				if(songPlaying == 0)
-					SoundManagerTools.Shuffle<AudioClip>(ref sc.soundsToPlay);
+					SoundManagerTools.ShuffleTwo<AudioClip, float>(ref sc.soundsToPlay, ref sc.baseVolumes);
 			}
 			break;
 			default:

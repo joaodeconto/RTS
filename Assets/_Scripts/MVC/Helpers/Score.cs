@@ -33,6 +33,8 @@ public struct DataScoreEnum
 public class Score : MonoBehaviour
 {
 	private Dictionary <string, Model.DataScore> dicDataScore;
+	private Dictionary <Model.Player, List<Model.DataScore>> rankingScores;
+
 	private Model.Player player;
 	private Model.Battle battle;
 	private DataScoreDAO dataScoreDAO;
@@ -41,7 +43,9 @@ public class Score : MonoBehaviour
 	public delegate void OnLoadScoreCallback ();
 	
 	public delegate void GetScoresCallback (List <Model.DataScore> listScore);
-	
+
+	public delegate void OnLoadRanking (Dictionary <Model.Player, List<Model.DataScore>> ranking);
+
 	private bool wasInitialized = false;
 	private bool NeedToSave = false;
 	private bool isSaving = false;
@@ -142,6 +146,17 @@ public class Score : MonoBehaviour
 	
 	private void _LoadScore (OnLoadScoreCallback cb)
 	{
+		if (wasInitialized)
+		{
+			if (cb != null)
+			{
+				cb ();
+			}
+			return;
+		}
+		
+		wasInitialized = true;
+		
 		//TODO ler apenas scores totais, ou seja, sem que tenham IdBattle's
 		dataScoreDAO.LoadAllPlayerScores (player.ToDatabaseModel (),
 											(scores) =>
@@ -173,6 +188,22 @@ public class Score : MonoBehaviour
 		{
 			Debug.LogWarning ("ConfigurationData.battle is null!");
 		}
+	}
+	
+	private void _LoadRanking (OnLoadRanking cb)
+	{
+		dataScoreDAO.LoadRankingScores
+		(
+			 (_rankingScores) =>
+			 {
+				rankingScores = _rankingScores;
+
+				if (cb != null)
+				{
+					cb (rankingScores);
+				}
+			}
+		);
 	}
 	
 	/* Static */
@@ -229,5 +260,10 @@ public class Score : MonoBehaviour
 	public static void LoadBattleScore (GetScoresCallback cb = null)
 	{
 		Instance._LoadBattleScore (cb);
+	}
+
+	public static void LoadRanking (OnLoadRanking cb = null)
+	{
+		Instance._LoadRanking (cb);
 	}
 }

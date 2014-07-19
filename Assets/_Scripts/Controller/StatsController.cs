@@ -255,6 +255,7 @@ public class StatsController : MonoBehaviour
 		{
 			ComponentGetter.Get<MiniMapController> ().AddUnit (stat.transform, stat.team);
 			gameplayManager.IncrementUnit (stat.team, unit.numberOfUnits);
+
 		}
 		
 		FactoryBase factory = stat as FactoryBase;
@@ -262,9 +263,11 @@ public class StatsController : MonoBehaviour
 		if (factory != null)
 		{
 			ComponentGetter.Get<MiniMapController> ().AddStructure (stat.transform, stat.team);
+
 		}
-							
+			
 		ComponentGetter.Get<FogOfWar> ().AddEntity (stat.transform, stat);
+
 	}
 
 	public void RemoveStats (IStats stat)

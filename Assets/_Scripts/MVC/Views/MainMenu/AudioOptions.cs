@@ -70,6 +70,6 @@ void Open ()
 
 	public void Close ()
 	{
-
+		gameObject.SetActive (false);
 	}
 }

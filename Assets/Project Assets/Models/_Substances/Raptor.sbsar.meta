@@ -3,10 +3,10 @@ guid: b405905ac21de7c49a8293c1f06026f8
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
-  - serializedVersion: 10
+  - serializedVersion: 12
     name: SUB_Raptor
     prototypeName: SUB_Raptor
-    shaderName: Mobile/Bumped Specular (1 Directional Light)
+    shader: {fileID: 2, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
@@ -33,6 +33,7 @@ SubstanceImporter:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
+      generateMipmaps: 1
       generateAllOutputs: 0
       animationUpdateRate: 0
     materialProperties:
@@ -82,9 +83,24 @@ SubstanceImporter:
       filterMode: 1
       aniso: 1
       wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 395123739
+    - shaderProp:
+        name: _BumpMap
+      material: {instanceID: 0}
+      baseUID: 395123636
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 
+      textureWidth: 1024
+      textureHeight: 1024
+      textureFormat: 0
+      loadingBehavior: 4
+    - serializedVersion: 2
+      buildTarget: Web
       textureWidth: 1024
       textureHeight: 1024
       textureFormat: 0

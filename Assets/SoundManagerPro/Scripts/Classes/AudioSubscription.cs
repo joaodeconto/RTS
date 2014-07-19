@@ -119,13 +119,16 @@ public class AudioSubscription {
 			
 			if(!propertiesSet)
 				return false;
-
+#if !(UNITY_WP8 || UNITY_METRO)
 			var member = sourceComponent.GetType().GetMember(methodName).FirstOrDefault();
 			
 			if(member == null)
 				return false;
-
+			
 			return true;
+#else
+			return false;
+#endif
 		}
 	}
 	
@@ -166,10 +169,10 @@ public class AudioSubscription {
 	{
 		if(lhs.ParameterType.Equals(rhs.ParameterType))
 			return true;
-		
+#if !(UNITY_WP8 || UNITY_METRO)		
 		if(lhs.ParameterType.IsAssignableFrom(rhs.ParameterType))
 			return true;
-		
+#endif
 		return false;
 	}
 #if !(UNITY_WP8 || UNITY_METRO)	

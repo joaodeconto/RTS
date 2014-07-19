@@ -41,11 +41,18 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	{
 		allClips.Clear();
 		prepools.Clear();
+		baseVolumes.Clear();
+		volumeVariations.Clear();
+		pitchVariations.Clear();
 		for(int i = 0; i < storedSFXs.Count; i++)
 		{
 			if(storedSFXs[i] == null) continue;
-			allClips.Add(storedSFXs[i].name, storedSFXs[i]);
-			prepools.Add(storedSFXs[i].name, sfxPrePoolAmounts[i]);
+			string clipName = storedSFXs[i].name;
+			allClips.Add(clipName, storedSFXs[i]);
+			prepools.Add(clipName, sfxPrePoolAmounts[i]);
+			baseVolumes.Add(clipName, sfxBaseVolumes[i]);
+			volumeVariations.Add(clipName, sfxVolumeVariations[i]);
+			pitchVariations.Add(clipName, sfxPitchVariations[i]);
 		}		
 #if !UNITY_EDITOR
 		storedSFXs.Clear();	
@@ -291,6 +298,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	private GameObject AddOwnedSFXObject(AudioClip clip)
 	{
 		GameObject SFXObject = new GameObject("SFX-["+clip.name+"]", typeof(AudioSource));
+		SFXObject.transform.parent = transform;
 		SFXObject.name += "(" + SFXObject.GetInstanceID() + ")";
 		SFXObject.audio.playOnAwake = false;
 		GameObject.DontDestroyOnLoad(SFXObject);
@@ -303,9 +311,17 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		else
 		{
 			int thisPrepoolAmount = 0;
-			if(allClips.ContainsKey(clip.name))
-				thisPrepoolAmount = prepools[clip.name];
-			ownedPools.Add(clip, new SFXPoolInfo(0,thisPrepoolAmount,new List<float>(){0f},new List<GameObject>(){SFXObject}));
+			float thisBaseVolume = 1f;
+			float thisVolumeVariation = 0f, thisPitchVariation = 0f;
+			string clipName = clip.name;
+			if(allClips.ContainsKey(clipName))
+			{
+				thisPrepoolAmount = prepools[clipName];
+				thisBaseVolume = baseVolumes[clipName];
+				thisVolumeVariation = volumeVariations[clipName];
+				thisPitchVariation = pitchVariations[clipName];
+			}
+			ownedPools.Add(clip, new SFXPoolInfo(0,thisPrepoolAmount,new List<float>(){0f},new List<GameObject>(){SFXObject},thisBaseVolume,thisVolumeVariation,thisPitchVariation));
 		}
 		ResetSFXObject(SFXObject);
 		SFXObject.audio.clip = clip;
@@ -339,8 +355,19 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	private AudioSource PlaySFXBase(AudioSource aSource, AudioClip clip, float volume, float pitch, bool capped=false, string cappedID="", bool looping=false, float delay=0f, SongCallBack runOnEndFunction=null, SoundDuckingSetting duckingSetting=SoundDuckingSetting.DoNotDuck, float duckVolume=0f, float duckPitch=1f)
     {		
         aSource.Stop();
-        aSource.pitch = pitch;
-        aSource.volume = volume;
+		string clipName = clip.name;
+		if(pitchVariations.ContainsKey(clipName))
+			aSource.pitch = pitch.Vary(pitchVariations[clipName]);
+		else
+        	aSource.pitch = pitch;
+		
+		if(baseVolumes.ContainsKey(clipName))
+			volume = volume * baseVolumes[clipName];
+		if(volumeVariations.ContainsKey(clipName))
+			aSource.volume = volume.VaryWithRestrictions(volumeVariations[clipName]);
+		else
+        	aSource.volume = volume;
+		
 		if(!capped)
 			aSource.loop = looping;
 		aSource.mute = mutedSFX;
@@ -380,8 +407,17 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	{
 		source.Stop();
 		source.clip = clip;
-		source.pitch = pitch;
-		source.volume = volume;
+		string clipName = clip.name;
+		if(pitchVariations.ContainsKey(clipName))
+			source.pitch = pitch.Vary(pitchVariations[clipName]);
+		else
+        	source.pitch = pitch;
+		if(baseVolumes.ContainsKey(clipName))
+			volume = volume * baseVolumes[clipName];
+		if(volumeVariations.ContainsKey(clipName))
+			source.volume = volume.VaryWithRestrictions(volumeVariations[clipName]);
+		else
+        	source.volume = volume;
 		source.mute = Instance.mutedSFX;
 		source.loop = true;
 		source.Play();

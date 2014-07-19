@@ -54,5 +54,11 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// EDITOR variables. DO NOT TOUCH.
 	public int autoPrepoolAmount = 0;
 	/// EDITOR variables. DO NOT TOUCH.
+	public float autoBaseVolume = 1f;
+	/// EDITOR variables. DO NOT TOUCH.
+	public float autoVolumeVariation = 0f;
+	/// EDITOR variables. DO NOT TOUCH.
+	public float autoPitchVariation = 0f;
+	/// EDITOR variables. DO NOT TOUCH.
 	public bool showAsGrouped = false;
 }

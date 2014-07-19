@@ -342,7 +342,11 @@ public class AudioSourceProEditor : Editor {
 						}
 						else if(selectedIndex < sourceComponentMembersArray.Length-numStandardEvents-1 && !script.audioSubscriptions[i].componentIsValid)
 						{
+#if !(UNITY_WP8 || UNITY_METRO)							
 							EditorGUILayout.HelpBox("Configuration is invalid.", MessageType.Error);
+#else
+							EditorGUILayout.HelpBox("Configuration is invalid. Keep in mind that custom event configurations are not supported in the Win8Phone and WinStore platforms.", MessageType.Error);
+#endif
 						}
 						else
 						{

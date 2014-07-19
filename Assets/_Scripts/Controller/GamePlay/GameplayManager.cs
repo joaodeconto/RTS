@@ -376,6 +376,25 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 	}
 
+	public void DefeatingEnemyTeamsByObjectives ()
+	{
+		if (PhotonNetwork.room.playerCount == 1)
+		{
+			winGame = true;
+			EndMatch ();
+		}
+		else
+		{
+			for (int indexTeam = 0, maxTeams = teams.Length - 1; indexTeam != maxTeams; ++indexTeam)
+			{
+				if (indexTeam == MyTeam)
+					continue;
+
+				photonView.RPC ("DefeatOther", PhotonTargets.All, indexTeam);
+			}
+		}
+	}
+
 	void NoMainBase ()
 	{
 		hud.uiLostMainBaseObject.SetActive (false);
@@ -388,6 +407,15 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		timeLeftToLoseTheGame -= 1f;
 		hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
+	}
+
+	[RPC]
+	void DefeatOther (int teamID)
+	{
+		if (teamID == MyTeam)
+		{
+			photonView.RPC ("Defeat", PhotonTargets.All, MyTeam, Allies);
+		}
 	}
 
 	[RPC]
@@ -482,7 +510,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 	}
 
-	void EndMatch ()
+	public void EndMatch ()
 	{
 		Debug.LogError ("EndMatch");
 		

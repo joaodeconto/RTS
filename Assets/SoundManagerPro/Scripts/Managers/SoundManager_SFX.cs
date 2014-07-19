@@ -896,15 +896,44 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			
 			if(!Instance.allClips.ContainsKey(clip.name))
 			{
-				Instance.allClips.Add(clip.name, clip);
-				Instance.prepools.Add(clip.name, 0);
+				string clipName = clip.name;
+				Instance.allClips.Add(clipName, clip);
+				Instance.prepools.Add(clipName, 0);
+				Instance.baseVolumes.Add(clipName, 1f);
+				Instance.volumeVariations.Add(clipName, 0f);
+				Instance.pitchVariations.Add(clipName, 0f);
 #if UNITY_EDITOR
 				Instance.storedSFXs.Add(clip);
 				Instance.sfxPrePoolAmounts.Add(0);
+				Instance.sfxBaseVolumes.Add(1f);
+				Instance.sfxVolumeVariations.Add(0f);
+				Instance.sfxPitchVariations.Add(0f);
 				Instance.showSFXDetails.Add(false);
 #endif
 			}
 		}
+	}
+	
+	public static void DeleteSFX()
+	{
+		Instance.allClips.Clear();
+		Instance.prepools.Clear();
+		Instance.baseVolumes.Clear();
+		Instance.volumeVariations.Clear();
+		Instance.pitchVariations.Clear();
+		Instance.clipsInGroups.Clear();
+		Instance.clipToGroupKeys.Clear();
+		Instance.clipToGroupValues.Clear();
+		foreach(SFXGroup grp in Instance.sfxGroups)
+			grp.clips.Clear();
+#if UNITY_EDITOR
+		Instance.storedSFXs.Clear();
+		Instance.sfxPrePoolAmounts.Clear();
+		Instance.sfxBaseVolumes.Clear();
+		Instance.sfxVolumeVariations.Clear();
+		Instance.sfxPitchVariations.Clear();
+		Instance.showSFXDetails.Clear();
+#endif
 	}
 	
 	public static void DeleteSFX(params AudioClip[] clips)
@@ -916,13 +945,21 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			
 			if(!Instance.allClips.ContainsKey(clip.name))
 			{
-				Instance.allClips.Remove(clip.name);
-				Instance.prepools.Remove(clip.name);
+				string clipName = clip.name;
+				Instance.allClips.Remove(clipName);
+				Instance.prepools.Remove(clipName);
+				Instance.baseVolumes.Remove(clipName);
+				Instance.volumeVariations.Remove(clipName);
+				Instance.pitchVariations.Remove(clipName);
+				Instance.RemoveClipFromGroup(clipName);
 #if UNITY_EDITOR
 				int index = Instance.storedSFXs.IndexOf(clip);
 				if(index == -1) continue;
 				Instance.storedSFXs.RemoveAt(index);
 				Instance.sfxPrePoolAmounts.RemoveAt(index);
+				Instance.sfxBaseVolumes.RemoveAt(index);
+				Instance.sfxVolumeVariations.RemoveAt(index);
+				Instance.sfxPitchVariations.RemoveAt(index);
 				Instance.showSFXDetails.RemoveAt(index);
 #endif
 			}
@@ -941,16 +978,70 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 				AudioClip clip = Instance.allClips[clipName];
 				Instance.allClips.Remove(clipName);
 				Instance.prepools.Remove(clipName);
+				Instance.baseVolumes.Remove(clipName);
+				Instance.volumeVariations.Remove(clipName);
+				Instance.pitchVariations.Remove(clipName);
+				Instance.RemoveClipFromGroup(clipName);
 #if UNITY_EDITOR
 				if(clip == null) continue;
 				int index = Instance.storedSFXs.IndexOf(clip);
 				if(index == -1) continue;
 				Instance.storedSFXs.RemoveAt(index);
 				Instance.sfxPrePoolAmounts.RemoveAt(index);
+				Instance.sfxBaseVolumes.RemoveAt(index);
+				Instance.sfxVolumeVariations.RemoveAt(index);
+				Instance.sfxPitchVariations.RemoveAt(index);
 				Instance.showSFXDetails.RemoveAt(index);
 #endif
 			}
 		}
+	}
+	
+	public static void ApplySFXAttributes(AudioClip clip, int prepool, float baseVolume, float volumeVariation, float pitchVariation)
+	{
+		if(clip == null || !Instance.allClips.ContainsKey(clip.name) || Instance.allClips[clip.name] != clip)
+			return;
+		
+		string clipName = clip.name;
+		
+		int oldPrepool = Instance.prepools[clipName];
+		Instance.prepools[clipName] = prepool;
+		Instance.baseVolumes[clipName] = baseVolume;
+		Instance.volumeVariations[clipName] = volumeVariation;
+		Instance.pitchVariations[clipName] = pitchVariation;
+		
+		
+		SFXPoolInfo info = null;
+		if(Instance.ownedPools.ContainsKey(clip))
+		{
+			info = Instance.ownedPools[clip];
+			if(info != null)
+			{
+				info.prepoolAmount = prepool;
+				info.baseVolume = baseVolume;
+				info.volumeVariation = volumeVariation;
+				info.pitchVariation = pitchVariation;
+			}
+		}
+		
+#if UNITY_EDITOR
+		int index = Instance.storedSFXs.IndexOf(clip);
+		Instance.sfxPrePoolAmounts[index] = prepool;
+		Instance.sfxBaseVolumes[index] = baseVolume;
+		Instance.sfxVolumeVariations[index] = volumeVariation;
+		Instance.sfxPitchVariations[index] = pitchVariation;
+#endif
+		
+		if(oldPrepool < prepool)
+			Instance.PrePoolClip(clip, prepool-oldPrepool);
+	}
+	
+	public static void ApplySFXAttributes(string clipName, int prepool, float baseVolume, float volumeVariation, float pitchVariation)
+	{
+		if(string.IsNullOrEmpty(clipName) || !ClipNameIsValid(clipName))
+			return;
+		
+		ApplySFXAttributes(Instance.allClips[clipName], prepool, baseVolume, volumeVariation, pitchVariation);
 	}
 	
 	/// <summary>

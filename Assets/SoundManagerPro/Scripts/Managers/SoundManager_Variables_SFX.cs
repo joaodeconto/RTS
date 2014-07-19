@@ -48,6 +48,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	private Dictionary<string, string> clipsInGroups = new Dictionary<string, string>();
 	private Dictionary<string, AudioClip> allClips = new Dictionary<string, AudioClip>();
 	private Dictionary<string, int> prepools = new Dictionary<string, int>();
+	private Dictionary<string, float> baseVolumes = new Dictionary<string, float>();
+	private Dictionary<string, float> volumeVariations = new Dictionary<string, float>();
+	private Dictionary<string, float> pitchVariations = new Dictionary<string, float>();
 	
 	public bool offTheSFX = false;
 	public int capAmount = 3;
@@ -143,5 +146,10 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	
 	private Dictionary<AudioClip, SFXPoolInfo> ownedPools = new Dictionary<AudioClip, SFXPoolInfo>();
 	public List<int> sfxPrePoolAmounts = new List<int>();
+	public List<float> sfxBaseVolumes = new List<float>();
+	public List<float> sfxVolumeVariations = new List<float>();
+	public List<float> sfxPitchVariations = new List<float>();
 	public float SFXObjectLifetime = 10f;
+	
+	public List<string> currentPockets = new List<string>() { "Default" };
 }

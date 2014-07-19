@@ -56,7 +56,7 @@ public class Worker : Unit
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
 
-	public WorkerState workerState; //{get; set;}
+	public WorkerState workerState {get; set;}
 
 	public bool IsExtracting {get; protected set;}
 	public bool IsRepairing {get; protected set;}

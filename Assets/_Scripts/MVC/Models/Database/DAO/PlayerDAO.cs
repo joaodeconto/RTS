@@ -14,7 +14,7 @@ public class PlayerDAO : MonoBehaviour
 		//TODO usar facebook no futuro
 		Database db        = ComponentGetter.Get<Database>();
 		DB.Player dbPlayer = new DB.Player () { SzName = username,
-												SzPassword = password };
+												SzPassword = password};
 
 		db.Read (dbPlayer,
 		(response) =>
@@ -40,7 +40,8 @@ public class PlayerDAO : MonoBehaviour
 		Database db        = ComponentGetter.Get<Database>();
 		DB.Player dbPlayer = new DB.Player () { SzName     = username,
 												SzPassword = password,
-												SzEmail    = email};
+												SzEmail    = email,
+												IdFacebookAccount = idFacebook};
 		db.Create (dbPlayer,
 		(response) =>
 		{
@@ -59,8 +60,26 @@ public class PlayerDAO : MonoBehaviour
 		});
 	}
 
-	public void SavePlayer (Model.Player player)
+	public void UpdatePlayer (Model.Player player, PlayerDAODelegate callback)
 	{
-		throw new NotImplementedException ();
+//		Database db        = ComponentGetter.Get<Database>();
+//		DB.Player dbPlayer = player.ToDatabaseModel ();
+
+//		db.Update (dbPlayer,
+//	    (response) =>
+//	    {
+//			dbPlayer = response as DB.Player;
+//			
+//			if (dbPlayer == null)
+//			{
+//				callback (null, "Can't update the player");
+//			}
+//			else
+//			{
+//				Debug.Log (dbPlayer.ToString ());
+//				player = dbPlayer.ToModel ();
+//				callback (player, "Player updated!");
+//			}
+//		});
 	}
 }

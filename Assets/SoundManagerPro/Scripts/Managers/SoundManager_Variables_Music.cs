@@ -15,11 +15,11 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	public SoundConnection currentSoundConnection;
 	private AudioSource currentSource;
 	public float crossDuration = 5f;
+	private float modifiedCrossDuration;
 	public bool showDebug = true;
 	public bool offTheBGM = false;
 
 	private int currentPlaying = 0;
-	private int lastPlaying = -1;
 
 	private bool silentLevel = false;
 

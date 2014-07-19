@@ -3,10 +3,10 @@ guid: 961317c1e81a5034c8ae194201aab1ed
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
-  - serializedVersion: 10
+  - serializedVersion: 12
     name: SUB_Parassa
     prototypeName: SUB_Parassa
-    shaderName: Mobile/Bumped Specular (1 Directional Light)
+    shader: {fileID: 10706, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
@@ -33,6 +33,7 @@ SubstanceImporter:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
+      generateMipmaps: 1
       generateAllOutputs: 0
       animationUpdateRate: 42
     materialProperties:
@@ -86,9 +87,24 @@ SubstanceImporter:
       filterMode: 1
       aniso: 1
       wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 2631855257
+    - shaderProp:
+        name: _BumpMap
+      material: {instanceID: 0}
+      baseUID: 2631855263
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 
+      textureWidth: 1024
+      textureHeight: 1024
+      textureFormat: 0
+      loadingBehavior: 1
+    - serializedVersion: 2
+      buildTarget: Web
       textureWidth: 1024
       textureHeight: 1024
       textureFormat: 0

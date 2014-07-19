@@ -8,6 +8,7 @@ public class SoundConnection {
 	public string level;
 	public bool isCustomLevel;
 	public List<AudioClip> soundsToPlay;
+	public List<float> baseVolumes = new List<float>();
 	public SoundManager.PlayMethod playMethod;
 	public float minDelay;
 	public float maxDelay;
@@ -23,11 +24,13 @@ public class SoundConnection {
 		maxDelay = 0f;
 		delay = 0f;
 		soundsToPlay = new List<AudioClip>();
+		baseVolumes = new List<float>();
 		foreach(AudioClip audio in audioList)
 		{
 			if(!soundsToPlay.Contains(audio))
 			{
 				soundsToPlay.Add(audio);
+				baseVolumes.Add(1f);
 			}
 		}
 	}
@@ -51,11 +54,13 @@ public class SoundConnection {
 		maxDelay = 0f;
 		delay = 0f;
 		soundsToPlay = new List<AudioClip>();
+		baseVolumes = new List<float>();
 		foreach(AudioClip audio in audioList)
 		{
 			if(!soundsToPlay.Contains(audio))
 			{
 				soundsToPlay.Add(audio);
+				baseVolumes.Add(1f);
 			}
 		}
 	}
@@ -69,11 +74,13 @@ public class SoundConnection {
 		maxDelay = delayPlay;
 		delay = delayPlay;
 		soundsToPlay = new List<AudioClip>();
+		baseVolumes = new List<float>();
 		foreach(AudioClip audio in audioList)
 		{
 			if(!soundsToPlay.Contains(audio))
 			{
 				soundsToPlay.Add(audio);
+				baseVolumes.Add(1f);
 			}
 		}
 	}
@@ -87,11 +94,13 @@ public class SoundConnection {
 		maxDelay = maxDelayPlay;
 		delay = (maxDelayPlay+minDelayPlay) / 2f;
 		soundsToPlay = new List<AudioClip>();
+		baseVolumes = new List<float>();
 		foreach(AudioClip audio in audioList)
 		{
 			if(!soundsToPlay.Contains(audio))
 			{
 				soundsToPlay.Add(audio);
+				baseVolumes.Add(1f);
 			}
 		}
 	}

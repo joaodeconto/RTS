@@ -347,6 +347,11 @@ public class FactoryBase : IStats, IDeathObservable
 	[RPC]
 	public void InstanceOverdraw (int teamID, int allyID)
 	{
+		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
+		{
+			obj.SetActive (false);
+		}
+
 		SetTeam (teamID, allyID);
 		
 		levelConstruct = Health = 1;
@@ -356,41 +361,22 @@ public class FactoryBase : IStats, IDeathObservable
 
 		GetComponent<NavMeshObstacle> ().enabled = false;
 
-		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
-		{
-			obj.SetActive (false);
-		}
-
 		if (!photonView.isMine) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;
 
-// =================================================================
-// |                                                               |
-// |      UTILIZANDO COMPONENTE FOW EM TODAS ESTRUTURAS!!!         |
-// |                 DEVE SER ATUALIZADO!!!                        |
-// |                                                               |
-// =================================================================
-//		if (gameplayManager.SameEntity (team, ally))
-//		{
-//			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
-//			fowr.range = new Vector2(0, 0);
-//		}
-
+	
 	}
 
 	[RPC]
 	public void Instance ()
 	{
 		realRangeView  = this.fieldOfView;
-//		if (gameplayManager.SameEntity (team, ally))
-//		{
-//			FOWRevealer fowr = gameObject.GetComponent<FOWRevealer>();
-//			fowr.range = new Vector2(0, helperCollider.radius);
-//		}
 
 		GetComponent<NavMeshObstacle> ().enabled = true;
 
 		statsController.AddStats(this);
+
+		this.fieldOfView = 0.5f;
 		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
@@ -408,11 +394,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		if (levelConstruct < (MaxHealth / 2))
 		{
-		
-		
-
-		
-						buildingState = BuildingState.Base;
+			buildingState = BuildingState.Base;
 		}
 		else if (levelConstruct < MaxHealth)
 		{
@@ -667,6 +649,7 @@ public class FactoryBase : IStats, IDeathObservable
 			timer = 0;
 			unitToCreate = null;
 			inUpgrade = false;
+			Deselect();
 		}
 
 		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);

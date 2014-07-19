@@ -156,9 +156,12 @@ public class NewAccount : IView
 				pw.SetPlayer (username, true);
 				pw.SetPropertyOnPlayer ("player", player.ToString ());
 								
-
-				
-
+				Score.LoadScores
+				( () =>
+				{
+					Score.SetScorePoints (DataScoreEnum.TotalCrystals,   NumberOfCoinsNewPlayerStartsWith, -1);
+					Score.AddScorePoints (DataScoreEnum.CurrentCrystals, NumberOfCoinsNewPlayerStartsWith, -1);
+				});
 			}
 		});
 	}

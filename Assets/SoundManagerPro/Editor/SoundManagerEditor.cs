@@ -122,6 +122,9 @@ public partial class SoundManagerEditor : Editor {
 			string levelName = script.soundConnections[i].level;
 			if(!script.songStatus.ContainsKey(levelName))
 				script.songStatus.Add(levelName, SoundManager.HIDE);
+			
+			while(script.soundConnections[i].soundsToPlay.Count > script.soundConnections[i].baseVolumes.Count)
+				script.soundConnections[i].baseVolumes.Add(1f);
 		}
 	}
 	
@@ -268,7 +271,7 @@ public partial class SoundManagerEditor : Editor {
 			EditorGUILayout.BeginHorizontal();
 			{
 				GUI.color = Color.white;
-				script.showAdd = EditorGUILayout.Foldout(script.showAdd, new GUIContent("Add SoundConnection(s)", "Where SoundConnections are made."), foldoutStyle);
+				script.showAdd = EditorGUILayout.Foldout(script.showAdd, new GUIContent("Add SoundConnection(s)", "Create SoundConnections here. Choose a level, play method, and selection of songs to make one. Choose <custom> to make a custom SoundConnection that isn't tied to a level. REMEMBER: Levels will appear only if they are added to the build settings."), foldoutStyle);
 				script.showAdd = GUILayout.Toggle(script.showAdd, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
 			}
 			EditorGUILayout.EndHorizontal();
@@ -296,7 +299,7 @@ public partial class SoundManagerEditor : Editor {
 			EditorGUILayout.BeginHorizontal();
 			{
 				GUI.color = Color.white;
-				script.showSFX = EditorGUILayout.Foldout(script.showSFX, new GUIContent("SFX", "Section for handling SFX and applying attributes to groups of SFX"), foldoutStyle);
+				script.showSFX = EditorGUILayout.Foldout(script.showSFX, new GUIContent("SFX", "Section for handling SFX, and SFX groups--along with the attributes that accompany them."), foldoutStyle);
 				script.showSFX = GUILayout.Toggle(script.showSFX, expandContent, EditorStyles.toolbarButton, GUILayout.Width(50f));
 			}
 			EditorGUILayout.EndHorizontal();
@@ -336,7 +339,7 @@ public partial class SoundManagerEditor : Editor {
 			EditorGUILayout.LabelField("Current Scene:", Application.loadedLevelName);
 			
 			float crossDuration = script.crossDuration;
-			crossDuration = EditorGUILayout.FloatField("Cross Duration:",crossDuration);
+			crossDuration = EditorGUILayout.FloatField(new GUIContent("Cross Duration:","Duration of crossfades for music."),crossDuration);
 			if(crossDuration < 0) 
 				crossDuration = 0f;
 			if(crossDuration != script.crossDuration)
@@ -493,7 +496,7 @@ public partial class SoundManagerEditor : Editor {
 			{
 				EditorGUILayout.LabelField("Play Method: ", playMethod.ToString());
 			} else {
-				playMethod = (SoundManager.PlayMethod)EditorGUILayout.EnumPopup("Play Method:", playMethod, EditorStyles.popup);
+				playMethod = (SoundManager.PlayMethod)EditorGUILayout.EnumPopup(new GUIContent("Play Method:", "Dictates how the SoundConnection will play through the sound list."), playMethod, EditorStyles.popup);
 				if(playMethod != obj.playMethod)
 				{
 					SoundManagerEditorTools.RegisterObjectChange("Change Play Method", script);
@@ -625,8 +628,17 @@ public partial class SoundManagerEditor : Editor {
 	private void ShowSongList(SoundConnection obj, bool editable)
 	{
 		int size = obj.soundsToPlay.Count;
-		
-		EditorGUILayout.LabelField("Sound List:");
+		EditorGUILayout.BeginHorizontal();
+		{
+			EditorGUILayout.LabelField(new GUIContent("Sound List:", "List of sounds in the SoundConnection. How they play is determined by the SoundConnection's PlayMethod. You can also assign the base volume of each sound."));
+			if(editable)
+			{
+				GUILayout.FlexibleSpace();
+				EditorGUILayout.LabelField(new GUIContent("B-Vol:", "Base volume for an AudioClip in this SoundConnection. Lower this value if you don't want a particular AudioClip to play as loud. When in doubt, keep this at 1."), GUILayout.Width(65f));
+				EditorGUILayout.LabelField("", GUILayout.Width(90f));
+			}
+		}
+		EditorGUILayout.EndHorizontal();
 		EditorGUI.indentLevel++;
 		
 		for(int i = 0; i < size ; i++)
@@ -642,7 +654,7 @@ public partial class SoundManagerEditor : Editor {
 						if(obj.soundsToPlay[i] == null) 
 							return;
 						
-						AudioClip newClip = (AudioClip)EditorGUILayout.ObjectField(obj.soundsToPlay[i], typeof(AudioClip), false);
+						AudioClip newClip = (AudioClip)EditorGUILayout.ObjectField(obj.soundsToPlay[i], typeof(AudioClip), false, GUILayout.ExpandWidth(true));
 						if(newClip != null)
 							obj.soundsToPlay[i] = newClip;
 						
@@ -653,6 +665,19 @@ public partial class SoundManagerEditor : Editor {
 								RemoveSound(obj, i);
 								return;
 							}
+						}
+						
+						float baseVolume = obj.baseVolumes[i];
+						baseVolume = EditorGUILayout.FloatField(baseVolume, GUILayout.Width(55f));
+						if(baseVolume < 0f) 
+							baseVolume = 0f;
+						else if (baseVolume > 1f)
+							baseVolume = 1f;
+						if(baseVolume != obj.baseVolumes[i])
+						{
+							SoundManagerEditorTools.RegisterObjectChange("Change Base Volume", script);
+							obj.baseVolumes[i] = baseVolume;
+							EditorUtility.SetDirty(script);
 						}
 						
 						bool oldEnabled = GUI.enabled;
@@ -923,7 +948,7 @@ public partial class SoundManagerEditor : Editor {
 		EditorGUI.indentLevel++;
 		{
 			bool showDebug = script.showDebug;
-			showDebug = EditorGUILayout.Toggle("Show Debug Info:" , showDebug);
+			showDebug = EditorGUILayout.Toggle(new GUIContent("Show Debug Info:", "Debug to the console what's happening with the music. Track changes, scene changes, etc.") , showDebug);
 			if(showDebug != script.showDebug)
 			{
 				SoundManagerEditorTools.RegisterObjectChange("Change Show Debug", script);
@@ -932,7 +957,7 @@ public partial class SoundManagerEditor : Editor {
 			}
 			
 			bool ignoreLevelLoad = script.ignoreLevelLoad;
-			ignoreLevelLoad = EditorGUILayout.Toggle("Ignore Level Load:" , ignoreLevelLoad);
+			ignoreLevelLoad = EditorGUILayout.Toggle(new GUIContent("Ignore Level Load:", "Sets whether the SoundManager uses the level loading behavior. Set this to true to control when SoundConnections change completely yourself.") , ignoreLevelLoad);
 			if(ignoreLevelLoad != script.ignoreLevelLoad)
 			{
 				SoundManagerEditorTools.RegisterObjectChange("Set Ignore Level Load", script);
@@ -941,7 +966,7 @@ public partial class SoundManagerEditor : Editor {
 			}
 		
 			bool offTheBGM = script.offTheBGM;
-			offTheBGM = EditorGUILayout.Toggle("Music Always Off:" , offTheBGM);
+			offTheBGM = EditorGUILayout.Toggle(new GUIContent("Music Always Off:", "Turns off and won't play any music. Recommended for use during development so you aren't always hearing game music!") , offTheBGM);
 			if(offTheBGM != script.offTheBGM)
 			{
 				SoundManagerEditorTools.RegisterObjectChange("Toggle BGM", script);
@@ -950,7 +975,7 @@ public partial class SoundManagerEditor : Editor {
 			}
 		
 			bool offTheSFX = script.offTheSFX;
-			offTheSFX = EditorGUILayout.Toggle("SFX Always Off:" , offTheSFX);
+			offTheSFX = EditorGUILayout.Toggle(new GUIContent("SFX Always Off:", "Turns off and won't play any sound effects. Recommended for use during development so you aren't always hearing game sounds!") , offTheSFX);
 			if(offTheSFX != script.offTheSFX)
 			{
 				SoundManagerEditorTools.RegisterObjectChange("Toggle SFX", script);
@@ -959,7 +984,7 @@ public partial class SoundManagerEditor : Editor {
 			}
 		
 			int capAmount = script.capAmount;
-			capAmount = EditorGUILayout.IntField("SFX Cap Amount:", capAmount, GUILayout.Width(3f*Screen.width/4f));
+			capAmount = EditorGUILayout.IntField(new GUIContent("SFX Cap Amount:", "Sets the automatic cap amount whenever playing capped sound effects. Capped sound effects won't play more than this amount at a time. Useful for sound effects that can get played many times at once."), capAmount, GUILayout.Width(3f*Screen.width/4f));
 			if(capAmount < 0) 
 				capAmount = 0;
 			if(capAmount != script.capAmount)
@@ -970,7 +995,7 @@ public partial class SoundManagerEditor : Editor {
 			}
 			
 			float SFXObjectLifetime = script.SFXObjectLifetime;
-			SFXObjectLifetime = EditorGUILayout.FloatField("SFX Object Lifetime:", SFXObjectLifetime, GUILayout.Width(3f*Screen.width/4f));
+			SFXObjectLifetime = EditorGUILayout.FloatField(new GUIContent("SFX Object Lifetime:", "This sets how long sound effect objects live in the pool if they exceed the prepool amount (in seconds)."), SFXObjectLifetime, GUILayout.Width(3f*Screen.width/4f));
 			if(SFXObjectLifetime < 1f) 
 				SFXObjectLifetime = 1f;
 			if(SFXObjectLifetime != script.SFXObjectLifetime)
@@ -981,7 +1006,7 @@ public partial class SoundManagerEditor : Editor {
 			}
 		
 			string resourcesPath = script.resourcesPath;
-			resourcesPath = EditorGUILayout.TextField("Default Load Path:", resourcesPath, GUILayout.Width(3f*Screen.width/4f));
+			resourcesPath = EditorGUILayout.TextField(new GUIContent("Default Load Path:", "This is the default path that the SoundManager will try to load sound effects from if they do not live on the SoundManager."), resourcesPath, GUILayout.Width(3f*Screen.width/4f));
 			if(resourcesPath != script.resourcesPath)
 			{
 				SoundManagerEditorTools.RegisterObjectChange("Change Default Load Path", script);
@@ -1192,6 +1217,10 @@ public partial class SoundManagerEditor : Editor {
 		AudioClip tempClip = obj.soundsToPlay[index1];
 		obj.soundsToPlay[index1] = obj.soundsToPlay[index2];
 		obj.soundsToPlay[index2] = tempClip;
+		
+		float tempBase = obj.baseVolumes[index1];
+		obj.baseVolumes[index1] = obj.baseVolumes[index2];
+		obj.baseVolumes[index2] = tempBase;
 		EditorUtility.SetDirty(script);
 		
 		SceneView.RepaintAll();
@@ -1204,6 +1233,7 @@ public partial class SoundManagerEditor : Editor {
 		
 		SoundManagerEditorTools.RegisterObjectChange("Remove Sound", script);
 		obj.soundsToPlay.RemoveAt(index);
+		obj.baseVolumes.RemoveAt(index);
 		EditorUtility.SetDirty(script);
 		
 		SceneView.RepaintAll();
@@ -1216,6 +1246,7 @@ public partial class SoundManagerEditor : Editor {
 		
 		SoundManagerEditorTools.RegisterObjectChange("Add Sound", script);
 		obj.soundsToPlay.Add(clip);
+		obj.baseVolumes.Add(1f);
 		EditorUtility.SetDirty(script);
 		
 		SceneView.RepaintAll();

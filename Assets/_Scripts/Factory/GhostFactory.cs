@@ -6,7 +6,6 @@ public class GhostFactory : MonoBehaviour
 {
 	protected Worker worker;
 	protected TouchController touchController;
-	protected FogOfWar fogOfWar;
 	protected GameplayManager gameplayManager;
 
 	protected string correctName;
@@ -15,6 +14,7 @@ public class GhostFactory : MonoBehaviour
 	protected GameObject overdrawModel;
 	protected int numberOfCollisions = 0;
 	protected float realRadius;
+	public bool collideOnNavMeshLayer;
 	
 	private bool isCapsuleCollider;
 
@@ -37,13 +37,14 @@ public class GhostFactory : MonoBehaviour
 
 		ComponentGetter.Get<InteractionController> ().enabled = false;
 		ComponentGetter.Get<SelectionController> ().enabled = false;
-		fogOfWar = ComponentGetter.Get<FogOfWar> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		touchController = ComponentGetter.Get<TouchController> ();
 
 		touchController.DisableDragOn = true;
 		
 		isCapsuleCollider = true;
+
+		thisFactory.gameObject.layer = LayerMask.NameToLayer ("Gizmos");
 		
 		GameObject helperColliderGameObject;
 		
@@ -101,31 +102,35 @@ public class GhostFactory : MonoBehaviour
 		Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit;
 		NavMeshHit navHit;
-		bool collideOnNavMeshLayer;
+
 
 		// Patch transform com hit.point
-		transform.position = Vector3.zero;
-		
+	//	transform.position = Vector3.zero;
+
+
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, terrainLayer))
 		{
 			transform.position = hit.point;
 		}
+		collideOnNavMeshLayer = NavMesh.SamplePosition (hit.point, out navHit, 0.1f, 1);
+//		Debug.DrawRay (ray.origin,ray.direction * 10000f);
+//		Debug.Log (collideOnNavMeshLayer);
+
+
 		if (touchController.touchType == TouchController.TouchType.Ended)
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id0)
 			{
+		//		collideOnNavMeshLayer = NavMesh.SamplePosition (hit.point, out navHit, 1f, 1);
 				
-				collideOnNavMeshLayer = NavMesh.SamplePosition (hit.point, out navHit, 1f, 7);
-				
-//				Debug.Log ("navHit: " + navHit.hit + " - collideOnNavMeshLayer: " + collideOnNavMeshLayer);
-				
-//				Debug.DrawRay (ray.origin,ray.direction * 10000f);
+							
+
 //				Debug.Break ();
 
 #if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
 				if (numberOfCollisions == 0)
 #else
-				if (numberOfCollisions == 0 && fogOfWar.IsKnownArea (transform) && collideOnNavMeshLayer)
+				if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)
 #endif
 				{
 					Apply ();
@@ -142,6 +147,15 @@ public class GhostFactory : MonoBehaviour
 				PhotonNetwork.Destroy (gameObject);
 			}
 		}
+		if (numberOfCollisions != 0 || collideOnNavMeshLayer == false)
+		{
+			SetColorOverdraw (new Color (0.75f, 0.25f, 0.25f));
+		}
+
+		if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)
+		{
+			SetColorOverdraw (new Color (0.25f, 0.75f, 0.25f));
+		}
 	}
 	
 	void OnCollider (Collider other)
@@ -151,13 +165,9 @@ public class GhostFactory : MonoBehaviour
 			numberOfCollisions++;
 		}
 
-			
-		if (numberOfCollisions != 0)
-		{
-			SetColorOverdraw (new Color (0.75f, 0.25f, 0.25f));
-		}
+
 	}
-	
+
 	void OffCollider (Collider other)
 	{
 		if (!other.name.Equals ("Terrain"))
@@ -166,10 +176,7 @@ public class GhostFactory : MonoBehaviour
 		}
 
 
-		if (numberOfCollisions == 0)
-		{
-			SetColorOverdraw (new Color (0.25f, 0.75f, 0.25f));
-		}
+
 	}
 	
 	void Apply ()
