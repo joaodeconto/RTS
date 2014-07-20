@@ -176,6 +176,21 @@ public class InteractionController : MonoBehaviour
 
 				feedback = true;
 
+				
+				hudController.DestroyInspector ("unit");
+				hudController.DestroyOptionsBtns();
+				
+				worker.Deselect ();
+				
+				if (statsController.selectedStats.Count == 1) 
+				{
+					statsController.DeselectAllStats();
+					statsController.selectedStats.Clear();
+					
+				}
+
+
+
 			}
 
 			if (feedback)

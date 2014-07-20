@@ -161,7 +161,7 @@ public class TutorialMenu : MonoBehaviour
 			//			Debug.Log ("message: " + message);
 			//			Debug.Log ("playerBattle: " + playerBattle);
 			
-			string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + System.DateTime.Now.ToString ("mm-ss");
+			string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + bMode;
 			bool isVisible = true, isOpen = true;
 			
 			ConfigurationData.battle = battle;

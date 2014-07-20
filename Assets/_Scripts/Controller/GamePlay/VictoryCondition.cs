@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
 using Visiorama;
 
 public class VictoryCondition : MonoBehaviour
@@ -24,18 +25,27 @@ public class VictoryCondition : MonoBehaviour
 		public bool IsActive;
 		public bool objectiveCompleted;
 		public string Name;
+		public EnumComparingType enumComparingType;
 		public int valueToCompare;
 		public EnumCondition enumCondition;
-		public EnumComparingType enumComparingType;
+		public string objDescription;
+		public string objSprite;
+
 	}
 
 	private GameplayManager gm;
 	private StatsController sc;
+	private EventManager em;
 
 	public Challenge[] ChallengesToWin;
-
+		 
 	public bool Ativar;
 	public bool FoiAtivado;
+	public GameObject objectiveLog;
+	public UITable objSubpanel;
+	public GameObject objectiveRow;
+
+
 
 	public void Update ()
 	{
@@ -51,12 +61,14 @@ public class VictoryCondition : MonoBehaviour
 		foreach (Challenge ch in ChallengesToWin)
 		{
 			ch.IsActive = true;
+			AddToObjectiveLog(ch.Name, ch.objSprite, ch.valueToCompare, ch.objDescription, ch.objectiveCompleted);
 		}
 	}
 		
 	public void Start ()
 	{
 		gm = ComponentGetter.Get<GameplayManager> ();
+		em = ComponentGetter.Get<EventManager> ();
 
 		InvokeRepeating ("CheckVictory", 1.0f, 1.0f);
 	}
@@ -143,6 +155,7 @@ public class VictoryCondition : MonoBehaviour
 			if (ch.objectiveCompleted)
 			{
 				++nSuccess;
+
 				continue;
 			}
 
@@ -153,9 +166,13 @@ public class VictoryCondition : MonoBehaviour
 				ch.objectiveCompleted = true;
 
 				//Faz alguma animaçao para que o usuario veja
-				Debug.Log ("Challenge " + ch.Name + "completado");
-				
+				em.AddEvent("objective completed", ch.Name, ch.objSprite);
+
+				Transform completeTrns = objSubpanel.transform.FindChild (ch.Name).FindChild("ObjectiveCompleted");
+				completeTrns.GetComponent<UIToggle>().value = true;
+								
 				++nSuccess;
+
 			}
 		}
 
@@ -167,6 +184,8 @@ public class VictoryCondition : MonoBehaviour
 			Debug.Log ("Feedback de fim de jogo");
 			Debug.Break ();
 		}
+
+
 
 		//Score.GetPlayerCurrentBattleScores
 		//(
@@ -185,4 +204,31 @@ public class VictoryCondition : MonoBehaviour
 	//		}
 	///	);
 	}
+
+	public void AddToObjectiveLog (string challengeName, string spriteName = "", int paramValue = 0, string description = "", bool complete = false)
+	{
+
+		Transform name = objectiveRow.transform.FindChild ("label (objName)");
+		name.GetComponent<UILabel>().text = challengeName;
+
+		Transform desc = objectiveRow.transform.FindChild ("Tween").FindChild ("Label - Description");
+		desc.GetComponent<UILabel>().text = description;
+
+		Transform sprite = objectiveRow.transform.FindChild ("Sprite (objSprite)");
+		sprite.GetComponent<UISprite>().spriteName = spriteName;
+
+		Transform completed = objectiveRow.transform.FindChild ("ObjectiveCompleted");
+		completed.GetComponent<UIToggle>().value = complete;
+
+		GameObject objline = NGUITools.AddChild (objSubpanel.gameObject, objectiveRow);
+
+		Transform completeTrns = objSubpanel.transform.FindChild ("Objective Row(Clone)");
+		completeTrns.name = challengeName;
+
+		objSubpanel.repositionNow = true;
+						
+	
+	}
+
+
 }

@@ -335,7 +335,14 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public virtual void Deselect ()
 	{
-		if (Selected) Selected = false;
+		if (Selected)
+		{
+			Selected = false;
+
+						
+						hudController.DestroyOptionsBtns ();
+						hudController.DestroySelected (transform);
+		}
 		else return;
 	}
 

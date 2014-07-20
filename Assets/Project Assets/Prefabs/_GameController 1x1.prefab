@@ -205,6 +205,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 8
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -216,6 +217,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 10
 --- !u!4 &400004
 Transform:
   m_ObjectHideFlags: 1
@@ -227,6 +229,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 2
 --- !u!4 &400006
 Transform:
   m_ObjectHideFlags: 1
@@ -238,6 +241,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 7
 --- !u!4 &400008
 Transform:
   m_ObjectHideFlags: 1
@@ -249,6 +253,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 9
 --- !u!4 &400012
 Transform:
   m_ObjectHideFlags: 1
@@ -260,6 +265,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 4
 --- !u!4 &400014
 Transform:
   m_ObjectHideFlags: 1
@@ -271,6 +277,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 0
 --- !u!4 &400018
 Transform:
   m_ObjectHideFlags: 1
@@ -282,6 +289,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 6
 --- !u!4 &400020
 Transform:
   m_ObjectHideFlags: 1
@@ -293,6 +301,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 3
 --- !u!4 &400022
 Transform:
   m_ObjectHideFlags: 1
@@ -304,6 +313,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 5
 --- !u!4 &400024
 Transform:
   m_ObjectHideFlags: 1
@@ -315,6 +325,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
+  m_RootOrder: 1
 --- !u!4 &400026
 Transform:
   m_ObjectHideFlags: 1
@@ -337,6 +348,7 @@ Transform:
   - {fileID: 400008}
   - {fileID: 400002}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -366,6 +378,7 @@ MonoBehaviour:
   pref_attackFeedback: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
   sliders:
   - {fileID: 0}
+  boostProduction: {fileID: 0}
   grids:
   - name: actions
     rootPosition: {x: -184, y: 92, z: 0}
@@ -423,7 +436,7 @@ MonoBehaviour:
     maxItems: 10
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 5
+      timeToFadeout: 4
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
   - queueName: Chat
     panel: {fileID: 0}
@@ -515,8 +528,8 @@ MonoBehaviour:
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
   minimapAtlas: {fileID: 11400000, guid: 1ad367796a1accb419f17d3ea071ca02, type: 2}
-  visualizationSize: {x: 42, y: 26, z: 0}
-  visualizationPosition: {x: 0, y: 0, z: 60}
+  visualizationSize: {x: 84, y: 52, z: 0}
+  visualizationPosition: {x: 0, y: 0, z: 50}
   MiniMapRefreshInterval: .5
 --- !u!114 &11400018
 MonoBehaviour:
@@ -546,11 +559,14 @@ MonoBehaviour:
     Message: max population reached
     spriteName: cross-option
   - Name: create unit
-    Message: '{0} train complete'
+    Message: '{0} unit train complete'
     spriteName: 
   - Name: being attacked
     Message: we are under attack
     spriteName: Atk
+  - Name: objective completed
+    Message: '{0} Completed'
+    spriteName: 
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -573,7 +589,8 @@ MonoBehaviour:
     zoomSpeed: .200000003
     zoom:
       min: 10
-      max: 20
+      max: 21
+  doubleClickSpeed: 0
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -611,7 +628,7 @@ MonoBehaviour:
   - name: Time 1
     colors:
     - {r: 0, g: 0, b: 1, a: 1}
-    - {r: .0808823705, g: .0808823705, b: .0808823705, a: 1}
+    - {r: 1, g: .558620691, b: 0, a: 1}
     - {r: .558823526, g: .47857058, b: .460207611, a: 1}
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
@@ -661,7 +678,7 @@ MonoBehaviour:
     initialPosition: {fileID: 0}
   resources:
     m_mana: 0
-    m_rocks: 600
+    m_rocks: 100
   hud:
     labelRocks: {fileID: 0}
     labelMana: {fileID: 0}
@@ -701,7 +718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 0
+  autoload: 1
   targetFPS: 60
 --- !u!1001 &100100000
 Prefab:

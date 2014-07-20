@@ -75,6 +75,8 @@ public class Worker : Unit
 	protected bool isMovingToFactory;
 	protected bool isCheckedSendResourceToFactory;
 
+
+
 	public override void Init ()
 	{
 		base.Init ();
@@ -121,9 +123,19 @@ public class Worker : Unit
 				{
 					Pathfind.Stop ();
 					transform.LookAt (resource.transform);
+					
+			}
+
+				if (!IsExtracting)
+				{
+
+
+
+				StartCoroutine (Extract ());
+
+
 				}
 
-				if (!IsExtracting) StartCoroutine (Extract ());
 				break;
 
 			case WorkerState.Carrying:
@@ -199,7 +211,12 @@ public class Worker : Unit
 				{
 					gameplayManager.resources.DeliverResources (resourceType, currentNumberOfResources);
 
-					if (resource != null) SetResource (resource);
+					if (resource != null)
+					{
+					SetResource (resource);
+
+					}
+
 					else
 					{
 						Pathfind.Stop ();
@@ -403,7 +420,7 @@ public class Worker : Unit
 			ghostFactory.AddComponent<GhostFactory>().Init (this, factoryConstruct);
 		}
 		else
-			eventManager.AddEvent("out of founds", factoryConstruct.factory.name);
+			eventManager.AddEvent("out of funds", factoryConstruct.factory.name);
 	}
 
 	public void SetResource (Resource newResource)
@@ -420,6 +437,7 @@ public class Worker : Unit
 			position.y = resource.transform.position.y;
 
 			Move (position);
+
 		}
 	}
 
@@ -747,6 +765,7 @@ public class Worker : Unit
 	{
 		if (resource != null)
 		{
+
 			if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.capsuleCollider.radius)
 			{
 				Pathfind.Stop ();
@@ -815,6 +834,7 @@ public class Worker : Unit
 		}
 	}
 
+
 	// GIZMOS
 
 	public override void DrawGizmosSelected ()
@@ -827,6 +847,7 @@ public class Worker : Unit
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
 	}
+
 
 	// RPC
 	[RPC]

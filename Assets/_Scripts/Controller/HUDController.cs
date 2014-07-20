@@ -72,6 +72,8 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public UISlider[] sliders;
 
+	public UIButton boostProduction;
+
 	public UISlider GetSlider(string name)
 	{
 		foreach(UISlider slider in sliders)
@@ -102,6 +104,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
+	private FactoryBase factoryBase;
 	private PrefabCache prefabCache;
 
 	private Stack<ButtonStatus> stackButtonToCreate;
@@ -570,6 +573,14 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 		Destroy (newFeedback, duration);
 	}
+
+	public void ActiveBoost ()
+	{
+		factoryBase.BoostProduction ();
+	}
+
+
+	
 	
 //	public void OpenInfoBoxUnit (Unit unit)
 //	{

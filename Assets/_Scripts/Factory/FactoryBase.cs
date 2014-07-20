@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
 using Visiorama;
 using Visiorama.Extension;
 
@@ -57,15 +56,19 @@ public class FactoryBase : IStats, IDeathObservable
 	protected Unit unitToCreate;
 	public float timeToCreate;
 	public float timer;
+	public float boostDuration = 10;
+	public float boostTime = 0;
 	protected bool inUpgrade;
 
 	public Animation ControllerAnimation { get; private set; }
 
 	public bool wasBuilt { get; private set; }
 
-//	protected HUDController hudController;
+	public bool onBoost = false;
+
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;
+
 
 	[HideInInspector]
 	public bool wasVisible = false;
@@ -97,6 +100,7 @@ public class FactoryBase : IStats, IDeathObservable
 		hudController     = ComponentGetter.Get<HUDController> ();
 		buildingSlider    = hudController.GetSlider("Building Unit");
 		buildingSlider.gameObject.SetActive(false);
+
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -147,6 +151,25 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		SyncAnimation ();
 
+		if (onBoost)
+		{
+						
+			if (boostTime> boostDuration)
+				
+			{
+				onBoost = false;
+				boostTime = 0;
+			}
+			
+			else
+			{
+				
+				boostTime += Time.deltaTime;
+				
+			}
+
+		}
+
 		if (!wasBuilt || lUnitsToCreate.Count == 0)
 			return;
 
@@ -182,8 +205,19 @@ public class FactoryBase : IStats, IDeathObservable
 			}
 			else
 			{
-				timer += Time.deltaTime;
+				if (onBoost)
+				{			
+				timer += Time.deltaTime*1.2f;
 				buildingSlider.value = (timer / timeToCreate);
+				}
+				else
+				
+				{
+					timer += Time.deltaTime;
+					buildingSlider.value = (timer / timeToCreate);
+				}
+
+
 			}
 		}
 	}
@@ -467,9 +501,28 @@ public class FactoryBase : IStats, IDeathObservable
 		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, timer);
 		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
+
+		DefaultCallbackButton dcb;
+				
+		Transform boost =  hudController.boostProduction.transform;
+		
+		UIButton btn_boost =  hudController.boostProduction;
+		
+		dcb = boost.gameObject.AddComponent<DefaultCallbackButton> ();
+		dcb.Init(null,
+		         (ht_dcb) => 
+		         {
+			BoostProduction();
+			
+		});
+
 		
 		if(unitToCreate != null)
+		{
 			buildingSlider.gameObject.SetActive(true);
+
+		}
+
 
 		if (!playerUnit) return;
 
@@ -667,6 +720,11 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 		
 		return null;
+	}
+
+	public void BoostProduction ()
+	{
+		onBoost = true;
 	}
 
 	public override void SetVisible(bool isVisible)
