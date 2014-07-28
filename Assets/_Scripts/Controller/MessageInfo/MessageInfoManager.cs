@@ -9,6 +9,7 @@ public class MessageInfoManager : MonoBehaviour
 	{
 		public float timeToFadeout;
 		public Color fadeColor;
+		public int messageCap;
 	}
 
 
@@ -66,6 +67,7 @@ public class MessageInfoManager : MonoBehaviour
 						 messageQueuesAttributes[i].IsVerticalQueue,
 						 messageQueuesAttributes[i].temporizedQueueAttributes.timeToFadeout,
 						 messageQueuesAttributes[i].temporizedQueueAttributes.fadeColor,
+				         messageQueuesAttributes[i].temporizedQueueAttributes.messageCap,
 						 messageQueuesAttributes[i].maxPerLine,
 						 messageQueuesAttributes[i].maxItems);
 			}

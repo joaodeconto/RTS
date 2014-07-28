@@ -345,15 +345,17 @@ MonoBehaviour:
   fieldOfView: 15
   sizeOfSelected: 5
   sizeOfSelectedHealthBar: 6
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 400004}
   movementActions: []
-  pref_ParticleDamage: {fileID: 0}
-  transformParticleDamageReference: {fileID: 0}
+  pref_ParticleDamage: {fileID: 100000}
+  transformParticleDamageReference: {fileID: 400000}
   playerUnit: 0
   category: Depot
   costOfResources:
     m_mana: 0
     m_rocks: 0
+  wasInitialized: 0
   model: {fileID: 100004}
   unitsToCreate: []
   receiveResource: 1
@@ -366,6 +368,9 @@ MonoBehaviour:
   guiTextureName: depot
   timeToCreate: 0
   timer: 0
+  boostDuration: 10
+  boostTime: 0
+  onBoost: 0
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400006

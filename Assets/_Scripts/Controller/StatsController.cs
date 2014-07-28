@@ -546,13 +546,13 @@ public class StatsController : MonoBehaviour
 						w.SetMoveToFactory(factory);
 						feedback = true;
 					}
-					else if (factory.IsNeededRepair)
+					else if (factory.IsDamaged)
 					{
 						w.SetMoveToFactory(factory);
 						feedback = true;
 					}
 				}
-				else if (factory.IsNeededRepair)
+				else if (factory.IsDamaged)
 				{
 					w.SetMoveToFactory(factory);
 					feedback = true;

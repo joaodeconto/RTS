@@ -574,13 +574,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		Destroy (newFeedback, duration);
 	}
 
-	public void ActiveBoost ()
-	{
-		factoryBase.BoostProduction ();
-	}
 
-
-	
 	
 //	public void OpenInfoBoxUnit (Unit unit)
 //	{

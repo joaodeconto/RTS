@@ -166,7 +166,7 @@ GameObject:
   - 114: {fileID: 11400002}
   m_Layer: 18
   m_Name: Barracks
-  m_TagString: Factory
+  m_TagString: ArmyStructure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
@@ -486,6 +486,7 @@ MonoBehaviour:
   costOfResources:
     m_mana: 0
     m_rocks: 200
+  wasInitialized: 0
   model: {fileID: 100004}
   unitsToCreate:
   - unit: {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
@@ -514,6 +515,9 @@ MonoBehaviour:
   guiTextureName: main-building
   timeToCreate: 0
   timer: 0
+  boostDuration: 10
+  boostTime: 0
+  onBoost: 0
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400006

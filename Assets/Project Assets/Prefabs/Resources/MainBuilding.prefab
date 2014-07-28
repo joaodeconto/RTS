@@ -86,7 +86,7 @@ GameObject:
   - 82: {fileID: 8200000}
   m_Layer: 10
   m_Name: MainBuilding
-  m_TagString: Factory
+  m_TagString: TribeCenter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
@@ -404,9 +404,6 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
-    costOfResources:
-      m_mana: 0
-      m_rocks: 70
   receiveResource: 1
   buildingObjects:
     baseObject: {fileID: 100010}
@@ -417,6 +414,11 @@ MonoBehaviour:
   guiTextureName: TribeMarket
   timeToCreate: 0
   timer: 0
+  boostDuration: 30
+  boostCost:
+    m_mana: 0
+    m_rocks: 100
+  boostPower: 1.29999995
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400002

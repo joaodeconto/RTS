@@ -3,8 +3,11 @@ using System.Collections;
 
 public class TemporizedMessageQueue : MessageQueue
 {
+	protected bool overCapLimit;
+	private int capCounter;
 	public Color fadeColor;
 	public float timeToFadeout;
+	public int messageCap = 1;
 
 	public TemporizedMessageQueue Init ( GameObject pref_button,
 										 UIGrid uiGrid,
@@ -16,6 +19,7 @@ public class TemporizedMessageQueue : MessageQueue
 										 bool IsVerticalQueue,
 										 float timeToFadeout,
 										 Color fadeColor,
+	                                     int messageCap,
 										 int maxPerLine,
 										 int maxItems)
 	{
@@ -33,6 +37,7 @@ public class TemporizedMessageQueue : MessageQueue
 		this.uiGrid.hideInactive = false;
 		this.timeToFadeout = timeToFadeout;
 		this.fadeColor     = fadeColor;
+		this.messageCap    = messageCap;
 
 		return this;
 	}
@@ -47,20 +52,36 @@ public class TemporizedMessageQueue : MessageQueue
 										DefaultCallbackButton.OnDragDelegate onDrag = null,
 										DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
+
+
+		if (capCounter>messageCap)
+		{
+			Debug.LogWarning("atingiu messageCap");
+			this.timeToFadeout = 1;				
+			return;
+		}
+
 		if(IsEmpty())
 		{
 			Invoke ("CleanFirstMessage", timeToFadeout);
 		}
 
+		this.timeToFadeout = 3;
 		base.AddMessageInfo (buttonName, ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
+
+		capCounter++;
+
 	}
 
 	private void CleanFirstMessage()
 	{
+		capCounter--;
 		DequeueMessageInfo();
 		if(!IsEmpty())
 		{
 			Invoke ("CleanFirstMessage", timeToFadeout);
+
+
 		}
 	}
 }

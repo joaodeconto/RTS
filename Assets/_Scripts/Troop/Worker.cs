@@ -707,7 +707,7 @@ public class Worker : Unit
 				}
 
 
-				else if (factoryChoose.IsNeededRepair)
+				else if (factoryChoose.IsDamaged)
 				{
 					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Repairing;
@@ -719,7 +719,7 @@ public class Worker : Unit
 
 			{
 				if (!factoryChoose.wasBuilt ||
-					factoryChoose.IsNeededRepair)
+					factoryChoose.IsDamaged)
 				{   
 														
 					Move (factoryChoose.transform.position);

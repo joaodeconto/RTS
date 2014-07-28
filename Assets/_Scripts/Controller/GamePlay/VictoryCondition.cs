@@ -19,17 +19,21 @@ public class VictoryCondition : MonoBehaviour
 			MaxPopulation,
 			Time_,
 			EnemyUnits,
-			Collect
+			Collect,
+			Build,
+			EnemyBuildings,
 		}
 	
 		public bool IsActive;
 		public bool objectiveCompleted;
 		public string Name;
 		public EnumComparingType enumComparingType;
+		public string specificStat;
 		public int valueToCompare;
 		public EnumCondition enumCondition;
 		public string objDescription;
 		public string objSprite;
+
 
 	}
 
@@ -44,6 +48,15 @@ public class VictoryCondition : MonoBehaviour
 	public GameObject objectiveLog;
 	public UITable objSubpanel;
 	public GameObject objectiveRow;
+
+	public int nEnemies = 0;
+	public int nPopulation = 0;
+	public int nTeams = 0;
+	public int nMaxPopulation = 0;
+	public int nTime = 0;
+	public int nBuilds = 0;
+	public int eneBuilds = 0;
+	public int nCollected = 0;
 
 
 
@@ -69,6 +82,7 @@ public class VictoryCondition : MonoBehaviour
 	{
 		gm = ComponentGetter.Get<GameplayManager> ();
 		em = ComponentGetter.Get<EventManager> ();
+		sc = ComponentGetter.Get<StatsController>();
 
 		InvokeRepeating ("CheckVictory", 1.0f, 1.0f);
 	}
@@ -84,7 +98,7 @@ public class VictoryCondition : MonoBehaviour
 		}
 	}
 
-	bool CheckCondtion (Challenge.EnumComparingType enumComparingType, Challenge.EnumCondition enumCondition, int valueToCompare, string name)
+	bool CheckCondition (Challenge.EnumComparingType enumComparingType, Challenge.EnumCondition enumCondition, int valueToCompare, string name, string specificStat)
 	{
 		switch (enumComparingType)
 		{
@@ -92,7 +106,7 @@ public class VictoryCondition : MonoBehaviour
 			case Challenge.EnumComparingType.Teams:
 
 				//Teams que estao jogando
-				int nTeams = gm.teams.Length;
+				nTeams = gm.teams.Length;
 
 				return CheckValue (enumCondition, nTeams, valueToCompare);
 
@@ -101,7 +115,7 @@ public class VictoryCondition : MonoBehaviour
 			case Challenge.EnumComparingType.CurrentPopulation: 
 			
 			//Populaçao atual do jogador
-			int nPopulation = gm.numberOfUnits;
+			nPopulation = gm.numberOfUnits;
 			
 			return CheckValue (enumCondition, nPopulation, valueToCompare);
 			
@@ -109,7 +123,7 @@ public class VictoryCondition : MonoBehaviour
 			case Challenge.EnumComparingType.MaxPopulation: 
 
 				//Populaçao maxima atual do jogador
-				int nMaxPopulation = gm.TotalPopulation;
+				nMaxPopulation = gm.TotalPopulation;
 				
 				return CheckValue (enumCondition, nMaxPopulation, valueToCompare);
 			
@@ -117,28 +131,72 @@ public class VictoryCondition : MonoBehaviour
 			case Challenge.EnumComparingType.Time_:
 			
 				//Tempo de jogo atual
-				int nTime = 10000;
+				nTime = 10000;
 				
 				return CheckValue (enumCondition, nTime, valueToCompare);
 			
 			break;
 			case Challenge.EnumComparingType.EnemyUnits:
 			
-				//Unidades inimigas em jogo
-				int nEnemies = sc.otherStats.Count;
-				
+			int _nEnemies = 0;
+
+			foreach (IStats stats in sc.otherStats)
+			{
+				if (stats.tag == "Unit") _nEnemies++;continue;
+			}
+			nEnemies = _nEnemies;
+			         
 				return CheckValue (enumCondition, nEnemies, valueToCompare);
 
 			break;
 			case Challenge.EnumComparingType.Collect:
-			
-				//Quantidade de recursos de ouro coletados
-				int nGoldCOllected = gm.resources.Rocks;
-				
-				return CheckValue (enumCondition, nGoldCOllected, valueToCompare);
-			break;
 
-			default: return true;
+			if (specificStat == "Mana")
+			{		    
+				//Quantidade de recursos de ouro coletados
+				nCollected = gm.resources.Mana;
+			}
+			else
+			{		    
+
+				nCollected = gm.resources.Rocks;
+			}
+				
+				return CheckValue (enumCondition, nCollected, valueToCompare);
+			break;
+			case Challenge.EnumComparingType.Build:
+
+			int _nBuilds = 0;
+			
+			foreach (IStats stats in sc.myStats)
+			{
+				if (stats.tag == specificStat) _nBuilds++;continue;
+			}
+			nBuilds = _nBuilds;
+												
+			return CheckValue (enumCondition, nBuilds, valueToCompare);
+
+			break;
+			case Challenge.EnumComparingType.EnemyBuildings:
+
+
+			foreach (IStats stats in sc.otherStats)
+			{
+				if  (stats.name == specificStat)
+				{
+					eneBuilds++;
+						
+				}
+				continue;
+			}
+				
+
+							
+			return CheckValue (enumCondition, eneBuilds, valueToCompare);
+			
+			break;
+			
+		default: return true;
 		}
 	}
 	
@@ -159,7 +217,7 @@ public class VictoryCondition : MonoBehaviour
 				continue;
 			}
 
-			success = CheckCondtion (ch.enumComparingType, ch.enumCondition, ch.valueToCompare, ch.Name);
+			success = CheckCondition (ch.enumComparingType, ch.enumCondition, ch.valueToCompare, ch.Name, ch.specificStat);
 
 			if (success)
 			{

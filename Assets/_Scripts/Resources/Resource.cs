@@ -41,10 +41,10 @@ public class ResourcesManager
 		{
 			Rocks += numberOfResources;
 			
-//			if (battle != null)
+			if (battle != null)
 //			{
 //				Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberOfResources);
-//				Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberOfResources, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberOfResources, battle.IdBattle);
 //			}
 		}
 
@@ -52,10 +52,10 @@ public class ResourcesManager
 		{
 			Mana += numberOfResources;
 			
-//			if (battle != null)
+			if (battle != null)
 //			{
 //				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, m_mana);
-//				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, m_mana, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, m_mana, battle.IdBattle);
 //			}
 		}
 	}

@@ -26,11 +26,12 @@ public class Tutorial_Basic : MonoBehaviour {
 	public int tutorialScreenSelected;
 	public UILabel tutorialIndex;
 	public GameObject tutorialMainBg;
-	int i = 0;
+	int i = -1;
 
 	public void OnEnable ()
 	{
 		Init ();
+
 	}
 	
 	public void OnDisable ()
@@ -42,11 +43,13 @@ public class Tutorial_Basic : MonoBehaviour {
 	public void Init ()
 	
 	{
+
 		tutorialIndex.text = tutorialScreenSelected+1 + " / " + tutorial.Length;
 
 		tutorialMainBg.SetActive (true);
 
 		Invoke("PauseTime",2);
+		Invoke("ShowNextTutorialItem",2);
 
 
 	}
