@@ -27,12 +27,12 @@ namespace Model {
 		{
 			DB.DataScoreRanking ds = new DB.DataScoreRanking ();
 			
-			ds.IdPlayer           = this.IdPlayer;
-			ds.SzName              = this.SzName.ToString();
-			ds.NrPointsVictory           = this.NrPointsVictory;
-			ds.NrPointsDefeat           = this.NrPointsDefeat;
-			ds.NrPoints           = this.NrPoints;
-			ds.IdLastBattle           = this.IdLastBattle;			
+			ds.IdPlayer           = this.IdPlayer.ToString();
+			ds.SzName              = this.SzName;
+			ds.NrPointsVictory           = this.NrPointsVictory.ToString();
+			ds.NrPointsDefeat           = this.NrPointsDefeat.ToString();
+			ds.NrPoints           = this.NrPoints.ToString();
+			ds.IdLastBattle           = this.IdLastBattle.ToString();			
             return ds;
         }		
 

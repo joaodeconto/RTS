@@ -71,15 +71,15 @@ public class DataScoreDAO : MonoBehaviour
 		//Cria objetos que serao usados durante o chamado ao DB
 		object dummyObject = new object ();
 		
-		List <DB.DataScoreRanking> lDataScoreRanking = new List <DB.DataScoreRanking> ();
+		List <Model.DataScoreRanking> lDataScoreRanking = new List <Model.DataScoreRanking> ();
 		
 		//Chama todos os datascores de vitoria e derrotas
 		db.Read (dummyObject, lDataScoreRanking.GetType (), "read-datascore-ranking",
 		         (response) =>
 		{
-				if ((response as List <DB.DataScoreRanking>) != null)
+			if ((response as List <Model.DataScoreRanking>) != null)
 				{
-					lDataScoreRanking = (response as List <DB.DataScoreRanking>);		
+				lDataScoreRanking = (response as List <Model.DataScoreRanking>);		
 					Debug.Log ("lDataScoreRanking.Count: " + lDataScoreRanking.Count);
 				}			
 				//Debug.Break ();
