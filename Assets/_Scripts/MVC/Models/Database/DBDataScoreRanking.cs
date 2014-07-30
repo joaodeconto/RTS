@@ -5,12 +5,12 @@ namespace DB
 {
 		public class DataScoreRanking
 		{
-				public int IdPlayer;
+				public string IdPlayer;
 				public string SzName;
-				public int NrPointsVictory;
-				public int NrPointsDefeat;
-				public int NrPoints;
-				public int IdLastBattle;
+				public string NrPointsVictory;
+				public string NrPointsDefeat;
+				public string NrPoints;
+				public string IdLastBattle;
 
 				public Model.DataScoreRanking ToModel ()
 				{
