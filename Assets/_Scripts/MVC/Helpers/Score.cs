@@ -33,7 +33,7 @@ public struct DataScoreEnum
 public class Score : MonoBehaviour
 {
 	private Dictionary <string, Model.DataScore> dicDataScore;
-//	private Dictionary <Model.Player, List<Model.DataScore>> rankingScores;
+	private List      <Model.DataScoreRanking> rankingScores;
 
 	private Model.Player player;
 	private Model.Battle battle;
@@ -44,7 +44,7 @@ public class Score : MonoBehaviour
 	
 	public delegate void GetScoresCallback (List <Model.DataScore> listScore);
 
-//	public delegate void OnLoadRanking (Dictionary <Model.Player, List<Model.DataScore>> ranking);
+	public delegate void OnLoadRanking (List<Model.DataScoreRanking> ranking);
 
 	private bool wasInitialized = false;
 	private bool NeedToSave = false;
@@ -190,21 +190,21 @@ public class Score : MonoBehaviour
 		}
 	}
 	
-//	private void _LoadRanking (OnLoadRanking cb)
-//	{
-//		dataScoreDAO.LoadRankingScores
-//		(
-//			 (_rankingScores) =>
-//			 {
-//				rankingScores = _rankingScores;
-//
-//				if (cb != null)
-//				{
-//					cb (rankingScores);
-//				}
-//			}
-//		);
-//	}
+	private void _LoadRanking (OnLoadRanking cb)
+	{
+		dataScoreDAO.LoadRankingScores
+		(
+			 (_rankingScores) =>
+			 {
+				rankingScores = _rankingScores;
+
+				if (cb != null)
+				{
+					cb (rankingScores);
+				}
+			}
+		);
+	}
 	
 	/* Static */
 	private static Score instance = null;
@@ -262,8 +262,8 @@ public class Score : MonoBehaviour
 		Instance._LoadBattleScore (cb);
 	}
 
-//	public static void LoadRanking (OnLoadRanking cb = null)
-//	{
-//		Instance._LoadRanking (cb);
-//	}
+	public static void LoadRanking (OnLoadRanking cb = null)
+	{
+		Instance._LoadRanking (cb);
+	}
 }
