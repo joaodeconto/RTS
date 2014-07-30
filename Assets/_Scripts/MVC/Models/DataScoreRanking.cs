@@ -22,6 +22,19 @@ namespace Model {
 			this.NrPoints    = (NrPointsVictory + NrPointsDefeat);
 			this.IdLastBattle    = IdLastBattle;
 		}
+		
+		public DB.DataScoreRanking ToDatabaseModel ()
+		{
+			DB.DataScoreRanking ds = new DB.DataScoreRanking ();
+			
+			ds.IdPlayer           = this.IdPlayer;
+			ds.SzName              = this.SzName.ToString();
+			ds.NrPointsVictory           = this.NrPointsVictory;
+			ds.NrPointsDefeat           = this.NrPointsDefeat;
+			ds.NrPoints           = this.NrPoints;
+			ds.IdLastBattle           = this.IdLastBattle;			
+            return ds;
+        }		
 
 	}
 }

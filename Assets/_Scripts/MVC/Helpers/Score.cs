@@ -44,7 +44,7 @@ public class Score : MonoBehaviour
 	
 	public delegate void GetScoresCallback (List <Model.DataScore> listScore);
 
-	public delegate void OnLoadRanking (List<Model.DataScoreRanking> ranking);
+	public delegate void OnLoadRanking (List <Model.DataScoreRanking> ranking);
 
 	private bool wasInitialized = false;
 	private bool NeedToSave = false;
