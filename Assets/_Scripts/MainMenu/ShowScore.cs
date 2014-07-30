@@ -132,7 +132,7 @@ public class ShowScore : MonoBehaviour
 					scorePlayerObject.GetComponent<ScoreRow>().StructuresLost.GetComponentInChildren<UILabel>().text  = sp.Value.StructureLostPoints.ToString ();
 					scorePlayerObject.GetComponent<ScoreRow>().StructuresDestroyed.GetComponentInChildren<UILabel>().text  = sp.Value.StructureDestroyedPoints.ToString ();
 
-					scorePlayerObject.GetComponent<ScoreRow>().ressourceGold.value  =  sp.Value.GoldCollectedPoints / battleTotalGold;
+					scorePlayerObject.GetComponent<ScoreRow>().ressourceGold.value  = battleTotalGold / sp.Value.GoldCollectedPoints;
 //					scorePlayerObject.GetComponent<ScoreRow>().ressourceMana.value  = battleTotalMana / sp.Value.ManaCollectedPoints;
 //					scorePlayerObject.GetComponent<ScoreRow>().ressourceSpent.value  = battleTotalSpent / sp.Value.ResourcesSpentPoints;
 					scorePlayerObject.GetComponent<ScoreRow>().StructuresBuild.value  = sp.Value.StructureCreatedPoints / battleTotalStructuresBuild;
