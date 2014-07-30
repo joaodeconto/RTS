@@ -65,7 +65,7 @@ public class DataScoreDAO : MonoBehaviour
 			callback (list);
 		});
 	}
-	public delegate void RankingDAODelegate ( Dictionary <Model.Player, List<Model.DataScore>> scores);
+	public delegate void RankingDAODelegate ( List<Model.DataScoreRanking> ranking);
 	public void LoadRankingScores (RankingDAODelegate callback)
 	{
 		//Cria objetos que serao usados durante o chamado ao DB
