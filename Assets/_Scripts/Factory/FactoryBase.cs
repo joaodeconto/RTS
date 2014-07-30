@@ -70,6 +70,7 @@ public class FactoryBase : IStats, IDeathObservable
 	protected bool inUpgrade;
 
 
+
 	public Animation ControllerAnimation { get; private set; }
 
 	public bool wasBuilt { get; private set; }
@@ -103,7 +104,10 @@ public class FactoryBase : IStats, IDeathObservable
 
 	public override void Init ()
 	{
+
 		base.Init();
+
+
 
 		timer = 0;
 
@@ -150,6 +154,7 @@ public class FactoryBase : IStats, IDeathObservable
 		enabled = playerUnit;
 
 		Invoke ("SendMessageInstance", 0.1f);
+
 	}
 
 	void SendMessageInstance ()
@@ -174,8 +179,10 @@ public class FactoryBase : IStats, IDeathObservable
 			{
 				onBoost = false;
 				boostTime = 0;
+				if(Selected){
 				boostTimeLabel =  hudController.boostProduction.GetComponentInChildren<UILabel>();
 				boostTimeLabel.text = ("Boost");
+				}
 			}
 			
 			else
@@ -183,12 +190,16 @@ public class FactoryBase : IStats, IDeathObservable
 				
 				boostTime += Time.deltaTime;
 				float countdown = boostDuration - boostTime;
+				if(Selected){
 				boostTimeLabel =  hudController.boostProduction.GetComponentInChildren<UILabel>();
 				boostTimeLabel.text = countdown.ToString ("00");
-				
+				}
 			}
 			
 		}
+
+		if (lUnitsToCreate.Count == 0)
+			return;
 
 		if (gameplayManager.NeedMoreHouses (lUnitsToCreate[0].numberOfUnits))
 		{
@@ -274,6 +285,8 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 //		buildingSlider.gameObject.SetActive(false);
 
+		timer = 0;
+
 		lUnitsToCreate.RemoveAt (0);
 
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
@@ -310,7 +323,7 @@ public class FactoryBase : IStats, IDeathObservable
 		//	Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1);
 			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);
 		//	Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
-			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1, battle.IdBattle);
+		//	Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1, battle.IdBattle);
 		}
 		if (!hasRallypoint) return;
 
@@ -374,7 +387,7 @@ public class FactoryBase : IStats, IDeathObservable
 		
 //		yield return StartCoroutine (model.animation.WaitForAnimation (model.animation.clip));
 
-		yield return new WaitForSeconds (4f);
+		yield return new WaitForSeconds (7f);
 		if (IsNetworkInstantiate)
 		{
 			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
@@ -488,7 +501,7 @@ public class FactoryBase : IStats, IDeathObservable
 //				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1);
 				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
 //				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1);
-				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1, battle.IdBattle);
+//				Score.AddScorePoints (factoryName + DataScoreEnum.XCreated, 1, battle.IdBattle);
 			}
 			return false;
 		}
@@ -524,50 +537,50 @@ public class FactoryBase : IStats, IDeathObservable
 		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 
-		DefaultCallbackButton dcb;
-				
-
-		GameObject boostBtn =  hudController.boostProduction.gameObject;
-		Transform boostCostTr = boostBtn.transform.FindChild("Gold").FindChild("Label Gold Price");
-		UILabel boostCostLabel = boostCostTr.GetComponent<UILabel>();
-		boostCostLabel.text = boostCost.Rocks.ToString();
-
-		buildingSlider.gameObject.SetActive(true);
-								
-		dcb = boostBtn.gameObject.AddComponent<DefaultCallbackButton> ();
-							dcb.Init(null,
-							         (ht_dcb) => 
-						         {
-
-			canBoost = gameplayManager.resources.CanBuy (boostCost);
-
-			if (onBoost)
-			{
-				eventManager.AddEvent("standard message", "Already on Production Boost");
-				Debug.Log("gold spent event");
-
-			}
-
-			if (canBoost && !onBoost)
-			{
-				BoostProduction();
-				gameplayManager.resources.UseResources (boostCost);
-				Debug.Log("gold spent event");
-			}
-
-			else
-			{
-				eventManager.AddEvent("out of funds", "boostCost");
-			
-			}
-		   	});
-
-
 		if (!playerUnit) return;
 
 		if (wasBuilt)
 		{
 			if (!hasRallypoint) return;
+
+			buildingSlider.gameObject.SetActive(true);
+
+			Transform boostBtn =  hudController.boostProduction.transform;
+			Transform boostCostTr = boostBtn.transform.FindChild("Gold").FindChild("Label Gold Price");
+			UILabel boostCostLabel = boostCostTr.GetComponent<UILabel>();
+			boostCostLabel.text = boostCost.Rocks.ToString();
+			
+			DefaultCallbackButton dcb;
+			
+			dcb = ComponentGetter.Get<DefaultCallbackButton> (boostBtn, false);
+			dcb.Init(null,
+			         (ht_dcb) => 
+			         {
+				
+				canBoost = gameplayManager.resources.CanBuy (boostCost);
+				
+				if (onBoost)
+				{
+					eventManager.AddEvent("standard message", "Already on Boosting Production ");
+					return;
+					
+				}
+				
+				if (canBoost && !onBoost)
+				{
+					BoostProduction();
+					gameplayManager.resources.UseResources (boostCost);
+					Debug.Log("gold spent event");
+					return;
+					
+				}
+				
+				else
+				{
+					eventManager.AddEvent("out of funds", "boostCost");
+					
+				}
+			});
 
 			goRallypoint.gameObject.SetActive (true);
 			if (!goRallypoint.gameObject.activeSelf)

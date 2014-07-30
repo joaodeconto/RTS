@@ -438,9 +438,9 @@ MonoBehaviour:
     maxItems: 10
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 4
+      timeToFadeout: 3
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
-      messageCap: 0
+      messageCap: 3
   - queueName: Chat
     panel: {fileID: 0}
     rootPosition: {x: 0, y: 0}
@@ -454,7 +454,7 @@ MonoBehaviour:
     temporizedQueueAttributes:
       timeToFadeout: 4
       fadeColor: {r: 1, g: 1, b: 1, a: 0}
-      messageCap: 0
+      messageCap: 4
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -572,8 +572,8 @@ MonoBehaviour:
     Message: '{0} Completed'
     spriteName: 
   - Name: standard message
-    Message: 
-    spriteName: 
+    Message: '{0}'
+    spriteName: cross-option
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -725,7 +725,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ccdc7773d14d7549b4f8eed07a51f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoload: 1
+  autoload: 0
   targetFPS: 60
 --- !u!1001 &100100000
 Prefab:

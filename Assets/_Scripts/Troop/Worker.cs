@@ -56,7 +56,7 @@ public class Worker : Unit
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
 
-	public WorkerState workerState {get; set;}
+	public WorkerState workerState;// {get; set;}
 
 	public bool IsExtracting {get; protected set;}
 	public bool IsRepairing {get; protected set;}
@@ -123,19 +123,9 @@ public class Worker : Unit
 				{
 					Pathfind.Stop ();
 					transform.LookAt (resource.transform);
-					
-			}
-
-				if (!IsExtracting)
-				{
-
-
-
-				StartCoroutine (Extract ());
-
-
 				}
 
+				if (!IsExtracting) StartCoroutine (Extract ());
 				break;
 
 			case WorkerState.Carrying:
@@ -211,12 +201,7 @@ public class Worker : Unit
 				{
 					gameplayManager.resources.DeliverResources (resourceType, currentNumberOfResources);
 
-					if (resource != null)
-					{
-					SetResource (resource);
-
-					}
-
+					if (resource != null) SetResource (resource);
 					else
 					{
 						Pathfind.Stop ();
@@ -273,18 +258,11 @@ public class Worker : Unit
 					if (!IsRepairing) StartCoroutine (StartRepair ());
 				}
 				break;
-
-		case WorkerState.None:
+			case WorkerState.None:
 			
 				CheckConstructFactory ();
 
 				CheckResource ();
-
-				if (MoveCompleted())
-
-					{		
-						unitState = UnitState.Idle;	
-					}
 
 				base.IAStep ();
 				break;
@@ -346,8 +324,8 @@ public class Worker : Unit
 					
 					bool isAttacking = (unitState == Unit.UnitState.Attack);
 
-					resourceWorker[0].extractingObject.SetActive (true);
-					
+					resourceWorker[0].extractingObject.SetActive (isAttacking);
+		
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);

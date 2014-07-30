@@ -191,7 +191,10 @@ public class Tutorial_Basic : MonoBehaviour {
 
 	public void Close ()
 	{
+		if (tutorialMainBg != null)
+		{
 		tutorialMainBg.SetActive (false);
+		}
 	}
 	
 

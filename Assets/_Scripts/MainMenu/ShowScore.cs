@@ -123,11 +123,8 @@ public class ShowScore : MonoBehaviour
 					
 					scorePlayerObject.GetComponent<ScoreRow>().playerName.text 		 = sp.Key.ToString ();
 					scorePlayerObject.GetComponent<ScoreRow>().ressourceGold.GetComponentInChildren<UILabel>().text  = sp.Value.GoldCollectedPoints.ToString();
-					scorePlayerObject.GetComponent<ScoreRow>().ressourceGold.value  =  battleTotalGold / sp.Value.GoldCollectedPoints;
 					scorePlayerObject.GetComponent<ScoreRow>().ressourceMana.GetComponentInChildren<UILabel>().text  = sp.Value.ManaCollectedPoints.ToString();
-					scorePlayerObject.GetComponent<ScoreRow>().ressourceMana.value  = battleTotalMana / sp.Value.ManaCollectedPoints;
 					scorePlayerObject.GetComponent<ScoreRow>().ressourceSpent.GetComponentInChildren<UILabel>().text  = sp.Value.ResourcesSpentPoints.ToString();
-					scorePlayerObject.GetComponent<ScoreRow>().ressourceSpent.value  = battleTotalSpent / sp.Value.ResourcesSpentPoints;
 					scorePlayerObject.GetComponent<ScoreRow>().unitsBuild.GetComponentInChildren<UILabel>().text  = sp.Value.UnitsCreatedPoints.ToString ();
 					scorePlayerObject.GetComponent<ScoreRow>().unitsLost.GetComponentInChildren<UILabel>().text  = sp.Value.UnitsLostPoints.ToString ();
 					scorePlayerObject.GetComponent<ScoreRow>().unitsDestroyed.GetComponentInChildren<UILabel>().text  = sp.Value.UnitsDestroyedPoints.ToString ();
@@ -135,6 +132,15 @@ public class ShowScore : MonoBehaviour
 					scorePlayerObject.GetComponent<ScoreRow>().StructuresLost.GetComponentInChildren<UILabel>().text  = sp.Value.StructureLostPoints.ToString ();
 					scorePlayerObject.GetComponent<ScoreRow>().StructuresDestroyed.GetComponentInChildren<UILabel>().text  = sp.Value.StructureDestroyedPoints.ToString ();
 
+					scorePlayerObject.GetComponent<ScoreRow>().ressourceGold.value  =  sp.Value.GoldCollectedPoints / battleTotalGold;
+//					scorePlayerObject.GetComponent<ScoreRow>().ressourceMana.value  = battleTotalMana / sp.Value.ManaCollectedPoints;
+//					scorePlayerObject.GetComponent<ScoreRow>().ressourceSpent.value  = battleTotalSpent / sp.Value.ResourcesSpentPoints;
+					scorePlayerObject.GetComponent<ScoreRow>().StructuresBuild.value  = sp.Value.StructureCreatedPoints / battleTotalStructuresBuild;
+					scorePlayerObject.GetComponent<ScoreRow>().StructuresLost.value  = sp.Value.StructureLostPoints / battleTotalStructuresDestroyed;
+					scorePlayerObject.GetComponent<ScoreRow>().StructuresDestroyed.value  = sp.Value.StructureDestroyedPoints / battleTotalStructuresDestroyed;
+					scorePlayerObject.GetComponent<ScoreRow>().unitsBuild.value  = sp.Value.UnitsCreatedPoints / battleTotalUnitsCreated;
+					scorePlayerObject.GetComponent<ScoreRow>().unitsLost.value  = sp.Value.UnitsLostPoints / battleTotalUnitsDestroyed;
+					scorePlayerObject.GetComponent<ScoreRow>().unitsDestroyed.value  = sp.Value.UnitsDestroyedPoints / battleTotalUnitsDestroyed;
 					
 					positionYInitial -= diferrenceBetweenLabels;
 				}

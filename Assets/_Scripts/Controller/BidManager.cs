@@ -7,7 +7,7 @@ public class BidManager : MonoBehaviour
 {
 	[Range(0.1f,1.0f)]
 	public float TaxFactor = 1.0f;
-	public bool WonPlayerGainsTheBidOfEachPlayerInTheGame = false;
+	public bool WinningPlayerGainsTheBidOfEachPlayerInTheGame = false;
 	
 	//Orichalcum => Orichal
 	//Passos
@@ -37,7 +37,7 @@ public class BidManager : MonoBehaviour
 		
 		float currentBid = (int)pw.GetPropertyOnRoom ("bid");	
 
-		if (WonPlayerGainsTheBidOfEachPlayerInTheGame)
+		if (WinningPlayerGainsTheBidOfEachPlayerInTheGame)
 		{
 			Room room = pw.GetCurrentRoom ();
 			currentBid *= (float)room.maxPlayers;

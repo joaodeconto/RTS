@@ -179,17 +179,14 @@ public class VictoryCondition : MonoBehaviour
 			break;
 			case Challenge.EnumComparingType.EnemyBuildings:
 
+			int _eneBuilds = 0;
+
 
 			foreach (IStats stats in sc.otherStats)
 			{
-				if  (stats.name == specificStat)
-				{
-					eneBuilds++;
-						
-				}
-				continue;
+				if  (stats.tag == specificStat) _eneBuilds++;continue;
 			}
-				
+			eneBuilds = _eneBuilds;
 
 							
 			return CheckValue (enumCondition, eneBuilds, valueToCompare);
@@ -239,8 +236,7 @@ public class VictoryCondition : MonoBehaviour
 			gm.DefeatingEnemyTeamsByObjectives ();
 
 			//Tudo feito
-			Debug.Log ("Feedback de fim de jogo");
-			Debug.Break ();
+
 		}
 
 

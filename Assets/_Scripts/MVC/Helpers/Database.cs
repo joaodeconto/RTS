@@ -1,4 +1,4 @@
-#define DEBUG_DATABASE_CONNECTION
+//#define DEBUG_DATABASE_CONNECTION
 
 using UnityEngine;
 
@@ -231,6 +231,7 @@ public class Database : MonoBehaviour
 		else
 		{
 #if DEBUG_DATABASE_CONNECTION
+
 			Debug.LogWarning ("WWW response: " + www.text);
 #endif
 			object obj = null;

@@ -512,8 +512,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public void EndMatch ()
 	{
-		Debug.LogError ("EndMatch");
-		
+				
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 		BidManager bm = ComponentGetter.Get <BidManager> ();
 		

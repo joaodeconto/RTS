@@ -65,101 +65,7 @@ public class DataScoreDAO : MonoBehaviour
 			callback (list);
 		});
 	}
-	public delegate void RankingDAODelegate ( Dictionary <Model.Player, List<Model.DataScore>> scores);
-	public void LoadRankingScores (RankingDAODelegate callback)
-	{
-		//Cria objetos que serao usados durante o chamado ao DB
-		object dummyObject = new object ();
 
-		List <DB.DataScore> lDataScore = new List <DB.DataScore> ();
-		List <DB.Player> lPlayers = new List<DB.Player> ();
-		
-		Model.DataScore cDataScore = null;
-		Model.Player cPlayer = null;
-
-		List <Model.DataScore> tmpList = new List<Model.DataScore> ();
-
-		//Chama todos os datascores de vitoria e derrotas
-		db.Read (dummyObject, lDataScore.GetType (), "read-datascore-ranking",
-        (response) =>
-        {
-			if ((response as List <DB.DataScore>) != null)
-			{
-				lDataScore = (response as List <DB.DataScore>);
-
-				//As linhas comentadas abaixo servem para debug
-				//foreach (DB.DataScore ds in lDataScore)
-				//{
-				//	Debug.Log (ds.SzScoreName + " - " + ds.NrPoints);
-				//}
-				
-				//Debug.Log ("lDataScore.Count: " + lDataScore.Count);
-			}
-
-			//Debug.Break ();
-
-			//Muda de lScore para sScore para melhorar performance
-			Stack <Model.DataScore> sDataScore = new Stack<Model.DataScore> ();
-
-			for (int i = 0, imax = lDataScore.Count; i != imax; ++i)
-			{
-				sDataScore.Push(lDataScore[i].ToModel ());
-			}
-
-			dummyObject = new object ();
-
-			//Chama todos os players
-			db.Read (dummyObject, lPlayers.GetType (), "read-all-players",
-	        (_response) =>
-			{
-				if ((_response as List <DB.Player>) != null)
-				{
-					lPlayers = (_response as List <DB.Player>);
-					Debug.Log ("lPlayers.Count: " + lPlayers.Count);
-				}
-				else
-				{
-					//Debug.Log ("_response: " + _response.GetType ());
-				}
-				
-				Debug.Log ("Chegou 2");
-
-				//Ranking com os data scores por player, que sera enviado a quem chamou a funcao
-				Dictionary <Model.Player, List<Model.DataScore>> scores = new Dictionary<Model.Player, List<Model.DataScore>> ();
-				
-				for (int p = 0, pmax = lPlayers.Count; p != pmax; ++pmax)
-				{
-					cPlayer = lPlayers[p].ToModel ();
-
-					while (sDataScore.Count != 0)
-					{
-						//					Debug.Log ("Chegou 3");
-						cDataScore = sDataScore.Pop ();
-
-						if (cDataScore.IdPlayer.ToString () == lPlayers[p].IdPlayer)
-						{
-//							Debug.Log ("Chegou 4");
-							if (!scores.ContainsKey (cPlayer))
-							{
-//								Debug.Log ("Chegou 5");
-								tmpList = new List<Model.DataScore> ();
-								tmpList.Add (cDataScore);
-								scores.Add (cPlayer, tmpList);
-							}
-							else
-							{
-//								Debug.Log ("Chegou 6");
-								scores[cPlayer].Add (cDataScore);
-							}
-						}
-					}
-				}
-
-				Debug.Log ("Chegou 7");
-//				callback (scores);
-			});
-		});
-	}
 
 	public void SaveScores (Dictionary <string, Model.DataScore> scores, DataScoreDAODelegateDictionary callback)
 	{
@@ -168,7 +74,7 @@ public class DataScoreDAO : MonoBehaviour
 		Debug.Log ("Antes!");
 		foreach (KeyValuePair <string, Model.DataScore> de in scores)
 		{
-			Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
+//			Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
 			lScores.Add (de.Value);
 		}
 
@@ -198,7 +104,7 @@ public class DataScoreDAO : MonoBehaviour
 			
 			foreach (KeyValuePair <string, Model.DataScore> de in scores)
 			{
-				Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
+			//	Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
 				lScores.Add (de.Value);
 			}
 //			*/
