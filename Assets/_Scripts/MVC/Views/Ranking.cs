@@ -3,10 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Ranking : MonoBehaviour {
+
+
+	public bool wasInitialized = false;
 	
-	// Use this for initialization 
-	void OnEnable ()
+	public void OnEnable ()
 	{
+		Open ();
+	}
+	
+	public void OnDisable ()
+    {
+        Close ();
+    }
+	void Open ()
+	{
+		if (wasInitialized)
+			return;
+		
+		wasInitialized = true;
+		
 		Score.LoadRanking 
 			(
 				(System.Collections.Generic.List<Model.DataScoreRanking> ranking) => 
@@ -21,8 +37,10 @@ public class Ranking : MonoBehaviour {
 			);
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	public void Close ()
+	{
+		gameObject.SetActive (false);
+    }
+    
+	
 }

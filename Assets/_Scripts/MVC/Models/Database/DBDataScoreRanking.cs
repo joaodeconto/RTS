@@ -7,8 +7,8 @@ namespace DB
 		{
 				public string IdPlayer;
 				public string SzName;
-				public string NrPointsVictory;
-				public string NrPointsDefeat;
+				public string NrVictory;
+				public string NrDefeat;
 				public string NrPoints;
 				public string IdLastBattle;
 
@@ -17,10 +17,10 @@ namespace DB
 						Model.DataScoreRanking ds = new Model.DataScoreRanking ();
 						ds.IdPlayer = int.Parse (this.IdPlayer);
 						ds.SzName = this.SzName;
-						ds.NrPointsVictory = int.Parse (this.NrPointsVictory);
-						ds.NrPointsDefeat = int.Parse (this.NrPointsDefeat);
+						ds.NrVictory = int.Parse (this.NrVictory);
+						ds.NrDefeat = int.Parse (this.NrDefeat);
 						ds.NrPoints = int.Parse (this.NrPoints);
-						ds.IdLastBattle = int.Parse (this.IdLastBattle);
+            			ds.IdLastBattle = int.Parse (this.IdLastBattle);
 						return ds;
 				}
 		
@@ -28,8 +28,8 @@ namespace DB
 				{	
 						return "IdPlayer: " + IdPlayer +
 								" - SzName: " + SzName +
-								" - NrPointsVictory: " + NrPointsVictory +
-								" - NrPointsDefeat: " + NrPointsDefeat +
+								" - NrVictory: " + NrVictory +
+								" - NrDefeat: " + NrDefeat +
 								" - NrPoints: " + NrPoints +
 								" - IdLastBattle: " + IdLastBattle;
 				}
