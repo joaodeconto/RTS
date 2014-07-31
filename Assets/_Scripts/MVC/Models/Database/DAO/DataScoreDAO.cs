@@ -30,7 +30,7 @@ public class DataScoreDAO : MonoBehaviour
 			for (int i = lScores.Count - 1; i != -1; --i)
 			{
 //				if (lDataScore[i].SzScoreName.Contains ("current"))
-				Debug.Log ("lDataScore[i]: " + lScores[i]);
+//				Debug.Log ("lDataScore[i]: " + lScores[i]);
 				string key = lScores[i].SzScoreName + " - " + lScores[i].IdBattle;
 				
 				if (!scores.ContainsKey (key))
