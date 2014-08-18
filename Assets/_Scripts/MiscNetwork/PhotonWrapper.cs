@@ -432,6 +432,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			GameplayManager.mode = GameplayManager.Mode.Cooperative;
 			break;
 		case 2:
+			GameplayManager.mode = GameplayManager.Mode.Tutorial;
+			break;
+		case 3:
 			GameplayManager.mode = GameplayManager.Mode.Survival;
 			break;
 		default:

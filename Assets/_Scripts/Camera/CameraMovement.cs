@@ -104,11 +104,12 @@ public class CameraMovement : MonoBehaviour
 #endif
 	}
 
-	public void SetSpeed (float sliderSpeedValue) 
+	public void SetSpeed (float sliderSpeedValue ) 
 
 	{
-		speed = sliderSpeedValue;
-		Debug.Log(sliderSpeedValue);
+		speed = sliderSpeedValue + 0.1f;
+		speedMobile = sliderSpeedValue + 0.1f;
+	
 	}
 
 	// Adicionar metodo na biblioteca

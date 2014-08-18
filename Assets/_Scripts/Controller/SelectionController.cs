@@ -213,7 +213,7 @@ public class SelectionController : MonoBehaviour
 				if (!leftShift) statsController.DeselectAllStats ();
 			}
 			
-			if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House"))
+			if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House")|| hit.transform.CompareTag ("Depot"))
 			{
 				FactoryBase factorySelected = hit.transform.GetComponent<FactoryBase>();
 				if (!gameplayManager.IsSameTeam (factorySelected)) 
@@ -463,7 +463,7 @@ public class SelectionController : MonoBehaviour
 //					if(!interactionController.HaveCallbacksForTouchId(TouchController.IdTouch.Id0))
 //						troopController.DeselectAllSoldiers ();
 					
-					if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House"))
+					if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House")|| hit.transform.CompareTag ("Depot"))
 					{
 						FactoryBase factory = hit.transform.GetComponent<FactoryBase>();
 						

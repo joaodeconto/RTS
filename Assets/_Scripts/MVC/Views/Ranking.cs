@@ -1,46 +1,69 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 
 public class Ranking : MonoBehaviour {
 
+	public GameObject rankRowPrefab;
+	public Transform rankRowreference;
+	public UIGrid rankGrid;
+	private int i = 0;
 
 	public bool wasInitialized = false;
-	
+
 	public void OnEnable ()
 	{
 		Open ();
 	}
 	
 	public void OnDisable ()
-    {
-        Close ();
-    }
-	void Open ()
+	{
+		Close ();
+	}
+
+	public void Open ()
 	{
 		if (wasInitialized)
 			return;
 		
 		wasInitialized = true;
-		
+
 		Score.LoadRanking 
 			(
 				(System.Collections.Generic.List<Model.DataScoreRanking> ranking) => 
 				{
-				Debug.Log ("Chegou ranking\t");
-				//Separar por nome do datascore victory ou defeat
+			
+				
+				ranking.Sort((x, y) => {
+					return y.NrPoints.CompareTo(x.NrPoints);
+				});
+				
 				foreach (Model.DataScoreRanking r in ranking)
 				{
-					Debug.Log ("Player: " + r.SzName + " : " + r.NrPoints + "\n");					
+
+					i++;
+					GameObject rankRow = NGUITools.AddChild (rankGrid.gameObject, rankRowPrefab);
+					rankRowPrefab.GetComponent<RankRow>().player.text = r.SzName;
+					rankRowPrefab.GetComponent<RankRow>().wins.text = r.NrVictory.ToString();
+					rankRowPrefab.GetComponent<RankRow>().defeats.text = r.NrDefeat.ToString();
+					rankRowPrefab.GetComponent<RankRow>().score.text = r.NrPoints.ToString();
+					rankRowPrefab.GetComponent<RankRow>().position.text = i.ToString();
+
+
 				}
+
 			}
 			);
+		rankGrid.repositionNow = true;
+
+
 	}
-	
 	public void Close ()
 	{
-		gameObject.SetActive (false);
+
     }
     
 	
 }
+

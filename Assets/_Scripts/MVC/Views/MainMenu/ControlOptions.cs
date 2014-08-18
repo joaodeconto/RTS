@@ -6,7 +6,7 @@ using Visiorama.Utils;
 public class ControlOptions : MonoBehaviour
 {
 	private bool wasInitialized = false;
-	
+		
 
 	public void OnEnable ()
 	{
@@ -58,6 +58,12 @@ public class ControlOptions : MonoBehaviour
 	public void SetPlayerTouchSense (float touchSense)
 	{
 		PlayerPrefs.SetFloat("TouchSense", touchSense + 0.1f);
+
+		CameraMovement cam = ComponentGetter.Get<CameraMovement>();
+
+		cam.SetSpeed (touchSense);
+
+
 	}
 
 	public void SetPlayerDoubleClickSpeed (float doubleClick)

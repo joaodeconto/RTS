@@ -79,7 +79,7 @@ public class InteractionController : MonoBehaviour
 	{
 		if (statsController.selectedStats.Count == 0) return;
 
-		if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House"))
+		if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House")|| hit.transform.CompareTag ("Depot"))
 		{
 			FactoryBase factory = hit.GetComponent<FactoryBase> ();
 			if(GameplayManager.mode == GameplayManager.Mode.Cooperative)
