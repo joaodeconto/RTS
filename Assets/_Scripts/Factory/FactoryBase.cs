@@ -689,9 +689,7 @@ public class FactoryBase : IStats, IDeathObservable
 		base.Deselect ();
 
 		buildingSlider.gameObject.SetActive(false);
-
-		hudController.DestroySelected (transform);
-		
+						
 		int c = IDOobservers.Count;
 		while (--c != -1)
 		{
@@ -704,7 +702,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 			goRallypoint.gameObject.SetActive (false);
 
-			hudController.DestroyInspector ("factory");
+//			hudController.DestroyInspector ("factory");
 		}
 	}
 

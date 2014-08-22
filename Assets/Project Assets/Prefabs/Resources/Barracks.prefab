@@ -278,8 +278,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100018}
-  m_LocalRotation: {x: 0, y: .294974089, z: 0, w: .955505311}
-  m_LocalPosition: {x: 1.32261324, y: -1.96973324, z: 10.4636059}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400012}
@@ -494,17 +494,11 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 1
-    costOfResources:
-      m_mana: 0
-      m_rocks: 100
   - unit: {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     buttonName: Speraman
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
-    costOfResources:
-      m_mana: 0
-      m_rocks: 150
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100010}
@@ -516,8 +510,10 @@ MonoBehaviour:
   timeToCreate: 0
   timer: 0
   boostDuration: 10
-  boostTime: 0
-  onBoost: 0
+  boostCost:
+    m_mana: 0
+    m_rocks: 0
+  boostPower: 1.29999995
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400006

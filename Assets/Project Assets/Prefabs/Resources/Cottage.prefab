@@ -126,7 +126,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 42.602005, y: 0, z: 19.6052303}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400010}
@@ -385,8 +385,10 @@ MonoBehaviour:
   timeToCreate: 0
   timer: 0
   boostDuration: 10
-  boostTime: 0
-  onBoost: 0
+  boostCost:
+    m_mana: 0
+    m_rocks: 0
+  boostPower: 1.29999995
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400006

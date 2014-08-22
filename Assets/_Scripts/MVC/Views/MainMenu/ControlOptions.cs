@@ -61,7 +61,7 @@ public class ControlOptions : MonoBehaviour
 
 		CameraMovement cam = ComponentGetter.Get<CameraMovement>();
 
-		cam.SetSpeed (touchSense);
+		cam.SetSpeed();
 
 
 	}

@@ -33,28 +33,34 @@ public class Ranking : MonoBehaviour {
 			(
 				(System.Collections.Generic.List<Model.DataScoreRanking> ranking) => 
 				{
-			
-				
+
 				ranking.Sort((x, y) => {
-					return y.NrPoints.CompareTo(x.NrPoints);
-				});
 				
+
+					return y.NrPoints.CompareTo(x.NrPoints);
+
+				});
+			
 				foreach (Model.DataScoreRanking r in ranking)
 				{
-
 					i++;
+
+										
 					GameObject rankRow = NGUITools.AddChild (rankGrid.gameObject, rankRowPrefab);
 					rankRowPrefab.GetComponent<RankRow>().player.text = r.SzName;
 					rankRowPrefab.GetComponent<RankRow>().wins.text = r.NrVictory.ToString();
 					rankRowPrefab.GetComponent<RankRow>().defeats.text = r.NrDefeat.ToString();
 					rankRowPrefab.GetComponent<RankRow>().score.text = r.NrPoints.ToString();
 					rankRowPrefab.GetComponent<RankRow>().position.text = i.ToString();
-
-
+					
+					
+					
 				}
 
+				NGUITools.Destroy(rankGrid.transform.GetChild(0).gameObject);
 			}
 			);
+
 		rankGrid.repositionNow = true;
 
 

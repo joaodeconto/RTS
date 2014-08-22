@@ -15,8 +15,9 @@ public class RankedBattle : MonoBehaviour
 	public UIInput bidInput;
 	public GameObject marketGlow;
 
+
 	public UIPopupList mapSelection;
-	public string playerMode;
+	public string playerMode = "1x1";
 
 	public Transform BtnLeaveRoom;
 	public Transform createRoom;
@@ -24,6 +25,7 @@ public class RankedBattle : MonoBehaviour
 	public int minimumBet = 1;
 	private int players = 2;
 	private int mapScene;
+	private Transform toggleButtons;
 	private int orichals {
 
 		get {return (cristal) ? int.Parse (cristal.text) :1;}
@@ -52,13 +54,7 @@ public class RankedBattle : MonoBehaviour
 	{
 		playerMode = pMode;
 
-		if (playerMode == "4vs")
-		{
-			players = 4;
-			battleMode = "DeathMatch";
-			battleName = "DeathMatch";
-		}
-		
+				
 		if (playerMode == "1x1")
 		{
 			players = 2;
@@ -71,6 +67,13 @@ public class RankedBattle : MonoBehaviour
 			players = 4;
 			battleMode = "Cooperative";
 			battleName = "2x2";
+		}
+
+		if (playerMode == "4vs")
+		{
+			players = 4;
+			battleMode = "DeathMatch";
+			battleName = "DeathMatch";
 		}
 
 		pw = ComponentGetter.Get<PhotonWrapper> ();
@@ -88,6 +91,9 @@ public class RankedBattle : MonoBehaviour
 								{
 									CreateRoom (players, CurrentBid, battleName, battleMode, mapScene);
 									createRoom.gameObject.SetActive (false);
+									mapSelection.gameObject.SetActive (false);
+									toggleButtons.gameObject.SetActive(false);
+									bidInput.gameObject.SetActive(false);
 								}
 
 								else if (CurrentBid < minimumBet)
@@ -135,6 +141,8 @@ public class RankedBattle : MonoBehaviour
 		
 		wasInitialized = true;
 
+		toggleButtons = this.transform.FindChild("Menu").FindChild("Buttons").transform;
+
 		createRoom.gameObject.SetActive (true);
 
 		messageActiveGame.gameObject.SetActive (false);
@@ -164,6 +172,10 @@ public class RankedBattle : MonoBehaviour
 			menu.SetActive (true);
 		}
 
+		mapSelection.gameObject.SetActive (true);
+		toggleButtons.gameObject.SetActive(true);
+		bidInput.gameObject.SetActive(true);
+
 		createRoom.gameObject.SetActive (true);
 
 		messageActiveGame.gameObject.SetActive (false);
@@ -179,8 +191,6 @@ public class RankedBattle : MonoBehaviour
 		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
 		PlayerDAO playerDao = ComponentGetter.Get <PlayerDAO> ();
-
-
 
 		if (bMode == "DeathMatch")
 		{
@@ -232,8 +242,7 @@ public class RankedBattle : MonoBehaviour
 			pw.TryToEnterGame (10000.0f,
 			(other_message) =>
 			{
-				Debug.Log("message: " + other_message);
-
+			
 				messageActiveGame.gameObject.SetActive (true);
 
 				createRoom.gameObject.SetActive (true); 
@@ -254,6 +263,9 @@ public class RankedBattle : MonoBehaviour
 		errorMessage.gameObject.SetActive (false);
 		marketGlow.SetActive (false);
 		createRoom.gameObject.SetActive (true);
+		mapSelection.gameObject.SetActive (true);
+		toggleButtons.gameObject.SetActive(true);
+		bidInput.gameObject.SetActive(true);
 	
 	}
 

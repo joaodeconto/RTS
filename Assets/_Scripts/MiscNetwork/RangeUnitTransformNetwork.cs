@@ -18,15 +18,27 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
 		}
 		else
 		{
+
 			rangeUnitScript = GetComponent <RangeUnit> ();
 			
 	        gameObject.name = gameObject.name + photonView.viewID;
 			
 			if (rangeUnitScript.IsNetworkInstantiate) enabled = !photonView.isMine;
-			else enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(rangeUnitScript);
-		}
-    }
 
+			else
+			{
+				GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
+				
+				enabled = !gm.IsSameTeam(rangeUnitScript);
+				
+				if (gm.IsBotTeam (rangeUnitScript) && PhotonNetwork.isMasterClient)
+				{
+					enabled = false;
+				}
+			}
+		}
+	}
+	
 	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
 	{
 		if (stream.isWriting)

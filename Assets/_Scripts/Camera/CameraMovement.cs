@@ -104,11 +104,11 @@ public class CameraMovement : MonoBehaviour
 #endif
 	}
 
-	public void SetSpeed (float sliderSpeedValue ) 
+	public void SetSpeed () 
 
 	{
-		speed = sliderSpeedValue + 0.1f;
-		speedMobile = sliderSpeedValue + 0.1f;
+		speed = PlayerPrefs.GetFloat("TouchSense");
+		speedMobile = PlayerPrefs.GetFloat("TouchSense");
 	
 	}
 

@@ -9,7 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   - 111: {fileID: 11100000}
-  - 114: {fileID: 11400010}
   m_Layer: 10
   m_Name: WarriorNeanderthal_LOD0
   m_TagString: Untagged
@@ -58,7 +57,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 400006}
   - 137: {fileID: 13700000}
-  - 114: {fileID: 11400006}
   m_Layer: 10
   m_Name: Hunter
   m_TagString: Untagged
@@ -74,7 +72,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400008}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Spear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1171,7 +1169,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100142}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.64331484, y: -10, z: 9.47371769}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400138}
@@ -1431,11 +1429,12 @@ MonoBehaviour:
         gridYIndex: 2
   pref_ParticleDamage: {fileID: 100004, guid: 20747cbb589a10f418c2fd1d67647962, type: 2}
   transformParticleDamageReference: {fileID: 400142}
-  playerUnit: 1
+  playerUnit: 0
   category: Spearman
   costOfResources:
     m_mana: 0
     m_rocks: 150
+  wasInitialized: 0
   model: {fileID: 100000}
   force: 4
   distanceView: 18
@@ -1459,54 +1458,6 @@ MonoBehaviour:
   highRangeAttack: 15
   highRangeAnimation: {fileID: 7400006, guid: d5613bf98745319448eb8f19ff5293dd, type: 3}
   projectileAnimationSync: .800000012
---- !u!114 &11400006
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -584772145, guid: f22c2bae7d3934637aeece17197d22ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputMeshes:
-  - mesh: {fileID: 4300006, guid: 6f7be2c7b9926bc44bd1fdfa8ba60dfb, type: 3}
-    materials:
-    - {fileID: 2100000, guid: cdbebd0d5ed13e0499fe2382b75d1e1d, type: 2}
-  outputMesh: {fileID: 4300002, guid: b7d94dad362aeba48ac780b3754caa3d, type: 2}
-  outputRenderer: {fileID: 13700000}
-  quality: .291999996
-  quantity: 932
-  inputVerticeCount: 1772
-  inputTriangleIndexCount: 8016
-  outputVerticeCount: 703
-  outputTriangleIndexCount: 2796
-  skinnedMeshRenderer: {fileID: 13700000}
---- !u!114 &11400010
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1374685535, guid: f22c2bae7d3934637aeece17197d22ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cruncherTargets:
-  - {fileID: 0}
-  - {fileID: 11400006}
-  cmc:
-    removeTJunctions: 1
-    removeTJunctionsThreshold: .100000001
-    joinVertices: 1
-    joinVerticesThreshold: 9.99999975e-05
-    joinUvs: 0
-    joinUvsThreshold: 9.99999975e-05
-    joinNormals: 0
-    joinNormalsThreshold: 60
-    recalculateNormals: 0
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
