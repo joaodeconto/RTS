@@ -106,6 +106,18 @@ public class VersusScreen : MonoBehaviour
 				}
 			}
 		}
+		if (GameplayManager.mode == GameplayManager.Mode.Tutorial)
+		{
+			battleMode.text = ("Tutorial"); 
+			i = 0;
+			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
+			{
+				SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);
+				
+				i++;
+			}
+		}
+		
 		else
 		{
 			i = 0;
@@ -124,21 +136,21 @@ public class VersusScreen : MonoBehaviour
 	public void cenaSelection ()
 	{
 
-		if (cena == 1 )
+		if (cena == 3 || cena == 6)
 		{
 			mapName.text = "Swamp King";
 			mapSprite.spriteName = "Swamp King";
 
 		}
 
-		if (cena == 2 )
+		if (cena == 1 || cena == 5)
 		{
 			mapName.text = "Living Desert";
 			mapSprite.spriteName = "Living Desert";
 			
 		}
 
-		if (cena == 3 )
+		if (cena == 2 || cena == 4)
 		{
 			mapName.text = "Dementia Forest";
 			mapSprite.spriteName = "Dementia Forest";

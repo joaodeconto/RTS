@@ -189,6 +189,14 @@ public class Tutorial_Basic : MonoBehaviour {
 		Time.timeScale = 0.0f;
 	}
 
+	public void Open ()
+	{
+		if (tutorialMainBg != null)
+		{
+			tutorialMainBg.SetActive (true);
+		}
+	}
+
 	public void Close ()
 	{
 		if (tutorialMainBg != null)

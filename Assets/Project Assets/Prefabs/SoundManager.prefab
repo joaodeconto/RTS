@@ -29,6 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!82 &8200002
 AudioSource:
   m_ObjectHideFlags: 1
@@ -156,21 +157,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617da7e6dc6c82f43988a70b1b7fd69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  helpOn: 1
+  helpOn: 0
   showInfo: 1
   showDev: 1
   showList: 1
   showAdd: 0
   showSFX: 1
-  showSFXDetails: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  showSFXDetails: 01010101010101010101010101010101010101010101010101010101010101010101010101010101
   groupAddIndex: 8
   autoPrepoolAmount: 0
+  autoBaseVolume: 1
+  autoVolumeVariation: 0
+  autoPitchVariation: 0
   showAsGrouped: 1
   soundConnections:
   - level: 2x2_Swamp_King
     isCustomLevel: 0
     soundsToPlay:
     - {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 5
     minDelay: 0
     maxDelay: 0
@@ -179,6 +185,8 @@ MonoBehaviour:
     isCustomLevel: 0
     soundsToPlay:
     - {fileID: 8300000, guid: fe403fd12ba51eb47a3a7e46fd6d75a9, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 0
     minDelay: 0
     maxDelay: 0
@@ -187,6 +195,8 @@ MonoBehaviour:
     isCustomLevel: 0
     soundsToPlay:
     - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 3
     minDelay: 0
     maxDelay: 0
@@ -195,6 +205,8 @@ MonoBehaviour:
     isCustomLevel: 0
     soundsToPlay:
     - {fileID: 8300000, guid: 03a2c95c0951b40499bf5a2df255caae, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 0
     minDelay: 0
     maxDelay: 0
@@ -207,6 +219,7 @@ MonoBehaviour:
     level: 
     isCustomLevel: 0
     soundsToPlay: []
+    baseVolumes: []
     playMethod: 0
     minDelay: 0
     maxDelay: 0
@@ -262,49 +275,49 @@ MonoBehaviour:
   unOwnedSFXObjects: []
   sfxGroups:
   - groupName: Select
-    specificCapAmount: 6
+    specificCapAmount: 3
     clips: []
     independentVolume: 0
     independentPitch: 0
     volume: 0
     pitch: 0
   - groupName: Confirm
-    specificCapAmount: 6
+    specificCapAmount: 3
     clips: []
     independentVolume: 0
     independentPitch: 0
     volume: 0
     pitch: 0
   - groupName: Attack
-    specificCapAmount: 8
+    specificCapAmount: 4
     clips: []
     independentVolume: 0
     independentPitch: 0
     volume: 0
     pitch: 0
   - groupName: Death
-    specificCapAmount: 8
+    specificCapAmount: 4
     clips: []
     independentVolume: 0
     independentPitch: 0
     volume: 0
     pitch: 0
   - groupName: Structures
-    specificCapAmount: 3
+    specificCapAmount: 2
     clips: []
     independentVolume: 0
     independentPitch: 0
     volume: 0
     pitch: 0
   - groupName: Charge
-    specificCapAmount: 8
+    specificCapAmount: 4
     clips: []
     independentVolume: 0
     independentPitch: 0
     volume: 0
     pitch: 0
   - groupName: Mining
-    specificCapAmount: 3
+    specificCapAmount: 2
     clips: []
     independentVolume: 0
     independentPitch: 0
@@ -401,7 +414,132 @@ MonoBehaviour:
   offTheSFX: 0
   capAmount: 4
   sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  sfxBaseVolumes:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  sfxVolumeVariations:
+  - 0
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - 0
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  sfxPitchVariations:
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
   SFXObjectLifetime: 2
+  currentPockets:
+  - Default
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

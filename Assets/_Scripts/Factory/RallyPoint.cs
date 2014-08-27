@@ -12,7 +12,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 {
 	public Texture2D lineTexture;
 	public float start = 1.0f; 
-	public float end = 1.0f;
+	public float end = 0.5f;
 	public string[] AllowedLayersToFollow = new string[3] { "Terrain", "Unit","Resources" };//Layers de objetos que podem ser seguidos 
 
 	public Transform subMesh;
@@ -38,7 +38,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		
 		lineRenderer = gameObject.AddComponent<LineRenderer>();
 		//lineRenderer.SetColors (Color.white, Color.white);
-		lineRenderer.material = new Material(Shader.Find("Transparent/Diffuse"));
+		lineRenderer.material = new Material(Shader.Find("Mobile/Particles/Alpha Blended"));
 		lineRenderer.material.mainTexture = lineTexture;
 		lineRenderer.material.color = ComponentGetter.Get<GameplayManager>().GetColorTeam ();
 		lineRenderer.SetColors (lineRenderer.material.color, lineRenderer.material.color);
@@ -232,8 +232,8 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		nodes.Add(transform.position);
 		nodes.Add(transform.parent.position);
 		
-//		Vector3 center = Math.CenterOfObjects (nodes.ToArray ());
-//		nodes.Insert (1, center);
+		Vector3 center = Math.CenterOfObjects (nodes.ToArray ());
+		nodes.Insert (1, center + (Vector3.up * 3f));
 		
 		IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 5, false);
 		

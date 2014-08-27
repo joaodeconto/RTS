@@ -64,18 +64,19 @@ public class VictoryCondition : MonoBehaviour
 	{
 		if (Ativar && !FoiAtivado)
 		{
-			FoiAtivado = true;
 			ActiveAllChallenges ();
 		}
 	}
 
 	public void ActiveAllChallenges ()
 	{
+		if (!FoiAtivado) 
 		foreach (Challenge ch in ChallengesToWin)
 		{
 			ch.IsActive = true;
 			AddToObjectiveLog(ch.Name, ch.objSprite, ch.valueToCompare, ch.objDescription, ch.objectiveCompleted);
 		}
+		FoiAtivado = true;
 	}
 		
 	public void Start ()

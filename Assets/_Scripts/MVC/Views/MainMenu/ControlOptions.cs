@@ -34,13 +34,13 @@ public class ControlOptions : MonoBehaviour
 		
 		slider = touch.FindChild ("Slider");
 		
-		slider.GetComponent<UISlider>().value = PlayerPrefs.GetFloat("TouchSense") - 0.1f;
+		slider.GetComponent<UISlider>().value = PlayerPrefs.GetFloat("TouchSense");
 
 		Transform doubleClick = this.transform.FindChild ("Menu").FindChild ("DoubleClick");
 		
 		slider = doubleClick.FindChild ("Slider");
 		
-		slider.GetComponent<UISlider>().value = PlayerPrefs.GetFloat("DoubleClickSpeed") - 0.1f;
+		slider.GetComponent<UISlider>().value = PlayerPrefs.GetFloat("DoubleClickSpeed");
 
 		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
 		
@@ -57,11 +57,11 @@ public class ControlOptions : MonoBehaviour
 
 	public void SetPlayerTouchSense (float touchSense)
 	{
-		PlayerPrefs.SetFloat("TouchSense", touchSense + 0.1f);
+		PlayerPrefs.SetFloat("TouchSense", touchSense);
 
 		CameraMovement cam = ComponentGetter.Get<CameraMovement>();
 
-		cam.SetSpeed();
+		cam.SetSpeed ();
 
 
 	}

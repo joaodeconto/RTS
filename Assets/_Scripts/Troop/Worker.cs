@@ -56,7 +56,7 @@ public class Worker : Unit
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
 
-	public WorkerState workerState;// {get; set;}
+	public WorkerState workerState {get; set;}
 
 	public bool IsExtracting {get; protected set;}
 	public bool IsRepairing {get; protected set;}
@@ -264,6 +264,12 @@ public class Worker : Unit
 
 				CheckResource ();
 
+				if (MoveCompleted())
+
+					{		
+						unitState = UnitState.Idle;	
+					}
+
 				base.IAStep ();
 				break;
 		}
@@ -324,8 +330,8 @@ public class Worker : Unit
 					
 					bool isAttacking = (unitState == Unit.UnitState.Attack);
 
-					resourceWorker[0].extractingObject.SetActive (isAttacking);
-		
+					resourceWorker[0].extractingObject.SetActive (true);
+					
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
@@ -377,7 +383,7 @@ public class Worker : Unit
 	public override IEnumerator OnDie ()
 	{
 		workerState = WorkerState.None;
-		Deselect ();
+
 		return base.OnDie ();
 
 	}

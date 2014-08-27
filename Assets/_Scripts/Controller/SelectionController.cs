@@ -473,6 +473,7 @@ public class SelectionController : MonoBehaviour
 							{
 								statsController.DeselectAllStats ();
 								statsController.SelectStat (factory, true);
+								statsController.PlaySelectSound ();
 
 
 							}

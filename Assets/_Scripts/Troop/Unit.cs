@@ -354,9 +354,9 @@ public class Unit : IStats, IMovementObservable,
 		{
 
 			smas.dopplerLevel = 0f;
-			smas.minDistance = 3.0f;
-			smas.maxDistance = 20.0f;
-			smas.rolloffMode = AudioRolloffMode.Custom;
+			smas.minDistance = 6.0f;
+			smas.maxDistance = 60.0f;
+			smas.rolloffMode = AudioRolloffMode.Logarithmic;
 		
 		}
 		
@@ -842,19 +842,19 @@ public class Unit : IStats, IMovementObservable,
 		Pathfind.angularSpeed = normalAngularSpeed;
 	}
 
-	public override void DrawGizmosSelected ()
-	{
-		base.DrawGizmosSelected ();
-
-		Gizmos.color = Color.cyan;
-		Gizmos.DrawWireSphere (this.transform.position, distanceView);
-
-		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere (this.transform.position, attackRange);
-
-		Gizmos.color = Color.yellow;
-		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
-	}
+//	public override void DrawGizmosSelected ()
+//	{
+//		base.DrawGizmosSelected ();
+//
+//		Gizmos.color = Color.cyan;
+//		Gizmos.DrawWireSphere (this.transform.position, distanceView);
+//
+//		Gizmos.color = Color.red;
+//		Gizmos.DrawWireSphere (this.transform.position, attackRange);
+//
+//		Gizmos.color = Color.yellow;
+//		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
+//	}
 
 	public override void SetVisible(bool isVisible)
 	{
@@ -945,7 +945,7 @@ public class Unit : IStats, IMovementObservable,
 		if (TargetAttack != null)
 			return;
 
-		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 3f;
+		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 1f;
 
 		
 		Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized * 2.0f))

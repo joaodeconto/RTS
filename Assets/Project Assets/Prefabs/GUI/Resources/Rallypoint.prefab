@@ -45,6 +45,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
+  m_RootOrder: 0
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -57,6 +58,7 @@ Transform:
   m_Children:
   - {fileID: 400000}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -75,9 +77,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
   m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!33 &3300000
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -108,12 +109,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 851e0f380856f1f4bb96182a9b35fd50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineTexture: {fileID: 2800000, guid: f959c4bc142d6954d9c9b7bce1d69dd5, type: 3}
-  start: .5
-  end: 1
+  lineTexture: {fileID: 2800000, guid: 6f9bd0987bdfc66449e2415756496672, type: 3}
+  start: .300000012
+  end: .5
   AllowedLayersToFollow:
   - Terrain
   - Unit
+  - Resources
   subMesh: {fileID: 400000}
 --- !u!1001 &100100000
 Prefab:
