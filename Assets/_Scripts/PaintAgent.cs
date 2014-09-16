@@ -6,11 +6,11 @@ public class PaintAgent : MonoBehaviour
     
 	public float paintSize;
 	public string terrainName = "Terrain";
-	private TerrainDeformer terrainDeformer;
+	private XTerrainDeformer xterrainDeformer;
 
 	public void Start ()
 	{
-		terrainDeformer = GameObject.Find (terrainName).GetComponent<TerrainDeformer>(); 
+		xterrainDeformer = GameObject.Find (terrainName).GetComponent<XTerrainDeformer>(); 
 	
 	}
 
@@ -31,7 +31,7 @@ public class PaintAgent : MonoBehaviour
 
 	public void Paint ()
 	{
-		terrainDeformer.DestroyTerrain(this.transform.position,paintSize);
+		xterrainDeformer.DestroyTerrain(this.transform.position,paintSize);
 
 	}
 }

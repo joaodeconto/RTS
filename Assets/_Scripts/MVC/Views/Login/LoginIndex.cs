@@ -37,7 +37,13 @@ public class LoginIndex : IView
 		goFacebookHandler.transform.parent = this.transform;
 		
 		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();
+
 		fh.OnLoggedIn = Yupy;
+
+
+
+
+
 		
 		SubmitButton
 			.AddComponent<DefaultCallbackButton>()
@@ -70,9 +76,15 @@ public class LoginIndex : IView
 	
 	public bool Yupy ()
 	{
+		FB.AppRequest(
+			message:"3D Real-Time Strategy game for mobile!",
+			title:"Join me in RTS - Rex Tribal Society!"
+			
+			);
 		errorMessage.enabled = true;
 		errorMessage.text = "Facebook Authorized";
 		Invoke ("CloseErrorMessage", 5.0f);
+	
 		return true;
 	}
 

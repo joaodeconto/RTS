@@ -945,8 +945,7 @@ public class Unit : IStats, IMovementObservable,
 		if (TargetAttack != null)
 			return;
 
-		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 1f;
-
+		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 1.2f;
 		
 		Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized * 2.0f))
 								* minDistanceBetweenFollowedUnit;

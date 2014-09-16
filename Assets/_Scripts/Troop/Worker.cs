@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 using System.Collections;
@@ -327,11 +328,15 @@ public class Worker : Unit
 					break;
 
 				case WorkerState.None:
-					
-					bool isAttacking = (unitState == Unit.UnitState.Attack);
+					if (unitState == Unit.UnitState.Attack)
+					{
+						resourceWorker[0].extractingObject.SetActive (true);
+					}
+					else
+					{
+						resourceWorker[0].extractingObject.SetActive (false);
+					}
 
-					resourceWorker[0].extractingObject.SetActive (true);
-					
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
@@ -817,14 +822,13 @@ public class Worker : Unit
 			}
 		}
 	}
-
-
+	
 	// GIZMOS
-
+	
 	public override void DrawGizmosSelected ()
 	{
 		base.DrawGizmosSelected ();
-
+		
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
 		

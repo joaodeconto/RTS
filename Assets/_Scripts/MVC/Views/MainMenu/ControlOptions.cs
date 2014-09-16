@@ -6,6 +6,8 @@ using Visiorama.Utils;
 public class ControlOptions : MonoBehaviour
 {
 	private bool wasInitialized = false;
+
+	protected TouchController touchController;
 		
 
 	public void OnEnable ()
@@ -25,6 +27,8 @@ public class ControlOptions : MonoBehaviour
 			return;
 
 		wasInitialized = true;
+
+		touchController = ComponentGetter.Get<TouchController> ();
 
 		Transform slider;
 
@@ -59,11 +63,9 @@ public class ControlOptions : MonoBehaviour
 	{
 		PlayerPrefs.SetFloat("TouchSense", touchSense);
 
-		CameraMovement cam = ComponentGetter.Get<CameraMovement>();
+		touchController.mainCamera.GetComponent<CameraMovement>().SetSpeed();
 
-		cam.SetSpeed ();
-
-
+	
 	}
 
 	public void SetPlayerDoubleClickSpeed (float doubleClick)

@@ -232,7 +232,7 @@ public class RankedBattle : MonoBehaviour
 
 
 			messageActiveGame.gameObject.SetActive (true);
-			messageActiveGame.text = "Game Created";
+			messageActiveGame.text = "Connecting to Server";
 			
 			if (BtnLeaveRoom)
 			{
@@ -244,10 +244,6 @@ public class RankedBattle : MonoBehaviour
 			{
 			
 				messageActiveGame.gameObject.SetActive (true);
-
-				createRoom.gameObject.SetActive (true); 
-
-				errorMessage.gameObject.SetActive (true);
 
 				Invoke ("CloseErrorMessage", 5.0f);
 			},

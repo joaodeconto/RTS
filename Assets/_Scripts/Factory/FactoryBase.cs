@@ -696,6 +696,8 @@ public class FactoryBase : IStats, IDeathObservable
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
 
+		hudController.DestroySelected (transform);
+
 		if (playerUnit && wasBuilt)
 		{
 			if (!hasRallypoint) return;

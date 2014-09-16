@@ -21,7 +21,7 @@ public class VersusScreen : MonoBehaviour
 
 	public UISprite mapSprite;
 	
-	public UILabel timeLabel;
+//	public UILabel timeLabel;
 	public UILabel mapName;
 	public UILabel battleMode;
 	public int cena;
@@ -33,7 +33,7 @@ public class VersusScreen : MonoBehaviour
 	public GameObject prefabPlayerLeft;
 
 
-	public int timeToWait;
+//	public int timeToWait;
 	
 	public ConfigurationOfScreen[] configurationOfScreen;
 	
@@ -43,8 +43,8 @@ public class VersusScreen : MonoBehaviour
 	
 	void Awake ()
 	{
-		timeCount = timeToWait;
-		timeLabel.text = timeCount.ToString ();
+//		timeCount = timeToWait;
+//		timeLabel.text = timeCount.ToString ();
 		
 		pw = ComponentGetter.Get<PhotonWrapper> ();
 		
@@ -128,7 +128,7 @@ public class VersusScreen : MonoBehaviour
 				i++;
 			}
 		}
-		InvokeRepeating ("DescountTime", 1f, 1f);
+//		InvokeRepeating ("DescountTime", 1f, 1f);
 		Invoke ("InstanceGame",2);
 
 	}
@@ -160,13 +160,13 @@ public class VersusScreen : MonoBehaviour
 	}
 	
 	
-	void DescountTime ()
-	{
-		--timeCount;
-		timeLabel.text = timeCount.ToString();
-		
-		if (timeCount == 0) CancelInvoke ("DescountTime");
-	}
+//	void DescountTime ()
+//	{
+//		--timeCount;
+//		timeLabel.text = timeCount.ToString();
+//		
+//		if (timeCount == 0) CancelInvoke ("DescountTime");
+//	}
 
 
 	void SetPlayer (Vector3 position, PhotonPlayer pp)

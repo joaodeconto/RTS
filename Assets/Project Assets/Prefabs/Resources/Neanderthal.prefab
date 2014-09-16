@@ -1140,7 +1140,7 @@ MonoBehaviour:
   m_Ally: 0
   fieldOfView: 16
   sizeOfSelected: 2.5
-  sizeOfSelectedHealthBar: 4
+  sizeOfSelectedHealthBar: 3
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400072}
   movementActions:
@@ -1181,7 +1181,7 @@ MonoBehaviour:
     m_rocks: 100
   wasInitialized: 0
   model: {fileID: 100068}
-  force: 7
+  force: 6
   distanceView: 14
   attackRange: 5
   attackDuration: 0
@@ -1196,7 +1196,7 @@ MonoBehaviour:
     Attack: {fileID: 7400002, guid: c7d02d7adbbf9bd488b8959df1038af7, type: 3}
     DieAnimation: {fileID: 7400004, guid: c7d02d7adbbf9bd488b8959df1038af7, type: 3}
     SpecialAttack: []
-  timeToSpawn: 10
+  timeToSpawn: 8
   ControllerAnimation: {fileID: 11100000}
 --- !u!136 &13600000
 CapsuleCollider:
@@ -1223,7 +1223,7 @@ SkinnedMeshRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 485726153, guid: 67e7134c0137a4a428fe595c862d007f, type: 3}
+  - {fileID: 485726153, guid: 73d7e73327e270c4d8fd54d5b34688d5, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -1282,7 +1282,7 @@ SkinnedMeshRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 485726153, guid: 67e7134c0137a4a428fe595c862d007f, type: 3}
+  - {fileID: 485726153, guid: 73d7e73327e270c4d8fd54d5b34688d5, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -1337,8 +1337,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
   m_Radius: .800000012
-  m_Speed: 3.5
-  m_Acceleration: 10
+  m_Speed: 3
+  m_Acceleration: 5
   avoidancePriority: 0
   m_AngularSpeed: 360
   m_StoppingDistance: .300000012
