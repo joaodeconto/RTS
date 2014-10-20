@@ -45,6 +45,10 @@ public class PhotonViewHandler : EditorWindow
         //PhotonView[] pvObjects = GameObject.FindSceneObjectsOfType(typeof(PhotonView)) as PhotonView[];
         //Debug.Log("HierarchyChange. PV Count: " + pvObjects.Length);
 
+        
+        int minViewIdInThisScene = PunSceneSettings.MinViewIdForScene(Application.loadedLevelName);
+        //Debug.Log("Level '" + Application.loadedLevelName + "' has a minimum ViewId of: " + minViewIdInThisScene);
+
         PhotonView[] pvObjects = Resources.FindObjectsOfTypeAll(typeof(PhotonView)) as PhotonView[];
         foreach (PhotonView view in pvObjects)
         {
@@ -77,10 +81,10 @@ public class PhotonViewHandler : EditorWindow
             }
             view.ownerId = 0;   // simply make sure no owner is set (cause room always uses 0)
             view.prefix = -1;   // TODO: prefix could be settable via inspector per scene?!
-            
+
             if (view.subId != 0)
             {
-                if (view.subId < 0 || usedInstanceViewNumbers.Contains(view.subId))
+                if (view.subId < minViewIdInThisScene || usedInstanceViewNumbers.Contains(view.subId))
                 {
                     view.subId = 0; // avoid duplicates and negative values by assigning 0 as (temporary) number to be fixed in next pass
                 }
@@ -92,7 +96,7 @@ public class PhotonViewHandler : EditorWindow
         }
 
         // third pass: anything that's now 0 must get a new (not yet used) subId number
-        int lastUsedId = 0;
+        int lastUsedId = (minViewIdInThisScene > 0) ? minViewIdInThisScene - 1 : 0;
         foreach (PhotonView view in pvInstances)
         {
             if (view.subId == 0)
@@ -114,7 +118,7 @@ public class PhotonViewHandler : EditorWindow
             //Debug.LogWarning("Some subId was adjusted."); // this log is only interesting for Exit Games
         }
     }
-    
+
     // TODO fail if no ID was available anymore
     // TODO look up lower numbers if offset hits max?!
     public static int GetID(int idOffset, HashSet<int> usedInstanceViewNumbers)

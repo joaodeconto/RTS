@@ -33,8 +33,8 @@ public class RTSPersonalizedCallbackButton : DefaultCallbackButton
 
 		if( !ht.ContainsKey("textureName") )
 		{
-			transform.FindChild("Foreground").GetComponent<UISlicedSprite>().enabled = false;
-			transform.FindChild("Background").GetComponent<UISlicedSprite>().enabled = false;
+			transform.FindChild("Foreground").GetComponent<UISprite>().enabled = false;
+			transform.FindChild("Background").GetComponent<UISprite>().enabled = false;
 			trnsLabel.localPosition = Vector3.zero;
 		}
 		else
@@ -64,11 +64,11 @@ public class RTSPersonalizedCallbackButton : DefaultCallbackButton
 
 		if ( ht.ContainsKey("counter") )
 		{
-			trnsBackCounter.GetComponent<UISlicedSprite>().enabled = true;
+			trnsBackCounter.GetComponent<UISprite>().enabled = true;
 			l.text = ((int)ht["counter"]).ToString ();
 		}
 		else
-			trnsBackCounter.GetComponent<UISlicedSprite>().enabled = false;
+			trnsBackCounter.GetComponent<UISprite>().enabled = false;
 
 
 		trnsLabel = transform.FindChild("Label Price");
@@ -81,14 +81,14 @@ public class RTSPersonalizedCallbackButton : DefaultCallbackButton
 
 	private void ChangeButtonForegroundTexture(Transform trnsForeground, string textureName)
 	{
-		if(trnsForeground == null || trnsForeground.GetComponent<UISlicedSprite>() == null)
+		if(trnsForeground == null || trnsForeground.GetComponent<UISprite>() == null)
 		{
 			Debug.LogError("Eh necessario que tenha o objeto \"Foreground\" com um sliced sprite dentro");
 			Debug.Break();
 			return;
 		}
 
-		UISlicedSprite sprite = trnsForeground.GetComponent<UISlicedSprite>();
+		UISprite sprite = trnsForeground.GetComponent<UISprite>();
 		sprite.spriteName = textureName;
 		sprite.MakePixelPerfect();
 		sprite.transform.localPosition = Vector3.forward * -5;

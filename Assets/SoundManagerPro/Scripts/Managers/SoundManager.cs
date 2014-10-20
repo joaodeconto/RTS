@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using antilunchbox;
 
 [AddComponentMenu("AntiLunchBox/SoundManager")]
+/// <summary>
+/// SoundManager is where most functions will be called from. This is the main controller of sound activity in your app.
+/// </summary>
 public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	#region level load handling
 	// Handle SFX on update
@@ -18,7 +21,12 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		HandleSFX();
 	}
 
-	// Handle normal LevelLoad
+	/// <summary>
+	/// Raises the level was loaded event, which handles the level loading behavior of SMP.
+	/// </summary>
+	/// <param name='level'>
+	/// Level.
+	/// </param>
 	public void OnLevelWasLoaded(int level)
 	{
 		if(Instance == this)
@@ -53,6 +61,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Adds the SoundConnection to the manager.  It will not add multiple SoundConnections to one level.  
 	/// </summary>
+	/// <param name='sc'>
+	/// The SoundConnection.
+	/// </param>
 	public static void AddSoundConnection(SoundConnection sc) {
 		int _indexOf = SoundConnectionsContainsThisLevel(sc.level);
 		if(_indexOf == SOUNDMANAGER_FALSE) {
@@ -67,6 +78,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Removes the SoundConnection for level.  It will not remove anything if that level does not exist.
 	/// </summary>
+	/// <param name='lvl'>
+	/// Level name of the SoundConnection.
+	/// </param>
 	public static void RemoveSoundConnectionForLevel(string lvl) {
 		int _indexOf = SoundConnectionsContainsThisLevel(lvl);
 		if(_indexOf == SOUNDMANAGER_FALSE) {
@@ -79,6 +93,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Replaces the SoundConnection at that level.  If a SoundConnection doesn't exist, it will just add it.
 	/// </summary>
+	/// <param name='sc'>
+	/// The SoundConnection.
+	/// </param>
 	public static void ReplaceSoundConnection(SoundConnection sc) {
 		int _indexOf = SoundConnectionsContainsThisLevel(sc.level);
 		if(_indexOf != SOUNDMANAGER_FALSE) {
@@ -93,6 +110,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <returns>
 	/// Index of the SoundConnection or SOUNDMANAGER_FALSE(-1)
 	/// </returns>
+	/// <param name='lvl'>
+	/// The level name of the SoundConnection.
+	/// </param>
 	public static int SoundConnectionsContainsThisLevel(string lvl) {
 		return Instance.soundConnections.FindIndex(
 				delegate(SoundConnection sc)
@@ -108,6 +128,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <returns>
 	/// The sound connection for this level.
 	/// </returns>
+	/// <param name='lvl'>
+	/// The level name of the SoundConnection.
+	/// </param>
 	public static SoundConnection GetSoundConnectionForThisLevel(string lvl) {
 		int index = SoundConnectionsContainsThisLevel(lvl);
 		if(index == SOUNDMANAGER_FALSE)
@@ -119,7 +142,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// Mutes/Unmutes all sounds.  Returns a bool if it's muted or not.
 	/// </summary>
 	/// <returns>
-	/// If the sound is muted or not.
+	/// If the sound is NOW muted or not.
 	/// </returns>
 	public static bool MuteMusic()
 	{
@@ -130,8 +153,11 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// Sets Mute to all sounds
 	/// </summary>
 	/// <returns>
-	/// If the sound is muted or not.
+	/// If the sound is NOW muted or not.
 	/// </returns>
+	/// <param name='toggle'>
+	/// The mute to set.
+	/// </param>
 	public static bool MuteMusic(bool toggle)
 	{
 		Instance.mutedMusic = toggle;
@@ -141,6 +167,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Determines whether this instance is music muted.
 	/// </summary>
+	/// <returns>
+	/// <c>true</c> if this instance is music muted; otherwise, <c>false</c>.
+	/// </returns>
 	public static bool IsMusicMuted()
 	{
 		return Instance.mutedMusic;
@@ -150,7 +179,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// Mutes/Unmutes all sounds.  Returns a bool if it's muted or not, priority is given to the music mute
 	/// </summary>
 	/// <returns>
-	/// If all sounds are muted or not.
+	/// If all sounds are NOW muted or not.
 	/// </returns>
 	public static bool Mute()
 	{
@@ -163,8 +192,11 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// Sets Mute to all sounds
 	/// </summary>
 	/// <returns>
-	/// If the sound is muted or not.
+	/// If all sounds are NOW muted or not.
 	/// </returns>
+	/// <param name='toggle'>
+	/// If set to <c>true</c> toggle.
+	/// </param>
 	public static bool Mute(bool toggle)
 	{
 		return MuteMusic(MuteSFX(toggle));
@@ -173,6 +205,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Determines whether this instance is muted.
 	/// </summary>
+	/// <returns>
+	/// If all sounds are muted or not.
+	/// </returns>
 	public static bool IsMuted()
 	{
 		return Instance.muted;
@@ -181,6 +216,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Sets the maximum volume of music in the game relative to the global volume.
 	/// </summary>
+	/// <param name='setVolume'>
+	/// Set volume.
+	/// </param>
 	public static void SetVolumeMusic(float setVolume)
 	{
 		setVolume = Mathf.Clamp01(setVolume);
@@ -209,6 +247,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the music volume.
 	/// </summary>
+	/// <returns>
+	/// The music volume.
+	/// </returns>
 	public static float GetVolumeMusic()
 	{
 		return Instance.maxMusicVolume;
@@ -217,6 +258,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Sets the pitch of music in the game.
 	/// </summary>
+	/// <param name='setPitch'>
+	/// Set pitch.
+	/// </param>
 	public static void SetPitchMusic(float setPitch)
 	{
 		Instance.audios[0].pitch = Instance.audios[1].pitch = setPitch;
@@ -225,6 +269,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the music pitch. Prioritizes music.
 	/// </summary>
+	/// <returns>
+	/// The music pitch.
+	/// </returns>
 	public static float GetPitchMusic()
 	{
 		return Instance.audios[0].pitch;
@@ -233,6 +280,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Sets the maximum volume of all sound in the game.
 	/// </summary>
+	/// <param name='setVolume'>
+	/// Set volume.
+	/// </param>
 	public static void SetVolume(float setVolume)
 	{
 		setVolume = Mathf.Clamp01(setVolume);
@@ -255,6 +305,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the volume.
 	/// </summary>
+	/// <returns>
+	/// The volume.
+	/// </returns>
 	public static float GetVolume()
 	{
 		return Instance.maxVolume;
@@ -263,6 +316,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Sets the pitch of all sound in the game.
 	/// </summary>
+	/// <param name='setPitch'>
+	/// Set pitch.
+	/// </param>
 	public static void SetPitch(float setPitch)
 	{
 		SetPitchMusic(setPitch);
@@ -272,6 +328,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the pitch. Prioritizes music.
 	/// </summary>
+	/// <returns>
+	/// The pitch.
+	/// </returns>
 	public static float GetPitch()
 	{
 		return GetPitchMusic();
@@ -280,6 +339,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the duration of the bgm crossfade.
 	/// </summary>
+	/// <returns>
+	/// The cross duration.
+	/// </returns>
 	public static float GetCrossDuration()
 	{
 		return Instance.crossDuration;
@@ -288,38 +350,53 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Sets the duration of the bgm crossfade.
 	/// </summary>
+	/// <param name='duration'>
+	/// Cross duration.
+	/// </param>
 	public static void SetCrossDuration(float duration)
 	{
 		Instance.crossDuration = duration;
 	}
 	
 	/// <summary>
-	/// Gets the default resources path
+	/// Gets the default resources path. Used in SoundManager.Load
 	/// </summary>
+	/// <returns>
+	/// The default resources path.
+	/// </returns>
 	public static string GetDefaultResourcesPath()
 	{
 		return Instance.resourcesPath;
 	}
 	
 	/// <summary>
-	/// Sets the default resources path
+	/// Sets the default resources path. Used in SoundManager.Load
 	/// </summary>
+	/// <param name='path'>
+	/// Path.
+	/// </param>
 	public static void SetDefaultResourcesPath(string path)
 	{
 		Instance.resourcesPath = path;
 	}
 	
 	/// <summary>
-	/// Gets the current soundconnection
+	/// Gets the current SoundConnection
 	/// </summary>
+	/// <returns>
+	/// The current sound connection.
+	/// </returns>
 	public static SoundConnection GetCurrentSoundConnection()
 	{
 		return Instance.currentSoundConnection;
 	}
 	
 	/// <summary>
-	/// Sets the current soundconnection
+	/// Sets the current SoundConnection
 	/// </summary>
+	/// <param name='connection'>
+	/// SoundConnection.
+	/// </param>
 	public static void SetCurrentSoundConnection(SoundConnection connection)
 	{
 		Instance.currentSoundConnection = connection;
@@ -328,6 +405,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Sets whether the background music is disabled
 	/// </summary>
+	/// <param name='disabled'>
+	/// Disabled.
+	/// </param>
 	public static void SetDisableBGM(bool disabled)
 	{
 		Instance.offTheBGM = disabled;
@@ -336,6 +416,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Sets whether the sfx is disabled
 	/// </summary>
+	/// <param name='disabled'>
+	/// Disabled.
+	/// </param>
 	public static void SetDisableSFX(bool disabled)
 	{
 		Instance.offTheSFX = disabled;
@@ -344,6 +427,15 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Plays the SoundConnection right then, regardless of what you put at the level parameter of the SoundConnection.
 	/// </summary>
+	/// <param name='sc'>
+	/// The SoundConnection.
+	/// </param>
+	/// <param name='syncPlaybackTime'>
+	/// Whether the playback times should be synced.
+	/// </param>
+	/// <param name='trackNumber'>
+	/// Track number to skip to, starting at 0.
+	/// </param>
 	public static void PlayConnection(SoundConnection sc, bool syncPlaybackTime=false, int trackNumber=0)
 	{
 		int currentTimeSamples = 0;
@@ -374,6 +466,15 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Plays a SoundConnection on SoundManager that matches the level name.
 	/// </summary>
+	/// <param name='levelName'>
+	/// The levelName of the SoundConnection.
+	/// </param>
+	/// <param name='syncPlaybackTime'>
+	/// Whether the playback times should be synced.
+	/// </param>
+	/// <param name='trackNumber'>
+	/// Track number to skip to, starting at 0.
+	/// </param>
 	public static void PlayConnection(string levelName, bool syncPlaybackTime=false, int trackNumber=0)
 	{
 		int currentTimeSamples = 0;
@@ -404,6 +505,15 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Creates a SoundConnection.  You can use a scene name or a custom name.  Will default to ContinousPlayThrough.
 	/// </summary>
+	/// <returns>
+	/// The SoundConnection.
+	/// </returns>
+	/// <param name='lvl'>
+	/// The level name of the SoundConnection.
+	/// </param>
+	/// <param name='audioList'>
+	/// Audio list.
+	/// </param>
 	public static SoundConnection CreateSoundConnection(string lvl, params AudioClip[] audioList)
 	{
 		SoundConnection sc = new SoundConnection(lvl, SoundManager.PlayMethod.ContinuousPlayThrough, audioList);
@@ -415,6 +525,18 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Creates a SoundConnection.  You can use a scene name or a custom name.
 	/// </summary>
+	/// <returns>
+	/// The SoundConnection.
+	/// </returns>
+	/// <param name='lvl'>
+	/// The level name of the SoundConnection.
+	/// </param>
+	/// <param name='method'>
+	/// The PlayMethod.
+	/// </param>
+	/// <param name='audioList'>
+	/// Audio list.
+	/// </param>
 	public static SoundConnection CreateSoundConnection(string lvl, SoundManager.PlayMethod method, params AudioClip[] audioList)
 	{
 		SoundConnection sc = new SoundConnection(lvl, method, audioList);
@@ -426,6 +548,21 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Creates a SoundConnection.  You can use a scene name or a custom name.  This overload is used for PlayMethods that use Delay.
 	/// </summary>
+	/// <returns>
+	/// The SoundConnection.
+	/// </returns>
+	/// <param name='lvl'>
+	/// The level name of the SoundConnection.
+	/// </param>
+	/// <param name='method'>
+	/// The PlayMethod.
+	/// </param>
+	/// <param name='delayPlay'>
+	/// The exact delay.
+	/// </param>
+	/// <param name='audioList'>
+	/// Audio list.
+	/// </param>
 	public static SoundConnection CreateSoundConnection(string lvl, SoundManager.PlayMethod method, float delayPlay, params AudioClip[] audioList)
 	{
 		SoundConnection sc = new SoundConnection(lvl, method, delayPlay, audioList);
@@ -437,6 +574,24 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Creates a SoundConnection.  You can use a scene name or a custom name.  This overload is used for PlayMethods that use Random Delay In Range.
 	/// </summary>
+	/// <returns>
+	/// The SoundConnection.
+	/// </returns>
+	/// <param name='lvl'>
+	/// The level name of the SoundConnection.
+	/// </param>
+	/// <param name='method'>
+	/// The PlayMethod.
+	/// </param>
+	/// <param name='minDelayPlay'>
+	/// The minimum delay.
+	/// </param>
+	/// <param name='maxDelayPlay'>
+	/// The maximum delay.
+	/// </param>
+	/// <param name='audioList'>
+	/// Audio list.
+	/// </param>
 	public static SoundConnection CreateSoundConnection(string lvl, SoundManager.PlayMethod method, float minDelayPlay, float maxDelayPlay, params AudioClip[] audioList)
 	{
 		SoundConnection sc = new SoundConnection(lvl, method, minDelayPlay, maxDelayPlay, audioList);
@@ -560,6 +715,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the current song list.
 	/// </summary>
+	/// <returns>
+	/// The current song list in the current SoundConnection.
+	/// </returns>
 	public static List<AudioClip> GetCurrentSongList()
 	{
 		if(Instance.currentSoundConnection == null)
@@ -570,6 +728,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the current song.
 	/// </summary>
+	/// <returns>
+	/// The current song.
+	/// </returns>
 	public static AudioClip GetCurrentSong()
 	{
 		if(!Instance.IsPlaying() || Instance.currentSource.clip == null)
@@ -599,6 +760,12 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Checks if the clip name is valid.
 	/// </summary>
+	/// <returns>
+	/// If the name is valid.
+	/// </returns>
+	/// <param name='clipName'>
+	/// The clip name to check.
+	/// </param>
 	public static bool ClipNameIsValid(string clipName) 
 	{
 		if(string.IsNullOrEmpty(clipName)) return false;
@@ -608,6 +775,12 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Checks if the group name is valid.
 	/// </summary>
+	/// <returns>
+	/// If the group name is valid.
+	/// </returns>
+	/// <param name='groupName'>
+	/// The SFXGroup name to check.
+	/// </param>
 	public static bool GroupNameIsValid(string groupName)
 	{
 		if(string.IsNullOrEmpty(groupName)) return false;
@@ -617,6 +790,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the current audio source playing BGM. Will return null if not playing anything at all.
 	/// </summary>
+	/// <returns>
+	/// The current audio source.
+	/// </returns>
 	public static AudioSource GetCurrentAudioSource()
 	{
 		return Instance.IsPlaying(GetCurrentSong());
@@ -625,12 +801,20 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// <summary>
 	/// Gets the track number in the playlist. Otherwise returns -1 if not in playlist.
 	/// </summary>
+	/// <returns>
+	/// The track number.
+	/// </returns>
+	/// <param name='clip'>
+	/// Clip.
+	/// </param>
 	public static int GetTrackNumber(AudioClip clip)
 	{
 		return GetCurrentSongList().IndexOf(clip);
 	}
 }
-
+/// <summary>
+/// Sound ducking setting. Can not duck, duck only SFX, duck only Music, or duck everything.
+/// </summary>
 public enum SoundDuckingSetting
 {
 	DoNotDuck,

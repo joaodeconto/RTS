@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using antilunchbox;
 
 public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool viewAll {
 		get {
 			return _viewAll;
@@ -25,40 +27,74 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	        }
 		}
 	}
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public const string VIEW = "view";
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public const string EDIT = "edit";
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public const string HIDE = "hide";
 	private bool _viewAll = false;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	[SerializeField]
 	public Hashtable songStatus = new Hashtable();
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool helpOn = false;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool showInfo = true;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool showDev = true;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool showList = true;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool showAdd = true;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool showSFX = true;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public List<bool> showSFXDetails = new List<bool>();
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public int groupAddIndex = 0;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public int autoPrepoolAmount = 0;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public float autoBaseVolume = 1f;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public float autoVolumeVariation = 0f;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public float autoPitchVariation = 0f;
-	/// EDITOR variables. DO NOT TOUCH.
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool showAsGrouped = false;
 }

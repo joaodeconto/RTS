@@ -60,7 +60,7 @@ SubShader {
             TANGENT_SPACE_ROTATION;
 		  
             o.lightDirection = mul(rotation, ObjSpaceLightDir(v.vertex));
-		    o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+		    o.pos = mul (unit_MATRIX_MVP, v.vertex);
 		    o.uv_Control = TRANSFORM_TEX (v.texcoord, _MainTex);
 		   
 		    float4 worldPos = mul (_Object2World, v.vertex);

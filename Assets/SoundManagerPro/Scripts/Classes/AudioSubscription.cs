@@ -8,34 +8,83 @@ using System.Linq.Expressions;
 using antilunchbox;
 
 [Serializable]
+/// <summary>
+/// Class that contains all the data needed to bind an AudioSourceAction to an event. AudioSubscriptions are bound at run-time to keep serialization intact.
+/// </summary>
 public class AudioSubscription {
-	// owner audiosourcepro
+	/// <summary>
+	/// The owner.
+	/// </summary>
 	public AudioSourcePro owner;
 	
-	// standard event
+	/// <summary>
+	/// Whether this is a standard event binding.
+	/// </summary>
 	public bool isStandardEvent = true;
+	/// <summary>
+	/// The standard event to bind to. Only used if isStandardEvent is <c>true</c>.
+	/// </summary>
 	public AudioSourceStandardEvent standardEvent;
 	
-	// custom event
+	/// <summary>
+	/// The source component if it's a custom event binding.
+	/// </summary>
 	public Component sourceComponent;
+	/// <summary>
+	/// The name of the method if it's a custom event binding.
+	/// </summary>
 	public string methodName = "";
 	private bool isBound = false;
 	
-	// result action
+	/// <summary>
+	/// The action to take when the event is triggered.
+	/// </summary>
 	public AudioSourceAction actionType = AudioSourceAction.None;
+	/// <summary>
+	/// If the action is to play a capped SFX, then this is the cap name.
+	/// </summary>
 	public string cappedName;
+	/// <summary>
+	/// Whether triggers will be filtered by layer.
+	/// </summary>
 	public bool filterLayers;
+	/// <summary>
+	/// Whether triggers will be filtered by tags.
+	/// </summary>
 	public bool filterTags;
+	/// <summary>
+	/// Whether triggers will be filtered by gameObject name.
+	/// </summary>
 	public bool filterNames;
-	public int layerMask;
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public int tagMask;
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public int nameMask;
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public string nameToAdd = "";
-	public List<string> tags = new List<string>() { "Default" };
-	public List<string> names = new List<string>();
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public List<string> allNames = new List<string>();
+	/// <summary>
+	/// If filterLayers is <c>true</c>, only trigger for this layer mask.
+	/// </summary>
+	public int layerMask;
+	/// <summary>
+	/// If filterTags is <c>true</c>, only trigger for these tags.
+	/// </summary>
+	public List<string> tags = new List<string>() { "Default" };
+	/// <summary>
+	/// If filterNames is <c>true</c>, only trigger for these gameObject names.
+	/// </summary>
+	public List<string> names = new List<string>();
 	
-	// event info
 #if !(UNITY_WP8 || UNITY_METRO)
 	private Component targetComponent;
 #endif
@@ -44,6 +93,12 @@ public class AudioSubscription {
 	private MethodInfo handlerProxy;
 	private ParameterInfo[] handlerParameters;
 	
+	/// <summary>
+	/// Binds event and action on the specified AudioSourcePro.
+	/// </summary>
+	/// <param name='sourcePro'>
+	/// The AudioSourcePro.
+	/// </param>
 	public void Bind(AudioSourcePro sourcePro)
 	{
 		if(isBound || isStandardEvent || sourceComponent == null)
@@ -88,7 +143,9 @@ public class AudioSubscription {
 #endif
 		isBound = true;
 	}
-	
+	/// <summary>
+	/// Unbind this instance.
+	/// </summary>
 	public void Unbind()
 	{
 		if(!isBound)
@@ -107,7 +164,12 @@ public class AudioSubscription {
 		targetComponent = null;
 #endif
 	}
-	
+	/// <summary>
+	/// Gets a value indicating whether this <see cref="AudioSubscription"/> component is valid.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if component is valid; otherwise, <c>false</c>.
+	/// </value>
 	public bool componentIsValid {
 		get {
 			if(standardEventIsValid)
@@ -131,7 +193,12 @@ public class AudioSubscription {
 #endif
 		}
 	}
-	
+	/// <summary>
+	/// Gets a value indicating whether this <see cref="AudioSubscription"/> standard event is valid.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if standard event is valid; otherwise, <c>false</c>.
+	/// </value>
 	public bool standardEventIsValid {
 		get {
 			if(isStandardEvent && Enum.IsDefined(typeof(AudioSourceStandardEvent), methodName))

@@ -10,6 +10,12 @@ using UnityEditor;
 [CustomEditor(typeof(UICamera))]
 public class UICameraEditor : Editor
 {
+	enum EventsGo
+	{
+		Colliders,
+		Rigidbodies,
+	}
+
 	public override void OnInspectorGUI ()
 	{
 		UICamera cam = target as UICamera;
@@ -25,11 +31,7 @@ public class UICameraEditor : Editor
 		}
 		else
 		{
-#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_1 && !UNITY_4_2
 			string[] options = new string[] { "3D World", "3D UI", "2D World", "2D UI" };
-#else
-			string[] options = new string[] { "3D World", "3D UI" };
-#endif
 			int val = EditorGUILayout.Popup("Event Type", et.intValue, options);
 			if (val != et.intValue) et.intValue = val;
 		}
@@ -54,6 +56,17 @@ public class UICameraEditor : Editor
 			SerializedProperty controller = serializedObject.FindProperty("useController");
 
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("eventReceiverMask"), new GUIContent("Event Mask"));
+
+			SerializedProperty ev = serializedObject.FindProperty("eventsGoToColliders");
+
+			if (ev != null)
+			{
+				bool val = ev.boolValue;
+				bool newVal = EventsGo.Colliders == (EventsGo)EditorGUILayout.EnumPopup("Events go to...",
+					ev.boolValue ? EventsGo.Colliders : EventsGo.Rigidbodies);
+				if (val != newVal) ev.boolValue = newVal;
+			}
+
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("debug"));
 
 			EditorGUI.BeginDisabledGroup(!mouse.boolValue && !touch.boolValue);

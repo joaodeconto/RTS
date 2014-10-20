@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(PhotonView))]
 public class RangeUnitTransformNetwork : Photon.MonoBehaviour
 {
     RangeUnit rangeUnitScript;
@@ -45,8 +46,8 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
         {
             //We own this player: send the others our data
 			stream.SendNext ((int)rangeUnitScript.Health);
-            stream.SendNext ((int)rangeUnitScript.unitState);
-            stream.SendNext ((bool)rangeUnitScript.inHighRange);
+			stream.SendNext ((bool)rangeUnitScript.inHighRange);
+			stream.SendNext ((int)rangeUnitScript.unitState);
             stream.SendNext (transform.position);
             stream.SendNext (transform.rotation);
         }
@@ -54,8 +55,8 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
         {
             //Network player, receive data
 			rangeUnitScript.SetHealth ((int)stream.ReceiveNext ());
+			rangeUnitScript.inHighRange = (bool)stream.ReceiveNext ();
             rangeUnitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
-            rangeUnitScript.inHighRange = (bool)stream.ReceiveNext ();
             correctPlayerPos = (Vector3)stream.ReceiveNext ();
             correctPlayerRot = (Quaternion)stream.ReceiveNext ();
         }
@@ -73,3 +74,4 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
 		rangeUnitScript.SyncAnimation ();
     }
 }
+

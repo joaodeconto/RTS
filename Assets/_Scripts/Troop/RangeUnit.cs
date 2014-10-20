@@ -31,7 +31,7 @@ public class RangeUnit : Unit
 			                      trnsInstantiateLocalPrefab.rotation) as GameObject;
 		}
 		
-		pRange.GetComponent<RangeObject> ().Init (TargetAttack, 3f,
+		pRange.GetComponent<RangeObject> ().Init (TargetAttack, 0.1f,
 		                                          (ht) => 
 		                                          {
 			if (TargetAttack != null)
@@ -87,6 +87,7 @@ public class RangeUnit : Unit
 			{
 				TargetingEnemy (null);
 				IsAttacking = false;
+				unitState = UnitState.Idle;
 				return;
 			}
 
@@ -106,6 +107,8 @@ public class RangeUnit : Unit
 	
 	IEnumerator Attack ()
 	{
+		SfxAtk();
+
 		if (highRangeAnimation != null)
 		{
 			Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);

@@ -1,7 +1,9 @@
 ﻿
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Visiorama;
+using Visiorama.Utils;
 
 public class InGameMenu : MonoBehaviour
 {
@@ -10,12 +12,16 @@ public class InGameMenu : MonoBehaviour
 	public GameObject controlsOptionPanel;
 	public GameObject audioOptionPanel;
 	public GameObject surrenderPanel;
+	protected GameplayManager gameplayManager;
+	protected TouchController touchController;
+	protected SelectionController interactionController;
 
 
 	
 	public void OnEnable ()
 	{
 		Open ();
+
 	}
 	
 	public void OnDisable ()
@@ -25,6 +31,20 @@ public class InGameMenu : MonoBehaviour
 	
 	public void Open ()
 	{
+		gameplayManager = ComponentGetter.Get<GameplayManager>();
+		touchController = ComponentGetter.Get<TouchController>();
+		interactionController = ComponentGetter.Get<SelectionController>();
+
+
+
+
+		if (gameplayManager.pauseTutorial = true)
+		{
+			touchController.mainCamera.GetComponent<CameraMovement>().enabled = false;
+			interactionController.enabled = false;
+			Time.timeScale = 0.0f;
+		}
+
 		if (wasInitialized)
 			return;
 		
@@ -43,8 +63,7 @@ public class InGameMenu : MonoBehaviour
 
 				controlsOptionPanel.SetActive (true);
 
-				gameObject.SetActive (false);
-			});
+				});
 		}
 
 		Transform audio = this.transform.FindChild ("Audio");
@@ -58,7 +77,7 @@ public class InGameMenu : MonoBehaviour
 				
 				audioOptionPanel.SetActive (true);
 				
-				gameObject.SetActive (false);
+
 			});
 		}
 
@@ -73,7 +92,7 @@ public class InGameMenu : MonoBehaviour
 				
 				surrenderPanel.SetActive (true);
 				
-				gameObject.SetActive (false);
+
 			});
 		}
 		
@@ -87,13 +106,21 @@ public class InGameMenu : MonoBehaviour
 			dcb.Init(null,
 			         (ht_dcb) => 
 			         {
+				Close ();
 				gameObject.SetActive (false);
+
 			});
 		}
 	}
 	
 	public void Close ()
 	{
+		if (gameplayManager.pauseTutorial = true)
+		{
+			touchController.mainCamera.GetComponent<CameraMovement>().enabled = true;
+			interactionController.enabled = true;
+			Time.timeScale = 1.0f;
+		}
 		
 	}
 }

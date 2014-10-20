@@ -10,13 +10,26 @@ using antilunchbox;
 [AddComponentMenu( "AntiLunchBox/AudioSourcePro" )]
 [Serializable]
 [ExecuteInEditMode()]
+/// <summary>
+/// SoundManagerPro's version of an AudioSource with additional features.
+/// </summary>
 public class AudioSourcePro : MonoBehaviour {
 	#region clip info
+	/// <summary>
+	/// The underlying <a href="http://docs.unity3d.com/ScriptReference/AudioSource.html">AudioSource</a>
+	/// </summary>
 	public AudioSource audioSource;
+	/// <summary>
+	/// Specifies how the <a href="http://docs.unity3d.com/ScriptReference/AudioClip.html">AudioClip</a> should be loaded.
+	/// </summary>
 	public ClipType clipType = ClipType.AudioClip;
-	public AudioSourceAction actionType = AudioSourceAction.None;
-	
+	/// <summary>
+	/// The name of the <a href="http://docs.unity3d.com/ScriptReference/AudioClip.html">AudioClip</a> if you are loading by clip name. The clip should live on the SoundManager.
+	/// </summary>
 	public string clipName = "";
+	/// <summary>
+	/// The name of the SFXGroup if you are loading by group name. The group should live on the SoundManager.
+	/// </summary>
 	public string groupName = "";
 	#endregion
 	
@@ -26,21 +39,69 @@ public class AudioSourcePro : MonoBehaviour {
 	#endregion
 	
 	#region event activation variables
+	/// <summary>
+	/// Is there a trigger on start?
+	/// </summary>
 	public bool OnStartActivated = false;
+	/// <summary>
+	/// Is there a trigger on visible?
+	/// </summary>
 	public bool OnVisibleActivated = false;
+	/// <summary>
+	/// Is there a trigger on invisible?
+	/// </summary>
 	public bool OnInvisibleActivated = false;
+	/// <summary>
+	/// Is there a trigger on collision enter?
+	/// </summary>
 	public bool OnCollisionEnterActivated = false;
+	/// <summary>
+	/// Is there a trigger on collision exit?
+	/// </summary>
 	public bool OnCollisionExitActivated = false;
+	/// <summary>
+	/// Is there a trigger on trigger enter?
+	/// </summary>
 	public bool OnTriggerEnterActivated = false;
+	/// <summary>
+	/// Is there a trigger on trigger exit?
+	/// </summary>
 	public bool OnTriggerExitActivated = false;
+	/// <summary>
+	/// Is there a trigger on mouse enter?
+	/// </summary>
 	public bool OnMouseEnterActivated = false;
+	/// <summary>
+	/// Is there a trigger on mouse click?
+	/// </summary>
 	public bool OnMouseClickActivated = false;
+	/// <summary>
+	/// Is there a trigger on enable?
+	/// </summary>
 	public bool OnEnableActivated = false;
+	/// <summary>
+	/// Is there a trigger on disable?
+	/// </summary>
 	public bool OnDisableActivated = false;
+	/// <summary>
+	/// Is there a trigger on 2D collision enter?
+	/// </summary>
 	public bool OnCollision2dEnterActivated = false;
+	/// <summary>
+	/// Is there a trigger on 2D collision exit?
+	/// </summary>
 	public bool OnCollision2dExitActivated = false;
+	/// <summary>
+	/// Is there a trigger on 2D trigger enter?
+	/// </summary>
 	public bool OnTriggerEnter2dActivated = false;
+	/// <summary>
+	/// Is there a trigger on 2D trigger exit?
+	/// </summary>
 	public bool OnTriggerExit2dActivated = false;
+	/// <summary>
+	/// Is there a trigger on particle collision?
+	/// </summary>
 	public bool OnParticleCollisionActivated = false;
 	#endregion
 	
@@ -105,8 +166,14 @@ public class AudioSourcePro : MonoBehaviour {
 	}
 	
 	/// <summary>
-	/// Binds standard events.
+	/// Binds or unbinds an AudioSourceStandardEvent.
 	/// </summary>
+	/// <param name='evt'>
+	/// The AudioSourceStandardEvent to bind or unbind.
+	/// </param>
+	/// <param name='activated'>
+	/// Whether to bind or unbind.
+	/// </param>
 	public void BindStandardEvent(AudioSourceStandardEvent evt, bool activated)
 	{
 		switch(evt)
@@ -168,7 +235,7 @@ public class AudioSourcePro : MonoBehaviour {
 	#region internal play
 	
 	/// <summary>
-	/// Calls the correct play handler by standard event.
+	/// Calls the correct play handler by AudioSourceStandardEvent.
 	/// </summary>
 	void PlaySoundInternal(AudioSourceStandardEvent evt)
 	{
@@ -496,6 +563,12 @@ public class AudioSourcePro : MonoBehaviour {
 	#endregion
 	
 	#region valiidation
+	/// <summary>
+	/// Gets a value indicating whether this <see cref="AudioSourcePro"/> components are valid.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if components are valid; otherwise, <c>false</c>.
+	/// </value>
 	public bool componentsAreValid
 	{
 		get {
@@ -505,7 +578,12 @@ public class AudioSourcePro : MonoBehaviour {
 			return true;
 		}
 	}
-	
+	/// <summary>
+	/// Gets a value indicating whether this <see cref="AudioSourcePro"/> audio setup is valid.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if audio setup is valid; otherwise, <c>false</c>.
+	/// </value>
 	public bool audioIsValid
 	{
 		get {	
@@ -532,6 +610,12 @@ public class AudioSourcePro : MonoBehaviour {
 	#endregion	
 	
 	#region audiosource variable access
+	/// <summary>
+	/// Bypass effects (Applied from filter components or global listener filters).
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if bypass effects; otherwise, <c>false</c>.
+	/// </value>
 	public bool bypassEffects {
 		get {
 			return audioSource.bypassEffects;
@@ -540,6 +624,12 @@ public class AudioSourcePro : MonoBehaviour {
 		}
 	}
 	
+	/// <summary>
+	/// The default <a href="http://docs.unity3d.com/ScriptReference/AudioClip.html">AudioClip</a> to play.
+	/// </summary>
+	/// <value>
+	/// The clip.
+	/// </value>
 	public AudioClip clip {
 		get {
 			switch(clipType)
@@ -568,7 +658,12 @@ public class AudioSourcePro : MonoBehaviour {
 			}
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets the Doppler scale for this <a href="http://docs.unity3d.com/ScriptReference/AudioSource.html">AudioSource</a>.
+	/// </summary>
+	/// <value>
+	/// The doppler level.
+	/// </value>
 	public float dopplerLevel {
 		get {
 			return audioSource.dopplerLevel;
@@ -578,6 +673,12 @@ public class AudioSourcePro : MonoBehaviour {
 	}
 	
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1
+	/// <summary>
+	/// Allows <a href="http://docs.unity3d.com/ScriptReference/AudioSource.html">AudioSource</a> to play even though <a href="http://docs.unity3d.com/ScriptReference/AudioListener-pause.html">AudioListener.pause</a> is set to true. This is useful for the menu element sounds or background music in pause menus.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> ignoring listener pause; otherwise, <c>false</c>. This property can only be set via the script and is not serialized.
+	/// </value>
 	public bool ignoreListenerPause {
 		get {
 			return audioSource.ignoreListenerPause;
@@ -586,7 +687,12 @@ public class AudioSourcePro : MonoBehaviour {
 		}
 	}
 #endif
-	
+	/// <summary>
+	/// This makes the <a href="http://docs.unity3d.com/ScriptReference/AudioSource.html">AudioSource</a> not take into account the volume of the <a href="http://docs.unity3d.com/ScriptReference/AudioListener.html">AudioListenter</a>.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if ignore listener volume; otherwise, <c>false</c>.
+	/// </value>
 	public bool ignoreListenerVolume {
 		get {
 			return audioSource.ignoreListenerVolume;
@@ -594,13 +700,23 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.ignoreListenerVolume = value;
 		}
 	}
-	
+	/// <summary>
+	/// Gets a value indicating whether this <see cref="AudioSourcePro"/> is playing.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if is playing; otherwise, <c>false</c>.
+	/// </value>
 	public bool isPlaying {
 		get {
 			return audioSource.isPlaying;
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets a value indicating whether this <see cref="AudioSourcePro"/> is set to loop.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if looping; otherwise, <c>false</c>.
+	/// </value>
 	public bool loop {
 		get {
 			return audioSource.loop;
@@ -608,7 +724,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.loop = value;
 		}
 	}
-	
+	/// <summary>
+	/// (Logarithmic rolloff) MaxDistance is the distance a sound stops attenuating at.
+	/// </summary>
+	/// <value>
+	/// The max distance.
+	/// </value>
 	public float maxDistance {
 		get {
 			return audioSource.maxDistance;
@@ -616,7 +737,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.maxDistance = value;
 		}
 	}
-	
+	/// <summary>
+	/// Within the Min distance the AudioSourcePro will cease to grow louder in volume.
+	/// </summary>
+	/// <value>
+	/// The minimum distance.
+	/// </value>
 	public float minDistance {
 		get {
 			return audioSource.minDistance;
@@ -624,7 +750,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.minDistance = value;
 		}
 	}
-	
+	/// <summary>
+	/// Un- / Mutes the AudioSource. Mute sets the volume=0, Un-Mute restore the original volume.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if mute; otherwise, <c>false</c>.
+	/// </value>
 	public bool mute {
 		get {
 			return audioSource.mute;
@@ -632,7 +763,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.mute = value;
 		}
 	}
-	
+	/// <summary>
+	/// Sets a channels pan position linearly. Only works for 2D clips.
+	/// </summary>
+	/// <value>
+	/// The pan.
+	/// </value>
 	public float pan {
 		get {
 			return audioSource.pan;
@@ -640,7 +776,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.pan = value;
 		}
 	}
-	
+	/// <summary>
+	/// Sets how much the 3d engine has an effect on the channel.
+	/// </summary>
+	/// <value>
+	/// The pan level.
+	/// </value>
 	public float panLevel {
 		get {
 			return audioSource.panLevel;
@@ -648,7 +789,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.panLevel = value;
 		}
 	}
-	
+	/// <summary>
+	/// The pitch of the AudioSourcePro.
+	/// </summary>
+	/// <value>
+	/// The pitch.
+	/// </value>
 	public float pitch {
 		get {
 			return audioSource.pitch;
@@ -656,7 +802,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.pitch = value;
 		}
 	}
-	
+	/// <summary>
+	/// If set to true, the AudioSourcePro will automatically start playing on awake.
+	/// </summary>
+	/// <value>
+	/// <c>true</c> if play on awake; otherwise, <c>false</c>.
+	/// </value>
 	public bool playOnAwake {
 		get {
 			return audioSource.playOnAwake;
@@ -664,7 +815,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.playOnAwake = value;
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets the priority.
+	/// </summary>
+	/// <value>
+	/// The priority.
+	/// </value>
 	public int priority {
 		get {
 			return audioSource.priority;
@@ -672,7 +828,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.priority = value;
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets the rolloff mode, how the AudioSourcePro attenuates over distance.
+	/// </summary>
+	/// <value>
+	/// The rolloff mode.
+	/// </value>
 	public AudioRolloffMode rolloffMode {
 		get {
 			return audioSource.rolloffMode;
@@ -680,7 +841,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.rolloffMode = value;
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets the spread angle a 3D stereo or multichannel sound in speaker space.
+	/// </summary>
+	/// <value>
+	/// The spread.
+	/// </value>
 	public float spread {
 		get {
 			return audioSource.spread;
@@ -688,7 +854,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.spread = value;
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets the time.
+	/// </summary>
+	/// <value>
+	/// Playback position in seconds.
+	/// </value>
 	public float time {
 		get {
 			return audioSource.time;
@@ -696,7 +867,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.time = value;
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets the time samples.
+	/// </summary>
+	/// <value>
+	/// Playback position in PCM samples.
+	/// </value>
 	public int timeSamples {
 		get {
 			return audioSource.timeSamples;
@@ -704,7 +880,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.timeSamples = value;
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets the velocity update mode.
+	/// </summary>
+	/// <value>
+	/// Whether the Audio Source should be updated in the fixed or dynamic update.
+	/// </value>
 	public AudioVelocityUpdateMode velocityUpdateMode {
 		get {
 			return audioSource.velocityUpdateMode;
@@ -712,7 +893,12 @@ public class AudioSourcePro : MonoBehaviour {
 			audioSource.velocityUpdateMode = value;
 		}
 	}
-	
+	/// <summary>
+	/// Gets or sets the volume.
+	/// </summary>
+	/// <value>
+	/// The volume of the audio source (0.0 to 1.0).
+	/// </value>
 	public float volume {
 		get {
 			return audioSource.volume;
@@ -723,21 +909,48 @@ public class AudioSourcePro : MonoBehaviour {
 	#endregion
 	
 	#region audiosource function access
+	/// <summary>
+	/// Returns a block of the currently playing source's output data.
+	/// </summary>
+	/// <param name='samples'>
+	/// Samples.
+	/// </param>
+	/// <param name='channel'>
+	/// Channel.
+	/// </param>
 	public void GetOutputData(float[] samples, int channel)
 	{
 		audioSource.GetOutputData(samples, channel);
 	}
-	
+	/// <summary>
+	/// Returns a block of the currently playing source's spectrum data.
+	/// </summary>
+	/// <param name='samples'>
+	/// Samples.
+	/// </param>
+	/// <param name='channel'>
+	/// Channel.
+	/// </param>
+	/// <param name='window'>
+	/// Window.
+	/// </param>
 	public void GetSpectrumData(float[] samples, int channel, FFTWindow window)
 	{
 		audioSource.GetSpectrumData(samples, channel, window);
 	}
-	
+	/// <summary>
+	/// Pauses playing the clip.
+	/// </summary>
 	public void Pause()
 	{
 		audioSource.Pause();
 	}
-	
+	/// <summary>
+	/// Plays the clip with an optional certain delay.
+	/// </summary>
+	/// <param name='delay'>
+	/// Delay.
+	/// </param>
 	public void Play(ulong delay=0)
 	{
 		switch(clipType)
@@ -753,7 +966,13 @@ public class AudioSourcePro : MonoBehaviour {
 		}
 	}
 	
-#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1	
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1
+	/// <summary>
+	/// Plays the clip with a delay specified in seconds. Users are advised to use this function instead of the old Play(delay) function that took a delay specified in samples relative to a reference rate of 44.1 kHz as an argument.
+	/// </summary>
+	/// <param name='delay'>
+	/// Delay.
+	/// </param>
 	public void PlayDelayed(float delay)
 	{
 		switch(clipType)
@@ -787,13 +1006,27 @@ public class AudioSourcePro : MonoBehaviour {
 		}		
 	}
 #endif
-	
+	/// <summary>
+	/// Plays an <a href="http://docs.unity3d.com/ScriptReference/AudioClip.html">AudioClip</a>, and scales the AudioSourcePro volume by volumeScale.
+	/// </summary>
+	/// <param name='clip'>
+	/// Clip.
+	/// </param>
+	/// <param name='volumeScale'>
+	/// Volume scale.
+	/// </param>
 	public void PlayOneShot(AudioClip clip, float volumeScale)
 	{
 		audioSource.PlayOneShot(clip, volumeScale);
 	}
 
-#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1	
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1
+	/// <summary>
+	/// Plays the clip at a specific time on the absolute time-line that <a href="http://docs.unity3d.com/ScriptReference/AudioSettings-dspTime.html">AudioSettings.dspTime</a> reads from.
+	/// </summary>
+	/// <param name='time'>
+	/// Time to play.
+	/// </param>
 	public void PlayScheduled(double time)
 	{
 		switch(clipType)
@@ -808,7 +1041,12 @@ public class AudioSourcePro : MonoBehaviour {
 			break;
 		}
 	}
-	
+	/// <summary>
+	/// Changes the time at which a sound that has already been scheduled to play will end. Notice that depending on the timing not all rescheduling requests can be fulfilled.
+	/// </summary>
+	/// <param name='time'>
+	/// Time to play.
+	/// </param>
 	public void SetScheduledEndTime(double time)
 	{
 		switch(clipType)
@@ -823,7 +1061,12 @@ public class AudioSourcePro : MonoBehaviour {
 			break;
 		}
 	}
-	
+	/// <summary>
+	/// Changes the time at which a sound that has already been scheduled to play will start.
+	/// </summary>
+	/// <param name='time'>
+	/// Time to play.
+	/// </param>
 	public void SetScheduledStartTime(double time)
 	{
 		switch(clipType)
@@ -839,7 +1082,9 @@ public class AudioSourcePro : MonoBehaviour {
 		}
 	}
 #endif
-	
+	/// <summary>
+	/// Stops playing the clip.
+	/// </summary>
 	public void Stop()
 	{
 		switch(clipType)
@@ -854,7 +1099,18 @@ public class AudioSourcePro : MonoBehaviour {
 			break;
 		}
 	}
-	
+	/// <summary>
+	/// Plays an <a href="http://docs.unity3d.com/ScriptReference/AudioClip.html">AudioClip</a> at a given position in world space.
+	/// </summary>
+	/// <param name='clip'>
+	/// Clip.
+	/// </param>
+	/// <param name='position'>
+	/// Position.
+	/// </param>
+	/// <param name='volume'>
+	/// Volume.
+	/// </param>
 	public static void PlayClipAtPoint(AudioClip clip, Vector3 position, float volume=1f)
 	{
 		SoundManager.PlaySFX(clip, false, 0f, volume, SoundManager.GetPitchSFX(), position);
@@ -862,23 +1118,43 @@ public class AudioSourcePro : MonoBehaviour {
 	#endregion
 	
 	#region editor related - DO NOT MODIFY
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool ShowEditor3D = false;
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool ShowEditor2D = false;
+	/// <summary>
+	/// Editor variable -- IGNORE AND DO NOT MODIFY
+	/// </summary>
 	public bool ShowEventTriggers = false;
+	/// <summary>
+	/// The number of AudioSubscription's are on this instance. The editor modifies this value. It is not recommended to modify this unless you know what you're doing.
+	/// </summary>
 	public int numSubscriptions = 0;
+	/// <summary>
+	/// The AudioSubscriptions on this instance. The editor modifies this value. It is not recommended to modify this unless you know what you're doing.
+	/// </summary>
 	public List<AudioSubscription> audioSubscriptions = new List<AudioSubscription>();
 	#endregion
 }
 
 namespace antilunchbox
 {
+	/// <summary>
+	/// Specifies how to load <a href="http://docs.unity3d.com/ScriptReference/AudioClip.html">AudioClip</a>s.
+	/// </summary>
 	public enum ClipType
 	{
 		AudioClip,
 		ClipFromSoundManager,
 		ClipFromGroup
 	}
-	
+	/// <summary>
+	/// Specifies what an AudioSubscription should do when an event is fired.
+	/// </summary>
 	public enum AudioSourceAction
 	{
 		None,
@@ -887,7 +1163,9 @@ namespace antilunchbox
 		PlayCapped,
 		Stop
 	}
-	
+	/// <summary>
+	/// Standard events to bind to that are automatically provided by the Unity Engine.
+	/// </summary>
 	public enum AudioSourceStandardEvent
 	{
 		OnStart,

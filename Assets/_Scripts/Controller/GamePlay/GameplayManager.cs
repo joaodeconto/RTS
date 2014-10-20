@@ -62,6 +62,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	}
 
 	public static Mode mode;
+	public bool pauseTutorial = false;
 
 	public const int MAX_POPULATION_ALLOWED = 200;
 	public const int BOT_TEAM = 8;
@@ -95,10 +96,26 @@ public class GameplayManager : Photon.MonoBehaviour
 	public int Allies {get; protected set;}
 
 
+
+
 	protected NetworkManager network;
+
 
 	public void Init ()
 	{
+		network = ComponentGetter.Get<NetworkManager>();
+
+	
+		if (mode != Mode.Tutorial)
+		{
+
+			teams[8].initialPosition.gameObject.SetActive(false);
+			GameObject tutorialC = GameObject.Find ("Tutorial Manager");
+			tutorialC.SetActive (false);
+			network.offlineMode = false;
+			pauseTutorial = true;
+		}
+
 		if (!PhotonNetwork.offlineMode)
 		{
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
@@ -111,7 +128,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				numberOfTeams = PhotonNetwork.room.maxPlayers;
 			}
 
-			network = ComponentGetter.Get<NetworkManager>();
+
 		}
 		else
 		{

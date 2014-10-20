@@ -66,7 +66,7 @@ half4 GetDisplacement2(half4 tileableUv, half4 tiling, half4 directionSpeed, sam
 
 inline void ComputeScreenAndGrabPassPos (float4 pos, out float4 screenPos, out float4 grabPassPos) 
 {
-	#if UNITY_UV_STARTS_AT_TOP
+	#if unit_UV_STARTS_AT_TOP
 		float scale = -1.0;
 	#else
 		float scale = 1.0f;

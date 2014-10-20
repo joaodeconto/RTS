@@ -849,7 +849,7 @@ http://www.tasharen.com/forum/index.php?topic=11.msg27296#msg27296
 
 1.60:
 - NEW: Added a built-in atlas-making solution: Atlas Maker, making it possible to create atlases without leaving Unity.
-- NEW: Added a tool that makes creation of fonts easier: Font Maker. Works well with the Atlas Maker.
+- NEW: Added a tool that makes unit of fonts easier: Font Maker. Works well with the Atlas Maker.
 - FIX: UIAtlasInspector will now always force the atlas texture to be of proper size whenever the material or texture packer import gets triggered.
 - FIX: Removed the work-around for Flash that disabled sound, seeing the bug has been since fixed.
 - FIX: Tweener has been renamed to NTweener to avoid name conflicts with HOTween.
@@ -922,7 +922,7 @@ http://www.tasharen.com/forum/index.php?topic=11.msg27296#msg27296
 - FIX: Slider will now correctly mark its foreground widget as having changed on value change.
 
 1.42:
-- NEW: Added a new tool: Widget Creation Wizard. It replaces all "Add" functions in NGUI menu.
+- NEW: Added a new tool: Widget unit Wizard. It replaces all "Add" functions in NGUI menu.
 - NEW: Added new templates to the Widget Wizard: Button, Toggle, Progress Bar, Slider.
 - NEW: When adding widgets via the wizard, widget depth is now chosen automatically so that each new widget appears on top.
 - NEW: AddWidget<> functionality is now exposed to runtime scripts (found in NGUITools).

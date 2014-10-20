@@ -37,8 +37,6 @@ public class Unit : IStats, IMovementObservable,
 	public float distanceView       = 15f;
 	public float attackRange        = 5f;
 	public float attackDuration     = 1f;
-	public float probeRange         = 1f; // how far the character can "see"
-    public float turnSpeedAvoidance = 50f; // how fast to turn
 	public int numberOfUnits = 1;
 	public float speed { get { return Pathfind.speed; } }
 
@@ -64,9 +62,7 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 
-    private Transform obstacleInPath; 	// we found something!
-    private bool obstacleAvoid = false; // internal var
-
+   
 	protected PhotonPlayer playerTargetAttack;
 
 	protected GameObject m_targetAttack;
@@ -112,6 +108,8 @@ public class Unit : IStats, IMovementObservable,
 	protected float normalAcceleration;
 	protected float normalSpeed;
 	protected float normalAngularSpeed;
+	protected ObstacleAvoidanceType normalObstacleAvoidance;
+	protected int normalAvoidancePriority;
 
 	// IObservers
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
@@ -142,6 +140,8 @@ public class Unit : IStats, IMovementObservable,
 		normalAcceleration = Pathfind.acceleration;
 		normalSpeed        = Pathfind.speed;
 		normalAngularSpeed = Pathfind.angularSpeed;
+		normalObstacleAvoidance = Pathfind.obstacleAvoidanceType;
+		normalAvoidancePriority = Pathfind.avoidancePriority;
 
 		PathfindTarget = transform.position;
 
@@ -240,11 +240,14 @@ public class Unit : IStats, IMovementObservable,
 							Move (PathfindTarget);
 						}
 					}
+
 				}
 				else if (MoveComplete(PathfindTarget))
 				{
-					StopMove ();
-					unitState = UnitState.Idle;
+
+//				Pathfind.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+					StopMove (true);
+					
 				}
 				break;
 			case UnitState.Attack:
@@ -271,6 +274,8 @@ public class Unit : IStats, IMovementObservable,
 					if (IsRangeAttack (TargetAttack))
 					{
 						StartCoroutine(Attack ());
+						
+						
 					}
 					else
 					{
@@ -322,6 +327,8 @@ public class Unit : IStats, IMovementObservable,
 	public void Move (Vector3 destination)
 	{
 		Pathfind.enabled = true;
+
+		Pathfind.avoidancePriority = normalAvoidancePriority;
 	
 		if (!Pathfind.updatePosition) Pathfind.updatePosition = true;
 
@@ -334,6 +341,8 @@ public class Unit : IStats, IMovementObservable,
 
 	public void StopMove (bool changeState = false)
 	{
+		Pathfind.avoidancePriority = 4;
+
 		if (changeState)
 		{
 			unitState = UnitState.Idle;
@@ -554,17 +563,16 @@ public class Unit : IStats, IMovementObservable,
 	{
 		float distanceToDestination = Vector3.Distance(transform.position, Pathfind.destination);
 	
-		return (distanceToDestination <= 1.0f) && Pathfind.velocity.sqrMagnitude < 0.1f;
+		return (distanceToDestination <= Pathfind.stoppingDistance) && Pathfind.velocity.sqrMagnitude < 0.1f;
 	}
 
-//	bool start = false;
-	public bool MoveCompleted ()
+
+	public bool MoveComplete ()
 	{
-//		if (pathfind.desiredVelocity.sqrMagnitude < 0.001f) start = !start;
-//		return pathfind.desiredVelocity.sqrMagnitude < 0.001f || !start;
-		return (Vector3.Distance(transform.position, Pathfind.destination) <= 2.0f) &&
+
+		return (Vector3.Distance(transform.position, Pathfind.destination) <= Pathfind.stoppingDistance) &&
 				Pathfind.velocity.sqrMagnitude < 0.1f;
-//		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
+
 	}
 
 	public void TargetingEnemy (GameObject enemy)
@@ -744,6 +752,8 @@ public class Unit : IStats, IMovementObservable,
 	{
 		IsDead = true;
 
+
+
 		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");
 
 		Vector3 u = this.transform.position;
@@ -760,7 +770,9 @@ public class Unit : IStats, IMovementObservable,
 
 		}
 
+
 		Pathfind.Stop ();
+		Pathfind.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 
 		unitState = UnitState.Die;
 

@@ -46,7 +46,7 @@ sampler2D _Splat0,_Splat1,_Splat2,_Splat3;
 
 void vert (inout appdata_full v, out Input IN)
 {
-	UNITY_INITIALIZE_OUTPUT(Input,IN);
+	unit_INITIALIZE_OUTPUT(Input,IN);
     float4 worldPos = mul (_Object2World, v.vertex);
     IN.fog.xy = worldPos.xz * _Params.z + _Params.xy;
 }

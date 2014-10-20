@@ -267,20 +267,29 @@ public class RankedBattle : MonoBehaviour
 
 	public void SceneSelection (string popSelect)
 	{
-				
-		if (popSelect == "Swamp King")
+		if (popSelect == "Dementia Forest")
 		{
 			mapScene = 1;
 		}
-
+		
 		if (popSelect == "Living Desert")
 		{
 			mapScene = 2;
 		}
 
-		if (popSelect == "Dementia Forest")
+		if (popSelect == "Swamp King")
 		{
 			mapScene = 3;
+		}
+
+		if (popSelect == "Hollow Fields")
+		{
+			mapScene = 4;
+
+		}
+		if (popSelect == "Sandstone Salvation")
+		{
+			mapScene = 5;
 		}
 	}
 }

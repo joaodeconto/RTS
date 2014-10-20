@@ -21,6 +21,27 @@ public class UIPlaySound : MonoBehaviour
 		OnRelease,
 		Custom,
 	}
+	// SMP Additions
+	[HideInInspector]
+	public antilunchbox.ClipType clipType = antilunchbox.ClipType.AudioClip;
+	[HideInInspector]
+	public string clipName;
+	[HideInInspector]
+	public string groupName;
+	private AudioClip _audioClip {
+		get {
+			switch(clipType)
+			{
+			case antilunchbox.ClipType.ClipFromSoundManager:
+				return SoundManager.Load(clipName);
+			case antilunchbox.ClipType.ClipFromGroup:
+				return SoundManager.LoadFromGroup(groupName);
+			case antilunchbox.ClipType.AudioClip:
+			default:
+				return audioClip;
+			}
+		}
+	}
 
 	public AudioClip audioClip;
 	public Trigger trigger = Trigger.OnClick;
@@ -54,7 +75,7 @@ public class UIPlaySound : MonoBehaviour
 		}
 
 		if (canPlay && ((isOver && trigger == Trigger.OnMouseOver) || (!isOver && trigger == Trigger.OnMouseOut)))
-			NGUITools.PlaySound(audioClip, volume, pitch);
+			NGUITools.PlaySound(_audioClip, volume, pitch);
 	}
 
 	void OnPress (bool isPressed)
@@ -66,13 +87,13 @@ public class UIPlaySound : MonoBehaviour
 		}
 
 		if (canPlay && ((isPressed && trigger == Trigger.OnPress) || (!isPressed && trigger == Trigger.OnRelease)))
-			NGUITools.PlaySound(audioClip, volume, pitch);
+			NGUITools.PlaySound(_audioClip, volume, pitch);
 	}
 
 	void OnClick ()
 	{
 		if (canPlay && trigger == Trigger.OnClick)
-			NGUITools.PlaySound(audioClip, volume, pitch);
+			NGUITools.PlaySound(_audioClip, volume, pitch);
 	}
 
 	void OnSelect (bool isSelected)
@@ -83,6 +104,6 @@ public class UIPlaySound : MonoBehaviour
 
 	public void Play ()
 	{
-		NGUITools.PlaySound(audioClip, volume, pitch);
+		NGUITools.PlaySound(_audioClip, volume, pitch);
 	}
 }

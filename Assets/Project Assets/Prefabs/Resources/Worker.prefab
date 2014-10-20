@@ -1330,9 +1330,7 @@ MonoBehaviour:
   force: 2
   distanceView: 12
   attackRange: 2
-  attackDuration: 0
-  probeRange: 1
-  turnSpeedAvoidance: 180
+  attackDuration: 1
   numberOfUnits: 1
   guiTextureName: worker
   unitAnimation:
@@ -1342,7 +1340,7 @@ MonoBehaviour:
     Attack: {fileID: 7400004, guid: 2f37d0dfb54c9d94580877ac55fc3ee9, type: 3}
     DieAnimation: {fileID: 7400010, guid: 2f37d0dfb54c9d94580877ac55fc3ee9, type: 3}
     SpecialAttack: []
-  timeToSpawn: 10
+  timeToSpawn: 7
   ControllerAnimation: {fileID: 11100000}
   forceToExtract: 2
   numberMaxGetResources: 10
@@ -1414,7 +1412,6 @@ MonoBehaviour:
       gridXIndex: 1
       gridYIndex: 1
   constructionAndRepairForce: 5
-  workerState: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1574,7 +1571,7 @@ NavMeshAgent:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
-  m_Radius: 1
+  m_Radius: .5
   m_Speed: 3
   m_Acceleration: 100
   avoidancePriority: 2

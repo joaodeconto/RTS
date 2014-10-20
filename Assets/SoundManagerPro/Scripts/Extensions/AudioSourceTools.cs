@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
-
+/// <summary>
+/// Extending SoundManager SFX functions to regular <a href="http://docs.unity3d.com/ScriptReference/AudioSource.html">AudioSource</a>s.
+/// </summary>
 public static class AudioSourceTools {
 
 	public static void PlaySFX ( ref AudioSource theAudioSource, bool fromGroup, string clipOrGroup_Name, bool loop, float delay, float volume, float pitch)

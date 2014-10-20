@@ -4,7 +4,12 @@ using antilunchbox;
 
 public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	
-	// Singleton required initialization
+	/// <summary>
+	/// Gets or sets the instance.
+	/// </summary>
+	/// <value>
+	/// The instance.
+	/// </value>
 	public static SoundManager Instance {
 		get {
 			return ((SoundManager)mInstance);
@@ -13,7 +18,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		}
 	}
 
-	// Enum representing what method to play songs
+	/// <summary>
+	/// Enum representing what method to play songs
+	/// </summary>
 	public enum PlayMethod {
 		ContinuousPlayThrough,
 		ContinuousPlayThroughWithDelay,

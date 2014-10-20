@@ -90,6 +90,12 @@
         <member name="F:ExitGames.Client.Photon.PeerBase.mtu">
             <summary> Maximum Transfer Unit to be used for UDP+TCP</summary>
         </member>
+        <member name="F:ExitGames.Client.Photon.PeerBase.rhttpMinConnections">
+            <summary> (default=2)) Rhttp: minimum number of open connections </summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.PeerBase.rhttpMaxConnections">
+            <summary> (default=6) Rhttp: maximum number of open connections, should be > rhttpMinConnections </summary>
+        </member>
         <member name="M:ExitGames.Client.Photon.PeerBase.ExchangeKeysForEncryption">
             <summary>
             Internally uses an operation to exchange encryption keys with the server.
@@ -383,6 +389,11 @@
             place in the same thread as a <see cref="M:ExitGames.Client.Photon.PhotonPeer.DispatchIncomingCommands"/> call.
             </remarks>
             <param name="eventData">The event currently being dispatched.</param>
+        </member>
+        <member name="M:ExitGames.Client.Photon.IPhotonSocket.TryParseAddress(System.String,System.String@,System.UInt16@)">
+            <summary>
+            Ports of IPv4 Addresses are of type ushort. They are used as int usually though.
+            </summary>
         </member>
         <member name="T:ExitGames.Client.Photon.Lite.LiteEventCode">
             <summary>
@@ -782,8 +793,8 @@
              <example>
              You could replace Service by:
             
-               while (DispatchIncomingCommands()); //Dispatch until everything is Dispatched...
-               SendOutgoingCommands(); //Send a UDP/TCP package with outgoing messages
+                 while (DispatchIncomingCommands()); //Dispatch until everything is Dispatched...
+                 SendOutgoingCommands(); //Send a UDP/TCP package with outgoing messages
              </example>
              <seealso cref="M:ExitGames.Client.Photon.PhotonPeer.DispatchIncomingCommands"/>
              <seealso cref="M:ExitGames.Client.Photon.PhotonPeer.SendOutgoingCommands"/>
@@ -972,6 +983,10 @@
                //...
              </remarks>
         </member>
+        <member name="P:ExitGames.Client.Photon.PhotonPeer.CommandInfoCurrentDispatch">
+            <summary>Returns the debug string of the event or operation-response currently being dispatched or string. Empty if none.</summary>
+            <remarks>In a release build of the lib, this will always be empty.</remarks>
+        </member>
         <member name="P:ExitGames.Client.Photon.PhotonPeer.ByteCountLastOperation">
             <summary>
             Gets the size of the last serialized operation call in bytes.
@@ -1045,6 +1060,12 @@
              There are additional buffers for &quot;sent commands&quot; and &quot;ACKs&quot;.
              TCP: Only two buffers exist: incoming and outgoing commands.
              </remarks>
+        </member>
+        <member name="P:ExitGames.Client.Photon.PhotonPeer.RhttpMinConnections">
+            <summary> (default=2) minimum number of open connections </summary>
+        </member>
+        <member name="P:ExitGames.Client.Photon.PhotonPeer.RhttpMaxConnections">
+            <summary> (default=6) maximum number of open connections, should be > RhttpMinConnections </summary>
         </member>
         <member name="P:ExitGames.Client.Photon.PhotonPeer.LimitOfUnreliableCommands">
             <summary>
@@ -1821,6 +1842,10 @@
         </member>
         <member name="F:ExitGames.Client.Photon.DebugLevel.ALL">
             <summary>Most complete workflow description (but lots of debug output), info, warnings and errors.</summary>
+        </member>
+        <member name="T:ExitGames.Client.Photon.PingMono">
+            <summary>Uses C# Socket class from System.Net.Sockets (as Unity usually does).</summary>
+            <remarks>Incompatible with Windows 8 Store/Phone API.</remarks>
         </member>
         <member name="T:ExitGames.Client.Photon.SerializeMethod">
             <summary>

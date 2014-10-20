@@ -151,7 +151,7 @@ CGINCLUDE
 
 		o.viewInterpolator.xyz = worldSpaceVertex - _WorldSpaceCameraPos;
 
-		o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+		o.pos = mul(unit_MATRIX_MVP, v.vertex);
 
 		ComputeScreenAndGrabPassPos(o.pos, o.screenPos, o.grabPassPos);
 		
@@ -172,12 +172,12 @@ CGINCLUDE
 		half4 screenWithOffset = i.screenPos + distortOffset;
 		half4 grabWithOffset = i.grabPassPos + distortOffset;
 		
-		half4 rtRefractionsNoDistort = tex2Dproj(_RefractionTex, UNITY_PROJ_COORD(i.grabPassPos));
-		half refrFix = UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(grabWithOffset)));
-		half4 rtRefractions = tex2Dproj(_RefractionTex, UNITY_PROJ_COORD(grabWithOffset));
+		half4 rtRefractionsNoDistort = tex2Dproj(_RefractionTex, unit_PROJ_COORD(i.grabPassPos));
+		half refrFix = unit_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, unit_PROJ_COORD(grabWithOffset)));
+		half4 rtRefractions = tex2Dproj(_RefractionTex, unit_PROJ_COORD(grabWithOffset));
 		
 		#ifdef WATER_REFLECTIVE
-			half4 rtReflections = tex2Dproj(_ReflectionTex, UNITY_PROJ_COORD(screenWithOffset));	
+			half4 rtReflections = tex2Dproj(_ReflectionTex, unit_PROJ_COORD(screenWithOffset));	
 		#endif
 
 		#ifdef WATER_EDGEBLEND_ON
@@ -193,7 +193,7 @@ CGINCLUDE
 		half4 edgeBlendFactors = half4(1.0, 0.0, 0.0, 0.0);
 		
 		#ifdef WATER_EDGEBLEND_ON
-			half depth = UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)));
+			half depth = unit_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, unit_PROJ_COORD(i.screenPos)));
 			depth = LinearEyeDepth(depth);
 			edgeBlendFactors = saturate(_InvFadeParemeter * (depth-i.screenPos.w));		
 			edgeBlendFactors.y = 1.0-edgeBlendFactors.y;
@@ -253,7 +253,7 @@ CGINCLUDE
 
 		o.viewInterpolator.xyz = worldSpaceVertex - _WorldSpaceCameraPos;
 
-		o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+		o.pos = mul(unit_MATRIX_MVP, v.vertex);
 
 		o.screenPos = ComputeScreenPos(o.pos);
 		
@@ -273,7 +273,7 @@ CGINCLUDE
 		half4 screenWithOffset = i.screenPos + distortOffset;
 		
 		#ifdef WATER_REFLECTIVE		
-			half4 rtReflections = tex2Dproj(_ReflectionTex, UNITY_PROJ_COORD(screenWithOffset));	
+			half4 rtReflections = tex2Dproj(_ReflectionTex, unit_PROJ_COORD(screenWithOffset));	
 		#endif
 		
 		half3 reflectVector = normalize(reflect(viewVector, worldNormal));          
@@ -284,7 +284,7 @@ CGINCLUDE
 		half4 edgeBlendFactors = half4(1.0, 0.0, 0.0, 0.0);
 		
 		#ifdef WATER_EDGEBLEND_ON
-			half depth = UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)));
+			half depth = unit_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, unit_PROJ_COORD(i.screenPos)));
 			depth = LinearEyeDepth(depth);
 			edgeBlendFactors = saturate(_InvFadeParemeter * (depth-i.screenPos.z));		
 			edgeBlendFactors.y = 1.0-edgeBlendFactors.y;
@@ -321,7 +321,7 @@ CGINCLUDE
 
 		o.viewInterpolator.xyz = worldSpaceVertex-_WorldSpaceCameraPos;
 		
-		o.pos = mul(UNITY_MATRIX_MVP,  v.vertex);
+		o.pos = mul(unit_MATRIX_MVP,  v.vertex);
 		
 		o.viewInterpolator.w = 1;//GetDistanceFadeout(ComputeScreenPos(o.pos).w, DISTANCE_SCALE); 
 		

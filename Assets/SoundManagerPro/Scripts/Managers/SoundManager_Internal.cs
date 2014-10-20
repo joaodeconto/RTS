@@ -43,6 +43,9 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			audios[0] = gameObject.AddComponent<AudioSource>(); 
 			audios[1] = gameObject.AddComponent<AudioSource>();
 			
+			audiosPaused = new bool[2];
+			audiosPaused[0] = audiosPaused[1] = false;
+			
 			audios[0].hideFlags = HideFlags.HideInInspector;
 			audios[1].hideFlags = HideFlags.HideInInspector;
 			
@@ -76,7 +79,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// </summary>
 	private void _PlayConnection(SoundConnection sc)
 	{
-		if(offTheBGM) return;
+		if(offTheBGM || isPaused) return;
 		if(string.IsNullOrEmpty(sc.level))
 		{
 			int i = 1;
@@ -93,7 +96,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// </summary>
 	private void _PlayConnection(string levelName)
 	{
-		if(offTheBGM) return;
+		if(offTheBGM || isPaused) return;
 		int _indexOf = SoundConnectionsContainsThisLevel(levelName);
 		if(_indexOf != SOUNDMANAGER_FALSE) {
 			StopPreviousPlaySoundConnection();
@@ -137,7 +140,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// </summary>
 	private void HandleLevel(int level)
 	{
-		if(gameObject != gameObject) return;
+		if(gameObject != gameObject || isPaused) return;
 		
 		if(Time.realtimeSinceStartup != 0f && lastLevelLoad == Time.realtimeSinceStartup)
 			return;
@@ -201,15 +204,16 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	{
 		if(InternalCallback != null)
 			OnSongEnd = InternalCallback;
+		StopMusicImmediately();		
 		InternalCallback = runOnEndFunction;
-		
-		StopMusicImmediately();
-		if(offTheBGM) return;
+				
+		if(offTheBGM || isPaused) return;
 		SoundConnection sc;
 		if(loop)
 			sc = new SoundConnection("",PlayMethod.ContinuousPlayThrough,clip2play);
 		else
 			sc = new SoundConnection("",PlayMethod.OncePlayThrough,clip2play);
+		ignoreCrossDuration = true;
 		PlayConnection(sc);
 	}
 	
@@ -254,7 +258,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// </param>
 	private void _Play(AudioClip clip2play, bool loop, SongCallBack runOnEndFunction)
 	{
-		if(offTheBGM) return;
+		if(offTheBGM || isPaused) return;
 		if(InternalCallback != null)
 			OnSongEnd = InternalCallback;
 		InternalCallback = runOnEndFunction;
@@ -318,7 +322,11 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		if(!isPaused)
 		{
 			isPaused = !isPaused;
+			if(audios[0].isPlaying)
+				audiosPaused[0] = true;
 			audios[0].Pause();
+			if(audios[1].isPlaying)
+				audiosPaused[1] = true;
 			audios[1].Pause();
 			PSFX(true);
 		}
@@ -331,8 +339,13 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	{
 		if(isPaused)
 		{
-			audios[0].Play();
-			audios[1].Play();
+			if(audiosPaused[0])
+				audios[0].Play();
+			if(audiosPaused[1])
+				audios[1].Play();
+			
+			audiosPaused[0] = audiosPaused[1] = false;
+			
 			PSFX(false);
 			isPaused = !isPaused;
 		}
@@ -359,8 +372,8 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			{
 				if((audios[currentPlaying].clip.Equals(clip2play) && audios[currentPlaying].isPlaying)) //If the current playing source is playing the clip...
 				{
-					if(showDebug)Debug.Log("Already playing BGM, check if crossing out("+crossingOut+") or in("+crossingIn+").");
-					if(crossingOut) //If that source is crossing out, stop it and cross it back in.
+					if(showDebug)Debug.Log("Already playing BGM, check if crossing out("+outCrossing[currentPlaying]+") or in("+inCrossing[currentPlaying]+").");
+					if(outCrossing[currentPlaying]) //If that source is crossing out, stop it and cross it back in.
 					{
 						StopAllNonSoundConnectionCoroutines();
 						if(showDebug)Debug.Log("In the process of crossing out, so that is being changed to cross in now.");
@@ -484,11 +497,36 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 				}
 			}
 		}
-		else //If no AudioSource is playing (silent scene), crossin to the clip
+		else //If no AudioSource is playing (silent scene OR paused), crossin to the clip
 		{
-			if(showDebug)Debug.Log("Wasn't playing anything, crossing in.");
-			audios[notPlaying].clip = clip2play;
-			StartCoroutine("Crossin", new object[]{audios[notPlaying],crossDuration,clipVolume});
+			if(audiosPaused[0] && audiosPaused[1]) // paused and playing two tracks (crossfading)
+			{
+				if(showDebug)Debug.Log("All sound is paused and it's crossfading between two songs. Replace the lower volume song and prepare for crossfade on unpause.");
+				int lesserAudio = (audios[0].volume > audios[1].volume) ? 1 : 0;
+				int greaterAudio = (lesserAudio == 0) ? 1 : 0;
+				audios[lesserAudio].clip = clip2play;
+				StartCoroutine("Crossfade", new object[]{audios[greaterAudio], audios[lesserAudio],crossDuration,clipVolume});
+			}
+			else if(audiosPaused[0]) // track 1 is paused
+			{
+				if(showDebug)Debug.Log("All sound is paused and track1 is playing. Prepare for crossfade on unpause.");
+				audios[1].clip = clip2play;
+				audiosPaused[1] = true;
+				StartCoroutine("Crossfade", new object[]{audios[0], audios[1],crossDuration,clipVolume});
+			}
+			else if(audiosPaused[1]) // track 2 is paused
+			{
+				if(showDebug)Debug.Log("All sound is paused and track2 is playing. Prepare for crossfade on unpause.");
+				audios[0].clip = clip2play;
+				audiosPaused[0] = true;
+				StartCoroutine("Crossfade", new object[]{audios[1], audios[0],crossDuration,clipVolume});
+			}
+			else // silent scene
+			{
+				if(showDebug)Debug.Log("Wasn't playing anything, crossing in.");
+				audios[notPlaying].clip = clip2play;
+				StartCoroutine("Crossin", new object[]{audios[notPlaying],crossDuration,clipVolume});
+			}
 		}
 		return SOUNDMANAGER_FALSE;
 	}
@@ -513,7 +551,14 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		int index2 = GetAudioSourceIndex(a2);
 		
 		float duration = (float)param[2];
-		float realSongLength = ((a2.clip.samples - a2.timeSamples)*1f) / (a2.clip.frequency*1f);
+		if(ignoreCrossDuration)
+		{
+			ignoreCrossDuration = false;
+			duration = 0f;
+		}
+		float realSongLength = 0f;
+		if(a2.clip != null)
+			realSongLength = ((a2.clip.samples - a2.timeSamples)*1f) / (a2.clip.frequency*1f);
 		if(duration - (realSongLength/2f) > .1f)
 		{
 			duration = Mathf.Floor((realSongLength/2f) * 100f) / 100f;
@@ -538,24 +583,47 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	    var endTime = startTime + duration;
 		if(!a2.isPlaying) a2.Play();
 		float a1StartVolume = a1.volume, a2StartVolume = a2.volume, deltaPercent = 0f, a1DeltaVolume = 0f, a2DeltaVolume = 0f, startMaxMusicVolume = maxMusicVolume, volumePercent = 1f;
-	    while (Time.realtimeSinceStartup < endTime) {
-			if(startMaxMusicVolume == 0f)
-				volumePercent = 1f;
-			else
-				volumePercent = maxMusicVolume / startMaxMusicVolume;
-			
-			if(endTime - Time.realtimeSinceStartup > duration)
+	    bool passedFirstPause = false, passedFirstUnpause = true;
+		float pauseTimeRemaining = 0f;
+		while (isPaused || passedFirstPause || Time.realtimeSinceStartup < endTime) {
+			if(isPaused)
 			{
-				startTime = Time.realtimeSinceStartup;
-	    		endTime = startTime + duration;
-			}			
-	        deltaPercent = ((Time.realtimeSinceStartup - startTime) / duration);
-			a1DeltaVolume = deltaPercent * a1StartVolume;
-			a2DeltaVolume = deltaPercent * (startMaxMusicVolume - a2StartVolume);
-	
-	        a1.volume = Mathf.Clamp01((a1StartVolume - a1DeltaVolume) * volumePercent);
-	        a2.volume = Mathf.Clamp01((a2DeltaVolume + a2StartVolume) * volumePercent * clipVolume);
-	       	yield return null;
+				if(!passedFirstPause)
+				{
+					pauseTimeRemaining = endTime - Time.realtimeSinceStartup;
+					passedFirstPause = true;
+					passedFirstUnpause = false;
+				}
+				yield return new WaitForFixedUpdate();
+			}
+			else
+			{
+				if(!passedFirstUnpause)
+				{
+					float oldEndTime = endTime;
+					endTime = Time.realtimeSinceStartup + pauseTimeRemaining;
+					startTime += (endTime - oldEndTime);
+					passedFirstPause = false;
+					passedFirstUnpause = true;
+				}
+				if(startMaxMusicVolume == 0f)
+					volumePercent = 1f;
+				else
+					volumePercent = maxMusicVolume / startMaxMusicVolume;
+				
+				if(endTime - Time.realtimeSinceStartup > duration)
+				{
+					startTime = Time.realtimeSinceStartup;
+		    		endTime = startTime + duration;
+				}			
+		        deltaPercent = ((Time.realtimeSinceStartup - startTime) / duration);
+				a1DeltaVolume = deltaPercent * a1StartVolume;
+				a2DeltaVolume = deltaPercent * (startMaxMusicVolume - a2StartVolume);
+		
+		        a1.volume = Mathf.Clamp01((a1StartVolume - a1DeltaVolume) * volumePercent);
+		        a2.volume = Mathf.Clamp01((a2DeltaVolume + a2StartVolume) * volumePercent * clipVolume);
+		       	yield return null;
+			}
 	    }
 		a1.volume = 0f;
 		a2.volume = maxMusicVolume * clipVolume;
@@ -599,7 +667,14 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		
 		AudioSource a1 = param[0] as AudioSource;
 		float duration = (float)param[1];
-		float realSongLength = ((a1.clip.samples - a1.timeSamples)*1f) / (a1.clip.frequency*1f);
+		if(ignoreCrossDuration)
+		{
+			ignoreCrossDuration = false;
+			duration = 0f;
+		}
+		float realSongLength = 0f;
+		if(a1.clip != null)
+			realSongLength = ((a1.clip.samples - a1.timeSamples)*1f) / (a1.clip.frequency*1f);
 		if(duration - (realSongLength/2f) > .1f)
 		{
 			duration = Mathf.Floor((realSongLength/2f) * 100f) / 100f;
@@ -617,21 +692,44 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	    var startTime = Time.realtimeSinceStartup;
 	    var endTime = startTime + duration;
 		float maxVolume = a1.volume, deltaVolume = 0f, startMaxMusicVolume = maxMusicVolume, volumePercent = 1f;
-	    while (Time.realtimeSinceStartup < endTime) {
-			if(startMaxMusicVolume == 0f)
-				volumePercent = 1f;
-			else
-				volumePercent = maxMusicVolume / startMaxMusicVolume;
-			
-	        if(endTime - Time.realtimeSinceStartup > duration)
+	    bool passedFirstPause = false, passedFirstUnpause = true;
+		float pauseTimeRemaining = 0f;
+		while (isPaused || passedFirstPause || Time.realtimeSinceStartup < endTime) {
+			if(isPaused)
 			{
-				startTime = Time.realtimeSinceStartup;
-	    		endTime = startTime + duration;
+				if(!passedFirstPause)
+				{
+					pauseTimeRemaining = endTime - Time.realtimeSinceStartup;
+					passedFirstPause = true;
+					passedFirstUnpause = false;
+				}
+				yield return new WaitForFixedUpdate();
 			}
-			deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * maxVolume;
-	
-	        a1.volume = Mathf.Clamp01((maxVolume - deltaVolume) * volumePercent);
-	       	yield return null;
+			else
+			{
+				if(!passedFirstUnpause)
+				{
+					float oldEndTime = endTime;
+					endTime = Time.realtimeSinceStartup + pauseTimeRemaining;
+					startTime += (endTime - oldEndTime);
+					passedFirstPause = false;
+					passedFirstUnpause = true;
+				}
+				if(startMaxMusicVolume == 0f)
+					volumePercent = 1f;
+				else
+					volumePercent = maxMusicVolume / startMaxMusicVolume;
+				
+		        if(endTime - Time.realtimeSinceStartup > duration)
+				{
+					startTime = Time.realtimeSinceStartup;
+		    		endTime = startTime + duration;
+				}
+				deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * maxVolume;
+		
+		        a1.volume = Mathf.Clamp01((maxVolume - deltaVolume) * volumePercent);
+		       	yield return null;
+			}
 	    }
 		a1.volume = 0f;
 		a1.Stop();
@@ -665,7 +763,20 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		outCrossing[1] = true;
 		inCrossing[0] = false;
 		inCrossing[1] = false;
-		float realSongLength = Mathf.Max(((audios[0].clip.samples - audios[0].timeSamples)*1f) / (audios[0].clip.frequency*1f), ((audios[1].clip.samples - audios[1].timeSamples)*1f) / (audios[1].clip.frequency*1f));
+		
+		float realSongLength = 0f;
+		if(audios[0].clip != null && audios[1].clip != null)
+			realSongLength = Mathf.Max(((audios[0].clip.samples - audios[0].timeSamples)*1f) / (audios[0].clip.frequency*1f), ((audios[1].clip.samples - audios[1].timeSamples)*1f) / (audios[1].clip.frequency*1f));
+		else if (audios[0].clip != null)
+			realSongLength = ((audios[0].clip.samples - audios[0].timeSamples)*1f) / (audios[0].clip.frequency*1f);
+		else if (audios[1].clip != null)
+			realSongLength = ((audios[1].clip.samples - audios[1].timeSamples)*1f) / (audios[1].clip.frequency*1f);
+		
+		if(ignoreCrossDuration)
+		{
+			ignoreCrossDuration = false;
+			duration = 0f;
+		}
 		if(duration - (realSongLength/2f) > .1f)
 		{
 			duration = Mathf.Floor((realSongLength/2f) * 100f) / 100f;
@@ -677,24 +788,47 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	    var endTime = Time.realtimeSinceStartup + duration;
 		float a1MaxVolume = volume1, a2MaxVolume = volume2;
 		float deltaPercent = 0f, a1DeltaVolume = 0f, a2DeltaVolume = 0f, startMaxMusicVolume = maxMusicVolume, volumePercent = 1f;
-		while (Time.realtimeSinceStartup < endTime) {
-			if(startMaxMusicVolume == 0f)
-				volumePercent = 1f;
-			else
-				volumePercent = maxMusicVolume / startMaxMusicVolume;
-			
-			if(endTime - Time.realtimeSinceStartup > duration)
+		bool passedFirstPause = false, passedFirstUnpause = true;
+		float pauseTimeRemaining = 0f;
+		while (isPaused || passedFirstPause || Time.realtimeSinceStartup < endTime) {
+			if(isPaused)
 			{
-				startTime = Time.realtimeSinceStartup;
-	    		endTime = startTime + duration;
+				if(!passedFirstPause)
+				{
+					pauseTimeRemaining = endTime - Time.realtimeSinceStartup;
+					passedFirstPause = true;
+					passedFirstUnpause = false;
+				}
+				yield return new WaitForFixedUpdate();
 			}
-			deltaPercent = ((Time.realtimeSinceStartup - startTime) / duration);
-			a1DeltaVolume = deltaPercent * a1MaxVolume;
-			a2DeltaVolume = deltaPercent * a2MaxVolume;
-	
-	        volume1 = Mathf.Clamp01((a1MaxVolume - a1DeltaVolume) * volumePercent);
-			volume2 = Mathf.Clamp01((a2MaxVolume - a2DeltaVolume) * volumePercent);
-	       	yield return null;
+			else
+			{
+				if(!passedFirstUnpause)
+				{
+					float oldEndTime = endTime;
+					endTime = Time.realtimeSinceStartup + pauseTimeRemaining;
+					startTime += (endTime - oldEndTime);
+					passedFirstPause = false;
+					passedFirstUnpause = true;
+				}
+				if(startMaxMusicVolume == 0f)
+					volumePercent = 1f;
+				else
+					volumePercent = maxMusicVolume / startMaxMusicVolume;
+				
+				if(endTime - Time.realtimeSinceStartup > duration)
+				{
+					startTime = Time.realtimeSinceStartup;
+		    		endTime = startTime + duration;
+				}
+				deltaPercent = ((Time.realtimeSinceStartup - startTime) / duration);
+				a1DeltaVolume = deltaPercent * a1MaxVolume;
+				a2DeltaVolume = deltaPercent * a2MaxVolume;
+		
+		        volume1 = Mathf.Clamp01((a1MaxVolume - a1DeltaVolume) * volumePercent);
+				volume2 = Mathf.Clamp01((a2MaxVolume - a2DeltaVolume) * volumePercent);
+		       	yield return null;
+			}
 	    }
 		volume1 = volume2 = 0f;
 		audios[0].Stop();
@@ -728,7 +862,14 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 		AudioSource a1 = param[0] as AudioSource;
 		
 		float duration = (float)param[1];
-		float realSongLength = (a1.clip.samples*1f) / (a1.clip.frequency*1f);
+		if(ignoreCrossDuration)
+		{
+			ignoreCrossDuration = false;
+			duration = 0f;
+		}
+		float realSongLength = 0f;
+		if(a1.clip != null)
+			realSongLength = (a1.clip.samples*1f) / (a1.clip.frequency*1f);
 		if(duration - (realSongLength/2f) > .1f)
 		{
 			duration = Mathf.Floor((realSongLength/2f) * 100f) / 100f;
@@ -754,21 +895,44 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			a1.Play();
 		}
 		float deltaVolume = 0f;
-	    while (Time.realtimeSinceStartup < endTime) {
-			if(startMaxMusicVolume == 0f)
-				volumePercent = 1f;
-			else
-				volumePercent = maxMusicVolume / startMaxMusicVolume;
-			
-	        if(endTime - Time.realtimeSinceStartup > duration)
+	    bool passedFirstPause = false, passedFirstUnpause = true;
+		float pauseTimeRemaining = 0f;
+		while (isPaused || passedFirstPause || Time.realtimeSinceStartup < endTime) {
+			if(isPaused)
 			{
-				startTime = Time.realtimeSinceStartup;
-	    		endTime = startTime + duration;
+				if(!passedFirstPause)
+				{
+					pauseTimeRemaining = endTime - Time.realtimeSinceStartup;
+					passedFirstPause = true;
+					passedFirstUnpause = false;
+				}
+				yield return new WaitForFixedUpdate();
 			}
-			deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * (startMaxMusicVolume - a1StartVolume);
-	
-	        a1.volume = Mathf.Clamp01((deltaVolume + a1StartVolume) * volumePercent * clipVolume);
-	       	yield return null;
+			else
+			{
+				if(!passedFirstUnpause)
+				{
+					float oldEndTime = endTime;
+					endTime = Time.realtimeSinceStartup + pauseTimeRemaining;
+					startTime += (endTime - oldEndTime);
+					passedFirstPause = false;
+					passedFirstUnpause = true;
+				}
+				if(startMaxMusicVolume == 0f)
+					volumePercent = 1f;
+				else
+					volumePercent = maxMusicVolume / startMaxMusicVolume;
+				
+		        if(endTime - Time.realtimeSinceStartup > duration)
+				{
+					startTime = Time.realtimeSinceStartup;
+		    		endTime = startTime + duration;
+				}
+				deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * (startMaxMusicVolume - a1StartVolume);
+		
+		        a1.volume = Mathf.Clamp01((deltaVolume + a1StartVolume) * volumePercent * clipVolume);
+		       	yield return null;
+			}
 	    }
 		a1.volume = maxMusicVolume * clipVolume;
 		modifiedCrossDuration = crossDuration;
@@ -873,6 +1037,7 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	/// Plays the SoundConnection according to it's PlayMethod.
 	/// </summary>
 	private IEnumerator PlaySoundConnection(SoundConnection sc) {
+		if(isPaused) yield break;
 		currentSoundConnection = sc;
 		if(sc.soundsToPlay.Count == 0) {
 			Debug.LogWarning("The SoundConnection for this level has no sounds to play.  Will cross out.");

@@ -42,8 +42,8 @@ v2f leaves(appdata_tree v)
 	
 	TerrainAnimateTree(v.vertex, v.color.w);
 	
-	float3 viewpos = mul(UNITY_MATRIX_MV, v.vertex);
-	o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+	float3 viewpos = mul(unit_MATRIX_MV, v.vertex);
+	o.pos = mul(unit_MATRIX_MVP, v.vertex);
 	o.uv = v.texcoord;
 	
 	float4 worldPos = mul (_Object2World, v.vertex);
@@ -53,7 +53,7 @@ v2f leaves(appdata_tree v)
 	float4 lightColor = 0;
 	lightDir.w = _AO;
 
-	float4 light = UNITY_LIGHTMODEL_AMBIENT;
+	float4 light = unit_LIGHTMODEL_AMBIENT;
 
 	for (int i = 0; i < 4; i++) {
 		float atten = 1.0;
@@ -89,8 +89,8 @@ v2f bark(appdata_tree v)
 	
 	TerrainAnimateTree(v.vertex, v.color.w);
 	
-	float3 viewpos = mul(UNITY_MATRIX_MV, v.vertex);
-	o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+	float3 viewpos = mul(unit_MATRIX_MV, v.vertex);
+	o.pos = mul(unit_MATRIX_MVP, v.vertex);
 	o.uv = v.texcoord;
 	
 	float4 worldPos = mul (_Object2World, v.vertex);
@@ -100,7 +100,7 @@ v2f bark(appdata_tree v)
 	float4 lightColor = 0;
 	lightDir.w = _AO;
 
-	float4 light = UNITY_LIGHTMODEL_AMBIENT;
+	float4 light = unit_LIGHTMODEL_AMBIENT;
 
 	for (int i = 0; i < 4; i++) {
 		float atten = 1.0;

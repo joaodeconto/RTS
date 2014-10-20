@@ -81,6 +81,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400010}
+  - 114: {fileID: 11400008}
+  - 114: {fileID: 11400016}
+  m_Layer: 0
+  m_Name: Tutorial Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &100012
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,6 +271,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 400026}
   m_RootOrder: 9
+--- !u!4 &400010
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400026}
+  m_RootOrder: 11
 --- !u!4 &400012
 Transform:
   m_ObjectHideFlags: 1
@@ -347,6 +376,7 @@ Transform:
   - {fileID: 400000}
   - {fileID: 400008}
   - {fileID: 400002}
+  - {fileID: 400010}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!114 &11400000
@@ -401,13 +431,13 @@ MonoBehaviour:
   messageQueuesAttributes:
   - queueName: Unit Group
     panel: {fileID: 0}
-    rootPosition: {x: -5, y: 0}
+    rootPosition: {x: 113, y: 143}
     cellSize: {x: 92, y: 92}
-    padding: {x: 1, y: 1}
+    padding: {x: 0, y: 0}
     labelSize: 0
     IsVerticalQueue: 1
-    maxPerLine: 8
-    maxItems: 100
+    maxPerLine: 5
+    maxItems: 150
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
       timeToFadeout: 0
@@ -479,6 +509,159 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offlineMode: 0
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72e3bb9dd87e615468daa4808f812081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextBtn: {fileID: 0}
+  tutorialBox: {fileID: 0}
+  tutorialTitle: {fileID: 0}
+  tutorial:
+  - order: 0
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: Salux Rex eolix!
+    tutorialBoxText: 'Learn how to use your powers, control your people, and lead
+      them to survival and perpetuation.
+
+
+      Follow each step carefully, feel free to review any instructions, before going
+      into real battle!'
+    nextTutorialBtn: {fileID: 0}
+  - order: 1
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Interface
+    tutorialBoxText: 'The interactive interface provides information about your resources,
+      zoom control and a minimap.
+
+
+      Check the functionalities of each one before moving on...'
+    nextTutorialBtn: {fileID: 0}
+  - order: 5
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Minimap
+    tutorialBoxText: game paused
+    nextTutorialBtn: {fileID: 0}
+  - order: 6
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Zoom
+    tutorialBoxText: game paused
+    nextTutorialBtn: {fileID: 0}
+  - order: 2
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Status
+    tutorialBoxText: game paused
+    nextTutorialBtn: {fileID: 0}
+  - order: 3
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Status
+    tutorialBoxText: game paused
+    nextTutorialBtn: {fileID: 0}
+  - order: 4
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Status
+    tutorialBoxText: game paused
+    nextTutorialBtn: {fileID: 0}
+  - order: 10
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: Selection
+    tutorialBoxText: "To select some of your units, \"click and drag\" drawing an
+      area over them and let go. \n\nTo Deselect your selected units, quickly click
+      with two fingers on the screen, or drag a small rectangle with no units in it. "
+    nextTutorialBtn: {fileID: 0}
+  - order: 11
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: Actions Menu
+    tutorialBoxText: 'When selecting a unit, new buttons will pop-up on the interface.
+
+      On the Botton Right, the "Action Buttons"'
+    nextTutorialBtn: {fileID: 0}
+  - order: 14
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: Workers
+    tutorialBoxText: If the unit have a special hability, those buttons will also
+      appear on the "Actions Menu". In this case, you have selected some workers,
+      wich can build "Structures".
+    nextTutorialBtn: {fileID: 0}
+  - order: 12
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: Mining
+    tutorialBoxText: Developing your tribe demands gold, select your workers and click
+      on a " Gold Resource" to begin extracting.
+    nextTutorialBtn: {fileID: 0}
+  - order: 16
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: Building
+    tutorialBoxText: It's time to extend the population limit. Select a single worker
+      by clicking in it, and click on the "Hut" button. Click and drag on the terrain
+      to select a suitable location for your structure. Green means you can release
+      the touch to build.
+    nextTutorialBtn: {fileID: 0}
+  - order: 13
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: Creating Units
+    tutorialBoxText: Click on the "Tribe Center" structure to show the available units
+      for construction. Each time you click for creating a unit, the described amount
+      of gold is subtracted from your total stack, even if the population limit has
+      been reached. To cancel the creation, click on the creation button queue.
+    nextTutorialBtn: {fileID: 0}
+  - order: 15
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Structures
+    tutorialBoxText: 'The Structures are under development, for now:'
+    nextTutorialBtn: {fileID: 0}
+  - order: 17
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: New Objetives!
+    tutorialBoxText: That's all for now, stash 500 gold units and expand population
+      limit to 30 units to win this level, check your "Objective Panel" for victory
+      condition and quests!
+    nextTutorialBtn: {fileID: 0}
+  - order: 7
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 1
+    tutorialTitleText: Scrolling
+    tutorialBoxText: " For scrolling the screen, touch with TWO fingers on an empty
+      terrain area, and \"drag\" one of them. It provides movement for your view over
+      the scenario.                            \n\t     Clicking and dragging on the
+      \"minimap\" also enable moving your vision to an especific point or event."
+    nextTutorialBtn: {fileID: 0}
+  - order: 9
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Idle Button
+    tutorialBoxText: press next for selection tutorial
+    nextTutorialBtn: {fileID: 0}
+  - order: 8
+    tutorialItem: {fileID: 0}
+    timeScaleItem: 0
+    tutorialTitleText: Game Options
+    tutorialBoxText: Game menus are still under inprovement.
+    nextTutorialBtn: {fileID: 0}
+  tutorialScreenSelected: 0
+  tutorialIndex: {fileID: 0}
+  tutorialMainBg: {fileID: 0}
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -491,7 +674,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamIdMessage: 
-  messages: []
+  chatInput: 
+  chatInputNgui: {fileID: 0}
 --- !u!114 &11400012
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -503,7 +687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111e42a9f574af1478996c9a5ee4404e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  idleButtonPosition: {x: 0, y: -46, z: 0}
+  idleButtonPosition: {x: 0, y: 0, z: 0}
   idleWorkerButtonParent: {fileID: 0}
   myStats: []
   otherStats: []
@@ -527,7 +711,6 @@ MonoBehaviour:
   MiniMapRoot: {fileID: 0}
   minimapAnchor: {fileID: 0}
   CamPositionMiniMap: {fileID: 0}
-  CamPositionTexture: {fileID: 2800000, guid: f92f0095c09765246a81892919654288, type: 3}
   mapTransform: {fileID: 0}
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
@@ -535,6 +718,51 @@ MonoBehaviour:
   visualizationSize: {x: 84, y: 52, z: 0}
   visualizationPosition: {x: 0, y: 0, z: 50}
   MiniMapRefreshInterval: .5
+--- !u!114 &11400016
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c4b840000f121241a531eee11351c04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChallengesToWin:
+  - IsActive: 0
+    objectiveCompleted: 0
+    Name: Stash 500 Gold
+    enumComparingType: 5
+    specificStat: 
+    valueToCompare: 500
+    enumCondition: 2
+    objDescription: 'Guide your workers to a gold mine, extract more and more! Save
+      enought gold for the next tutorial! '
+    objSprite: Achiv_Battle1
+  - IsActive: 0
+    objectiveCompleted: 0
+    Name: Build shelter for 30 units
+    enumComparingType: 2
+    specificStat: 
+    valueToCompare: 30
+    enumCondition: 1
+    objDescription: Learn to grow your tribe, contructing huts its fundamental for
+      a future army growth.
+    objSprite: cottage
+  Ativar: 0
+  FoiAtivado: 0
+  objectiveLog: {fileID: 0}
+  objSubpanel: {fileID: 0}
+  objectiveRow: {fileID: 100016, guid: 8ddc659078696134ba3dbf1fcba7838c, type: 2}
+  nEnemies: 0
+  nPopulation: 0
+  nTeams: 0
+  nMaxPopulation: 0
+  nTime: 0
+  nBuilds: 0
+  eneBuilds: 0
+  nCollected: 0
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -684,8 +912,8 @@ MonoBehaviour:
     colorTexture: {fileID: 0}
     initialPosition: {fileID: 0}
   resources:
-    m_mana: 0
-    m_rocks: 100
+    m_mana: 5
+    m_rocks: 300
   hud:
     labelRocks: {fileID: 0}
     labelMana: {fileID: 0}
@@ -726,7 +954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoload: 0
-  targetFPS: 60
+  targetFPS: 45
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

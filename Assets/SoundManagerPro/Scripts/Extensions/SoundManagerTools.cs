@@ -4,9 +4,20 @@ using System.Collections.Generic;
 using System.Reflection;
 using System;
 using System.Linq;
-
+/// <summary>
+/// Some useful extension functions to use in the SoundManager.
+/// </summary>
 public static class SoundManagerTools {
 	static readonly System.Random random = new System.Random();
+	/// <summary>
+	/// Shuffle the specified list.
+	/// </summary>
+	/// <param name='theList'>
+	/// The list.
+	/// </param>
+	/// <typeparam name='T'>
+	/// The 1st type parameter.
+	/// </typeparam>
 	public static void Shuffle<T> ( ref List<T> theList )
 	{
 		int n = theList.Count;
@@ -19,7 +30,21 @@ public static class SoundManagerTools {
 			theList[n] = val;
 		}
 	}
-	
+	/// <summary>
+	/// Shuffles two lists together identically.
+	/// </summary>
+	/// <param name='theList'>
+	/// The list.
+	/// </param>
+	/// <param name='otherList'>
+	/// The second list.
+	/// </param>
+	/// <typeparam name='T'>
+	/// The 1st type parameter.
+	/// </typeparam>
+	/// <typeparam name='K'>
+	/// The 2nd type parameter.
+	/// </typeparam>
 	public static void ShuffleTwo<T, K> ( ref List<T> theList, ref List<K> otherList)
 	{
 		int n = theList.Count;
@@ -41,17 +66,44 @@ public static class SoundManagerTools {
 			otherList[n] = otherVal;
 		}
 	}
-	
+	/// <summary>
+	/// Make an <a href="http://docs.unity3d.com/ScriptReference/AudioSource.html">AudioSource</a> play any clip like it's 2D.
+	/// </summary>
+	/// <param name='theAudioSource'>
+	/// The audio source.
+	/// </param>
 	public static void make2D ( ref AudioSource theAudioSource )
 	{
 		theAudioSource.panLevel = 0f;
 	}
-	
+	/// <summary>
+	/// Make an <a href="http://docs.unity3d.com/ScriptReference/AudioSource.html">AudioSource</a> play any clip like it's 3D.
+	/// </summary>
+	/// <param name='theAudioSource'>
+	/// The audio source.
+	/// </param>
 	public static void make3D ( ref AudioSource theAudioSource )
 	{
 		theAudioSource.panLevel = 1f;
 	}
-	
+	/// <summary>
+	/// Vary a float with restrictions.
+	/// </summary>
+	/// <returns>
+	/// The varied float.
+	/// </returns>
+	/// <param name='theFloat'>
+	/// The float.
+	/// </param>
+	/// <param name='variance'>
+	/// Variance.
+	/// </param>
+	/// <param name='minimum'>
+	/// Minimum value.
+	/// </param>
+	/// <param name='maximum'>
+	/// Maximum value.
+	/// </param>
 	public static float VaryWithRestrictions ( this float theFloat, float variance, float minimum=0f, float maximum=1f)
 	{
 		float max = theFloat * (1f+variance);
@@ -64,7 +116,18 @@ public static class SoundManagerTools {
 		
 		return UnityEngine.Random.Range(min, max);
 	}
-	
+	/// <summary>
+	/// Vary a float.
+	/// </summary>
+	/// <returns>
+	/// The varied float.
+	/// </returns>
+	/// <param name='theFloat'>
+	/// The float.
+	/// </param>
+	/// <param name='variance'>
+	/// Variance.
+	/// </param>
 	public static float Vary ( this float theFloat, float variance)
 	{
 		float max = theFloat * (1f+variance);

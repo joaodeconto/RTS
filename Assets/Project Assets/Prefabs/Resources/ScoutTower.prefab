@@ -1058,7 +1058,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43cb1f64fb49314c9a9e25a01920f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 300
+  maxHealth: 200
   Defense: 0
   m_Team: 0
   m_Ally: 0
@@ -1079,7 +1079,12 @@ MonoBehaviour:
     m_rocks: 150
   wasInitialized: 0
   model: {fileID: 100010}
-  unitsToCreate: []
+  unitsToCreate:
+  - unit: {fileID: 0}
+    buttonName: Overview
+    gridItemAttributes:
+      gridXIndex: 0
+      gridYIndex: 0
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100002}

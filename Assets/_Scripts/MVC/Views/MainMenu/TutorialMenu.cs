@@ -16,6 +16,7 @@ public class TutorialMenu : MonoBehaviour
 		public Transform Btn1;
 		public Transform Btn2;
 		public Transform Btn3;
+		public Transform Btn4;
 		public Transform BtnLeaveRoom;
 		
 		public IEnumerable<Transform> Iterate
@@ -26,6 +27,7 @@ public class TutorialMenu : MonoBehaviour
 				yield return Btn1;
 				yield return Btn2;
 				yield return Btn3;
+				yield return Btn4;
 				yield return BtnLeaveRoom;
 			}
 		}
@@ -71,25 +73,31 @@ public class TutorialMenu : MonoBehaviour
 		if (buttons.Btn0)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn0, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "Basics", "Tutorial", 4);  } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "Basics", "Tutorial", 1);  } );
 		}
 		
 		if (buttons.Btn1)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Combat", "Tutorial", 5); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Combat", "Tutorial", 2); } );
 		}
 		
 		if (buttons.Btn2)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Favor", "Tutorial", 6); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Domination", "Tutorial", 3); } );
 		}
 		
 		if (buttons.Btn3)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (2, 0, "Online", "DeathMatch", 1); } );
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "TreeTest", "Tutorial", 4); } );
+		}
+
+		if (buttons.Btn3)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4, false);
+			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "Apocalipse", "Tutorial", 5); } );
 		}
 		
 				

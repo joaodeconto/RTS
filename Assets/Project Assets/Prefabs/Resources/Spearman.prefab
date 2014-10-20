@@ -636,7 +636,6 @@ GameObject:
   - 136: {fileID: 13600000}
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400000}
-  - 82: {fileID: 8200000}
   m_Layer: 10
   m_Name: Spearman
   m_TagString: Unit
@@ -1438,10 +1437,8 @@ MonoBehaviour:
   model: {fileID: 100000}
   force: 4
   distanceView: 18
-  attackRange: 15
+  attackRange: 3
   attackDuration: 1
-  probeRange: 1
-  turnSpeedAvoidance: 100
   numberOfUnits: 1
   guiTextureName: spearman
   unitAnimation:
@@ -1542,13 +1539,13 @@ NavMeshAgent:
   m_Radius: .800000012
   m_Speed: 4
   m_Acceleration: 10
-  avoidancePriority: 0
+  avoidancePriority: 2
   m_AngularSpeed: 150
-  m_StoppingDistance: 3
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2.5
+  m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4

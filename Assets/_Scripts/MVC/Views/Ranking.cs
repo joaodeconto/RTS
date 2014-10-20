@@ -43,9 +43,11 @@ public class Ranking : MonoBehaviour {
 			
 				foreach (Model.DataScoreRanking r in ranking)
 				{
-					i++;
-
-										
+					if (r.NrVictory > 2)
+					{
+					
+						i++;
+																
 					GameObject rankRow = NGUITools.AddChild (rankGrid.gameObject, rankRowPrefab);
 					rankRowPrefab.GetComponent<RankRow>().player.text = r.SzName;
 					rankRowPrefab.GetComponent<RankRow>().wins.text = r.NrVictory.ToString();
@@ -53,11 +55,14 @@ public class Ranking : MonoBehaviour {
 					rankRowPrefab.GetComponent<RankRow>().score.text = r.NrPoints.ToString();
 					rankRowPrefab.GetComponent<RankRow>().position.text = i.ToString();
 					
+					}
+					
 					
 					
 				}
 
 				NGUITools.Destroy(rankGrid.transform.GetChild(0).gameObject);
+				rankGrid.repositionNow = true;
 			}
 			);
 

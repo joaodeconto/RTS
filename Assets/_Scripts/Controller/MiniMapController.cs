@@ -122,10 +122,6 @@ public class MiniMapController : MonoBehaviour
 		us.width = (int)visualizationSize.x;
 		us.height = (int)visualizationSize.y;
 		us.type = UISprite.Type.Sliced;
-		//ut.transform.parent.localScale = Vector3.one;
-        //ut.transform.localEulerAngles = Vector3.forward * 90f;
-		//ut.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
-		//ut.material.mainTexture = CamPositionTexture;
 
 		mainCameraGO = Camera.main.gameObject;
 		
@@ -288,7 +284,7 @@ public class MiniMapController : MonoBehaviour
 		miniMapObject.GetComponent <UISprite>().width = beingAttackedMiniMap.GetComponent <UISprite>().width;
 
 		miniMapObject.GetComponent<TweenHeight> ().Play (true);
-		miniMapObject.GetComponent<TweenWidth> ().Play (true);
+
 
 		miniMapObject.GetComponent<UISprite> ().depth = 60;
 
@@ -301,11 +297,11 @@ public class MiniMapController : MonoBehaviour
 		GameObject _go = Instantiate(pref_go, Vector3.zero, Quaternion.identity) as GameObject;
 
 		_go.transform.parent     = miniMapPanel.transform;
-		_go.transform.localScale = pref_go.GetComponent<UISprite> ().localSize;
+		_go.transform.localScale = Vector3.one;
 
 		Color teamColor = ComponentGetter.Get<GameplayManager>().teams[teamId].colors[0];
 
-		_go.GetComponent<UISlicedSprite>().color = teamColor;
+		_go.GetComponent<UISprite>().color = teamColor;
 
 //		_go.GetComponent<UISprite> ().depth = 10;
 
@@ -397,6 +393,7 @@ public class MiniMapController : MonoBehaviour
 				StructureMiniMapList[teamId][index].SetActive(true);
 				WasStructureAlreadyVisible[teamId][index] = true;
 			}
+
 		}
 		else
 		{

@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace antilunchbox 
 {
+	/// <summary>
+	/// Singleton base class that will cause any inheriting class to create itself when referenced in any way at all.
+	/// </summary>
 	public class Singleton<T> : MonoBehaviour where T : Singleton<T> {
 		/*
 		 * 		This is required in every script that inherits from Singleton for it to work properly:
@@ -18,7 +21,12 @@ namespace antilunchbox
 			}
 		}
 		*/
-		
+		/// <summary>
+		/// Gets or sets the instance.
+		/// </summary>
+		/// <value>
+		/// The instance.
+		/// </value>
 		protected static Singleton<T> mInstance {
 			get {
 				if(!_mInstance)

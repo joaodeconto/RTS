@@ -61,7 +61,7 @@ Shader "Mobile/Fog of War/Bumped Diffuse" {
                 TANGENT_SPACE_ROTATION;
  
                 o.lightDirection = mul(rotation, ObjSpaceLightDir(v.vertex));
-                o.pos = mul( UNITY_MATRIX_MVP, v.vertex);
+                o.pos = mul( unit_MATRIX_MVP, v.vertex);
                 o.uv = TRANSFORM_TEX (v.texcoord, _MainTex); 
                 o.uv2 = TRANSFORM_TEX (v.texcoord, _Bump);
                 
@@ -76,7 +76,7 @@ Shader "Mobile/Fog of War/Bumped Diffuse" {
                 float4 c = tex2D (_MainTex, i.uv); 
                 float3 n =  UnpackNormal(tex2D (_Bump, i.uv2));
  
-                float3 lightColor = UNITY_LIGHTMODEL_AMBIENT.xyz;
+                float3 lightColor = unit_LIGHTMODEL_AMBIENT.xyz;
  
                 float lengthSq = dot(i.lightDirection, i.lightDirection);
                 float atten = 1.0 / (1.0 + lengthSq);
@@ -148,7 +148,7 @@ Shader "Mobile/Fog of War/Bumped Diffuse" {
                 TANGENT_SPACE_ROTATION;
  
                 o.lightDirection = mul(rotation, ObjSpaceLightDir(v.vertex));
-                o.pos = mul( UNITY_MATRIX_MVP, v.vertex);
+                o.pos = mul( unit_MATRIX_MVP, v.vertex);
                 o.uv = TRANSFORM_TEX (v.texcoord, _MainTex); 
                 o.uv2 = TRANSFORM_TEX (v.texcoord, _Bump);
                 

@@ -10,11 +10,12 @@ public class RangeObject : MonoBehaviour {
 	protected Hashtable hashtable;
 	
 	float maximumHeightDistance = 10f;
+
 	float speed = 20f;
 			
 	protected GameObject target;
 	protected Vector3 targetPosition;
-	protected float time = 2f;
+	protected float time = 0.3f;
 	
 	public void Init (GameObject target, float timeToDestroyWhenCollide, RangeHitDelegate rhd, Hashtable ht = null)
 	{
@@ -22,22 +23,19 @@ public class RangeObject : MonoBehaviour {
 		
 		rangeHitDelegate = rhd;
 		hashtable = ht;
-		if (target != (null))
-		{
 		targetPosition = target.transform.position;
-		}
 		this.target = target;
 		time = timeToDestroyWhenCollide;
 		
-		if (collider == null)
-		{
-			BoxCollider col = gameObject.AddComponent<BoxCollider> ();
-			
-			MeshRenderer mr = gameObject.GetComponentInChildren<MeshRenderer>();
-			col.size = mr.bounds.size;
-		}
-		
-		collider.isTrigger = true;
+//		if (collider == null)
+//		{
+//			BoxCollider col = gameObject.AddComponent<BoxCollider> ();
+//			
+//			MeshRenderer mr = gameObject.GetComponentInChildren<MeshRenderer>();
+//			col.size = mr.bounds.size;
+//		}
+//		
+//		collider.isTrigger = true;
 		
 		Move ();
 	}
@@ -91,8 +89,10 @@ public class RangeObject : MonoBehaviour {
 	
 	void FinalPoint ()
 	{
+
 		bool isIntersects = false;
-		
+
+
 		if (target.collider != null)
 		{
 			isIntersects = target.collider.bounds.Intersects (collider.bounds);
@@ -116,40 +116,15 @@ public class RangeObject : MonoBehaviour {
 		else
 		{
 			Invoke ("DestroyObjectInNetwork", time);
+			Destroy (gameObject, time);
 		}
+
+		Debug.LogError("Final point"); 
 	}
 	
 	void DestroyObjectInNetwork ()
 	{
 		PhotonNetwork.Destroy (gameObject);
 	}
-	
-	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
-    {
-		if (stream.isWriting)
-        {
-            stream.SendNext (transform.position);
-            stream.SendNext (transform.rotation);
-        }
-        else
-        {
-            correctPlayerPos = (Vector3)stream.ReceiveNext ();
-            correctPlayerRot = (Quaternion)stream.ReceiveNext ();
-        }
-    }
 
-    private Vector3 correctPlayerPos = Vector3.zero;
-    private Quaternion correctPlayerRot = Quaternion.identity;
-	
-	void Awake ()
-	{
-		correctPlayerPos = transform.position;
-		correctPlayerRot = transform.rotation;
-	}
-	
-    void Update ()
-    {
-//        transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-//        transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
-    }
 }

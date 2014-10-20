@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 using System.Collections;
@@ -6,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Visiorama.Extension;
 using Visiorama;
-
+using Visiorama.Utils;
 
 public class Worker : Unit
 {
@@ -165,7 +164,7 @@ public class Worker : Unit
 					}
 				}
 
-				if (!MoveCompleted ())
+				if (!MoveComplete ())
 				{
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
@@ -265,12 +264,7 @@ public class Worker : Unit
 
 				CheckResource ();
 
-				if (MoveCompleted())
-
-					{		
-						unitState = UnitState.Idle;	
-					}
-
+				
 				base.IAStep ();
 				break;
 		}
@@ -328,15 +322,11 @@ public class Worker : Unit
 					break;
 
 				case WorkerState.None:
-					if (unitState == Unit.UnitState.Attack)
-					{
-						resourceWorker[0].extractingObject.SetActive (true);
-					}
-					else
-					{
-						resourceWorker[0].extractingObject.SetActive (false);
-					}
+					
+					bool isAttacking = (unitState == Unit.UnitState.Attack);
 
+					resourceWorker[0].extractingObject.SetActive (true);
+					
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
@@ -426,7 +416,6 @@ public class Worker : Unit
 			position.y = resource.transform.position.y;
 
 			Move (position);
-
 		}
 	}
 

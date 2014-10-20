@@ -35,7 +35,7 @@ public class CameraMovement : MonoBehaviour
 		
 		foreach (Camera camera in touchController.zoomSettings.cameras)
 		{
-			camera.orthographicSize = thisCamera.orthographicSize;
+			camera.fieldOfView = thisCamera.fieldOfView;
 		}
 	}
 
@@ -62,7 +62,7 @@ public class CameraMovement : MonoBehaviour
 			
 			size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
 			
-			thisCamera.orthographicSize = Mathf.Clamp (size, zoom.min, zoom.max);
+			thisCamera.fieldOfView = Mathf.Clamp (size, zoom.min, zoom.max);
 						
 		
 //			float movementForceDirection = Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;

@@ -36,7 +36,8 @@ public class ExitGame : MonoBehaviour
 			{
 				if (PhotonNetwork.room != null)
 					PhotonNetwork.LeaveRoom ();
-				
+
+				Time.timeScale = 1f;
 				Application.LoadLevel (0);
 			}
 			);

@@ -579,21 +579,44 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	    var endTime = startTime + duration;
 		if(!a2.isPlaying) a2.Play();
 		float a1StartVolume = a1.volume, a2StartVolume = a2.volume, deltaPercent = 0f, a1DeltaVolume = 0f, a2DeltaVolume = 0f, startMaxMusicVolume = a2.volume, volumePercent = 1f;
-	    while (Time.realtimeSinceStartup < endTime) {
-			volumePercent = 1f;
-			
-			if(endTime - Time.realtimeSinceStartup > duration)
+	    bool passedFirstPause = false, passedFirstUnpause = true;
+		float pauseTimeRemaining = 0f;
+		while (isPaused || passedFirstPause || Time.realtimeSinceStartup < endTime) {
+			if(isPaused)
 			{
-				startTime = Time.realtimeSinceStartup;
-	    		endTime = startTime + duration;
-			}			
-	        deltaPercent = ((Time.realtimeSinceStartup - startTime) / duration);
-			a1DeltaVolume = deltaPercent * a1StartVolume;
-			a2DeltaVolume = deltaPercent * (startMaxMusicVolume - a2StartVolume);
-	
-	        a1.volume = Mathf.Clamp01((a1StartVolume - a1DeltaVolume) * volumePercent);
-	        a2.volume = Mathf.Clamp01((a2DeltaVolume + a2StartVolume) * volumePercent);
-	       	yield return null;
+				if(!passedFirstPause)
+				{
+					pauseTimeRemaining = endTime - Time.realtimeSinceStartup;
+					passedFirstPause = true;
+					passedFirstUnpause = false;
+				}
+				yield return new WaitForFixedUpdate();
+			}
+			else
+			{
+				if(!passedFirstUnpause)
+				{
+					float oldEndTime = endTime;
+					endTime = Time.realtimeSinceStartup + pauseTimeRemaining;
+					startTime += (endTime - oldEndTime);
+					passedFirstPause = false;
+					passedFirstUnpause = true;
+				}
+				volumePercent = 1f;
+			
+				if(endTime - Time.realtimeSinceStartup > duration)
+				{
+					startTime = Time.realtimeSinceStartup;
+		    		endTime = startTime + duration;
+				}			
+		        deltaPercent = ((Time.realtimeSinceStartup - startTime) / duration);
+				a1DeltaVolume = deltaPercent * a1StartVolume;
+				a2DeltaVolume = deltaPercent * (startMaxMusicVolume - a2StartVolume);
+		
+		        a1.volume = Mathf.Clamp01((a1StartVolume - a1DeltaVolume) * volumePercent);
+		        a2.volume = Mathf.Clamp01((a2DeltaVolume + a2StartVolume) * volumePercent);
+		       	yield return null;
+			}
 	    }
 		a1.volume = 0f;
 		a2.volume = a2StartVolume;
@@ -611,18 +634,41 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 	    var startTime = Time.realtimeSinceStartup;
 	    var endTime = startTime + duration;
 		float maxVolume = a1.volume, deltaVolume = 0f, volumePercent = 1f;
-	    while (Time.realtimeSinceStartup < endTime) {
-			volumePercent = 1f;
-			
-	        if(endTime - Time.realtimeSinceStartup > duration)
+	    bool passedFirstPause = false, passedFirstUnpause = true;
+		float pauseTimeRemaining = 0f;
+		while (isPaused || passedFirstPause || Time.realtimeSinceStartup < endTime) {
+			if(isPaused)
 			{
-				startTime = Time.realtimeSinceStartup;
-	    		endTime = startTime + duration;
+				if(!passedFirstPause)
+				{
+					pauseTimeRemaining = endTime - Time.realtimeSinceStartup;
+					passedFirstPause = true;
+					passedFirstUnpause = false;
+				}
+				yield return new WaitForFixedUpdate();
 			}
-			deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * maxVolume;
-	
-	        a1.volume = Mathf.Clamp01((maxVolume - deltaVolume) * volumePercent);
-	       	yield return null;
+			else
+			{
+				if(!passedFirstUnpause)
+				{
+					float oldEndTime = endTime;
+					endTime = Time.realtimeSinceStartup + pauseTimeRemaining;
+					startTime += (endTime - oldEndTime);
+					passedFirstPause = false;
+					passedFirstUnpause = true;
+				}
+				volumePercent = 1f;
+				
+		        if(endTime - Time.realtimeSinceStartup > duration)
+				{
+					startTime = Time.realtimeSinceStartup;
+		    		endTime = startTime + duration;
+				}
+				deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * maxVolume;
+		
+		        a1.volume = Mathf.Clamp01((maxVolume - deltaVolume) * volumePercent);
+		       	yield return null;
+			}
 	    }
 		a1.volume = 0f;
 		a1.Stop();
@@ -648,18 +694,41 @@ public partial class SoundManager : antilunchbox.Singleton<SoundManager> {
 			a1.Play();
 		}
 		float deltaVolume = 0f;
-	    while (Time.realtimeSinceStartup < endTime) {
-			volumePercent = 1f;
-			
-	        if(endTime - Time.realtimeSinceStartup > duration)
+	    bool passedFirstPause = false, passedFirstUnpause = true;
+		float pauseTimeRemaining = 0f;
+		while (isPaused || passedFirstPause || Time.realtimeSinceStartup < endTime) {
+			if(isPaused)
 			{
-				startTime = Time.realtimeSinceStartup;
-	    		endTime = startTime + duration;
+				if(!passedFirstPause)
+				{
+					pauseTimeRemaining = endTime - Time.realtimeSinceStartup;
+					passedFirstPause = true;
+					passedFirstUnpause = false;
+				}
+				yield return new WaitForFixedUpdate();
 			}
-			deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * (startMaxMusicVolume - a1StartVolume);
-	
-	        a1.volume = Mathf.Clamp01((deltaVolume + a1StartVolume) * volumePercent);
-	       	yield return null;
+			else
+			{
+				if(!passedFirstUnpause)
+				{
+					float oldEndTime = endTime;
+					endTime = Time.realtimeSinceStartup + pauseTimeRemaining;
+					startTime += (endTime - oldEndTime);
+					passedFirstPause = false;
+					passedFirstUnpause = true;
+				}
+				volumePercent = 1f;
+				
+		        if(endTime - Time.realtimeSinceStartup > duration)
+				{
+					startTime = Time.realtimeSinceStartup;
+		    		endTime = startTime + duration;
+				}
+				deltaVolume = ((Time.realtimeSinceStartup - startTime) / duration) * (startMaxMusicVolume - a1StartVolume);
+		
+		        a1.volume = Mathf.Clamp01((deltaVolume + a1StartVolume) * volumePercent);
+		       	yield return null;
+			}
 	    }
 		a1.volume = startMaxMusicVolume;
 		

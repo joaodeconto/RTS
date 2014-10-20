@@ -4,20 +4,51 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
+/// <summary>
+/// Used to group SFX together with certain attributes to share.
+/// </summary>
 public class SFXGroup {
+	/// <summary>
+	/// The name of the group.
+	/// </summary>
 	public string groupName;
+	/// <summary>
+	/// The specific cap amount. If set to -1, it will use the default global cap amount. If set to 0, the group will not use a specific cap amount at all. This amount will only be respected when using SoundManager.PlayCappedSFX
+	/// </summary>
 	public int specificCapAmount;
+	/// <summary>
+	/// The clips in the group.
+	/// </summary>
 	public List<AudioClip> clips = new List<AudioClip>();
+	/// <summary>
+	/// NOT IMPLEMENTED YET.
+	/// </summary>
 	public bool independentVolume;
+	/// <summary>
+	/// NOT IMPLEMENTED YET.
+	/// </summary>
 	public bool independentPitch;
+	/// <summary>
+	/// NOT IMPLEMENTED YET.
+	/// </summary>
 	public float volume;
+	/// <summary>
+	/// NOT IMPLEMENTED YET.
+	/// </summary>
 	public float pitch;
 	
 	/// <summary>
-	/// Initialize a SFX Group.  'name' is the name of the group, and 'capAmount' is a custom SFX cap for that group.
-	/// Use -1 as the cap amount to use the default global cap amount, and use 0 if you don't want the group to use a specific cap amount at all.
-	/// The specific cap amount will only be respected when using SoundManager.PlayCappedSFX
+	/// Initializes a new instance of the <see cref="SFXGroup"/> class.
 	/// </summary>
+	/// <param name='name'>
+	/// Name of the group.
+	/// </param>
+	/// <param name='capAmount'>
+	/// The specificCapAmount.
+	/// </param>
+	/// <param name='audioclips'>
+	/// Audioclips in the group.
+	/// </param>
 	public SFXGroup(string name, int capAmount, params AudioClip[] audioclips)
 	{
 		groupName = name;
@@ -31,8 +62,14 @@ public class SFXGroup {
 	}
 	
 	/// <summary>
-	/// Initialize a SFX Group.  'name' is the name of the group
+	/// Initializes a new instance of the <see cref="SFXGroup"/> class.
 	/// </summary>
+	/// <param name='name'>
+	/// Name of the group.
+	/// </param>
+	/// <param name='audioclips'>
+	/// Audioclips in the group.
+	/// </param>
 	public SFXGroup(string name, params AudioClip[] audioclips)
 	{
 		groupName = name;

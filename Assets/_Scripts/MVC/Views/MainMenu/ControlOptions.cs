@@ -5,7 +5,6 @@ using Visiorama.Utils;
 
 public class ControlOptions : MonoBehaviour
 {
-	private bool wasInitialized = false;
 
 	protected TouchController touchController;
 		
@@ -23,10 +22,7 @@ public class ControlOptions : MonoBehaviour
 
 	public void Open ()
 	{
-		if (wasInitialized)
-			return;
 
-		wasInitialized = true;
 
 		touchController = ComponentGetter.Get<TouchController> ();
 
@@ -63,8 +59,10 @@ public class ControlOptions : MonoBehaviour
 	{
 		PlayerPrefs.SetFloat("TouchSense", touchSense);
 
+		if (touchController.mainCamera != null)
+		{
 		touchController.mainCamera.GetComponent<CameraMovement>().SetSpeed();
-
+		}
 	
 	}
 
@@ -75,6 +73,6 @@ public class ControlOptions : MonoBehaviour
 
 	public void Close ()
 	{
-
+		gameObject.SetActive (false);
 	}
 }
