@@ -216,16 +216,20 @@ public class FactoryBase : IStats, IDeathObservable
 			if (Selected) buildingSlider.gameObject.SetActive(true);
 		}
 
-		if (gameplayManager.NeedMoreHouses (lUnitsToCreate[0].numberOfUnits))
+		if (lUnitsToCreate.Count >= 1)
 		{
-			if (!alreadyCheckedMaxPopulation)
+				
+			if (gameplayManager.NeedMoreHouses (lUnitsToCreate[0].numberOfUnits))
 			{
-				alreadyCheckedMaxPopulation = true;
-				eventManager.AddEvent("need more houses");
+				if (!alreadyCheckedMaxPopulation)
+				{
+					alreadyCheckedMaxPopulation = true;
+					eventManager.AddEvent("need more houses");
+				}
 				return;
 			}
 			else
-			alreadyCheckedMaxPopulation = false;
+				alreadyCheckedMaxPopulation = false;
 				
 					
 			if (unitToCreate == null)
@@ -237,7 +241,7 @@ public class FactoryBase : IStats, IDeathObservable
 				if (Selected) buildingSlider.gameObject.SetActive(true);
 				
 			}
-			return;
+
 		}
 		
 		if (inUpgrade)
@@ -538,7 +542,7 @@ public class FactoryBase : IStats, IDeathObservable
 					ht["mana"] = ui.upgrade.costOfResources.Mana;
 				}
 
-				if (!ui.alreadyUpgraded || !ui.upgrade.uniquelyUpgraded)
+				if (!ui.alreadyUpgraded && !ui.upgrade.uniquelyUpgraded)
 				{
 									
 				hudController.CreateButtonInInspector (ui.buttonName,
@@ -579,19 +583,16 @@ public class FactoryBase : IStats, IDeathObservable
 																				
 																				if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
 																				{
-																					factories[factoryChoose].EnqueueUpgradeToCreate (upgrade.upgrade);
+																						bool canBuy = gameplayManager.resources.CanBuy (upgrade.upgrade.costOfResources);
+																																												
+																						if (canBuy)
+																						{
+																							factories[factoryChoose].EnqueueUpgradeToCreate (upgrade.upgrade);
 
-																					if (ui.upgrade.modelUpgrade)
-																					{
-																						hudController.RemoveButtonInInspector (ui.buttonName);
-																						ui.alreadyUpgraded = true;
-																					}
-																					if (ui.upgrade.unique)
-																					{
-
-																						hudController.RemoveButtonInInspector (ui.buttonName);
-																						ui.upgrade.uniquelyUpgraded = true;
-																					}
+																								hudController.RemoveButtonInInspector (upgrade.buttonName);
+																								upgrade.alreadyUpgraded = true;
+																																													
+																						}
 							
 							
 																				}
@@ -823,11 +824,6 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	public void EnqueueUpgradeToCreate (Upgrade upgrade)
 	{
-		bool canBuy = gameplayManager.resources.CanBuy (upgrade.costOfResources);
-		Debug.Log("gold spent event");
-		
-		if (canBuy)
-		{
 
 			gameplayManager.resources.UseResources (upgrade.costOfResources);
 			lUpgradesToCreate.Add (upgrade);
@@ -844,17 +840,11 @@ public class FactoryBase : IStats, IDeathObservable
 				
 //															DequeueUpgrade(hud_ht);
 														});
-			if (upgrade.unique)
-			{
-				hudController.RemoveButtonInInspector (upgrade.name);
-				upgrade.uniquelyUpgraded = true;
-
-				
-			}
-
+		if (upgrade.unique)
+		{
+			upgrade.uniquelyUpgraded = true;
 		}
-		else
-			eventManager.AddEvent("out of funds", upgrade.name);
+		
 	}
 	
 	private void DequeueUnit(Hashtable ht)
@@ -874,26 +864,26 @@ public class FactoryBase : IStats, IDeathObservable
 		lUnitsToCreate.Remove (unit);
 	}
 	
-	private void DequeueUpgrade (Hashtable ht)
-	{
-		string btnName = (string)ht["name"];
-		Upgrade upgrade = 	 (Upgrade)ht["upgradeHT"];
-		
-		gameplayManager.resources.ReturnResources (upgrade.costOfResources);
-		if (upgrade.modelUpgrade || upgrade.unique)
-		{
-			Select();
-		}
-		
-		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
-		{
-			timer = 0;
-			upgradeToCreate = null;
-		}
-		
-		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);
-		lUpgradesToCreate.Remove (upgrade);
-	}
+//	private void DequeueUpgrade (Hashtable ht)
+//	{
+//		string btnName = (string)ht["name"];
+//		Upgrade upgrade = 	 (Upgrade)ht["upgradeHT"];
+//		
+//		gameplayManager.resources.ReturnResources (upgrade.costOfResources);
+//		if (upgrade.modelUpgrade || upgrade.unique)
+//		{
+//			Select();
+//		}
+//		
+//		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
+//		{
+//			timer = 0;
+//			upgradeToCreate = null;
+//		}
+//		
+//		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);
+//		lUpgradesToCreate.Remove (upgrade);
+//	}
 	
 	Unit CheckUnit (Unit unit)
 	{

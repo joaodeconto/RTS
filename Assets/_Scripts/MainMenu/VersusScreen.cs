@@ -108,7 +108,7 @@ public class VersusScreen : MonoBehaviour
 		}
 		if (GameplayManager.mode == GameplayManager.Mode.Tutorial)
 		{
-			battleMode.text = ("Tutorial"); 
+			battleMode.text = ("Single Player"); 
 			i = 0;
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{

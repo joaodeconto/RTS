@@ -34,4 +34,11 @@ public class PaintAgent : MonoBehaviour
 		xterrainDeformer.DestroyTerrain(this.transform.position,paintSize);
 
 	}
+	void ConstructFinished ()
+	{
+		xterrainDeformer = GameObject.Find (terrainName).GetComponent<XTerrainDeformer>(); 
+		xterrainDeformer.DestroyTerrain(this.transform.position,paintSize);
+		
+	}
+
 }
