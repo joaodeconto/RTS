@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 30
   m_IsActive: 1
 --- !u!1 &100002
 GameObject:
@@ -32,7 +32,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 30
   m_IsActive: 1
 --- !u!1 &100004
 GameObject:
@@ -49,7 +49,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 30
   m_IsActive: 1
 --- !u!1 &100006
 GameObject:
@@ -64,7 +64,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 30
   m_IsActive: 1
 --- !u!1 &100008
 GameObject:
@@ -79,7 +79,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 30
   m_IsActive: 1
 --- !u!1 &100010
 GameObject:
@@ -96,7 +96,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 30
   m_IsActive: 1
 --- !u!1 &100012
 GameObject:
@@ -118,7 +118,7 @@ GameObject:
   m_TagString: ArmyStructure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 30
   m_IsActive: 1
 --- !u!4 &400000
 Transform:
@@ -420,7 +420,7 @@ MonoBehaviour:
   category: Barracks
   costOfResources:
     m_mana: 0
-    m_rocks: 0
+    m_rocks: 250
   wasInitialized: 0
   model: {fileID: 100010}
   unitsToCreate:
@@ -449,11 +449,13 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 2
+  upgradesToCreate: []
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100000}
     unfinishedObject: {fileID: 100002}
     finishedObject: {fileID: 100004}
+    upgradedObject: {fileID: 0}
     desactiveObjectsWhenInstance: []
   buttonName: Lizard Aras
   guiTextureName: LizardAras
@@ -486,10 +488,10 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_Enabled: 1
-  m_Radius: 2.6400001
+  m_Radius: 2
   m_Height: 2
   m_MoveThreshold: 0
-  m_Carve: 0
+  m_Carve: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

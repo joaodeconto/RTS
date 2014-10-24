@@ -534,7 +534,7 @@ public class StatsController : MonoBehaviour
 					w.SetMoveToFactory(factory);
 					feedback = true;
 				}
-				else if (w.hasResource)
+				else if (w.canUseResources)
 				{
 					if (factory.receiveResource == w.resource.type)
 					{
@@ -702,7 +702,7 @@ public class StatsController : MonoBehaviour
 
 			switch (w.workerState)
 			{
-				case Worker.WorkerState.None:
+				case Worker.WorkerState.Idle:
 					if (w.unitState == Unit.UnitState.Idle && !selectedStats.Contains(w))
 						idleWorkers.Add(w);
 					break;

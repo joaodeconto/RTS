@@ -31,6 +31,7 @@ public class FogOfWar : MonoBehaviour
 
 	public Color visibleAreaColor = new Color(1.0f,1.0f,1.0f,0.0f);
 	public Color knownAreaColor   = new Color(0.5f,0.5f,0.5f,0.5f);
+	public Color blackFogColor    = new Color(0.0f,0.0f,0.0f,1.0f);
 
 	public float fogHeight = 0.0f;
 	public float fogUpdate = 0.6f;
@@ -73,7 +74,7 @@ public class FogOfWar : MonoBehaviour
 			for (j = 0; j != SIZE_TEXTURE; ++j)
 			{
 				if(DarkFog)
-					FogTexture.SetPixel(i,j, Color.black);
+					FogTexture.SetPixel(i,j, blackFogColor);
 				else
 					FogTexture.SetPixel(i,j, knownAreaColor);
 
@@ -295,6 +296,19 @@ public class FogOfWar : MonoBehaviour
 
 		return this;
 	}
+
+	public void RemoveBlackFog()
+	{
+		for (i = 0; i != SIZE_TEXTURE; ++i)
+			for (j = 0; j != SIZE_TEXTURE; ++j)
+		{
+			FogTexture.SetPixel(i,j, knownAreaColor);
+			
+			matrixFogFlag[i,j] = FogFlag.KNOWN_AREA;
+		}
+		FogTexture.Apply();
+	}
+
 
 	public bool IsKnownArea (Transform trns)
 	{

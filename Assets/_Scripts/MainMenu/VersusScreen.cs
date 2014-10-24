@@ -135,22 +135,35 @@ public class VersusScreen : MonoBehaviour
 
 	public void cenaSelection ()
 	{
+		if (cena == 5)
+		{
+			mapName.text = "Sandstone Salvation";
+			mapSprite.spriteName = "Sandstone Salvation";
+			
+		}
 
-		if (cena == 3 || cena == 6)
+		if (cena == 4)
+		{
+			mapName.text = "Hollow Fields";
+			mapSprite.spriteName = "Hollow Fields";
+			
+		}
+
+		if (cena == 3)
 		{
 			mapName.text = "Swamp King";
 			mapSprite.spriteName = "Swamp King";
 
 		}
 
-		if (cena == 1 || cena == 5)
+		if (cena == 2)
 		{
 			mapName.text = "Living Desert";
 			mapSprite.spriteName = "Living Desert";
 			
 		}
 
-		if (cena == 2 || cena == 4)
+		if (cena == 1)
 		{
 			mapName.text = "Dementia Forest";
 			mapSprite.spriteName = "Dementia Forest";

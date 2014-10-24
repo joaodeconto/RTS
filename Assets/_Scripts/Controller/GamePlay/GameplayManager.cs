@@ -361,7 +361,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		VerifyPopulation ();
 	}
 		
-	private void VerifyPopulation ()
+	public void VerifyPopulation ()
 	{	
 		int allowedPopulation = 0;
 		

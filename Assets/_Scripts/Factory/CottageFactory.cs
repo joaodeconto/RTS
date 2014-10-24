@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CottageFactory : FactoryBase, IHouse
 {
-	public const int cottagePopulation = 10;
+	public int cottagePopulation = 10;
 	
 	void ConstructFinished ()
 	{

@@ -40,7 +40,7 @@ public class Worker : Unit
 
 	public enum WorkerState
 	{
-		None		 = 0,
+		Idle		 = 0,
 		Extracting	 = 1,
 		Carrying	 = 2,
 		CarryingIdle = 3,
@@ -56,7 +56,7 @@ public class Worker : Unit
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
 
-	public WorkerState workerState {get; set;}
+	public WorkerState workerState;
 
 	public bool IsExtracting {get; protected set;}
 	public bool IsRepairing {get; protected set;}
@@ -66,7 +66,7 @@ public class Worker : Unit
 	public Resource.Type resourceType {get; protected set;}
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
-	public bool hasResource {get; protected set;}
+	public bool canUseResources {get; protected set;}
 	protected int lastResourceId;
 	protected Resource lastResource;
 	protected bool isSettingWorkerNull;
@@ -89,9 +89,9 @@ public class Worker : Unit
 			rw.extractingObject.SetActive (false);
 		}
 
-		hasResource = isSettingWorkerNull = false;
+		canUseResources = isSettingWorkerNull = false;
 
-		workerState = WorkerState.None;
+		workerState = WorkerState.Idle;
 	}
 
 	public override void IAStep ()
@@ -108,7 +108,7 @@ public class Worker : Unit
 					resourceId = -1;
 					resource.RemoveWorker (this);
 					lastResource = resource = null;
-					workerState = WorkerState.None;
+					workerState = WorkerState.Idle;
 					Move (factoryChoose.transform.position);
 				}
 				else if (resource != lastResource || resource == null)
@@ -116,7 +116,7 @@ public class Worker : Unit
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
 					lastResource.RemoveWorker (this);
-					workerState = WorkerState.None;
+					workerState = WorkerState.Idle;
 					return;
 				}
 				else
@@ -126,7 +126,8 @@ public class Worker : Unit
 				}
 
 				if (!IsExtracting) StartCoroutine (Extract ());
-				break;
+				unitState = UnitState.Idle;
+			break;
 
 			case WorkerState.Carrying:
 			case WorkerState.CarryingIdle:
@@ -191,13 +192,13 @@ public class Worker : Unit
 					resourceWorker[resourceId].carryingObject.SetActive (false);
 					ResetPathfindValue ();
 
-					workerState = WorkerState.None;
+					workerState = WorkerState.Idle;
 
 					return;
 				}
 
 
-				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius)
+				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+1f)
 				{
 					gameplayManager.resources.DeliverResources (resourceType, currentNumberOfResources);
 
@@ -205,22 +206,24 @@ public class Worker : Unit
 					else
 					{
 						Pathfind.Stop ();
-						unitState = Unit.UnitState.Idle;
+						workerState = WorkerState.Idle;
 					}
 
 					currentNumberOfResources = 0;
 
 					factoryChoose = null;
 
-					workerState = WorkerState.None;
+					workerState = WorkerState.Idle;
 
-					isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;
+					isCheckedSendResourceToFactory = isMovingToFactory = canUseResources = isSettingWorkerNull = false;
 
 					resourceWorker[resourceId].carryingObject.SetActive (false);
 
 					resourceId = -1;
 
 					ResetPathfindValue ();
+
+
 				}
 				break;
 			case WorkerState.Building:
@@ -237,14 +240,14 @@ public class Worker : Unit
 
 					isMovingToFactory = false;
 
-					if (hasResource)
+					if (canUseResources)
 					{
 						resource = lastResource;
 						GetResource (currentNumberOfResources);
 					}
 					else
 					{
-						workerState = WorkerState.None;
+						workerState = WorkerState.Idle;
 					}
 				}
 
@@ -252,18 +255,24 @@ public class Worker : Unit
 				if (workerState == WorkerState.Building)
 				{
 					if (!IsBuilding) StartCoroutine (StartConstruct ());
+					
 				}
+
 				else
 				{
 					if (!IsRepairing) StartCoroutine (StartRepair ());
+					unitState = UnitState.Idle;
+
 				}
-				break;
-			case WorkerState.None:
+
+
+			break;
+			case WorkerState.Idle:
+
 			
 				CheckConstructFactory ();
 
 				CheckResource ();
-
 				
 				base.IAStep ();
 				break;
@@ -321,11 +330,13 @@ public class Worker : Unit
 					}
 					break;
 
-				case WorkerState.None:
+				case WorkerState.Idle:
 					
 					bool isAttacking = (unitState == Unit.UnitState.Attack);
 
 					resourceWorker[0].extractingObject.SetActive (true);
+
+					unitState = UnitState.Idle;
 					
 					if (lastResourceId != -1)
 					{
@@ -377,7 +388,7 @@ public class Worker : Unit
 
 	public override IEnumerator OnDie ()
 	{
-		workerState = WorkerState.None;
+		workerState = WorkerState.Idle;
 
 		return base.OnDie ();
 
@@ -449,6 +460,7 @@ public class Worker : Unit
 		}
 
 		IsBuilding = false;
+
 	}
 
 	IEnumerator StartRepair ()
@@ -511,7 +523,7 @@ public class Worker : Unit
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 
 		if (resource != null) resource.ExtractResource (this);
-		else workerState = WorkerState.None;
+		else workerState = WorkerState.Idle;
 
 		IsExtracting = false;
 	}
@@ -526,7 +538,7 @@ public class Worker : Unit
 	public void GetResource (int gotNumberResources)
 	{
 		currentNumberOfResources = gotNumberResources;
-		hasResource = true;
+		canUseResources = true;
 
 		Pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
 		Pathfind.speed = resourceWorker[resourceId].carryingSpeed;
@@ -675,7 +687,7 @@ public class Worker : Unit
 		if (HasFactory ())
 		{
 
-			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius)
+			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+1)
 			{
 
 				if (!factoryChoose.wasBuilt)
@@ -707,12 +719,14 @@ public class Worker : Unit
 				else
 				{
 					Pathfind.Stop ();
-					unitState = Unit.UnitState.Idle;
+					workerState = WorkerState.Idle;
 					factoryChoose = null;
 					isMovingToFactory = false;
 				}
 			}
+
 		}
+
 		else if (factoryChoose != null)
 		{
 			if (factoryChoose.WasRemoved)
@@ -720,7 +734,7 @@ public class Worker : Unit
 				factoryChoose = null;
 
 				Pathfind.Stop ();
-				unitState = Unit.UnitState.Idle;
+				workerState = WorkerState.Idle;
 				factoryChoose = null;
 				isMovingToFactory = false;
 			}
@@ -764,49 +778,6 @@ public class Worker : Unit
 					lastResource = resource;
 
 					workerState = WorkerState.Extracting;
-				}
-				else
-				{
-					if (unitState != Unit.UnitState.Idle)
-					{
-						unitState = Unit.UnitState.Idle;
-
-						Collider[] nearbyResources = Physics.OverlapSphere (transform.position, distanceView);
-
-						if (nearbyResources.Length == 0) return;
-
-						Resource.Type typeResource = resource.type;
-
-						Resource resourceSelected = null;
-						for (int i = 0; i != nearbyResources.Length; i++)
-						{
-							if (nearbyResources[i].GetComponent<Resource> ())
-							{
-								if (nearbyResources[i].GetComponent<Resource> ().type == typeResource)
-								{
-									if (nearbyResources[i].GetComponent<Resource> ().IsLimitWorkers)
-										continue;
-
-									if (resourceSelected == null) resourceSelected = nearbyResources[i].GetComponent<Resource> ();
-									else
-									{
-										if (Vector3.Distance (transform.position, nearbyResources[i].transform.position) <
-												Vector3.Distance (transform.position, resourceSelected.transform.position))
-										{
-											resourceSelected = nearbyResources[i].GetComponent<Resource> ();
-										}
-									}
-								}
-							}
-						}
-
-						if (resourceSelected == null) return;
-						else
-						{
-							resource = resourceSelected;
-							Move (resource.transform.position);
-						}
-					}
 				}
 			}
 		}

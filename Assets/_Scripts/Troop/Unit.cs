@@ -563,7 +563,7 @@ public class Unit : IStats, IMovementObservable,
 	{
 		float distanceToDestination = Vector3.Distance(transform.position, Pathfind.destination);
 	
-		return (distanceToDestination <= Pathfind.stoppingDistance) && Pathfind.velocity.sqrMagnitude < 0.1f;
+		return (distanceToDestination <= Pathfind.stoppingDistance) && Pathfind.velocity.sqrMagnitude < 0.01f;
 	}
 
 
