@@ -73,6 +73,14 @@ public class LoginIndex : IView
 				}
 			);
 	}
+	public void FBShareRTS ()
+	{
+		FB.AppRequest(
+			message:"3D Real-Time Strategy game for mobile!",
+			title:"Join me in RTS - Rex Tribal Society!"
+			
+			);
+	}
 	
 	public bool Yupy ()
 	{

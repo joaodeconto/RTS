@@ -198,7 +198,7 @@ public class Worker : Unit
 				}
 
 
-				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+1f)
+				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+2f)
 				{
 					gameplayManager.resources.DeliverResources (resourceType, currentNumberOfResources);
 
@@ -336,8 +336,7 @@ public class Worker : Unit
 
 					resourceWorker[0].extractingObject.SetActive (true);
 
-					unitState = UnitState.Idle;
-					
+										
 					if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
@@ -563,11 +562,13 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
-			
-			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
-			
-			Vector3 position = factoryChoose.transform.position - randomVector;
+//			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
+//			
+//			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
+//			
+//			Vector3 position = factoryChoose.transform.position - randomVector;
+
+			Vector3 position = factoryChoose.transform.position;
 
 			position.y = factoryChoose.transform.position.y;
 			
@@ -587,11 +588,12 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
-			
-			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
-			
-			Vector3 position = factoryChoose.transform.position - randomVector;
+//			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
+//			
+//			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
+//			
+//			Vector3 position = factoryChoose.transform.position - randomVector;
+			Vector3 position = factoryChoose.transform.position;
 			position.y = factoryChoose.transform.position.y;
 			
 			Move (position);
@@ -606,11 +608,12 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
-			
-			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
-			
-			Vector3 position = factoryChoose.transform.position - randomVector;
+//			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
+//			
+//			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
+//			
+//			Vector3 position = factoryChoose.transform.position - randomVector;
+			Vector3 position = factoryChoose.transform.position;
 			position.y = factoryChoose.transform.position.y;
 			
 			Move (position);
