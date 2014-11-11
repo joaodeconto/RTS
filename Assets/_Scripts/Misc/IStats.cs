@@ -235,7 +235,8 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	protected StatsController statsController;
 	protected HUDController hudController;
 	protected GameplayManager gameplayManager;
-	protected EventManager eventManager;
+	protected EventController eventController;
+	protected SelectionController selectionController;
 
 	//IHealthObserver
 	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
@@ -257,7 +258,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		statsController = ComponentGetter.Get<StatsController> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-		eventManager    = ComponentGetter.Get<EventManager> ();
+		eventController    = ComponentGetter.Get<EventController> ();
 		
 		Health = MaxHealth;
 		
@@ -361,7 +362,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			
 			if (gameplayManager.IsBeingAttacked (this))
 			{
-				eventManager.AddEvent("being attacked");
+				eventController.AddEvent("being attacked", transform.position);
 						
 				Visiorama.ComponentGetter.Get<MiniMapController> ().InstantiatePositionBeingAttacked (transform);
 

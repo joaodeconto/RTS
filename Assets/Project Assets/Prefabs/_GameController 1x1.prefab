@@ -124,7 +124,7 @@ GameObject:
   - 4: {fileID: 400014}
   - 114: {fileID: 11400018}
   m_Layer: 0
-  m_Name: EventManager
+  m_Name: EventController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -218,7 +218,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -323, y: 238, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
@@ -411,7 +411,7 @@ MonoBehaviour:
   boostProduction: {fileID: 0}
   grids:
   - name: actions
-    rootPosition: {x: -184, y: 92, z: 0}
+    rootPosition: {x: -323, y: 238, z: 0}
     xPadding: 1
     yPadding: 1
     cellSizeX: 92
@@ -445,7 +445,7 @@ MonoBehaviour:
       messageCap: 0
   - queueName: Factory
     panel: {fileID: 0}
-    rootPosition: {x: 40, y: 46}
+    rootPosition: {x: 0, y: 0}
     cellSize: {x: 92, y: 92}
     padding: {x: 1, y: 0}
     labelSize: 0
@@ -674,8 +674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamIdMessage: 
-  chatInput: 
-  chatInputNgui: {fileID: 0}
+  messages: []
 --- !u!114 &11400012
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -711,12 +710,13 @@ MonoBehaviour:
   MiniMapRoot: {fileID: 0}
   minimapAnchor: {fileID: 0}
   CamPositionMiniMap: {fileID: 0}
+  CamPositionTexture: {fileID: 0}
   mapTransform: {fileID: 0}
   fogMiniMap: {fileID: 0}
-  beingAttackedMiniMap: {fileID: 100000, guid: 2563270c424d95d47b8d712fe2381cd3, type: 2}
+  beingAttackedMiniMap: {fileID: 100000, guid: 6d689bc25bc28e347a367c3883aeaf9a, type: 2}
   minimapAtlas: {fileID: 11400000, guid: 1ad367796a1accb419f17d3ea071ca02, type: 2}
-  visualizationSize: {x: 84, y: 52, z: 0}
-  visualizationPosition: {x: 0, y: 0, z: 50}
+  visualizationSize: {x: 103, y: 78, z: 0}
+  visualizationPosition: {x: 0, y: 0, z: 60}
   MiniMapRefreshInterval: .5
 --- !u!114 &11400016
 MonoBehaviour:
@@ -745,8 +745,8 @@ MonoBehaviour:
     Name: Build shelter for 30 units
     enumComparingType: 2
     specificStat: 
-    valueToCompare: 30
-    enumCondition: 1
+    valueToCompare: 29
+    enumCondition: 2
     objDescription: Learn to grow your tribe, contructing huts its fundamental for
       a future army growth.
     objSprite: cottage
@@ -859,6 +859,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6a830f3446549408e3bc23cf6bc4be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseTutorial: 0
   teams:
   - name: Time 1
     colors:

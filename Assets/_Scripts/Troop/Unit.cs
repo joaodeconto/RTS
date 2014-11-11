@@ -134,6 +134,7 @@ public class Unit : IStats, IMovementObservable,
 		statsController       = ComponentGetter.Get<StatsController> ();
 		hudController         = ComponentGetter.Get<HUDController> ();
 		interactionController = ComponentGetter.Get<InteractionController>();
+		selectionController   = ComponentGetter.Get<SelectionController>();
 
 		Pathfind = GetComponent<NavMeshAgent>();
 
@@ -435,9 +436,14 @@ public class Unit : IStats, IMovementObservable,
 		Hashtable ht = new Hashtable();
 
 		ht["observableHealth"] = this;
+		ht["time"] = 0f;
 		
 		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
+
+		if (!gameplayManager.IsSameTeam (this.team))
+			return;
+
 		hudController.CreateEnqueuedButtonInInspector ( this.name,
 														Unit.UnitGroupQueueName,
 														ht,
@@ -446,17 +452,33 @@ public class Unit : IStats, IMovementObservable,
 														{
 															statsController.DeselectAllStats();
 															statsController.SelectStat(this, true);
+														},
+														(ht_dcb, isDown) => 
+														{
+															if (isDown)
+															{
+																ht["time"] = Time.time;
+															}
+															else
+															{
+																Debug.Log(Time.time - (float)ht["time"]);
+																if (Time.time - (float)ht["time"] > 0.1f)
+																{	
+																	selectionController.SelectSameCategory(this.category);
+						
+																}
+																
+															}
 														});
-
-		if (!gameplayManager.IsSameTeam (this.team))
-			return;
-		
-		foreach (MovementAction ma in movementActions)
-		{
-			ht = new Hashtable();
-			ht["actionType"] = ma.actionType;
 			
-			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
+			
+			
+			foreach (MovementAction ma in movementActions)
+			{
+				ht = new Hashtable();
+				ht["actionType"] = ma.actionType;
+				
+				hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
 													ma.buttonAttributes.gridItemAttributes.Position,
 													ht,
 													ma.buttonAttributes.spriteName,

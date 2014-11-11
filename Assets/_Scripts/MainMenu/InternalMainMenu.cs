@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Advertisements;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,6 +17,8 @@ public class InternalMainMenu : MonoBehaviour
 	public GameObject goMainMenu;
 	public UILabel PlayerLabel;
 	public UISprite avatarImg;
+
+	private bool canQuit = false;
 	
 	public UILabel CurrentCrystalsLabel;
 	public UILabel CreatedUnitsLabel;
@@ -34,6 +37,7 @@ public class InternalMainMenu : MonoBehaviour
 	public void Awake ()
 	{
 		Init ();
+	
 	}
 	
 	public void Init ()
@@ -48,6 +52,17 @@ public class InternalMainMenu : MonoBehaviour
 			score.Init ();
 			return;
 		}
+
+		if (Advertisement.isSupported) {
+			Advertisement.allowPrecache = true;
+			Advertisement.Initialize ("18990");
+		}
+		
+		else {
+			
+			Debug.Log("Platform not supported");
+		}
+
 
 		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
 
@@ -96,8 +111,17 @@ public class InternalMainMenu : MonoBehaviour
 			{
 				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
 				dcb.ChangeParams (null, (ht_dcb) =>
-				{
-					 Application.Quit ();
+				{ 
+
+					Advertisement.Show(null, new ShowOptions {
+						pause = true,
+						resultCallback = result => {
+
+							QuitGame();
+
+						}
+					});
+								
 				});
 			}
 		}
@@ -139,6 +163,10 @@ public class InternalMainMenu : MonoBehaviour
 				);
 			}
 		);
+	}
+	private void QuitGame ()
+	{
+		Application.Quit();
 	}
 
 	private void ShowMenu (string optionName)

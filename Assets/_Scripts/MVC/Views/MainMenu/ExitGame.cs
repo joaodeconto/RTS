@@ -1,5 +1,7 @@
 using UnityEngine;
+using UnityEngine.Cloud.Analytics;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ExitGame : MonoBehaviour 
 	{
@@ -9,6 +11,7 @@ public class ExitGame : MonoBehaviour
 
 	public void OnEnable ()
 	{
+
 		Open ();
 	}
 	
@@ -21,7 +24,7 @@ public class ExitGame : MonoBehaviour
 	{
 		if (wasInitialized)
 			return;
-		
+						
 		wasInitialized = true;
 
 		DefaultCallbackButton dcb;
@@ -38,6 +41,13 @@ public class ExitGame : MonoBehaviour
 					PhotonNetwork.LeaveRoom ();
 
 				Time.timeScale = 1f;
+
+				UnityAnalytics.CustomEvent("whatsTheScene", new Dictionary<string, object>
+				                           {
+					{ "Result", 2 },
+					
+				});
+												
 				Application.LoadLevel (0);
 			}
 			);

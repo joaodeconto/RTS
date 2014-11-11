@@ -40,6 +40,8 @@ public class StatsController : MonoBehaviour
 	protected GameplayManager gameplayManager;
 	protected SoundManager soundManager;
 	protected HUDController hudController;
+	protected SelectionController selectionController;
+	private int selectedGroup = -1;   //-1 == null
 
 	protected List<Worker> idleWorkers;
 
@@ -51,6 +53,7 @@ public class StatsController : MonoBehaviour
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		soundManager    = ComponentGetter.Get<SoundManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
+		selectionController = ComponentGetter.Get<SelectionController>();
 
 		selectedStats 	= new List<IStats> ();
 		idleWorkers     = new List<Worker>();
@@ -387,8 +390,12 @@ public class StatsController : MonoBehaviour
 
 	public void DeselectAllStats ()
 	{
+		selectedGroup = -1;
+
+		selectionController.groupFeedback.SetActive(false);
+
 		if (selectedStats.Count == 0) return;
-		
+				
 		foreach (IStats stat in selectedStats)
 		{
 			if (stat != null)
@@ -419,6 +426,7 @@ public class StatsController : MonoBehaviour
 						{
 							stat.Group = -1;
 						}
+						selectionController.groupFeedback.SetActive(true);
 						group.Value.Clear ();
 						break;
 					}
@@ -456,23 +464,49 @@ public class StatsController : MonoBehaviour
 	public bool SelectGroup (int numberGroup)
 	{
 		if (statsGroups.Count == 0) return false;
-
+								
 		foreach (KeyValuePair<int, List<IStats>> group in statsGroups)
 		{
+				
 			if (group.Key == numberGroup)
 			{
-				DeselectAllStats ();
 
-				foreach (IStats stat in group.Value)
-				{
-					SelectStat (stat, true);
-				}
-				return true;
-				break;
+					if (numberGroup == selectedGroup)
+					{
+
+						Vector3 groupPos = group.Value[0].transform.position;
+						groupPos.y = 0.0f;
+						Math.CenterCameraInObject (Camera.main, groupPos);
+						selectionController.groupFeedback.SetActive(true);
+					   
+						
+
+						return false;
+						break;
+						
+					}
+
+					else 
+					{
+						DeselectAllStats ();
+
+						foreach (IStats stat in group.Value)
+						{
+							SelectStat (stat, true);
+						}
+						
+						selectionController.groupFeedback.SetActive(true);
+						selectedGroup = numberGroup;
+						
+						
+						return true;
+						break;
+					}
 			}
 		}
 
 		return false;
+		
 	}
 	
 	public bool IsUnit (IStats stat)
@@ -776,7 +810,7 @@ public class StatsController : MonoBehaviour
 													}
 													else
 													{
-														if (Time.time - (float)ht["time"] > 2f)
+														if (Time.time - (float)ht["time"] > 3f)
 														{															
 															//Deselect anything was selected
 															DeselectAllStats();

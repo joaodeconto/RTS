@@ -105,7 +105,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
 	private FactoryBase factoryBase;
-	private PrefabCache prefabCache;
+
 
 	private Stack<ButtonStatus> stackButtonToCreate;
 
@@ -154,7 +154,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
 		touchController    = ComponentGetter.Get<TouchController>();
-		//prefabCache        = ComponentGetter.Get<PrefabCache>();
+	
 
 		stackButtonToCreate = new Stack<ButtonStatus>();
 

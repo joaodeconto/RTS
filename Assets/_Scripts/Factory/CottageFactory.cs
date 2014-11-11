@@ -8,7 +8,7 @@ public class CottageFactory : FactoryBase, IHouse
 	void ConstructFinished ()
 	{
 		if (gameplayManager.ReachedMaxPopulation)
-			eventManager.AddEvent("reach max population");
+			eventController.AddEvent("reach max population");
 		else
 			gameplayManager.AddHouse (this);
 	}

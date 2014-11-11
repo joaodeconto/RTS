@@ -224,7 +224,7 @@ public class FactoryBase : IStats, IDeathObservable
 				if (!alreadyCheckedMaxPopulation)
 				{
 					alreadyCheckedMaxPopulation = true;
-					eventManager.AddEvent("need more houses");
+					eventController.AddEvent("need more houses",transformParticleDamageReference.position);
 				}
 				return;
 			}
@@ -474,7 +474,7 @@ public class FactoryBase : IStats, IDeathObservable
 				
 				Init ();
 				
-				eventManager.AddEvent("building finish", factoryName, this.guiTextureName);
+				eventController.AddEvent("building finish",transformParticleDamageReference.position, factoryName, this.guiTextureName);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 				
 				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
@@ -598,7 +598,7 @@ public class FactoryBase : IStats, IDeathObservable
 																				}
 																				
 																				else
-																					eventManager.AddEvent("reach enqueued units");
+																					eventController.AddEvent("reach enqueued units");
 																																	
 																			
 						
@@ -645,7 +645,7 @@ public class FactoryBase : IStats, IDeathObservable
 				
 				if (onBoost)
 				{
-					eventManager.AddEvent("standard message", "Already on Boosting Production ");
+					eventController.AddEvent("standard message", "Already on Boosting Production ");
 					return;
 					
 				}
@@ -661,7 +661,7 @@ public class FactoryBase : IStats, IDeathObservable
 				
 				else
 				{
-					eventManager.AddEvent("out of funds", "boostCost");
+					eventController.AddEvent("out of funds", "boostCost");
 					
 				}
 			});
@@ -724,7 +724,7 @@ public class FactoryBase : IStats, IDeathObservable
 															if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
 																factories[factoryChoose].EnqueueUnitToCreate (unitFactory.unit);
 															else
-																eventManager.AddEvent("reach enqueued units");
+																eventController.AddEvent("reach enqueued units");
 															
 														});
 			}
@@ -819,7 +819,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 		}
 		else
-			eventManager.AddEvent("out of funds", unit.name);
+			eventController.AddEvent("out of funds", unit.name);
 	}
 	
 	public void EnqueueUpgradeToCreate (Upgrade upgrade)
@@ -916,7 +916,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 		newUpgrade = upg;
 
-		eventManager.AddEvent("standard message", "upgrade", upgrade.guiTextureName);
+		eventController.AddEvent("standard message",transformParticleDamageReference.position , "upgrade", upgrade.guiTextureName);
 		
 		Debug.Log("Fez UPGRADE!  " + upgrade.upgradeName);
 	}
@@ -947,7 +947,7 @@ public class FactoryBase : IStats, IDeathObservable
 			unitName = unit.name;
 		}
 		
-		eventManager.AddEvent("create unit", unitName, unit.guiTextureName);
+		eventController.AddEvent("create unit",  transformParticleDamageReference.position, unitName, unit.guiTextureName);
 		
 		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 		

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-
 using Visiorama;
 
 public class ShowScore : MonoBehaviour
@@ -85,7 +84,7 @@ public class ShowScore : MonoBehaviour
 	public GameObject scorePlayerPrefab;
 	public Login login;
 	public InternalMainMenu imm;
-	
+		
 	public float startLabelPoisition;
 	public float diferrenceBetweenLabels;
 	private int battleTotalGold;
@@ -102,6 +101,8 @@ public class ShowScore : MonoBehaviour
 
 
 		LoginIndex index = login.GetComponentInChildren<LoginIndex> ();
+		Ranking ranking = ComponentGetter.Get<Ranking>();
+
 		index.SetActive (false);
 		
 		ActiveScoreMenu (true);
@@ -129,7 +130,7 @@ public class ShowScore : MonoBehaviour
 				{
 					GameObject scorePlayerObject = NGUITools.AddChild (scoreMenuObject.gameObject, scorePlayerPrefab);
 					scorePlayerObject.transform.localPosition = Vector3.up * positionYInitial;
-					
+										
 					scorePlayerObject.GetComponent<ScoreRow>().playerName.text 		 = sp.Key.ToString ();
 					scorePlayerObject.GetComponent<ScoreRow>().ressourceGold.GetComponentInChildren<UILabel>().text  = sp.Value.GoldCollectedPoints.ToString();
 					scorePlayerObject.GetComponent<ScoreRow>().ressourceMana.GetComponentInChildren<UILabel>().text  = sp.Value.ManaCollectedPoints.ToString();
@@ -140,18 +141,37 @@ public class ShowScore : MonoBehaviour
 					scorePlayerObject.GetComponent<ScoreRow>().StructuresBuild.GetComponentInChildren<UILabel>().text  = sp.Value.StructureCreatedPoints.ToString ();
 					scorePlayerObject.GetComponent<ScoreRow>().StructuresLost.GetComponentInChildren<UILabel>().text  = sp.Value.StructureLostPoints.ToString ();
 					scorePlayerObject.GetComponent<ScoreRow>().StructuresDestroyed.GetComponentInChildren<UILabel>().text  = sp.Value.StructureDestroyedPoints.ToString ();
-					scorePlayerObject.GetComponent<ScoreRow>().gameResult.GetComponentInChildren<UILabel>().text  = sp.Value.VictoryPoints.ToString ();
+					string resultString = scorePlayerObject.GetComponent<ScoreRow>().gameResult.GetComponentInChildren<UILabel>().text;
+
+					if (sp.Value.VictoryPoints>0) resultString = "Victory";
+					else resultString = "Defeat";
 
 
-//					scorePlayerObject.GetComponent<ScoreRow>().ressourceGold.value  = battleTotalGold / sp.Value.GoldCollectedPoints;
-////					scorePlayerObject.GetComponent<ScoreRow>().ressourceMana.value  = battleTotalMana / sp.Value.ManaCollectedPoints;
-////					scorePlayerObject.GetComponent<ScoreRow>().ressourceSpent.value  = battleTotalSpent / sp.Value.ResourcesSpentPoints;
-//					scorePlayerObject.GetComponent<ScoreRow>().StructuresBuild.value  = sp.Value.StructureCreatedPoints / battleTotalStructuresBuild;
-//					scorePlayerObject.GetComponent<ScoreRow>().StructuresLost.value  = sp.Value.StructureLostPoints / battleTotalStructuresDestroyed;
-//					scorePlayerObject.GetComponent<ScoreRow>().StructuresDestroyed.value  = sp.Value.StructureDestroyedPoints / battleTotalStructuresDestroyed;
-//					scorePlayerObject.GetComponent<ScoreRow>().unitsBuild.value  = sp.Value.UnitsCreatedPoints / battleTotalUnitsCreated;
-//					scorePlayerObject.GetComponent<ScoreRow>().unitsLost.value  = sp.Value.UnitsLostPoints / battleTotalUnitsDestroyed;
-//					scorePlayerObject.GetComponent<ScoreRow>().unitsDestroyed.value  = sp.Value.UnitsDestroyedPoints / battleTotalUnitsDestroyed;
+					scorePlayerObject.GetComponent<ScoreRow>().ressourceGold.value  = ((float)sp.Value.GoldCollectedPoints / (float)battleTotalGold);
+
+
+					scorePlayerObject.GetComponent<ScoreRow>().ressourceMana.value  = ((float)sp.Value.ManaCollectedPoints / (float)battleTotalMana);
+
+
+					scorePlayerObject.GetComponent<ScoreRow>().ressourceSpent.value  = ((float)sp.Value.ResourcesSpentPoints / (float)battleTotalSpent);
+
+
+					scorePlayerObject.GetComponent<ScoreRow>().StructuresBuild.value  = ((float)sp.Value.StructureCreatedPoints / (float)battleTotalStructuresBuild);
+
+
+					scorePlayerObject.GetComponent<ScoreRow>().StructuresLost.value  = ((float)sp.Value.StructureLostPoints / (float)battleTotalStructuresDestroyed);
+
+
+					scorePlayerObject.GetComponent<ScoreRow>().StructuresDestroyed.value  = ((float)sp.Value.StructureDestroyedPoints / (float)battleTotalStructuresDestroyed);
+
+
+					scorePlayerObject.GetComponent<ScoreRow>().unitsBuild.value  = ((float)sp.Value.UnitsCreatedPoints / (float)battleTotalUnitsCreated);
+
+
+					scorePlayerObject.GetComponent<ScoreRow>().unitsLost.value  = ((float)sp.Value.UnitsLostPoints / (float)battleTotalUnitsDestroyed);
+
+
+					scorePlayerObject.GetComponent<ScoreRow>().unitsDestroyed.value  = ((float)sp.Value.UnitsDestroyedPoints / (float)battleTotalUnitsDestroyed);
 					
 					positionYInitial -= diferrenceBetweenLabels;
 				}
@@ -165,6 +185,7 @@ public class ShowScore : MonoBehaviour
 			{
 				ActiveScoreMenu (false);
 				imm.Init ();
+				
 			}
 		);
 	}
@@ -183,6 +204,7 @@ public class ShowScore : MonoBehaviour
 				if (!players.ContainsKey (dicScore[i].IdPlayer))
 				{
 					players.Add (dicScore[i].IdPlayer, new ScorePlayer ());
+				
 				}
 				
 				players[dicScore[i].IdPlayer].AddScorePlayer (dicScore[i].SzScoreName, dicScore[i].NrPoints);
@@ -198,8 +220,11 @@ public class ShowScore : MonoBehaviour
 				totalUnitsDestroyed +=  sp.Value.UnitsDestroyedPoints;
 				totalStructuresBuild +=  sp.Value.StructureCreatedPoints;
 				totalStructuresDestroyed +=  sp.Value.StructureDestroyedPoints;
+				
+				
 
 			}
+							
 		}
 		);
 

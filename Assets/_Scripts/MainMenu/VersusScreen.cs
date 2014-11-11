@@ -1,6 +1,7 @@
-
 using UnityEngine;
+using UnityEngine.Cloud.Analytics;
 using System.Collections;
+using System.Collections.Generic;
 using Visiorama;
 
 public class VersusScreen : MonoBehaviour
@@ -56,6 +57,12 @@ public class VersusScreen : MonoBehaviour
 	{
 		cena = (int)pw.GetPropertyOnRoom("map");
 		cenaSelection();
+		UnityAnalytics.CustomEvent("whatsTheScene", new Dictionary<string, object>
+		                           {
+			{ "cena", cena },
+
+		}
+		);
 		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
 

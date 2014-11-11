@@ -55,13 +55,14 @@ public class Score : MonoBehaviour
 		if (NeedToSave && !isSaving)
 		{
 			NeedToSave = false;
-			Invoke ("SaveScore", 1.0f);
+			isSaving = true;
+			Invoke ("SaveScore", 10.0f);
 		}
 	}
 	
 	public void SaveScore ()
 	{
-		isSaving = true;
+
 		dataScoreDAO.SaveScores
 		(
 			dicDataScore,

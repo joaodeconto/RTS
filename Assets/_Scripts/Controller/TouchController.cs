@@ -208,6 +208,12 @@ public class TouchController : MonoBehaviour
 	
 	protected bool GetDoubleClick (float maxTimeToReclick)
 	{
+		#if UNITY_IPHONE && !UNITY_EDITOR
+
+		if(Input.GetTouch(0).tapCount == 2) return true;
+
+		#else
+
 		if (idTouch != lastTouch)
 		{
 			countClick = 0;
@@ -229,6 +235,7 @@ public class TouchController : MonoBehaviour
 				return true;
 			}
 		}
+		#endif
 		
 		return false;
 	}
@@ -288,7 +295,7 @@ public class TouchController : MonoBehaviour
 
 	public void SetDoubleClick (float dc)
 	{
-			doubleClickSpeed = dc*2;
+			doubleClickSpeed = dc;
 	}
 
 }

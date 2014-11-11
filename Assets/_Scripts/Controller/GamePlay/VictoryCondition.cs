@@ -39,7 +39,7 @@ public class VictoryCondition : MonoBehaviour
 
 	private GameplayManager gm;
 	private StatsController sc;
-	private EventManager em;
+	private EventController em;
 
 	public Challenge[] ChallengesToWin;
 		 
@@ -82,7 +82,7 @@ public class VictoryCondition : MonoBehaviour
 	public void Start ()
 	{
 		gm = ComponentGetter.Get<GameplayManager> ();
-		em = ComponentGetter.Get<EventManager> ();
+		em = ComponentGetter.Get<EventController> ();
 		sc = ComponentGetter.Get<StatsController>();
 
 		InvokeRepeating ("CheckVictory", 1.0f, 1.0f);

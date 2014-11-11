@@ -69,6 +69,15 @@ public class ControlOptions : MonoBehaviour
 	public void SetPlayerDoubleClickSpeed (float doubleClick)
 	{
 		PlayerPrefs.SetFloat("DoubleClickSpeed", doubleClick + 0.1f);
+
+		if (touchController != null)
+		{
+			touchController.SetDoubleClick (doubleClick);
+		}
+	}
+	public void SetFullScreen (bool isFullScreen)
+	{
+		Screen.fullScreen = isFullScreen;
 	}
 
 	public void Close ()

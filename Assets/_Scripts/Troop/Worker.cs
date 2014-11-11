@@ -206,7 +206,7 @@ public class Worker : Unit
 					else
 					{
 						Pathfind.Stop ();
-						workerState = WorkerState.Idle;
+						unitState = Unit.UnitState.Idle;
 					}
 
 					currentNumberOfResources = 0;
@@ -409,7 +409,7 @@ public class Worker : Unit
 			ghostFactory.AddComponent<GhostFactory>().Init (this, factoryConstruct);
 		}
 		else
-			eventManager.AddEvent("out of funds", factoryConstruct.factory.name);
+			eventController.AddEvent("out of funds", factoryConstruct.factory.name);
 	}
 
 	public void SetResource (Resource newResource)
@@ -784,19 +784,6 @@ public class Worker : Unit
 				}
 			}
 		}
-	}
-	
-	// GIZMOS
-	
-	public override void DrawGizmosSelected ()
-	{
-		base.DrawGizmosSelected ();
-		
-		Gizmos.color = Color.green;
-		Gizmos.DrawWireSphere (this.transform.position, distanceToExtract);
-		
-		Gizmos.color = Color.yellow;
-		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
 	}
 
 

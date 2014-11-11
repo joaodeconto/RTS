@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.Cloud.Analytics;
 using Visiorama;
 using Visiorama.Utils;
 
@@ -548,11 +548,22 @@ public class GameplayManager : Photon.MonoBehaviour
 			
 			if (winGame)
 			{
+				UnityAnalytics.CustomEvent("whatsTheScene", new Dictionary<string, object>
+				 		        {
+									{ "Result", 1 },
+									
+								});
+
 				Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
 				Score.AddScorePoints (DataScoreEnum.Victory, 1);
 			}
 			else
 			{
+				UnityAnalytics.CustomEvent("whatsTheScene", new Dictionary<string, object>
+				                           {
+												{ "Result", 2 },
+					
+											});
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
 			}

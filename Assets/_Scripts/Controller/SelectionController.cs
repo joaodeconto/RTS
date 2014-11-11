@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Visiorama;
 using Visiorama.Utils;
 
@@ -12,6 +13,11 @@ public class SelectionController : MonoBehaviour
 	protected InteractionController interactionController;
 	
 	protected IStats lastStatClick;
+	private List<Transform> listChildGroupBtns;
+	public Transform groupButtonsObj;
+	private int groupNumberCounter = 0;
+	public GameObject groupFeedback {get; set;}
+
 
 	public void Init ()
 	{
@@ -19,13 +25,63 @@ public class SelectionController : MonoBehaviour
 		statsController       = ComponentGetter.Get<StatsController>();
 		gameplayManager       = ComponentGetter.Get<GameplayManager>();
 		interactionController = ComponentGetter.Get<InteractionController>();
-	}
 
+		listChildGroupBtns = new List<Transform>();
+		groupFeedback = new GameObject();
+
+		foreach (Transform child in groupButtonsObj)
+		{
+			listChildGroupBtns.Add (child);
+
+			DefaultCallbackButton dcb;
+			
+			if (child)
+			{
+				Hashtable ht = new Hashtable ();
+				ht["groupNumber"] = groupNumberCounter;
+				ht["time"] = 0f;
+				
+				dcb = ComponentGetter.Get <DefaultCallbackButton> (child, false);
+				dcb.Init    (ht, (ht_dcb) =>
+				            {
+
+							groupFeedback.SetActive(false);
+							groupFeedback = dcb.transform.Find("ActiveFeedback").gameObject;
+							SelectGroup((int)ht["groupNumber"]);
+															
+							},
+							(ht_dcb, isDown) => 
+							{
+								if (isDown)
+								{
+									ht["time"] = Time.time;
+								}
+								else
+								{
+									if (Time.time - (float)ht["time"] > 0.5f)
+									{	
+										groupFeedback.SetActive(false);
+										groupFeedback = dcb.transform.Find("ActiveFeedback").gameObject;
+										statsController.CreateGroup ((int)ht["groupNumber"]);
+										
+									}
+								}
+							}
+
+						);
+
+			}
+
+			groupNumberCounter ++;
+			
+		}
+	}
+	
 	bool WebPlayerAndPcSelection()
 	{
 		//EDITOR ou PC
 		if ((touchController.touchType != TouchController.TouchType.Ended) ||
-			(touchController.idTouch != TouchController.IdTouch.Id0))
+		    (touchController.idTouch != TouchController.IdTouch.Id0))
 			return true;
 		
 		bool leftShift = Input.GetKey (KeyCode.LeftShift);
@@ -157,7 +213,7 @@ public class SelectionController : MonoBehaviour
 						string category = selectedUnit.category;
 						foreach (IStats stat in statsController.myStats)
 						{
-							//TODO pegar somente da mesma categoria dentro da tela
+
 							if (stat.category == category &&
 								touchController.IsInCamera (stat.transform.position))
 							{
@@ -184,7 +240,7 @@ public class SelectionController : MonoBehaviour
 							string category = selectedUnit.category;
 							foreach (IStats stat in statsController.myStats)
 							{
-								//TODO pegar somente da mesma categoria dentro da tela
+
 								if (stat.category == category &&
 									touchController.IsInCamera (stat.transform.position))
 								{
@@ -436,15 +492,48 @@ public class SelectionController : MonoBehaviour
 					if (hit.transform.CompareTag ("Unit"))
 					{
 						Unit selectedUnit = hit.transform.GetComponent<Unit> ();
-						
-						if (gameplayManager.IsSameTeam (selectedUnit))
+
+						if (!gameplayManager.IsSameTeam (selectedUnit)) // return true
 						{
 							statsController.DeselectAllStats ();
 							statsController.SelectStat (selectedUnit, true);
-							statsController.PlaySelectSound ();
 							return true;
 						}
+
+						else
+						{
+
+							if (touchController.DoubleClick &&
+							    selectedUnit == lastStatClick)
+							{
+								statsController.DeselectAllStats ();
+								
+								string category = selectedUnit.category;
+								foreach (IStats stat in statsController.myStats)
+								{
+									//TODO pegar somente da mesma categoria dentro da tela
+									if (stat.category == category &&
+									    touchController.IsInCamera (stat.transform.position))
+									{
+										statsController.SelectStat (stat, true);
+									}
+								}
+							}
+							
+							else
+							{
+								statsController.DeselectAllStats ();
+								statsController.SelectStat (selectedUnit, true);
+								statsController.PlaySelectSound ();
+								lastStatClick = selectedUnit;
+
+								return true;
+							}
+						}
+
+
 					}
+
 
 					if (hit.transform.CompareTag ("Resource") && statsController.selectedStats.Count == 0)
 					{
@@ -492,10 +581,25 @@ public class SelectionController : MonoBehaviour
 		return false;
 	}
 
-	void Update ()
+	public void SelectSameCategory (string category)
 	{
-#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
-		WebPlayerAndPcSelection();
+			statsController.DeselectAllStats ();
+			foreach (IStats stat in statsController.myStats)
+			{
+				//TODO pegar somente da mesma categoria dentro da tela
+				if (stat.category == category &&
+				    touchController.IsInCamera (stat.transform.position))
+				{
+					statsController.SelectStat (stat, true);
+				}
+			}
+
+	}
+		
+		void Update ()
+		{
+			#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+			WebPlayerAndPcSelection();
 #else
 		AndroidAndIphoneSelection();
 #endif
@@ -636,7 +740,7 @@ public class SelectionController : MonoBehaviour
 	
 	float tempTime = -1f;
 	
-	void SelectGroup (int numberOfGroup)
+	public void SelectGroup (int numberOfGroup)
 	{
 		bool hasGroup = statsController.SelectGroup (numberOfGroup);
 

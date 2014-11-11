@@ -176,9 +176,6 @@ public class InteractionController : MonoBehaviour
 
 				feedback = true;
 
-				worker.Deselect ();
-				
-
 			}
 
 			if (feedback)

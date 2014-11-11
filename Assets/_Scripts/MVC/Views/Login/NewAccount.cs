@@ -52,7 +52,7 @@ public class NewAccount : IView
 					{
 						wUser.SetActive (true);
 							Invoke ("CloseErrorMessage", 5.0f);
-						Debug.Log("AccountAlreadyExists");//TODO mostrar que conta já existe
+						Debug.Log("AccountAlreadyExists");
 
 						return;
 					}
@@ -67,24 +67,25 @@ public class NewAccount : IView
 				
 					if (string.IsNullOrEmpty (password_confirmation.value) || password.value != password_confirmation.value)
 					{
-						Debug.Log("you need confirm password ");//TODO mostrar password não confirmado
+						Debug.Log("you need confirm password ");
 						wPass.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
 					}
 
-					if (string.IsNullOrEmpty (username.value) || username.value.Length < 6)
+					if (string.IsNullOrEmpty (username.value))
 					{
 						wUser.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
-						Debug.Log("invalid username");//TODO mostrar que conta já existe
+						Debug.Log("invalid username");
 					}
 						
 
-					if (!Regex.Match(email.value, @"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$").Success)
+//					if (!Regex.Match(email.value, @"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$").Success)
+					if (string.IsNullOrEmpty(email.value))
 					{
 						wEmail.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
-						Debug.Log("invalid email");//TODO mostrar que conta já existe
+						Debug.Log("invalid email");
 						return;
 
 					}
