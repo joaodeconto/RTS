@@ -223,6 +223,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public bool playerUnit;
 
 	public string category;
+	public string description;
 	
 	public ResourcesManager costOfResources;
 	

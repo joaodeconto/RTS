@@ -361,6 +361,7 @@ public class Worker : Unit
 		{
 			ht = new Hashtable();
 			ht["factory"] = fc;
+			ht["time"] = 0;
 
 			if (fc.costOfResources.Rocks != 0)
 			{
@@ -376,11 +377,29 @@ public class Worker : Unit
 													fc.gridItemAttributes.Position,
 													ht,
 													fc.factory.guiTextureName,
-													(ht_hud) =>
+			                                        null,
+			                                       	(ht_dcb, isDown) =>
 													{
-														FactoryConstruction factory = (FactoryConstruction)ht_hud["factory"];
-//														InstanceGhostFactory (factory);
-														InstanceGhostFactory (ht_hud);
+															FactoryConstruction factory = (FactoryConstruction)ht_dcb["factory"];
+														
+															if (isDown)
+															{
+																ht["time"] = Time.time;
+															}
+															else
+															{
+																Debug.Log(Time.time - (float)ht["time"]);
+																if (Time.time - (float)ht["time"] > 0.3f)
+																{	
+																	hudController.OpenInfoBoxFactory(factory.factory);
+																	
+																}
+																else
+																{
+																	hudController.CloseInfoBox();
+																	InstanceGhostFactory (ht_dcb);
+																}
+															}
 													});
 		}
 	}

@@ -27,6 +27,7 @@ public class GhostFactory : MonoBehaviour
 	{
 		GameObject oldGhost = GameObject.Find ("GhostFactory");
 		if (oldGhost != null) Destroy (oldGhost);
+
 		randomRotation = Random.rotation.y;
 		
 		this.worker 			 = worker;
@@ -77,7 +78,7 @@ public class GhostFactory : MonoBehaviour
 			helperColliderGameObject = gameObject;
 		}
 		
-		helperColliderGameObject.AddComponent<Rigidbody> ();
+//		helperColliderGameObject.AddComponent<Rigidbody> ();
 		helperColliderGameObject.rigidbody.isKinematic = true;
 		
 		HelperColliderDetect hcd = helperColliderGameObject.AddComponent<HelperColliderDetect> ();
@@ -131,7 +132,7 @@ public class GhostFactory : MonoBehaviour
 				//				Debug.Break ();
 				
 				#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
-				if (numberOfCollisions == 0)
+				if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)
 					#else
 					if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)
 						#endif

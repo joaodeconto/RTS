@@ -23,6 +23,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 	protected GameplayManager gameplayManager;
 	protected InteractionController interactionController;
 
+	public Resource observedResource { get; private set;}
 	public Unit observedUnit { get; private set; }
 	private IMovementObservable observed { get; set; }
 	private Vector3 lastObservedPosition = Vector3.zero;
@@ -147,7 +148,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 
 				if (goHit.name == "Resource")
 				{
-					Resource resourceStats = goHit.GetComponent<Resource>();
+					observedResource = goHit.GetComponent<Resource>();
 					hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.transform.localPosition,
 					                              1f,
 					                              gameplayManager.GetColorTeam ());

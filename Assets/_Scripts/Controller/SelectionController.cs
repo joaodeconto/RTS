@@ -87,7 +87,7 @@ public class SelectionController : MonoBehaviour
 		bool leftShift = Input.GetKey (KeyCode.LeftShift);
 		bool leftCtrl = Input.GetKey (KeyCode.LeftControl);
 		
-//		ComponentGetter.Get<HUDController> ().CloseInfoBox ();
+		ComponentGetter.Get<HUDController> ().CloseInfoBox ();
 		
 		if (touchController.DragOn)
 		{
@@ -430,13 +430,19 @@ public class SelectionController : MonoBehaviour
 
 		if (!touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id1) //return
 		{
+			//colocar cancelamento da ghostfactory aqui!!!TODO
 			statsController.DeselectAllStats ();
+			ComponentGetter.Get<HUDController> ().CloseInfoBox ();
 			return true;
 		}
+
+
+
 		if (touchController.idTouch == TouchController.IdTouch.Id0) //return
 		{
 			if (touchController.DragOn)
 			{
+				ComponentGetter.Get<HUDController> ().CloseInfoBox ();
 				statsController.DeselectAllStats ();
 
 				Bounds b = touchController.GetTouchBounds();
@@ -487,24 +493,17 @@ public class SelectionController : MonoBehaviour
 			{
 				RaycastHit hit;
 
+				ComponentGetter.Get<HUDController> ().CloseInfoBox ();
+
 				if (Physics.Raycast (touchController.GetFinalRay, out hit))
 				{
 					if (hit.transform.CompareTag ("Unit"))
 					{
 						Unit selectedUnit = hit.transform.GetComponent<Unit> ();
 
-						if (!gameplayManager.IsSameTeam (selectedUnit)) // return true
-						{
-							statsController.DeselectAllStats ();
-							statsController.SelectStat (selectedUnit, true);
-							return true;
-						}
 
-						else
-						{
 
-							if (touchController.DoubleClick &&
-							    selectedUnit == lastStatClick)
+							if (touchController.DoubleClick && selectedUnit == lastStatClick)
 							{
 								statsController.DeselectAllStats ();
 								
@@ -520,7 +519,7 @@ public class SelectionController : MonoBehaviour
 								}
 							}
 							
-							else
+							else if (gameplayManager.IsSameTeam (selectedUnit))
 							{
 								statsController.DeselectAllStats ();
 								statsController.SelectStat (selectedUnit, true);
@@ -529,7 +528,7 @@ public class SelectionController : MonoBehaviour
 
 								return true;
 							}
-						}
+
 
 
 					}

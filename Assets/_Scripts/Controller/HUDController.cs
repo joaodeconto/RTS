@@ -132,23 +132,31 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		}
 	}
 	
-//	private Transform infoStats;
-//	private Transform infoQuali;
-//	private Transform infoIcon;
-//	
-//	private UILabel attackLabel;
-//	private UILabel hpLabel;
-//	private UILabel speedLabel;
-//	private UILabel timeLabel;
-//	private UILabel unitsLabel;
-//	
-//	private UILabel nameLabel;
+	private Transform infoUnit;
+	private Transform infoFactory;
+	private Transform infoUpgrade;
+	private Transform infoQuali;
+	private Transform infoIcon;
+	
+	private UILabel attackLabel;
+	private UILabel hpLabel;
+	private UILabel speedLabel;
+	private UILabel timeLabel;
+	private UILabel unitsLabel;
+	private UILabel defLabel;
+	private UILabel descriptLabel;
+	private UILabel stats1;
+	private UILabel stats2;
+	private UILabel stats1Text;
+	private UILabel stats2Text;
+	
+	private UILabel nameLabel;
 //	private HealthBar currentHp;
-//	
+	
 //	private UISprite spriteFactory;
 //	private UISprite spriteUnit;
 	
-//	private string cGODisplayedOnInfoBox;
+	private string cGODisplayedOnInfoBox;
 
 	public void Init()
 	{
@@ -159,20 +167,17 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		stackButtonToCreate = new Stack<ButtonStatus>();
 
 		IsDestroying = false;
-		
-//		infoStats = trnsPanelInfoBox.FindChild ("Info Stats");
-//		infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
-//		infoIcon  = trnsPanelInfoBox.FindChild ("Info Icon");
-//		
-//		attackLabel = infoStats.FindChild ("attack-label").GetComponent<UILabel> ();
-//		hpLabel	    = infoStats.FindChild ("hp-label").GetComponent<UILabel> ();
-//		speedLabel  = infoStats.FindChild ("speed-label").GetComponent<UILabel> ();
-//		unitsLabel  = infoStats.FindChild ("units-label").GetComponent<UILabel> ();
-//		timeLabel   = infoStats.FindChild ("time-label").GetComponent<UILabel> ();
-//		
-//		nameLabel = infoQuali.FindChild ("name-label").GetComponent<UILabel> ();
-//		currentHp = infoQuali.FindChild ("CurrentHP").gameObject.GetComponent <HealthBar> ();
-//		
+
+		infoUpgrade = trnsPanelInfoBox.FindChild ("Info Upgrade");
+		infoFactory = trnsPanelInfoBox.FindChild ("Info Factory");
+		infoUnit = trnsPanelInfoBox.FindChild ("Info Unit");
+		infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
+		infoIcon  = trnsPanelInfoBox.FindChild ("Info Icon");
+
+		nameLabel = infoQuali.FindChild ("name-label").GetComponent<UILabel> ();
+
+
+
 //		spriteFactory = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 //		spriteUnit	  = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 	}
@@ -576,77 +581,92 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 
 	
-//	public void OpenInfoBoxUnit (Unit unit)
-//	{
-//		cGODisplayedOnInfoBox = unit.name;
-//		
-//		RemoveEnqueuedButtonInInspector (unit.name, Unit.UnitGroupQueueName);
-//				
-//		nameLabel.text = unit.category;
-//				
-//		spriteUnit.spriteName = unit.guiTextureName;
-//
-//		currentHp.SetTarget (unit);
-//		
-//		// Info
-//				
-//		attackLabel.text = (unit.AdditionalForce != 0)
-//							? unit.force + "(+" + unit.AdditionalForce + ")"
-//							: unit.force.ToString ();
-//				
-//		hpLabel.text = unit.Health.ToString ();
-//		speedLabel.text = ((int)unit.speed).ToString ();
-//		unitsLabel.text = unit.numberOfUnits.ToString ();
-//		timeLabel.text = unit.timeToSpawn.ToString ();
-//		
-////		Transform goldLabel = infoStats.FindChild ("gold-label");
-////		goldLabel.GetComponent<UILabel> ().text = unit.costOfResources.ToString ();
-//		
-//		unit.RegisterDeathObserver (this);
-//		
-//		//Ligar painel so por ultimo
-//		trnsPanelInfoBox.gameObject.SetActive (true);
-//		infoStats.gameObject.SetActive (true);
-//	}
+	public void OpenInfoBoxUnit (Unit unit)
+	{
 
-//	public void OpenInfoBoxFactory (FactoryBase factory)
-//	{
-//		cGODisplayedOnInfoBox = factory.name;
-//		
-//		nameLabel.text = factory.category;
-//		
-//		spriteFactory.spriteName = factory.guiTextureName;
-//
-//		currentHp.SetTarget (factory);
-		// Info
-//		Transform attackLabel = infoStats.FindChild ("attack-label");
-//		attackLabel.GetComponent<UILabel> ().text = unit.AdditionalForce != 0 ?
-//			unit.force + "(+" + unit.AdditionalForce + ")" :
-//				unit.force.ToString ();
-//		
-//		Transform hpLabel = infoStats.FindChild ("hp-label");
-//		hpLabel.GetComponent<UILabel> ().text = stat.Health.ToString ();
-//		
-//		Transform speedLabel = infoStats.FindChild ("speed-label");
-//		speedLabel.GetComponent<UILabel> ().text = ((int)unit.speed).ToString ();
-//		
-//		Transform unitsLabel = infoStats.FindChild ("units-label");
-//		unitsLabel.GetComponent<UILabel> ().text = unit.numberOfUnits.ToString ();
-//		
-//		Transform timeLabel = infoStats.FindChild ("time-label");
-//		timeLabel.GetComponent<UILabel> ().text = unit.timeToSpawn.ToString ();
-//		
+		infoFactory.gameObject.SetActive (false);
+		infoUpgrade.gameObject.SetActive (false);
+
+		attackLabel = infoUnit.FindChild ("attack-label").GetComponent<UILabel> ();
+		hpLabel	    = infoUnit.FindChild ("hp-label").GetComponent<UILabel> ();
+		speedLabel  = infoUnit.FindChild ("speed-label").GetComponent<UILabel> ();
+		unitsLabel  = infoUnit.FindChild ("house-label").GetComponent<UILabel> ();
+		timeLabel   = infoUnit.FindChild ("time-label").GetComponent<UILabel> ();
+		defLabel    = infoUnit.FindChild ("def-label").GetComponent<UILabel> ();
+			
+		nameLabel.text = unit.category;
+				
+//		spriteUnit.spriteName = unit.guiTextureName;
+				
+		attackLabel.text = (unit.AdditionalForce != 0)
+							? unit.force + "(+" + unit.AdditionalForce + ")"
+							: unit.force.ToString ();
+		defLabel.text = unit.Defense.ToString ();				
+		hpLabel.text = unit.maxHealth.ToString ();
+//		speedLabel.text = unit.speed.ToString ();
+		unitsLabel.text = unit.numberOfUnits.ToString ();
+		timeLabel.text = unit.timeToSpawn.ToString ()+"s";
+		
 //		Transform goldLabel = infoStats.FindChild ("gold-label");
-//		goldLabel.GetComponent<UILabel> ().text = stat.costOfResources.ToString ();
-//		factory.RegisterDeathObserver (this);
+//		goldLabel.GetComponent<UILabel> ().text = unit.costOfResources.ToString ();
+		
+//		unit.RegisterDeathObserver (this);
+		
 		//Ligar painel so por ultimo
-//		infoStats.gameObject.SetActive (false);
-//		trnsPanelInfoBox.gameObject.SetActive (true);
-//	}	
-//	public void CloseInfoBox ()
-//	{
-//		trnsPanelInfoBox.gameObject.SetActive (false);
-//	}
+		trnsPanelInfoBox.gameObject.SetActive (true);
+		infoUnit.gameObject.SetActive (true);
+	}
+
+	public void OpenInfoBoxFactory (FactoryBase factory)
+	{
+		infoUnit.gameObject.SetActive (false);
+		infoUpgrade.gameObject.SetActive (false);
+
+
+		nameLabel.text = factory.category;
+		hpLabel = infoFactory.FindChild ("hp-label").GetComponent<UILabel> ();
+		hpLabel.text = factory.MaxHealth.ToString();
+
+		defLabel = infoFactory.FindChild ("def-label").GetComponent<UILabel> ();
+		defLabel.text = factory.Defense.ToString();
+
+		descriptLabel = infoFactory.FindChild ("descript-label").GetComponent<UILabel> ();
+		descriptLabel.text = factory.description;
+
+		infoFactory.gameObject.SetActive (true);
+		trnsPanelInfoBox.gameObject.SetActive (true);
+	}	
+
+	public void OpenInfoBoxUpgrade (Upgrade upgrade)
+	{
+		infoUnit.gameObject.SetActive (false);
+		infoFactory.gameObject.SetActive (false);
+		
+		
+		nameLabel.text = upgrade.upgradeName;
+		stats1 = infoUpgrade.FindChild ("stats1-label").GetComponent<UILabel> ();
+		stats1.text = upgrade.stats1Value;
+		stats1Text = infoUpgrade.FindChild ("stats1-text").GetComponent<UILabel> ();
+		stats1Text.text = upgrade.stats1Text;
+				
+		stats2 = infoUpgrade.FindChild ("stats2-label").GetComponent<UILabel> ();
+		stats2.text = upgrade.stats2Value;
+		stats2Text = infoUpgrade.FindChild ("stats2-text").GetComponent<UILabel> ();
+		stats2Text.text = upgrade.stats2Text;
+		
+		timeLabel = infoUpgrade.FindChild ("time-label").GetComponent<UILabel> ();
+		timeLabel.text = upgrade.timeToSpawn.ToString()+"s";
+		
+		descriptLabel = infoUpgrade.FindChild ("descript-label").GetComponent<UILabel> ();
+		descriptLabel.text = upgrade.description;
+		
+		infoUpgrade.gameObject.SetActive (true);
+		trnsPanelInfoBox.gameObject.SetActive (true);
+	}	
+	public void CloseInfoBox ()
+	{
+		trnsPanelInfoBox.gameObject.SetActive (false);
+	}
 
 	#region IDeathObserver implementation
 

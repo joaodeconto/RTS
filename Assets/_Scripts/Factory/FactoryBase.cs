@@ -530,6 +530,8 @@ public class FactoryBase : IStats, IDeathObservable
 
 				Hashtable ht = new Hashtable();
 				ht["upgradeHT"] = ui;
+				ht["time"] = 0f;
+
 				
 				
 				if (ui.upgrade.costOfResources.Rocks != 0)
@@ -549,60 +551,82 @@ public class FactoryBase : IStats, IDeathObservable
 				                                       ui.gridItemAttributes.Position,
 				                                       ht,
 				                                       ui.upgrade.guiTextureName,
-				                                       (ht_hud) =>
-				                                       {
-																				List<FactoryBase> factories = new List<FactoryBase> ();
-																				UpgradeItem upgrade = (UpgradeItem)ht_hud["upgradeHT"];
-																				
-																				foreach (IStats stat in statsController.selectedStats)
-																				{
+					                                   null,
+				                                       (ht_dcb, isDown) =>
+					                                        
+														{
+															UpgradeItem upgrade = (UpgradeItem)ht_dcb["upgradeHT"];
+														
+															if (isDown)
+															{
+																ht["time"] = Time.time;
+															}
+															else
+															{
+																Debug.Log(Time.time - (float)ht["time"]);
+																if (Time.time - (float)ht["time"] > 0.3f)
+																{	
+																	hudController.OpenInfoBoxUpgrade(upgrade.upgrade);
+																	
+																}
+																else
+																{
+																	hudController.CloseInfoBox();
+				                                       
+																	List<FactoryBase> factories = new List<FactoryBase> ();
+																	
+																	
+																	foreach (IStats stat in statsController.selectedStats)
+																	{
 
-																					FactoryBase factory = stat as FactoryBase;
-																					
-																					if (factory == null) continue;
-																					
-																					factories.Add (factory);
-																				}
-																				
-																				int i = 0, factoryChoose = 0, numberToCreate = -1;
-																				
-																				foreach (FactoryBase factory in factories)
-																				{
-																					if (numberToCreate == -1)
-																					{
-																						numberToCreate = factory.lUpgradesToCreate.Count;
-																						factoryChoose = i;
-																																			}
-																					else if (numberToCreate > factory.lUpgradesToCreate.Count)
-																					{
-																						numberToCreate = factory.lUpgradesToCreate.Count;
-																						factoryChoose = i;
-																					}
-																					i++;
-																				}
-																				
-																				if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
-																				{
-																						bool canBuy = gameplayManager.resources.CanBuy (upgrade.upgrade.costOfResources);
-																																												
-																						if (canBuy)
-																						{
-																							factories[factoryChoose].EnqueueUpgradeToCreate (upgrade.upgrade);
+																		FactoryBase factory = stat as FactoryBase;
+																		
+																		if (factory == null) continue;
+																		
+																		factories.Add (factory);
+																	}
+																	
+																	int i = 0, factoryChoose = 0, numberToCreate = -1;
+																	
+																	foreach (FactoryBase factory in factories)
+																	{
+																		if (numberToCreate == -1)
+																		{
+																			numberToCreate = factory.lUpgradesToCreate.Count;
+																			factoryChoose = i;
+																																}
+																		else if (numberToCreate > factory.lUpgradesToCreate.Count)
+																		{
+																			numberToCreate = factory.lUpgradesToCreate.Count;
+																			factoryChoose = i;
+																		}
+																		i++;
+																	}
+																	
+																	if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
+																	{
+																			bool canBuy = gameplayManager.resources.CanBuy (upgrade.upgrade.costOfResources);
+																																									
+																			if (canBuy)
+																			{
+																				factories[factoryChoose].EnqueueUpgradeToCreate (upgrade.upgrade);
 
-																								hudController.RemoveButtonInInspector (upgrade.buttonName);
-																								upgrade.alreadyUpgraded = true;
-																																													
-																						}
-							
-							
-																				}
-																				
-																				else
-																					eventController.AddEvent("reach enqueued units");
-																																	
-																			
-						
-							                                       });
+																					hudController.RemoveButtonInInspector (upgrade.buttonName);
+																					upgrade.alreadyUpgraded = true;
+																																										
+																			}
+				
+				
+																	}
+																	
+																	else
+																		eventController.AddEvent("reach enqueued units");
+															}
+														}
+																														
+																
+			
+				                                       });
 					}
 			}
 			
@@ -673,6 +697,7 @@ public class FactoryBase : IStats, IDeathObservable
 			{
 				Hashtable ht = new Hashtable();
 				ht["unitFactory"] = uf;
+				ht["time"] = 0f;
 				
 				
 				if (uf.unit.costOfResources.Rocks != 0)
@@ -686,46 +711,66 @@ public class FactoryBase : IStats, IDeathObservable
 				}
 				
 				
-				hudController.CreateButtonInInspector ( uf.buttonName,
+				hudController.CreateButtonInInspector (uf.buttonName,
 				                                       uf.gridItemAttributes.Position,
 				                                       ht,
 				                                       uf.unit.guiTextureName,
-				                                       (ht_hud) =>
-				                                       {
-															List<FactoryBase> factories = new List<FactoryBase> ();
-															UnitFactory unitFactory = (UnitFactory)ht_hud["unitFactory"];
-															
-															foreach (IStats stat in statsController.selectedStats)
+				                                       null,
+													   (ht_dcb, isDown) => 
+														{
+															UnitFactory unitFactory = (UnitFactory)ht_dcb["unitFactory"];
+														
+															if (isDown)
 															{
-																FactoryBase factory = stat as FactoryBase;
-																
-																if (factory == null) continue;
-																
-																factories.Add (factory);
+																ht["time"] = Time.time;
 															}
-															
-															int i = 0, factoryChoose = 0, numberToCreate = -1;
-															
-															foreach (FactoryBase factory in factories)
-															{
-																if (numberToCreate == -1)
-																{
-																	numberToCreate = factory.lUnitsToCreate.Count;
-																	factoryChoose = i;
-																}
-																else if (numberToCreate > factory.lUnitsToCreate.Count)
-																{
-																	numberToCreate = factory.lUnitsToCreate.Count;
-																	factoryChoose = i;
-																}
-																i++;
-															}
-															
-															if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
-																factories[factoryChoose].EnqueueUnitToCreate (unitFactory.unit);
 															else
-																eventController.AddEvent("reach enqueued units");
-															
+															{
+																Debug.Log(Time.time - (float)ht["time"]);
+																if (Time.time - (float)ht["time"] > 0.3f)
+																{	
+																	hudController.OpenInfoBoxUnit(unitFactory.unit);
+																	
+																}
+																else
+																{
+																	hudController.CloseInfoBox();
+																	
+																	List<FactoryBase> factories = new List<FactoryBase> ();
+																																			
+																	foreach (IStats stat in statsController.selectedStats)
+																	{
+																		FactoryBase factory = stat as FactoryBase;
+																		
+																		if (factory == null) continue;
+																		
+																		factories.Add (factory);
+																	}
+																	
+																	int i = 0, factoryChoose = 0, numberToCreate = -1;
+																	
+																	foreach (FactoryBase factory in factories)
+																	{
+																		if (numberToCreate == -1)
+																		{
+																			numberToCreate = factory.lUnitsToCreate.Count;
+																			factoryChoose = i;
+																		}
+																		else if (numberToCreate > factory.lUnitsToCreate.Count)
+																		{
+																			numberToCreate = factory.lUnitsToCreate.Count;
+																			factoryChoose = i;
+																		}
+																		i++;
+																	}
+																	
+																	if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
+																		factories[factoryChoose].EnqueueUnitToCreate (unitFactory.unit);
+																	else
+																		eventController.AddEvent("reach enqueued units");
+																	
+																}
+															}
 														});
 			}
 						
@@ -996,7 +1041,16 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			newUnit.Follow (rallypoint.observedUnit);
 		}
-		
+
+		if(newUnit.category == "Worker" && rallypoint.observedResource != null)
+		{
+			Worker workerUnit = (Worker)newUnit;
+			workerUnit.SetResource (rallypoint.observedResource);
+					
+		}
+	
+
+
 		newUnit.Move (goRallypoint.position);
 		newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 	}

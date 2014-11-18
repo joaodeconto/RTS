@@ -40,6 +40,7 @@ public class Unit : IStats, IMovementObservable,
 	public int numberOfUnits = 1;
 	public float speed { get { return Pathfind.speed; } }
 
+
 	public string guiTextureName;
 
 	public UnitAnimation unitAnimation;
@@ -106,7 +107,7 @@ public class Unit : IStats, IMovementObservable,
 	protected InteractionController interactionController;
 
 	protected float normalAcceleration;
-	protected float normalSpeed;
+	public float normalSpeed;
 	protected float normalAngularSpeed;
 	protected ObstacleAvoidanceType normalObstacleAvoidance;
 	protected int normalAvoidancePriority;

@@ -5,6 +5,11 @@ public class Upgrade : MonoBehaviour {
 
 
 	public string upgradeName;
+	public string description;
+	public string stats1Value;
+	public string stats1Text;
+	public string stats2Value;
+	public string stats2Text;
 	public string guiTextureName;
 	public float timeToSpawn;
 	public bool modelUpgrade = false;

@@ -111,16 +111,16 @@ public class InternalMainMenu : MonoBehaviour
 			{
 				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
 				dcb.ChangeParams (null, (ht_dcb) =>
-				{ 
+				                  { QuitGame();
 
-					Advertisement.Show(null, new ShowOptions {
-						pause = true,
-						resultCallback = result => {
-
-							QuitGame();
-
-						}
-					});
+//					Advertisement.Show(null, new ShowOptions {
+//						pause = true,
+//						resultCallback = result => {
+//
+//
+//
+//						}
+//					});
 								
 				});
 			}
