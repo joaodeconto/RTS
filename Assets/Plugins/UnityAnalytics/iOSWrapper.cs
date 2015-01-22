@@ -16,24 +16,24 @@ namespace UnityEngine.Cloud.Analytics
 		[DllImport ("__Internal")]
 		public static extern bool UnityEngine_Cloud_IsJailbroken();
 
-		public override string GetAppVersion()
+		public override string appVersion
 		{
-			return UnityEngine_Cloud_GetAppVersion();
+			get { return UnityEngine_Cloud_GetAppVersion(); }
 		}
 
-		public override string GetAppBundleIdentifier()
+		public override string appBundleIdentifier
 		{
-			return UnityEngine_Cloud_GetBundleIdentifier();
+			get { return UnityEngine_Cloud_GetBundleIdentifier(); }
 		}
 
-		public override string GetAppInstallMode()
+		public override string appInstallMode
 		{
-			return UnityEngine_Cloud_GetAppInstallMode();
+			get { return UnityEngine_Cloud_GetAppInstallMode(); }
 		}
 		
-		public override bool IsRootedOrJailbroken()
+		public override bool isRootedOrJailbroken
 		{
-			return UnityEngine_Cloud_IsJailbroken();
+			get { return UnityEngine_Cloud_IsJailbroken(); }
 		}		
 	}
 }

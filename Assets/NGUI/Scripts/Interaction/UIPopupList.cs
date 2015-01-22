@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2014 Tasharen Entertainment
+// Copyright © 2011-2015 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -184,14 +184,13 @@ public class UIPopupList : UIWidgetContainer
 
 	// Currently selected item
 	[HideInInspector][SerializeField] string mSelectedItem;
-
-	UIPanel mPanel;
-	GameObject mChild;
-	UISprite mBackground;
-	UISprite mHighlight;
-	UILabel mHighlightedLabel = null;
-	List<UILabel> mLabelList = new List<UILabel>();
-	float mBgBorder = 0f;
+	[HideInInspector][SerializeField] UIPanel mPanel;
+	[HideInInspector][SerializeField] GameObject mChild;
+	[HideInInspector][SerializeField] UISprite mBackground;
+	[HideInInspector][SerializeField] UISprite mHighlight;
+	[HideInInspector][SerializeField] UILabel mHighlightedLabel = null;
+	[HideInInspector][SerializeField] List<UILabel> mLabelList = new List<UILabel>();
+	[HideInInspector][SerializeField] float mBgBorder = 0f;
 
 	// Deprecated functionality
 	[HideInInspector][SerializeField] GameObject eventReceiver;
@@ -248,7 +247,7 @@ public class UIPopupList : UIWidgetContainer
 		get
 		{
 			int index = items.IndexOf(mSelectedItem);
-			return index < itemData.Count ? itemData[index] : null;
+			return index > -1 && index < itemData.Count ? itemData[index] : null;
 		}
 	}
 
@@ -495,7 +494,7 @@ public class UIPopupList : UIWidgetContainer
 				if (!mTweening)
 				{
 					mTweening = true;
-					StartCoroutine(UpdateTweenPosition());
+					StartCoroutine("UpdateTweenPosition");
 				}
 			}
 		}
@@ -742,6 +741,26 @@ public class UIPopupList : UIWidgetContainer
 	void OnDoubleClick () { if (openOn == OpenOn.DoubleClick) Show(); }
 
 	/// <summary>
+	/// Used to keep an eye on the selected object, closing the popup if it changes.
+	/// </summary>
+
+	IEnumerator CloseIfUnselected ()
+	{
+		GameObject go = UICamera.selectedObject;
+
+		for (; ; )
+		{
+			yield return null;
+
+			if (UICamera.selectedObject != go)
+			{
+				Close();
+				break;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Show the popup list dialog.
 	/// </summary>
 
@@ -763,7 +782,9 @@ public class UIPopupList : UIWidgetContainer
 
 			// Calculate the dimensions of the object triggering the popup list so we can position it below it
 			Transform myTrans = transform;
-			Bounds bounds = NGUIMath.CalculateRelativeWidgetBounds(myTrans.parent, myTrans);
+
+			Vector3 min;
+			Vector3 max;
 
 			// Create the root object for the list
 			mChild = new GameObject("Drop-down List");
@@ -771,7 +792,27 @@ public class UIPopupList : UIWidgetContainer
 
 			Transform t = mChild.transform;
 			t.parent = myTrans.parent;
-			t.localPosition = bounds.min;
+			Vector3 pos;
+
+			// Manually triggered popup list on some other game object
+			if (openOn == OpenOn.Manual && UICamera.selectedObject != gameObject)
+			{
+				StopCoroutine("CloseIfUnselected");
+				min = t.parent.InverseTransformPoint(mPanel.anchorCamera.ScreenToWorldPoint(UICamera.lastTouchPosition));
+				max = min;
+				t.localPosition = min;
+				pos = t.position;
+				StartCoroutine("CloseIfUnselected");
+			}
+			else
+			{
+				Bounds bounds = NGUIMath.CalculateRelativeWidgetBounds(myTrans.parent, myTrans, false, false);
+				min = bounds.min;
+				max = bounds.max;
+				t.localPosition = min;
+				pos = myTrans.position;
+			}
+
 			t.localRotation = Quaternion.identity;
 			t.localScale = Vector3.one;
 
@@ -844,10 +885,10 @@ public class UIPopupList : UIWidgetContainer
 			}
 
 			// The triggering widget's width should be the minimum allowed width
-			x = Mathf.Max(x, bounds.size.x * dynScale - (bgPadding.x + padding.x) * 2f);
+			x = Mathf.Max(x, (max.x - min.x) * dynScale - (bgPadding.x + padding.x) * 2f);
 
 			float cx = x;
-			Vector3 bcCenter = new Vector3(cx * 0.5f, -fontHeight * 0.5f, 0f);
+			Vector3 bcCenter = new Vector3(cx * 0.5f, -labelHeight * 0.5f, 0f);
 			Vector3 bcSize = new Vector3(cx, (labelHeight + padding.y), 1f);
 
 			// Run through all labels and add colliders
@@ -867,7 +908,11 @@ public class UIPopupList : UIWidgetContainer
 				else
 				{
 					BoxCollider2D b2d = lbl.GetComponent<BoxCollider2D>();
+#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
 					b2d.center = bcCenter;
+#else
+					b2d.offset = bcCenter;
+#endif
 					b2d.size = bcSize;
 				}
 			}
@@ -899,11 +944,11 @@ public class UIPopupList : UIWidgetContainer
 
 			if (position == Position.Auto)
 			{
-				UICamera cam = UICamera.FindCameraForLayer(gameObject.layer);
+				UICamera cam = UICamera.FindCameraForLayer((UICamera.selectedObject ?? gameObject).layer);
 
 				if (cam != null)
 				{
-					Vector3 viewPos = cam.cachedCamera.WorldToViewportPoint(myTrans.position);
+					Vector3 viewPos = cam.cachedCamera.WorldToViewportPoint(pos);
 					placeAbove = (viewPos.y < 0.5f);
 				}
 			}
@@ -921,8 +966,15 @@ public class UIPopupList : UIWidgetContainer
 			// If we need to place the popup list above the item, we need to reposition everything by the size of the list
 			if (placeAbove)
 			{
-				t.localPosition = new Vector3(bounds.min.x, bounds.max.y - y - bgPadding.y, bounds.min.z);
+				t.localPosition = new Vector3(min.x, max.y - y - bgPadding.y, min.z);
 			}
+
+			min = t.localPosition;
+			max.x = min.x + mBackground.width;
+			max.y = min.y - mBackground.height;
+			max.z = min.z;
+			Vector3 offset = mPanel.CalculateConstrainOffset(min, max);
+			t.localPosition += offset;
 		}
 		else OnSelect(false);
 	}

@@ -6,19 +6,7 @@ using Visiorama;
 
 public class FogOfWar : MonoBehaviour
 {
-	protected FOWSystem fowSystem;
-	protected FOWSystem FowSystem
-	{
-		get
-		{
-			if (fowSystem == null)
-			{
-				fowSystem = FOWSystem.instance;
-			}
-			return fowSystem;
-		}
-	}
-	
+			
 	public int SIZE_TEXTURE = 128;
 
 	public bool UseFog  = true;
@@ -111,7 +99,7 @@ public class FogOfWar : MonoBehaviour
 		if (!UseFog || allies == null)
 			return;
 		
-#if UNITY_ANDROID || UNITY_IPHONE || true
+
 		for (i = (allies.Count - 1); i != -1; --i)
 		{
 			trns = allies[i];
@@ -160,21 +148,7 @@ public class FogOfWar : MonoBehaviour
 				else if(matrixFogFlag[i,j] == FogFlag.KNOWN_AREA)//fogNodeVisited[i,j])
 					FogTexture.SetPixel(i, j, knownAreaColor);
 			}
-#else
-		for (i = 0; i != SIZE_TEXTURE; ++i)
-			for (j = 0; j != SIZE_TEXTURE; ++j)
-			{
-				//trocar pela textura do tasharen
-				Color mapColor = FowSystem.texture1.GetPixel (i, j);
-				if (new Color (0f, 0f, 0f, 0f) != mapColor)
-				{
-					FogTexture.SetPixel(i, j, visibleAreaColor);
 
-					//deixar área invisivel para que seja verificada posteriormente se é visivel
-					matrixFogFlag[i,j] = FogFlag.KNOWN_AREA;
-				}
-			}
-#endif
 		FogTexture.Apply();
 	}
 

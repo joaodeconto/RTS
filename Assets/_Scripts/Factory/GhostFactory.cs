@@ -280,7 +280,11 @@ public class GhostFactory : MonoBehaviour
 	
 	void DestroyOverdrawModel ()
 	{
+		Quaternion factoryRotation = thisFactory.model.transform.rotation;
+		factoryRotation.y = randomRotation;
+		thisFactory.model.transform.rotation = factoryRotation;
 		thisFactory.model.SetActive (true);
+
 		Destroy (overdrawModel);
 	}
 }

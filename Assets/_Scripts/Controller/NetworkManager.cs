@@ -3,11 +3,11 @@ using System.Collections;
 
 public class NetworkManager : Photon.MonoBehaviour {
 	
-	public bool offlineMode;
+//	public bool offlineMode;
 	
 	public void Init ()
 	{
-		PhotonNetwork.offlineMode = offlineMode;
+//		PhotonNetwork.offlineMode = offlineMode;
 		PhotonNetwork.isMessageQueueRunning = true;
 	}
 

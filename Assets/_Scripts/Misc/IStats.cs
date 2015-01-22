@@ -197,7 +197,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		}
 	}
 	
-	public int Defense;
+	public int defense;
 
 	public int m_Team;
 	public int team {
@@ -231,7 +231,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public bool IsNetworkInstantiate { get; protected set; }
 	public bool WasRemoved { get; protected set; }
 	
-	internal int Group = -1;
+	public int group = -1;
 	
 	protected StatsController statsController;
 	protected HUDController hudController;
@@ -290,35 +290,10 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		
 		WasRemoved = false;
 
-//		NotifyHealthChange ();
+
 
 		statsController.AddStats (this);
 
-
-// =================================================================
-// |                                                               |
-// |      UTILIZANDO COMPONENTE FOW EM TODAS UNIDADES!!!           |
-// |                 DEVE SER ATUALIZADO!!!                        |
-// |                                                               |
-// =================================================================
-//	
-//		if (!gameplayManager.IsBoot (team))
-//		{
-//			if (gameplayManager.SameEntity (team, ally))
-//			{
-//				FOWRevealer fowr = gameObject.AddComponent<FOWRevealer>();
-//				fowr.range = new Vector2(0, fieldOfView);
-//				fowr.lineOfSightCheck = FOWSystem.LOSChecks.EveryUpdate;
-//			}
-//			else
-//			{
-//				gameObject.AddComponent<FOWRenderers>();
-//			}
-//		}
-//		else
-//		{
-//			gameObject.AddComponent<FOWRenderers>();
-//		}
 	}
 	
 	public void SetTeam (int team, int ally)
@@ -352,7 +327,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	{
 		if (Health != 0)
 		{
-			int newDamage = Mathf.Max (0, Damage - Defense);
+			int newDamage = Mathf.Max (0, Damage - defense);
 
 			Health = Mathf.Max (0, Health - newDamage);
 
@@ -482,15 +457,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public void NotifyHealthChange ()
 	{	
-//		if (IsVisible && !hudController.HasSelected(this.transform))
-//		{
-//			hudController.CreateSubstanceHealthBar(this, sizeOfSelectedHealthBar, MaxHealth, "Health Reference");
-//			Invoke ("Deselect", 5.0f);
-//			print ("visible?");
-//
-//		}
-//
-//		if (!team
 
 		foreach (IHealthObserver o in healthObservers)
 		{

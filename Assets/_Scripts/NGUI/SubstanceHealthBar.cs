@@ -65,6 +65,11 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		{
 			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
 		}
+		if (currentHealth <= 0)
+		{
+			DestroyObject (this.gameObject);
+			
+		}
 		
 		//so mostra o submesh da substance healthbar se tiver vida, se nao nao
 //		subMeshRenderer.enabled = (currentHealth != 0);

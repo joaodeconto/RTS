@@ -125,7 +125,7 @@ public class FactoryBase : IStats, IDeathObservable
 		hudController     = ComponentGetter.Get<HUDController> ();
 		buildingSlider    = hudController.GetSlider("Building Unit");
 		buildingSlider.gameObject.SetActive(false);
-				
+						
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 		
@@ -211,9 +211,13 @@ public class FactoryBase : IStats, IDeathObservable
 					upgradeToCreate = lUpgradesToCreate[0];
 					timeToCreate = lUpgradesToCreate[0].timeToSpawn;
 					inUpgrade = true;
+
+					if (Selected) buildingSlider.gameObject.SetActive(true);
+					hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, timer);
+					
 				}
 				
-			if (Selected) buildingSlider.gameObject.SetActive(true);
+
 		}
 
 		if (lUnitsToCreate.Count >= 1)
@@ -239,6 +243,7 @@ public class FactoryBase : IStats, IDeathObservable
 				inUpgrade = true;
 				
 				if (Selected) buildingSlider.gameObject.SetActive(true);
+				hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, timer);
 				
 			}
 
@@ -517,7 +522,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		base.Select ();
 		
-		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, timer);
+
 		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		
@@ -825,9 +830,7 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
-		
-		hudController.DestroySelected (transform);
-		
+						
 		if (playerUnit && wasBuilt)
 		{
 			if (!hasRallypoint) return;

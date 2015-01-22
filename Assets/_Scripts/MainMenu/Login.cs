@@ -176,7 +176,7 @@ public class Login : IController
 		
 		if (!PlayerPrefs.HasKey("GraphicQuality"))
 		{
-			QualitySettings.SetQualityLevel(3);
+			QualitySettings.SetQualityLevel(2);
 		}
 		
 		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));

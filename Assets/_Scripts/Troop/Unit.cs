@@ -80,6 +80,8 @@ public class Unit : IStats, IMovementObservable,
 	protected bool followingTarget;
 	protected float attackBuff;
 
+	public bool moveAttack { get; set; }
+
 	public UnitState unitState { get; set; }
 
 	protected bool invokeCheckEnemy;
@@ -123,6 +125,7 @@ public class Unit : IStats, IMovementObservable,
 	public override void Init ()
 	{
 		base.Init();
+		moveAttack = false;
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -213,7 +216,10 @@ public class Unit : IStats, IMovementObservable,
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
 				
-				CancelCheckEnemy ();
+				if (!moveAttack)
+				{
+					CancelCheckEnemy ();
+				}
 
 				if (TargetAttack != null)
 				{	
@@ -853,16 +859,16 @@ public class Unit : IStats, IMovementObservable,
 			{
 				PhotonNetwork.Destroy(gameObject);
 
-//				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1);
+				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1);
 				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1, battle.IdBattle);
-//				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
+				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
 				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
 			}
 			else
 			{
-//				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1);
+				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1);
 				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1, battle.IdBattle);
-//				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1);
+				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1);
 				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1, battle.IdBattle);
 			}
 

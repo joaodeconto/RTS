@@ -27,7 +27,7 @@ public class Database : MonoBehaviour
 
 	public delegate void CallbackDatabaseCall (object obj);
 
-	public const string wrapperURL = "http://www.visiorama.com.br/uploads/RTS2/database/access.php";
+	public const string wrapperURL = "https://www.visiorama.com.br/uploads/RTS2/database/access.php";
 
 	private float timeToWait = 0.5f;
 

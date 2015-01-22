@@ -224,7 +224,7 @@ public class Resource : IStats
 		base.Select ();
 		
 //		hudController.CreateSelected (this.transform, sizeOfSelected, Color.yellow);
-		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, maxResources);
+//		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, maxResources);
 	
 
 	}
@@ -232,9 +232,7 @@ public class Resource : IStats
 	public override void Deselect ()
 	{
 		base.Deselect ();
-		
-		hudController.DestroySelected (this.transform);
-		
+				
 
 	}
 

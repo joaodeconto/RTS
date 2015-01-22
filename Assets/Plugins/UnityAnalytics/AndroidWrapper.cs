@@ -5,53 +5,60 @@ namespace UnityEngine.Cloud.Analytics
 {
 	internal class AndroidWrapper : BasePlatformWrapper
 	{
-		public override string GetAppVersion()
+		public override string appVersion
 		{
-			string appVer = null;
-			#if UNITY_ANDROID && !UNITY_EDITOR
-			using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
-			{
-				appVer = appUtilClass.CallStatic<string>("getAppVersion");
+			get {
+				string appVer = null;
+				#if UNITY_ANDROID && !UNITY_EDITOR
+				using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
+				{
+					appVer = appUtilClass.CallStatic<string>("getAppVersion");
+				}
+				#endif
+				return appVer;
 			}
-			#endif
-			return appVer;
 		}
 
-		public override string GetAppBundleIdentifier()
+		public override string appBundleIdentifier
 		{
-			string appBundleId = null;
-			#if UNITY_ANDROID && !UNITY_EDITOR
-			using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
-			{
-				appBundleId = appUtilClass.CallStatic<string>("getAppPackageName");
+			get {
+				string appBundleId = null;
+				#if UNITY_ANDROID && !UNITY_EDITOR
+				using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
+				{
+					appBundleId = appUtilClass.CallStatic<string>("getAppPackageName");
+				}
+				#endif
+				return appBundleId;
 			}
-			#endif
-			return appBundleId;
 		}
 
-		public override string GetAppInstallMode()
+		public override string appInstallMode
 		{
-			string appInstallMode = null;
-			#if UNITY_ANDROID && !UNITY_EDITOR
-			using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
-			{
-				appInstallMode = appUtilClass.CallStatic<string>("getAppInstallMode");
+			get {
+				string appInstallMode = null;
+				#if UNITY_ANDROID && !UNITY_EDITOR
+				using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
+				{
+					appInstallMode = appUtilClass.CallStatic<string>("getAppInstallMode");
+				}
+				#endif
+				return appInstallMode;
 			}
-			#endif
-			return appInstallMode;
 		}
 		
-		public override bool IsRootedOrJailbroken()
+		public override bool isRootedOrJailbroken
 		{
-			bool isBroken = false;
-			#if UNITY_ANDROID && !UNITY_EDITOR
-			using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
-			{
-				isBroken = appUtilClass.CallStatic<bool>("isDeviceRooted");
+			get {
+				bool isBroken = false;
+				#if UNITY_ANDROID && !UNITY_EDITOR
+				using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
+				{
+					isBroken = appUtilClass.CallStatic<bool>("isDeviceRooted");
+				}
+				#endif
+				return isBroken;
 			}
-			#endif
-			return isBroken;
 		}
 	}
 }
-

@@ -200,6 +200,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		return healthBar;
 	}
 
+	#region CreateSubsResourceBKP
 	public SubstanceResourceBar CreateSubstanceResourceBar (IStats target, float size, float maxResource)
 	{
 		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
@@ -212,7 +213,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.destroyObjectWhenLoseReference = true;
+		refTransform.destroyObjectWhenLoseReference = false;
 		refTransform.offsetPosition += Vector3.up * 0.1f;
 		
 		selectObj.transform.parent = mainTranformSelectedObjects;
@@ -223,6 +224,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		
 		return resourceBar;
 	}
+	#endregion
 	
 	public SubstanceHealthBar CreateSubstanceHealthBar (IStats target, float size, int maxHealth, string referenceChild)
 	{
@@ -319,7 +321,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		foreach (Transform child in mainTranformSelectedObjects)
 		{
-			if (child.GetComponent<ReferenceTransform>().referenceObject == target)
+			if (child.GetComponent<ReferenceTransform>().referenceObject == target && child.GetComponent<SubstanceResourceBar>() == null)
 			{
 				DestroyObject (child.gameObject);
 			}
@@ -593,6 +595,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		unitsLabel  = infoUnit.FindChild ("house-label").GetComponent<UILabel> ();
 		timeLabel   = infoUnit.FindChild ("time-label").GetComponent<UILabel> ();
 		defLabel    = infoUnit.FindChild ("def-label").GetComponent<UILabel> ();
+		descriptLabel = infoUnit.FindChild ("descript-label").GetComponent<UILabel> ();
 			
 		nameLabel.text = unit.category;
 				
@@ -601,11 +604,12 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		attackLabel.text = (unit.AdditionalForce != 0)
 							? unit.force + "(+" + unit.AdditionalForce + ")"
 							: unit.force.ToString ();
-		defLabel.text = unit.Defense.ToString ();				
+		defLabel.text = unit.defense.ToString ();				
 		hpLabel.text = unit.maxHealth.ToString ();
-//		speedLabel.text = unit.speed.ToString ();
+		speedLabel.text = unit.normalSpeed.ToString();
 		unitsLabel.text = unit.numberOfUnits.ToString ();
 		timeLabel.text = unit.timeToSpawn.ToString ()+"s";
+		descriptLabel.text = unit.description;
 		
 //		Transform goldLabel = infoStats.FindChild ("gold-label");
 //		goldLabel.GetComponent<UILabel> ().text = unit.costOfResources.ToString ();
@@ -628,7 +632,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		hpLabel.text = factory.MaxHealth.ToString();
 
 		defLabel = infoFactory.FindChild ("def-label").GetComponent<UILabel> ();
-		defLabel.text = factory.Defense.ToString();
+		defLabel.text = factory.defense.ToString();
 
 		descriptLabel = infoFactory.FindChild ("descript-label").GetComponent<UILabel> ();
 		descriptLabel.text = factory.description;

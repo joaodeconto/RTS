@@ -66,6 +66,11 @@ public class SubstanceResourceBar : MonoBehaviour
 	
 	public void UpdateResource (float actualResource)
 	{
+		if (actualResource <= 0)
+		{
+			DestroyObject (this.gameObject);
+
+		}
 
 		float percentResource = (float)actualResource /(float)maxResources;
 		
@@ -101,6 +106,8 @@ public class SubstanceResourceBar : MonoBehaviour
 		}
 
 		substance.RebuildTextures ();
+
+
 	}
 
 	

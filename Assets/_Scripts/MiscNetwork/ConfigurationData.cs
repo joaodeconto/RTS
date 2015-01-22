@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ConfigurationData
 {
-	public const string VERSION = "1.2.3.2";
+	public const string VERSION = "1.2.4.1";
 	
 	public static bool Logged = false;
 	public static bool InGame = false;

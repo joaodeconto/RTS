@@ -33,6 +33,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		public UILabel labelRocks;
 		public UILabel labelMana;
 		public UILabel labelUnits;
+		public UILabel labelTotalTime;
 		public GameObject uiVictoryObject;
 		public GameObject uiDefeatObject;
 //		public Transform buttonMatchScore;
@@ -95,8 +96,8 @@ public class GameplayManager : Photon.MonoBehaviour
 	public int MyTeam {get; protected set;}
 	public int Allies {get; protected set;}
 
-
-
+	public float myTimer = 0.0f;
+	public int Triggerflag = 1;
 
 	protected NetworkManager network;
 
@@ -112,7 +113,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			teams[8].initialPosition.gameObject.SetActive(false);
 			GameObject tutorialC = GameObject.Find ("Tutorial Manager");
 			tutorialC.SetActive (false);
-			network.offlineMode = false;
+			PhotonNetwork.offlineMode = false;
 			pauseTutorial = true;
 		}
 
@@ -470,7 +471,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				SendMessage ("EndMatch");
 			}
 			break;
-			
+		case Mode.Tutorial:	
 		case Mode.Deathmatch:
 			loserTeams++;
 			
@@ -490,6 +491,8 @@ public class GameplayManager : Photon.MonoBehaviour
 				SendMessage ("EndMatch");
 			}
 			break;
+
+		
 			
 		default:
 			break;
@@ -498,13 +501,19 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void Update ()
 	{
+		myTimer += Time.deltaTime;
+		int minutes = Mathf.FloorToInt(myTimer / 60F);
+		int seconds = Mathf.FloorToInt(myTimer - minutes * 60);
+		string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
+
 		hud.labelMana.text = resources.Mana.ToString ();
 		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
-
+		hud.labelTotalTime.text = niceTime;
+			
 		if ((loseGame || winGame))
 		{
-			//Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
+			Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
 
 			hud.uiVictoryObject.SetActive (winGame);
 			hud.uiDefeatObject.SetActive (loseGame);
@@ -548,22 +557,11 @@ public class GameplayManager : Photon.MonoBehaviour
 			
 			if (winGame)
 			{
-				UnityAnalytics.CustomEvent("whatsTheScene", new Dictionary<string, object>
-				 		        {
-									{ "Result", 1 },
-									
-								});
-
 				Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
 				Score.AddScorePoints (DataScoreEnum.Victory, 1);
 			}
 			else
 			{
-				UnityAnalytics.CustomEvent("whatsTheScene", new Dictionary<string, object>
-				                           {
-												{ "Result", 2 },
-					
-											});
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
 			}

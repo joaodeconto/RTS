@@ -11,7 +11,6 @@ public class StatsController : MonoBehaviour
 {
 	public const int MAX_NUMBER_OF_GROUPS = 9;
 	public const string buttonIdleWorkersName = "IdleWorkers";
-	
 	public enum StatsTypeSelected
 	{
 		None,
@@ -19,32 +18,22 @@ public class StatsController : MonoBehaviour
 		Factory,
 		Resource
 	}
-
 	public StatsTypeSelected statsTypeSelected {get; protected set;}
-	
 	public bool keepFormation {get; set;}
-
 	public Vector3 idleButtonPosition;
 	public Transform idleWorkerButtonParent = null;
-
 	public List<IStats> myStats = new List<IStats> ();
 	public List<IStats> otherStats = new List<IStats> ();
-	
 	internal List<IStats> selectedStats;
-
 	internal Dictionary<int, List<IStats>> statsGroups = new Dictionary<int, List<IStats>>();
-
 	protected bool otherSelected = false;
 	protected Vector3 centerOfTroop;
-
 	protected GameplayManager gameplayManager;
 	protected SoundManager soundManager;
 	protected HUDController hudController;
 	protected SelectionController selectionController;
 	private int selectedGroup = -1;   //-1 == null
-
 	protected List<Worker> idleWorkers;
-
 
 	public void Init ()
 	{
@@ -236,7 +225,6 @@ public class StatsController : MonoBehaviour
 			}
 	}
  	
-
 	public void AddStats (IStats stat)
 	{
 		//Inicializar antes de usar o gameplayManager
@@ -424,7 +412,7 @@ public class StatsController : MonoBehaviour
 					{
 						foreach (IStats stat in group.Value)
 						{
-							stat.Group = -1;
+							stat.group = -1;
 						}
 						selectionController.groupFeedback.SetActive(true);
 						group.Value.Clear ();
@@ -440,21 +428,21 @@ public class StatsController : MonoBehaviour
 
 			foreach (IStats stat in selectedStats)
 			{
-				if (stat.Group == numberGroup)
+				if (stat.group == numberGroup)
 					continue;
 
-				if (stat.Group != -1)
+				if (stat.group != -1)
 				{
 					foreach (int key in statsGroups.Keys)
 					{
-						if (key == stat.Group)
+						if (key == stat.group)
 						{
 							statsGroups[key].Remove (stat);
 						}
 						break;
 					}
 				}
-				stat.Group = numberGroup;
+				stat.group = numberGroup;
 				statsGroups[numberGroup].Add (stat);
 			}
 		}
@@ -694,26 +682,6 @@ public class StatsController : MonoBehaviour
 			}
 		}
 	}
-
-//	public void SfxSelected ( vectorTarget )
-//	{
-//		Vector3 u = vectorTarget.transform.position;
-//		
-//		AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
-//		
-//		AudioSource smas = SoundManager.PlayCappedSFX (sfxSelect, "Select", 1f, 1f, u);
-//		
-//		if (smas != null)
-//		{
-//			
-//			smas.dopplerLevel = 0f;
-//			smas.minDistance = 3.0f;
-//			smas.maxDistance = 30.0f;
-//			smas.rolloffMode = AudioRolloffMode.Linear;
-//			
-//		}
-//		
-//	}
 
 	void OrganizeUnits()
 	{
