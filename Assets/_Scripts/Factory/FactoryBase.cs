@@ -54,11 +54,11 @@ public class FactoryBase : IStats, IDeathObservable
 	public string buttonName;
 	public string guiTextureName;
 	
-	public CapsuleCollider helperCollider { get; private set; }
+	public CapsuleCollider helperCollider { get; set; }
 	
-	public bool hasRallypoint { get; private set; }
+	public bool hasRallypoint { get; set; }
 	
-	private Transform goRallypoint;
+	public Transform goRallypoint;
 	
 	public BuildingState buildingState { get; set; }
 	protected int levelConstruct;
@@ -86,7 +86,7 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	public Animation ControllerAnimation { get; private set; }
 	
-	public bool wasBuilt { get; private set; }
+	public bool wasBuilt { get; set; }
 	
 	
 	
@@ -841,7 +841,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 	}
 	
-	public void EnqueueUnitToCreate (Unit unit)
+	public virtual void EnqueueUnitToCreate (Unit unit)
 	{
 		bool canBuy = gameplayManager.resources.CanBuy (unit.costOfResources);
 
@@ -969,7 +969,7 @@ public class FactoryBase : IStats, IDeathObservable
 		Debug.Log("Fez UPGRADE!  " + upgrade.upgradeName);
 	}
 	
-	void InvokeUnit (Unit unit)
+	public virtual void InvokeUnit (Unit unit)
 	{
 				
 		timer = 0;
@@ -1007,10 +1007,10 @@ public class FactoryBase : IStats, IDeathObservable
 			
 			Debug.Log ("battle: " + battle);
 			//Score
-			//	Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1);
+			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1);
 			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);
-			//	Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
-			//	Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1, battle.IdBattle);
+			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
+			Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1, battle.IdBattle);
 		}
 		if (!hasRallypoint) return;
 		

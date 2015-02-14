@@ -38,7 +38,7 @@ public class InGameMenu : MonoBehaviour
 
 
 
-		if (gameplayManager.pauseTutorial = true)
+		if (gameplayManager.pauseTutorial == true)
 		{
 			touchController.mainCamera.GetComponent<CameraMovement>().enabled = false;
 			interactionController.enabled = false;

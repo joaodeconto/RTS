@@ -114,6 +114,8 @@ public class Unit : IStats, IMovementObservable,
 	protected ObstacleAvoidanceType normalObstacleAvoidance;
 	protected int normalAvoidancePriority;
 
+	public int unitCluster {get; set;}
+
 	// IObservers
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();

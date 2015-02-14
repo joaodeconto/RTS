@@ -31,7 +31,7 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<FogOfWar> ().Init ();
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<EventController> ().Init ();
-		ComponentGetter.Get<EnemyController> ().Init ();
+		ComponentGetter.Get<EnemyCluster> ().Init ();
 		
 		Score.LoadScores (
 			() => 

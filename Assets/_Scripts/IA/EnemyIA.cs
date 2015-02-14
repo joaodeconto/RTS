@@ -3,20 +3,33 @@ using System.Collections;
 
 public class EnemyIA : MonoBehaviour
 {
-	public int enemyCluster;
-	public Transform offensiveTarget;
+
+	public int enemyClusterNumber;
 	private Unit unit;
+	public Transform offensiveTarget;
 	public bool initiated = false; 
+
+	void Start()
+	{
+		unit = gameObject.GetComponent<Unit>(); 
+		unit.moveAttack = true;
+	}
 
 
 	public void EnemyOffensive ()
 	{
-		unit = GetComponent<Unit>(); 
-		unit.moveAttack = true;
+		
 		unit.Move (offensiveTarget.position);
-//		unit.Follow(enemyLeader);
+		
 	}
 
+	void Update()
+	{
+		if (offensiveTarget !=null && unit.unitState == Unit.UnitState.Idle)
+		{
+			EnemyOffensive ();
+		}
+	}
 }
 
 

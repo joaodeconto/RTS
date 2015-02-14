@@ -36,7 +36,7 @@ public class RankedBattle : MonoBehaviour
 	private string battleName;
 	private int CurrentBid {
 	
-		get { return (bidInput) ? int.Parse (bidInput.text) : 1; }
+		get { return (bidInput) ? int.Parse (bidInput.value) : 1; }
 	}
 
 

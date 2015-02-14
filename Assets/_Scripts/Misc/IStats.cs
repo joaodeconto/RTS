@@ -202,7 +202,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public int m_Team;
 	public int team {
 		get { return m_Team; }
-		private set { m_Team = value; }
+		 set { m_Team = value; }
 	}
 	
 	public int m_Ally;

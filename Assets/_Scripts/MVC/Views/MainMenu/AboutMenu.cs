@@ -24,7 +24,6 @@ public class AboutMenu : MonoBehaviour
 
 		wasInitialized = true;
 
-		DefaultCallbackButton dcb;
 
 		buttons = this.transform.FindChild ("Menu").FindChild ("Buttons");
 

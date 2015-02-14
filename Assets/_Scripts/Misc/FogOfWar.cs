@@ -56,7 +56,7 @@ public class FogOfWar : MonoBehaviour
 		matrixFogFlag = new FogFlag[SIZE_TEXTURE,SIZE_TEXTURE];
 
 		//GameplayManager
-		TerrainData td = terrain.terrainData;
+//		TerrainData td = terrain.terrainData;
 
 		for (i = 0; i != SIZE_TEXTURE; ++i)
 			for (j = 0; j != SIZE_TEXTURE; ++j)
