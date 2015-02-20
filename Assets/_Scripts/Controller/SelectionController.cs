@@ -528,11 +528,7 @@ public class SelectionController : MonoBehaviour
 
 								return true;
 							}
-
-
-
 					}
-
 
 					if (hit.transform.CompareTag ("Resource") && statsController.selectedStats.Count == 0)
 					{
@@ -542,11 +538,8 @@ public class SelectionController : MonoBehaviour
 						statsController.SelectStat (selectedResource, true);
 						statsController.PlaySelectSound ();
 
-
 						return true;
-						
 					}
-
 
 //					if(!interactionController.HaveCallbacksForTouchId(TouchController.IdTouch.Id0))
 //						troopController.DeselectAllSoldiers ();
@@ -562,7 +555,6 @@ public class SelectionController : MonoBehaviour
 								statsController.DeselectAllStats ();
 								statsController.SelectStat (factory, true);
 								statsController.PlaySelectSound ();
-
 
 							}
 							else
@@ -592,7 +584,6 @@ public class SelectionController : MonoBehaviour
 					statsController.SelectStat (stat, true);
 				}
 			}
-
 	}
 		
 		void Update ()
@@ -760,8 +751,6 @@ public class SelectionController : MonoBehaviour
 	{
 		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
 		{
-
-
 			GUI.Box (touchController.GetDragRect (), "");
 		}
 	}

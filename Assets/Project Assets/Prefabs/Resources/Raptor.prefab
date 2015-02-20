@@ -1103,7 +1103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
-  Defense: 0
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 18
@@ -1145,10 +1145,11 @@ MonoBehaviour:
   playerUnit: 0
   category: Raptor
   description: 'Easely addapted to human control, raptors are all-around fighters. '
+  requisites: 
   costOfResources:
     m_mana: 0
     m_rocks: 160
-  wasInitialized: 0
+  group: -1
   model: {fileID: 100000}
   force: 7
   distanceView: 14
@@ -1317,7 +1318,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

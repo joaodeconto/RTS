@@ -96,6 +96,8 @@ GameObject:
   - 4: {fileID: 464098}
   - 108: {fileID: 10864090}
   - 114: {fileID: 11464092}
+  - 111: {fileID: 11127174}
+  - 114: {fileID: 11427174}
   m_Layer: 18
   m_Name: Point light
   m_TagString: Untagged
@@ -177,8 +179,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 492482}
-  - 111: {fileID: 11197510}
-  - 114: {fileID: 11401490}
   m_Layer: 18
   m_Name: CaveModel
   m_TagString: Untagged
@@ -212,7 +212,7 @@ Transform:
   m_GameObject: {fileID: 164090}
   m_LocalRotation: {x: 0, y: .256145477, z: 0, w: .966638267}
   m_LocalPosition: {x: 8.86999989, y: .119999997, z: 67.8000031}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children:
   - {fileID: 464100}
   - {fileID: 464098}
@@ -525,12 +525,12 @@ Light:
   m_ShadowAngle: 0
   m_IndirectIntensity: 1
   m_AreaSize: {x: 1, y: 1}
---- !u!111 &11197510
+--- !u!111 &11127174
 Animation:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 192482}
+  m_GameObject: {fileID: 164098}
   m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
@@ -540,12 +540,12 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &11401490
+--- !u!114 &11427174
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 192482}
+  m_GameObject: {fileID: 164098}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
@@ -578,7 +578,7 @@ MonoBehaviour:
   group: 0
   prefixBackup: -1
   observed: {fileID: 11460686}
-  synchronization: 3
+  synchronization: 0
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   instantiationId: 0
@@ -602,7 +602,7 @@ MonoBehaviour:
   sizeOfSelectedHealthBar: 1
   rendererTeamSubstanceColor: []
   movementActions: []
-  pref_ParticleDamage: {fileID: 164100}
+  pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
   transformParticleDamageReference: {fileID: 464100}
   playerUnit: 0
   category: Cave
@@ -616,6 +616,16 @@ MonoBehaviour:
   unitsToCreate:
   - unit: {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     buttonName: Neanderthal
+    gridItemAttributes:
+      gridXIndex: 0
+      gridYIndex: 0
+  - unit: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+    buttonName: Raptor
+    gridItemAttributes:
+      gridXIndex: 0
+      gridYIndex: 0
+  - unit: {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    buttonName: Spearman
     gridItemAttributes:
       gridXIndex: 0
       gridYIndex: 0

@@ -61,7 +61,7 @@ public class GhostFactory : MonoBehaviour
 			//			capCollider.height = thisFactory.helperCollider.height;
 			
 			thisFactory.helperCollider.isTrigger = true;
-			realRadius = thisFactory.helperCollider.radius;
+			realRadius = thisFactory.helperCollider.radius+1f;
 			//	thisFactory.helperCollider.radius += 3f;
 			
 			helperColliderGameObject = thisFactory.helperCollider.gameObject;
@@ -258,9 +258,10 @@ public class GhostFactory : MonoBehaviour
 		{
 			foreach (Material m in r.materials)
 			{
-				#if UNITY_ANDROID || UNITY_IPHONE
+//				#if UNITY_ANDROID || UNITY_IPHONE
+//				m.shader = Shader.Find ("Diffuse");
+//				#endif
 				m.shader = Shader.Find ("Diffuse");
-				#endif
 				m.color = new Color (0.25f, 0.75f, 0.25f);
 			}
 		}

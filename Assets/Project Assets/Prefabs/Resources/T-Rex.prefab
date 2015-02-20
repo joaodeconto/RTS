@@ -1102,8 +1102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51827a10171c11d4080abbf7a998406b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 120
-  Defense: 0
+  maxHealth: 110
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 20
@@ -1146,10 +1146,11 @@ MonoBehaviour:
   category: T-Rex
   description: These mighty beasts are the top of it's kind, althought fast and strong,
     T-rex are very hard to tame.
+  requisites: Workshop
   costOfResources:
     m_mana: 0
     m_rocks: 320
-  wasInitialized: 0
+  group: -1
   model: {fileID: 100000}
   force: 18
   distanceView: 18
@@ -1343,8 +1344,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 100072}
   m_Enabled: 1
   m_Radius: 1
-  m_Speed: 5
-  m_Acceleration: 5
+  m_Speed: 4
+  m_Acceleration: 3
   avoidancePriority: 0
   m_AngularSpeed: 270
   m_StoppingDistance: 1
@@ -1354,7 +1355,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

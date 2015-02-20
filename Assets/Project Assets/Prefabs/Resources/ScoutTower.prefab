@@ -1111,7 +1111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
-  Defense: 1
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 20
@@ -1128,21 +1128,25 @@ MonoBehaviour:
   playerUnit: 0
   category: Scout Tower
   description: Observation tower, increases the FOW of the perimeter. Can be upgraded
+  requisites: Depot
   costOfResources:
     m_mana: 0
     m_rocks: 150
+  group: -1
   wasInitialized: 0
   model: {fileID: 100062}
   unitsToCreate: []
   upgradesToCreate:
   - upgrade: {fileID: 11400000, guid: 2bd0417263348034d9082db562e5f8d4, type: 2}
     buttonName: ClearFog
+    techAvailable: 0
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 0
     alreadyUpgraded: 0
   - upgrade: {fileID: 11400002, guid: bbb8ae4ce7132cf41a397f97c2f06abb, type: 2}
     buttonName: ObservationTower
+    techAvailable: 0
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 0
@@ -1157,6 +1161,7 @@ MonoBehaviour:
     - {fileID: 100060}
   buttonName: Scout Tower
   guiTextureName: baseTower
+  goRallypoint: {fileID: 0}
   timeToCreate: 0
   timer: 0
   boostDuration: 10
@@ -1164,6 +1169,8 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 0
   boostPower: 1.29999995
+  TechsToActive:
+  - Parasaurolophus
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400006

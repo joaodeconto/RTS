@@ -963,11 +963,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 120
-  Defense: 0
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 20
-  sizeOfSelected: 4
+  sizeOfSelected: 3.5
   sizeOfSelectedHealthBar: 5.5
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400008}
@@ -1006,10 +1006,11 @@ MonoBehaviour:
   category: Triceratops
   description: Triceratops are heavy horned beasts, can be highly effective against
     structures, causes more damage if attacking on top speed.
+  requisites: 
   costOfResources:
     m_mana: 0
     m_rocks: 280
-  wasInitialized: 0
+  group: -1
   model: {fileID: 100004}
   force: 10
   distanceView: 16
@@ -1176,7 +1177,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
   m_Radius: 1.29999995
-  m_Speed: 5
+  m_Speed: 4
   m_Acceleration: 3
   avoidancePriority: 0
   m_AngularSpeed: 90
@@ -1187,7 +1188,7 @@ NavMeshAgent:
   m_Height: 3.21000004
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

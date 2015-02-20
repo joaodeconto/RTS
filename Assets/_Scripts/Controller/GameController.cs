@@ -6,13 +6,13 @@ public class GameController : MonoBehaviour
 {
 	public bool autoload = false;
 
-	public int targetFPS = 30;
+	public int targetFPS = 60;
 
 	static bool wasInitialized = false;
 
 	void Awake ()
 	{
-		Application.targetFrameRate = targetFPS;
+		Application.targetFrameRate = 60;
 
 		if (autoload && !wasInitialized)
 		{
@@ -23,6 +23,11 @@ public class GameController : MonoBehaviour
 
 		ComponentGetter.Get<NetworkManager> ().Init ();
 		ComponentGetter.Get<GameplayManager> ().Init ();
+				
+	}
+
+	public void GameStartInit()
+	{
 		ComponentGetter.Get<HUDController> ().Init ();
 		ComponentGetter.Get<TouchController> ().Init ();
 		ComponentGetter.Get<SelectionController> ().Init ();
@@ -32,27 +37,28 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<EventController> ().Init ();
 		ComponentGetter.Get<EnemyCluster> ().Init ();
+		ComponentGetter.Get<TechTreeController> ().Init ();
 		
 		Score.LoadScores (
 			() => 
 			{
-//				foreach (System.Collections.Generic.KeyValuePair<string, Model.DataScore> de in dicScore)
-//				{
-//					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
-//				}
-
-				ComponentGetter.Get <BidManager> ().PayTheBid ();
-		
-				Score.GetDataScore
+			//				foreach (System.Collections.Generic.KeyValuePair<string, Model.DataScore> de in dicScore)
+			//				{
+			//					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
+			//				}
+			
+			ComponentGetter.Get <BidManager> ().PayTheBid ();
+			
+			Score.GetDataScore
 				(
 					DataScoreEnum.CurrentCrystals,
 					(currentCrystals) =>
 					{
-						ComponentGetter.Get<GameplayManager> ().resources.Mana = currentCrystals.NrPoints;
-					}
+					ComponentGetter.Get<GameplayManager> ().resources.Mana = currentCrystals.NrPoints;
+				}
 				);
-			}
+		}
 		);
-		
+
 	}
 }

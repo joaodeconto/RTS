@@ -8,12 +8,15 @@ public class CaveFactory : FactoryBase
 
 {
 	protected EnemyCluster enemyCluster;
+	private List<int> lUnitCluster = new List<int>();
+	private int unitToCreateCluster;
 
 
 	public override void Init ()
 	{
 		string factoryName = buttonName;
 		base.Init();
+		wasBuilt = true;
 		enabled = true;
 		enemyCluster      = ComponentGetter.Get<EnemyCluster>();
 
@@ -22,29 +25,58 @@ public class CaveFactory : FactoryBase
 
 	public void BuildEnemy(Unit unit, int clusterNumber)
 	{
-			unit.unitCluster = clusterNumber;	
-			lUnitsToCreate.Add (unit);
-											
-	}
 
+		List<CaveFactory> factories = new List<CaveFactory> ();
+		
+		foreach (IStats stat in statsController.otherStats)
+		{
+			if (stat.GetType() == typeof(CaveFactory))
+			{
 
-	public override void EnqueueUnitToCreate (Unit unit)            
-	{
-			lUnitsToCreate.Add (unit);
-			Hashtable ht = new Hashtable();
-			ht["unit"] = unit;
-			ht["name"] = "button-" + Time.time;
+			CaveFactory factory = stat as CaveFactory;
 			
+			if (factory == null) continue;
+			
+			factories.Add (factory);
+			}
+			
+
+		}
+		
+		int i = 0, factoryChoose = 0, numberToCreate = -1;
+		
+		foreach (CaveFactory factory in factories)
+		{
+			if (numberToCreate == -1)
+			{
+				numberToCreate = factory.lUnitsToCreate.Count;
+				factoryChoose = i;
+			}
+			else if (numberToCreate > factory.lUnitsToCreate.Count)
+			{
+				numberToCreate = factory.lUnitsToCreate.Count;
+				factoryChoose = i;
+			}
+			i++;
+		}
+		
+
+			factories[factoryChoose].lUnitsToCreate.Add (unit);
+			factories[factoryChoose].lUnitCluster.Add(clusterNumber);
+
 	}
 
 
-	public override void InvokeUnit (Unit unit)
+	public void InvokeUnit (Unit unit, int unitCluster)
 	{
-		string unitName = "";
 
 		timer = 0;
 
 		lUnitsToCreate.RemoveAt (0);
+		lUnitCluster.RemoveAt (0);
+
+		string unitName = "";
+
 
 		foreach(UnitFactory uf in unitsToCreate)
 		{
@@ -63,6 +95,12 @@ public class CaveFactory : FactoryBase
 	
 
 		if (!hasRallypoint) return;
+
+		Vector3 difference = goRallypoint.position - transform.position;
+		Quaternion rotation = Quaternion.LookRotation (difference);
+		Vector3 forward = rotation * Vector3.forward;
+		
+		Vector3 unitSpawnPosition = transform.position + (forward * helperCollider.radius);
 		
 		// Look At
 //		Vector3 difference = goRallypoint.position - transformParticleDamageReference.transform.position;
@@ -72,41 +110,44 @@ public class CaveFactory : FactoryBase
 //		Vector3 unitSpawnPosition = transformParticleDamageReference.transform.position + (forward * helperCollider.radius);
 //		
 		Unit newUnit = null;
+
 		if (PhotonNetwork.offlineMode)
 		{
+
 			Unit u = Instantiate (unit, transformParticleDamageReference.position, Quaternion.identity) as Unit;
 			newUnit = u;
+
 		}
 		else
 		{
+			int teamInt = this.team;
+			unit.SetTeam(teamInt,teamInt);
 			GameObject u = PhotonNetwork.Instantiate(unit.gameObject.name, transformParticleDamageReference.position, Quaternion.identity, 0);
 			newUnit = u.GetComponent<Unit> ();
+			unit.SetTeam(0,0);
 		}
 
-		newUnit.m_Team = 8;
-		newUnit.team = 8;
-		newUnit.playerUnit = false;
-
+		newUnit.SetTeam(8,8);
 		newUnit.Init ();
 						
 		RallyPoint rallypoint = goRallypoint.GetComponent<RallyPoint> ();
-		
-		if (rallypoint.observedUnit != null)
-		{
-			newUnit.Follow (rallypoint.observedUnit);
-		}
-						
+
+		rallypoint.transform.position = transformParticleDamageReference.position;
+										
 		newUnit.Move (goRallypoint.position);
+		newUnit.moveAttack = true;
+
 		newUnit.transform.parent = GameObject.Find("GamePlay/" + newUnit.team).transform;
-		Debug.Log(newUnit.team + " " + " " + gameplayManager.MyTeam +" "+unit.team);
-		enemyCluster.clusterModels[newUnit.unitCluster].clusterUnits.Add(newUnit);
-	//	newUnit = newUnit.gameObject.AddComponent("EnemyIA") as Unit;
+//		Debug.Log(newUnit.team + " " + " " + gameplayManager.MyTeam +" "+unit.team);
+		enemyCluster.clusterModels[unitCluster].clusterUnits.Add(newUnit);
+		newUnit = newUnit.gameObject.AddComponent("EnemyIA") as Unit;
+
 	}
 
 
 	void Update ()
 	{
-		Debug.Log(lUnitsToCreate.Count);
+//		Debug.Log(lUnitsToCreate.Count);
 		if (lUnitsToCreate.Count == 0 && lUpgradesToCreate.Count == 0)
 		return;
 				
@@ -115,6 +156,7 @@ public class CaveFactory : FactoryBase
 			if (unitToCreate == null)
 			{
 				unitToCreate = lUnitsToCreate[0];
+				unitToCreateCluster = lUnitCluster[0];
 				timeToCreate = lUnitsToCreate[0].timeToSpawn;
 				inUpgrade = true;
 			
@@ -128,7 +170,7 @@ public class CaveFactory : FactoryBase
 			{
 				if (unitToCreate != null) 
 				{
-					InvokeUnit (unitToCreate);
+					InvokeUnit (unitToCreate, unitToCreateCluster);
 					unitToCreate = null;
 				}
 								

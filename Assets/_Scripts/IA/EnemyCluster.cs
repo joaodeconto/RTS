@@ -9,7 +9,7 @@ public class EnemyCluster : MonoBehaviour {
 	public class ClusterModel 
 	{
 		public bool clusterComplete = false;
-		public int clusterNumber = 1;
+		public int clusterNumber;
 		public Transform defendTarget;
 		public Transform exploreTarget;
 		public Transform attackTarget;
@@ -19,7 +19,8 @@ public class EnemyCluster : MonoBehaviour {
 		public ClusterBehaviour clusterBehaviour { get; set; }
 		public List<Unit> clusterDesiredUnits = new List<Unit>();
 		public List<Unit> clusterUnits = new List<Unit>();
-		public bool clusterIsAttacking = false;
+		public bool clusterIsBusy = false;
+		public int bravery = 5; // numero dividido pelo total de unidades ate demandar novas unidades.
 
 	}
 
@@ -40,27 +41,45 @@ public class EnemyCluster : MonoBehaviour {
 
 	public void Init()
 	{	 	
-
-
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
 		statsController = ComponentGetter.Get<StatsController>();
 		teamNine = GameObject.Find("GamePlay/" + "8").transform;
 		teamZero = GameObject.Find("GamePlay/" + "0").transform;
 		startedOffensive = false;
-		int a = 0;
+		Invoke("ActiveClusters",5f);
+		InvokeRepeating ("IABehaviour",2,1);
 
-		foreach (ClusterModel enemyCluster in clusterModels)
-		{
-			a++;
-
-			enemyCluster.clusterNumber = a;
-			ClusterDemmand(enemyCluster);
-			Debug.Log ("Init Cluster demmand");
-		}
 	}
 
+	public void ActiveClusters()
+	{
+		int a = 0;
+		foreach (ClusterModel enemyCluster in clusterModels)
+		{
+
+			enemyCluster.clusterNumber = a;
+			enemyCluster.clusterTarget = null;
+			ClusterDemmand(enemyCluster);
+			a++;
+		}
+	}
 	public void ClusterDemmand (ClusterModel cluster)
 	{
+		List<CaveFactory> factories = new List<CaveFactory> ();
+		
+		foreach (IStats stat in statsController.otherStats)
+		{
+			if (stat.GetType() == typeof(CaveFactory))
+			{
+				CaveFactory factory = stat as CaveFactory;
+
+				cluster.factory = factory;
+				break;
+			}
+			
+			
+		}
+
 		foreach (Unit desiredUnit in cluster.clusterDesiredUnits)
 		{
 			cluster.factory.BuildEnemy(desiredUnit, cluster.clusterNumber);
@@ -68,20 +87,20 @@ public class EnemyCluster : MonoBehaviour {
 
 	}
 
-	public void AddEnemy(Unit newUnit, int clusterNumber)
-	{
-		newUnit = gameObject.AddComponent("EnemyIA") as Unit;
-		clusterModels[0].clusterUnits.Add(newUnit);
-	
-	}
+//	public void AddEnemy(Unit newUnit, int clusterNumber)
+//	{
+//		newUnit = gameObject.AddComponent("EnemyIA") as Unit;
+//		clusterModels[0].clusterUnits.Add(newUnit);
+//	
+//	}
 
-	public void SendOffensive(ClusterModel cluster)
+	public void MoveCluster(ClusterModel cluster)
 	{
 		foreach (Unit e in cluster.clusterUnits)
 		{
 			EnemyIA eIA = e.gameObject.GetComponent<EnemyIA>();
-			eIA.offensiveTarget = cluster.attackTarget;
-			eIA.EnemyOffensive ();
+			eIA.movementTarget = cluster.clusterTarget;
+			eIA.EnemyMovement ();
 		}
 	}
 
@@ -90,25 +109,23 @@ public class EnemyCluster : MonoBehaviour {
 	{
 		foreach (ClusterModel enemyCluster in clusterModels)
 		{
-
-
 			if( enemyCluster.clusterComplete)
 			{
 				enemyCluster.clusterUnits.RemoveAll(item => item == null);
 				enemyCluster.clusterBehaviour = enemyCluster.desiredBehaviour;
-				int clusterMinimum = enemyCluster.clusterDesiredUnits.Count/8;
+				int clusterMinimum = enemyCluster.clusterDesiredUnits.Count/enemyCluster.bravery;
 				
 				if (enemyCluster.clusterUnits.Count <= clusterMinimum)
 				{
 					enemyCluster.clusterComplete = false;
-					enemyCluster.clusterIsAttacking = false;
+					enemyCluster.clusterIsBusy = false;
 					ClusterDemmand(enemyCluster);
 					enemyCluster.clusterBehaviour = ClusterBehaviour.defend;
 				}
 			}
 			else 
 			{
-				if (enemyCluster.clusterUnits.Count == enemyCluster.clusterDesiredUnits.Count)
+				if (enemyCluster.clusterUnits.Count >= enemyCluster.clusterDesiredUnits.Count)
 				{
 					enemyCluster.clusterComplete = true;
 				}
@@ -121,33 +138,39 @@ public class EnemyCluster : MonoBehaviour {
 				break;
 				
 			case ClusterBehaviour.defend:
-				if (enemyCluster.clusterTarget != null)
+				if (!enemyCluster.clusterIsBusy && enemyCluster.clusterTarget != null)
 				{
+					enemyCluster.clusterIsBusy = true;
 					enemyCluster.clusterTarget = enemyCluster.defendTarget;
+					MoveCluster(enemyCluster);
 				}
 				break;
 				
 			case ClusterBehaviour.explore:
 				
-				if (enemyCluster.clusterTarget != null)
+				if (!enemyCluster.clusterIsBusy && enemyCluster.clusterTarget != null)
 				{
+					enemyCluster.clusterIsBusy = true;
 					enemyCluster.clusterTarget = enemyCluster.exploreTarget;
+					MoveCluster(enemyCluster);
 				}
 				
 				break;
 				
 			case ClusterBehaviour.attack:
 				
-				if (!enemyCluster.clusterIsAttacking && enemyCluster.attackTarget != null)
+				if (!enemyCluster.clusterIsBusy && enemyCluster.attackTarget != null)
 				{
-					SendOffensive(enemyCluster);
-					enemyCluster.clusterIsAttacking = true;
+
+					enemyCluster.clusterTarget = enemyCluster.attackTarget;
+					enemyCluster.clusterIsBusy = true;
+					MoveCluster(enemyCluster);
 
 				}					
 				break;
 			}
 
-			Debug.Log (enemyCluster.clusterBehaviour);
+//			Debug.Log (enemyCluster.clusterBehaviour);
 		}
 				
 	}
@@ -156,10 +179,10 @@ public class EnemyCluster : MonoBehaviour {
 
 
 	
-	void Update ()
-	{
-		IABehaviour ();
-	
-	}
+//	void Update ()
+//	{
+//		IABehaviour ();
+//	
+//	}
 
 }

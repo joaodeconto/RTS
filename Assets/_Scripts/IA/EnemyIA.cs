@@ -6,29 +6,41 @@ public class EnemyIA : MonoBehaviour
 
 	public int enemyClusterNumber;
 	private Unit unit;
-	public Transform offensiveTarget;
+	public Transform movementTarget;
 	public bool initiated = false; 
+	public bool isMoving = false; 
+
 
 	void Start()
 	{
+		initiated = true; 
 		unit = gameObject.GetComponent<Unit>(); 
 		unit.moveAttack = true;
 	}
 
 
-	public void EnemyOffensive ()
+	public void EnemyMovement ()
 	{
-		
-		unit.Move (offensiveTarget.position);
+		unit.Move (movementTarget.position);
+		isMoving = true;
 		
 	}
 
 	void Update()
 	{
-		if (offensiveTarget !=null && unit.unitState == Unit.UnitState.Idle)
+		if (movementTarget != null && unit.unitState == Unit.UnitState.Idle)
 		{
-			EnemyOffensive ();
+			EnemyMovement ();
 		}
+		if (isMoving)
+		{
+			if (unit.MoveComplete(movementTarget.position))
+			{
+				isMoving = false;
+				movementTarget = null;
+			}
+		}
+
 	}
 }
 

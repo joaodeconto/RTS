@@ -202,7 +202,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public int m_Team;
 	public int team {
 		get { return m_Team; }
-		 set { m_Team = value; }
+		private set { m_Team = value; }
 	}
 	
 	public int m_Ally;
@@ -224,6 +224,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	public string category;
 	public string description;
+	public string requisites;
 	
 	public ResourcesManager costOfResources;
 	
@@ -238,11 +239,12 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	protected GameplayManager gameplayManager;
 	protected EventController eventController;
 	protected SelectionController selectionController;
+	protected TechTreeController techTreeController;
 
 	//IHealthObserver
 	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
 
-	public bool wasInitialized = false;
+	private bool wasInitialized = false;
 
 	void Awake ()
 	{
@@ -256,13 +258,14 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 		wasInitialized = true;
 
+		techTreeController =  ComponentGetter.Get<TechTreeController> ();
 		statsController = ComponentGetter.Get<StatsController> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		eventController    = ComponentGetter.Get<EventController> ();
 		
 		Health = MaxHealth;
-		
+
 		if (!gameplayManager.IsBotTeam (this))
 		{
 			if (IsNetworkInstantiate)
@@ -289,8 +292,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		SetColorTeam ();
 		
 		WasRemoved = false;
-
-
 
 		statsController.AddStats (this);
 

@@ -394,7 +394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 400
-  Defense: 2
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 22
@@ -425,14 +425,18 @@ MonoBehaviour:
   category: Main Base
   description: Main structure of yout tribe, use it to train workers. If you lose
     all your tribe centers, you lose the battle.
+  requisites: 
   costOfResources:
     m_mana: 0
     m_rocks: 400
+  group: -1
   wasInitialized: 0
   model: {fileID: 100016}
   unitsToCreate:
   - unit: {fileID: 11400000, guid: 097090cf2466e1b408f34f8b34778481, type: 2}
     buttonName: Worker
+    VIP: 1
+    techAvailable: 0
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
@@ -446,6 +450,7 @@ MonoBehaviour:
     desactiveObjectsWhenInstance: []
   buttonName: Main Building
   guiTextureName: TribeMarket
+  goRallypoint: {fileID: 0}
   timeToCreate: 0
   timer: 0
   boostDuration: 30
@@ -453,6 +458,8 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 100
   boostPower: 1.29999995
+  TechsToActive:
+  - Hut
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400002

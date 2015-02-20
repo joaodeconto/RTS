@@ -1135,7 +1135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 60
-  Defense: 0
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 16
@@ -1178,10 +1178,11 @@ MonoBehaviour:
   category: Neanderthal
   description: Basic human units. Slow but cheap, master hunters, receives bonus agains
     any dinosaur.
+  requisites: 
   costOfResources:
     m_mana: 0
     m_rocks: 90
-  wasInitialized: 0
+  group: -1
   model: {fileID: 100068}
   force: 6
   distanceView: 12
@@ -1338,7 +1339,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
   m_Radius: .800000012
-  m_Speed: 3
+  m_Speed: 2
   m_Acceleration: 5
   avoidancePriority: 2
   m_AngularSpeed: 360
@@ -1349,7 +1350,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

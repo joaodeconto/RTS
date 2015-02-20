@@ -137,6 +137,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	private Transform infoUpgrade;
 	private Transform infoQuali;
 	private Transform infoIcon;
+	private Transform infoReq;
 	
 	private UILabel attackLabel;
 	private UILabel hpLabel;
@@ -149,6 +150,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	private UILabel stats2;
 	private UILabel stats1Text;
 	private UILabel stats2Text;
+	private UILabel reqLabel;
 	
 	private UILabel nameLabel;
 //	private HealthBar currentHp;
@@ -173,6 +175,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		infoUnit = trnsPanelInfoBox.FindChild ("Info Unit");
 		infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
 		infoIcon  = trnsPanelInfoBox.FindChild ("Info Icon");
+		infoReq = trnsPanelInfoBox.FindChild ("Info Require");
 
 		nameLabel = infoQuali.FindChild ("name-label").GetComponent<UILabel> ();
 
@@ -504,6 +507,29 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			}
 		}
 	}
+	public void DeactivateButtonInInspector(string buttonName, Transform buttonParent = null)
+	{
+		Transform trns = (buttonParent != null) ? buttonParent : trnsOptionsMenu;
+		GameObject button = null;
+		
+		foreach (Transform child in trns)
+		{
+			if (child.gameObject.name.Equals(buttonName) ||
+			    child.gameObject.name.Equals(PERSIST_STRING + buttonName))
+			{
+				button = child.gameObject;
+				UISprite b = button.transform.FindChild("Foreground").gameObject.GetComponent<UISprite>();
+				b.color = Color.gray;
+				UISprite c = button.transform.FindChild("Background").gameObject.GetComponent<UISprite>();  
+				c.color = Color.gray;
+				UILabel d = button.transform.FindChild("Label Counter").gameObject.GetComponent<UILabel>();
+				d.text = "x";
+				d.enabled = true;
+				Debug.Log (buttonName + " desativado e deve estar cinza e com um x.");
+				break;
+			}
+		}
+	}
 
 	public void DestroyOptionsBtns ()
 
@@ -621,8 +647,17 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		infoUnit.gameObject.SetActive (true);
 	}
 
-	public void OpenInfoBoxFactory (FactoryBase factory)
+	public void OpenInfoBoxFactory (FactoryBase factory, bool techAvailable) // inserida boleana para ativar requires;
 	{
+		if (!techAvailable)
+		{
+			infoReq.gameObject.SetActive(true);
+			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
+			reqLabel.text = factory.requisites;
+		}
+		else
+			infoReq.gameObject.SetActive(false);
+
 		infoUnit.gameObject.SetActive (false);
 		infoUpgrade.gameObject.SetActive (false);
 

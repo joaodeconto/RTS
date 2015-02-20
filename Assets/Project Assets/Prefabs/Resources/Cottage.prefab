@@ -393,7 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  Defense: 1
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 16
@@ -410,15 +410,18 @@ MonoBehaviour:
   playerUnit: 0
   category: Hut
   description: Basic structure, adds 10 rooms to your population limit. Can be upgraded.
+  requisites: Tribe Center
   costOfResources:
     m_mana: 0
     m_rocks: 70
+  group: -1
   wasInitialized: 0
   model: {fileID: 100010}
   unitsToCreate: []
   upgradesToCreate:
   - upgrade: {fileID: 11400002, guid: 340f70900bb288e41af1bf000cbe2964, type: 2}
     buttonName: CottageGrowth
+    techAvailable: 1
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 0
@@ -432,6 +435,7 @@ MonoBehaviour:
     desactiveObjectsWhenInstance: []
   buttonName: Hut
   guiTextureName: cottage
+  goRallypoint: {fileID: 0}
   timeToCreate: 0
   timer: 0
   boostDuration: 0
@@ -439,6 +443,9 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 0
   boostPower: 1.29999995
+  TechsToActive:
+  - Depot
+  - Barracks
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
   cottagePopulation: 10

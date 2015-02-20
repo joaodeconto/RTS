@@ -37,7 +37,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		public GameObject uiVictoryObject;
 		public GameObject uiDefeatObject;
 //		public Transform buttonMatchScore;
-
+		public GameObject uiWaitingPlayers;
 		public UILabel labelTime;
 		public GameObject uiLostMainBaseObject;
 	}
@@ -63,7 +63,9 @@ public class GameplayManager : Photon.MonoBehaviour
 	}
 
 	public static Mode mode;
-	public bool pauseTutorial = false;
+	public bool pauseGame = false;
+	private int readyCounter;
+	private bool gamestarted = false;
 
 	public const int MAX_POPULATION_ALLOWED = 200;
 	public const int BOT_TEAM = 8;
@@ -100,41 +102,42 @@ public class GameplayManager : Photon.MonoBehaviour
 	public int Triggerflag = 1;
 
 	protected NetworkManager network;
+	protected GameController gameController;
 
 
 	public void Init ()
 	{
 		network = ComponentGetter.Get<NetworkManager>();
-
+		gameController = ComponentGetter.Get<GameController> ();
 	
-		if (mode != Mode.Tutorial)
+		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
 		{
 
 			teams[8].initialPosition.gameObject.SetActive(false);
 			GameObject tutorialC = GameObject.Find ("Tutorial Manager");
 			tutorialC.SetActive (false);
-			PhotonNetwork.offlineMode = false;
-			pauseTutorial = true;
-		}
 
-		if (!PhotonNetwork.offlineMode)
-		{
+			photonView.RPC ("MySceneReady", PhotonTargets.All);
+			InvokeRepeating ("CheckGameStart",1f,1f);
+			hud.uiWaitingPlayers.SetActive(true);
+
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
 			if (mode == Mode.Cooperative)
 			{
 				Allies = (int)PhotonNetwork.player.customProperties["allies"];
 			}
-			else
-			{
-				numberOfTeams = PhotonNetwork.room.maxPlayers;
-			}
-
+			
+			numberOfTeams = PhotonNetwork.room.maxPlayers;
+			pauseGame = true;
 
 		}
+
 		else
 		{
 			MyTeam = 0;
 			Allies = 0;
+			gamestarted = true;
+			gameController.GameStartInit();
 		}
 
 		for (int i = 0; i != teams.Length; i++)
@@ -171,8 +174,29 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiDefeatObject.SetActive (false);
 		hud.uiVictoryObject.SetActive (false);
 		hud.uiLostMainBaseObject.SetActive (false);
+
 	}
-	
+
+	void CheckGameStart()
+	{
+		int numberOfPlayers = PhotonNetwork.playerList.Length;
+		if (numberOfPlayers >= readyCounter) photonView.RPC ("GameStart", PhotonTargets.All);
+	}
+
+	void MySceneReady()
+	{
+		readyCounter++;
+	}
+
+	void GameStart()
+	{
+		gamestarted = true;
+		gameController.GameStartInit();
+		hud.uiWaitingPlayers.SetActive(false);
+
+	}
+
+
 	/// <summary>
 	/// Gets the texture color of my team.
 	/// </summary>
@@ -501,19 +525,23 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void Update ()
 	{
+		if(gamestarted)
+		{
 		myTimer += Time.deltaTime;
 		int minutes = Mathf.FloorToInt(myTimer / 60F);
 		int seconds = Mathf.FloorToInt(myTimer - minutes * 60);
 		string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
+		hud.labelTotalTime.text = niceTime;
+		}
 
 		hud.labelMana.text = resources.Mana.ToString ();
 		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
-		hud.labelTotalTime.text = niceTime;
+
 			
 		if ((loseGame || winGame))
 		{
-			Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
+//			Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
 
 			hud.uiVictoryObject.SetActive (winGame);
 			hud.uiDefeatObject.SetActive (loseGame);
@@ -584,4 +612,5 @@ public class GameplayManager : Photon.MonoBehaviour
 			});
 		}
 	}
+
 }

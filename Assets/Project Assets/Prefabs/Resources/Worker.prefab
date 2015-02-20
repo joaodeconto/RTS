@@ -1281,7 +1281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 40
-  Defense: 0
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 14
@@ -1324,10 +1324,11 @@ MonoBehaviour:
   category: Worker
   description: Workers are the base of our society, they build, repair and extract
     gold.
+  requisites: 
   costOfResources:
     m_mana: 0
     m_rocks: 70
-  wasInitialized: 0
+  group: -1
   model: {fileID: 100004}
   force: 2
   distanceView: 12
@@ -1375,21 +1376,27 @@ MonoBehaviour:
   - factory: {fileID: 11400000, guid: 74c85a2adc76ed644b091d367b2acdfc, type: 2}
     costOfResources:
       m_mana: 0
-      m_rocks: 400
+      m_rocks: 500
+    VIP: 1
+    m_techActive: 1
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
   - factory: {fileID: 11400004, guid: a77a63a079277ef4299d9bfed72091ab, type: 2}
     costOfResources:
       m_mana: 0
-      m_rocks: 200
+      m_rocks: 150
+    VIP: 0
+    m_techActive: 0
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 0
   - factory: {fileID: 11400004, guid: bda9eea0154e54849a501374d7ba96d0, type: 2}
     costOfResources:
       m_mana: 0
-      m_rocks: 100
+      m_rocks: 200
+    VIP: 0
+    m_techActive: 0
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 0
@@ -1397,6 +1404,8 @@ MonoBehaviour:
     costOfResources:
       m_mana: 0
       m_rocks: 70
+    VIP: 0
+    m_techActive: 0
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 0
@@ -1404,6 +1413,8 @@ MonoBehaviour:
     costOfResources:
       m_mana: 0
       m_rocks: 150
+    VIP: 0
+    m_techActive: 0
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 1
@@ -1411,6 +1422,8 @@ MonoBehaviour:
     costOfResources:
       m_mana: 0
       m_rocks: 250
+    VIP: 0
+    m_techActive: 0
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 1
@@ -1587,7 +1600,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 0
+  m_ObstacleAvoidanceType: 2
 --- !u!198 &19800000
 ParticleSystem:
   m_ObjectHideFlags: 1

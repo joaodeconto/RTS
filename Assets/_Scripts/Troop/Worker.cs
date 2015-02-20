@@ -1,5 +1,4 @@
 using UnityEngine;
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +34,9 @@ public class Worker : Unit
 	{
 		public FactoryBase factory;
 		public ResourcesManager costOfResources;
+		public bool VIP = false;
+		public bool m_techActive = false;
+		public bool techAvailable { get {if (VIP) return VIP; else return m_techActive; } set { m_techActive = value; } }
 		public IStats.GridItemAttributes gridItemAttributes;
 	}
 
@@ -83,7 +85,7 @@ public class Worker : Unit
 
 		resourceId = -1;
 
-		foreach (ResourceWorker rw in resourceWorker)
+	foreach (ResourceWorker rw in resourceWorker)
 		{
 			rw.carryingObject.SetActive (false);
 			rw.extractingObject.SetActive (false);
@@ -92,6 +94,16 @@ public class Worker : Unit
 		canUseResources = isSettingWorkerNull = false;
 
 		workerState = WorkerState.Idle;
+	}
+
+	public void InitWorkerTechAvailability ()
+	{
+		foreach (FactoryConstruction fc in factoryConstruction)
+		{
+			fc.techAvailable = fc.VIP;
+			
+		}
+
 	}
 
 	public override void IAStep ()
@@ -359,48 +371,73 @@ public class Worker : Unit
 
 		foreach (FactoryConstruction fc in factoryConstruction)
 		{
-			ht = new Hashtable();
-			ht["factory"] = fc;
-			ht["time"] = 0;
-
-			if (fc.costOfResources.Rocks != 0)
+			if(!fc.techAvailable)
 			{
-				ht["gold"] = fc.costOfResources.Rocks;
-			}
-			
-			if (fc.costOfResources.Mana != 0)
-			{
-				ht["mana"] = fc.costOfResources.Mana;
-			}
-
-			hudController.CreateButtonInInspector ( fc.factory.name,
-													fc.gridItemAttributes.Position,
-													ht,
-													fc.factory.guiTextureName,
-			                                        null,
-			                                       	(ht_dcb, isDown) =>
-													{
+				ht = new Hashtable();
+				ht["factory"] = fc;
+				ht["disable"] = 0;
+				
+				hudController.CreateButtonInInspector (fc.factory.buttonName,
+				                                       fc.gridItemAttributes.Position,
+				                                       ht,
+				                                       fc.factory.guiTextureName,
+				                                       null,
+				                                       (ht_dcb, onClick) => 
+				                                       {
 															FactoryConstruction factory = (FactoryConstruction)ht_dcb["factory"];
-														
-															if (isDown)
-															{
-																ht["time"] = Time.time;
-															}
-															else
-															{
-																Debug.Log(Time.time - (float)ht["time"]);
-																if (Time.time - (float)ht["time"] > 0.3f)
-																{	
-																	hudController.OpenInfoBoxFactory(factory.factory);
-																	
+															
+															hudController.OpenInfoBoxFactory(factory.factory, false);																				
+															
+														});
+
+
+			}
+
+			else
+			{
+				ht = new Hashtable();
+				ht["factory"] = fc;
+				ht["time"] = 0;
+
+				if (fc.costOfResources.Rocks != 0)
+				{
+					ht["gold"] = fc.costOfResources.Rocks;
+				}
+				
+				if (fc.costOfResources.Mana != 0)
+				{
+					ht["mana"] = fc.costOfResources.Mana;
+				}
+
+				hudController.CreateButtonInInspector ( fc.factory.name,
+														fc.gridItemAttributes.Position,
+														ht,
+														fc.factory.guiTextureName,
+				                                        null,
+				                                       	(ht_dcb, isDown) =>
+														{
+																FactoryConstruction factory = (FactoryConstruction)ht_dcb["factory"];
+															
+																if (isDown)
+																{
+																	ht["time"] = Time.time;
 																}
 																else
 																{
-																	hudController.CloseInfoBox();
-																	InstanceGhostFactory (ht_dcb);
+																	Debug.Log(Time.time - (float)ht["time"]);
+																	if (Time.time - (float)ht["time"] > 0.3f)
+																	{	
+																		hudController.OpenInfoBoxFactory(factory.factory, true);
+																		
+																	}
+																	else
+																	{
+																		hudController.CloseInfoBox();
+																		InstanceGhostFactory (ht_dcb);
+																	}
 																}
-															}
-													});
+														});
+			}
 		}
 	}
 
@@ -801,6 +838,18 @@ public class Worker : Unit
 
 					workerState = WorkerState.Extracting;
 				}
+			}
+		}
+	}
+
+	public void StructureTechBool(string category, bool isAvailable)
+	{
+		foreach (FactoryConstruction fc in factoryConstruction)
+		{
+			if (fc.factory.category == category)
+			{
+				fc.techAvailable = isAvailable;
+
 			}
 		}
 	}
