@@ -9,13 +9,14 @@ public class RangeObject : MonoBehaviour {
 	protected RangeHitDelegate rangeHitDelegate;
 	protected Hashtable hashtable;
 	
-	float maximumHeightDistance = 10f;
+//	float maximumHeightDistance = 10f;
 
 	float speed = 20f;
 			
 	protected GameObject target;
 	protected Vector3 targetPosition;
-	protected float time = 0.3f;
+	protected float time;
+	protected bool reachedTarget = false;
 	
 	public void Init (GameObject target, float timeToDestroyWhenCollide, RangeHitDelegate rhd, Hashtable ht = null)
 	{
@@ -89,6 +90,7 @@ public class RangeObject : MonoBehaviour {
 	
 	void FinalPoint ()
 	{
+		reachedTarget = true;
 
 		bool isIntersects = false;
 
@@ -116,15 +118,45 @@ public class RangeObject : MonoBehaviour {
 		else
 		{
 			Invoke ("DestroyObjectInNetwork", time);
-			Destroy (gameObject, time);
 		}
 
-		Debug.LogError("Final point"); 
 	}
 	
 	void DestroyObjectInNetwork ()
 	{
 		PhotonNetwork.Destroy (gameObject);
 	}
+	
+	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
+    {
+		if (stream.isWriting)
+        {
+            stream.SendNext (transform.position);
+            stream.SendNext (transform.rotation);
+        }
+        else
+        {
+            correctPlayerPos = (Vector3)stream.ReceiveNext ();
+            correctPlayerRot = (Quaternion)stream.ReceiveNext ();
+        }
+    }
 
+    private Vector3 correctPlayerPos = Vector3.zero;
+    private Quaternion correctPlayerRot = Quaternion.identity;
+	
+	void Awake ()
+	{
+		correctPlayerPos = transform.position;
+		correctPlayerRot = transform.rotation;
+	}
+	
+    void Update ()
+    {
+		if(!reachedTarget)
+		{
+        	transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
+        	transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+    
+		}
+	}
 }

@@ -43,27 +43,51 @@ public class EnemyCluster : MonoBehaviour {
 	{	 	
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
 		statsController = ComponentGetter.Get<StatsController>();
-		teamNine = GameObject.Find("GamePlay/" + "8").transform;
-		teamZero = GameObject.Find("GamePlay/" + "0").transform;
+		teamNine = gameplayManager.teams[8].initialPosition;
+		teamZero = gameplayManager.teams[0].initialPosition;
+		teamNine.gameObject.SetActive(true);
+		InitInicialEnemies ();
+
 		startedOffensive = false;
 		Invoke("ActiveClusters",5f);
 		InvokeRepeating ("IABehaviour",2,1);
 
+
 	}
 
-	public void ActiveClusters()
+	public void InitInicialEnemies ()
+	{
+		foreach (Transform trns in teamNine)
+		{
+			
+			if(trns.gameObject.activeSelf == true)
+			{
+				InitInstantiateEnemy toInit = trns.GetComponent<InitInstantiateEnemy>();
+				if (toInit.GetType() == typeof(InitInstantiateEnemy))
+				{
+					
+					toInit.Init();
+					Debug.Log("transform  "+ trns.name);
+					
+				}
+			}
+			
+		}
+	}
+		
+		public void ActiveClusters()
 	{
 		int a = 0;
-		foreach (ClusterModel enemyCluster in clusterModels)
+		foreach (ClusterModel cluster in clusterModels)
 		{
 
-			enemyCluster.clusterNumber = a;
-			enemyCluster.clusterTarget = null;
-			ClusterDemmand(enemyCluster);
+			cluster.clusterNumber = a;
+			cluster.clusterTarget = null;
+			CheckClusterFactory(cluster);
 			a++;
 		}
 	}
-	public void ClusterDemmand (ClusterModel cluster)
+	public void CheckClusterFactory(ClusterModel cluster)
 	{
 		List<CaveFactory> factories = new List<CaveFactory> ();
 		
@@ -72,19 +96,26 @@ public class EnemyCluster : MonoBehaviour {
 			if (stat.GetType() == typeof(CaveFactory))
 			{
 				CaveFactory factory = stat as CaveFactory;
-
 				cluster.factory = factory;
-				break;
-			}
-			
+				ClusterDemmand(cluster);
+			}			
 			
 		}
+	}
 
-		foreach (Unit desiredUnit in cluster.clusterDesiredUnits)
+	public void ClusterDemmand (ClusterModel cluster)
+	{
+		if(cluster.factory == null)
 		{
-			cluster.factory.BuildEnemy(desiredUnit, cluster.clusterNumber);
+			CheckClusterFactory(cluster);		
 		}
-
+		else
+		{	
+			foreach (Unit desiredUnit in cluster.clusterDesiredUnits)
+			{
+				cluster.factory.BuildEnemy(desiredUnit, cluster.clusterNumber);
+			}
+		}
 	}
 
 //	public void AddEnemy(Unit newUnit, int clusterNumber)

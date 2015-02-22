@@ -46,20 +46,21 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
         {
             //We own this player: send the others our data
 			stream.SendNext ((int)rangeUnitScript.Health);
-			stream.SendNext ((bool)rangeUnitScript.inHighRange);
 			stream.SendNext ((int)rangeUnitScript.unitState);
-            stream.SendNext (transform.position);
+			stream.SendNext ((bool)rangeUnitScript.projectileAttacking);
+			stream.SendNext (transform.position);
             stream.SendNext (transform.rotation);
         }
         else
         {
             //Network player, receive data
 			rangeUnitScript.SetHealth ((int)stream.ReceiveNext ());
-			rangeUnitScript.inHighRange = (bool)stream.ReceiveNext ();
-            rangeUnitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
+			rangeUnitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
+			rangeUnitScript.projectileAttacking = (bool)stream.ReceiveNext ();
             correctPlayerPos = (Vector3)stream.ReceiveNext ();
             correctPlayerRot = (Quaternion)stream.ReceiveNext ();
         }
+		Debug.LogWarning(rangeUnitScript.projectileAttacking);
 	}
 
     private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this

@@ -23,11 +23,6 @@ public class GameController : MonoBehaviour
 
 		ComponentGetter.Get<NetworkManager> ().Init ();
 		ComponentGetter.Get<GameplayManager> ().Init ();
-				
-	}
-
-	public void GameStartInit()
-	{
 		ComponentGetter.Get<HUDController> ().Init ();
 		ComponentGetter.Get<TouchController> ().Init ();
 		ComponentGetter.Get<SelectionController> ().Init ();
@@ -36,29 +31,33 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<FogOfWar> ().Init ();
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<EventController> ().Init ();
-		ComponentGetter.Get<EnemyCluster> ().Init ();
 		ComponentGetter.Get<TechTreeController> ().Init ();
+//		ComponentGetter.Get<EnemyCluster> ().Init ();
 		
 		Score.LoadScores (
 			() => 
 			{
-			//				foreach (System.Collections.Generic.KeyValuePair<string, Model.DataScore> de in dicScore)
-			//				{
-			//					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
-			//				}
-			
-			ComponentGetter.Get <BidManager> ().PayTheBid ();
-			
-			Score.GetDataScore
+//				foreach (System.Collections.Generic.KeyValuePair<string, Model.DataScore> de in dicScore)
+//				{
+//					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
+//				}
+
+				ComponentGetter.Get <BidManager> ().PayTheBid ();
+		
+				Score.GetDataScore
 				(
 					DataScoreEnum.CurrentCrystals,
 					(currentCrystals) =>
 					{
-					ComponentGetter.Get<GameplayManager> ().resources.Mana = currentCrystals.NrPoints;
-				}
+						ComponentGetter.Get<GameplayManager> ().resources.Mana = currentCrystals.NrPoints;
+					}
 				);
-		}
+			}
 		);
+		
+	}
 
+	public void GameStartInit()
+	{
 	}
 }

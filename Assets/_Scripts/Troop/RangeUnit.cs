@@ -5,93 +5,101 @@ using Visiorama;
 
 public class RangeUnit : Unit
 {
-	public GameObject prefabRange;
+	public int projectileAttackForce;
+	public float projectileAttackRange;
+
+	public GameObject prefabProjectile;
 	public Transform trnsInstantiateLocalPrefab;
-	public float highRangeAttack;
-	public AnimationClip highRangeAnimation;
+	public GameObject dummyRangeObject;
+	private Quaternion dummyRotation;
+
+	public AnimationClip projectileAttackAnimation;
 	public float projectileAnimationSync;
-	
-	public bool inHighRange {get; set;}
+
+	public bool projectileAttacking {get; set;}
+
 
 	public void ProjectileSync ()
 	{
+		dummyRangeObject.SetActive(false);
 		GameObject pRange;
 		
 		if (!PhotonNetwork.offlineMode)
 		{
-			pRange = PhotonNetwork.Instantiate  (prefabRange.name, 
+			pRange = PhotonNetwork.Instantiate  (prefabProjectile.name, 
 			                                     trnsInstantiateLocalPrefab.position,
 			                                     trnsInstantiateLocalPrefab.rotation,
 			                                     0, null);
 		}
 		else
 		{
-			pRange = Instantiate (prefabRange, 
+			pRange = Instantiate (prefabProjectile, 
 			                      trnsInstantiateLocalPrefab.position,
 			                      trnsInstantiateLocalPrefab.rotation) as GameObject;
 		}
 		
-		pRange.GetComponent<RangeObject> ().Init (TargetAttack, 0.1f,
+		pRange.GetComponent<RangeObject>().Init (TargetAttack, 2f,
 		                                          (ht) => 
 		                                          {
 			if (TargetAttack != null)
 			{
 				if (!PhotonNetwork.offlineMode)
 				{
-					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
+					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + AdditionalForce);
 				}
 				else
 				{
-					TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+					TargetAttack.GetComponent<IStats>().ReceiveAttack(projectileAttackForce + AdditionalForce);
 				}
 			}
+
 		}
 		);
+		Invoke ("DummyActive",1);
 
 	}
 	
 	public override void Init ()
 	{
+		dummyRangeObject.SetActive(true);
+		dummyRotation = dummyRangeObject.transform.localRotation;
 		base.Init ();
-		
-		if (trnsInstantiateLocalPrefab == null)
-			trnsInstantiateLocalPrefab = transform;
+
 	}
 	
 	public override void IAStep ()
 	{
 		if (TargetAttack != null)
 		{
-			if (!inHighRange)
-			{
-				if (IsHighRangeAttack (TargetAttack))
-					inHighRange = true;
-			}
-			else
-			{
-				if (IsRangeAttack (TargetAttack))
-					inHighRange = false;
-			}
+			if (InMeleeRange (TargetAttack)) projectileAttacking = false;
+
+			else if (InProjectileRange (TargetAttack)) projectileAttacking = true;
+		
 		}
 		else
 		{
-			if (inHighRange)
-				inHighRange = false;
+			if (projectileAttacking) projectileAttacking = false;
 		}
-		
-		if (inHighRange)
+
+		if (projectileAttacking)
 		{
 			followingTarget = true;
 
 			if (TargetAttack.GetComponent<IStats>().WasRemoved)
 			{
+				dummyRangeObject.SetActive(true);
 				TargetingEnemy (null);
 				IsAttacking = false;
+				projectileAttacking = false;
 				unitState = UnitState.Idle;
 				return;
 			}
 
-			if (IsAttacking) return;
+			if (IsAttacking)
+			{
+				dummyRangeObject.transform.localRotation = Quaternion.Euler(0f,-3.34f,0f);		//reajusta direçao da lança
+				return;
+			}
 			
 			Pathfind.Stop ();
 
@@ -101,40 +109,47 @@ public class RangeUnit : Unit
 		}
 		else
 		{
+			DummyReset();
 			base.IAStep ();
+
 		}
 	}
 	
 	IEnumerator Attack ()
-	{
-		SfxAtk();
+	{			
+		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
+		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
 
-		if (highRangeAnimation != null)
+
+		if(projectileAttacking)
 		{
-			Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
-			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
-			
-			ControllerAnimation.PlayCrossFade (highRangeAnimation, WrapMode.Once);
-
-			IsAttacking = true;
-
+			ControllerAnimation.PlayCrossFade (projectileAttackAnimation, WrapMode.Once);
 			Invoke ("ProjectileSync", projectileAnimationSync);
-
-			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
-
-			IsAttacking = false;
+			IsAttacking = true;			
+			yield return StartCoroutine (ControllerAnimation.WhilePlaying (projectileAttackAnimation));
 		}
+
+		else
+		{		
+			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);											
+			IsAttacking = true;			
+			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
+		}
+			
+		SfxAtk();
+		IsAttacking = false;
 	}
+
 	
 	public override void SyncAnimation ()
 	{
 		if (!IsVisible) return;
 		
-//		Debug.Log ("inHightRangeSync: " + inHighRange);
+//		Debug.Log ("inHightRangeSync: " + projectileAttacking);
 		
-		if (inHighRange)
+		if (projectileAttacking)
 		{
-			ControllerAnimation.PlayCrossFade (highRangeAnimation, WrapMode.Once);
+			ControllerAnimation.PlayCrossFade (projectileAttackAnimation, WrapMode.Once);
 		}
 		else
 		{
@@ -142,47 +157,24 @@ public class RangeUnit : Unit
 		}
 	}
 	
-	public bool IsHighRangeAttack (GameObject target)
-	{
+	public bool InProjectileRange (GameObject target)
+	{	
 		return Vector3.Distance(transform.position, target.transform.position) <=
-							   (highRangeAttack + target.GetComponent<CapsuleCollider>().radius);
+							   (projectileAttackRange + target.GetComponent<CapsuleCollider>().radius);
 	}
-		
-	public override void Select ()
-	{
-		base.Select ();
-	}
-	
-	public override void Deselect ()
-	{
-		base.Deselect ();
-	}
-	
-	public override void DrawGizmosSelected ()
-	{
-		base.DrawGizmosSelected ();
-		
-		Gizmos.color = Color.yellow;
-		Gizmos.DrawWireSphere (this.transform.position, highRangeAttack);
-	}
-	
-	public override void SetVisible (bool isVisible)
-	{
-		ComponentGetter
-			.Get<StatsController>()
-				.ChangeVisibility (this, isVisible);
 
-		model.SetActive(isVisible);
-	}
-	
-	public override bool IsVisible
+	private void DummyActive()
 	{
-		get
-		{
-			return model.activeSelf;
-		}
+		dummyRangeObject.SetActive(true);
 	}
-	
+	private void DummyReset()
+	{
+		dummyRangeObject.SetActive(true);
+		dummyRangeObject.transform.localRotation = dummyRotation;
+	}
+
+
+
 	// RPC
 	[RPC]
 	public override void AttackStat (string name, int force)

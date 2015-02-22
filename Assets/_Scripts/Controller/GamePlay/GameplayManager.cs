@@ -102,25 +102,22 @@ public class GameplayManager : Photon.MonoBehaviour
 	public int Triggerflag = 1;
 
 	protected NetworkManager network;
-	protected GameController gameController;
+	protected TouchController touchController;
+	protected SelectionController interactionController;
 
 
 	public void Init ()
 	{
 		network = ComponentGetter.Get<NetworkManager>();
-		gameController = ComponentGetter.Get<GameController> ();
+		touchController = ComponentGetter.Get<TouchController>();
+		interactionController = ComponentGetter.Get<SelectionController>();
+		hud.uiWaitingPlayers.SetActive(true);
 	
 		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
 		{
-
-			teams[8].initialPosition.gameObject.SetActive(false);
+			gamestarted = false;
 			GameObject tutorialC = GameObject.Find ("Tutorial Manager");
 			tutorialC.SetActive (false);
-
-			photonView.RPC ("MySceneReady", PhotonTargets.All);
-			InvokeRepeating ("CheckGameStart",1f,1f);
-			hud.uiWaitingPlayers.SetActive(true);
-
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
 			if (mode == Mode.Cooperative)
 			{
@@ -128,7 +125,9 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 			
 			numberOfTeams = PhotonNetwork.room.maxPlayers;
-			pauseGame = true;
+			GamePaused(true);
+			pauseGame = false;
+
 
 		}
 
@@ -136,8 +135,11 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			MyTeam = 0;
 			Allies = 0;
+			ComponentGetter.Get<EnemyCluster> ().Init ();
+			pauseGame = true;
 			gamestarted = true;
-			gameController.GameStartInit();
+			GameStart();
+
 		}
 
 		for (int i = 0; i != teams.Length; i++)
@@ -175,23 +177,60 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiVictoryObject.SetActive (false);
 		hud.uiLostMainBaseObject.SetActive (false);
 
+		TribeInstiateNetwork ();
+
+		if (mode != Mode.Tutorial)photonView.RPC ("MySceneReady", PhotonTargets.AllBuffered);
+
 	}
 
 	void CheckGameStart()
 	{
 		int numberOfPlayers = PhotonNetwork.playerList.Length;
-		if (numberOfPlayers >= readyCounter) photonView.RPC ("GameStart", PhotonTargets.All);
+		if (readyCounter >= numberOfPlayers)
+		{
+			GameStart();
+			CancelInvoke("CheckStart");
+		}
+
 	}
 
+	void TribeInstiateNetwork ()
+	{
+		foreach (Team t in teams)
+		{
+			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
+			{
+				foreach (Transform trns in t.initialPosition)
+				{
+
+					if(trns.gameObject.activeSelf == true)
+					{
+						InitInstantiateNetwork toInit = trns.GetComponent<InitInstantiateNetwork>();
+						if (toInit.GetType() == typeof(InitInstantiateNetwork))
+						{
+
+							toInit.Init();
+							Debug.Log("transform  "+ trns.name);
+					
+						}
+					}
+
+				}
+			}
+		}
+	}
+
+	[RPC]
 	void MySceneReady()
 	{
 		readyCounter++;
 	}
 
+
 	void GameStart()
 	{
 		gamestarted = true;
-		gameController.GameStartInit();
+		GamePaused(false);
 		hud.uiWaitingPlayers.SetActive(false);
 
 	}
@@ -533,7 +572,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
 		hud.labelTotalTime.text = niceTime;
 		}
-
+		else CheckGameStart();
+		
 		hud.labelMana.text = resources.Mana.ToString ();
 		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
@@ -610,6 +650,22 @@ public class GameplayManager : Photon.MonoBehaviour
 						Debug.Log ("salvou playerBattle");
 				});
 			});
+		}
+	}
+
+	public void GamePaused(bool state)
+	{
+		if(state)
+		{
+			touchController.mainCamera.GetComponent<CameraMovement>().enabled = false;
+			interactionController.enabled = false;
+			Time.timeScale = 0.0f;
+		}
+		else
+		{
+			touchController.mainCamera.GetComponent<CameraMovement>().enabled = true;
+			interactionController.enabled = true;
+			Time.timeScale = 1.0f;
 		}
 	}
 

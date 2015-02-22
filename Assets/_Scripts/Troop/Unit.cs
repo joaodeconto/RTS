@@ -225,7 +225,7 @@ public class Unit : IStats, IMovementObservable,
 				{	
 					PathfindTarget = transform.position;
 
-					if (IsRangeAttack(TargetAttack))
+					if (InMeleeRange(TargetAttack))
 					{
 						unitState = UnitState.Attack;
 					}
@@ -279,12 +279,10 @@ public class Unit : IStats, IMovementObservable,
 
 				if (TargetAttack != null)
 				{
-					if (IsRangeAttack (TargetAttack))
+					if (InMeleeRange (TargetAttack))
 					{
 						StartCoroutine(Attack ());
-						
-						
-					}
+						}
 					else
 					{
 						unitState = UnitState.Walk;
@@ -571,7 +569,7 @@ public class Unit : IStats, IMovementObservable,
 		hudController.DestroySelected (transform);
 	}
 
-	public bool IsRangeAttack (GameObject target)
+	public bool InMeleeRange (GameObject target)
 	{
 		if (target.GetComponent<FactoryBase> () != null)
 		{

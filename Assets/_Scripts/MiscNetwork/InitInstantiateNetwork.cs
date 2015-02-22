@@ -7,10 +7,13 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class InitInstantiateNetwork : Photon.MonoBehaviour
 {
 	public GameObject prefabInstantiate;
+	private bool wasInitialized = false;
 
-	void Awake ()
+	public void Init ()
 	{
-		InvokeRepeating ("CheckNetwork", 0.1f, 0.5f);
+		if(!wasInitialized) InvokeRepeating ("CheckNetwork", 0.1f, 0.5f);
+
+		wasInitialized = true;
 	}
 
 	void CheckNetwork ()

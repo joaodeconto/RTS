@@ -712,6 +712,7 @@ public class FactoryBase : IStats, IDeathObservable
 				{
 					Hashtable ht = new Hashtable();
 					ht["unitFactory"] = uf;
+					ht["disable"] = 0;
 
 					hudController.CreateButtonInInspector (uf.buttonName,
 					                                       uf.gridItemAttributes.Position,

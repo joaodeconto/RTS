@@ -64,8 +64,8 @@ public class RangeObjectTransformNetwork : Photon.MonoBehaviour
 	   
     void Update()
     {
-		transform.position = Vector3.Lerp(transform.position, correctPlayerPos, 5f);
-		transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, 5f);
+		transform.position = Vector3.Slerp(transform.position, correctPlayerPos, 2f);
+		transform.rotation = Quaternion.Slerp(transform.rotation, correctPlayerRot, 2f);
 			
     }
 }

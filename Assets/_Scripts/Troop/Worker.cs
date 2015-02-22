@@ -281,8 +281,16 @@ public class Worker : Unit
 			break;
 			case WorkerState.Idle:
 
+				bool WorkerisAttacking = (unitState == Unit.UnitState.Attack);
+				if (WorkerisAttacking)	resourceWorker[0].extractingObject.SetActive (true);
+
+				else if (lastResourceId != -1)
+				{
+					resourceWorker[lastResourceId].carryingObject.SetActive (false);
+					lastResourceId = resourceId;
+				}
 			
-				CheckConstructFactory ();
+			CheckConstructFactory ();
 
 				CheckResource ();
 				
@@ -344,17 +352,16 @@ public class Worker : Unit
 
 				case WorkerState.Idle:
 					
-					bool isAttacking = (unitState == Unit.UnitState.Attack);
-
-					resourceWorker[0].extractingObject.SetActive (true);
-
-										
-					if (lastResourceId != -1)
+					bool WorkerisAttacking = (unitState == Unit.UnitState.Attack);
+					
+					if (WorkerisAttacking)	resourceWorker[0].extractingObject.SetActive (true);
+								
+					else if (lastResourceId != -1)
 					{
 						resourceWorker[lastResourceId].carryingObject.SetActive (false);
 						lastResourceId = resourceId;
 					}
-
+									
 					base.SyncAnimation ();
 					break;
 			}
@@ -424,8 +431,7 @@ public class Worker : Unit
 																}
 																else
 																{
-																	Debug.Log(Time.time - (float)ht["time"]);
-																	if (Time.time - (float)ht["time"] > 0.3f)
+																	if (Time.time - (float)ht["time"] > 0.4f)
 																	{	
 																		hudController.OpenInfoBoxFactory(factory.factory, true);
 																		

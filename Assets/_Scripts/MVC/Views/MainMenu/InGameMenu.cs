@@ -13,8 +13,7 @@ public class InGameMenu : MonoBehaviour
 	public GameObject audioOptionPanel;
 	public GameObject surrenderPanel;
 	protected GameplayManager gameplayManager;
-	protected TouchController touchController;
-	protected SelectionController interactionController;
+
 
 
 	
@@ -32,17 +31,14 @@ public class InGameMenu : MonoBehaviour
 	public void Open ()
 	{
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
-		touchController = ComponentGetter.Get<TouchController>();
-		interactionController = ComponentGetter.Get<SelectionController>();
 
 
 
 
-		if (gameplayManager.pauseGame == true)
+
+		if (gameplayManager.pauseGame)
 		{
-			touchController.mainCamera.GetComponent<CameraMovement>().enabled = false;
-			interactionController.enabled = false;
-			Time.timeScale = 0.0f;
+			gameplayManager.GamePaused(true);
 		}
 
 		if (wasInitialized)
@@ -117,9 +113,7 @@ public class InGameMenu : MonoBehaviour
 	{
 		if (gameplayManager.pauseGame = true)
 		{
-			touchController.mainCamera.GetComponent<CameraMovement>().enabled = true;
-			interactionController.enabled = true;
-			Time.timeScale = 1.0f;
+			gameplayManager.GamePaused(false);
 		}
 		
 	}

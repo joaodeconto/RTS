@@ -278,7 +278,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!4 &400006
 Transform:
   m_ObjectHideFlags: 1
@@ -290,7 +290,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 7
+  m_RootOrder: 0
 --- !u!4 &400008
 Transform:
   m_ObjectHideFlags: 1
@@ -326,7 +326,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!4 &400014
 Transform:
   m_ObjectHideFlags: 1
@@ -350,7 +350,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 6
+  m_RootOrder: 7
 --- !u!4 &400020
 Transform:
   m_ObjectHideFlags: 1
@@ -362,7 +362,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!4 &400022
 Transform:
   m_ObjectHideFlags: 1
@@ -374,7 +374,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 5
+  m_RootOrder: 6
 --- !u!4 &400024
 Transform:
   m_ObjectHideFlags: 1
@@ -397,14 +397,14 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 444844}
+  - {fileID: 400006}
   - {fileID: 400024}
+  - {fileID: 444844}
   - {fileID: 400004}
   - {fileID: 400020}
   - {fileID: 400012}
   - {fileID: 400022}
   - {fileID: 400018}
-  - {fileID: 400006}
   - {fileID: 400000}
   - {fileID: 400008}
   - {fileID: 400002}
@@ -436,7 +436,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 0
+  m_RootOrder: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -935,7 +935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6a830f3446549408e3bc23cf6bc4be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseTutorial: 0
+  pauseGame: 0
   teams:
   - name: Time 1
     colors:
@@ -998,6 +998,7 @@ MonoBehaviour:
     labelTotalTime: {fileID: 0}
     uiVictoryObject: {fileID: 0}
     uiDefeatObject: {fileID: 0}
+    uiWaitingPlayers: {fileID: 0}
     labelTime: {fileID: 0}
     uiLostMainBaseObject: {fileID: 0}
   myTimer: 0
