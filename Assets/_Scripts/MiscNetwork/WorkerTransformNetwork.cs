@@ -4,14 +4,24 @@ using System.Collections;
 public class WorkerTransformNetwork : Photon.MonoBehaviour
 {
     Worker workerScript;
+	private Vector3 correctPlayerPos; 
+	private Quaternion correctPlayerRot;
+	private bool wasInitialized = false; 
 	
-    void Awake ()
+	void Awake ()
 	{
-		Init ();
+		if(!wasInitialized)
+		{
+			Init ();
+		}
 	}
 	
-    public void Init ()
-    {
+	public void Init ()
+	{
+		wasInitialized = true;
+		correctPlayerPos = transform.position; 
+		correctPlayerRot = transform.rotation;
+
 		if (PhotonNetwork.offlineMode)
 		{
 			enabled = false;
@@ -51,15 +61,14 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
         }
 	}
 
-    private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
-    private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this
-
     void Update()
     {
-        //Update remote player (smooth this, this looks good, at the cost of some accuracy)
-        transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-        transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
-		
-		workerScript.SyncAnimation ();
+		if (!photonView.isMine)
+		{
+			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
+			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+			workerScript.SyncAnimation ();
+		}
+
     }
 }

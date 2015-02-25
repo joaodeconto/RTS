@@ -5,14 +5,24 @@ using System.Collections;
 public class UnitTransformNetwork : Photon.MonoBehaviour
 {
     Unit unitScript;
+	private Vector3 correctPlayerPos; 
+	private Quaternion correctPlayerRot;
+	private bool wasInitialized = false; 
 
     void Awake ()
 	{
-		Init ();
+		if(!wasInitialized)
+		{
+			Init ();
+		}
 	}
 	
     public void Init ()
     {
+		wasInitialized = true;
+		correctPlayerPos = transform.position; 
+		correctPlayerRot = transform.rotation;
+
 		if (PhotonNetwork.offlineMode)
 		{
 			enabled = false;
@@ -55,20 +65,52 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
             unitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
             correctPlayerPos = (Vector3)stream.ReceiveNext ();
             correctPlayerRot = (Quaternion)stream.ReceiveNext ();
+
+//			lastNetworkDataReceivedTime = info.timestamp;
         }
     }
 
-    private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
-    private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this
+
 
     void Update()
     {
-        //Update remote player (smooth this, this looks good, at the cost of some accuracy)
-        transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-        transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
-		
-		unitScript.SyncAnimation ();
+		if (!photonView.isMine)
+		{
+			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
+			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+
+			unitScript.SyncAnimation ();
+		}
+
     }
+
+	//Tentativa de prever a posiçao da unit atraves da velocidade.
+	//Nao funcionou.
+
+//	NavMeshAgent navAgent;
+//	double lastNetworkDataReceivedTime;
+//	float m_Speed;
+//	
+//	void UpdateNetworkPosition()
+//	{
+//		float pingInSeconds = (float)PhotonNetwork.GetPing() * 0.001f;
+//		float timesinceLastUpdate = (float)(PhotonNetwork.time - lastNetworkDataReceivedTime);
+//		float totalTimePassed = pingInSeconds + timesinceLastUpdate;
+//
+//		Vector3 possiblePlayerPos = correctPlayerPos + transform.forward * m_Speed * totalTimePassed;
+//
+//		Vector3 newPosition = Vector3.MoveTowards (transform.position
+//		                                           , possiblePlayerPos
+//		                                           ,m_Speed * Time.deltaTime);
+//
+//		if(Vector3.Distance (transform.position, possiblePlayerPos) > 3f && m_Speed > 0)
+//		{
+//			newPosition = possiblePlayerPos;
+//		}
+//
+//		transform.position = newPosition;
+//		transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+//	}
 	
 	/*
 	public AnimationClip this [int index]

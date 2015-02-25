@@ -556,7 +556,7 @@ public class StatsController : MonoBehaviour
 					w.SetMoveToFactory(factory);
 					feedback = true;
 				}
-				else if (w.canUseResources)
+				else if (w.hasResource)
 				{
 					if (factory.receiveResource == w.resource.type)
 					{

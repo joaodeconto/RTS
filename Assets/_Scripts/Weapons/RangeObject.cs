@@ -2,42 +2,37 @@ using UnityEngine;
 using System.Collections;
 using Visiorama.Utils;
 
-public class RangeObject : MonoBehaviour {
-	
+public class RangeObject : Photon.MonoBehaviour
+{
 	public delegate void RangeHitDelegate (Hashtable ht);
-	
 	protected RangeHitDelegate rangeHitDelegate;
 	protected Hashtable hashtable;
-	
-//	float maximumHeightDistance = 10f;
-
-	float speed = 20f;
-			
+	public float speed = 20f;
+	public float smoothFactor = 3f;
 	protected GameObject target;
 	protected Vector3 targetPosition;
 	protected float time;
 	protected bool reachedTarget = false;
+	private Vector3 correctPlayerPos;
+	private Quaternion correctPlayerRot;
 	
 	public void Init (GameObject target, float timeToDestroyWhenCollide, RangeHitDelegate rhd, Hashtable ht = null)
 	{
+		if (target == null)
+		{
+			DestroyObjectInNetwork();
+			return;
+		}
+
 		enabled = true;
-		
 		rangeHitDelegate = rhd;
 		hashtable = ht;
 		targetPosition = target.transform.position;
 		this.target = target;
 		time = timeToDestroyWhenCollide;
-		
-//		if (collider == null)
-//		{
-//			BoxCollider col = gameObject.AddComponent<BoxCollider> ();
-//			
-//			MeshRenderer mr = gameObject.GetComponentInChildren<MeshRenderer>();
-//			col.size = mr.bounds.size;
-//		}
-//		
-//		collider.isTrigger = true;
-		
+		correctPlayerPos = transform.position;
+		correctPlayerRot = transform.rotation;
+
 		Move ();
 	}
 	
@@ -119,7 +114,6 @@ public class RangeObject : MonoBehaviour {
 		{
 			Invoke ("DestroyObjectInNetwork", time);
 		}
-
 	}
 	
 	void DestroyObjectInNetwork ()
@@ -141,22 +135,12 @@ public class RangeObject : MonoBehaviour {
         }
     }
 
-    private Vector3 correctPlayerPos = Vector3.zero;
-    private Quaternion correctPlayerRot = Quaternion.identity;
-	
-	void Awake ()
-	{
-		correctPlayerPos = transform.position;
-		correctPlayerRot = transform.rotation;
-	}
-	
     void Update ()
     {
 		if(!reachedTarget)
 		{
-        	transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-        	transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
-    
-		}
+			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * smoothFactor);
+			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * smoothFactor);
+    	}
 	}
 }

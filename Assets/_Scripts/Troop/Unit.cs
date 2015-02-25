@@ -436,6 +436,7 @@ public class Unit : IStats, IMovementObservable,
 
 	public override void Select ()
 	{
+		if(IsDead) return;
 		base.Select ();
 
 		Hashtable ht = new Hashtable();
@@ -779,8 +780,6 @@ public class Unit : IStats, IMovementObservable,
 	{
 		IsDead = true;
 
-
-
 		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");
 
 		Vector3 u = this.transform.position;
@@ -836,9 +835,7 @@ public class Unit : IStats, IMovementObservable,
 
 		if (Selected)
 		{
-
 			Deselect ();
-
 		}
 
 		if (unitAnimation.DieAnimation)

@@ -5,21 +5,31 @@ using System.Collections;
 public class RangeUnitTransformNetwork : Photon.MonoBehaviour
 {
     RangeUnit rangeUnitScript;
+	private Vector3 correctPlayerPos; 
+	private Quaternion correctPlayerRot;
+	private bool wasInitialized = false; 
 	
-    void Awake ()
+	void Awake ()
 	{
-		Init ();
+		if(!wasInitialized)
+		{
+			Init ();
+		}
 	}
 	
-    public void Init ()
-    {
+	public void Init ()
+	{
+		wasInitialized = true;
+
+		correctPlayerPos = transform.position; 
+		correctPlayerRot = transform.rotation;
+
 		if (PhotonNetwork.offlineMode)
 		{
 			enabled = false;
 		}
 		else
 		{
-
 			rangeUnitScript = GetComponent <RangeUnit> ();
 			
 	        gameObject.name = gameObject.name + photonView.viewID;
@@ -46,33 +56,38 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
         {
             //We own this player: send the others our data
 			stream.SendNext ((int)rangeUnitScript.Health);
+			stream.SendNext ((int)rangeUnitScript.projectileAnimating);
 			stream.SendNext ((int)rangeUnitScript.unitState);
-			stream.SendNext ((bool)rangeUnitScript.projectileAttacking);
 			stream.SendNext (transform.position);
             stream.SendNext (transform.rotation);
+
         }
         else
         {
             //Network player, receive data
 			rangeUnitScript.SetHealth ((int)stream.ReceiveNext ());
+			rangeUnitScript.projectileAnimating = (int)stream.ReceiveNext ();
 			rangeUnitScript.unitState = (Unit.UnitState)(int)stream.ReceiveNext ();
-			rangeUnitScript.projectileAttacking = (bool)stream.ReceiveNext ();
             correctPlayerPos = (Vector3)stream.ReceiveNext ();
             correctPlayerRot = (Quaternion)stream.ReceiveNext ();
+
         }
-		Debug.LogWarning(rangeUnitScript.projectileAttacking);
+
+		rangeUnitScript.SyncAnimation ();
 	}
 
-    private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
-    private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this
+//    private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
+//    private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this
 
     void Update()
     {
-        //Update remote player (smooth this, this looks good, at the cost of some accuracy)
-        transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-        transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
-		
-		rangeUnitScript.SyncAnimation ();
+       	if (!photonView.isMine)
+		{
+
+       		transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
+     		transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+
+		}
     }
 }
 

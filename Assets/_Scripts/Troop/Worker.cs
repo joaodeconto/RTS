@@ -64,11 +64,11 @@ public class Worker : Unit
 	public bool IsRepairing {get; protected set;}
 	public bool IsBuilding {get; protected set;}
 
-	public int resourceId {get; set;}
+	public int resourceId = -1;
 	public Resource.Type resourceType {get; protected set;}
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
-	public bool canUseResources {get; protected set;}
+	public bool hasResource {get; protected set;}
 	protected int lastResourceId;
 	protected Resource lastResource;
 	protected bool isSettingWorkerNull;
@@ -91,7 +91,7 @@ public class Worker : Unit
 			rw.extractingObject.SetActive (false);
 		}
 
-		canUseResources = isSettingWorkerNull = false;
+		hasResource = isSettingWorkerNull = false;
 
 		workerState = WorkerState.Idle;
 	}
@@ -103,7 +103,6 @@ public class Worker : Unit
 			fc.techAvailable = fc.VIP;
 			
 		}
-
 	}
 
 	public override void IAStep ()
@@ -227,7 +226,7 @@ public class Worker : Unit
 
 					workerState = WorkerState.Idle;
 
-					isCheckedSendResourceToFactory = isMovingToFactory = canUseResources = isSettingWorkerNull = false;
+					isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;
 
 					resourceWorker[resourceId].carryingObject.SetActive (false);
 
@@ -252,7 +251,7 @@ public class Worker : Unit
 
 					isMovingToFactory = false;
 
-					if (canUseResources)
+					if (hasResource)
 					{
 						resource = lastResource;
 						GetResource (currentNumberOfResources);
@@ -599,7 +598,7 @@ public class Worker : Unit
 	public void GetResource (int gotNumberResources)
 	{
 		currentNumberOfResources = gotNumberResources;
-		canUseResources = true;
+		hasResource = true;
 
 		Pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
 		Pathfind.speed = resourceWorker[resourceId].carryingSpeed;

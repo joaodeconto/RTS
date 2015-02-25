@@ -362,7 +362,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public virtual IEnumerator OnDie ()
 	{
 		statsController.RemoveStats (this);
-		if (playerUnit)TechActiveBool(TechsToActive, false);
+		if (playerUnit && wasBuilt)TechActiveBool(TechsToActive, false);
 		
 		model.animation.Play ();
 		
@@ -370,7 +370,6 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			hudController.DestroyInspector ("factory");
 			hudController.DestroyOptionsBtns();
-			
 			Deselect ();
 		}
 		
@@ -385,7 +384,7 @@ public class FactoryBase : IStats, IDeathObservable
 		
 		//		yield return StartCoroutine (model.animation.WaitForAnimation (model.animation.clip));
 		
-		yield return new WaitForSeconds (7f);
+		yield return new WaitForSeconds (5f);
 		if (IsNetworkInstantiate)
 		{
 			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();

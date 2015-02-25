@@ -510,7 +510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
-  Defense: 0
+  defense: 0
   m_Team: 0
   m_Ally: 0
   fieldOfView: 20
@@ -524,10 +524,11 @@ MonoBehaviour:
   playerUnit: 0
   category: Obelisk
   description: Provides mana, and upgrades
+  requisites: 
   costOfResources:
     m_mana: 0
     m_rocks: 0
-  wasInitialized: 0
+  group: -1
   model: {fileID: 100000}
   unitsToCreate: []
   upgradesToCreate: []
@@ -540,6 +541,7 @@ MonoBehaviour:
     desactiveObjectsWhenInstance: []
   buttonName: Obelisk
   guiTextureName: Obelisk
+  goRallypoint: {fileID: 0}
   timeToCreate: 0
   timer: 0
   boostDuration: 30
@@ -547,6 +549,7 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 0
   boostPower: 1.29999995
+  TechsToActive: []
   wasVisible: 0
   alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400002

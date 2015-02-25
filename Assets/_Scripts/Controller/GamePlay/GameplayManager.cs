@@ -10,19 +10,8 @@ public class Team
 {
 	public string name;
 	public Color[] colors = new Color[3] { Color.white, Color.gray, Color.blue };
-	public Texture2D colorTexture;
 	public Transform initialPosition;
-
 	public bool lose { get; set; }
-	
-	public void CreateColorTexture ()
-	{
-		colorTexture = new Texture2D(1, 1);
-		
-		colorTexture.SetPixel (0, 0, Color.white);
-		
-		colorTexture.Apply ();
-	}
 }
 
 public class GameplayManager : Photon.MonoBehaviour
@@ -66,6 +55,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public bool pauseGame = false;
 	private int readyCounter;
 	private bool gamestarted = false;
+	public float myTimer = 0f;
 
 	public const int MAX_POPULATION_ALLOWED = 200;
 	public const int BOT_TEAM = 8;
@@ -97,8 +87,6 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public int MyTeam {get; protected set;}
 	public int Allies {get; protected set;}
-
-	public float myTimer = 0.0f;
 	public int Triggerflag = 1;
 
 	protected NetworkManager network;
@@ -123,12 +111,8 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				Allies = (int)PhotonNetwork.player.customProperties["allies"];
 			}
-			
 			numberOfTeams = PhotonNetwork.room.maxPlayers;
-			GamePaused(true);
 			pauseGame = false;
-
-
 		}
 
 		else
@@ -137,7 +121,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			Allies = 0;
 			ComponentGetter.Get<EnemyCluster> ().Init ();
 			pauseGame = true;
-			gamestarted = true;
 			GameStart();
 
 		}
@@ -148,9 +131,8 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				Math.CenterCameraInObject (Camera.main, teams[i].initialPosition.position);
 			}
-			
-			teams[i].CreateColorTexture ();
 		}
+		TribeInstiateNetwork ();
 
 		if (mode == Mode.Cooperative)
 		{
@@ -177,9 +159,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiVictoryObject.SetActive (false);
 		hud.uiLostMainBaseObject.SetActive (false);
 
-		TribeInstiateNetwork ();
-
-		if (mode != Mode.Tutorial)photonView.RPC ("MySceneReady", PhotonTargets.AllBuffered);
+		if (mode != Mode.Tutorial) CallMySceneReady();
 
 	}
 
@@ -224,6 +204,11 @@ public class GameplayManager : Photon.MonoBehaviour
 	void MySceneReady()
 	{
 		readyCounter++;
+		GamePaused(true);
+	}
+	void CallMySceneReady()
+	{
+		photonView.RPC ("MySceneReady", PhotonTargets.AllBuffered);
 	}
 
 
@@ -234,42 +219,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiWaitingPlayers.SetActive(false);
 
 	}
-
-
-	/// <summary>
-	/// Gets the texture color of my team.
-	/// </summary>
-	/// <returns>
-	/// The of my texture color team.
-	/// </returns>
-	/// 
-	public Texture2D GetColorTextureTeam ()
-	{
-		return GetColorTextureTeam (MyTeam);
-	}
-	
-	/// <summary>
-	/// Gets the texture color team.
-	/// </summary>
-	/// <returns>
-	/// The texture color team.
-	/// </returns>
-	/// <param name='teamID'>
-	/// Team ID.
-	/// </param>
-	public Texture2D GetColorTextureTeam (int teamID)
-	{
-		if (teamID >= 0 && teamID < teams.Length)
-		{
-			return teams[teamID].colorTexture;
-		}
-		else
-		{
-			Debug.LogError ("Team ID not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
-			return null;
-		}
-	}
-	
+		
 	/// <summary>
 	/// Gets the color of my team.
 	/// </summary>
@@ -561,31 +511,32 @@ public class GameplayManager : Photon.MonoBehaviour
 			break;
 		}
 	}
-
-	void Update ()
+	void ClockGameplay()
 	{
-		if(gamestarted)
-		{
 		myTimer += Time.deltaTime;
 		int minutes = Mathf.FloorToInt(myTimer / 60F);
 		int seconds = Mathf.FloorToInt(myTimer - minutes * 60);
 		string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
 		hud.labelTotalTime.text = niceTime;
+	}
+
+	void Update ()
+	{
+		if(gamestarted)
+		{
+			ClockGameplay();		
 		}
 		else CheckGameStart();
-		
+				
 		hud.labelMana.text = resources.Mana.ToString ();
 		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
-
-			
+					
 		if ((loseGame || winGame))
 		{
 //			Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
-
 			hud.uiVictoryObject.SetActive (winGame);
-			hud.uiDefeatObject.SetActive (loseGame);
-		
+			hud.uiDefeatObject.SetActive (loseGame);		
 //			hud.buttonMatchScore.gameObject.SetActive (true);
 //			
 //			DefaultCallbackButton dcb = ComponentGetter.Get <DefaultCallbackButton> (hud.buttonMatchScore.transform, false);
@@ -605,8 +556,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	}
 
 	public void EndMatch ()
-	{
-				
+	{				
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 		BidManager bm = ComponentGetter.Get <BidManager> ();
 		

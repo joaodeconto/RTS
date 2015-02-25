@@ -17,8 +17,10 @@ public class RangeUnit : Unit
 	public float projectileAnimationSync;
 
 	public bool projectileAttacking {get; set;}
-
-
+	public int projectileAnimating 	{get; set;}
+			           
+			           
+			           
 	public void ProjectileSync ()
 	{
 		dummyRangeObject.SetActive(false);
@@ -83,6 +85,7 @@ public class RangeUnit : Unit
 
 		if (projectileAttacking)
 		{
+
 			followingTarget = true;
 
 			if (TargetAttack.GetComponent<IStats>().WasRemoved)
@@ -111,7 +114,6 @@ public class RangeUnit : Unit
 		{
 			DummyReset();
 			base.IAStep ();
-
 		}
 	}
 	
@@ -123,10 +125,12 @@ public class RangeUnit : Unit
 
 		if(projectileAttacking)
 		{
+			projectileAnimating++;
 			ControllerAnimation.PlayCrossFade (projectileAttackAnimation, WrapMode.Once);
 			Invoke ("ProjectileSync", projectileAnimationSync);
 			IsAttacking = true;			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (projectileAttackAnimation));
+			projectileAnimating--;
 		}
 
 		else
@@ -140,14 +144,13 @@ public class RangeUnit : Unit
 		IsAttacking = false;
 	}
 
-	
 	public override void SyncAnimation ()
 	{
 		if (!IsVisible) return;
 		
-//		Debug.Log ("inHightRangeSync: " + projectileAttacking);
+		Debug.Log ("projectileAnimating: " + projectileAttacking + "  " + projectileAnimating);
 		
-		if (projectileAttacking)
+		if (projectileAnimating == 1)
 		{
 			ControllerAnimation.PlayCrossFade (projectileAttackAnimation, WrapMode.Once);
 		}
@@ -156,6 +159,7 @@ public class RangeUnit : Unit
 			base.SyncAnimation ();
 		}
 	}
+
 	
 	public bool InProjectileRange (GameObject target)
 	{	
@@ -172,8 +176,6 @@ public class RangeUnit : Unit
 		dummyRangeObject.SetActive(true);
 		dummyRangeObject.transform.localRotation = dummyRotation;
 	}
-
-
 
 	// RPC
 	[RPC]

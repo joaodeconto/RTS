@@ -9,7 +9,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	public GameObject prefabInstantiate;
 	private bool wasInitialized = false;
 
-	public void Init ()
+	public virtual void Init ()
 	{
 		if(!wasInitialized) InvokeRepeating ("CheckNetwork", 0.1f, 0.5f);
 

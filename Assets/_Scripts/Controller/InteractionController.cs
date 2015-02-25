@@ -195,7 +195,7 @@ public class InteractionController : MonoBehaviour
 				
 				if (worker == null) continue;
 				
-				if (!worker.canUseResources)
+				if (!worker.hasResource)
 				{
 					if (worker.resource != null)
 					{
