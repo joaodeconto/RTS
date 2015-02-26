@@ -18,10 +18,11 @@ public class VictoryCondition : MonoBehaviour
 			CurrentPopulation,
 			MaxPopulation,
 			Time_,
-			EnemyUnits,
 			Collect,
 			Build,
 			EnemyBuildings,
+			EnemyUnits,
+			AllEnemies
 		}
 	
 		public bool IsActive;
@@ -53,7 +54,7 @@ public class VictoryCondition : MonoBehaviour
 	public int nPopulation = 0;
 	public int nTeams = 0;
 	public int nMaxPopulation = 0;
-	public int nTime = 0;
+	public float nTime = 0;
 	public int nBuilds = 0;
 	public int eneBuilds = 0;
 	public int nCollected = 0;
@@ -85,7 +86,7 @@ public class VictoryCondition : MonoBehaviour
 		em = ComponentGetter.Get<EventController> ();
 		sc = ComponentGetter.Get<StatsController>();
 
-		InvokeRepeating ("CheckVictory", 1.0f, 1.0f);
+		InvokeRepeating ("CheckVictory", 10.0f, 2.0f);
 	}
 
 	bool CheckValue (Challenge.EnumCondition enumCondition, int value, int valueToCompare)
@@ -103,98 +104,102 @@ public class VictoryCondition : MonoBehaviour
 	{
 		switch (enumComparingType)
 		{
-			//Teams condition
+				//Teams condition
 			case Challenge.EnumComparingType.Teams:
 
-				//Teams que estao jogando
-				nTeams = gm.teams.Length;
+					//Teams que estao jogando
+					nTeams = gm.teams.Length;
 
-				return CheckValue (enumCondition, nTeams, valueToCompare);
-
-			break;
-			
+					return CheckValue (enumCondition, nTeams, valueToCompare);
+				
 			case Challenge.EnumComparingType.CurrentPopulation: 
-			
-			//Populaçao atual do jogador
-			nPopulation = gm.numberOfUnits;
-			
-			return CheckValue (enumCondition, nPopulation, valueToCompare);
-			
-			break;
+				
+					//Populaçao atual do jogador
+					nPopulation = gm.numberOfUnits;
+					
+					return CheckValue (enumCondition, nPopulation, valueToCompare);
+
 			case Challenge.EnumComparingType.MaxPopulation: 
 
-				//Populaçao maxima atual do jogador
-				nMaxPopulation = gm.TotalPopulation;
-				
-				return CheckValue (enumCondition, nMaxPopulation, valueToCompare);
-			
-			break;
+					//Populaçao maxima atual do jogador
+					nMaxPopulation = gm.TotalPopulation;
+					
+					return CheckValue (enumCondition, nMaxPopulation, valueToCompare);
+		
 			case Challenge.EnumComparingType.Time_:
-			
-				//Tempo de jogo atual
-				nTime = 10000;
 				
-				return CheckValue (enumCondition, nTime, valueToCompare);
-			
-			break;
-			case Challenge.EnumComparingType.EnemyUnits:
-			
-			int _nEnemies = 0;
-
-			foreach (IStats stats in sc.otherStats)
-			{
-				if (stats.tag == "Unit") _nEnemies++;continue;
-			}
-			nEnemies = _nEnemies;
-			         
-				return CheckValue (enumCondition, nEnemies, valueToCompare);
-
-			break;
+					//Tempo de jogo atual
+					nTime = gm.myTimer;
+					
+					return CheckValue (enumCondition, (int)nTime, valueToCompare);
+	
 			case Challenge.EnumComparingType.Collect:
 
-			if (specificStat == "Mana")
-			{		    
-				//Quantidade de recursos de ouro coletados
-				nCollected = gm.resources.Mana;
-			}
-			else
-			{		    
+				if (specificStat == "Mana")
+				{		    
+					//Quantidade de recursos de ouro coletados
+					nCollected = gm.resources.Mana;
+				}
+				else
+				{
+					nCollected = gm.resources.Rocks;
+				}
+					
+					return CheckValue (enumCondition, nCollected, valueToCompare);
 
-				nCollected = gm.resources.Rocks;
-			}
-				
-				return CheckValue (enumCondition, nCollected, valueToCompare);
-			break;
 			case Challenge.EnumComparingType.Build:
 
-			int _nBuilds = 0;
-			
-			foreach (IStats stats in sc.myStats)
-			{
-				if (stats.tag == specificStat) _nBuilds++;continue;
-			}
-			nBuilds = _nBuilds;
-												
-			return CheckValue (enumCondition, nBuilds, valueToCompare);
+					int _nBuilds = 0;
+					
+					foreach (IStats stats in sc.myStats)
+					{
+						FactoryBase fb = stats as FactoryBase;
 
-			break;
-			case Challenge.EnumComparingType.EnemyBuildings:
+						if (stats.tag == specificStat && fb.wasBuilt) _nBuilds++;continue;
+					}
+					nBuilds = _nBuilds;
+														
+					return CheckValue (enumCondition, nBuilds, valueToCompare);
 
-			int _eneBuilds = 0;
+			case Challenge.EnumComparingType.EnemyBuildings:						
+
+					int _eneBuilds = 0;
 
 
-			foreach (IStats stats in sc.otherStats)
-			{
-				if  (stats.tag == specificStat) _eneBuilds++;continue;
-			}
-			eneBuilds = _eneBuilds;
+					foreach (IStats stats in sc.otherStats)
+					{
+						if  (stats.tag == specificStat) _eneBuilds++;continue;
+					}
+					eneBuilds = _eneBuilds;
 
-							
-			return CheckValue (enumCondition, eneBuilds, valueToCompare);
-			
-			break;
-			
-		default: return true;
+									
+					return CheckValue (enumCondition, eneBuilds, valueToCompare);			
+
+			case Challenge.EnumComparingType.EnemyUnits:
+				
+					int _nEnemies = 0;
+					
+					foreach (IStats stats in sc.otherStats)
+					{
+						if (stats.tag == "Unit" && !gm.IsNotEnemy(stats.team,stats.ally)) _nEnemies++; continue;
+					}
+					nEnemies = _nEnemies;
+					
+					return CheckValue (enumCondition, nEnemies, valueToCompare);
+				
+			case Challenge.EnumComparingType.AllEnemies:
+				
+					int _nEnemyTribe = 0;
+				
+					foreach (IStats stats in sc.otherStats)
+					{
+					if (!gm.IsNotEnemy(stats.team,stats.ally)) _nEnemyTribe++; continue;
+					}
+					nEnemies = _nEnemyTribe;
+					
+					return CheckValue (enumCondition, nEnemies, valueToCompare);
+								
+			default: return true;
 		}
 	}
 	
@@ -210,8 +215,6 @@ public class VictoryCondition : MonoBehaviour
 
 			if (ch.objectiveCompleted)
 			{
-				++nSuccess;
-
 				continue;
 			}
 
@@ -220,23 +223,16 @@ public class VictoryCondition : MonoBehaviour
 			if (success)
 			{
 				ch.objectiveCompleted = true;
-
-				//Faz alguma animaçao para que o usuario veja
 				em.AddEvent("objective completed", ch.Name, ch.objSprite);
-
 				Transform completeTrns = objSubpanel.transform.FindChild (ch.Name).FindChild("ObjectiveCompleted");
-				completeTrns.GetComponent<UIToggle>().value = true;
-								
+				completeTrns.GetComponent<UIToggle>().value = true;								
 				++nSuccess;
-
 			}
 		}
 
-		if (nSuccess == ChallengesToWin.Length)
+		if (nSuccess == ChallengesToWin.Length) 	//Tudo feito
 		{
 			gm.DefeatingEnemyTeamsByObjectives ();
-
-			//Tudo feito
 
 		}
 
@@ -275,15 +271,11 @@ public class VictoryCondition : MonoBehaviour
 		Transform completed = objectiveRow.transform.FindChild ("ObjectiveCompleted");
 		completed.GetComponent<UIToggle>().value = complete;
 
-		GameObject objline = NGUITools.AddChild (objSubpanel.gameObject, objectiveRow);
-
 		Transform completeTrns = objSubpanel.transform.FindChild ("Objective Row(Clone)");
 		completeTrns.name = challengeName;
 
-		objSubpanel.repositionNow = true;
-						
+		objSubpanel.repositionNow = true;						
 	
 	}
-
 
 }

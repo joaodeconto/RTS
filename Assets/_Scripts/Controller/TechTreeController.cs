@@ -17,8 +17,6 @@ public class TechTreeController : MonoBehaviour {
 	public int unitDefBonus;
 	public int buildingDefBonus;
 
-
-
 	// Use this for initialization
 	public void Init ()
 	{
@@ -28,12 +26,17 @@ public class TechTreeController : MonoBehaviour {
 		InitialiseCategoryList();
 	}
 
-	public void InitialiseCategoryList()                //sao adicionadas todas unidades possiveis de serem construidas
+	public void InitialiseCategoryList()               						//sao adicionadas todas unidades possiveis de serem construidas
 	{
 		foreach(FactoryBase fb in prefabFactory)
 		{
 			techTreeManager.Add(fb.category,0);
-			fb.InitFactoryTechAvailability();
+			fb.InitFactoryTechAvailability();								// inicializa techs no factory para zerar o prefab;
+		}
+
+		foreach(Upgrade up in prefabUpgrade)
+		{
+			techTreeManager.Add(up.name,0);
 		}
 
 		foreach(Unit u in prefabUnit)
@@ -43,21 +46,19 @@ public class TechTreeController : MonoBehaviour {
 			if (u.GetType() == typeof(Worker))
 			{
 				Worker worker = u as Worker;
-
-				worker.InitWorkerTechAvailability(); // inicializa techs no worker para zerar o prefab;
+				worker.InitWorkerTechAvailability(); 						// inicializa techs no worker para zerar o prefab;
 				break;
 			}
-
 		}
 
 		foreach (KeyValuePair<string, int> pair in techTreeManager)
 		{
 			string entry = pair.Key + " = " + pair.Value;
-			Debug.Log(entry);
+//			Debug.Log(entry);
 		}
 	}
-
-	public void TechBoolOperator(string category, bool techAvailality)
+		
+	public void TechBoolOperator(string category, bool techAvailality) 		//adiciona ou subtrai tokens de tech na lista
 	{
 		Debug.Log ("Called TechBoolOp for " +category );
 		int a = techTreeManager[category];
@@ -69,25 +70,24 @@ public class TechTreeController : MonoBehaviour {
 
 		if (a<=0) 
 		{
-			TechUnitBool(category, false);
-			TechStructureBool (category, false);
+			TechFactoriesBool(category, false);
+			TechWorkersBool (category, false);
 		}
 		if (a == 1)
 		{
-			TechUnitBool(category, true);
-			TechStructureBool (category, true);
+			TechFactoriesBool(category, true);
+			TechWorkersBool (category, true);
 		}
-		foreach (KeyValuePair<string, int> pair in techTreeManager)
-		{
-			string entry = pair.Key + " = " + pair.Value;
-			Debug.Log(entry);
-		}
+//		foreach (KeyValuePair<string, int> pair in techTreeManager)
+//		{
+//			string entry = pair.Key + " = " + pair.Value;
+//			Debug.Log(entry);
+//		}
 		
 	}
 
-	public void TechUnitBool (string category, bool techAvailality)
-	{
-	
+	public void TechFactoriesBool (string category, bool techAvailality)    //envia boleana para as factories
+	{	
 		List<FactoryBase> statsFactories = new List<FactoryBase>();
 
 		foreach (IStats stat in statsController.myStats) //muda tech nos stats
@@ -105,15 +105,14 @@ public class TechTreeController : MonoBehaviour {
 		}
 
 		foreach (FactoryBase factory in statsFactories) // aplica mudança de tech
-		{
-		
-			factory.UnitTechBool(category, techAvailality);
+		{		
+			factory.TechBool(category, techAvailality);
 		}
 
 
 	}
 
-	public void TechStructureBool (string category, bool isAvailable)
+	public void TechWorkersBool (string category, bool isAvailable) 		//envia boleana para todos workers
 	{
 		List<Worker> statsWorkers = new List<Worker>();
 		
@@ -142,7 +141,6 @@ public class TechTreeController : MonoBehaviour {
 		}
 		
 	}
-
 
 	public void GetTechOnStat()
 	{

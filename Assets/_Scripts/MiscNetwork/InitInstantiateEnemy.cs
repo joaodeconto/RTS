@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 [System.Serializable]
 public class InitInstantiateEnemy : Photon.MonoBehaviour
 {
+
 	public GameObject prefabInstantiate;
 	private bool wasInitialized = false;
 
@@ -29,13 +31,13 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 		{
 			CancelInvoke ("CheckNetwork");
 
-			InvokeRepeating ("InstantiatePrefab", 0.1f, 0.5f);
+			InvokeRepeating ("NetworkInstantiatePrefab", 0.1f, 0.5f);
 		}
 	}
 
 	void InstantiatePrefab ()
 	{
-		GameObject prefab = Instantiate (prefabInstantiate, transform.position, prefabInstantiate.transform.rotation) as GameObject;
+		GameObject prefab = Instantiate (prefabInstantiate, transform.position, transform.rotation) as GameObject;
 		prefab.transform.parent = transform.parent;
 		IStats stats = prefab.GetComponent<IStats>();
 		stats.SetTeam (8,8);
@@ -54,18 +56,27 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 
 	void NetworkInstantiatePrefab ()
 	{
-		GameObject prefab = PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, prefabInstantiate.transform.rotation, 0);
+		GameObject prefab = PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, transform.rotation, 0);
 		prefab.transform.parent = transform.parent;
+		IStats stats = prefab.GetComponent<IStats>();
+		stats.SetTeam (8,8);
+		stats.Init ();
 		if (prefab.GetComponent<FactoryBase>() != null)
 		{
 			prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
-			if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
-			Debug.Log ("init instanciate" + fb.playerUnit);
-		}				
+		}	
+
 		CancelInvoke ("NetworkInstantiatePrefab");
 		Destroy (this.gameObject);
 
 	}
+
+		void OnDrawGizmos ()
+		{			
+			Gizmos.color = Color.green;
+			float prefabSize = prefabInstantiate.GetComponent<CapsuleCollider>().radius;
+			Gizmos.DrawWireSphere (this.transform.position, prefabSize);			
+		}
 }

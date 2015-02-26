@@ -26,6 +26,7 @@ public class FactoryBase : IStats, IDeathObservable
 		public Upgrade upgrade;
 		public string buttonName;
 		public bool techAvailable = false;
+		public bool VIP = false;
 		public IStats.GridItemAttributes gridItemAttributes;
 		public bool alreadyUpgraded = false;
 		//		public ResourcesManager costOfResources;
@@ -531,8 +532,7 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	public override void Select ()
 	{
-		base.Select ();
-		
+		base.Select ();		
 
 		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
@@ -543,112 +543,125 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			foreach (UpgradeItem ui in upgradesToCreate)
 			{
-				Hashtable ht = new Hashtable();
-				ht["upgradeHT"] = ui;
-				ht["time"] = 0f;
-								
-				if (ui.upgrade.costOfResources.Rocks != 0)
+				if(!ui.techAvailable)
 				{
-					ht["gold"] = ui.upgrade.costOfResources.Rocks;
+					Hashtable ht = new Hashtable();
+					ht["upgradeHT"] = ui;
+					ht["disable"] = 0;
+					
+					hudController.CreateButtonInInspector (ui.buttonName,
+					                                       ui.gridItemAttributes.Position,
+					                                       ht,
+					                                       ui.upgrade.guiTextureName,
+					                                       null,
+					                                       (ht_dcb, onClick) => 
+					                                       {
+																UpgradeItem upgrade = (UpgradeItem)ht_dcb["upgradeHT"];																
+																hudController.OpenInfoBoxUpgrade(upgrade.upgrade);
+															});
+					
+					hudController.DeactivateButtonInInspector(ui.buttonName);
 				}
 				
-				if (ui.upgrade.costOfResources.Mana != 0)
+				else
 				{
-					ht["mana"] = ui.upgrade.costOfResources.Mana;
-				}
-
-				if (!ui.alreadyUpgraded && !ui.upgrade.uniquelyUpgraded)
-				{
+					Hashtable ht = new Hashtable();
+					ht["upgradeHT"] = ui;
+					ht["time"] = 0f;
 									
-				hudController.CreateButtonInInspector (ui.buttonName,
-				                                       ui.gridItemAttributes.Position,
-				                                       ht,
-				                                       ui.upgrade.guiTextureName,
-					                                   null,
-				                                       (ht_dcb, isDown) =>
-					                                        
-														{
-															UpgradeItem upgrade = (UpgradeItem)ht_dcb["upgradeHT"];
-														
-															if (isDown)
+					if (ui.upgrade.costOfResources.Rocks != 0)	ht["gold"] = ui.upgrade.costOfResources.Rocks;
+										
+					if (ui.upgrade.costOfResources.Mana != 0)	ht["mana"] = ui.upgrade.costOfResources.Mana;
+
+					if (!ui.alreadyUpgraded && !ui.upgrade.uniquelyUpgraded)
+					{										
+					hudController.CreateButtonInInspector (ui.buttonName,
+					                                       ui.gridItemAttributes.Position,
+					                                       ht,
+					                                       ui.upgrade.guiTextureName,
+						                                   null,
+					                                       (ht_dcb, isDown) =>
+						                                        
 															{
-																ht["time"] = Time.time;
-															}
-															else
-															{
-																Debug.Log(Time.time - (float)ht["time"]);
-																if (Time.time - (float)ht["time"] > 0.3f)
-																{	
-																	hudController.OpenInfoBoxUpgrade(upgrade.upgrade);
-																	
+																UpgradeItem upgrade = (UpgradeItem)ht_dcb["upgradeHT"];
+															
+																if (isDown)
+																{
+																	ht["time"] = Time.time;
 																}
 																else
 																{
-																	hudController.CloseInfoBox();
-				                                       
-																	List<FactoryBase> factories = new List<FactoryBase> ();
-																	
-																	
-																	foreach (IStats stat in statsController.selectedStats)
-																	{
-
-																		FactoryBase factory = stat as FactoryBase;
+																	Debug.Log(Time.time - (float)ht["time"]);
+																	if (Time.time - (float)ht["time"] > 0.3f)
+																	{	
+																		hudController.OpenInfoBoxUpgrade(upgrade.upgrade);
 																		
-																		if (factory == null) continue;
-																		
-																		factories.Add (factory);
 																	}
-																	
-																	int i = 0, factoryChoose = 0, numberToCreate = -1;
-																	
-																	foreach (FactoryBase factory in factories)
-																	{
-																		if (numberToCreate == -1)
-																		{
-																			numberToCreate = factory.lUpgradesToCreate.Count;
-																			factoryChoose = i;
-																																}
-																		else if (numberToCreate > factory.lUpgradesToCreate.Count)
-																		{
-																			numberToCreate = factory.lUpgradesToCreate.Count;
-																			factoryChoose = i;
-																		}
-																		i++;
-																	}
-																	
-																	if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
-																	{
-																			bool canBuy = gameplayManager.resources.CanBuy (upgrade.upgrade.costOfResources);
-																																									
-																			if (canBuy)
-																			{
-																				factories[factoryChoose].EnqueueUpgradeToCreate (upgrade.upgrade);
-
-																					hudController.RemoveButtonInInspector (upgrade.buttonName);
-																					upgrade.alreadyUpgraded = true;
-																																										
-																			}
-				
-				
-																	}
-																	
 																	else
-																		eventController.AddEvent("reach enqueued units");
+																	{
+																		hudController.CloseInfoBox();
+					                                       
+																		List<FactoryBase> factories = new List<FactoryBase> ();
+																		
+																		
+																		foreach (IStats stat in statsController.selectedStats)
+																		{
+
+																			FactoryBase factory = stat as FactoryBase;
+																			
+																			if (factory == null) continue;
+																			
+																			factories.Add (factory);
+																		}
+																		
+																		int i = 0, factoryChoose = 0, numberToCreate = -1;
+																		
+																		foreach (FactoryBase factory in factories)
+																		{
+																			if (numberToCreate == -1)
+																			{
+																				numberToCreate = factory.lUpgradesToCreate.Count;
+																				factoryChoose = i;
+																																	}
+																			else if (numberToCreate > factory.lUpgradesToCreate.Count)
+																			{
+																				numberToCreate = factory.lUpgradesToCreate.Count;
+																				factoryChoose = i;
+																			}
+																			i++;
+																		}
+																		
+																		if (!factories[factoryChoose].ReachedMaxEnqueuedUnits)
+																		{
+																				bool canBuy = gameplayManager.resources.CanBuy (upgrade.upgrade.costOfResources);
+																																										
+																				if (canBuy)
+																				{
+																					factories[factoryChoose].EnqueueUpgradeToCreate (upgrade.upgrade);
+
+																						hudController.RemoveButtonInInspector (upgrade.buttonName);
+																						upgrade.alreadyUpgraded = true;
+																																											
+																				}
+					
+					
+																		}
+																		
+																		else
+																			eventController.AddEvent("reach enqueued units");
+																}
 															}
-														}
-						});
-					}
+							});
+						}
+				}
 			}
 			
 				for(int i = 0; i != lUpgradesToCreate.Count; ++i)
 				{
-					Upgrade upgrade = lUpgradesToCreate[i];
-													
+					Upgrade upgrade = lUpgradesToCreate[i];													
 					Hashtable ht = new Hashtable ();
 					ht["upgradeHT"] = upgrade;
-					ht["name"] = "button-" + Time.time;
-
-					
+					ht["name"] = "button-" + Time.time;					
 					hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
 					                                               FactoryBase.FactoryQueueName,
 					                                               ht,
@@ -659,10 +672,8 @@ public class FactoryBase : IStats, IDeathObservable
 				});
 			}
 
-			if (!hasRallypoint) return;
-			
-			buildingSlider.gameObject.SetActive(true);
-			
+			if (!hasRallypoint) return;			
+			buildingSlider.gameObject.SetActive(true);			
 			Transform boostBtn =  hudController.boostProduction.transform;
 			Transform boostCostTr = boostBtn.transform.FindChild("Gold").FindChild("Label Gold Price");
 			UILabel boostCostLabel = boostCostTr.GetComponent<UILabel>();
@@ -673,38 +684,34 @@ public class FactoryBase : IStats, IDeathObservable
 			dcb = ComponentGetter.Get<DefaultCallbackButton> (boostBtn, false);
 			dcb.Init(null,
 			         (ht_dcb) => 
-			         {
-				
-				canBoost = gameplayManager.resources.CanBuy (boostCost);
-				
-				if (onBoost)
-				{
-					eventController.AddEvent("standard message", "Already on Boosting Production ");
-					return;
-					
-				}
-				
-				if (canBoost && !onBoost)
-				{
-					BoostProduction();
-					gameplayManager.resources.UseResources (boostCost);
-					Debug.Log("gold spent event");
-					return;
-					
-				}
-				
-				else
-				{
-					eventController.AddEvent("out of funds", "boostCost");
-					
-				}
-			});
-			
-			goRallypoint.gameObject.SetActive (true);
-
-//			if (!goRallypoint.gameObject.activeSelf)
-//				goRallypoint.gameObject.SetActive (true);
-
+			         {				
+							canBoost = gameplayManager.resources.CanBuy (boostCost);
+							
+							if (onBoost)
+							{
+								eventController.AddEvent("standard message", "Already on Boosting Production ");
+								return;
+								
+							}
+							
+							if (canBoost && !onBoost)
+							{
+								BoostProduction();
+								gameplayManager.resources.UseResources (boostCost);
+								Debug.Log("gold spent event");
+								return;
+								
+							}
+							
+							else
+							{
+								eventController.AddEvent("out of funds", "boostCost");
+								
+							}
+						});
+	
+			if (!goRallypoint.gameObject.activeSelf) goRallypoint.gameObject.SetActive (true);
+						
 			foreach (UnitFactory uf in unitsToCreate)
 			{
 				if(!uf.techAvailable)
@@ -732,19 +739,10 @@ public class FactoryBase : IStats, IDeathObservable
 				{
 					Hashtable ht = new Hashtable();
 					ht["unitFactory"] = uf;
-					ht["time"] = 0f;
-					
+					ht["time"] = 0f;					
 
-					if (uf.unit.costOfResources.Rocks != 0)
-					{
-						ht["gold"] = uf.unit.costOfResources.Rocks;
-					}
-					
-					if (uf.unit.costOfResources.Mana != 0)
-					{
-						ht["mana"] = uf.unit.costOfResources.Mana;
-					}
-					
+					if (uf.unit.costOfResources.Rocks != 0)	ht["gold"] = uf.unit.costOfResources.Rocks;					
+					if (uf.unit.costOfResources.Mana != 0)	ht["mana"] = uf.unit.costOfResources.Mana;					
 					
 					hudController.CreateButtonInInspector (uf.buttonName,
 					                                       uf.gridItemAttributes.Position,
@@ -844,12 +842,12 @@ public class FactoryBase : IStats, IDeathObservable
 			                                       "cross-option",
 			                                       (ht_hud) =>
 			                                       {
-				gameplayManager.resources.ReturnResources (costOfResources, 0.75f);
-				photonView.RPC ("SendRemove", PhotonTargets.All);
-			});
+														gameplayManager.resources.ReturnResources (costOfResources, 0.75f);
+														photonView.RPC ("SendRemove", PhotonTargets.All);
+													});
 		}
 	}
-	
+
 	public override void Deselect ()
 	{
 		base.Deselect ();
@@ -875,7 +873,6 @@ public class FactoryBase : IStats, IDeathObservable
 	public virtual void EnqueueUnitToCreate (Unit unit)
 	{
 		bool canBuy = gameplayManager.resources.CanBuy (unit.costOfResources);
-
 		
 		if (canBuy)
 		{
@@ -892,9 +889,8 @@ public class FactoryBase : IStats, IDeathObservable
 			                                               unit.guiTextureName,
 			                                               (hud_ht) =>
 			                                               {
-				//TODO cancelar construnção do item
-				DequeueUnit(hud_ht);
-			});
+																DequeueUnit(hud_ht);
+															});
 
 		}
 		else
@@ -903,27 +899,24 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	public void EnqueueUpgradeToCreate (Upgrade upgrade)
 	{
-
-			gameplayManager.resources.UseResources (upgrade.costOfResources);
-			lUpgradesToCreate.Add (upgrade);
-			Hashtable ht = new Hashtable();
-			ht["upgradeHT"] = upgrade;
-			ht["name"] = "button-" + Time.time;
-			
-			hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
-			                                               FactoryBase.FactoryQueueName,
-			                                               ht,
-			                                               upgrade.guiTextureName,
-			                                               (hud_ht) =>
-			                                               {
-				
+		gameplayManager.resources.UseResources (upgrade.costOfResources);
+		lUpgradesToCreate.Add (upgrade);
+		Hashtable ht = new Hashtable();
+		ht["upgradeHT"] = upgrade;
+		ht["name"] = "button-" + Time.time;
+		
+		hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
+		                                               FactoryBase.FactoryQueueName,
+		                                               ht,
+		                                               upgrade.guiTextureName,
+		                                               (hud_ht) =>
+		                                               {			
 //															DequeueUpgrade(hud_ht);
-														});
+													});
 		if (upgrade.unique)
 		{
 			upgrade.uniquelyUpgraded = true;
-		}
-		
+		}		
 	}
 	
 	private void DequeueUnit(Hashtable ht)
@@ -980,24 +973,15 @@ public class FactoryBase : IStats, IDeathObservable
 	void InvokeUpgrade (Upgrade upgrade)
 	{
 		buildingSlider.gameObject.SetActive(false);
-
 		lUpgradesToCreate.RemoveAt (0);
+		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);	
 
-		Upgrade newUpgrade = null;
-		
-		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
-	
 		Upgrade upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
-
 		upg.transform.parent = this.transform;
 
 		if (upgrade.modelUpgrade) buildingState = BuildingState.Upgraded;
 
-		newUpgrade = upg;
-
-		eventController.AddEvent("standard message",transformParticleDamageReference.position , "upgrade", upgrade.guiTextureName);
-		
-		Debug.Log("Fez UPGRADE!  " + upgrade.upgradeName);
+		eventController.AddEvent("standard message",transformParticleDamageReference.position , "upgrade", upgrade.guiTextureName);	
 	}
 	
 	public virtual void InvokeUnit (Unit unit)
@@ -1113,14 +1097,23 @@ public class FactoryBase : IStats, IDeathObservable
 	}
 
 
-	public void UnitTechBool(string category, bool isAvailable)
+	public void TechBool(string category, bool isAvailable)  // Aplica disponibilidade de tech em Upgrades e Units
 	{
 		foreach (UnitFactory uf in unitsToCreate)
 		{
 			if (uf.unit.category == category)
 			{
 				uf.techAvailable = isAvailable;
+				break;
 
+			}
+		}
+		foreach (UpgradeItem up in upgradesToCreate)
+		{	
+			if(up.upgrade.upgradeName == category)
+			{
+				up.techAvailable = isAvailable;
+				break;
 			}
 		}
 	}
@@ -1131,6 +1124,11 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			uc.techAvailable = uc.VIP;
 			
+		}
+
+		foreach (UpgradeItem up in upgradesToCreate)
+		{	
+			up.techAvailable = up.VIP;
 		}
 		
 	}

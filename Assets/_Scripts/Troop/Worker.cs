@@ -69,7 +69,7 @@ public class Worker : Unit
 	public Resource resource {get; protected set;}
 	public int currentNumberOfResources {get; protected set;}
 	public bool hasResource {get; protected set;}
-	protected int lastResourceId;
+	public int lastResourceId;
 	protected Resource lastResource;
 	protected bool isSettingWorkerNull;
 
@@ -134,12 +134,9 @@ public class Worker : Unit
 				{
 					Pathfind.Stop ();
 					transform.LookAt (resource.transform);
+					if (!IsExtracting) StartCoroutine (Extract ());
 				}
-
-				if (!IsExtracting) StartCoroutine (Extract ());
-				unitState = UnitState.Idle;
-			break;
-
+				break;
 			case WorkerState.Carrying:
 			case WorkerState.CarryingIdle:
 //				if (resource != null &&
@@ -192,7 +189,6 @@ public class Worker : Unit
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.CarryingIdle);
 
 					workerState = WorkerState.CarryingIdle;
-
 				}
 
 				if (!HasFactory ()) return;
@@ -207,7 +203,6 @@ public class Worker : Unit
 
 					return;
 				}
-
 
 				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+2f)
 				{
@@ -233,7 +228,6 @@ public class Worker : Unit
 					resourceId = -1;
 
 					ResetPathfindValue ();
-
 
 				}
 				break;
@@ -288,10 +282,10 @@ public class Worker : Unit
 					resourceWorker[lastResourceId].carryingObject.SetActive (false);
 					lastResourceId = resourceId;
 				}
-			
-			CheckConstructFactory ();
 
 				CheckResource ();
+				CheckConstructFactory ();
+				
 				
 				base.IAStep ();
 				break;
@@ -750,7 +744,6 @@ public class Worker : Unit
 	{
 		if (HasFactory ())
 		{
-
 			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+1)
 			{
 
@@ -769,15 +762,12 @@ public class Worker : Unit
 
 				lastFactory = factoryChoose;
 			}
+
 			else
-
 			{
-				if (!factoryChoose.wasBuilt ||
-					factoryChoose.IsDamaged)
-				{   
-														
+				if (!factoryChoose.wasBuilt ||	factoryChoose.IsDamaged)
+				{   														
 					Move (factoryChoose.transform.position);
-
 				}
 
 				else
@@ -788,7 +778,6 @@ public class Worker : Unit
 					isMovingToFactory = false;
 				}
 			}
-
 		}
 
 		else if (factoryChoose != null)
@@ -796,7 +785,6 @@ public class Worker : Unit
 			if (factoryChoose.WasRemoved)
 			{
 				factoryChoose = null;
-
 				Pathfind.Stop ();
 				workerState = WorkerState.Idle;
 				factoryChoose = null;
@@ -821,7 +809,6 @@ public class Worker : Unit
 	{
 		if (resource != null)
 		{
-
 			if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.capsuleCollider.radius)
 			{
 				Pathfind.Stop ();

@@ -14,7 +14,6 @@ public class CaveFactory : FactoryBase
 
 	public override void Init ()
 	{
-		string factoryName = buttonName;
 		base.Init();
 		wasBuilt = true;
 		enabled = true;
@@ -122,7 +121,7 @@ public class CaveFactory : FactoryBase
 		{
 			int teamInt = this.team;
 			unit.SetTeam(teamInt,teamInt);
-			GameObject u = PhotonNetwork.Instantiate(unit.gameObject.name, transformParticleDamageReference.position, Quaternion.identity, 0);
+			GameObject u = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
 			newUnit = u.GetComponent<Unit> ();
 			unit.SetTeam(0,0);
 		}

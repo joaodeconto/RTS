@@ -4,30 +4,18 @@ using System.Collections;
 public class PaintAgent : MonoBehaviour
 {
     
-	public float paintSize;
+	private float paintSize;
 	public string terrainName = "Terrain";
 	private XTerrainDeformer xterrainDeformer;
 
 	public void Start ()
 	{
 		xterrainDeformer = GameObject.Find (terrainName).GetComponent<XTerrainDeformer>(); 
-	
+		paintSize = GetComponent<CapsuleCollider>().radius * 2;	
 	}
 
 	 
-//	public bool TerrainPaint (
-  
-//	public void OnCollision (Collider other)
-//    {
-//
-//        if (other.GetComponent<TerrainDeformer>() != null)
-//        {
-//           other.GetComponent<TerrainDeformer>().DestroyTerrain(this.transform.position,paintSize);
-//		   
-//
-//		}
-//       
-//    }
+//	public bool TerrainPaint
 
 	public void Paint ()
 	{
@@ -37,8 +25,7 @@ public class PaintAgent : MonoBehaviour
 	void ConstructFinished ()
 	{
 		xterrainDeformer = GameObject.Find (terrainName).GetComponent<XTerrainDeformer>(); 
-		xterrainDeformer.DestroyTerrain(this.transform.position,paintSize);
-		
+		xterrainDeformer.DestroyTerrain(this.transform.position,paintSize);		
 	}
 
 }

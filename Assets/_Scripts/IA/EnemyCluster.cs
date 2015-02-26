@@ -84,9 +84,7 @@ public class EnemyCluster : MonoBehaviour {
 	}
 
 	private void CheckClusterFactory(ClusterModel cluster)
-	{
-		List<CaveFactory> factories = new List<CaveFactory> ();
-		
+	{				
 		foreach (IStats stat in statsController.otherStats)
 		{
 			if (stat.GetType() == typeof(CaveFactory))

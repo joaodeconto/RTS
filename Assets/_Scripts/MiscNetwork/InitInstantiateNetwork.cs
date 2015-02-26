@@ -76,4 +76,14 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 			Destroy (this.gameObject);
 		}
 	}
+	void OnDrawGizmos()
+	{	
+		int teamTransfor = int.Parse(this.transform.parent.name);
+		if (teamTransfor == 0) Gizmos.color = Color.red;
+		if (teamTransfor == 1) Gizmos.color = Color.blue;
+		if (teamTransfor == 2) Gizmos.color = Color.magenta;
+		if (teamTransfor == 3) Gizmos.color = Color.cyan;
+		float prefabSize = prefabInstantiate.GetComponent<CapsuleCollider>().radius;
+		Gizmos.DrawWireSphere (this.transform.position, prefabSize);		
+	}
 }

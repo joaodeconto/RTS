@@ -85,15 +85,15 @@ public class ShowScore : MonoBehaviour
 	public Login login;
 	public InternalMainMenu imm;
 		
-	public float startLabelPoisition;
-	public float diferrenceBetweenLabels;
-	private int battleTotalGold;
-	private int battleTotalMana;
-	private int battleTotalSpent;
-	private int battleTotalUnitsCreated;
-	private int battleTotalUnitsDestroyed;
-	private int battleTotalStructuresBuild;
-	private int battleTotalStructuresDestroyed;
+	public float startLabelPoisition = 0f;
+	public float diferrenceBetweenLabels = 0f;
+	private int battleTotalGold = 0;
+	private int battleTotalMana = 0;
+	private int battleTotalSpent = 0;
+	private int battleTotalUnitsCreated = 0;
+	private int battleTotalUnitsDestroyed = 0;
+	private int battleTotalStructuresBuild = 0;
+	private int battleTotalStructuresDestroyed = 0;
 		
 	// Use this for initialization
 	public void Init ()

@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using Visiorama.Extension;
 using Visiorama;
 
@@ -31,6 +30,13 @@ public class Unit : IStats, IMovementObservable,
 		Walk   = 1,
 		Attack = 2,
 		Die    = 3
+	}
+	public enum UnitSkill
+	{
+		none,
+		Crusher,
+		ManEater,
+		BeastMaster
 	}
 
 	public int force;
@@ -61,11 +67,8 @@ public class Unit : IStats, IMovementObservable,
 
 			return canHit;
 		}
-	}
-
-   
+	}   
 	protected PhotonPlayer playerTargetAttack;
-
 	protected GameObject m_targetAttack;
 	protected GameObject TargetAttack {
 		get { return m_targetAttack; }
@@ -79,21 +82,17 @@ public class Unit : IStats, IMovementObservable,
 	}
 	protected bool followingTarget;
 	protected float attackBuff;
-
 	public bool moveAttack { get; set; }
-
 	public UnitState unitState { get; set; }
-
+	public UnitSkill unitSkill {get; set;}
+	public int skillBonus {get; set;}
 	protected bool invokeCheckEnemy;
-
 	protected NavMeshAgent Pathfind;
-
 	public float GetPathFindRadius {
 		get	{
 			return Pathfind.radius;
 		}
 	}
-
 	protected Vector3 PathfindTarget {
 		get { return m_pathFindTarget; }
 		set {
@@ -101,13 +100,9 @@ public class Unit : IStats, IMovementObservable,
 			m_pathFindTarget = value;
 		}
 	}
-
 	private Vector3 m_pathFindTarget;
 	private Vector3 m_lastSavedPosition;
-
-//	protected HUDController hudController;
 	protected InteractionController interactionController;
-
 	protected float normalAcceleration;
 	public float normalSpeed;
 	protected float normalAngularSpeed;
@@ -376,8 +371,21 @@ public class Unit : IStats, IMovementObservable,
 		}
 		
 	}
-		
-		//			SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
+
+	public bool CheckNemesis(IStats targetStats)										 // Confere se o target stats e do tipo alvo de nossa habilidade
+	{
+		if (unitSkill == UnitSkill.Crusher && targetStats.GetType() == typeof(FactoryBase))	 // bonus vs factory
+			return true;
+
+		if (unitSkill == UnitSkill.ManEater && targetStats.GetType() == typeof(Unit) && targetStats.subCategory == "Man") // bonus vs factory - busca por subcategoria o nome "man"
+			return true;
+
+		if (unitSkill == UnitSkill.BeastMaster && targetStats.GetType() == typeof(Unit) && targetStats.subCategory == "Dino") 	// bonus vs factory - busca por subcategoria o nome "Dino" da
+			return true;
+
+		else return false;
+	}
+
 		
 	private IEnumerator Attack ()
 	{
@@ -385,7 +393,6 @@ public class Unit : IStats, IMovementObservable,
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
 
 		SfxAtk();
-
 
 		if (unitAnimation.Attack)
 		{
@@ -399,15 +406,27 @@ public class Unit : IStats, IMovementObservable,
 			}
 			else
 			{
-				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
+				if (unitSkill != UnitSkill.none)
+				{	
+					if	(CheckNemesis(TargetAttack.GetComponent<IStats>()))
+					{
+						skillBonus  = Mathf.FloorToInt((force + AdditionalForce)*1.5f);                                   
+					}
+				}
+				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce + skillBonus);
 			}
 			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
-  			
+
+			Debug.Log("SkillBonus de" + this + " skill " +skillBonus);
+			skillBonus = 0; 
 			IsAttacking = false;
+			Debug.Log("zerou?"+skillBonus);
 		}
 		else
 		{
+			Debug.LogError("Caiu no attack buffer estranho");
+
 			if(attackBuff < attackDuration)
 			{
                 attackBuff += Time.deltaTime;
@@ -421,8 +440,6 @@ public class Unit : IStats, IMovementObservable,
 				else
 				{
 					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
-//					photonView.RPC ("AttackUnit", targetAttack.GetPhotonView().owner, targetAttack.name, force + AdditionalForce);
-//					photonView.RPC ("AttackUnit", PhotonTargets.AllBuffered, targetAttack.name, force + AdditionalForce);
 				}
 
 				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -877,8 +894,8 @@ public class Unit : IStats, IMovementObservable,
 		Pathfind.angularSpeed = normalAngularSpeed;
 	}
 
-//	public override void DrawGizmosSelected ()
-//	{
+	public override void DrawGizmosSelected ()
+	{
 //		base.DrawGizmosSelected ();
 //
 //		Gizmos.color = Color.cyan;
@@ -887,9 +904,9 @@ public class Unit : IStats, IMovementObservable,
 //		Gizmos.color = Color.red;
 //		Gizmos.DrawWireSphere (this.transform.position, attackRange);
 //
-//		Gizmos.color = Color.yellow;
-//		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
-//	}
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
+	}
 
 	public override void SetVisible(bool isVisible)
 	{
@@ -1082,7 +1099,7 @@ public class Unit : IStats, IMovementObservable,
 		IStats stat = statsController.FindMyStat (name);
 		if (stat != null)
 		{
-			stat.ReceiveAttack (force);
+			stat.ReceiveAttack (force - defense);
 		}
 	}
 

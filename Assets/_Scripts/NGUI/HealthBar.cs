@@ -42,7 +42,7 @@ public class HealthBar : MonoBehaviour, IHealthObserver
 		if (Target == null)
 			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
 
-		slider.sliderValue = (float)currentHealth / (float)Target.MaxHealth;
+		slider.value = (float)currentHealth / (float)Target.MaxHealth;
 	}
 
 	#endregion
