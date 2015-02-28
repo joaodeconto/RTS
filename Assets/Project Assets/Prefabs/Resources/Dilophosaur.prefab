@@ -1492,6 +1492,7 @@ MonoBehaviour:
   transformParticleDamageReference: {fileID: 400002}
   playerUnit: 0
   category: Dilophosaur
+  subCategory: Dino
   description: Fast moving ranged-attacker, spits poison from a medium distance. Stronger
     agains humans.
   requisites: Workshop
@@ -1515,11 +1516,14 @@ MonoBehaviour:
     SpecialAttack: []
   timeToSpawn: 7
   ControllerAnimation: {fileID: 11100000}
+  unitSkill: 0
   normalSpeed: 0
-  prefabRange: {fileID: 100004, guid: 699719ce50e336b4a83967805e46fab8, type: 2}
+  projectileAttackForce: 0
+  projectileAttackRange: 0
+  prefabProjectile: {fileID: 0}
   trnsInstantiateLocalPrefab: {fileID: 400092}
-  highRangeAttack: 13
-  highRangeAnimation: {fileID: 7400008, guid: faa0835c348881a4fa17938cdba990a8, type: 3}
+  dummyRangeObject: {fileID: 0}
+  projectileAttackAnimation: {fileID: 0}
   projectileAnimationSync: .800000012
 --- !u!114 &11400004
 MonoBehaviour:

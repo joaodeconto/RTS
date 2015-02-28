@@ -104,10 +104,8 @@ public class RangeUnit : Unit
 				return;
 			}
 			
-			Pathfind.Stop ();
-
+			NavAgent.Stop ();
 			PathfindTarget = transform.position;
-
 			StartCoroutine(Attack ());
 		}
 		else
@@ -120,7 +118,7 @@ public class RangeUnit : Unit
 	IEnumerator Attack ()
 	{			
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
-		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
+		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * NavAgent.angularSpeed);
 
 
 		if(projectileAttacking)

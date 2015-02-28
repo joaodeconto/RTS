@@ -73,7 +73,6 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
 
         }
 
-		rangeUnitScript.SyncAnimation ();
 	}
 
 //    private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
@@ -83,10 +82,9 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
     {
        	if (!photonView.isMine)
 		{
-
        		transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
      		transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
-
+			rangeUnitScript.SyncAnimation ();
 		}
     }
 }

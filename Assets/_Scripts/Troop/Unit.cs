@@ -24,13 +24,6 @@ public class Unit : IStats, IMovementObservable,
 		public AnimationClip[] SpecialAttack;
 	}
 
-	public enum UnitState
-	{
-		Idle   = 0,
-		Walk   = 1,
-		Attack = 2,
-		Die    = 3
-	}
 	public enum UnitSkill
 	{
 		none,
@@ -39,27 +32,27 @@ public class Unit : IStats, IMovementObservable,
 		BeastMaster
 	}
 
+	public enum UnitState
+	{
+		Idle   = 0,
+		Walk   = 1,
+		Attack = 2,
+		Die    = 3
+	}
+
 	public int force;
 	public float distanceView       = 15f;
 	public float attackRange        = 5f;
 	public float attackDuration     = 1f;
-	public int numberOfUnits = 1;
-	public float speed { get { return Pathfind.speed; } }
-
-
+	public int numberOfUnits 		= 1;
+	public float speed { get { return NavAgent.speed; } }
 	public string guiTextureName;
-
-	public UnitAnimation unitAnimation;
-	
+	public UnitAnimation unitAnimation;	
 	public float timeToSpawn;
-
 	public int AdditionalForce { get; set; }
-
 	public bool IsAttacking { get; protected set; }
-	public bool IsDead { get; protected set; }
-
+	public bool IsDead { get; set; }
 	public Animation ControllerAnimation;
-
 	private bool canHit;
 	public bool CanHit {
 		get {
@@ -84,13 +77,13 @@ public class Unit : IStats, IMovementObservable,
 	protected float attackBuff;
 	public bool moveAttack { get; set; }
 	public UnitState unitState { get; set; }
-	public UnitSkill unitSkill {get; set;}
+	public UnitSkill unitSkill;
 	public int skillBonus {get; set;}
 	protected bool invokeCheckEnemy;
-	protected NavMeshAgent Pathfind;
+	protected NavMeshAgent NavAgent;
 	public float GetPathFindRadius {
 		get	{
-			return Pathfind.radius;
+			return NavAgent.radius;
 		}
 	}
 	protected Vector3 PathfindTarget {
@@ -135,33 +128,27 @@ public class Unit : IStats, IMovementObservable,
 		interactionController = ComponentGetter.Get<InteractionController>();
 		selectionController   = ComponentGetter.Get<SelectionController>();
 
-		Pathfind = GetComponent<NavMeshAgent>();
+		NavAgent = GetComponent<NavMeshAgent>();
 
-		normalAcceleration = Pathfind.acceleration;
-		normalSpeed        = Pathfind.speed;
-		normalAngularSpeed = Pathfind.angularSpeed;
-		normalObstacleAvoidance = Pathfind.obstacleAvoidanceType;
-		normalAvoidancePriority = Pathfind.avoidancePriority;
+		normalAcceleration = NavAgent.acceleration;
+		normalSpeed        = NavAgent.speed;
+		normalAngularSpeed = NavAgent.angularSpeed;
+		normalObstacleAvoidance = NavAgent.obstacleAvoidanceType;
+		normalAvoidancePriority = NavAgent.avoidancePriority;
 
 		PathfindTarget = transform.position;
-
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
-
 		GameController gc = ComponentGetter.Get<GameController> ();
-
 		float timeToNotifyMovementObservers = 1f / gc.targetFPS;
-
 		InvokeRepeating ("NotifyMovement", timeToNotifyMovementObservers, timeToNotifyMovementObservers);
-
-		unitState = UnitState.Idle;
-			
+		unitState = UnitState.Idle;			
 		if (!enabled) enabled = playerUnit;
 	}
 
 	void Update ()
 	{
-		if (unitState != UnitState.Die) IAStep ();
+		if (!IsDead) IAStep ();
 	}
 
 	void OnDestroy ()
@@ -207,7 +194,7 @@ public class Unit : IStats, IMovementObservable,
 			case UnitState.Walk:
 				if (unitAnimation.Walk)
 				{
-					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(Pathfind.velocity.sqrMagnitude, 0f, 1f);
+					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(NavAgent.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
 				
@@ -248,7 +235,7 @@ public class Unit : IStats, IMovementObservable,
 				else if (MoveComplete(PathfindTarget))
 				{
 
-//				Pathfind.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+//				NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 					StopMove (true);
 					
 				}
@@ -324,16 +311,16 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 
-	#region Move Pathfind w/ Avoidance
+	#region Move NavAgent w/ Avoidance
 	public void Move (Vector3 destination)
 	{
-		Pathfind.enabled = true;
+		NavAgent.enabled = true;
 
-		Pathfind.avoidancePriority = normalAvoidancePriority;
+		NavAgent.avoidancePriority = normalAvoidancePriority;
 	
-		if (!Pathfind.updatePosition) Pathfind.updatePosition = true;
+		if (!NavAgent.updatePosition) NavAgent.updatePosition = true;
 
-		if (PathfindTarget != destination) Pathfind.SetDestination (destination);
+		if (PathfindTarget != destination) NavAgent.SetDestination (destination);
 
 		PathfindTarget = destination;
 
@@ -342,13 +329,13 @@ public class Unit : IStats, IMovementObservable,
 
 	public void StopMove (bool changeState = false)
 	{
-		Pathfind.avoidancePriority = 4;
+		NavAgent.avoidancePriority = 4;
 
 		if (changeState)
 		{
 			unitState = UnitState.Idle;
 		}
-		Pathfind.Stop ();
+		NavAgent.Stop ();
 	}
 	#endregion
 
@@ -390,7 +377,7 @@ public class Unit : IStats, IMovementObservable,
 	private IEnumerator Attack ()
 	{
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
-		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * Pathfind.angularSpeed);
+		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * NavAgent.angularSpeed);
 
 		SfxAtk();
 
@@ -461,7 +448,7 @@ public class Unit : IStats, IMovementObservable,
 		ht["observableHealth"] = this;
 		ht["time"] = 0f;
 		
-		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
+		hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 
 		if (!gameplayManager.IsSameTeam (this.team))
@@ -606,17 +593,17 @@ public class Unit : IStats, IMovementObservable,
 
 	public bool MoveComplete (Vector3 destination)
 	{
-		float distanceToDestination = Vector3.Distance(transform.position, Pathfind.destination);
+		float distanceToDestination = Vector3.Distance(transform.position, NavAgent.destination);
 	
-		return (distanceToDestination <= Pathfind.stoppingDistance) && Pathfind.velocity.sqrMagnitude < 0.1f;
+		return (distanceToDestination <= NavAgent.stoppingDistance) && NavAgent.velocity.sqrMagnitude < 0.1f;
 	}
 
 
 	public bool MoveComplete ()
 	{
 
-		return (Vector3.Distance(transform.position, Pathfind.destination) <= Pathfind.stoppingDistance) &&
-				Pathfind.velocity.sqrMagnitude < 0.1f;
+		return (Vector3.Distance(transform.position, NavAgent.destination) <= NavAgent.stoppingDistance) &&
+				NavAgent.velocity.sqrMagnitude < 0.1f;
 
 	}
 
@@ -792,10 +779,11 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 
-
 	public virtual IEnumerator OnDie ()
 	{
 		IsDead = true;
+
+		unitState = UnitState.Die;
 
 		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");
 
@@ -812,12 +800,8 @@ public class Unit : IStats, IMovementObservable,
 			smas.rolloffMode =AudioRolloffMode.Custom;
 
 		}
-
-
-		Pathfind.Stop ();
-		Pathfind.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-
-		unitState = UnitState.Die;
+		NavAgent.Stop ();
+		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 
 		//IMovementObservable
 		int c = IMOobservers.Count;
@@ -889,13 +873,13 @@ public class Unit : IStats, IMovementObservable,
 
 	internal void ResetPathfindValue ()
 	{
-		Pathfind.acceleration = normalAcceleration;
-		Pathfind.speed = normalSpeed;
-		Pathfind.angularSpeed = normalAngularSpeed;
+		NavAgent.acceleration = normalAcceleration;
+		NavAgent.speed = normalSpeed;
+		NavAgent.angularSpeed = normalAngularSpeed;
 	}
 
-	public override void DrawGizmosSelected ()
-	{
+//	public override void DrawGizmosSelected ()
+//	{
 //		base.DrawGizmosSelected ();
 //
 //		Gizmos.color = Color.cyan;
@@ -904,22 +888,25 @@ public class Unit : IStats, IMovementObservable,
 //		Gizmos.color = Color.red;
 //		Gizmos.DrawWireSphere (this.transform.position, attackRange);
 //
-		Gizmos.color = Color.yellow;
-		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
-	}
+//		Gizmos.color = Color.yellow;
+//		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
+//	}
 
 	public override void SetVisible(bool isVisible)
 	{
-		ComponentGetter
-			.Get<StatsController>()
-				.ChangeVisibility (this, isVisible);
-
+		ComponentGetter.Get<StatsController>().ChangeVisibility (this, isVisible);
 		model.SetActive(isVisible);
+		if (firstDamage)
+		{
+			if(isVisible)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
+			else hudController.DestroySelected(transform);
+		}
 	}
 
 	public override bool IsVisible
 	{
-		get {
+		get 
+		{
 			return model.activeSelf;
 		}
 	}
@@ -1097,9 +1084,9 @@ public class Unit : IStats, IMovementObservable,
 	public virtual void AttackStat (string name, int force)
 	{
 		IStats stat = statsController.FindMyStat (name);
-		if (stat != null)
+		if (stat != null && unitState != UnitState.Die)
 		{
-			stat.ReceiveAttack (force - defense);
+			stat.ReceiveAttack (force);
 		}
 	}
 

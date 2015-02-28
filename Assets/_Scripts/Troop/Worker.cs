@@ -132,13 +132,19 @@ public class Worker : Unit
 				}
 				else
 				{
-					Pathfind.Stop ();
+					NavAgent.Stop ();
 					transform.LookAt (resource.transform);
 					if (!IsExtracting) StartCoroutine (Extract ());
 				}
-				break;
+
+				if (!IsExtracting) StartCoroutine (Extract ());
+				unitState = UnitState.Idle;
+			break;
+
 			case WorkerState.Carrying:
 			case WorkerState.CarryingIdle:
+				
+				NavAgent.obstacleAvoidanceType = this.normalObstacleAvoidance;			
 //				if (resource != null &&
 //					!settingWorkerNull)
 //				{
@@ -177,10 +183,11 @@ public class Worker : Unit
 				{
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
-					ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = resourceWorker[resourceId].workerAnimation.carryingAnimSpeed * Mathf.Clamp(Pathfind.velocity.sqrMagnitude, 0f, 1f);
+						NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+						ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = resourceWorker[resourceId].workerAnimation.carryingAnimSpeed * Mathf.Clamp(NavAgent.velocity.sqrMagnitude, 0f, 1f);
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying, WrapMode.Loop);
 					}
-
+					
 					workerState = WorkerState.Carrying;
 				}
 				else
@@ -211,7 +218,7 @@ public class Worker : Unit
 					if (resource != null) SetResource (resource);
 					else
 					{
-						Pathfind.Stop ();
+						NavAgent.Stop ();
 						unitState = Unit.UnitState.Idle;
 					}
 
@@ -256,7 +263,7 @@ public class Worker : Unit
 					}
 				}
 
-				Pathfind.Stop ();
+				NavAgent.Stop ();
 				if (workerState == WorkerState.Building)
 				{
 					if (!IsBuilding) StartCoroutine (StartConstruct ());
@@ -389,8 +396,6 @@ public class Worker : Unit
 															hudController.OpenInfoBoxFactory(factory.factory, false);																				
 															
 														});
-
-
 			}
 
 			else
@@ -443,9 +448,7 @@ public class Worker : Unit
 	public override IEnumerator OnDie ()
 	{
 		workerState = WorkerState.Idle;
-
 		return base.OnDie ();
-
 	}
 
 	public void InstanceGhostFactory (Hashtable ht)
@@ -474,12 +477,9 @@ public class Worker : Unit
 		if (resource != null)
 		{
 			CapsuleCollider col = resource.GetComponent<CapsuleCollider> ();
-
 			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
-
 			Vector3 position = resource.transform.position - randomVector;
 			position.y = resource.transform.position.y;
-
 			Move (position);
 		}
 	}
@@ -488,25 +488,9 @@ public class Worker : Unit
 	IEnumerator StartConstruct ()
 	{
 		IsBuilding = true;
-
-		AudioClip sfxBuilding = SoundManager.LoadFromGroup("Building");
-		
-		Vector3 u = this.transform.position;
-		
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxBuilding, "Building", 0.7f, 1f, u);
-		
-		if (smas !=null)
-		{
-			
-			smas.dopplerLevel = 0.0f;
-			smas.minDistance = 3.0f;
-			smas.maxDistance = 30.0f;
-			smas.rolloffMode =AudioRolloffMode.Linear;
-		}
-
+		PlayWorkerSfx("Building");
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
-
 
 		if (HasFactory () && !factoryChoose.Construct (this))
 		{
@@ -514,34 +498,14 @@ public class Worker : Unit
 		}
 
 		IsBuilding = false;
-
 	}
 
 	IEnumerator StartRepair ()
 	{
 		IsRepairing = true;
-
-		AudioClip sfxBuilding = SoundManager.LoadFromGroup("Building");
-		
-		Vector3 u = this.transform.position;
-		
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxBuilding, "Building", 0.7f, 1f, u);
-		
-		if (smas !=null)
-		{
-			
-			smas.dopplerLevel = 0.0f;
-			smas.minDistance = 3.0f;
-			smas.maxDistance = 30.0f;
-			smas.rolloffMode =AudioRolloffMode.Linear;
-		}
-
-
+		PlayWorkerSfx("Building");
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
-
-
-
 		if (HasFactory ())
 		{
 			if (!factoryChoose.Repair (this))
@@ -549,36 +513,17 @@ public class Worker : Unit
 				factoryChoose = null;
 			}
 		}
-
 		IsRepairing = false;
 	}
 
 	IEnumerator Extract ()
 	{
 		IsExtracting = true;
-
-		AudioClip sfxmining = SoundManager.LoadFromGroup("Mining");
-		
-		Vector3 u = this.transform.position;
-		
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxmining, "Mining", 0.6f, 1f, u);
-		
-		if (smas !=null)
-		{
-			
-			smas.dopplerLevel = 0.0f;
-			smas.minDistance = 3.0f;
-			smas.maxDistance = 30.0f;
-			smas.rolloffMode =AudioRolloffMode.Linear;
-		}
-
-
+		PlayWorkerSfx("Mining");
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
-
 		if (resource != null) resource.ExtractResource (this);
 		else workerState = WorkerState.Idle;
-
 		IsExtracting = false;
 	}
 #endregion
@@ -594,9 +539,9 @@ public class Worker : Unit
 		currentNumberOfResources = gotNumberResources;
 		hasResource = true;
 
-		Pathfind.acceleration = resourceWorker[resourceId].carryingAcceleration;
-		Pathfind.speed = resourceWorker[resourceId].carryingSpeed;
-		Pathfind.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
+		NavAgent.acceleration = resourceWorker[resourceId].carryingAcceleration;
+		NavAgent.speed = resourceWorker[resourceId].carryingSpeed;
+		NavAgent.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
 
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
@@ -772,7 +717,7 @@ public class Worker : Unit
 
 				else
 				{
-					Pathfind.Stop ();
+					NavAgent.Stop ();
 					workerState = WorkerState.Idle;
 					factoryChoose = null;
 					isMovingToFactory = false;
@@ -785,13 +730,12 @@ public class Worker : Unit
 			if (factoryChoose.WasRemoved)
 			{
 				factoryChoose = null;
-				Pathfind.Stop ();
+				NavAgent.Stop ();
 				workerState = WorkerState.Idle;
 				factoryChoose = null;
 				isMovingToFactory = false;
 			}
 		}
-
 	}
 
 	public bool HasFactory ()
@@ -811,7 +755,7 @@ public class Worker : Unit
 		{
 			if (Vector3.Distance (transform.position, resource.transform.position) < distanceToExtract + resource.capsuleCollider.radius)
 			{
-				Pathfind.Stop ();
+				NavAgent.Stop ();
 
 				if (resource.AddWorker (this))
 				{
@@ -827,7 +771,6 @@ public class Worker : Unit
 					}
 
 					lastResource = resource;
-
 					workerState = WorkerState.Extracting;
 				}
 			}
@@ -843,6 +786,20 @@ public class Worker : Unit
 				fc.techAvailable = isAvailable;
 
 			}
+		}
+	}
+
+	void PlayWorkerSfx(string audioGroup)
+	{
+		AudioClip sfx = SoundManager.LoadFromGroup(audioGroup);		
+		Vector3 u = this.transform.position;		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfx, audioGroup, 0.6f, 1f, u);		
+		if (smas != null)
+		{		
+			smas.dopplerLevel = 0.0f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 30.0f;
+			smas.rolloffMode =AudioRolloffMode.Linear;
 		}
 	}
 

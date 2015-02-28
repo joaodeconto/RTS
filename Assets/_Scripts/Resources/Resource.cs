@@ -122,7 +122,6 @@ public class Resource : IStats
 
 	void Awake ()
 	{
-
 		hudController         = ComponentGetter.Get<HUDController> ();
 		WorkersResistance	  = new Dictionary<Worker, int>();
 		capsuleCollider  	  = GetComponent<CapsuleCollider> ();
@@ -130,8 +129,6 @@ public class Resource : IStats
 
 	public void ExtractResource (Worker worker)
 	{
-
-
 			WorkersResistance[worker] = Mathf.Max (0, WorkersResistance[worker] - worker.forceToExtract);
 			if (WorkersResistance[worker] == 0f)
 			{
@@ -152,14 +149,12 @@ public class Resource : IStats
 				WorkersResistance[worker] = resistance;
 		    	
 			}
-
 	}
 
 	[RPC]
 	void DiscountResources (int numberMaxGetResources)
 	{
 		numberOfResources = Mathf.Max (0, numberOfResources - numberMaxGetResources);
-
 
 		if (numberOfResources == 0) Destroy (gameObject);
 	}
@@ -224,7 +219,7 @@ public class Resource : IStats
 		base.Select ();
 		
 //		hudController.CreateSelected (this.transform, sizeOfSelected, Color.yellow);
-//		hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, maxResources);
+//		hudController.CreateSubstanceResourceBar (this, sizeOfHealthBar, maxResources);
 	
 
 	}

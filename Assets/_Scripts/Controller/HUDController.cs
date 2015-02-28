@@ -204,7 +204,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	}
 
 	#region CreateSubsResourceBKP
-	public SubstanceResourceBar CreateSubstanceResourceBar (IStats target, float size, float maxResource)
+	public SubstanceResourceBar CreateSubstanceResourceBar (IStats target, float size, float timeToCreateBar)
 	{
 		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
@@ -222,9 +222,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		selectObj.transform.parent = mainTranformSelectedObjects;
 		
 		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
-			      	
-		//healthBar.SetTarget (target, target.team);
-		
+
+		resourceBar.refTarget = target;
+		resourceBar.Init();	
 		return resourceBar;
 	}
 	#endregion
@@ -340,13 +340,13 @@ public class HUDController : MonoBehaviour, IDeathObserver
 				}
 			}
 			
-//			if (child.GetComponent<SubstanceHealthBar>())
-//			{
-//				if (child.GetComponent<SubstanceHealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
-//				{
-//					Destroy (child.gameObject);
-//				}
-//			}
+			if (child.GetComponent<SubstanceHealthBar>())
+			{
+				if (child.GetComponent<SubstanceHealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+				{
+					Destroy (child.gameObject);
+				}
+			}
 		}
 	}
 
@@ -507,29 +507,6 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			}
 		}
 	}
-	public void DeactivateButtonInInspector(string buttonName, Transform buttonParent = null)
-	{
-		Transform trns = (buttonParent != null) ? buttonParent : trnsOptionsMenu;
-		GameObject button = null;
-		
-		foreach (Transform child in trns)
-		{
-			if (child.gameObject.name.Equals(buttonName) ||
-			    child.gameObject.name.Equals(PERSIST_STRING + buttonName))
-			{
-				button = child.gameObject;
-				UISprite b = button.transform.FindChild("Foreground").gameObject.GetComponent<UISprite>();
-				b.color = Color.gray;
-				UISprite c = button.transform.FindChild("Background").gameObject.GetComponent<UISprite>();  
-				c.color = Color.gray;
-				UILabel d = button.transform.FindChild("Label Counter").gameObject.GetComponent<UILabel>();
-				d.text = "x";
-				d.enabled = true;
-				Debug.Log (buttonName + " desativado e deve estar cinza e com um x.");
-				break;
-			}
-		}
-	}
 
 	public void DestroyOptionsBtns ()
 
@@ -609,40 +586,34 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 
 	
-	public void OpenInfoBoxUnit (Unit unit)
+	public void OpenInfoBoxUnit (Unit unit, bool techAvailable)
 	{
-
+		if (!techAvailable)
+		{
+			infoReq.gameObject.SetActive(true);
+			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
+			reqLabel.text =  unit.requisites;
+		}
+		else
+			infoReq.gameObject.SetActive(false);
 		infoFactory.gameObject.SetActive (false);
 		infoUpgrade.gameObject.SetActive (false);
-
 		attackLabel = infoUnit.FindChild ("attack-label").GetComponent<UILabel> ();
 		hpLabel	    = infoUnit.FindChild ("hp-label").GetComponent<UILabel> ();
 		speedLabel  = infoUnit.FindChild ("speed-label").GetComponent<UILabel> ();
 		unitsLabel  = infoUnit.FindChild ("house-label").GetComponent<UILabel> ();
 		timeLabel   = infoUnit.FindChild ("time-label").GetComponent<UILabel> ();
 		defLabel    = infoUnit.FindChild ("def-label").GetComponent<UILabel> ();
-		descriptLabel = infoUnit.FindChild ("descript-label").GetComponent<UILabel> ();
-			
-		nameLabel.text = unit.category;
-				
-//		spriteUnit.spriteName = unit.guiTextureName;
-				
-		attackLabel.text = (unit.AdditionalForce != 0)
-							? unit.force + "(+" + unit.AdditionalForce + ")"
-							: unit.force.ToString ();
+		descriptLabel = infoUnit.FindChild ("descript-label").GetComponent<UILabel> ();			
+		nameLabel.text = unit.category;				
+		attackLabel.text = (unit.AdditionalForce != 0)	? unit.force + "(+" + unit.AdditionalForce + ")": unit.force.ToString ();
 		defLabel.text = unit.defense.ToString ();				
 		hpLabel.text = unit.maxHealth.ToString ();
 		speedLabel.text = unit.normalSpeed.ToString();
 		unitsLabel.text = unit.numberOfUnits.ToString ();
 		timeLabel.text = unit.timeToSpawn.ToString ()+"s";
-		descriptLabel.text = unit.description;
-		
-//		Transform goldLabel = infoStats.FindChild ("gold-label");
-//		goldLabel.GetComponent<UILabel> ().text = unit.costOfResources.ToString ();
-		
-//		unit.RegisterDeathObserver (this);
-		
-		//Ligar painel so por ultimo
+		descriptLabel.text = unit.description;			
+//		unit.RegisterDeathObserver (this);		
 		trnsPanelInfoBox.gameObject.SetActive (true);
 		infoUnit.gameObject.SetActive (true);
 	}
@@ -658,47 +629,45 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		else
 			infoReq.gameObject.SetActive(false);
 
-		infoUnit.gameObject.SetActive (false);
-		infoUpgrade.gameObject.SetActive (false);
-
-
 		nameLabel.text = factory.category;
 		hpLabel = infoFactory.FindChild ("hp-label").GetComponent<UILabel> ();
 		hpLabel.text = factory.MaxHealth.ToString();
-
 		defLabel = infoFactory.FindChild ("def-label").GetComponent<UILabel> ();
 		defLabel.text = factory.defense.ToString();
-
 		descriptLabel = infoFactory.FindChild ("descript-label").GetComponent<UILabel> ();
 		descriptLabel.text = factory.description;
-
+		infoUnit.gameObject.SetActive (false);
+		infoUpgrade.gameObject.SetActive (false);
 		infoFactory.gameObject.SetActive (true);
 		trnsPanelInfoBox.gameObject.SetActive (true);
 	}	
 
-	public void OpenInfoBoxUpgrade (Upgrade upgrade)
+	public void OpenInfoBoxUpgrade (Upgrade upgrade, bool techAvailable)
 	{
+		if (!techAvailable)
+		{
+			infoReq.gameObject.SetActive(true);
+			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
+			reqLabel.text = upgrade.requisites;
+		}
+		else
+			infoReq.gameObject.SetActive(false);
+
 		infoUnit.gameObject.SetActive (false);
-		infoFactory.gameObject.SetActive (false);
-		
-		
+		infoFactory.gameObject.SetActive (false);		
 		nameLabel.text = upgrade.upgradeName;
 		stats1 = infoUpgrade.FindChild ("stats1-label").GetComponent<UILabel> ();
 		stats1.text = upgrade.stats1Value;
 		stats1Text = infoUpgrade.FindChild ("stats1-text").GetComponent<UILabel> ();
-		stats1Text.text = upgrade.stats1Text;
-				
+		stats1Text.text = upgrade.stats1Text;				
 		stats2 = infoUpgrade.FindChild ("stats2-label").GetComponent<UILabel> ();
 		stats2.text = upgrade.stats2Value;
 		stats2Text = infoUpgrade.FindChild ("stats2-text").GetComponent<UILabel> ();
-		stats2Text.text = upgrade.stats2Text;
-		
+		stats2Text.text = upgrade.stats2Text;		
 		timeLabel = infoUpgrade.FindChild ("time-label").GetComponent<UILabel> ();
-		timeLabel.text = upgrade.timeToSpawn.ToString()+"s";
-		
+		timeLabel.text = upgrade.timeToSpawn.ToString()+"s";		
 		descriptLabel = infoUpgrade.FindChild ("descript-label").GetComponent<UILabel> ();
-		descriptLabel.text = upgrade.description;
-		
+		descriptLabel.text = upgrade.description;		
 		infoUpgrade.gameObject.SetActive (true);
 		trnsPanelInfoBox.gameObject.SetActive (true);
 	}	

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-
 using Visiorama;
 
 [RequireComponent(typeof (MeshRenderer))]
@@ -8,10 +7,9 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 {
 	public IHealthObservable Target { private set; get; }
 	private int TargetTeamID;
-	
+	private bool colored = false;
 	private ProceduralMaterial substance;
 	private ProceduralPropertyDescription[] curProperties;
-	
 	private MeshRenderer subMeshRenderer;
 
 	void Awake ()
@@ -87,13 +85,14 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 				{
 					substance.SetProceduralFloat(curProperty.name, (percentHealth-3.14f));
 				}
-				else
-				{
-					int teamID = this.TargetTeamID;
-					Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
-					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
-						substance.SetProceduralColor(curProperty.name, teamColor);
-				}
+//				if(!colored)
+//				{
+//					int teamID = this.TargetTeamID;
+//					Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
+//					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
+//						substance.SetProceduralColor(curProperty.name, teamColor);
+//					colored = true;
+//				}
 			}
 
 		}

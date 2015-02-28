@@ -34,34 +34,29 @@ public class VictoryCondition : MonoBehaviour
 		public EnumCondition enumCondition;
 		public string objDescription;
 		public string objSprite;
-
-
 	}
 
 	private GameplayManager gm;
 	private StatsController sc;
 	private EventController em;
-
-	public Challenge[] ChallengesToWin;
-		 
+	public Challenge[] ChallengesToWin;		 
 	public bool Ativar;
-	public bool FoiAtivado;
+	private bool FoiAtivado;
 	public GameObject objectiveLog;
 	public UITable objSubpanel;
 	public GameObject objectiveRow;
-
-	public int nEnemies = 0;
-	public int nPopulation = 0;
-	public int nTeams = 0;
-	public int nMaxPopulation = 0;
-	public float nTime = 0;
-	public int nBuilds = 0;
-	public int eneBuilds = 0;
-	public int nCollected = 0;
-
+	private int nEnemies = 0;
+	private int nPopulation = 0;
+	private int nTeams = 0;
+	private int nMaxPopulation = 0;
+	private float nTime = 0;
+	private int nBuilds = 0;
+	private int eneBuilds = 0;
+	private int nCollected = 0;
 
 
-	public void Update ()
+
+	void Update ()
 	{
 		if (Ativar && !FoiAtivado)
 		{
@@ -215,6 +210,7 @@ public class VictoryCondition : MonoBehaviour
 
 			if (ch.objectiveCompleted)
 			{
+				++nSuccess;
 				continue;
 			}
 
@@ -270,6 +266,8 @@ public class VictoryCondition : MonoBehaviour
 
 		Transform completed = objectiveRow.transform.FindChild ("ObjectiveCompleted");
 		completed.GetComponent<UIToggle>().value = complete;
+
+		GameObject objline = NGUITools.AddChild (objSubpanel.gameObject, objectiveRow);
 
 		Transform completeTrns = objSubpanel.transform.FindChild ("Objective Row(Clone)");
 		completeTrns.name = challengeName;

@@ -1111,9 +1111,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 20
   sizeOfSelected: 6
   sizeOfSelectedHealthBar: 7
@@ -1127,26 +1127,28 @@ MonoBehaviour:
   transformParticleDamageReference: {fileID: 400000}
   playerUnit: 0
   category: Scout Tower
+  subCategory: 
   description: Observation tower, increases the FOW of the perimeter. Can be upgraded
   requisites: Depot
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 150
-  group: -1
-  wasInitialized: 0
   model: {fileID: 100062}
   unitsToCreate: []
   upgradesToCreate:
   - upgrade: {fileID: 11400000, guid: 2bd0417263348034d9082db562e5f8d4, type: 2}
     buttonName: ClearFog
     techAvailable: 0
+    VIP: 0
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 0
     alreadyUpgraded: 0
   - upgrade: {fileID: 11400002, guid: bbb8ae4ce7132cf41a397f97c2f06abb, type: 2}
     buttonName: ObservationTower
-    techAvailable: 0
+    techAvailable: 1
+    VIP: 1
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 0
@@ -1195,7 +1197,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 143a42557347b1d49ab459467a34b92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paintSize: 5
   terrainName: Terrain
 --- !u!136 &13600000
 CapsuleCollider:

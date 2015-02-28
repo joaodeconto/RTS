@@ -10,14 +10,14 @@ SubstanceImporter:
     inputs:
     - name: AngleRotation
       value:
-        scalar[0]: .5
+        scalar[0]: 1
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
     - name: outputcolor
       value:
-        scalar[0]: 0
+        scalar[0]: 1
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 1
@@ -55,7 +55,7 @@ SubstanceImporter:
           second: {r: .5, g: .5, b: .5, a: 1}
     textureParameters:
     - name: Health_Bar_diffuse
-      alphaSource: 5
+      alphaSource: 1
       filterMode: 1
       aniso: 1
       wrapMode: 0
@@ -70,7 +70,7 @@ SubstanceImporter:
       textureWidth: 512
       textureHeight: 512
       textureFormat: 1
-      loadingBehavior: 1
+      loadingBehavior: 0
     - serializedVersion: 2
       buildTarget: iPhone
       textureWidth: 512
@@ -90,7 +90,7 @@ SubstanceImporter:
     inputs:
     - name: AngleRotation
       value:
-        scalar[0]: .5
+        scalar[0]: 1
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -98,8 +98,8 @@ SubstanceImporter:
     - name: outputcolor
       value:
         scalar[0]: 1
-        scalar[1]: 1
-        scalar[2]: 1
+        scalar[1]: 0
+        scalar[2]: 0
         scalar[3]: 1
         texture: {instanceID: 0}
     materialInformation:
@@ -135,7 +135,7 @@ SubstanceImporter:
           second: {r: .5, g: .5, b: .5, a: 1}
     textureParameters:
     - name: Resource_Bar_diffuse
-      alphaSource: 5
+      alphaSource: 1
       filterMode: 1
       aniso: 1
       wrapMode: 0
@@ -150,7 +150,7 @@ SubstanceImporter:
       textureWidth: 512
       textureHeight: 512
       textureFormat: 0
-      loadingBehavior: 1
+      loadingBehavior: 0
     - serializedVersion: 2
       buildTarget: Android
       textureWidth: 512

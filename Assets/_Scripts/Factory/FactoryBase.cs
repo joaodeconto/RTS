@@ -54,27 +54,19 @@ public class FactoryBase : IStats, IDeathObservable
 	public UpgradeItem[] upgradesToCreate;
 	public Resource.Type receiveResource;
 	public BuildingObjects buildingObjects;
-
 	public string buttonName;
-	public string guiTextureName;
-	
-	public CapsuleCollider helperCollider { get; set; }
-	
-	public bool hasRallypoint { get; set; }
-	
-	public Transform goRallypoint;
-	
+	public string guiTextureName;	
+	public CapsuleCollider helperCollider { get; set; }	
+	public bool hasRallypoint { get; set; }	
+	public Transform goRallypoint;	
 	public BuildingState buildingState { get; set; }
-	protected int levelConstruct;
-	
+	protected int levelConstruct;	
 	protected List<Unit> lUnitsToCreate = new List<Unit>();
 	protected Unit unitToCreate;
 	protected List<Upgrade> lUpgradesToCreate = new List<Upgrade>();
 	protected Upgrade upgradeToCreate;
 	public float timeToCreate;
-	public float timer;
-	
-	
+	public float timer;	
 	public float boostDuration = 30;
 	public ResourcesManager boostCost;
 	[HideInInspector]
@@ -82,29 +74,20 @@ public class FactoryBase : IStats, IDeathObservable
 	private float boostTime = 0;
 	private UILabel boostTimeLabel;
 	private bool onBoost;
-	private bool canBoost;
-	
-	protected bool inUpgrade;
-
+	private bool canBoost;	
+	public bool inUpgrade{get;set;}
 	public List<string> TechsToActive = new List<string>();	
-	
-	public Animation ControllerAnimation { get; private set; }
-	
-	public bool wasBuilt { get; set; }
-	
-	
-	
+	public Animation ControllerAnimation { get; private set; }	
+	public bool wasBuilt { get; set; }	
 	protected HealthBar healthBar;
-	protected UISlider buildingSlider;
-	
+	protected UISlider buildingSlider;	
 	
 	[HideInInspector]
 	public bool wasVisible = false;
 	[HideInInspector]
-	public bool alreadyCheckedMaxPopulation = false;
-	
-	protected float realRangeView;
-	
+	public bool alreadyCheckedMaxPopulation = false;	
+
+	protected float realRangeView;	
 	public bool IsDamaged {
 		get	{
 			return Health != MaxHealth;
@@ -122,8 +105,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public override void Init ()
 	{
 	
-		base.Init();
-									
+		base.Init();									
 		timer = 0;
 
 		hudController     = ComponentGetter.Get<HUDController> ();
@@ -155,24 +137,13 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 		
 		playerUnit = gameplayManager.IsSameTeam (this);
-
-		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
-		
-		inUpgrade = false;
-				
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
+		inUpgrade = false;				
 		buildingState = BuildingState.Finished;
-
 		if (playerUnit && wasBuilt)TechActiveBool(TechsToActive, true);
-
-		Debug.Log ("init instanciate" + wasBuilt);
-
 		wasBuilt = true;
-
 		enabled = playerUnit;
-				
 		Invoke ("SendMessageInstance", 0.1f);
-
-
 						
 	}
 
@@ -224,7 +195,7 @@ public class FactoryBase : IStats, IDeathObservable
 					inUpgrade = true;
 
 					if (Selected) buildingSlider.gameObject.SetActive(true);
-					hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, timer);
+					hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);
 					
 				}
 				
@@ -232,8 +203,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 
 		if (lUnitsToCreate.Count >= 1)
-		{
-				
+		{				
 			if (gameplayManager.NeedMoreHouses (lUnitsToCreate[0].numberOfUnits))
 			{
 				if (!alreadyCheckedMaxPopulation)
@@ -244,8 +214,7 @@ public class FactoryBase : IStats, IDeathObservable
 				return;
 			}
 			else
-				alreadyCheckedMaxPopulation = false;
-				
+				alreadyCheckedMaxPopulation = false;				
 					
 			if (unitToCreate == null)
 			{
@@ -254,8 +223,7 @@ public class FactoryBase : IStats, IDeathObservable
 				inUpgrade = true;
 				
 				if (Selected) buildingSlider.gameObject.SetActive(true);
-				hudController.CreateSubstanceResourceBar (this, sizeOfSelectedHealthBar, timer);
-				
+				hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);				
 			}
 
 		}
@@ -275,7 +243,6 @@ public class FactoryBase : IStats, IDeathObservable
 					InvokeUpgrade (upgradeToCreate);
 					upgradeToCreate = null;
 				}
-
 				inUpgrade = false;
 				timer = 0;
 			}
@@ -363,8 +330,8 @@ public class FactoryBase : IStats, IDeathObservable
 	public virtual IEnumerator OnDie ()
 	{
 		statsController.RemoveStats (this);
-		if (playerUnit && wasBuilt)TechActiveBool(TechsToActive, false);
-		
+		inUpgrade = false;
+		if (playerUnit && wasBuilt)TechActiveBool(TechsToActive, false);		
 		model.animation.Play ();
 		
 		if (Selected)
@@ -372,20 +339,16 @@ public class FactoryBase : IStats, IDeathObservable
 			hudController.DestroyInspector ("factory");
 			hudController.DestroyOptionsBtns();
 			Deselect ();
-		}
-		
+		}		
 		//IDeathObservable
-		NotifyDeath ();
-		
+		NotifyDeath ();		
 		int c = IDOobservers.Count;
 		while (--c != -1)
 		{
 			UnRegisterDeathObserver (IDOobservers[c]);
-		}
-		
-		//		yield return StartCoroutine (model.animation.WaitForAnimation (model.animation.clip));
-		
-		yield return new WaitForSeconds (5f);
+		}		
+			
+		yield return new WaitForSeconds (3f);
 		if (IsNetworkInstantiate)
 		{
 			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
@@ -534,7 +497,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		base.Select ();		
 
-		hudController.CreateSubstanceHealthBar (this, sizeOfSelected, MaxHealth, "Health Reference");
+		hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		
 		if (!playerUnit) return;
@@ -557,10 +520,8 @@ public class FactoryBase : IStats, IDeathObservable
 					                                       (ht_dcb, onClick) => 
 					                                       {
 																UpgradeItem upgrade = (UpgradeItem)ht_dcb["upgradeHT"];																
-																hudController.OpenInfoBoxUpgrade(upgrade.upgrade);
+																hudController.OpenInfoBoxUpgrade(upgrade.upgrade, true);
 															});
-					
-					hudController.DeactivateButtonInInspector(ui.buttonName);
 				}
 				
 				else
@@ -594,7 +555,7 @@ public class FactoryBase : IStats, IDeathObservable
 																	Debug.Log(Time.time - (float)ht["time"]);
 																	if (Time.time - (float)ht["time"] > 0.3f)
 																	{	
-																		hudController.OpenInfoBoxUpgrade(upgrade.upgrade);
+																		hudController.OpenInfoBoxUpgrade(upgrade.upgrade, false);
 																		
 																	}
 																	else
@@ -640,11 +601,8 @@ public class FactoryBase : IStats, IDeathObservable
 																					factories[factoryChoose].EnqueueUpgradeToCreate (upgrade.upgrade);
 
 																						hudController.RemoveButtonInInspector (upgrade.buttonName);
-																						upgrade.alreadyUpgraded = true;
-																																											
-																				}
-					
-					
+																						upgrade.alreadyUpgraded = true;																																											
+																				}					
 																		}
 																		
 																		else
@@ -729,10 +687,9 @@ public class FactoryBase : IStats, IDeathObservable
 					                                       {
 																UnitFactory unitFactory = (UnitFactory)ht_dcb["unitFactory"];
 															
-																hudController.OpenInfoBoxUnit(unitFactory.unit);
-															});
-
-					hudController.DeactivateButtonInInspector(uf.buttonName);
+																hudController.OpenInfoBoxUnit(unitFactory.unit,true);
+															});							
+				
 				}
 					
 				else
@@ -762,7 +719,7 @@ public class FactoryBase : IStats, IDeathObservable
 																	Debug.Log(Time.time - (float)ht["time"]);
 																	if (Time.time - (float)ht["time"] > 0.3f)
 																	{	
-																		hudController.OpenInfoBoxUnit(unitFactory.unit);
+																		hudController.OpenInfoBoxUnit(unitFactory.unit, false);
 																		
 																	}
 																	else
@@ -870,6 +827,29 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 	}
 	
+	public void EnqueueUpgradeToCreate (Upgrade upgrade)
+	{
+		gameplayManager.resources.UseResources (upgrade.costOfResources);
+		lUpgradesToCreate.Add (upgrade);
+		Hashtable ht = new Hashtable();
+		ht["upgradeHT"] = upgrade;
+		ht["name"] = "button-" + Time.time;
+		
+		hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
+		                                               FactoryBase.FactoryQueueName,
+		                                               ht,
+		                                               upgrade.guiTextureName,
+		                                               (hud_ht) =>
+		                                               {			
+			//															DequeueUpgrade(hud_ht);
+		});
+		if (upgrade.unique)
+		{
+			upgrade.uniquelyUpgraded = true;
+		}		
+	}
+
+	
 	public virtual void EnqueueUnitToCreate (Unit unit)
 	{
 		bool canBuy = gameplayManager.resources.CanBuy (unit.costOfResources);
@@ -896,29 +876,7 @@ public class FactoryBase : IStats, IDeathObservable
 		else
 			eventController.AddEvent("out of funds", unit.name);
 	}
-	
-	public void EnqueueUpgradeToCreate (Upgrade upgrade)
-	{
-		gameplayManager.resources.UseResources (upgrade.costOfResources);
-		lUpgradesToCreate.Add (upgrade);
-		Hashtable ht = new Hashtable();
-		ht["upgradeHT"] = upgrade;
-		ht["name"] = "button-" + Time.time;
-		
-		hudController.CreateEnqueuedButtonInInspector ( (string)ht["name"],
-		                                               FactoryBase.FactoryQueueName,
-		                                               ht,
-		                                               upgrade.guiTextureName,
-		                                               (hud_ht) =>
-		                                               {			
-//															DequeueUpgrade(hud_ht);
-													});
-		if (upgrade.unique)
-		{
-			upgrade.uniquelyUpgraded = true;
-		}		
-	}
-	
+
 	private void DequeueUnit(Hashtable ht)
 	{
 		string btnName = (string)ht["name"];
@@ -988,8 +946,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{				
 		timer = 0;		
 		lUnitsToCreate.RemoveAt (0);		
-		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
-		
+		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);		
 		string unitName = "";
 		
 		foreach(UnitFactory uf in unitsToCreate)
@@ -1007,10 +964,8 @@ public class FactoryBase : IStats, IDeathObservable
 			unitName = unit.name;
 		}
 		
-		eventController.AddEvent("create unit",  transformParticleDamageReference.position, unitName, unit.guiTextureName);
-		
-		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-		
+		eventController.AddEvent("create unit",  transformParticleDamageReference.position, unitName, unit.guiTextureName);		
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();		
 		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
 		
 		if (!string.IsNullOrEmpty (encodedBattle))
@@ -1029,8 +984,7 @@ public class FactoryBase : IStats, IDeathObservable
 		// Look At
 		Vector3 difference = goRallypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);
-		Vector3 forward = rotation * Vector3.forward;
-		
+		Vector3 forward = rotation * Vector3.forward;		
 		Vector3 unitSpawnPosition = transform.position + (forward * helperCollider.radius);
 
 		Unit newUnit = null;
@@ -1096,8 +1050,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 	}
 
-
-	public void TechBool(string category, bool isAvailable)  // Aplica disponibilidade de tech em Upgrades e Units
+	public void TechBool(string category, bool isAvailable)  // Aplica disponibilidade de tech em Upgrades e Units desta factory
 	{
 		foreach (UnitFactory uf in unitsToCreate)
 		{
@@ -1122,15 +1075,13 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		foreach ( UnitFactory uc in unitsToCreate)
 		{
-			uc.techAvailable = uc.VIP;
-			
+			uc.techAvailable = uc.VIP;			
 		}
 
 		foreach (UpgradeItem up in upgradesToCreate)
 		{	
 			up.techAvailable = up.VIP;
-		}
-		
+		}		
 	}
 
 	

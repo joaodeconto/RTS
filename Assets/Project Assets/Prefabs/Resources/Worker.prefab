@@ -1281,9 +1281,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 40
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 14
   sizeOfSelected: 1.5
   sizeOfSelectedHealthBar: 2.5
@@ -1322,13 +1322,14 @@ MonoBehaviour:
   transformParticleDamageReference: {fileID: 400002}
   playerUnit: 0
   category: Worker
+  subCategory: Man
   description: Workers are the base of our society, they build, repair and extract
     gold.
   requisites: 
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 70
-  group: -1
   model: {fileID: 100004}
   force: 2
   distanceView: 12
@@ -1345,6 +1346,7 @@ MonoBehaviour:
     SpecialAttack: []
   timeToSpawn: 7
   ControllerAnimation: {fileID: 11100000}
+  unitSkill: 0
   normalSpeed: 0
   forceToExtract: 2
   numberMaxGetResources: 10
@@ -1387,7 +1389,7 @@ MonoBehaviour:
       m_mana: 0
       m_rocks: 150
     VIP: 0
-    m_techActive: 0
+    m_techActive: 1
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 0
@@ -1396,7 +1398,7 @@ MonoBehaviour:
       m_mana: 0
       m_rocks: 200
     VIP: 0
-    m_techActive: 0
+    m_techActive: 1
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 0
@@ -1405,7 +1407,7 @@ MonoBehaviour:
       m_mana: 0
       m_rocks: 70
     VIP: 0
-    m_techActive: 0
+    m_techActive: 1
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 0
@@ -1414,7 +1416,7 @@ MonoBehaviour:
       m_mana: 0
       m_rocks: 150
     VIP: 0
-    m_techActive: 0
+    m_techActive: 1
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 1
@@ -1423,12 +1425,14 @@ MonoBehaviour:
       m_mana: 0
       m_rocks: 250
     VIP: 0
-    m_techActive: 0
+    m_techActive: 1
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 1
   constructionAndRepairForce: 5
   workerState: 0
+  resourceId: -1
+  lastResourceId: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1591,7 +1595,7 @@ NavMeshAgent:
   m_Radius: .600000024
   m_Speed: 3
   m_Acceleration: 100
-  avoidancePriority: 2
+  avoidancePriority: 3
   m_AngularSpeed: 360
   m_StoppingDistance: .300000012
   m_AutoTraverseOffMeshLink: 0

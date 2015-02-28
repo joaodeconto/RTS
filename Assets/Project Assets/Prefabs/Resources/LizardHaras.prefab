@@ -152,7 +152,7 @@ Transform:
   m_GameObject: {fileID: 100012}
   m_LocalRotation: {x: 0, y: -.284015357, z: 0, w: .958819747}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.10000002, y: 1.10000002, z: 1.10000002}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
   - {fileID: 400000}
@@ -333,7 +333,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 143a42557347b1d49ab459467a34b92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paintSize: 8.39999962
   terrainName: Terrain
 --- !u!114 &11400002
 MonoBehaviour:
@@ -418,6 +417,7 @@ MonoBehaviour:
   transformParticleDamageReference: {fileID: 400002}
   playerUnit: 0
   category: Lizard Haras
+  subCategory: 
   description: Train and mounted dinosaurs as Raptors, Dilophos, Triceratops, T-Rex
     and Paralophos.
   requisites: Barracks
@@ -425,7 +425,6 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 250
   group: -1
-  wasInitialized: 0
   model: {fileID: 100010}
   unitsToCreate:
   - unit: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}

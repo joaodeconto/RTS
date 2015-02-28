@@ -1,10 +1,7 @@
 using UnityEngine;
-
 using System.Collections;
 using System.Collections.Generic;
-
 using System.Text.RegularExpressions;
-
 using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
@@ -116,35 +113,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 		}
 	}
-
-	/*
-	 //Old code
-
-		public Transform subMesh;
-
-		private ProceduralMaterial substance;
-		private ProceduralPropertyDescription[] curProperties;
-
-		public void SetColorInMaterial (Transform transform, int teamID)
-		{
-			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
-			Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
-			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
-
-			substance 	  = subMesh.renderer.sharedMaterial as ProceduralMaterial;
-			curProperties = substance.GetProceduralPropertyDescriptions();
-			
-			foreach (ProceduralPropertyDescription curProperty in curProperties)
-			{
-				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
-					substance.SetProceduralColor(curProperty.name, teamColor);
-				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor1"))
-					substance.SetProceduralColor(curProperty.name, teamColor1);
-				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor2"))
-					substance.SetProceduralColor(curProperty.name, teamColor2);
-			}
-		}
-	 */
 	[System.Serializable]
 	public class GridItemAttributes
 	{
@@ -158,11 +126,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 							.Get<HUDController>()
 								.GetGrid("actions")
 									.GetGridPosition(gridXIndex, gridYIndex);
-
 			}
 		}
 	}
-
 	[System.Serializable]
 	public class ButtonAttributes
 	{
@@ -170,7 +136,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		public string spriteName;
 		public GridItemAttributes gridItemAttributes;
 	}
-
 	[System.Serializable]
 	public class MovementAction
 	{
@@ -186,7 +151,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		public ActionType actionType;
 		public ButtonAttributes buttonAttributes;
 	}
-
 	public int maxHealth = 200;
 	private int m_health;
 	public int Health {
@@ -196,56 +160,47 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			NotifyHealthChange ();
 		}
 	}
-	
-	public int defense;
-
 	public int m_Team;
 	public int team {
 		get { return m_Team; }
 		private set { m_Team = value; }
 	}
-	
 	public int m_Ally;
-	public int ally { get { return m_Team; } private set { m_Team = value; } }
-	
+	public int ally { get { return m_Team; } private set { m_Team = value; } }	
+	public int defense;
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;
-	public float sizeOfSelectedHealthBar = 1f;
+	public float sizeOfHealthBar {get {return (sizeOfSelected*0.8f);}}
+	public float sizeOfResourceBar {get {return (sizeOfSelected*1.2f);}}
 
-//	public RendererTeamColor[] rendererTeamColor;
+		//	public RendererTeamColor[] rendererTeamColor;
 	public RendererTeamSubstanceColor[] rendererTeamSubstanceColor;
-
 	public MovementAction[] movementActions;
-
 	public GameObject pref_ParticleDamage;
 	public Transform transformParticleDamageReference;
-
 	public bool playerUnit;
-
 	public string category;
 	public string subCategory;
 	public string description;
-	public string requisites;
-	
-	public ResourcesManager costOfResources;
-	
+	public string requisites;	
 	public bool Selected { get; protected set; }
 	public bool IsNetworkInstantiate { get; protected set; }
-	public bool WasRemoved { get; protected set; }
-	
-	public int group = -1;
-	
+	public bool WasRemoved { get; protected set; }	
+	public int group = -1;	
+	public ResourcesManager costOfResources;
 	protected StatsController statsController;
+	protected MiniMapController minimapController;
 	protected HUDController hudController;
 	protected GameplayManager gameplayManager;
 	protected EventController eventController;
 	protected SelectionController selectionController;
 	protected TechTreeController techTreeController;
-
-	//IHealthObserver
 	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
-
 	private bool wasInitialized = false;
+	public GameObject model;
+	public abstract void SetVisible(bool visible);
+	public abstract bool IsVisible { get; }
+	public bool firstDamage {get;set;}
 
 	void Awake ()
 	{
@@ -254,18 +209,17 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	public virtual void Init ()
 	{
-		if (wasInitialized)
-			return;
+		if (wasInitialized)	return;
 
 		wasInitialized = true;
-
 		techTreeController =  ComponentGetter.Get<TechTreeController> ();
 		statsController = ComponentGetter.Get<StatsController> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		eventController    = ComponentGetter.Get<EventController> ();
-		
+		minimapController = ComponentGetter.Get<MiniMapController>();		
 		Health = MaxHealth;
+
 
 		if (!gameplayManager.IsBotTeam (this))
 		{
@@ -289,13 +243,10 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		{
 			playerUnit = false;
 		}
-
-		SetColorTeam ();
-		
+		firstDamage = false;
+		SetColorTeam ();		
 		WasRemoved = false;
-
 		statsController.AddStats (this);
-
 	}
 	
 	public void SetTeam (int team, int ally)
@@ -325,10 +276,21 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		else return;
 	}
 
+	void ShowEnemyHealth()
+	{
+		firstDamage = true;
+		if (!gameplayManager.IsNotEnemy(team,ally))
+		{
+			if(IsVisible)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
+		}
+	}
+
 	public void ReceiveAttack (int Damage)
 	{
-		if (Health != 0)
+		if (Health > 0)
 		{
+			if(!firstDamage) ShowEnemyHealth();
+
 			int newDamage = Mathf.Max (0, Damage - defense);
 
 			Health = Mathf.Max (0, Health - newDamage);
@@ -340,12 +302,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			
 			if (gameplayManager.IsBeingAttacked (this))
 			{
-				eventController.AddEvent("being attacked", transform.position);
-						
-				Visiorama.ComponentGetter.Get<MiniMapController> ().InstantiatePositionBeingAttacked (transform);
-
-				AudioClip sfxbeingattacked = SoundManager.Load("being_attacked");
-				
+				eventController.AddEvent("being attacked", transform.position);						
+				minimapController.InstantiatePositionBeingAttacked (transform);
+				AudioClip sfxbeingattacked = SoundManager.Load("being_attacked");				
 				SoundManager.PlaySFX(sfxbeingattacked);
 			}
 		}
@@ -356,6 +315,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			photonView.RPC ("SendRemove", PhotonTargets.Others);
 		}
 	}
+
 
 	[RPC]
 	public virtual void InstantiatParticleDamage ()
@@ -376,14 +336,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public virtual void SendRemove ()
 	{
 		Health = 0;
-		WasRemoved = true;
-		
+		WasRemoved = true;		
 		SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
 	}
-
-	public GameObject model;
-	public abstract void SetVisible(bool visible);
-	public abstract bool IsVisible { get; }
 
 	public void OnPhotonInstantiate(PhotonMessageInfo info)
     {

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Visiorama.Utils;
-
 using Visiorama;
 
 
@@ -37,22 +36,15 @@ public class StatsController : MonoBehaviour
 
 	public void Init ()
 	{
-		if (idleWorkerButtonParent != null)
-	
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		soundManager    = ComponentGetter.Get<SoundManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
 		selectionController = ComponentGetter.Get<SelectionController>();
-
 		selectedStats 	= new List<IStats> ();
 		idleWorkers     = new List<Worker>();
-
-		keepFormation = false;
-		
+		keepFormation = false;		
 		statsTypeSelected = StatsTypeSelected.None;
-
 		InvokeRepeating("CheckWorkersInIdle",1.0f,1.0f);
-//		InvokeRepeating("OrganizeUnits",1.0f,1.0f);
 	}
 
 	public void MoveTroop (Vector3 destination)

@@ -557,7 +557,7 @@ Transform:
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.10000002, y: 1.10000002, z: 1.10000002}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400070}
   - {fileID: 400002}
@@ -1135,12 +1135,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 60
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 16
-  sizeOfSelected: 2.5
-  sizeOfSelectedHealthBar: 3
+  sizeOfSelected: 2
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400072}
   movementActions:
@@ -1176,13 +1175,14 @@ MonoBehaviour:
   transformParticleDamageReference: {fileID: 400002}
   playerUnit: 0
   category: Neanderthal
+  subCategory: Man
   description: Basic human units. Slow but cheap, master hunters, receives bonus agains
     any dinosaur.
   requisites: 
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 90
-  group: -1
   model: {fileID: 100068}
   force: 7
   distanceView: 12
@@ -1199,6 +1199,7 @@ MonoBehaviour:
     SpecialAttack: []
   timeToSpawn: 6
   ControllerAnimation: {fileID: 11100000}
+  unitSkill: 1
   normalSpeed: 0
 --- !u!136 &13600000
 CapsuleCollider:
