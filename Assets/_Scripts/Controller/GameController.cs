@@ -23,15 +23,15 @@ public class GameController : MonoBehaviour
 
 		ComponentGetter.Get<NetworkManager> ().Init ();
 		ComponentGetter.Get<GameplayManager> ().Init ();
-		ComponentGetter.Get<HUDController> ().Init ();
 		ComponentGetter.Get<TouchController> ().Init ();
 		ComponentGetter.Get<SelectionController> ().Init ();
 		ComponentGetter.Get<StatsController> ().Init ();
 		ComponentGetter.Get<InteractionController> ().Init ();
-		ComponentGetter.Get<FogOfWar> ().Init ();
-		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<EventController> ().Init ();
 		ComponentGetter.Get<TechTreeController> ().Init ();
+		ComponentGetter.Get<HUDController> ().Init ();
+		ComponentGetter.Get<FogOfWar> ().Init ();
+		ComponentGetter.Get<MiniMapController> ().Init ();
 //		ComponentGetter.Get<EnemyCluster> ().Init ();
 		
 		Score.LoadScores (

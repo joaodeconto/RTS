@@ -394,12 +394,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 400
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 22
-  sizeOfSelected: 8
-  sizeOfSelectedHealthBar: 10
+  sizeOfSelected: 8.5
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400014}
   - subMesh: {fileID: 400012}
@@ -427,10 +426,10 @@ MonoBehaviour:
   description: Main structure of yout tribe, use it to train workers. If you lose
     all your tribe centers, you lose the battle.
   requisites: 
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 400
-  group: -1
   model: {fileID: 100016}
   unitsToCreate:
   - unit: {fileID: 11400000, guid: 097090cf2466e1b408f34f8b34778481, type: 2}
@@ -438,9 +437,17 @@ MonoBehaviour:
     VIP: 1
     techAvailable: 1
     gridItemAttributes:
-      gridXIndex: 3
+      gridXIndex: 1
       gridYIndex: 1
-  upgradesToCreate: []
+  upgradesToCreate:
+  - upgrade: {fileID: 11458246, guid: 98826f1efde5f7a438150aea089f082e, type: 2}
+    buttonName: Enhace Construction
+    techAvailable: 0
+    VIP: 1
+    gridItemAttributes:
+      gridXIndex: 3
+      gridYIndex: 2
+    alreadyUpgraded: 0
   receiveResource: 1
   buildingObjects:
     baseObject: {fileID: 100010}

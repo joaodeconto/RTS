@@ -29,7 +29,9 @@ public class Unit : IStats, IMovementObservable,
 		none,
 		Crusher,
 		ManEater,
-		BeastMaster
+		BeastMaster,
+		Charger,
+		Pusher
 	}
 
 	public enum UnitState
@@ -49,7 +51,6 @@ public class Unit : IStats, IMovementObservable,
 	public string guiTextureName;
 	public UnitAnimation unitAnimation;	
 	public float timeToSpawn;
-	public int AdditionalForce { get; set; }
 	public bool IsAttacking { get; protected set; }
 	public bool IsDead { get; set; }
 	public Animation ControllerAnimation;
@@ -81,7 +82,7 @@ public class Unit : IStats, IMovementObservable,
 	public int skillBonus {get; set;}
 	protected bool invokeCheckEnemy;
 	protected NavMeshAgent NavAgent;
-	public float GetPathFindRadius {
+	public float GetAgentRadius {
 		get	{
 			return NavAgent.radius;
 		}
@@ -101,19 +102,22 @@ public class Unit : IStats, IMovementObservable,
 	protected float normalAngularSpeed;
 	protected ObstacleAvoidanceType normalObstacleAvoidance;
 	protected int normalAvoidancePriority;
+	protected Hashtable loadAttribs = new Hashtable();
 
-	// IObservers
+	public int bonusForce {get; set;}
+	public int bonusSpeed {get; set;}
+	public int bonusSight {get; set;}
+
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
 	List<IDeathObserver> IDOobservers	 = new List<IDeathObserver> ();
-
-	//IMovementObserver
 	Unit followedUnit = null;
 
 	public override void Init ()
 	{
 		base.Init();
 		moveAttack = false;
+
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -127,23 +131,24 @@ public class Unit : IStats, IMovementObservable,
 		hudController         = ComponentGetter.Get<HUDController> ();
 		interactionController = ComponentGetter.Get<InteractionController>();
 		selectionController   = ComponentGetter.Get<SelectionController>();
+		GameController gc     = ComponentGetter.Get<GameController> ();
 
 		NavAgent = GetComponent<NavMeshAgent>();
-
 		normalAcceleration = NavAgent.acceleration;
 		normalSpeed        = NavAgent.speed;
 		normalAngularSpeed = NavAgent.angularSpeed;
 		normalObstacleAvoidance = NavAgent.obstacleAvoidanceType;
 		normalAvoidancePriority = NavAgent.avoidancePriority;
-
 		PathfindTarget = transform.position;
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
-		GameController gc = ComponentGetter.Get<GameController> ();
 		float timeToNotifyMovementObservers = 1f / gc.targetFPS;
 		InvokeRepeating ("NotifyMovement", timeToNotifyMovementObservers, timeToNotifyMovementObservers);
-		unitState = UnitState.Idle;			
-		if (!enabled) enabled = playerUnit;
+//		unitState = UnitState.Idle;	
+		if (playerUnit)
+		{	enabled = true;
+			if (techTreeController.attribsHash.ContainsKey(category)) LoadStandardAttribs();
+		}
 	}
 
 	void Update ()
@@ -370,6 +375,12 @@ public class Unit : IStats, IMovementObservable,
 		if (unitSkill == UnitSkill.BeastMaster && targetStats.GetType() == typeof(Unit) && targetStats.subCategory == "Dino") 	// bonus vs factory - busca por subcategoria o nome "Dino" da
 			return true;
 
+		if (unitSkill == UnitSkill.Charger) 	// bonus por velocidade//TODO
+			return false;
+
+		if (unitSkill == UnitSkill.Pusher) 	// estuna ou empurra inimigos //TODO
+			return false;
+
 		else return false;
 	}
 
@@ -389,7 +400,7 @@ public class Unit : IStats, IMovementObservable,
 
 			if (PhotonNetwork.offlineMode)
 			{
-				TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+				TargetAttack.GetComponent<IStats>().ReceiveAttack(force + bonusForce);
 			}
 			else
 			{
@@ -397,10 +408,10 @@ public class Unit : IStats, IMovementObservable,
 				{	
 					if	(CheckNemesis(TargetAttack.GetComponent<IStats>()))
 					{
-						skillBonus  = Mathf.FloorToInt((force + AdditionalForce)*1.5f);                                   
+						skillBonus  = Mathf.FloorToInt((force + bonusForce)*0.5f);                                   
 					}
 				}
-				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce + skillBonus);
+				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + bonusForce + skillBonus);
 			}
 			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
@@ -422,11 +433,11 @@ public class Unit : IStats, IMovementObservable,
 			{
 				if (PhotonNetwork.offlineMode)
 				{
-					TargetAttack.GetComponent<IStats>().ReceiveAttack(force + AdditionalForce);
+					TargetAttack.GetComponent<IStats>().ReceiveAttack(force + bonusForce);
 				}
 				else
 				{
-					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + AdditionalForce);
+					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + bonusForce);
 				}
 
 				GameObject attackObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -593,18 +604,18 @@ public class Unit : IStats, IMovementObservable,
 
 	public bool MoveComplete (Vector3 destination)
 	{
-		float distanceToDestination = Vector3.Distance(transform.position, NavAgent.destination);
+		float distanceToDestination = Vector3.Distance(transform.position, destination);
 	
-		return (distanceToDestination <= NavAgent.stoppingDistance) && NavAgent.velocity.sqrMagnitude < 0.1f;
+		return (distanceToDestination <= NavAgent.stoppingDistance);
 	}
 
 
 	public bool MoveComplete ()
 	{
-
-		return (Vector3.Distance(transform.position, NavAgent.destination) <= NavAgent.stoppingDistance) &&
-				NavAgent.velocity.sqrMagnitude < 0.1f;
-
+//		if (pathfind.desiredVelocity.sqrMagnitude < 0.001f) start = !start;
+//		return pathfind.desiredVelocity.sqrMagnitude < 0.001f || !start;
+		return (Vector3.Distance(transform.position, NavAgent.destination) <= 2.0f);
+//		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
 	}
 
 	public void TargetingEnemy (GameObject enemy)
@@ -981,10 +992,10 @@ public class Unit : IStats, IMovementObservable,
 
 	public void UpdatePosition (Vector3 newPosition, GameObject go = null)
 	{
-		if (TargetAttack != null)
+		if (TargetAttack != null || followedUnit == null)
 			return;
 
-		float minDistanceBetweenFollowedUnit = (followedUnit.GetPathFindRadius + this.GetPathFindRadius) * 1.2f;
+		float minDistanceBetweenFollowedUnit = (followedUnit.GetAgentRadius + this.GetAgentRadius) * 1.2f;
 		
 		Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized * 2.0f))
 								* minDistanceBetweenFollowedUnit;
@@ -1078,6 +1089,15 @@ public class Unit : IStats, IMovementObservable,
 	}
 
 	#endregion
+
+	public virtual void LoadStandardAttribs()											// Inicializa os tributos da unidade conforme Techtree
+	{
+		Hashtable ht = techTreeController.attribsHash[category] as Hashtable;
+		bonusForce		= (int)ht["bonusforce"];
+		bonusSpeed		= (int)ht["bonusspeed"];
+		bonusSight		= (int)ht["bonussight"];
+		bonusDefense	= (int)ht["bonusdefense"];
+	}	
 
 	// RPC
 	[RPC]

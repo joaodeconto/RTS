@@ -7,7 +7,6 @@ using Visiorama;
 public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 {
 	public const int InvalidAlliance = 10000;
-
 	public static int UniversalEntityCounter = 0;
 
 	[System.Serializable]
@@ -53,7 +52,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public class RendererTeamSubstanceColor
 	{
 		public Transform subMesh;
-
 		private static Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
 
 		//Caso esse metodo for modificado eh necessario modificar no Rallypoint tbm
@@ -62,15 +60,11 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
 			Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
 			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
-
 			string unitName = transform.name;
-			int startRemoveIndex = unitName.IndexOf ("(");
-			
-			unitName = Regex.Replace (unitName, "[0-9]", "" );
-			
+			int startRemoveIndex = unitName.IndexOf ("(");			
+			unitName = Regex.Replace (unitName, "[0-9]", "" );			
 			startRemoveIndex = (startRemoveIndex > 0) ? startRemoveIndex : unitName.Length - 1;
 			unitName.Remove (startRemoveIndex);
-
 			string keyUnitTeamMaterial = unitName + " - " + teamID;
 			
 			//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
@@ -170,10 +164,8 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public int defense;
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;
-	public float sizeOfHealthBar {get {return (sizeOfSelected*0.8f);}}
-	public float sizeOfResourceBar {get {return (sizeOfSelected*1.2f);}}
-
-		//	public RendererTeamColor[] rendererTeamColor;
+	public float sizeOfHealthBar {get {return (sizeOfSelected*0.9f);}}
+	public float sizeOfResourceBar {get {return (sizeOfSelected*1.1f);}}
 	public RendererTeamSubstanceColor[] rendererTeamSubstanceColor;
 	public MovementAction[] movementActions;
 	public GameObject pref_ParticleDamage;
@@ -201,6 +193,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public abstract void SetVisible(bool visible);
 	public abstract bool IsVisible { get; }
 	public bool firstDamage {get;set;}
+	public int bonusDefense{get;set;}
 
 	void Awake ()
 	{
@@ -267,11 +260,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	{
 		if (Selected)
 		{
-			Selected = false;
-
-						
-						hudController.DestroyOptionsBtns ();
-						hudController.DestroySelected (transform);
+			Selected = false;						
+			hudController.DestroyOptionsBtns ();
+			hudController.DestroySelected (transform);
 		}
 		else return;
 	}
@@ -420,7 +411,5 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			o.UpdateHealth (m_health);
 		}
 	}
-
-
 	#endregion
 }

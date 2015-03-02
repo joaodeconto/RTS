@@ -32,12 +32,12 @@ public class RangeObject : Photon.MonoBehaviour
 		time = timeToDestroyWhenCollide;
 		correctPlayerPos = transform.position;
 		correctPlayerRot = transform.rotation;
-
 		Move ();
 	}
 	
 	void Move ()
 	{
+		InvokeRepeating("CheckProjectileHit",0.2f,0.1f);
 		Vector3[] positionArrays = new Vector3[2]
 		{
 			transform.position, targetPosition
@@ -87,25 +87,6 @@ public class RangeObject : Photon.MonoBehaviour
 	{
 		reachedTarget = true;
 
-		bool isIntersects = false;
-
-
-		if (target.collider != null)
-		{
-			isIntersects = target.collider.bounds.Intersects (collider.bounds);
-		}
-		else
-		{
-			isIntersects = Math.AABBContains (target.transform.position,
-											  collider.bounds,
-											  Math.IgnoreVector.Y);
-		}
-		
-		if (isIntersects)
-		{
-			rangeHitDelegate (hashtable);
-		}
-		
 		if (PhotonNetwork.offlineMode)
 		{
 			Destroy (gameObject, time);
@@ -119,6 +100,24 @@ public class RangeObject : Photon.MonoBehaviour
 	void DestroyObjectInNetwork ()
 	{
 		PhotonNetwork.Destroy (gameObject);
+	}
+
+	void CheckProjectileHit()
+	{
+		bool isIntersects = false;		
+		
+		if (target.collider != null) isIntersects = target.collider.bounds.Intersects (collider.bounds);
+
+		else
+		{
+			isIntersects = Math.AABBContains (target.transform.position,collider.bounds, Math.IgnoreVector.Y);
+		}
+		
+		if (isIntersects)
+		{
+			rangeHitDelegate (hashtable);
+		}		
+
 	}
 	
 	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)

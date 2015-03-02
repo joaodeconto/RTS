@@ -4,29 +4,65 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class TechTreeController : MonoBehaviour {
-
+public class TechTreeController : MonoBehaviour
+{
 	protected StatsController statsController;
-
 	public List<Upgrade> prefabUpgrade = new List<Upgrade>();
 	public List<FactoryBase> prefabFactory = new List<FactoryBase>();
 	public List<Unit> prefabUnit = new List<Unit>();
 	public Dictionary<string, int> techTreeManager;
+	public Hashtable attribsHash = new Hashtable();
 
-	public int unitAtkBonus;
-	public int unitDefBonus;
-	public int buildingDefBonus;
-
-	// Use this for initialization
 	public void Init ()
 	{
 		techTreeManager = new Dictionary<string, int>();
 		statsController = ComponentGetter.Get<StatsController>();
-
-		InitialiseCategoryList();
+		InitCategoryList();
+		InitAtribList ();
 	}
 
-	public void InitialiseCategoryList()               						//sao adicionadas todas unidades possiveis de serem construidas
+	public void AttributeModifier(string category, string attribute, int bonusValue)       // adiciona o valor do bonus a categoria indicada
+	{
+		foreach(Hashtable ht in attribsHash)
+		{
+			if (ht.ContainsKey(category))
+			{
+				int oldValue = (int)ht[attribute];
+				ht[attribute] = (oldValue + bonusValue);
+				break;
+			}
+		}
+	}
+
+	public void InitAtribList ()				//Guarda todos os atributos atributos iniciais de todas as classes;
+	{
+		foreach(Unit u in prefabUnit)
+		{
+			Hashtable ht = new Hashtable();
+			ht["category"] 			= u.category;
+			ht["subcategory"] 		= u.subCategory;
+			ht["bonusdefense"] 		= u.bonusDefense;
+			ht["bonusforce"]		= u.bonusForce;
+			ht["bonusspeed"]		= u.bonusSpeed;
+			ht["bonussight"]		= u.bonusSight;
+
+			attribsHash.Add(u.category,ht);
+		}
+
+		foreach(FactoryBase fb in prefabFactory)
+		{
+			Hashtable ht = new Hashtable();
+			ht["category"] 			= fb.category;
+			ht["subcategory"] 		= fb.subCategory;
+			ht["bonusdefense"] 		= fb.bonusDefense;
+			attribsHash.Add(fb.category,ht);
+		}
+	
+
+
+	}
+
+	public void InitCategoryList()               						//sao adicionadas todas unidades possiveis de serem construidas
 	{
 		foreach(FactoryBase fb in prefabFactory)
 		{
@@ -51,11 +87,6 @@ public class TechTreeController : MonoBehaviour {
 			}
 		}
 
-		foreach (KeyValuePair<string, int> pair in techTreeManager)
-		{
-			string entry = pair.Key + " = " + pair.Value;
-//			Debug.Log(entry);
-		}
 	}
 		
 	public void TechBoolOperator(string category, bool techAvailality) 		//adiciona ou subtrai tokens de tech na lista
@@ -109,7 +140,6 @@ public class TechTreeController : MonoBehaviour {
 			factory.TechBool(category, techAvailality);
 		}
 
-
 	}
 
 	public void TechWorkersBool (string category, bool isAvailable) 		//envia boleana para todos workers
@@ -140,15 +170,5 @@ public class TechTreeController : MonoBehaviour {
 			worker.StructureTechBool(category, isAvailable);
 		}
 		
-	}
-
-	public void GetTechOnStat()
-	{
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

@@ -47,11 +47,11 @@ public class RangeUnit : Unit
 			{
 				if (!PhotonNetwork.offlineMode)
 				{
-					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + AdditionalForce);
+					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + bonusForce);
 				}
 				else
 				{
-					TargetAttack.GetComponent<IStats>().ReceiveAttack(projectileAttackForce + AdditionalForce);
+					TargetAttack.GetComponent<IStats>().ReceiveAttack(projectileAttackForce + bonusForce);
 				}
 			}
 

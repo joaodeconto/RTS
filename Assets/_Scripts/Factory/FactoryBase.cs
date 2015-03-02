@@ -75,12 +75,13 @@ public class FactoryBase : IStats, IDeathObservable
 	private UILabel boostTimeLabel;
 	private bool onBoost;
 	private bool canBoost;	
-	public bool inUpgrade{get;set;}
+	public bool inUpgrade {get;set;}
 	public List<string> TechsToActive = new List<string>();	
 	public Animation ControllerAnimation { get; private set; }	
 	public bool wasBuilt { get; set; }	
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;	
+	protected bool isInvokingSlider{get; set;}
 	
 	[HideInInspector]
 	public bool wasVisible = false;
@@ -105,7 +106,8 @@ public class FactoryBase : IStats, IDeathObservable
 	public override void Init ()
 	{
 	
-		base.Init();									
+		base.Init();
+
 		timer = 0;
 
 		hudController     = ComponentGetter.Get<HUDController> ();
@@ -140,7 +142,11 @@ public class FactoryBase : IStats, IDeathObservable
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
 		inUpgrade = false;				
 		buildingState = BuildingState.Finished;
-		if (playerUnit && wasBuilt)TechActiveBool(TechsToActive, true);
+		if (playerUnit)
+		{
+			if (techTreeController.attribsHash.ContainsKey(category))LoadStandardAttribs();
+		    if(wasBuilt)TechActiveBool(TechsToActive, true);
+		}
 		wasBuilt = true;
 		enabled = playerUnit;
 		Invoke ("SendMessageInstance", 0.1f);
@@ -155,36 +161,8 @@ public class FactoryBase : IStats, IDeathObservable
 				
 		if (!wasBuilt)
 			return;
-		
-		if (onBoost)
-		{
-			
-			if (boostTime> boostDuration)
-				
-			{
-				onBoost = false;
-				boostTime = 0;
-				if(Selected){
-					boostTimeLabel =  hudController.boostProduction.GetComponentInChildren<UILabel>();
-					boostTimeLabel.text = ("Boost");
-				}
-			}
-			
-			else
-			{
-				
-				boostTime += Time.deltaTime;
-				float countdown = boostDuration - boostTime;
-				if(Selected){
-					boostTimeLabel =  hudController.boostProduction.GetComponentInChildren<UILabel>();
-					boostTimeLabel.text = countdown.ToString ("00");
-				}
-			}
-			
-		}
-		
-		if (lUnitsToCreate.Count == 0 && lUpgradesToCreate.Count == 0)
-			return;
+
+		if (lUnitsToCreate.Count == 0 && lUpgradesToCreate.Count == 0)	return;
 
 		if (lUpgradesToCreate.Count >= 1)
 		{
@@ -193,13 +171,13 @@ public class FactoryBase : IStats, IDeathObservable
 					upgradeToCreate = lUpgradesToCreate[0];
 					timeToCreate = lUpgradesToCreate[0].timeToSpawn;
 					inUpgrade = true;
-
-					if (Selected) buildingSlider.gameObject.SetActive(true);
-					hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);
-					
+					if (Selected)
+					{
+						buildingSlider.gameObject.SetActive(true);
+						InvokeRepeating ("InvokeSliderUpdate",0.2f,0.2f);
+					}
+					hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);					
 				}
-				
-
 		}
 
 		if (lUnitsToCreate.Count >= 1)
@@ -213,6 +191,7 @@ public class FactoryBase : IStats, IDeathObservable
 				}
 				return;
 			}
+
 			else
 				alreadyCheckedMaxPopulation = false;				
 					
@@ -220,18 +199,31 @@ public class FactoryBase : IStats, IDeathObservable
 			{
 				unitToCreate = lUnitsToCreate[0];
 				timeToCreate = lUnitsToCreate[0].timeToSpawn;
-				inUpgrade = true;
-				
-				if (Selected) buildingSlider.gameObject.SetActive(true);
+				inUpgrade = true;				
+				if (Selected)
+				{
+					buildingSlider.gameObject.SetActive(true);
+					InvokeRepeating ("InvokeSliderUpdate",0.2f,0.2f);                              			 // atualiza o slider a 0.2;
+				}
 				hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);				
 			}
 
 		}
 		
 		if (inUpgrade)
+		
 		{
+			if(!Selected && isInvokingSlider)
+			{
+				CancelInvoke ("InvokeSliderUpdate");
+				buildingSlider.value = 0;
+				isInvokingSlider = false;
+			}
 			if (timer > timeToCreate)
 			{
+				CancelInvoke ("InvokeSliderUpdate");
+				isInvokingSlider = false;
+
 				if (unitToCreate != null) 
 				{
 					InvokeUnit (unitToCreate);
@@ -244,24 +236,12 @@ public class FactoryBase : IStats, IDeathObservable
 					upgradeToCreate = null;
 				}
 				inUpgrade = false;
-				timer = 0;
+				timer = 0;			
 			}
 			else
 			{
-				if (onBoost)
-				{			
-					timer += Time.deltaTime*1.2f;
-					buildingSlider.value = (timer / timeToCreate);
-					Debug.Log("boost Feedback HERE");
-					
-				}
-				else
-					
-				{
-					timer += Time.deltaTime;
-					buildingSlider.value = (timer / timeToCreate);
-				}
-								
+				timer += Time.deltaTime;	
+				if(Selected && !isInvokingSlider) InvokeRepeating ("InvokeSliderUpdate",0.2f,0.2f);
 			}
 		}
 	}
@@ -401,12 +381,9 @@ public class FactoryBase : IStats, IDeathObservable
 	[RPC]
 	public void Instance ()
 	{
-		realRangeView  = this.fieldOfView;
-		
-		GetComponent<NavMeshObstacle> ().enabled = true;
-		
-		statsController.AddStats(this);
-		
+		realRangeView  = this.fieldOfView;		
+		GetComponent<NavMeshObstacle> ().enabled = true;		
+		statsController.AddStats(this);		
 		this.fieldOfView = 0.5f;
 		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
@@ -414,8 +391,7 @@ public class FactoryBase : IStats, IDeathObservable
 			obj.SetActive (true);
 		}
 		
-		buildingState = BuildingState.Base;
-		
+		buildingState = BuildingState.Base;		
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 		
 		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
@@ -440,12 +416,10 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			if (!wasBuilt)
 			{
-				wasBuilt = true;
-												
-				this.fieldOfView = realRangeView;
-				
+				wasBuilt = true;												
+				this.fieldOfView = realRangeView;				
 				string factoryName = buttonName;
-				
+
 				if(string.IsNullOrEmpty(factoryName))
 				{
 					Debug.LogError("Eh necessario colocar um nome no buttonName.\nUtilizando nome padrao");
@@ -455,8 +429,7 @@ public class FactoryBase : IStats, IDeathObservable
 				Init ();
 				
 				eventController.AddEvent("building finish",transformParticleDamageReference.position, factoryName, this.guiTextureName);
-				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
-				
+				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);				
 				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 				Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
 				
@@ -808,7 +781,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public override void Deselect ()
 	{
 		base.Deselect ();
-		
+
 		buildingSlider.gameObject.SetActive(false);
 		
 		int c = IDOobservers.Count;
@@ -848,7 +821,6 @@ public class FactoryBase : IStats, IDeathObservable
 			upgrade.uniquelyUpgraded = true;
 		}		
 	}
-
 	
 	public virtual void EnqueueUnitToCreate (Unit unit)
 	{
@@ -930,7 +902,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 	void InvokeUpgrade (Upgrade upgrade)
 	{
-		buildingSlider.gameObject.SetActive(false);
+		timer = 0;
 		lUpgradesToCreate.RemoveAt (0);
 		hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);	
 
@@ -1082,10 +1054,20 @@ public class FactoryBase : IStats, IDeathObservable
 		{	
 			up.techAvailable = up.VIP;
 		}		
+	}	
+	#endregion
+
+	public  void LoadStandardAttribs()											// Inicializa os tributos da unidade conforme Techtree
+	{
+		Hashtable ht = techTreeController.attribsHash[category] as Hashtable;
+		bonusDefense = (int)ht["bonusdefense"];
 	}
 
-	
-	#endregion
+	private void InvokeSliderUpdate()
+	{
+		if(!isInvokingSlider) isInvokingSlider = true;
+		buildingSlider.value = (timer / timeToCreate);
+	}
 	
 	// RPCs
 	[RPC]

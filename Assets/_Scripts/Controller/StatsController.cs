@@ -80,18 +80,20 @@ public class StatsController : MonoBehaviour
 				Vector3 newDestination = destination;
 				if (i != 0)
 				{
-					if (i-1 % 3 == 0)
+					if (i == 1)
 					{
-						newDestination += Vector3.left * unit.GetPathFindRadius * k;
+						newDestination += Vector3.left * unit.GetAgentRadius * k;
 					}
-					if (i-1 % 3 == 1)
+					if (i == 2)
 					{
-						newDestination += Vector3.right * unit.GetPathFindRadius * k;
+						newDestination += Vector3.right * unit.GetAgentRadius * k;
+
 					}
-					if (i-1 % 3 == 2)
+					if (i == 3)
 					{
-						newDestination += Vector3.back * unit.GetPathFindRadius * k;
+						newDestination += Vector3.back * unit.GetAgentRadius * k;
 						k++;
+						i=-3;
 					}
 				}
 				 
@@ -314,13 +316,6 @@ public class StatsController : MonoBehaviour
 
 	public void SelectStat (IStats stat, bool select)
 	{
-		Resource resource = stat as Resource;
-		
-		if (resource != null)
-		{
-			statsTypeSelected = StatsTypeSelected.Resource;
-			
-		}
 
 		if(!stat.IsVisible)
 			return;
@@ -337,7 +332,6 @@ public class StatsController : MonoBehaviour
 			{
 				Unit unit = stat as Unit;
 				FactoryBase factory = stat as FactoryBase;
-
 				
 				if (unit != null)
 				{
@@ -348,8 +342,6 @@ public class StatsController : MonoBehaviour
 				{
 					statsTypeSelected = StatsTypeSelected.Factory;
 				}
-
-
 			}
 			
 			stat.Select ();
@@ -459,11 +451,7 @@ public class StatsController : MonoBehaviour
 						Math.CenterCameraInObject (Camera.main, groupPos);
 						selectionController.groupFeedback.SetActive(true);
 					   
-						
-
-						return false;
-						break;
-						
+						return false;						
 					}
 
 					else 
@@ -476,11 +464,9 @@ public class StatsController : MonoBehaviour
 						}
 						
 						selectionController.groupFeedback.SetActive(true);
-						selectedGroup = numberGroup;
+						selectedGroup = numberGroup;					
 						
-						
-						return true;
-						break;
+						return true;						
 					}
 			}
 		}

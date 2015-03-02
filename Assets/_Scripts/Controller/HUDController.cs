@@ -262,7 +262,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			
 		foreach (ParticleSystem ps in selectObj.GetComponentsInChildren<ParticleSystem>())
 		{
-			ps.startSize = size * 2f;
+			ps.startSize = Mathf.Clamp (size * 1.2f, 2, 10);
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
 		}
@@ -517,8 +517,6 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		{
 				Destroy (child.gameObject);
 		}
-
-
 	}
 
 	public void DestroyInspector (string type)
@@ -606,7 +604,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		defLabel    = infoUnit.FindChild ("def-label").GetComponent<UILabel> ();
 		descriptLabel = infoUnit.FindChild ("descript-label").GetComponent<UILabel> ();			
 		nameLabel.text = unit.category;				
-		attackLabel.text = (unit.AdditionalForce != 0)	? unit.force + "(+" + unit.AdditionalForce + ")": unit.force.ToString ();
+		attackLabel.text = (unit.bonusForce != 0)	? unit.force + "(+" + unit.bonusForce + ")": unit.force.ToString ();
 		defLabel.text = unit.defense.ToString ();				
 		hpLabel.text = unit.maxHealth.ToString ();
 		speedLabel.text = unit.normalSpeed.ToString();

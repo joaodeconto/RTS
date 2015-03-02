@@ -35,6 +35,7 @@ public class EnemyCluster : MonoBehaviour {
 
 	public Transform teamNine;
 	public Transform teamZero;
+	private bool gotMainBase = false;
 	protected GameplayManager gameplayManager;
 	protected StatsController statsController;
 	public ClusterModel[] clusterModels;
@@ -183,7 +184,6 @@ public class EnemyCluster : MonoBehaviour {
 				}					
 				break;
 			}
-
 //			Debug.Log (cluster.clusterBehaviour);
 		}				
 	}
@@ -212,15 +212,25 @@ public class EnemyCluster : MonoBehaviour {
 			eIA.EnemyMovement ();
 		}
 	}
-	
-	// Use this for initialization
-
-
-	
-//	void Update ()
-//	{
-//		IABehaviour ();
-//	
-//	}
-
+	private void UpdateClusterTargert(ClusterModel cluster)
+	{
+		foreach (IStats stats in statsController.myStats)				// Utilizando o mystats como base para facilitar (multiplayer inserir times)
+		{
+			if(stats.GetType() == typeof(MainFactory) && !gotMainBase)
+			{
+				cluster.attackTarget = stats.transform;
+				gotMainBase = true;
+				break;
+			}
+			if(stats.category == "Barracks");
+			{
+				cluster.attackTarget = stats.transform;
+				break;
+			}
+			if(stats != null)											//Nao sendo nullo, base ou depot pega qualquer stats
+			{
+				cluster.attackTarget = stats.transform;
+			}
+		}
+	}
 }

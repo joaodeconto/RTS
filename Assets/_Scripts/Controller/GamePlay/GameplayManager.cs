@@ -132,7 +132,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				Math.CenterCameraInObject (Camera.main, teams[i].initialPosition.position);
 			}
 		}
-		TribeInstiateNetwork ();
+		TribeInstiateNetwork();
 
 		if (mode == Mode.Cooperative)
 		{
@@ -182,19 +182,14 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				foreach (Transform trns in t.initialPosition)
 				{
-
 					if(trns.gameObject.activeSelf == true)
 					{
 						InitInstantiateNetwork toInit = trns.GetComponent<InitInstantiateNetwork>();
 						if (toInit.GetType() == typeof(InitInstantiateNetwork))
 						{
-
-							toInit.Init();
-							Debug.Log("transform  "+ trns.name);
-					
+							toInit.Init();											
 						}
 					}
-
 				}
 			}
 		}
