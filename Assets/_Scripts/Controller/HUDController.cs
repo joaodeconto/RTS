@@ -164,23 +164,15 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
 		touchController    = ComponentGetter.Get<TouchController>();
-	
-
 		stackButtonToCreate = new Stack<ButtonStatus>();
-
 		IsDestroying = false;
-
 		infoUpgrade = trnsPanelInfoBox.FindChild ("Info Upgrade");
 		infoFactory = trnsPanelInfoBox.FindChild ("Info Factory");
 		infoUnit = trnsPanelInfoBox.FindChild ("Info Unit");
 		infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
 		infoIcon  = trnsPanelInfoBox.FindChild ("Info Icon");
 		infoReq = trnsPanelInfoBox.FindChild ("Info Require");
-
 		nameLabel = infoQuali.FindChild ("name-label").GetComponent<UILabel> ();
-
-
-
 //		spriteFactory = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 //		spriteUnit	  = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 	}
@@ -593,9 +585,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			reqLabel.text =  unit.requisites;
 		}
 		else
+
 			infoReq.gameObject.SetActive(false);
-		infoFactory.gameObject.SetActive (false);
-		infoUpgrade.gameObject.SetActive (false);
+
 		attackLabel = infoUnit.FindChild ("attack-label").GetComponent<UILabel> ();
 		hpLabel	    = infoUnit.FindChild ("hp-label").GetComponent<UILabel> ();
 		speedLabel  = infoUnit.FindChild ("speed-label").GetComponent<UILabel> ();

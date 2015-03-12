@@ -1,22 +1,16 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
 using Visiorama;
 
 public class InteractionController : MonoBehaviour
 {
 	public delegate void InteractionCallback(Vector3 position, Transform hit);
-
 	public GameObject uiExitGameObject;
-
 	protected TouchController touchController;
 	protected StatsController statsController;
 	protected GameplayManager gameplayManager;
 	protected HUDController hudController;
-
-
-
 	private Stack<InteractionCallback> stackInteractionCallbacks;
 
 	public void Init ()
@@ -173,17 +167,13 @@ public class InteractionController : MonoBehaviour
 				}
 				
 				worker.SetResource (hit.GetComponent<Resource> ());
-
 				feedback = true;
-
 			}
 
 			if (feedback)
 							
 			{  // hudController.CreateSubstanceHealthBar (this, 6, Resource, "Health Reference");
-				hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.position, 2f,
-											  gameplayManager.GetColorTeam ());
-
+				hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.position, 2f, gameplayManager.GetColorTeam ());
 			}
 			return;
 		}
@@ -207,11 +197,7 @@ public class InteractionController : MonoBehaviour
 					worker.SetMoveToFactory (null);
 				}
 			}
-
-
-		}
-		
+		}		
 		statsController.MoveTroop (touchController.GetFinalPoint);
-
 	}
 }

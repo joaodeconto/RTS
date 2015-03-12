@@ -4,16 +4,17 @@ using System.Collections;
 public class EnemyIA : MonoBehaviour
 {
 
-	public int enemyClusterNumber;
+	public int IAClusterNumber;
 	private Unit unit;
 	public Transform movementTarget;
-	public bool initiated = false; 
+	private bool initialized = false; 
 	public bool isMoving = false; 
+	public bool ScoutType;
 
 
 	void Start()
 	{
-		initiated = true; 
+		initialized = true; 
 		unit = gameObject.GetComponent<Unit>(); 
 		unit.moveAttack = true;
 	}
@@ -22,8 +23,7 @@ public class EnemyIA : MonoBehaviour
 	public void EnemyMovement ()
 	{
 		unit.Move (movementTarget.position);
-		isMoving = true;
-		
+		isMoving = true;		
 	}
 
 	void Update()
@@ -38,9 +38,9 @@ public class EnemyIA : MonoBehaviour
 			{
 				isMoving = false;
 				movementTarget = null;
+				if (ScoutType)SendMessage ("ReachPoint", IAClusterNumber, SendMessageOptions.DontRequireReceiver);
 			}
 		}
-
 	}
 }
 

@@ -5,12 +5,10 @@ using Visiorama;
 using Visiorama.Extension;
 
 public class CaveFactory : FactoryBase
-
 {
 	protected EnemyCluster enemyCluster;
 	private List<int> lUnitCluster = new List<int>();
 	private int unitToCreateCluster;
-
 
 	public override void Init ()
 	{
@@ -18,13 +16,10 @@ public class CaveFactory : FactoryBase
 		wasBuilt = true;
 		enabled = true;
 		enemyCluster      = ComponentGetter.Get<EnemyCluster>();
-
-
 	}
 
 	public void BuildEnemy(Unit unit, int clusterNumber)
 	{
-
 		List<CaveFactory> factories = new List<CaveFactory> ();
 		
 		foreach (IStats stat in statsController.otherStats)
@@ -38,8 +33,6 @@ public class CaveFactory : FactoryBase
 			
 			factories.Add (factory);
 			}
-			
-
 		}
 		
 		int i = 0, factoryChoose = 0, numberToCreate = -1;
@@ -57,25 +50,20 @@ public class CaveFactory : FactoryBase
 				factoryChoose = i;
 			}
 			i++;
-		}
-		
+		}	
 
-			factories[factoryChoose].lUnitsToCreate.Add (unit);
-			factories[factoryChoose].lUnitCluster.Add(clusterNumber);
-
+		factories[factoryChoose].lUnitsToCreate.Add (unit);
+		factories[factoryChoose].lUnitCluster.Add(clusterNumber);
 	}
 
 
 	public void InvokeUnit (Unit unit, int unitCluster)
 	{
-
 		timer = 0;
-
 		lUnitsToCreate.RemoveAt (0);
 		lUnitCluster.RemoveAt (0);
 
 		string unitName = "";
-
 
 		foreach(UnitFactory uf in unitsToCreate)
 		{
@@ -85,29 +73,12 @@ public class CaveFactory : FactoryBase
 				break;
 			}
 		}
-								
-		if(string.IsNullOrEmpty(unitName))
-		{
-			Debug.LogError("Eh necessario colocar um nome no UnitFactory.Utilizando nome padrao");
-
-		}
-	
 
 		if (!hasRallypoint) return;
-
 		Vector3 difference = goRallypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);
-		Vector3 forward = rotation * Vector3.forward;
-		
+		Vector3 forward = rotation * Vector3.forward;		
 		Vector3 unitSpawnPosition = transform.position + (forward * helperCollider.radius);
-		
-		// Look At
-//		Vector3 difference = goRallypoint.position - transformParticleDamageReference.transform.position;
-//		Quaternion rotation = Quaternion.LookRotation (difference);
-//		Vector3 forward = rotation * Vector3.forward;
-//		
-//		Vector3 unitSpawnPosition = transformParticleDamageReference.transform.position + (forward * helperCollider.radius);
-//		
 		Unit newUnit = null;
 
 		if (PhotonNetwork.offlineMode)
@@ -129,24 +100,17 @@ public class CaveFactory : FactoryBase
 		newUnit.SetTeam(8,8);
 		newUnit.Init ();
 						
-		RallyPoint rallypoint = goRallypoint.GetComponent<RallyPoint> ();
-
-		rallypoint.transform.position = transformParticleDamageReference.position;
-										
+//		RallyPoint rallypoint = goRallypoint.GetComponent<RallyPoint> ();
 		newUnit.Move (goRallypoint.position);
-		newUnit.moveAttack = true;
-
 		newUnit.transform.parent = GameObject.Find("GamePlay/" + newUnit.team).transform;
-//		Debug.Log(newUnit.team + " " + " " + gameplayManager.MyTeam +" "+unit.team);
 		enemyCluster.clusterModels[unitCluster].clusterUnits.Add(newUnit);
 		newUnit = newUnit.gameObject.AddComponent("EnemyIA") as Unit;
-
 	}
+
 
 
 	void Update ()
 	{
-//		Debug.Log(lUnitsToCreate.Count);
 		if (lUnitsToCreate.Count == 0 && lUpgradesToCreate.Count == 0)
 		return;
 				
@@ -159,8 +123,7 @@ public class CaveFactory : FactoryBase
 				timeToCreate = lUnitsToCreate[0].timeToSpawn;
 				inUpgrade = true;
 			
-			}
-			
+			}			
 		}
 
 		if (inUpgrade)
@@ -178,10 +141,8 @@ public class CaveFactory : FactoryBase
 			}
 
 			else
-			{
-		
-				timer += Time.deltaTime;
-							
+			{		
+				timer += Time.deltaTime;		
 				
 			}
 		}

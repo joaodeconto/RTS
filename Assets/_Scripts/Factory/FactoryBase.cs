@@ -422,7 +422,6 @@ public class FactoryBase : IStats, IDeathObservable
 
 				if(string.IsNullOrEmpty(factoryName))
 				{
-					Debug.LogError("Eh necessario colocar um nome no buttonName.\nUtilizando nome padrao");
 					factoryName = this.name;
 				}
 				
@@ -493,7 +492,7 @@ public class FactoryBase : IStats, IDeathObservable
 					                                       (ht_dcb, onClick) => 
 					                                       {
 																UpgradeItem upgrade = (UpgradeItem)ht_dcb["upgradeHT"];																
-																hudController.OpenInfoBoxUpgrade(upgrade.upgrade, true);
+																hudController.OpenInfoBoxUpgrade(upgrade.upgrade, false);
 															});
 				}
 				
@@ -525,10 +524,9 @@ public class FactoryBase : IStats, IDeathObservable
 																}
 																else
 																{
-																	Debug.Log(Time.time - (float)ht["time"]);
 																	if (Time.time - (float)ht["time"] > 0.3f)
 																	{	
-																		hudController.OpenInfoBoxUpgrade(upgrade.upgrade, false);
+																		hudController.OpenInfoBoxUpgrade(upgrade.upgrade, true);
 																		
 																	}
 																	else
@@ -689,16 +687,13 @@ public class FactoryBase : IStats, IDeathObservable
 																}
 																else
 																{
-																	Debug.Log(Time.time - (float)ht["time"]);
 																	if (Time.time - (float)ht["time"] > 0.3f)
 																	{	
-																		hudController.OpenInfoBoxUnit(unitFactory.unit, false);
-																		
+																		hudController.OpenInfoBoxUnit(unitFactory.unit, false);																		
 																	}
 																	else
 																	{
-																		hudController.CloseInfoBox();
-																		
+																		hudController.CloseInfoBox();																		
 																		List<FactoryBase> factories = new List<FactoryBase> ();
 																																				
 																		foreach (IStats stat in statsController.selectedStats)
@@ -829,7 +824,6 @@ public class FactoryBase : IStats, IDeathObservable
 		if (canBuy)
 		{
 			gameplayManager.resources.UseResources (unit.costOfResources);
-			Debug.Log("gold spent event" + unit.costOfResources);
 			lUnitsToCreate.Add (unit);
 			Hashtable ht = new Hashtable();
 			ht["unit"] = unit;
@@ -932,7 +926,6 @@ public class FactoryBase : IStats, IDeathObservable
 		
 		if(string.IsNullOrEmpty(unitName))
 		{
-			Debug.LogError("Eh necessario colocar um nome no UnitFactory.Utilizando nome padrao");
 			unitName = unit.name;
 		}
 		
@@ -943,8 +936,6 @@ public class FactoryBase : IStats, IDeathObservable
 		if (!string.IsNullOrEmpty (encodedBattle))
 		{
 			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
-			
-			Debug.Log ("battle: " + battle);
 			//Score
 			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1);
 			Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);

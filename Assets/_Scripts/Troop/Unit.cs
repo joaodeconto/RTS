@@ -408,7 +408,7 @@ public class Unit : IStats, IMovementObservable,
 				{	
 					if	(CheckNemesis(TargetAttack.GetComponent<IStats>()))
 					{
-						skillBonus  = Mathf.FloorToInt((force + bonusForce)*0.5f);                                   
+						skillBonus  = Mathf.FloorToInt((force + bonusForce)*0.25f);                                   
 					}
 				}
 				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + bonusForce + skillBonus);
@@ -416,10 +416,8 @@ public class Unit : IStats, IMovementObservable,
 			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
 
-			Debug.Log("SkillBonus de" + this + " skill " +skillBonus);
 			skillBonus = 0; 
 			IsAttacking = false;
-			Debug.Log("zerou?"+skillBonus);
 		}
 		else
 		{
@@ -482,17 +480,12 @@ public class Unit : IStats, IMovementObservable,
 															}
 															else
 															{
-																Debug.Log(Time.time - (float)ht["time"]);
 																if (Time.time - (float)ht["time"] > 0.1f)
 																{	
-																	selectionController.SelectSameCategory(this.category);
-						
-																}
-																
+																	selectionController.SelectSameCategory(this.category);						
+																}																
 															}
-														});
-			
-			
+														});		
 			
 			foreach (MovementAction ma in movementActions)
 			{
@@ -538,9 +531,8 @@ public class Unit : IStats, IMovementObservable,
 															interactionController.AddCallback(TouchController.IdTouch.Id0,
 															                                 	(position, hit) =>
 															                                  	{
-																									Unit unit = hit.GetComponent <Unit> ();
+																									Unit unit = hit.GetComponent <Unit> ();																									
 																									
-																									Debug.LogWarning ("Seguindo apenas do mesmo time, nao segue aliados.");
 																									if (unit != null && gameplayManager.IsSameTeam (unit))
 																									{
 																										statsController.FollowTroop (unit);
@@ -659,8 +651,6 @@ public class Unit : IStats, IMovementObservable,
 			else
 				return BinarySearch(units, unit, mid + 1, last);
 		}
-
-		Debug.Log (testedUnit.team + " == " + unit.team);
 
 		//obtendo posição x
 		float testedUnitX = testedUnit.transform.position.x;
@@ -792,6 +782,9 @@ public class Unit : IStats, IMovementObservable,
 
 	public virtual IEnumerator OnDie ()
 	{
+		NavAgent.Stop ();
+		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+
 		IsDead = true;
 
 		unitState = UnitState.Die;
@@ -811,8 +804,6 @@ public class Unit : IStats, IMovementObservable,
 			smas.rolloffMode =AudioRolloffMode.Custom;
 
 		}
-		NavAgent.Stop ();
-		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 
 		//IMovementObservable
 		int c = IMOobservers.Count;
@@ -1016,7 +1007,7 @@ public class Unit : IStats, IMovementObservable,
 
 	public void OnUnRegisterMovementObserver ()
 	{
-		Move (LastPosition);
+		if(NavAgent != null) Move (LastPosition);
 	}
 
 	public Vector3 LastPosition {

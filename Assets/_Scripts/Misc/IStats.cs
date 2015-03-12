@@ -180,13 +180,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public bool WasRemoved { get; protected set; }	
 	public int group = -1;	
 	public ResourcesManager costOfResources;
-	protected StatsController statsController;
-	protected MiniMapController minimapController;
-	protected HUDController hudController;
-	protected GameplayManager gameplayManager;
-	protected EventController eventController;
-	protected SelectionController selectionController;
-	protected TechTreeController techTreeController;
 	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
 	private bool wasInitialized = false;
 	public GameObject model;
@@ -194,6 +187,14 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public abstract bool IsVisible { get; }
 	public bool firstDamage {get;set;}
 	public int bonusDefense{get;set;}
+
+	protected StatsController statsController;
+	protected MiniMapController minimapController;
+	protected HUDController hudController;
+	protected GameplayManager gameplayManager;
+	protected EventController eventController;
+	protected SelectionController selectionController;
+	protected TechTreeController techTreeController;
 
 	void Awake ()
 	{

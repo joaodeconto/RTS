@@ -429,8 +429,7 @@ public class StatsController : MonoBehaviour
 				stat.group = numberGroup;
 				statsGroups[numberGroup].Add (stat);
 			}
-		}
-		else VDebug.LogError ("No units selected.");
+		}	
 	}
 
 	public bool SelectGroup (int numberGroup)

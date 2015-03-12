@@ -33,13 +33,14 @@ public class EnemyCluster : MonoBehaviour {
 		explore
 	}
 
-	public Transform teamNine;
-	public Transform teamZero;
+	private Transform teamNine;
+	private Transform teamZero;
 	private bool gotMainBase = false;
 	protected GameplayManager gameplayManager;
 	protected StatsController statsController;
 	public ClusterModel[] clusterModels;
-
+	private int exploreIndex = 0;
+	private Dictionary<int, Transform> exploreTargets = new Dictionary<int, Transform>();
 
 	public void Init()
 	{	 	
@@ -48,8 +49,9 @@ public class EnemyCluster : MonoBehaviour {
 		teamNine = gameplayManager.teams[8].initialPosition;
 		teamZero = gameplayManager.teams[0].initialPosition;
 		teamNine.gameObject.SetActive(true);
+		InitExploreTargets();
 		InitInicialEnemies ();
-		Invoke("InitClusters",5f);
+		Invoke("InitClusters",3f);
 		InvokeRepeating ("IABehaviour",2,1);
 	}
 		
@@ -80,21 +82,28 @@ public class EnemyCluster : MonoBehaviour {
 			{
 				CheckClusterFactory(cluster); 
 			}
-		}
-		
+		}		
 	}
 
 	private void CheckClusterFactory(ClusterModel cluster)
-	{				
-		foreach (IStats stat in statsController.otherStats)
+	{			
+		if (cluster.factory != null)
 		{
-			if (stat.GetType() == typeof(CaveFactory))
+			ClusterDemand(cluster);
+		}
+		else
+		{
+			foreach (IStats stat in statsController.otherStats)
 			{
-				CaveFactory factory = stat as CaveFactory;
-				cluster.factory = factory;
-				ClusterDemand(cluster);
-			}			
-			
+				if (stat.GetType() == typeof(CaveFactory))
+				{
+					CaveFactory factory = stat as CaveFactory;
+					cluster.factory = factory;
+					ClusterDemand(cluster);
+				}						
+			}
+
+			if (cluster.factory == null) return;
 		}
 	}
 
@@ -106,6 +115,7 @@ public class EnemyCluster : MonoBehaviour {
 			{
 				CheckClusterFactory(cluster);		
 			}
+
 			else
 			{	
 				foreach (Unit desiredUnit in cluster.clusterDesiredUnits)
@@ -116,12 +126,11 @@ public class EnemyCluster : MonoBehaviour {
 				cluster.hasDemanded = true;
 			}
 		}
-		else Debug.Log(cluster +"  ja demandou");
 	}
 
 	void IABehaviour ()
 	{
-		foreach (ClusterModel cluster in clusterModels)
+		foreach (ClusterModel cluster in clusterModels)             //chama os grupos
 		{
 			if(cluster.clusterComplete)
 			{
@@ -153,48 +162,51 @@ public class EnemyCluster : MonoBehaviour {
 				break;
 				
 			case ClusterBehaviour.defend:
-				if (!cluster.clusterIsBusy && cluster.clusterTarget != null)
+
+				if(cluster.defendTarget == null)
 				{
-					cluster.clusterIsBusy = true;
+					Transform defendRef = cluster.factory.goRallypoint;
+					defendRef.position += Vector3.forward * 4;
+					cluster.defendTarget = defendRef;
+				}
+
+				else if (!cluster.clusterIsBusy)
+				{
 					cluster.clusterTarget = cluster.defendTarget;
 					MoveCluster(cluster);
 				}
 				break;
 				
 			case ClusterBehaviour.explore:
-				
-				if (!cluster.clusterIsBusy && cluster.clusterTarget != null)
+
+				if (cluster.clusterTarget == null)	UpdateClusterExploreTarget(cluster);	
+				else if (!cluster.clusterIsBusy )
 				{
-					cluster.clusterIsBusy = true;
-					cluster.clusterTarget = cluster.exploreTarget;
 					MoveCluster(cluster);
 				}
 				
 				break;
 				
 			case ClusterBehaviour.attack:
-				
-				if (!cluster.clusterIsBusy && cluster.attackTarget != null)
+
+				if (cluster.clusterTarget == null)	UpdateClusterAttackTarget(cluster);
+				else if(!cluster.clusterIsBusy )
 				{
-
-					cluster.clusterTarget = cluster.attackTarget;
-					cluster.clusterIsBusy = true;
 					MoveCluster(cluster);
-
 				}					
 				break;
 			}
-//			Debug.Log (cluster.clusterBehaviour);
 		}				
 	}
 	
-	private void InitInicialEnemies ()            // instancia Enemies ataraves do initInstanciateEnemy
+	private void InitInicialEnemies ()            
 	{
 		foreach (Transform trns in teamNine)
 		{			
 			if(trns.gameObject.activeSelf == true)
 			{
 				InitInstantiateEnemy toInit = trns.GetComponent<InitInstantiateEnemy>();
+				if (!toInit)continue;
 				if (toInit.GetType() == typeof(InitInstantiateEnemy))
 				{					
 					toInit.Init();
@@ -208,11 +220,14 @@ public class EnemyCluster : MonoBehaviour {
 		foreach (Unit e in cluster.clusterUnits)
 		{
 			EnemyIA eIA = e.gameObject.GetComponent<EnemyIA>();
+			eIA.IAClusterNumber = cluster.clusterNumber;
 			eIA.movementTarget = cluster.clusterTarget;
 			eIA.EnemyMovement ();
+			if (cluster.clusterBehaviour == ClusterBehaviour.explore) eIA.ScoutType = true;
+			cluster.clusterIsBusy = true;
 		}
 	}
-	private void UpdateClusterTargert(ClusterModel cluster)
+	private void UpdateClusterAttackTarget(ClusterModel cluster)
 	{
 		foreach (IStats stats in statsController.myStats)				// Utilizando o mystats como base para facilitar (multiplayer inserir times)
 		{
@@ -222,7 +237,8 @@ public class EnemyCluster : MonoBehaviour {
 				gotMainBase = true;
 				break;
 			}
-			if(stats.category == "Barracks");
+			string barracks = "Barracks";
+			if(stats.category == barracks)
 			{
 				cluster.attackTarget = stats.transform;
 				break;
@@ -231,6 +247,40 @@ public class EnemyCluster : MonoBehaviour {
 			{
 				cluster.attackTarget = stats.transform;
 			}
+		}
+		cluster.clusterTarget = cluster.attackTarget;
+	}
+
+	private void UpdateClusterExploreTarget(ClusterModel cluster)         //Observa o index e envia para o target nao explorado
+	{
+		if (exploreIndex > exploreTargets.Count) exploreIndex = 0;        // zera se todos ja foram assignalados
+
+		cluster.exploreTarget = exploreTargets[exploreIndex];
+		cluster.clusterTarget = cluster.exploreTarget;
+	}
+
+	void ReachPoint(int clusterNumber)									//Recebe mensagem da IA de que chegou no explore point
+	{
+		exploreIndex++;
+		
+		foreach (ClusterModel cluster in clusterModels)
+		{
+			if(cluster.clusterNumber == clusterNumber)
+			{
+				UpdateClusterExploreTarget(cluster);
+				break;
+			}
+		}
+	}
+
+	private void InitExploreTargets()
+	{
+		int i = 0;
+		Transform exploreTarget = GameObject.Find("GamePlay/" + "Resources").transform;
+		foreach (Transform target in exploreTarget)	
+		{
+			exploreTargets.Add(i,target);
+			i++;
 		}
 	}
 }
