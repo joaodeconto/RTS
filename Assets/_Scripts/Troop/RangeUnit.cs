@@ -51,7 +51,7 @@ public class RangeUnit : Unit
 				}
 				else
 				{
-					TargetAttack.GetComponent<IStats>().ReceiveAttack(projectileAttackForce + bonusForce);
+					TargetAttack.GetComponent<IStats>().ReceiveAttack(projectileAttackForce + bonusProjectile);
 				}
 			}
 

@@ -116,6 +116,7 @@ public class RangeObject : Photon.MonoBehaviour
 		if (isIntersects)
 		{
 			rangeHitDelegate (hashtable);
+			CancelInvoke("CheckProjectileHit");
 		}		
 
 	}

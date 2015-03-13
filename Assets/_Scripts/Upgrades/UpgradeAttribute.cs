@@ -19,7 +19,8 @@ public class UpgradeAttribute : Upgrade
 		defense,
 		force,
 		speed,
-		sight
+		sight,
+		projectile
 	}
 
 	public void Init()
@@ -153,8 +154,34 @@ public class UpgradeAttribute : Upgrade
 				}
 			}
 				break;
-		}
 
+		case AttributeBonus.projectile:
+		{
+			foreach (IStats stat in statsController.myStats)
+			{
+				if(allUnits)
+				{
+					if (stat.GetType() == typeof(RangeUnit))
+					{
+						RangeUnit u = stat as RangeUnit;
+						u.bonusProjectile += _bonus;
+					}
+				}
+				if(_subCategory != null)
+				{
+					RangeUnit u = stat as RangeUnit;		
+					if(_subCategory == u.subCategory)u.bonusProjectile += _bonus;
+				}
+				else if (stat.category == _category)
+				{
+					RangeUnit u = stat as RangeUnit;
+					u.bonusProjectile += _bonus;
+				}
+			}
+		}
+			break;
+		}
+		
 		if(allUnits)
 		{ 
 			foreach (Unit u in techTreeController.prefabUnit)

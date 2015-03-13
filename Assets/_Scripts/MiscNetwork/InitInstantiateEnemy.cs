@@ -47,7 +47,6 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 			prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
-
 		}				
 		CancelInvoke ("NetworkInstantiatePrefab");
 		Destroy (this.gameObject);
@@ -56,10 +55,12 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 
 	void NetworkInstantiatePrefab ()
 	{
+		IStats prefSetTeam = prefabInstantiate.GetComponent<IStats>();
+		prefSetTeam.SetTeam (8,8);
 		GameObject prefab = PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, transform.rotation, 0);
+		prefSetTeam.SetTeam (0,0);
 		prefab.transform.parent = transform.parent;
 		IStats stats = prefab.GetComponent<IStats>();
-		stats.SetTeam (8,8);
 		stats.Init ();
 		if (prefab.GetComponent<FactoryBase>() != null)
 		{
@@ -70,7 +71,6 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 
 		CancelInvoke ("NetworkInstantiatePrefab");
 		Destroy (this.gameObject);
-
 	}
 
 		void OnDrawGizmos ()

@@ -772,9 +772,9 @@ MonoBehaviour:
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 6d689bc25bc28e347a367c3883aeaf9a, type: 2}
   minimapAtlas: {fileID: 11400000, guid: 1ad367796a1accb419f17d3ea071ca02, type: 2}
-  visualizationSize: {x: 103, y: 78, z: 0}
+  visualizationSize: {x: 95, y: 70, z: 0}
   visualizationPosition: {x: 0, y: 0, z: 60}
-  MiniMapRefreshInterval: .5
+  MiniMapRefreshInterval: .200000003
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1029,13 +1029,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72e672c7e9acff14687d20194d1d4ab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teamNine: {fileID: 0}
-  teamZero: {fileID: 0}
   clusterModels:
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 120
-    bravery: 5
+    triggerDemmand: 60
+    bravery: 6
     defendTarget: {fileID: 0}
     exploreTarget: {fileID: 0}
     attackTarget: {fileID: 0}
@@ -1053,8 +1051,8 @@ MonoBehaviour:
     hasDemanded: 0
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 30
-    bravery: 5
+    triggerDemmand: 180
+    bravery: 3
     defendTarget: {fileID: 0}
     exploreTarget: {fileID: 0}
     attackTarget: {fileID: 0}
@@ -1065,9 +1063,21 @@ MonoBehaviour:
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
+    clusterUnits: []
+    clusterIsBusy: 0
+    hasDemanded: 0
+  - clusterComplete: 0
+    clusterNumber: 0
+    triggerDemmand: 20
+    bravery: 3
+    defendTarget: {fileID: 0}
+    exploreTarget: {fileID: 0}
+    attackTarget: {fileID: 0}
+    clusterTarget: {fileID: 0}
+    factory: {fileID: 0}
+    desiredBehaviour: 3
+    clusterDesiredUnits:
+    - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0

@@ -104,10 +104,6 @@ public class Unit : IStats, IMovementObservable,
 	protected int normalAvoidancePriority;
 	protected Hashtable loadAttribs = new Hashtable();
 
-	public int bonusForce {get; set;}
-	public int bonusSpeed {get; set;}
-	public int bonusSight {get; set;}
-
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
 	List<IDeathObserver> IDOobservers	 = new List<IDeathObserver> ();

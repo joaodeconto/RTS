@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Visiorama;
 
 public class EnemyIA : MonoBehaviour
 {
@@ -10,13 +11,17 @@ public class EnemyIA : MonoBehaviour
 	private bool initialized = false; 
 	public bool isMoving = false; 
 	public bool ScoutType;
+	private float helperColl;
+	protected EnemyCluster enemyCluster;
 
 
 	void Start()
 	{
+		enemyCluster = ComponentGetter.Get<EnemyCluster>();
 		initialized = true; 
 		unit = gameObject.GetComponent<Unit>(); 
-		unit.moveAttack = true;
+		if(!ScoutType) unit.moveAttack = true;
+		InvokeRepeating("UpdateIATarget",1,1);
 	}
 
 
@@ -26,19 +31,22 @@ public class EnemyIA : MonoBehaviour
 		isMoving = true;		
 	}
 
-	void Update()
+	void UpdateIATarget()
 	{
-		if (movementTarget != null && unit.unitState == Unit.UnitState.Idle)
+		if(!movementTarget) return;
+
+		if (unit.unitState == Unit.UnitState.Idle)
 		{
 			EnemyMovement ();
 		}
+
 		if (isMoving)
-		{
-			if (unit.MoveComplete(movementTarget.position))
+		{						 
+			if ( unit.MoveComplete(movementTarget.position) || Vector3.Distance(transform.position, movementTarget.position) <= 4)
 			{
 				isMoving = false;
 				movementTarget = null;
-				if (ScoutType)SendMessage ("ReachPoint", IAClusterNumber, SendMessageOptions.DontRequireReceiver);
+				if (ScoutType) enemyCluster.ReachPoint(IAClusterNumber);
 			}
 		}
 	}

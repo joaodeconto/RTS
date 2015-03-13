@@ -427,7 +427,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!82 &8200000
 AudioSource:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 10
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
@@ -510,12 +510,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 20
   sizeOfSelected: 7
-  sizeOfSelectedHealthBar: 8
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400006}
   movementActions: []
@@ -526,10 +525,10 @@ MonoBehaviour:
   subCategory: 
   description: Provides mana, and upgrades
   requisites: 
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 0
-  group: -1
   model: {fileID: 100000}
   unitsToCreate: []
   upgradesToCreate: []

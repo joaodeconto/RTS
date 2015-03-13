@@ -186,8 +186,13 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public abstract void SetVisible(bool visible);
 	public abstract bool IsVisible { get; }
 	public bool firstDamage {get;set;}
-	public int bonusDefense{get;set;}
 
+	public int bonusDefense{get;set;}
+	public int bonusProjectile {get; set;}
+	public int bonusForce {get; set;}
+	public int bonusSpeed {get; set;}
+	public int bonusSight {get; set;}
+	
 	protected StatsController statsController;
 	protected MiniMapController minimapController;
 	protected HUDController hudController;
@@ -283,7 +288,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		{
 			if(!firstDamage) ShowEnemyHealth();
 
-			int newDamage = Mathf.Max (0, Damage - defense);
+			int newDamage = Mathf.Max (0, Damage - (defense+bonusDefense));
 
 			Health = Mathf.Max (0, Health - newDamage);
 
@@ -406,7 +411,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public void NotifyHealthChange ()
 	{	
-
 		foreach (IHealthObserver o in healthObservers)
 		{
 			o.UpdateHealth (m_health);

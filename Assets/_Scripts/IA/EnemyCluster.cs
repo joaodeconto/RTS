@@ -27,6 +27,7 @@ public class EnemyCluster : MonoBehaviour {
 
 	public enum ClusterBehaviour
 	{
+		none,
 		spawning,
 		attack,
 		defend,
@@ -63,6 +64,9 @@ public class EnemyCluster : MonoBehaviour {
 			cluster.clusterNumber = a;
 			cluster.clusterTarget = null;
 			cluster.hasDemanded = false;
+			cluster.clusterIsBusy = false;
+			cluster.clusterBehaviour = ClusterBehaviour.none;
+
 			if(cluster.triggerDemmand <= gameplayManager.myTimer)
 					CheckClusterFactory(cluster); 
 			else
@@ -132,19 +136,21 @@ public class EnemyCluster : MonoBehaviour {
 	{
 		foreach (ClusterModel cluster in clusterModels)             //chama os grupos
 		{
+			cluster.clusterUnits.RemoveAll(item => item == null);
+			
 			if(cluster.clusterComplete)
 			{
-				cluster.clusterUnits.RemoveAll(item => item == null);
 				cluster.clusterBehaviour = cluster.desiredBehaviour;
-				int clusterMinimum = cluster.clusterDesiredUnits.Count/cluster.bravery;
+				int clusterMinimum = Mathf.FloorToInt(cluster.clusterDesiredUnits.Count/cluster.bravery);
 				
 				if (cluster.clusterUnits.Count <= clusterMinimum)
 				{
 					cluster.clusterComplete = false;
 					cluster.clusterIsBusy = false;
 					cluster.hasDemanded = false;
+					cluster.clusterBehaviour = ClusterBehaviour.none;
 					ClusterDemand(cluster);
-					cluster.clusterBehaviour = ClusterBehaviour.defend;
+
 				}
 			}
 			else 
@@ -157,10 +163,11 @@ public class EnemyCluster : MonoBehaviour {
 			
 			switch (cluster.clusterBehaviour)
 			{
-				
-			case ClusterBehaviour.spawning:
+
+			case ClusterBehaviour.none:
 				break;
 				
+			case ClusterBehaviour.spawning:
 			case ClusterBehaviour.defend:
 
 				if(cluster.defendTarget == null)
@@ -253,13 +260,15 @@ public class EnemyCluster : MonoBehaviour {
 
 	private void UpdateClusterExploreTarget(ClusterModel cluster)         //Observa o index e envia para o target nao explorado
 	{
-		if (exploreIndex > exploreTargets.Count) exploreIndex = 0;        // zera se todos ja foram assignalados
+		cluster.clusterIsBusy = false;
+
+		if (exploreIndex >= exploreTargets.Count) exploreIndex = 0;        // zera se todos ja foram assignalados
 
 		cluster.exploreTarget = exploreTargets[exploreIndex];
 		cluster.clusterTarget = cluster.exploreTarget;
 	}
 
-	void ReachPoint(int clusterNumber)									//Recebe mensagem da IA de que chegou no explore point
+	public void ReachPoint(int clusterNumber)									//Recebe mensagem da IA de que chegou no explore point
 	{
 		exploreIndex++;
 		

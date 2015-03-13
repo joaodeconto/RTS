@@ -520,6 +520,7 @@ public class Worker : Unit
 	{
 		IsExtracting = true;
 		PlayWorkerSfx("Mining");
+		resourceId = 0;
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 		if (resource != null) resource.ExtractResource (this);

@@ -45,6 +45,7 @@ public class TechTreeController : MonoBehaviour
 			ht["bonusforce"]		= u.bonusForce;
 			ht["bonusspeed"]		= u.bonusSpeed;
 			ht["bonussight"]		= u.bonusSight;
+			ht["bonusprojectile"]	= u.bonusProjectile;
 
 			attribsHash.Add(u.category,ht);
 		}
@@ -55,10 +56,9 @@ public class TechTreeController : MonoBehaviour
 			ht["category"] 			= fb.category;
 			ht["subcategory"] 		= fb.subCategory;
 			ht["bonusdefense"] 		= fb.bonusDefense;
+			ht["bonussight"]		= fb.bonusSight;
 			attribsHash.Add(fb.category,ht);
 		}
-	
-
 
 	}
 
