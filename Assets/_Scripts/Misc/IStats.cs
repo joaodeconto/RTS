@@ -6,8 +6,7 @@ using Visiorama;
 
 public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 {
-	public const int InvalidAlliance = 10000;
-	public static int UniversalEntityCounter = 0;
+	#region Serializable
 
 	[System.Serializable]
 	public class RendererTeamColor
@@ -145,6 +144,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		public ActionType actionType;
 		public ButtonAttributes buttonAttributes;
 	}
+	#endregion
+
+	#region Declares
 	public int maxHealth = 200;
 	private int m_health;
 	public int Health {
@@ -200,6 +202,13 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	protected EventController eventController;
 	protected SelectionController selectionController;
 	protected TechTreeController techTreeController;
+	
+	public const int InvalidAlliance = 10000;
+	public static int UniversalEntityCounter = 0;
+
+	#endregion
+
+	#region Awake, Init
 
 	void Awake ()
 	{
@@ -247,6 +256,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		WasRemoved = false;
 		statsController.AddStats (this);
 	}
+	#endregion
+
+	#region General Methods
 	
 	public void SetTeam (int team, int ally)
 	{
@@ -313,6 +325,50 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		}
 	}
 
+	public void OnPhotonInstantiate(PhotonMessageInfo info)
+	{
+		IsNetworkInstantiate = true;
+	}
+	
+	public void SetHealth (int health)
+	{
+		Health = health;
+	}
+	
+	void SetTeamInNetwork ()
+	{
+		playerUnit = photonView.isMine;
+		if (playerUnit)
+		{
+			team = (int)PhotonNetwork.player.customProperties["team"];
+			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
+				ally = (int)PhotonNetwork.player.customProperties["allies"];
+		}
+		else
+		{
+			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
+			
+			team = (int)other.customProperties["team"];
+			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
+				ally = (int)other.customProperties["allies"];
+		}
+	}
+	
+	void SetColorTeam ()
+	{
+		//		foreach (RendererTeamColor rtc in rendererTeamColor)
+		//		{
+		//			rtc.SetColorInMaterial (transform, team);
+		//		}
+		
+		foreach (RendererTeamSubstanceColor rtsc in rendererTeamSubstanceColor)
+		{
+			rtsc.SetColorInMaterial (transform, team);
+		}
+	}
+	#endregion
+
+	#region RPC's
 
 	[RPC]
 	public virtual void InstantiatParticleDamage ()
@@ -337,48 +393,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		SendMessage ("OnDie", SendMessageOptions.DontRequireReceiver);
 	}
 
-	public void OnPhotonInstantiate(PhotonMessageInfo info)
-    {
-        IsNetworkInstantiate = true;
-    }
+	#endregion
 
-	public void SetHealth (int health)
-	{
-		Health = health;
-	}
-
-	void SetTeamInNetwork ()
-	{
-		playerUnit = photonView.isMine;
-		if (playerUnit)
-		{
-			team = (int)PhotonNetwork.player.customProperties["team"];
-			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
-				ally = (int)PhotonNetwork.player.customProperties["allies"];
-		}
-		else
-		{
-			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
-			
-			team = (int)other.customProperties["team"];
-			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
-				ally = (int)other.customProperties["allies"];
-		}
-	}
-
-	void SetColorTeam ()
-	{
-//		foreach (RendererTeamColor rtc in rendererTeamColor)
-//		{
-//			rtc.SetColorInMaterial (transform, team);
-//		}
-
-		foreach (RendererTeamSubstanceColor rtsc in rendererTeamSubstanceColor)
-		{
-			rtsc.SetColorInMaterial (transform, team);
-		}
-	}
-
+	#region Gizmos
 	// GIZMOS
 	void OnDrawGizmosSelected ()
 	{
@@ -390,6 +407,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		Gizmos.color = Color.white;
 		Gizmos.DrawWireSphere (this.transform.position, fieldOfView);
 	}
+	#endregion
 	
 	#region IHealthObservable implementation
 	

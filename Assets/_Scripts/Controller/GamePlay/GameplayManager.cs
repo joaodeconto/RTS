@@ -16,6 +16,7 @@ public class Team
 
 public class GameplayManager : Photon.MonoBehaviour
 {
+	#region Serializable e Declares
 	[System.Serializable]
 	public class HUD
 	{    
@@ -56,44 +57,33 @@ public class GameplayManager : Photon.MonoBehaviour
 	private int readyCounter;
 	private bool gamestarted = false;
 	public float myTimer = 0f;
-
 	public const int MAX_POPULATION_ALLOWED = 200;
 	public const int BOT_TEAM = 8;
-
 	public Team[] teams;
-	
-	// Resources
-	public ResourcesManager resources;
-	
-	public HUD hud;
-	
+	public ResourcesManager resources;	
+	public HUD hud;	
 	public int numberOfUnits { get; protected set; }
 	public int TotalPopulation { get; protected set; }
 	protected int numberOfActiveMainBases;
-
 	private List<IHouse> houses = new List<IHouse> ();
-	private Model.PlayerBattle playerBattle;
-	
-	protected List<AllyClass> alliesNumberOfStats = new List<AllyClass>();
-	
+	private Model.PlayerBattle playerBattle;	
+	protected List<AllyClass> alliesNumberOfStats = new List<AllyClass>();	
 	protected int loserTeams;
 	protected int numberOfTeams;
-
 	protected bool loseGame = false;
 	protected bool winGame = false;
 	protected float timeLeftToLoseTheGame;
-
 	protected bool beingAttacked = false;
-
 	public int MyTeam {get; protected set;}
 	public int Allies {get; protected set;}
 	public int Triggerflag = 1;
-
 	protected NetworkManager network;
 	protected TouchController touchController;
 	protected SelectionController interactionController;
 
+	#endregion
 
+	#region Init e GameStart
 	public void Init ()
 	{
 		network = ComponentGetter.Get<NetworkManager>();
@@ -122,7 +112,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			ComponentGetter.Get<EnemyCluster> ().Init ();
 			pauseGame = true;
 			GameStart();
-
 		}
 
 		for (int i = 0; i != teams.Length; i++)
@@ -160,7 +149,6 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiLostMainBaseObject.SetActive (false);
 
 		if (mode != Mode.Tutorial) CallMySceneReady();
-
 	}
 
 	void CheckGameStart()
@@ -171,7 +159,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			GameStart();
 			CancelInvoke("CheckStart");
 		}
-
 	}
 
 	void TribeInstiateNetwork ()
@@ -195,26 +182,56 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 	}
 
-	[RPC]
-	void MySceneReady()
-	{
-		readyCounter++;
-		GamePaused(true);
-	}
 	void CallMySceneReady()
 	{
 		photonView.RPC ("MySceneReady", PhotonTargets.AllBuffered);
 	}
-
 
 	void GameStart()
 	{
 		gamestarted = true;
 		GamePaused(false);
 		hud.uiWaitingPlayers.SetActive(false);
-
 	}
+	#endregion
+
+	#region Update
+	void Update ()
+	{
+		if(gamestarted)
+		{
+			ClockGameplay();		
+		}
+		else CheckGameStart();
 		
+		hud.labelMana.text = resources.Mana.ToString ();
+		hud.labelRocks.text = resources.Rocks.ToString ();
+		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
+		
+		if ((loseGame || winGame))
+		{
+			hud.uiVictoryObject.SetActive (winGame);
+			hud.uiDefeatObject.SetActive (loseGame);		
+			//			hud.buttonMatchScore.gameObject.SetActive (true);
+			//			
+			//			DefaultCallbackButton dcb = ComponentGetter.Get <DefaultCallbackButton> (hud.buttonMatchScore.transform, false);
+			//			
+			//			dcb.Init
+			//			(
+			//				null,
+			//				(ht_dcb) => 
+			//				{
+			//					if (PhotonNetwork.room != null)
+			//						PhotonNetwork.LeaveRoom ();
+			//					
+			//					Application.LoadLevel (0);
+			//				}
+			//			);
+		}
+	}
+	#endregion
+		
+	#region Get Colors
 	/// <summary>
 	/// Gets the color of my team.
 	/// </summary>
@@ -257,7 +274,9 @@ public class GameplayManager : Photon.MonoBehaviour
 			return Color.black;
 		}
 	}
+	#endregion
 
+	#region Check Teams e Stats
 	public bool IsSameTeam (int teamID)
 	{
 		return teamID == MyTeam;
@@ -294,6 +313,9 @@ public class GameplayManager : Photon.MonoBehaviour
 			return IsSameTeam (teamID);
 		}
 	}
+	#endregion
+
+	#region Being Attacked
 
 	public bool IsBeingAttacked (IStats target)
 	{
@@ -326,33 +348,9 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		beingAttacked = false;
 	}
+	#endregion
 
-	public void IncrementMainBase (int teamID)
-	{
-		if (IsSameTeam (teamID))
-		{
-			numberOfActiveMainBases++;
-			hud.uiLostMainBaseObject.SetActive (false);
-			CancelInvoke ("NoMainBase");
-			CancelInvoke ("DecrementTime");
-		}
-	}
-
-	public void DecrementMainBase (int teamID)
-	{
-		if (IsSameTeam (teamID))
-		{
-			numberOfActiveMainBases--;
-			if (numberOfActiveMainBases == 0)
-			{
-				hud.uiLostMainBaseObject.SetActive (true);
-				timeLeftToLoseTheGame = 40f;
-				hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
-				Invoke ("NoMainBase", timeLeftToLoseTheGame);
-				InvokeRepeating ("DecrementTime", 1f, 1f);
-			}
-		}
-	}
+	#region Population Methods
 
 	public void IncrementUnit (int teamID, int numberOfUnits)
 	{
@@ -420,6 +418,36 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 		}
 	}
+	#endregion
+
+	#region MainBase Methods
+
+	public void IncrementMainBase (int teamID)
+	{
+		if (IsSameTeam (teamID))
+		{
+			numberOfActiveMainBases++;
+			hud.uiLostMainBaseObject.SetActive (false);
+			CancelInvoke ("NoMainBase");
+			CancelInvoke ("DecrementTime");
+		}
+	}
+	
+	public void DecrementMainBase (int teamID)
+	{
+		if (IsSameTeam (teamID))
+		{
+			numberOfActiveMainBases--;
+			if (numberOfActiveMainBases == 0)
+			{
+				hud.uiLostMainBaseObject.SetActive (true);
+				timeLeftToLoseTheGame = 40f;
+				hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
+				Invoke ("NoMainBase", timeLeftToLoseTheGame);
+				InvokeRepeating ("DecrementTime", 1f, 1f);
+			}
+		}
+	}
 
 	void NoMainBase ()
 	{
@@ -434,7 +462,86 @@ public class GameplayManager : Photon.MonoBehaviour
 		timeLeftToLoseTheGame -= 1f;
 		hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
 	}
+	#endregion
 
+	#region Gamepause e Clock
+	void ClockGameplay()
+	{
+		myTimer += Time.deltaTime;
+		int minutes = Mathf.FloorToInt(myTimer / 60F);
+		int seconds = Mathf.FloorToInt(myTimer - minutes * 60);
+		string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
+		hud.labelTotalTime.text = niceTime;
+	}
+
+	public void GamePaused(bool state)
+	{
+		if(state)
+		{
+			touchController.mainCamera.GetComponent<CameraMovement>().enabled = false;
+			interactionController.enabled = false;
+			Time.timeScale = 0.0f;
+		}
+		else
+		{
+			touchController.mainCamera.GetComponent<CameraMovement>().enabled = true;
+			interactionController.enabled = true;
+			Time.timeScale = 1.0f;
+		}
+	}
+	#endregion
+	
+	#region EndMatch
+	public void EndMatch ()
+	{				
+		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
+		BidManager bm = ComponentGetter.Get <BidManager> ();
+		
+		if (winGame)
+		{
+			bm.WonTheGame ();
+		}
+
+		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
+		string encodedPlayer = (string)pw.GetPropertyOnPlayer ("player");
+
+		if (!string.IsNullOrEmpty (encodedBattle) && !string.IsNullOrEmpty (encodedPlayer))
+		{
+			Model.Battle battle = new Model.Battle (encodedBattle);
+			Model.Player player = new Model.Player(encodedPlayer);
+			
+			if (winGame)
+			{
+				Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.Victory, 1);
+			}
+			else
+			{
+				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
+				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
+			}
+
+			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
+
+			pbDAO.CreatePlayerBattle (player, battle,
+			(playerBattle, message) =>
+			{
+				playerBattle.BlWin = winGame;
+
+				pbDAO.UpdatePlayerBattle (playerBattle,
+				(playerBattle_update, message_update) =>
+				{
+					if (playerBattle_update != null)
+						Debug.Log ("message: " + message);
+					else
+						Debug.Log ("salvou playerBattle");
+				});
+			});
+		}
+	}
+	#endregion
+
+	#region RPC's
 	[RPC]
 	void DefeatOther (int teamID)
 	{
@@ -443,12 +550,12 @@ public class GameplayManager : Photon.MonoBehaviour
 			photonView.RPC ("Defeat", PhotonTargets.All, MyTeam, Allies);
 		}
 	}
-
+	
 	[RPC]
 	void Defeat (int teamID, int ally)
 	{
 		if (teams[teamID].lose) return;
-
+		
 		StatsController sc = ComponentGetter.Get<StatsController> ();
 		
 		sc.DestroyAllStatsTeam (teamID);
@@ -499,119 +606,19 @@ public class GameplayManager : Photon.MonoBehaviour
 				SendMessage ("EndMatch");
 			}
 			break;
-
-		
+			
+			
 			
 		default:
 			break;
 		}
 	}
-	void ClockGameplay()
+	
+	[RPC]
+	void MySceneReady()
 	{
-		myTimer += Time.deltaTime;
-		int minutes = Mathf.FloorToInt(myTimer / 60F);
-		int seconds = Mathf.FloorToInt(myTimer - minutes * 60);
-		string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
-		hud.labelTotalTime.text = niceTime;
+		readyCounter++;
+		GamePaused(true);
 	}
-
-	void Update ()
-	{
-		if(gamestarted)
-		{
-			ClockGameplay();		
-		}
-		else CheckGameStart();
-				
-		hud.labelMana.text = resources.Mana.ToString ();
-		hud.labelRocks.text = resources.Rocks.ToString ();
-		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
-					
-		if ((loseGame || winGame))
-		{
-//			Debug.Log ("hud.uiVictoryObject.SetActive (" + winGame + ") - hud.uiVictoryObject.SetActive (" + loseGame + ")");
-			hud.uiVictoryObject.SetActive (winGame);
-			hud.uiDefeatObject.SetActive (loseGame);		
-//			hud.buttonMatchScore.gameObject.SetActive (true);
-//			
-//			DefaultCallbackButton dcb = ComponentGetter.Get <DefaultCallbackButton> (hud.buttonMatchScore.transform, false);
-//			
-//			dcb.Init
-//			(
-//				null,
-//				(ht_dcb) => 
-//				{
-//					if (PhotonNetwork.room != null)
-//						PhotonNetwork.LeaveRoom ();
-//					
-//					Application.LoadLevel (0);
-//				}
-//			);
-		}
-	}
-
-	public void EndMatch ()
-	{				
-		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
-		BidManager bm = ComponentGetter.Get <BidManager> ();
-		
-		if (winGame)
-		{
-			bm.WonTheGame ();
-		}
-
-		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
-		string encodedPlayer = (string)pw.GetPropertyOnPlayer ("player");
-
-		if (!string.IsNullOrEmpty (encodedBattle) && !string.IsNullOrEmpty (encodedPlayer))
-		{
-			Model.Battle battle = new Model.Battle (encodedBattle);
-			Model.Player player = new Model.Player(encodedPlayer);
-			
-			if (winGame)
-			{
-				Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
-				Score.AddScorePoints (DataScoreEnum.Victory, 1);
-			}
-			else
-			{
-				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
-				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
-			}
-
-			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
-
-			pbDAO.CreatePlayerBattle (player, battle,
-			(playerBattle, message) =>
-			{
-				playerBattle.BlWin = winGame;
-
-				pbDAO.UpdatePlayerBattle (playerBattle,
-				(playerBattle_update, message_update) =>
-				{
-					if (playerBattle_update != null)
-						Debug.Log ("message: " + message);
-					else
-						Debug.Log ("salvou playerBattle");
-				});
-			});
-		}
-	}
-
-	public void GamePaused(bool state)
-	{
-		if(state)
-		{
-			touchController.mainCamera.GetComponent<CameraMovement>().enabled = false;
-			interactionController.enabled = false;
-			Time.timeScale = 0.0f;
-		}
-		else
-		{
-			touchController.mainCamera.GetComponent<CameraMovement>().enabled = true;
-			interactionController.enabled = true;
-			Time.timeScale = 1.0f;
-		}
-	}
-
+	#endregion
 }

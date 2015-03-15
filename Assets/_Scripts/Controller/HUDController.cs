@@ -9,8 +9,8 @@ public class HUDController : MonoBehaviour, IDeathObserver
 {
 	private string PERSIST_STRING = "###_";
 
+	#region Serializable
 	[System.Serializable]
-
 	public class GridDefinition
 	{
 		public string name;
@@ -29,13 +29,6 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		}
 	}
 
-	public enum Feedbacks
-	{
-		Move,
-		Attack,
-		Self
-	}
-
 	[System.Serializable]
 	public class ButtonStatus
 	{
@@ -51,6 +44,43 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		public DefaultCallbackButton.OnDragDelegate onDrag;
 		public DefaultCallbackButton.OnDropDelegate onDrop;
 		public bool persistent;
+	}	
+	#endregion
+
+	#region Declares: Grid, Sliders,
+	public UISlider[] sliders;
+	public UIButton boostProduction;
+	public UISlider GetSlider(string name)
+	{
+		foreach(UISlider slider in sliders)
+		{
+			if(slider.name.ToLower().Equals(name.ToLower()))
+			{
+				return slider;
+			}
+		}
+		return null;
+	}
+	private Stack<ButtonStatus> stackButtonToCreate;
+	private List<UIGrid> gridsToReposition = new List<UIGrid>();
+	public GridDefinition[] grids;
+	public GridDefinition GetGrid(string name)
+	{
+		foreach(GridDefinition gd in grids)
+		{
+			if(gd.name.Equals(name))
+				return gd;
+		}
+		return null;
+	}
+	#endregion
+
+	#region Feedback Declares
+	public enum Feedbacks
+	{
+		Move,
+		Attack,
+		Self
 	}
 
 	public GameObject pref_healthBar;
@@ -70,45 +100,12 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	public GameObject pref_selfFeedback;
 	public GameObject pref_attackFeedback;
 
-	public UISlider[] sliders;
 
-	public UIButton boostProduction;
-
-	public UISlider GetSlider(string name)
-	{
-		foreach(UISlider slider in sliders)
-		{
-			if(slider.name.ToLower().Equals(name.ToLower()))
-			{
-				return slider;
-			}
-		}
-		return null;
-	}
-
-	public GridDefinition[] grids;
-
-	public GridDefinition GetGrid(string name)
-	{
-		foreach(GridDefinition gd in grids)
-		{
-			if(gd.name.Equals(name))
-				return gd;
-		}
-		return null;
-	}
-
-	private List<UIGrid> gridsToReposition = new List<UIGrid>();
 
 	private GameObject oldFeedback;
-
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
 	private FactoryBase factoryBase;
-
-
-	private Stack<ButtonStatus> stackButtonToCreate;
-
 	private bool _isDestroying;
 	private bool IsDestroying {
 		get	{
@@ -131,14 +128,16 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			_isDestroying = value;
 		}
 	}
+	#endregion
+
+	#region Info Obj Declares;
 	
 	private Transform infoUnit;
 	private Transform infoFactory;
 	private Transform infoUpgrade;
 	private Transform infoQuali;
 	private Transform infoIcon;
-	private Transform infoReq;
-	
+	private Transform infoReq;	
 	private UILabel attackLabel;
 	private UILabel hpLabel;
 	private UILabel speedLabel;
@@ -151,15 +150,18 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	private UILabel stats1Text;
 	private UILabel stats2Text;
 	private UILabel reqLabel;
-	
+	private UILabel bonusAtkLabel;
+	private UILabel bonusDefLabel;
+	private UILabel bonusSpdLabel;
+	private UILabel skillLabel;
 	private UILabel nameLabel;
-//	private HealthBar currentHp;
-	
+//	private HealthBar currentHp;	
 //	private UISprite spriteFactory;
-//	private UISprite spriteUnit;
-	
+//	private UISprite spriteUnit;	
 	private string cGODisplayedOnInfoBox;
+	#endregion
 
+	#region Init
 	public void Init()
 	{
 		messageInfoManager = ComponentGetter.Get<MessageInfoManager>();
@@ -176,26 +178,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 //		spriteFactory = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 //		spriteUnit	  = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 	}
+	#endregion
 
-	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
-	{
-		GameObject child = NGUITools.AddChild(trnsPanelUnitStats.gameObject, pref_healthBar);
-
-		child.GetComponent<UISlider> ().foregroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
-		child.GetComponent<UISlider> ().foregroundWidget.height = 8;
-
-		child.AddComponent<UIFollowTarget>().target      = target.transform.FindChild (referenceChild).transform;
-		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
-		child.GetComponent<UIFollowTarget>().mUICamera   = uiRoot.transform.FindChild ("CameraHUD").camera;
-
-		HealthBar healthBar = child.GetComponent<HealthBar> ();
-
-		healthBar.SetTarget (target);
-
-		return healthBar;
-	}
-
-	#region CreateSubsResourceBKP
+	#region Feedback Creation Methods
 	public SubstanceResourceBar CreateSubstanceResourceBar (IStats target, float size, float timeToCreateBar)
 	{
 		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
@@ -219,8 +204,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		resourceBar.Init();	
 		return resourceBar;
 	}
-	#endregion
-	
+		
 	public SubstanceHealthBar CreateSubstanceHealthBar (IStats target, float size, int maxHealth, string referenceChild)
 	{
 		GameObject selectObj = Instantiate (pref_SubstanceHealthBar, target.transform.position, Quaternion.identity) as GameObject;
@@ -272,6 +256,33 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
 
+	public void CreateEnqueuedButtonInInspector(string buttonName,
+	                                            string queueName,
+	                                            Hashtable ht,
+	                                            string textureName = "",
+	                                            DefaultCallbackButton.OnClickDelegate onClick = null,
+	                                            DefaultCallbackButton.OnPressDelegate onPress = null,
+	                                            DefaultCallbackButton.OnSliderChangeDelegate onSliderChange = null,
+	                                            DefaultCallbackButton.OnActivateDelegate onActivate = null,
+	                                            DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick = null,
+	                                            DefaultCallbackButton.OnDragDelegate onDrag = null,
+	                                            DefaultCallbackButton.OnDropDelegate onDrop = null)
+	{
+		if (ht == null)
+			ht = new Hashtable();
+		
+		if(!string.IsNullOrEmpty(textureName))
+			ht["textureName"] = textureName;
+		
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);
+		mq.AddMessageInfo ( buttonName, ht,
+		                   onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
+	}
+	
+
+	#endregion
+
+	#region Selected
 	public bool HasSelected (Transform target)
 	{
 		bool hasSelected = false;
@@ -341,43 +352,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			}
 		}
 	}
+	#endregion
 
-	public void CreateEnqueuedButtonInInspector(string buttonName,
-												string queueName,
-												Hashtable ht,
-												string textureName = "",
-												DefaultCallbackButton.OnClickDelegate onClick = null,
-												DefaultCallbackButton.OnPressDelegate onPress = null,
-												DefaultCallbackButton.OnSliderChangeDelegate onSliderChange = null,
-												DefaultCallbackButton.OnActivateDelegate onActivate = null,
-												DefaultCallbackButton.OnRepeatClickDelegate onRepeatClick = null,
-												DefaultCallbackButton.OnDragDelegate onDrag = null,
-												DefaultCallbackButton.OnDropDelegate onDrop = null)
-	{
-		if (ht == null)
-			ht = new Hashtable();
-
-		if(!string.IsNullOrEmpty(textureName))
-			ht["textureName"] = textureName;
-
-		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-		mq.AddMessageInfo ( buttonName, ht,
-							onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
-	}
-
-	public void RemoveEnqueuedButtonInInspector(string buttonName, string queueName)
-	{
-		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-	
-		mq.RemoveMessageInfo(buttonName);
-	}
-
-	public void DequeueButtonInInspector(string queueName)
-	{
-		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-
-		mq.DequeueMessageInfo();
-	}
+	#region Button Creation Methods
 
 	public bool CheckQueuedButtonIsFirst(string buttonName, string queueName)
 	{
@@ -484,6 +461,23 @@ public class HUDController : MonoBehaviour, IDeathObserver
                                         
 		return button;
 	}
+	#endregion
+
+	#region Destroy, Remove e Dequeue Buttons
+
+	public void RemoveEnqueuedButtonInInspector(string buttonName, string queueName)
+	{
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);
+		
+		mq.RemoveMessageInfo(buttonName);
+	}
+	
+	public void DequeueButtonInInspector(string queueName)
+	{
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);
+		
+		mq.DequeueMessageInfo();
+	}
 
 	public void RemoveButtonInInspector(string buttonName, Transform buttonParent = null)
 	{
@@ -501,7 +495,6 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	}
 
 	public void DestroyOptionsBtns ()
-
 	{
 		IsDestroying = true;
 
@@ -525,6 +518,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
 		}
 	}
+	#endregion
+
+	#region CreatefeedBack
 
 	public void CreateFeedback (Feedbacks feedback, Transform transform, float size, Color color)
 	{
@@ -563,6 +559,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 		foreach (ParticleSystem ps in newFeedback.GetComponentsInChildren<ParticleSystem>())
 		{
+
 			ps.startSize = size * ps.startSize;
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
@@ -573,8 +570,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 		Destroy (newFeedback, duration);
 	}
+	#endregion
 
-
+	#region InfoBox
 	
 	public void OpenInfoBoxUnit (Unit unit, bool techAvailable)
 	{
@@ -594,9 +592,17 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		unitsLabel  = infoUnit.FindChild ("house-label").GetComponent<UILabel> ();
 		timeLabel   = infoUnit.FindChild ("time-label").GetComponent<UILabel> ();
 		defLabel    = infoUnit.FindChild ("def-label").GetComponent<UILabel> ();
-		descriptLabel = infoUnit.FindChild ("descript-label").GetComponent<UILabel> ();			
+		descriptLabel = infoUnit.FindChild ("descript-label").GetComponent<UILabel> ();		
+		bonusAtkLabel = infoUnit.FindChild ("attack-bonus").GetComponent<UILabel> ();
+		bonusDefLabel = infoUnit.FindChild ("def-bonus").GetComponent<UILabel> ();
+		bonusSpdLabel = infoUnit.FindChild ("speed-bonus").GetComponent<UILabel> ();
+		skillLabel =  infoUnit.FindChild ("skill-label").GetComponent<UILabel> ();
+		bonusAtkLabel.text = "+" + unit.bonusForce.ToString();
+		bonusDefLabel.text = "+" + unit.bonusDefense.ToString();
+		bonusSpdLabel.text = "+" + unit.bonusSpeed.ToString();
+		skillLabel.text = unit.unitSkill.ToString();
 		nameLabel.text = unit.category;				
-		attackLabel.text = (unit.bonusForce != 0)	? unit.force + "(+" + unit.bonusForce + ")": unit.force.ToString ();
+		attackLabel.text = unit.force.ToString ();
 		defLabel.text = unit.defense.ToString ();				
 		hpLabel.text = unit.maxHealth.ToString ();
 		speedLabel.text = unit.normalSpeed.ToString();
@@ -606,6 +612,8 @@ public class HUDController : MonoBehaviour, IDeathObserver
 //		unit.RegisterDeathObserver (this);		
 		trnsPanelInfoBox.gameObject.SetActive (true);
 		infoUnit.gameObject.SetActive (true);
+		infoUpgrade.gameObject.SetActive (false);
+		infoFactory.gameObject.SetActive (false);
 	}
 
 	public void OpenInfoBoxFactory (FactoryBase factory, bool techAvailable) // inserida boleana para ativar requires;
@@ -624,6 +632,8 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		hpLabel.text = factory.MaxHealth.ToString();
 		defLabel = infoFactory.FindChild ("def-label").GetComponent<UILabel> ();
 		defLabel.text = factory.defense.ToString();
+		bonusDefLabel = infoFactory.FindChild ("def-bonus").GetComponent<UILabel> ();
+		bonusDefLabel.text = "+" + factory.bonusDefense.ToString();
 		descriptLabel = infoFactory.FindChild ("descript-label").GetComponent<UILabel> ();
 		descriptLabel.text = factory.description;
 		infoUnit.gameObject.SetActive (false);
@@ -658,13 +668,38 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		timeLabel.text = upgrade.timeToSpawn.ToString()+"s";		
 		descriptLabel = infoUpgrade.FindChild ("descript-label").GetComponent<UILabel> ();
 		descriptLabel.text = upgrade.description;		
+		infoUnit.gameObject.SetActive (false);
 		infoUpgrade.gameObject.SetActive (true);
+		infoFactory.gameObject.SetActive (false);
 		trnsPanelInfoBox.gameObject.SetActive (true);
 	}	
+
 	public void CloseInfoBox ()
 	{
 		trnsPanelInfoBox.gameObject.SetActive (false);
 	}
+	#endregion
+
+	#region HealthBar
+	
+	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
+	{
+		GameObject child = NGUITools.AddChild(trnsPanelUnitStats.gameObject, pref_healthBar);
+		
+		child.GetComponent<UISlider> ().foregroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
+		child.GetComponent<UISlider> ().foregroundWidget.height = 8;
+		
+		child.AddComponent<UIFollowTarget>().target      = target.transform.FindChild (referenceChild).transform;
+		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
+		child.GetComponent<UIFollowTarget>().mUICamera   = uiRoot.transform.FindChild ("CameraHUD").camera;
+		
+		HealthBar healthBar = child.GetComponent<HealthBar> ();
+		
+		healthBar.SetTarget (target);
+		
+		return healthBar;
+	}
+	#endregion
 
 	#region IDeathObserver implementation
 

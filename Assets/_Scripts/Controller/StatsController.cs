@@ -8,6 +8,7 @@ using Visiorama;
 
 public class StatsController : MonoBehaviour
 {
+	#region Declares e Init
 	public const int MAX_NUMBER_OF_GROUPS = 9;
 	public const string buttonIdleWorkersName = "IdleWorkers";
 	public enum StatsTypeSelected
@@ -46,7 +47,9 @@ public class StatsController : MonoBehaviour
 		statsTypeSelected = StatsTypeSelected.None;
 		InvokeRepeating("CheckWorkersInIdle",1.0f,1.0f);
 	}
+	#endregion
 
+	#region Stats Action Methods
 	public void MoveTroop (Vector3 destination)
 	{
 		if (otherSelected) return;
@@ -218,6 +221,10 @@ public class StatsController : MonoBehaviour
 			                              gameplayManager.GetColorTeam(enemyStats.team));
 			}
 	}
+
+	#endregion
+
+	#region Stats Control Methods
  	
 	public void AddStats (IStats stat)
 	{
@@ -309,6 +316,53 @@ public class StatsController : MonoBehaviour
 		}
 	}
 
+	public bool IsUnit (IStats stat)
+	{
+		Unit unit = stat as Unit;
+		
+		return unit != null;
+	}
+	
+	public IStats FindMyStat (string name)
+	{
+		IStats stat;
+		
+		for (int i = myStats.Count - 1; i != -1; --i)
+		{
+			stat = myStats[i];
+			if (stat == null)
+			{
+				myStats.RemoveAt (i);
+				continue;
+			}
+			
+			if (stat.name.Equals(name))
+			{
+				return stat;
+			}
+		}
+		
+		for (int i = otherStats.Count - 1; i != -1; --i)
+		{
+			stat = otherStats[i];
+			if (stat == null)
+			{
+				otherStats.RemoveAt (i);
+				continue;
+			}
+			
+			if (stat.name.Equals(name))
+			{
+				return stat;
+			}
+		}
+		
+		return null;
+	}
+	#endregion
+
+	#region Stats Selection
+
 	public void ToogleSelection (IStats stat)
 	{
 		SelectStat (stat, !selectedStats.Contains (stat));
@@ -383,7 +437,9 @@ public class StatsController : MonoBehaviour
 		
 		statsTypeSelected = StatsTypeSelected.None;
 	}
+	#endregion
 
+	#region Group Methods
 	public void CreateGroup (int numberGroup)
 	{
 		if (selectedStats.Count != 0)
@@ -473,99 +529,21 @@ public class StatsController : MonoBehaviour
 		return false;
 		
 	}
-	
-	public bool IsUnit (IStats stat)
+	#endregion	
+
+	#region Organize units
+
+	void OrganizeUnits()
 	{
-		Unit unit = stat as Unit;
-		
-		return unit != null;
+		myStats.Sort((unit1, unit2) =>
+		             {
+			return unit1.transform.position.x.CompareTo(unit2.transform.position.x);
+		});
 	}
 
-	public IStats FindMyStat (string name)
-	{
-		IStats stat;
-		
-		for (int i = myStats.Count - 1; i != -1; --i)
-		{
-			stat = myStats[i];
-			if (stat == null)
-			{
-				myStats.RemoveAt (i);
-				continue;
-			}
+	#endregion
 
-			if (stat.name.Equals(name))
-			{
-				return stat;
-			}
-		}
-		
-		for (int i = otherStats.Count - 1; i != -1; --i)
-		{
-			stat = otherStats[i];
-			if (stat == null)
-			{
-				otherStats.RemoveAt (i);
-				continue;
-			}
-
-			if (stat.name.Equals(name))
-			{
-				return stat;
-			}
-		}
-
-		return null;
-	}
-
-	public bool WorkerCheckFactory (FactoryBase factory)
-	{
-		bool feedback = false;
-
-		foreach (IStats stat in selectedStats)
-		{
-			if (stat.GetType() == typeof(Worker))
-			{
-				Worker w = stat as Worker;
-
-				if (!factory.wasBuilt)
-				{
-					w.SetMoveToFactory(factory);
-					feedback = true;
-				}
-				else if (w.hasResource)
-				{
-					if (factory.receiveResource == w.resource.type)
-					{
-						w.SetMoveToFactory(factory);
-						feedback = true;
-					}
-					else if (factory.gameObject.GetComponent<MainFactory>() != null)
-					{
-						w.SetMoveToFactory(factory);
-						feedback = true;
-					}
-					else if (factory.IsDamaged)
-					{
-						w.SetMoveToFactory(factory);
-						feedback = true;
-					}
-				}
-				else if (factory.IsDamaged)
-				{
-					w.SetMoveToFactory(factory);
-					feedback = true;
-
-				}
-			}
-		}
-
-		if (feedback)
-			hudController.CreateFeedback (HUDController.Feedbacks.Self, factory.transform.position, factory.sizeOfSelected, gameplayManager.GetColorTeam ());
-
-		return feedback;
-	}
-
+	#region Visibility
 	public void ChangeVisibility (IStats stat, bool visibility)
 	{
 		MiniMapController mmc = ComponentGetter.Get<MiniMapController> ();
@@ -584,7 +562,9 @@ public class StatsController : MonoBehaviour
 			mmc.SetVisibilityStructure (stat.transform, stat.team, visibility);
         }
 	}
-	
+	#endregion
+
+	#region Play Sound
 	public void PlaySelectSound ()
 	{
 		if (selectedStats.Count == 1)
@@ -659,13 +639,55 @@ public class StatsController : MonoBehaviour
 			}
 		}
 	}
+	#endregion
 
-	void OrganizeUnits()
+	#region Workers Check's
+
+	public bool WorkerCheckFactory (FactoryBase factory)
 	{
-		myStats.Sort((unit1, unit2) =>
+		bool feedback = false;
+		
+		foreach (IStats stat in selectedStats)
 		{
-			return unit1.transform.position.x.CompareTo(unit2.transform.position.x);
-		});
+			if (stat.GetType() == typeof(Worker))
+			{
+				Worker w = stat as Worker;
+				
+				if (!factory.wasBuilt)
+				{
+					w.SetMoveToFactory(factory);
+					feedback = true;
+				}
+				else if (w.hasResource)
+				{
+					if (factory.receiveResource == w.resource.type)
+					{
+						w.SetMoveToFactory(factory);
+						feedback = true;
+					}
+					else if (factory.gameObject.GetComponent<MainFactory>() != null)
+					{
+						w.SetMoveToFactory(factory);
+						feedback = true;
+					}
+					else if (factory.IsDamaged)
+					{
+						w.SetMoveToFactory(factory);
+						feedback = true;
+					}
+				}
+				else if (factory.IsDamaged)
+				{
+					w.SetMoveToFactory(factory);
+					feedback = true;					
+				}
+			}
+		}
+		
+		if (feedback)
+			hudController.CreateFeedback (HUDController.Feedbacks.Self, factory.transform.position, factory.sizeOfSelected, gameplayManager.GetColorTeam ());
+		
+		return feedback;
 	}
 
 	void CheckWorkersInIdle()
@@ -775,4 +797,5 @@ public class StatsController : MonoBehaviour
 												true);
 		}
 	}
+	#endregion
 }

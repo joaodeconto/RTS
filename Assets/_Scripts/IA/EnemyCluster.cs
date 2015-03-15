@@ -3,7 +3,9 @@ using Visiorama;
 using System.Collections;
 using System.Collections.Generic;
 
-public class EnemyCluster : MonoBehaviour {
+public class EnemyCluster : MonoBehaviour
+{
+	#region Serializable e Declares
 
 	[System.Serializable]
 	public class ClusterModel 
@@ -25,6 +27,14 @@ public class EnemyCluster : MonoBehaviour {
 		public bool hasDemanded;
 	}
 
+	private Transform teamNine;
+	private Transform teamZero;
+	private bool gotMainBase = false;
+	protected GameplayManager gameplayManager;
+	protected StatsController statsController;
+	public ClusterModel[] clusterModels;
+	private int exploreIndex = 0;
+	private Dictionary<int, Transform> exploreTargets = new Dictionary<int, Transform>();	
 	public enum ClusterBehaviour
 	{
 		none,
@@ -33,15 +43,9 @@ public class EnemyCluster : MonoBehaviour {
 		defend,
 		explore
 	}
+	#endregion
 
-	private Transform teamNine;
-	private Transform teamZero;
-	private bool gotMainBase = false;
-	protected GameplayManager gameplayManager;
-	protected StatsController statsController;
-	public ClusterModel[] clusterModels;
-	private int exploreIndex = 0;
-	private Dictionary<int, Transform> exploreTargets = new Dictionary<int, Transform>();
+	#region Inits
 
 	public void Init()
 	{	 	
@@ -78,6 +82,35 @@ public class EnemyCluster : MonoBehaviour {
 		}
 	}
 
+	private void InitInicialEnemies ()            
+	{
+		foreach (Transform trns in teamNine)
+		{			
+			if(trns.gameObject.activeSelf == true)
+			{
+				InitInstantiateEnemy toInit = trns.GetComponent<InitInstantiateEnemy>();
+				if (!toInit)continue;
+				if (toInit.GetType() == typeof(InitInstantiateEnemy))
+				{					
+					toInit.Init();
+					Debug.Log("transform  "+ trns.name);					
+				}
+			}			
+		}
+	}
+	private void InitExploreTargets()
+	{
+		int i = 0;
+		Transform exploreTarget = GameObject.Find("GamePlay/" + "Resources").transform;
+		foreach (Transform target in exploreTarget)	
+		{
+			exploreTargets.Add(i,target);
+			i++;
+		}
+	}
+	#endregion
+
+	#region Cluster Methods
 	private void CheckClusterTrigger()
 	{
 		foreach (ClusterModel cluster in clusterModels)
@@ -119,19 +152,34 @@ public class EnemyCluster : MonoBehaviour {
 			{
 				CheckClusterFactory(cluster);		
 			}
-
+			
 			else
 			{	
 				foreach (Unit desiredUnit in cluster.clusterDesiredUnits)
 				{
 					cluster.factory.BuildEnemy(desiredUnit, cluster.clusterNumber);
 				}
-
+				
 				cluster.hasDemanded = true;
 			}
 		}
 	}
 
+	private void MoveCluster(ClusterModel cluster)
+	{
+		foreach (Unit e in cluster.clusterUnits)
+		{
+			EnemyIA eIA = e.gameObject.GetComponent<EnemyIA>();
+			eIA.IAClusterNumber = cluster.clusterNumber;
+			eIA.movementTarget = cluster.clusterTarget;
+			eIA.EnemyMovement ();
+			if (cluster.clusterBehaviour == ClusterBehaviour.explore) eIA.ScoutType = true;
+			cluster.clusterIsBusy = true;
+		}
+	}
+	#endregion
+
+	#region Behaviour
 	void IABehaviour ()
 	{
 		foreach (ClusterModel cluster in clusterModels)             //chama os grupos
@@ -205,35 +253,10 @@ public class EnemyCluster : MonoBehaviour {
 			}
 		}				
 	}
-	
-	private void InitInicialEnemies ()            
-	{
-		foreach (Transform trns in teamNine)
-		{			
-			if(trns.gameObject.activeSelf == true)
-			{
-				InitInstantiateEnemy toInit = trns.GetComponent<InitInstantiateEnemy>();
-				if (!toInit)continue;
-				if (toInit.GetType() == typeof(InitInstantiateEnemy))
-				{					
-					toInit.Init();
-					Debug.Log("transform  "+ trns.name);					
-				}
-			}			
-		}
-	}
-	private void MoveCluster(ClusterModel cluster)
-	{
-		foreach (Unit e in cluster.clusterUnits)
-		{
-			EnemyIA eIA = e.gameObject.GetComponent<EnemyIA>();
-			eIA.IAClusterNumber = cluster.clusterNumber;
-			eIA.movementTarget = cluster.clusterTarget;
-			eIA.EnemyMovement ();
-			if (cluster.clusterBehaviour == ClusterBehaviour.explore) eIA.ScoutType = true;
-			cluster.clusterIsBusy = true;
-		}
-	}
+	#endregion
+
+	#region Cluster Updates
+
 	private void UpdateClusterAttackTarget(ClusterModel cluster)
 	{
 		foreach (IStats stats in statsController.myStats)				// Utilizando o mystats como base para facilitar (multiplayer inserir times)
@@ -281,15 +304,5 @@ public class EnemyCluster : MonoBehaviour {
 			}
 		}
 	}
-
-	private void InitExploreTargets()
-	{
-		int i = 0;
-		Transform exploreTarget = GameObject.Find("GamePlay/" + "Resources").transform;
-		foreach (Transform target in exploreTarget)	
-		{
-			exploreTargets.Add(i,target);
-			i++;
-		}
-	}
+	#endregion
 }

@@ -1,80 +1,61 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
 using Visiorama;
 
 public class MiniMapController : MonoBehaviour
 {
+	#region Declares
 	public GameObject pref_UnitMiniMap;
 	public GameObject pref_StructureMiniMap;
-
 	public Transform miniMapButton;
-	public Camera MapGUICamera;
-	
+	public Camera MapGUICamera;	
 	public GameObject miniMapPanel;
 	public UIRoot MiniMapRoot;
 	public UIAnchor minimapAnchor;
-
 	public GameObject CamPositionMiniMap;
 	public Texture2D CamPositionTexture;
-
 	public Transform mapTransform;
-
 	public GameObject fogMiniMap;
-
 	public GameObject beingAttackedMiniMap;
-
-	public UIAtlas minimapAtlas;
-	
+	public UIAtlas minimapAtlas;	
     public Vector3 visualizationSize;
 	public Vector3 visualizationPosition;
-
 	public float MiniMapRefreshInterval = 0.4f;
-
 	private Vector2 miniMapSize;
-
 	public Vector3 mapSize { get; private set; }
 
 	private List<Transform>[] structureList;
 	private List<Transform>[] unitList;
-
 	private List<GameObject>[] UnitMiniMapList;
 	private List<GameObject>[] StructureMiniMapList;
-
 	private List<bool>[] WasStructureAlreadyVisible;
 
 	private GameObject mainCameraGO;
-
-	private bool WasInitialized;
-	
+	private bool WasInitialized;	
 	private FogOfWar fogOfWar;
 	private TouchController tc;
-
-	InteractionController ic;
-	
+	InteractionController ic;	
 	private UITexture textureFogOfWar;
-	
-	public MiniMapController Init()
+	#endregion
+
+	#region Init
+	public void Init()
 	{
 		if (WasInitialized)
 		{
-			Debug.LogError("Classe ja inicializada!");
-			return this;
+			return;
 		}
 		
 		WasInitialized = true;
 
 		GameplayManager gm = ComponentGetter.Get<GameplayManager>();
-
 		int nTeams = gm.teams.Length;
 
 		unitList      = new List<Transform>[nTeams];
 		structureList = new List<Transform>[nTeams];
-
 		UnitMiniMapList      = new List<GameObject>[nTeams];
 		StructureMiniMapList = new List<GameObject>[nTeams];
-
 		WasStructureAlreadyVisible = new List<bool>[nTeams];
 
 		for(int i = structureList.Length - 1; i != -1; --i)
@@ -141,7 +122,6 @@ public class MiniMapController : MonoBehaviour
 		
 		RefreshMiniMapSize();
 
-		return this;
 	}
 
 	void RefreshMiniMapSize()
@@ -158,13 +138,15 @@ public class MiniMapController : MonoBehaviour
 		
 		//CamPositionMiniMap.transform.localScale = newScale;
 	}
+	#endregion
 
+	#region Minimap updates	
 	void UpdateMiniMap()
 	{
-#if UNITY_EDITOR
-		//RefreshMiniMapSize();
-#endif
-//		Debug.Log(FOWSystem.instance.texture1.width);
+		#if UNITY_EDITOR
+				//RefreshMiniMapSize();
+		#endif
+		//		Debug.Log(FOWSystem.instance.texture1.width);
 		
 		//Update camera mini map position
 		UpdateMiniMapCameraPosition();
@@ -290,8 +272,9 @@ public class MiniMapController : MonoBehaviour
 
 		UpdatePosition (miniMapObject, target);
 	}
+	#endregion
 
-#region Add and Remove Structures/Units
+	#region Add and Remove Structures/Units
 	GameObject InstantiateMiniMapObject(GameObject pref_go, Transform trns, int teamId)
 	{
 		GameObject _go = Instantiate(pref_go, Vector3.zero, Quaternion.identity) as GameObject;
@@ -312,7 +295,7 @@ public class MiniMapController : MonoBehaviour
 
 	public void AddStructure (Transform trns, int teamId)
 	{
-#if UNITY_EDITOR
+	#if UNITY_EDITOR
 		if(structureList.Length <= teamId)
 		{
 			Debug.Log("O numero de times eh menor do que o id enviado");
@@ -411,5 +394,5 @@ public class MiniMapController : MonoBehaviour
 		if (index != -1)
 			UnitMiniMapList[teamId][index].SetActive(visibility);
 	}
-#endregion
+	#endregion
 }

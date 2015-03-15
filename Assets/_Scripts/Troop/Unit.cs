@@ -11,8 +11,7 @@ public class Unit : IStats, IMovementObservable,
 							IAttackObserver,
 							IDeathObservable
 {
-	public const string UnitGroupQueueName = "Unit Group";
-
+	#region Declares, Serializables
 	[System.Serializable]
 	public class UnitAnimation
 	{
@@ -107,8 +106,13 @@ public class Unit : IStats, IMovementObservable,
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
 	List<IDeathObserver> IDOobservers	 = new List<IDeathObserver> ();
-	Unit followedUnit = null;
 
+	public const string UnitGroupQueueName = "Unit Group";
+
+	Unit followedUnit = null;
+	#endregion
+
+	#region Init
 	public override void Init ()
 	{
 		base.Init();
@@ -147,26 +151,23 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 
+	public virtual void LoadStandardAttribs()											// Inicializa os tributos da unidade conforme Techtree
+	{
+		Hashtable ht = techTreeController.attribsHash[category] as Hashtable;
+		bonusForce		= (int)ht["bonusforce"];
+		bonusSpeed		= (int)ht["bonusspeed"];
+		bonusSight		= (int)ht["bonussight"];
+		bonusDefense	= (int)ht["bonusdefense"];
+	}
+	#endregion
+
+	#region Update, IAstep, Animation Sync
+
 	void Update ()
 	{
 		if (!IsDead) IAStep ();
 	}
 
-	void OnDestroy ()
-	{
-		if (gameplayManager.IsBotTeam (this)) return;
-		
-		if (Selected && !playerUnit)
-		{
-			hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
-
-			Deselect ();
-		}
-		if (!WasRemoved && !playerUnit)
-		{
-			statsController.RemoveStats (this);
-		}
-	}
 
 	public virtual void IAStep ()
 	{
@@ -311,8 +312,9 @@ public class Unit : IStats, IMovementObservable,
 			}
 		}
 	}
+	#endregion
 
-	#region Move NavAgent w/ Avoidance
+	#region Move NavAgent, Follow
 	public void Move (Vector3 destination)
 	{
 		NavAgent.enabled = true;
@@ -338,8 +340,39 @@ public class Unit : IStats, IMovementObservable,
 		}
 		NavAgent.Stop ();
 	}
+
+	internal void ResetPathfindValue ()
+	{
+		NavAgent.acceleration = normalAcceleration;
+		NavAgent.speed = normalSpeed;
+		NavAgent.angularSpeed = normalAngularSpeed;
+	}
+	
+	public void Follow (Unit followed)
+	{
+		TargetAttack    = null;
+		followingTarget = false;
+		
+		followed.RegisterMovementObserver (this);
+		followed.RegisterAttackObserver (this);
+		followedUnit = followed;
+		
+		if (followed.followedUnit == this)
+			followed.UnFollow ();
+	}
+	
+	public void UnFollow  ()
+	{
+		if (followedUnit == null)
+			return;
+		
+		followedUnit.UnRegisterMovementObserver (this);
+		followedUnit.UnRegisterAttackObserver (this);
+		followedUnit = null;
+	}
 	#endregion
 
+	#region Attack, Targeting 
 	public void SfxAtk ()
 	{
 		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
@@ -359,27 +392,6 @@ public class Unit : IStats, IMovementObservable,
 		}
 		
 	}
-
-	public bool CheckNemesis(IStats targetStats)										 // Confere se o target stats e do tipo alvo de nossa habilidade
-	{
-		if (unitSkill == UnitSkill.Crusher && targetStats.GetType() == typeof(FactoryBase))	 // bonus vs factory
-			return true;
-
-		if (unitSkill == UnitSkill.ManEater && targetStats.GetType() == typeof(Unit) && targetStats.subCategory == "Man") // bonus vs factory - busca por subcategoria o nome "man"
-			return true;
-
-		if (unitSkill == UnitSkill.BeastMaster && targetStats.GetType() == typeof(Unit) && targetStats.subCategory == "Dino") 	// bonus vs factory - busca por subcategoria o nome "Dino" da
-			return true;
-
-		if (unitSkill == UnitSkill.Charger) 	// bonus por velocidade//TODO
-			return false;
-
-		if (unitSkill == UnitSkill.Pusher) 	// estuna ou empurra inimigos //TODO
-			return false;
-
-		else return false;
-	}
-
 		
 	private IEnumerator Attack ()
 	{
@@ -441,169 +453,6 @@ public class Unit : IStats, IMovementObservable,
                 attackBuff = 0;
             }
 		}
-	}
-
-	public override void Select ()
-	{
-		if(IsDead) return;
-		base.Select ();
-
-		Hashtable ht = new Hashtable();
-
-		ht["observableHealth"] = this;
-		ht["time"] = 0f;
-		
-		hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
-		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
-
-		if (!gameplayManager.IsSameTeam (this.team))
-			return;
-
-		hudController.CreateEnqueuedButtonInInspector ( this.name,
-														Unit.UnitGroupQueueName,
-														ht,
-														this.guiTextureName,
-														(hud_ht) =>
-														{
-															statsController.DeselectAllStats();
-															statsController.SelectStat(this, true);
-														},
-														(ht_dcb, isDown) => 
-														{
-															if (isDown)
-															{
-																ht["time"] = Time.time;
-															}
-															else
-															{
-																if (Time.time - (float)ht["time"] > 0.1f)
-																{	
-																	selectionController.SelectSameCategory(this.category);						
-																}																
-															}
-														});		
-			
-			foreach (MovementAction ma in movementActions)
-			{
-				ht = new Hashtable();
-				ht["actionType"] = ma.actionType;
-				
-				hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
-													ma.buttonAttributes.gridItemAttributes.Position,
-													ht,
-													ma.buttonAttributes.spriteName,
-													(_ht) =>
-			                                       {
-														MovementAction.ActionType action = (MovementAction.ActionType)_ht["actionType"];
-														switch(action)
-														{
-														case MovementAction.ActionType.Move:
-															interactionController.AddCallback(TouchController.IdTouch.Id0,
-																								(position, hit) =>
-																								{
-																									statsController.MoveTroop(position);
-																								});
-															break;
-														case MovementAction.ActionType.Patrol:
-//					
-//															interactionController.AddCallback(TouchController.IdTouch.Id0,
-//															                                 	(position, hit) =>
-//															                                  	{
-//																									IStats istats = hit.GetComponent <IStats> ();
-//																									
-//																									//Nao pode ser nulo e nao pode atacar aliados
-//																									//so do mesmo time ou inimigo
-//																									if (istats != null && 
-//																									    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
-//																									{
-//																										statsController.AttackTroop (istats.gameObject);
-//																									}
-//																								});
-															break;
-														case MovementAction.ActionType.CancelMovement:
-															StopMove (true);
-															break;
-														case MovementAction.ActionType.Follow:
-															interactionController.AddCallback(TouchController.IdTouch.Id0,
-															                                 	(position, hit) =>
-															                                  	{
-																									Unit unit = hit.GetComponent <Unit> ();																									
-																									
-																									if (unit != null && gameplayManager.IsSameTeam (unit))
-																									{
-																										statsController.FollowTroop (unit);
-																									}
-																								});
-															break;
-														case MovementAction.ActionType.Attack:
-															interactionController.AddCallback(TouchController.IdTouch.Id0,
-															                                  	(position, hit) =>
-															                                  	{
-																									IStats istats = hit.GetComponent <IStats> ();
-																									
-																									//Nao pode ser nulo e nao pode atacar aliados
-																									//so do mesmo time ou inimigo
-																									if (istats != null && 
-						    																			(gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
-																									{
-																										statsController.AttackTroop (istats.gameObject);
-																									}
-																								});
-															break;
-														}
-													});
-		}
-	}
-
-	public override void Deselect ()
-	{
-		if (statsController.selectedStats.Count == 1) 
-		{
-			hudController.DestroyOptionsBtns ();
-		}
-
-		base.Deselect ();
-
-		int c = IDOobservers.Count;
-		while (--c != -1)
-		{
-			UnRegisterDeathObserver (IDOobservers[c]);
-		}
-
-		hudController.DestroySelected (transform);
-	}
-
-	public bool InMeleeRange (GameObject target)
-	{
-		if (target.GetComponent<FactoryBase> () != null)
-		{
-			return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<FactoryBase> ().helperCollider.radius);
-		}
-		else
-		{
-			return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<CapsuleCollider> ().radius);
-		}
-	}
-
-	public bool InDistanceView (Vector3 position)
-	{
-		return Vector3.Distance(transform.position, position) <= distanceView;
-	}
-
-	public bool MoveComplete (Vector3 destination)
-	{
-		float distanceToDestination = Vector3.Distance(transform.position, destination);
-	
-		return (distanceToDestination <= NavAgent.stoppingDistance);
-	}
-
-
-	public bool MoveComplete ()
-	{
-//		if (pathfind.desiredVelocity.sqrMagnitude < 0.001f) start = !start;
-//		return pathfind.desiredVelocity.sqrMagnitude < 0.001f || !start;
-		return (Vector3.Distance(transform.position, NavAgent.destination) <= 2.0f);
-//		return Vector3.Distance(transform.position, pathfind.destination) <= 2;
 	}
 
 	public void TargetingEnemy (GameObject enemy)
@@ -676,47 +525,20 @@ public class Unit : IStats, IMovementObservable,
 			return BinarySearch(units, unit, mid + 1, last);
 		}
 	}
+	#endregion
 
-	private void StartCheckEnemy ()
-	{
-		if (!invokeCheckEnemy)
-		{
-			InvokeRepeating ("CheckEnemyIsClose", 0.3f, 0.2f);
-			invokeCheckEnemy = true;
-		}
-	}
-
-	private void CancelCheckEnemy ()
-	{
-		if (invokeCheckEnemy)
-		{
-			CancelInvoke ("CheckEnemyIsClose");
-			invokeCheckEnemy = false;
-		}
-	}
-
+	#region Unit Check's
+	
 	private void CheckEnemyIsClose ()
-	{
-		/*
-		Unit[] soldiers = ComponentGetter.Get<TroopController>().soldiers.ToArray();
-
-		Unit nearestUnit = BinarySearch (soldiers, this, 0, soldiers.Length - 1);
-
-		if(nearestUnit != null)
-		{
-			TargetingEnemy (nearestUnit.gameObject);
-			unitState = UnitState.Walk;
-		}
-		*/
-		
+	{		
 		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1 << LayerMask.NameToLayer ("Unit"));
-
+		
 		if (nearbyUnits.Length == 0) return;
-
+		
 		GameObject enemyFound = null;
 		IStats cStats = null;
 		
-        for (int i = 0; i != nearbyUnits.Length; i++)
+		for (int i = 0; i != nearbyUnits.Length; i++)
 		{
 			cStats = nearbyUnits[i].GetComponent<IStats> ();
 			if (cStats)
@@ -738,7 +560,7 @@ public class Unit : IStats, IMovementObservable,
 						if (!cStats.WasRemoved)
 						{
 							if (Vector3.Distance (transform.position, cStats.transform.position) <
-								Vector3.Distance (transform.position, enemyFound.transform.position))
+							    Vector3.Distance (transform.position, enemyFound.transform.position))
 							{
 								enemyFound = cStats.gameObject;
 							}
@@ -760,7 +582,7 @@ public class Unit : IStats, IMovementObservable,
 						if (!cStats.WasRemoved)
 						{
 							if (Vector3.Distance (transform.position, cStats.transform.position) <
-								Vector3.Distance (transform.position, enemyFound.transform.position))
+							    Vector3.Distance (transform.position, enemyFound.transform.position))
 							{
 								enemyFound = cStats.gameObject;
 							}
@@ -768,128 +590,214 @@ public class Unit : IStats, IMovementObservable,
 					}
 				}
 			}
-        }
-
+		}
+		
 		if (enemyFound != null)
 		{
 			TargetingEnemy (enemyFound);
 		}
 	}
-
-	public virtual IEnumerator OnDie ()
+	
+	private void StartCheckEnemy ()
 	{
-		NavAgent.Stop ();
-		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-
-		IsDead = true;
-
-		unitState = UnitState.Die;
-
-		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");
-
-		Vector3 u = this.transform.position;
-
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
-
-		if (smas != null)
+		if (!invokeCheckEnemy)
 		{
-			smas.dopplerLevel = 0.0f;
-			smas.spread = 0.3f;
-			smas.minDistance = 3.0f;
-			smas.maxDistance = 30.0f;
-			smas.rolloffMode =AudioRolloffMode.Custom;
-
+			InvokeRepeating ("CheckEnemyIsClose", 0.3f, 0.2f);
+			invokeCheckEnemy = true;
 		}
-
-		//IMovementObservable
-		int c = IMOobservers.Count;
-		while (--c != -1)
+	}
+	private void CancelCheckEnemy ()
+	{
+		if (invokeCheckEnemy)
 		{
-			UnRegisterMovementObserver (IMOobservers[c]);
+			CancelInvoke ("CheckEnemyIsClose");
+			invokeCheckEnemy = false;
+		}
+	}
+	
+	public bool InMeleeRange (GameObject target)
+	{
+		if (target.GetComponent<FactoryBase> () != null)
+		{
+			return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<FactoryBase> ().helperCollider.radius);
+		}
+		else
+		{
+			return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<CapsuleCollider> ().radius);
+		}
+	}
+	
+	public bool InDistanceView (Vector3 position)
+	{
+		return Vector3.Distance(transform.position, position) <= distanceView;
+	}
+	
+	public bool MoveComplete (Vector3 destination)
+	{
+		float distanceToDestination = Vector3.Distance(transform.position, destination);
+		
+		return (distanceToDestination <= NavAgent.stoppingDistance);
+	}
+	
+	public bool MoveComplete ()
+	{
+		return (Vector3.Distance(transform.position, NavAgent.destination) <= 2.0f);
+	}
+	
+	public bool CheckNemesis(IStats targetStats)										 // Confere se o target stats e do tipo alvo de nossa habilidade
+	{
+		if (unitSkill == UnitSkill.Crusher && targetStats.GetType() == typeof(FactoryBase))	 // bonus vs factory
+			return true;
+		
+		if (unitSkill == UnitSkill.ManEater && targetStats.GetType() == typeof(Unit) && targetStats.subCategory == "Man") // bonus vs factory - busca por subcategoria o nome "man"
+			return true;
+		
+		if (unitSkill == UnitSkill.BeastMaster && targetStats.GetType() == typeof(Unit) && targetStats.subCategory == "Dino") 	// bonus vs factory - busca por subcategoria o nome "Dino" da
+			return true;
+		
+		if (unitSkill == UnitSkill.Charger) 	// bonus por velocidade//TODO
+			return false;
+		
+		if (unitSkill == UnitSkill.Pusher) 	// estuna ou empurra inimigos //TODO
+			return false;
+		
+		else return false;
+	}
+	#endregion
+
+	#region Select
+	public override void Select ()
+	{
+		if(IsDead) return;
+		base.Select ();
+		
+		Hashtable ht = new Hashtable();
+		
+		ht["observableHealth"] = this;
+		ht["time"] = 0f;
+		
+		hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
+		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
+		
+		if (!gameplayManager.IsSameTeam (this.team))
+			return;
+		
+		hudController.CreateEnqueuedButtonInInspector ( this.name,
+		                                               Unit.UnitGroupQueueName,
+		                                               ht,
+		                                               this.guiTextureName,
+		                                               (hud_ht) =>
+		                                               {
+			statsController.DeselectAllStats();
+			statsController.SelectStat(this, true);
+		},
+		(ht_dcb, isDown) => 
+		{
+			if (isDown)
+			{
+				ht["time"] = Time.time;
+			}
+			else
+			{
+				if (Time.time - (float)ht["time"] > 0.1f)
+				{	
+					selectionController.SelectSameCategory(this.category);						
+				}																
+			}
+		});		
+		
+		foreach (MovementAction ma in movementActions)
+		{
+			ht = new Hashtable();
+			ht["actionType"] = ma.actionType;
+			
+			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
+			                                       ma.buttonAttributes.gridItemAttributes.Position,
+			                                       ht,
+			                                       ma.buttonAttributes.spriteName,
+			                                       (_ht) =>
+			                                       {
+				MovementAction.ActionType action = (MovementAction.ActionType)_ht["actionType"];
+				switch(action)
+				{
+				case MovementAction.ActionType.Move:
+					interactionController.AddCallback(TouchController.IdTouch.Id0,
+					                                  (position, hit) =>
+					                                  {
+						statsController.MoveTroop(position);
+					});
+					break;
+				case MovementAction.ActionType.Patrol:
+					//					
+					//															interactionController.AddCallback(TouchController.IdTouch.Id0,
+					//															                                 	(position, hit) =>
+					//															                                  	{
+					//																									IStats istats = hit.GetComponent <IStats> ();
+					//																									
+					//																									//Nao pode ser nulo e nao pode atacar aliados
+					//																									//so do mesmo time ou inimigo
+					//																									if (istats != null && 
+					//																									    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
+					//																									{
+					//																										statsController.AttackTroop (istats.gameObject);
+					//																									}
+					//																								});
+					break;
+				case MovementAction.ActionType.CancelMovement:
+					StopMove (true);
+					break;
+				case MovementAction.ActionType.Follow:
+					interactionController.AddCallback(TouchController.IdTouch.Id0,
+					                                  (position, hit) =>
+					                                  {
+						Unit unit = hit.GetComponent <Unit> ();																									
+						
+						if (unit != null && gameplayManager.IsSameTeam (unit))
+						{
+							statsController.FollowTroop (unit);
+						}
+					});
+					break;
+				case MovementAction.ActionType.Attack:
+					interactionController.AddCallback(TouchController.IdTouch.Id0,
+					                                  (position, hit) =>
+					                                  {
+						IStats istats = hit.GetComponent <IStats> ();
+						
+						//Nao pode ser nulo e nao pode atacar aliados
+						//so do mesmo time ou inimigo
+						if (istats != null && 
+						    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
+						{
+							statsController.AttackTroop (istats.gameObject);
+						}
+					});
+					break;
+				}
+			});
+		}
+	}
+	
+	public override void Deselect ()
+	{
+		if (statsController.selectedStats.Count == 1) 
+		{
+			hudController.DestroyOptionsBtns ();
 		}
 		
-		//IAttackObservable
-		c = IAOobservers.Count;
-		while (--c != -1)
-		{
-			UnRegisterAttackObserver (IAOobservers[c]);
-		}
-
-		statsController.RemoveStats(this);
-
-		ComponentGetter.Get<MiniMapController> ().RemoveUnit (this.transform, this.team);
-		gameplayManager.DecrementUnit (this.team, this.numberOfUnits);
+		base.Deselect ();
 		
-		//IDeathObservable
-		NotifyDeath ();
-					
-		c = IDOobservers.Count;
+		int c = IDOobservers.Count;
 		while (--c != -1)
 		{
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
 		
-		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
-
-
-		if (Selected)
-		{
-			Deselect ();
-		}
-
-		if (unitAnimation.DieAnimation)
-		{
-			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
-			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
-		}
-
-		if (IsNetworkInstantiate)
-		{
-			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
-
-			if (photonView.isMine)
-			{
-				PhotonNetwork.Destroy(gameObject);
-
-				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1);
-				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
-				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
-			}
-			else
-			{
-				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1);
-				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1, battle.IdBattle);
-				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1);
-				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1, battle.IdBattle);
-			}
-
-		}
-		else Destroy (gameObject);
+		hudController.DestroySelected (transform);
 	}
+	#endregion
 
-	internal void ResetPathfindValue ()
-	{
-		NavAgent.acceleration = normalAcceleration;
-		NavAgent.speed = normalSpeed;
-		NavAgent.angularSpeed = normalAngularSpeed;
-	}
-
-//	public override void DrawGizmosSelected ()
-//	{
-//		base.DrawGizmosSelected ();
-//
-//		Gizmos.color = Color.cyan;
-//		Gizmos.DrawWireSphere (this.transform.position, distanceView);
-//
-//		Gizmos.color = Color.red;
-//		Gizmos.DrawWireSphere (this.transform.position, attackRange);
-//
-//		Gizmos.color = Color.yellow;
-//		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
-//	}
-
+	#region Visibility
 	public override void SetVisible(bool isVisible)
 	{
 		ComponentGetter.Get<StatsController>().ChangeVisibility (this, isVisible);
@@ -908,29 +816,118 @@ public class Unit : IStats, IMovementObservable,
 			return model.activeSelf;
 		}
 	}
-	
-	public void Follow (Unit followed)
-	{
-		TargetAttack    = null;
-		followingTarget = false;
+	#endregion
 
-		followed.RegisterMovementObserver (this);
-		followed.RegisterAttackObserver (this);
-		followedUnit = followed;
-		
-		if (followed.followedUnit == this)
-			followed.UnFollow ();
-	}
-	
-	public void UnFollow  ()
+	#region Ondie
+	public virtual IEnumerator OnDie ()
 	{
-		if (followedUnit == null)
-			return;
+		NavAgent.Stop ();
+		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 		
-		followedUnit.UnRegisterMovementObserver (this);
-		followedUnit.UnRegisterAttackObserver (this);
-		followedUnit = null;
+		IsDead = true;
+		
+		unitState = UnitState.Die;
+		
+		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");
+		
+		Vector3 u = this.transform.position;
+		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
+		
+		if (smas != null)
+		{
+			smas.dopplerLevel = 0.0f;
+			smas.spread = 0.3f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 30.0f;
+			smas.rolloffMode =AudioRolloffMode.Custom;
+			
+		}
+		
+		//IMovementObservable
+		int c = IMOobservers.Count;
+		while (--c != -1)
+		{
+			UnRegisterMovementObserver (IMOobservers[c]);
+		}
+		
+		//IAttackObservable
+		c = IAOobservers.Count;
+		while (--c != -1)
+		{
+			UnRegisterAttackObserver (IAOobservers[c]);
+		}
+		
+		statsController.RemoveStats(this);
+		
+		ComponentGetter.Get<MiniMapController> ().RemoveUnit (this.transform, this.team);
+		gameplayManager.DecrementUnit (this.team, this.numberOfUnits);
+		
+		//IDeathObservable
+		NotifyDeath ();
+		
+		c = IDOobservers.Count;
+		while (--c != -1)
+		{
+			UnRegisterDeathObserver (IDOobservers[c]);
+		}
+		
+		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
+		
+		
+		if (Selected)
+		{
+			Deselect ();
+		}
+		
+		if (unitAnimation.DieAnimation)
+		{
+			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
+			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
+		}
+		
+		if (IsNetworkInstantiate)
+		{
+			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+			
+			if (photonView.isMine)
+			{
+				PhotonNetwork.Destroy(gameObject);
+				
+				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1);
+				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
+				Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1, battle.IdBattle);
+			}
+			else
+			{
+				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1);
+				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1);
+				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, 1, battle.IdBattle);
+			}
+			
+		}
+		else Destroy (gameObject);
 	}
+
+	void OnDestroy ()
+	{
+		if (gameplayManager.IsBotTeam (this)) return;
+		
+		if (Selected && !playerUnit)
+		{
+			hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
+			
+			Deselect ();
+		}
+		if (!WasRemoved && !playerUnit)
+		{
+			statsController.RemoveStats (this);
+		}
+	}
+	#endregion
 
 	#region IMovementObservable implementation
 
@@ -1077,16 +1074,7 @@ public class Unit : IStats, IMovementObservable,
 
 	#endregion
 
-	public virtual void LoadStandardAttribs()											// Inicializa os tributos da unidade conforme Techtree
-	{
-		Hashtable ht = techTreeController.attribsHash[category] as Hashtable;
-		bonusForce		= (int)ht["bonusforce"];
-		bonusSpeed		= (int)ht["bonusspeed"];
-		bonusSight		= (int)ht["bonussight"];
-		bonusDefense	= (int)ht["bonusdefense"];
-	}	
-
-	// RPC
+	#region RPC's
 	[RPC]
 	public virtual void AttackStat (string name, int force)
 	{
@@ -1109,4 +1097,21 @@ public class Unit : IStats, IMovementObservable,
 	{
 		base.SendRemove ();
 	}
+	#endregion
+
+	#region Gizmos
+	//	public override void DrawGizmosSelected ()
+	//	{
+	//		base.DrawGizmosSelected ();
+	//
+	//		Gizmos.color = Color.cyan;
+	//		Gizmos.DrawWireSphere (this.transform.position, distanceView);
+	//
+	//		Gizmos.color = Color.red;
+	//		Gizmos.DrawWireSphere (this.transform.position, attackRange);
+	//
+	//		Gizmos.color = Color.yellow;
+	//		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
+	//	}
+	#endregion
 }

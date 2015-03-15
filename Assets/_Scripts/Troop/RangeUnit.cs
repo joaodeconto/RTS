@@ -5,62 +5,19 @@ using Visiorama;
 
 public class RangeUnit : Unit
 {
+	#region Declares e Init
+
 	public int projectileAttackForce;
 	public float projectileAttackRange;
-
 	public GameObject prefabProjectile;
 	public Transform trnsInstantiateLocalPrefab;
 	public GameObject dummyRangeObject;
 	private Quaternion dummyRotation;
-
 	public AnimationClip projectileAttackAnimation;
 	public float projectileAnimationSync;
-
 	public bool projectileAttacking {get; set;}
-	public int projectileAnimating 	{get; set;}
-			           
-			           
-			           
-	public void ProjectileSync ()
-	{
-		dummyRangeObject.SetActive(false);
-		GameObject pRange;
-		
-		if (!PhotonNetwork.offlineMode)
-		{
-			pRange = PhotonNetwork.Instantiate  (prefabProjectile.name, 
-			                                     trnsInstantiateLocalPrefab.position,
-			                                     trnsInstantiateLocalPrefab.rotation,
-			                                     0, null);
-		}
-		else
-		{
-			pRange = Instantiate (prefabProjectile, 
-			                      trnsInstantiateLocalPrefab.position,
-			                      trnsInstantiateLocalPrefab.rotation) as GameObject;
-		}
-		
-		pRange.GetComponent<RangeObject>().Init (TargetAttack, 2f,
-		                                          (ht) => 
-		                                          {
-			if (TargetAttack != null)
-			{
-				if (!PhotonNetwork.offlineMode)
-				{
-					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + bonusForce);
-				}
-				else
-				{
-					TargetAttack.GetComponent<IStats>().ReceiveAttack(projectileAttackForce + bonusProjectile);
-				}
-			}
+	public int projectileAnimating 	{get; set;}		           
 
-		}
-		);
-		Invoke ("DummyActive",1);
-
-	}
-	
 	public override void Init ()
 	{
 		dummyRangeObject.SetActive(true);
@@ -68,7 +25,9 @@ public class RangeUnit : Unit
 		base.Init ();
 
 	}
+	#endregion
 	
+	#region IaStep, Attack e SyncAnimation
 	public override void IAStep ()
 	{
 		if (TargetAttack != null)
@@ -114,7 +73,7 @@ public class RangeUnit : Unit
 			base.IAStep ();
 		}
 	}
-	
+
 	IEnumerator Attack ()
 	{			
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
@@ -157,12 +116,53 @@ public class RangeUnit : Unit
 			base.SyncAnimation ();
 		}
 	}
+	#endregion
+		
+	#region Projectile
 
-	
 	public bool InProjectileRange (GameObject target)
 	{	
 		return Vector3.Distance(transform.position, target.transform.position) <=
 							   (projectileAttackRange + target.GetComponent<CapsuleCollider>().radius);
+	}
+
+	public void ProjectileSync ()
+	{
+		dummyRangeObject.SetActive(false);
+		GameObject pRange;
+		
+		if (!PhotonNetwork.offlineMode)
+		{
+			pRange = PhotonNetwork.Instantiate  (prefabProjectile.name, 
+			                                     trnsInstantiateLocalPrefab.position,
+			                                     trnsInstantiateLocalPrefab.rotation,
+			                                     0, null);
+		}
+		else
+		{
+			pRange = Instantiate (prefabProjectile, 
+			                      trnsInstantiateLocalPrefab.position,
+			                      trnsInstantiateLocalPrefab.rotation) as GameObject;
+		}
+		
+		pRange.GetComponent<RangeObject>().Init (TargetAttack, 2f,
+		                                         (ht) => 
+		                                         {
+			if (TargetAttack != null)
+			{
+				if (!PhotonNetwork.offlineMode)
+				{
+					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + bonusForce);
+				}
+				else
+				{
+					TargetAttack.GetComponent<IStats>().ReceiveAttack(projectileAttackForce + bonusProjectile);
+				}
+			}
+			
+		}
+		);
+		Invoke ("DummyActive",1);
 	}
 
 	private void DummyActive()
@@ -174,7 +174,9 @@ public class RangeUnit : Unit
 		dummyRangeObject.SetActive(true);
 		dummyRangeObject.transform.localRotation = dummyRotation;
 	}
+	#endregion
 
+	#region RPC's
 	// RPC
 	[RPC]
 	public override void AttackStat (string name, int force)
@@ -193,4 +195,5 @@ public class RangeUnit : Unit
 	{
 		base.SendRemove ();
 	}
+	#endregion
 }

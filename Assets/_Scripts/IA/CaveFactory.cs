@@ -6,6 +6,8 @@ using Visiorama.Extension;
 
 public class CaveFactory : FactoryBase
 {
+	#region Declare e Init
+
 	protected EnemyCluster enemyCluster;
 	private List<int> lUnitCluster = new List<int>();
 	private int unitToCreateCluster;
@@ -17,6 +19,9 @@ public class CaveFactory : FactoryBase
 		enabled = true;
 		enemyCluster      = ComponentGetter.Get<EnemyCluster>();
 	}
+	#endregion
+
+	#region Cave Methods
 
 	public void BuildEnemy(Unit unit, int clusterNumber)
 	{
@@ -106,8 +111,9 @@ public class CaveFactory : FactoryBase
 		enemyCluster.clusterModels[unitCluster].clusterUnits.Add(newUnit);
 		newUnit = newUnit.gameObject.AddComponent("EnemyIA") as Unit;
 	}
+	#endregion
 
-
+	#region Update
 
 	void Update ()
 	{
@@ -147,5 +153,6 @@ public class CaveFactory : FactoryBase
 			}
 		}
 	}
+	#endregion
 
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class TechTreeController : MonoBehaviour
 {
+	#region Declares e Inits
 	protected StatsController statsController;
 	public List<Upgrade> prefabUpgrade = new List<Upgrade>();
 	public List<FactoryBase> prefabFactory = new List<FactoryBase>();
@@ -19,19 +20,6 @@ public class TechTreeController : MonoBehaviour
 		statsController = ComponentGetter.Get<StatsController>();
 		InitCategoryList();
 		InitAtribList ();
-	}
-
-	public void AttributeModifier(string category, string attribute, int bonusValue)       // adiciona o valor do bonus a categoria indicada
-	{
-		foreach(Hashtable ht in attribsHash)
-		{
-			if (ht.ContainsKey(category))
-			{
-				int oldValue = (int)ht[attribute];
-				ht[attribute] = (oldValue + bonusValue);
-				break;
-			}
-		}
 	}
 
 	public void InitAtribList ()				//Guarda todos os atributos atributos iniciais de todas as classes;
@@ -86,8 +74,25 @@ public class TechTreeController : MonoBehaviour
 				break;
 			}
 		}
-
 	}
+	#endregion
+
+	#region Tech Functions
+
+	public void AttributeModifier(string category, string attribute, int bonusValue)       // adiciona o valor do bonus a categoria indicada
+	{
+		foreach(Hashtable ht in attribsHash)
+		{
+			if (ht.ContainsKey(category))
+			{
+				int oldValue = (int)ht[attribute];
+				ht[attribute] = (oldValue + bonusValue);
+				break;
+			}
+		}
+	}
+	
+
 		
 	public void TechBoolOperator(string category, bool techAvailality) 		//adiciona ou subtrai tokens de tech na lista
 	{
@@ -171,4 +176,5 @@ public class TechTreeController : MonoBehaviour
 		}
 		
 	}
+	#endregion
 }
