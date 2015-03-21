@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using System.IO;
+using System.Linq;
 
 public class SMPMenuItems : MonoBehaviour {
 	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Check For Updates", false, 100)]
@@ -39,14 +40,64 @@ public class SMPMenuItems : MonoBehaviour {
 	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/Setup For JS", false, 102)]
 	static void JSSetup()
 	{
-		string error1, error2;
-		error1 = AssetDatabase.MoveAsset("Assets/SoundManagerPro/Scripts", "Assets/Plugins/SoundManagerPro/Scripts");
-		error2 = AssetDatabase.MoveAsset("Assets/SoundManagerPro/EditorHelper", "Assets/Plugins/SoundManagerPro/EditorHelper");
+		string folderpath = Application.dataPath + "/" + "Plugins";
+		string editorpath, scriptpath;
+
+		if(!Directory.Exists(folderpath))
+			AssetDatabase.CreateFolder("Assets", "Plugins");
 		
-		if(error1 != "")
-			Debug.LogError(error1 + "\nMove the 'SoundManagerPro/Scripts' folder to 'Plugins/SoundManagerPro/Scripts' yourself.");
-		if(error2 != "")
-			Debug.LogError(error2 + "\nMove the 'SoundManagerPro/EditorHelper' folder to 'Plugins/SoundManagerPro/EditorHelper' yourself.");
+		folderpath += "/" + "SoundManagerPro";
+		if(!Directory.Exists(folderpath))
+			AssetDatabase.CreateFolder("Assets/Plugins", "SoundManagerPro");
+		
+		scriptpath = folderpath + "/" + "Scripts";
+		editorpath = folderpath + "/" + "EditorHelper";
+		if(!Directory.Exists(scriptpath))
+			AssetDatabase.CreateFolder("Assets/Plugins/SoundManagerPro", "Scripts");
+		if(!Directory.Exists(editorpath))
+			AssetDatabase.CreateFolder("Assets/Plugins/SoundManagerPro", "EditorHelper");
+		
+		MoveThisFolder("Assets/SoundManagerPro/Scripts", "Assets/Plugins/SoundManagerPro/Scripts");
+		MoveThisFolder("Assets/SoundManagerPro/EditorHelper", "Assets/Plugins/SoundManagerPro/EditorHelper");
+		
+		Debug.LogWarning("IMPORTANT: When calling SoundManager functions from JS, you have to use ALL optional parameters!");
+	}
+	
+	static void MoveThisFolder(string path, string newpath)
+	{
+		DirectoryInfo dir = new DirectoryInfo(path);
+		FileInfo[] files = dir.GetFiles().Where(x => !x.Name.EndsWith(".meta")).ToArray();
+		
+		foreach (FileInfo file in files) {
+			string status = AssetDatabase.MoveAsset(
+		                        path + "/" + file.Name,
+		                        newpath + "/" + file.Name);
+		    
+		    // Everything is OK if status is empty
+		    if (status != "") {
+		        Debug.LogError(status + ": " + file.Name + "\nMove the '"+path+"' folder to '"+newpath+"' yourself.");
+		    }
+		}
+		
+		DirectoryInfo[] subdirs = dir.GetDirectories();
+		if(subdirs.Length > 0)
+		{
+			for(int i = 0; i < subdirs.Length; i++)
+			{
+				if (subdirs[i].FullName.StartsWith(Path.GetFullPath(Application.dataPath))) {
+			        string relativepath =  "Assets" + subdirs[i].FullName.Substring(Application.dataPath.Length);
+					string newrelativepath = relativepath.Insert(6, "\\Plugins");
+					
+					string fullnewpath = Application.dataPath + newrelativepath.Substring("Assets".Length);
+					if(!Directory.Exists(fullnewpath))
+					{
+						AssetDatabase.CreateFolder(newpath, subdirs[i].Name);
+					}
+					
+					MoveThisFolder(relativepath, newrelativepath);
+			    }
+			}
+		}
 	}
 	[MenuItem ("Tools/AntiLunchBox/SoundManagerPro/NGUI Integration", false, 200)]
 	static void IntegrateNGUI()

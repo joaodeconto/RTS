@@ -111,7 +111,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			Allies = 0;
 			ComponentGetter.Get<EnemyCluster> ().Init ();
 			pauseGame = true;
-			GameStart();
+			Invoke("GameStart",2);
 		}
 
 		for (int i = 0; i != teams.Length; i++)
@@ -401,12 +401,14 @@ public class GameplayManager : Photon.MonoBehaviour
 	}
 
 	public void DefeatingEnemyTeamsByObjectives ()
-	{
+	{		
+		winGame = true;
+
 		if (PhotonNetwork.room.playerCount == 1)
 		{
-			winGame = true;
 			EndMatch ();
 		}
+
 		else
 		{
 			for (int indexTeam = 0, maxTeams = teams.Length - 1; indexTeam != maxTeams; ++indexTeam)
@@ -514,11 +516,13 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
 				Score.AddScorePoints (DataScoreEnum.Victory, 1);
+				Debug.Log ("WINGAME: " + winGame);
 			}
 			else
 			{
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
+				Debug.Log ("LOSEGAME: " + winGame);
 			}
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();

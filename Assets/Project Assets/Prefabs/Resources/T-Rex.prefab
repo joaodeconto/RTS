@@ -1103,12 +1103,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 110
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 20
   sizeOfSelected: 3.5
-  sizeOfSelectedHealthBar: 5.5
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400004}
   movementActions:
@@ -1148,14 +1147,19 @@ MonoBehaviour:
   description: These mighty beasts are the top of it's kind, althought fast and strong,
     T-rex are very hard to tame.
   requisites: Workshop
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 320
-  group: -1
   model: {fileID: 100000}
-  force: 18
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
+  force: 14
   distanceView: 18
-  attackRange: 7
+  attackRange: 6
   attackDuration: 1
   numberOfUnits: 6
   guiTextureName: t-rex
@@ -1349,7 +1353,7 @@ NavMeshAgent:
   m_Speed: 4
   m_Acceleration: 3
   avoidancePriority: 0
-  m_AngularSpeed: 270
+  m_AngularSpeed: 90
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1

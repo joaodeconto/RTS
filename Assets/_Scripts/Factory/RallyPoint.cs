@@ -236,7 +236,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		Vector3 center = Math.CenterOfObjects (nodes.ToArray ());
 		nodes.Insert (1, center + (Vector3.up * 3f));
 		
-		IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 5, false);
+		IEnumerable<Vector3> sequence = Interpolate.NewCatmullRom (nodes.ToArray(), 3, false);
 		
 		int i = 0;
 		foreach (Vector3 segment in sequence)

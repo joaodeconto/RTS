@@ -4,6 +4,19 @@
 //  Created by Viraf Zack on 7/2/14
 //  Copyright (c) 2014 Unity. All rights reserved.
 //
+
+#if __has_feature(objc_arc)
+#define RETAIN self
+#define AUTORELEASE self
+#define RELEASE self
+#define DEALLOC self
+#else
+#define RETAIN retain
+#define AUTORELEASE autorelease
+#define RELEASE release
+#define DEALLOC dealloc
+#endif
+
 #import <Foundation/Foundation.h>
 
 @interface UnityEngineCloudUtil : NSObject
@@ -96,6 +109,11 @@ extern "C" {
     
     const char* UnityEngine_Cloud_GetAppInstallMode()
     {
+#if TARGET_IPHONE_SIMULATOR
+        NSString* value = @"simulator";
+#else
+        NSString* value = @"store";
+        
         if (mobileProvision==nil)
         {
             if(lookedForMobileProvision)
@@ -104,14 +122,9 @@ extern "C" {
             mobileProvision = [UnityEngineCloudMobileProvisionUtil getMobileProvision];
             if (mobileProvision==nil)
                 return NULL;
-            [mobileProvision retain];
+            [mobileProvision RETAIN];
         }
-        
-#if TARGET_IPHONE_SIMULATOR
-        NSString* value = @"simulator";
-#else
-        NSString* value = @"store";
-#endif
+
         if ([mobileProvision count])
         {
             if ([[mobileProvision objectForKey:@"ProvisionsAllDevices"] boolValue])
@@ -126,7 +139,9 @@ extern "C" {
                     value = @"adhoc";
             }
         }
+#endif
         return [UnityEngineCloudUtil makeStringCopy:value];
+        
     }
     
     const char* UnityEngine_Cloud_GetAppVersion()

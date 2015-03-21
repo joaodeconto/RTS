@@ -1221,12 +1221,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 70
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 15
   sizeOfSelected: 3
-  sizeOfSelectedHealthBar: 3.5
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400076}
   - subMesh: {fileID: 400074}
@@ -1270,14 +1269,19 @@ MonoBehaviour:
   description: Warlords are strong but slow, these fierce warriors are specialized
     on T-Rex hunting.
   requisites: Lizard Haras
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 200
-  group: -1
   model: {fileID: 100080}
-  force: 12
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
+  force: 10
   distanceView: 12
-  attackRange: 6
+  attackRange: 5
   attackDuration: 0
   numberOfUnits: 4
   guiTextureName: warlord
@@ -1618,7 +1622,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 100004}
   m_Enabled: 1
   m_Radius: 1
-  m_Speed: 3
+  m_Speed: 2
   m_Acceleration: 5
   avoidancePriority: 2
   m_AngularSpeed: 200

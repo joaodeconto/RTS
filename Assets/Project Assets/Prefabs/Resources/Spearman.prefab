@@ -1464,12 +1464,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 30
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 20
   sizeOfSelected: 1.5
-  sizeOfSelectedHealthBar: 2.5
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400006}
   movementActions:
@@ -1509,11 +1508,16 @@ MonoBehaviour:
   description: Using tools and the power of earth, humans can reach targets beyond
     sight. At least they will try...
   requisites: Depot
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 160
-  group: -1
   model: {fileID: 100000}
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
   force: 2
   distanceView: 18
   attackRange: 3.5

@@ -1,5 +1,8 @@
+#if UNITY_ANDROID && !UNITY_EDITOR
 using UnityEngine;
 using System.Collections;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace UnityEngine.Cloud.Analytics
 {
@@ -9,12 +12,10 @@ namespace UnityEngine.Cloud.Analytics
 		{
 			get {
 				string appVer = null;
-				#if UNITY_ANDROID && !UNITY_EDITOR
 				using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
 				{
 					appVer = appUtilClass.CallStatic<string>("getAppVersion");
 				}
-				#endif
 				return appVer;
 			}
 		}
@@ -23,12 +24,10 @@ namespace UnityEngine.Cloud.Analytics
 		{
 			get {
 				string appBundleId = null;
-				#if UNITY_ANDROID && !UNITY_EDITOR
 				using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
 				{
 					appBundleId = appUtilClass.CallStatic<string>("getAppPackageName");
 				}
-				#endif
 				return appBundleId;
 			}
 		}
@@ -37,12 +36,10 @@ namespace UnityEngine.Cloud.Analytics
 		{
 			get {
 				string appInstallMode = null;
-				#if UNITY_ANDROID && !UNITY_EDITOR
 				using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
 				{
 					appInstallMode = appUtilClass.CallStatic<string>("getAppInstallMode");
 				}
-				#endif
 				return appInstallMode;
 			}
 		}
@@ -51,14 +48,66 @@ namespace UnityEngine.Cloud.Analytics
 		{
 			get {
 				bool isBroken = false;
-				#if UNITY_ANDROID && !UNITY_EDITOR
 				using(var appUtilClass = new AndroidJavaClass("com.unityengine.cloud.AppUtil"))
 				{
 					isBroken = appUtilClass.CallStatic<bool>("isDeviceRooted");
 				}
-				#endif
 				return isBroken;
+			}
+		}
+
+		private string Md5Hex(string input){
+			System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
+			byte[] bytes = ue.GetBytes(input);
+
+			// encrypt bytes
+			MD5 md5 = new MD5CryptoServiceProvider();
+			byte[] hashBytes = md5.ComputeHash(bytes);
+
+			// Convert the encrypted bytes back to a string (base 16)
+			string hashString = "";
+
+			for (int i = 0; i < hashBytes.Length; i++)
+			{
+				hashString += System.Convert.ToString(hashBytes[i], 16).PadLeft(2, '0');
+			}
+
+			return hashString.PadLeft(32, '0');
+		}
+
+		public override string deviceUniqueIdentifier
+		{
+			get 
+			{ 
+				try 
+				{
+					AndroidJavaClass clsUnity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+					AndroidJavaObject objActivity = clsUnity.GetStatic<AndroidJavaObject>("currentActivity");
+					AndroidJavaObject objResolver = objActivity.Call<AndroidJavaObject>("getContentResolver");
+					AndroidJavaClass clsSecure = new AndroidJavaClass("android.provider.Settings$Secure");
+					string ANDROID_ID = clsSecure.GetStatic<string>("ANDROID_ID");
+					string androidId = clsSecure.CallStatic<string>("getString", objResolver, ANDROID_ID);
+
+					return Md5Hex(androidId);
+				} 
+			#if UNITY_4_0 || UNITY_4_1 || UNITY_4_2
+				catch (System.Exception)
+				{
+					return "";
+				}
+			#else
+				catch (UnityEngine.AndroidJavaException)
+				{
+					return "";
+				}
+				catch (System.Exception)
+				{
+					return "";
+				}
+			#endif
 			}
 		}
 	}
 }
+#endif
+

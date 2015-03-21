@@ -166,8 +166,8 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public int defense;
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;
-	public float sizeOfHealthBar {get {return (sizeOfSelected*0.9f);}}
-	public float sizeOfResourceBar {get {return (sizeOfSelected*1.1f);}}
+	public float sizeOfHealthBar {get {return (sizeOfSelected);}}
+	public float sizeOfResourceBar {get {return (sizeOfSelected*1.2f);}}
 	public RendererTeamSubstanceColor[] rendererTeamSubstanceColor;
 	public MovementAction[] movementActions;
 	public GameObject pref_ParticleDamage;
@@ -189,11 +189,11 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public abstract bool IsVisible { get; }
 	public bool firstDamage {get;set;}
 
-	public int bonusDefense{get;set;}
-	public int bonusProjectile {get; set;}
-	public int bonusForce {get; set;}
-	public int bonusSpeed {get; set;}
-	public int bonusSight {get; set;}
+	public int bonusDefense;
+	public int bonusProjectile;
+	public int bonusForce;
+	public int bonusSpeed;
+	public int bonusSight;
 	
 	protected StatsController statsController;
 	protected MiniMapController minimapController;

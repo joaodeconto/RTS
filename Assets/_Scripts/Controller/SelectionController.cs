@@ -187,9 +187,6 @@ public class SelectionController : MonoBehaviour
 				
 			}
 
-
-
-
 			if (hit.transform.CompareTag ("Unit")) // return true
 			{
 				Unit selectedUnit = hit.transform.GetComponent<Unit> ();
@@ -256,7 +253,7 @@ public class SelectionController : MonoBehaviour
 							
 							lastStatClick = selectedUnit;
 							
-//							ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (selectedUnit);
+							ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (selectedUnit, true);
 
 						}
 					}
@@ -323,8 +320,6 @@ public class SelectionController : MonoBehaviour
 									touchController.IsInCamera (currentFactory.transform.position))
 								{
 									statsController.SelectStat (stat, true);
-
-
 
 								}
 							}
@@ -437,7 +432,6 @@ public class SelectionController : MonoBehaviour
 		}
 
 
-
 		if (touchController.idTouch == TouchController.IdTouch.Id0) //return
 		{
 			if (touchController.DragOn)
@@ -474,7 +468,7 @@ public class SelectionController : MonoBehaviour
 					statsController.PlaySelectSound ();
 					if (statsController.selectedStats.Count == 1)
 					{
-//						ComponentGetter.Get<HUDController> ().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit);
+						ComponentGetter.Get<HUDController>().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit, true);
 					}
 					return true;
 				}
@@ -489,6 +483,7 @@ public class SelectionController : MonoBehaviour
 					}
 				}
 			}
+
 			else
 			{
 				RaycastHit hit;
@@ -501,12 +496,11 @@ public class SelectionController : MonoBehaviour
 					{
 						Unit selectedUnit = hit.transform.GetComponent<Unit> ();
 
-
-
+						if (!touchController.touchHold)
+						{
 							if (touchController.DoubleClick && selectedUnit == lastStatClick)
 							{
-								statsController.DeselectAllStats ();
-								
+								statsController.DeselectAllStats ();								
 								string category = selectedUnit.category;
 								foreach (IStats stat in statsController.myStats)
 								{
@@ -528,22 +522,14 @@ public class SelectionController : MonoBehaviour
 
 								return true;
 							}
-					}
+						}
+						else
+						{
+							interactionController.Interaction (selectedUnit.transform, true);
+							return false;
+						}
+					}				
 
-					if (hit.transform.CompareTag ("Resource") && statsController.selectedStats.Count == 0)
-					{
-
-						Resource selectedResource = hit.transform.GetComponent<Resource>();
-						statsController.DeselectAllStats ();
-						statsController.SelectStat (selectedResource, true);
-						statsController.PlaySelectSound ();
-
-						return true;
-					}
-
-//					if(!interactionController.HaveCallbacksForTouchId(TouchController.IdTouch.Id0))
-//						troopController.DeselectAllSoldiers ();
-					
 					if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House")|| hit.transform.CompareTag ("Depot"))
 					{
 						FactoryBase factory = hit.transform.GetComponent<FactoryBase>();
@@ -560,12 +546,12 @@ public class SelectionController : MonoBehaviour
 							else
 								statsController.DeselectAllStats ();
 							
-//							return true;
+							return true;
 						}
 					}
 				}
 				
-				interactionController.Interaction (touchController.GetFinalRaycastHit.transform);
+				interactionController.Interaction (touchController.GetFinalRaycastHit.transform, true);
 			}
 		}
 		
@@ -588,7 +574,7 @@ public class SelectionController : MonoBehaviour
 		
 		void Update ()
 		{
-			#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+#if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 			WebPlayerAndPcSelection();
 #else
 		AndroidAndIphoneSelection();

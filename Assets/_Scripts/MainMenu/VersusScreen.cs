@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Cloud.Analytics;
 using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
@@ -13,66 +12,42 @@ public class VersusScreen : MonoBehaviour
 		public int numberOfPlayers;
 		public Vector3[] positions;
 	}
-	
+
 	public GameObject goVersusScreen;
 	public GameObject gameObjectPlayerL;
 	public GameObject gameObjectPlayerR;
-
 	public UISlider progBar;
-
-	public UISprite mapSprite;
-	
+	public UISprite mapSprite;	
 //	public UILabel timeLabel;
 	public UILabel mapName;
 	public UILabel battleMode;
-	public int cena;
-
-
-
-	
+	public int cena;	
 	public GameObject prefabPlayerRight;
 	public GameObject prefabPlayerLeft;
-
-
-//	public int timeToWait;
-	
+//	public int timeToWait;	
 	public ConfigurationOfScreen[] configurationOfScreen;
-	
-	protected int timeCount;
-	
+	protected int timeCount;	
 	protected PhotonWrapper pw;
 	
 	void Awake ()
 	{
 //		timeCount = timeToWait;
-//		timeLabel.text = timeCount.ToString ();
-		
-		pw = ComponentGetter.Get<PhotonWrapper> ();
-		
+//		timeLabel.text = timeCount.ToString ();		
+		pw = ComponentGetter.Get<PhotonWrapper> ();		
 		pw.SetStartGame (() => Init ());
-
 	}
 	
 	public void Init ()
 	{
 		cena = (int)pw.GetPropertyOnRoom("map");
 		cenaSelection();
-		UnityAnalytics.CustomEvent("whatsTheScene", new Dictionary<string, object>
-		                           {
-			{ "cena", cena },
-
-		}
-		);
 		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
 
-
 		// LOAD GAMEPLAY!
 
-		int totalPlayers = PhotonNetwork.playerList.Length;
-		
-		int configurationOfScreenSelected = 0;
-		
+		int totalPlayers = PhotonNetwork.playerList.Length;		
+		int configurationOfScreenSelected = 0;		
 		int i = 0;
 		foreach (ConfigurationOfScreen cos in configurationOfScreen)
 		{
@@ -83,32 +58,27 @@ public class VersusScreen : MonoBehaviour
 					configurationOfScreenSelected = i;
 					break;
 				}
-			}
-			
+			}			
 			i++;
 		}
 		
 		if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 		{
 			battleMode.text = ("Ranked Coop"); 
-
-			int ally = (int)PhotonNetwork.player.customProperties["allies"];
-			
-			int k = totalPlayers / 2;
-			
+			int ally = (int)PhotonNetwork.player.customProperties["allies"];			
+			int k = totalPlayers / 2;			
 			i = 0;
+
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
 				if ((int)pp.customProperties["allies"] == ally)
 				{
-					SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);
-					
+					SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);					
 					i++;
 				}
 				else
 				{
-					SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[k], pp);
-					
+					SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[k], pp);					
 					k++;
 				}
 			}
@@ -119,8 +89,7 @@ public class VersusScreen : MonoBehaviour
 			i = 0;
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
-				SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);
-				
+				SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);				
 				i++;
 			}
 		}
@@ -130,14 +99,12 @@ public class VersusScreen : MonoBehaviour
 			i = 0;
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
-				SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);
-				
+				SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);				
 				i++;
 			}
 		}
 //		InvokeRepeating ("DescountTime", 1f, 1f);
 		Invoke ("InstanceGame",2);
-
 	}
 
 	public void cenaSelection ()
@@ -145,40 +112,33 @@ public class VersusScreen : MonoBehaviour
 		if (cena == 5)
 		{
 			mapName.text = "Sandstone Salvation";
-			mapSprite.spriteName = "Sandstone Salvation";
-			
+			mapSprite.spriteName = "Sandstone Salvation";			
 		}
 
 		if (cena == 4)
 		{
 			mapName.text = "Hollow Fields";
-			mapSprite.spriteName = "Hollow Fields";
-			
+			mapSprite.spriteName = "Hollow Fields";			
 		}
 
 		if (cena == 3)
 		{
 			mapName.text = "Swamp King";
 			mapSprite.spriteName = "Swamp King";
-
 		}
 
 		if (cena == 2)
 		{
 			mapName.text = "Living Desert";
-			mapSprite.spriteName = "Living Desert";
-			
+			mapSprite.spriteName = "Living Desert";			
 		}
 
 		if (cena == 1)
 		{
 			mapName.text = "Dementia Forest";
-			mapSprite.spriteName = "Dementia Forest";
-			
+			mapSprite.spriteName = "Dementia Forest";			
 		}
-
-	}
-	
+	}	
 	
 //	void DescountTime ()
 //	{
@@ -188,33 +148,21 @@ public class VersusScreen : MonoBehaviour
 //		if (timeCount == 0) CancelInvoke ("DescountTime");
 //	}
 
-
 	void SetPlayer (Vector3 position, PhotonPlayer pp)
-	{
-
-	
+	{	
 		if (position.x <= 0)
 		{
-
-			GameObject button = NGUITools.AddChild (gameObjectPlayerL, prefabPlayerLeft);
-						
-			button.transform.localPosition = position;
-			
+			GameObject button = NGUITools.AddChild (gameObjectPlayerL, prefabPlayerLeft);						
+			button.transform.localPosition = position;			
 			button.GetComponentInChildren<UILabel> ().text = pp.name;
-
-
 		}
 
 		else
 		{
-			GameObject button = NGUITools.AddChild (gameObjectPlayerR, prefabPlayerRight);
-						
-			button.transform.localPosition = position;
-			
+			GameObject button = NGUITools.AddChild (gameObjectPlayerR, prefabPlayerRight);						
+			button.transform.localPosition = position;			
 			button.GetComponentInChildren<UILabel> ().text = pp.name;
-
 		}
-
 	}
 	
 	void InstanceGame ()
@@ -230,12 +178,9 @@ public class VersusScreen : MonoBehaviour
 
 		while (!async.isDone)
 		{
-
 			progBar.value = async.progress + 0.1f;
-
 			yield return null;
 		}
-	}
-			
+	}		
 
 }

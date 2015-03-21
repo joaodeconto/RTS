@@ -17,27 +17,20 @@ public class InternalMainMenu : MonoBehaviour
 	public GameObject goMainMenu;
 	public UILabel PlayerLabel;
 	public UISprite avatarImg;
-
-	private bool canQuit = false;
-	
+	private bool canQuit = false;	
 	public UILabel CurrentCrystalsLabel;
 	public UILabel CreatedUnitsLabel;
-	public UILabel CreatedBuildingsLabel;
-	
+	public UILabel RankingLabel;	
 	public Transform options;
-	public Transform menus;
-	
+	public Transform menus;	
 	public ShowScore score;
-
 	public Model.Player player { get; private set; }
 	private List<Transform> listChildOptions;
-
 	private bool WasInitialized = false;
-	
+
 	public void Awake ()
 	{
-		Init ();
-	
+		Init ();	
 	}
 	
 	public void Init ()
@@ -53,28 +46,14 @@ public class InternalMainMenu : MonoBehaviour
 			return;
 		}
 
-		if (Advertisement.isSupported) {
-			Advertisement.allowPrecache = true;
-			Advertisement.Initialize ("18990");
-		}
-		
-		else {
-			
-			Debug.Log("Platform not supported");
-		}
-
-
-		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
-
 		avatarImg.spriteName = PlayerPrefs.GetString("Avatar");
 	
 		//Deixar primeiro carregar o jogador
-		Invoke ("InitScore", 0.5f);
-
-		this.player = ConfigurationData.player;
-		
+		player = ConfigurationData.player;
+		PlayerLabel.text = player.SzName;
 		Debug.Log ("player: " + player);
-		
+		Invoke ("InitScore", 0.2f);
+
 //		dcb = quickMatch.gameObject.AddComponent<DefaultCallbackButton> ();
 //
 //		dcb.Init(null, (ht_hud) =>
@@ -84,9 +63,6 @@ public class InternalMainMenu : MonoBehaviour
 //
 			//TODO fazer timeout de conexão
 //		});
-
-		PlayerLabel.text = player.SzName;
-
 		listChildOptions = new List<Transform>();
 		foreach (Transform child in options)
 		{
@@ -143,27 +119,11 @@ public class InternalMainMenu : MonoBehaviour
 						CurrentCrystalsLabel.text  = currentCrystals.NrPoints.ToString ();
 					}
 				);
-				
-				Score.GetDataScore
-				(
-					DataScoreEnum.UnitsCreated,
-					(unitsCreated) =>
-					{
-						CreatedUnitsLabel.text = unitsCreated.NrPoints.ToString ();
-					}
-				);
-						
-				Score.GetDataScore
-				(
-					DataScoreEnum.BuildingsCreated,
-					(buildingsCreated) =>
-					{
-						CreatedBuildingsLabel.text = buildingsCreated.NrPoints.ToString ();
-					}
-				);
 			}
-		);
+		);	
+		SetPlayerRank();
 	}
+
 	private void QuitGame ()
 	{
 		Application.Quit();
@@ -194,5 +154,26 @@ public class InternalMainMenu : MonoBehaviour
 		}
 
 		option.SendMessage ("Open", SendMessageOptions.DontRequireReceiver);
+	}
+
+	public void SetPlayerRank()
+	{
+		int i = 0;
+		Score.LoadRanking 
+			(
+				(List<Model.DataScoreRanking> ranking) => 	
+				{
+				foreach (Model.DataScoreRanking r in ranking)
+				{
+					i++;
+					if (r.IdPlayer == player.IdPlayer)
+					{							
+						RankingLabel.text =i.ToString();	
+						PlayerPrefs.SetInt("Rank", i);
+						break;													
+					}
+				}
+			}
+			);		
 	}
 }

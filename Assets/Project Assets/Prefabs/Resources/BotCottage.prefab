@@ -310,7 +310,8 @@ MonoBehaviour:
   defense: 0
   fieldOfView: 0
   sizeOfSelected: 1
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 411174}
   movementActions: []
   pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
   transformParticleDamageReference: {fileID: 411172}
@@ -324,6 +325,11 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 0
   model: {fileID: 111178}
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
   unitsToCreate:
   - unit: {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     buttonName: 
@@ -354,6 +360,7 @@ MonoBehaviour:
       gridXIndex: 0
       gridYIndex: 0
   upgradesToCreate: []
+  keys: 
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 111176}
@@ -372,8 +379,10 @@ MonoBehaviour:
     m_rocks: 0
   boostPower: 1.29999995
   TechsToActive: []
+  queueTicket: 0
+  queueCounter: 0
+  checkPopCouter: 0
   wasVisible: 0
-  alreadyCheckedMaxPopulation: 0
 --- !u!114 &11411170
 MonoBehaviour:
   m_ObjectHideFlags: 1

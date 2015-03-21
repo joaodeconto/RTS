@@ -5,6 +5,8 @@ using Visiorama;
 
 public class InteractionController : MonoBehaviour
 {
+	#region Declares
+
 	public delegate void InteractionCallback(Vector3 position, Transform hit);
 	public GameObject uiExitGameObject;
 	protected TouchController touchController;
@@ -12,6 +14,7 @@ public class InteractionController : MonoBehaviour
 	protected GameplayManager gameplayManager;
 	protected HUDController hudController;
 	private Stack<InteractionCallback> stackInteractionCallbacks;
+	#endregion
 
 	public void Init ()
 	{
@@ -46,13 +49,14 @@ public class InteractionController : MonoBehaviour
 		}
 		
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
+
 		if (touchController.touchType != TouchController.TouchType.Ended)
 			return;
 
 		switch (touchController.idTouch)
 		{
 		case TouchController.IdTouch.Id1:
-			Interaction (touchController.GetFinalRaycastHit.transform);
+			Interaction (touchController.GetFinalRaycastHit.transform, true);
 			break;
 		case TouchController.IdTouch.Id0:
 			while(stackInteractionCallbacks.Count != 0)
@@ -69,7 +73,7 @@ public class InteractionController : MonoBehaviour
 #endif
 	}
 
-	public void Interaction (Transform hit)
+	public void Interaction (Transform hit, bool moveToTarget)
 	{
 		if (statsController.selectedStats.Count == 0) return;
 
@@ -150,7 +154,7 @@ public class InteractionController : MonoBehaviour
 				}
 			}
 		}
-		else if (hit.CompareTag ("Resource"))
+		else if (hit.CompareTag ("Resource"))   //TODO conferir esta parte, worker trancando
 		{
 			bool feedback = false;
 
@@ -173,7 +177,7 @@ public class InteractionController : MonoBehaviour
 			if (feedback)
 							
 			{  // hudController.CreateSubstanceHealthBar (this, 6, Resource, "Health Reference");
-				hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.position, 2f, gameplayManager.GetColorTeam ());
+				hudController.CreateFeedback (HUDController.Feedbacks.Move, hit.position, 2f, gameplayManager.GetColorTeam ());
 			}
 			return;
 		}
@@ -198,6 +202,7 @@ public class InteractionController : MonoBehaviour
 				}
 			}
 		}		
-		statsController.MoveTroop (touchController.GetFinalPoint);
+
+		if(moveToTarget)statsController.MoveTroop (touchController.GetFinalPoint);
 	}
 }

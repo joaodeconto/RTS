@@ -676,6 +676,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void CloseInfoBox ()
 	{
+		infoUnit.gameObject.SetActive (false);
+		infoUpgrade.gameObject.SetActive (false);
+		infoFactory.gameObject.SetActive (false);
 		trnsPanelInfoBox.gameObject.SetActive (false);
 	}
 	#endregion

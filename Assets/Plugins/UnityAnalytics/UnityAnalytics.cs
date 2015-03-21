@@ -1,3 +1,7 @@
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_METRO
+#define UNITY_ANALYTICS_SUPPORTED_PLATFORM
+#endif
+
 using System;
 using System.Collections.Generic;
 
@@ -9,14 +13,34 @@ namespace UnityEngine.Cloud.Analytics
 		F,
 		U
 	}
-	
+
+	public enum AnalyticsResult
+	{
+		Ok,
+		NotInitialized,
+		AnalyticsDisabled,
+		TooManyItems,
+		SizeLimitReached,
+		TooManyRequests,
+		InvalidData,
+		UnsupportedPlatform
+	}
+
+	public enum LogLevel
+	{
+		None,
+		Error,
+		Warning,
+		Info
+	}
+
 	public static class UnityAnalytics
 	{
 		public static AnalyticsResult StartSDK(string appId)
 		{
-			#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID 
+			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			IUnityAnalyticsSession session = UnityAnalytics.GetSingleton();
-			return session.StartWithAppId(appId);
+			return (AnalyticsResult)session.StartWithAppId(appId);
 			#else
 			return AnalyticsResult.UnsupportedPlatform;
 			#endif
@@ -24,17 +48,17 @@ namespace UnityEngine.Cloud.Analytics
 
 		public static void SetLogLevel(LogLevel logLevel, bool enableLogging=true)
 		{
-			#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID 
+			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			Logger.EnableLogging = enableLogging;
-			Logger.logLevel = logLevel;
+			Logger.SetLogLevel((int)logLevel);
 			#endif
 		}
 		
 		public static AnalyticsResult SetUserId(string userId)
 		{
-			#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID 
+			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			IUnityAnalyticsSession session = UnityAnalytics.GetSingleton();
-			return session.SetUserId(userId);
+			return (AnalyticsResult)session.SetUserId(userId);
 			#else
 			return AnalyticsResult.UnsupportedPlatform;
 			#endif
@@ -42,9 +66,9 @@ namespace UnityEngine.Cloud.Analytics
 
 		public static AnalyticsResult SetUserGender(SexEnum gender)
 		{
-			#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID 
+			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			IUnityAnalyticsSession session = UnityAnalytics.GetSingleton();
-			return session.SetUserGender( gender==SexEnum.M ? "M" : gender==SexEnum.F ? "F" : "U" );
+			return (AnalyticsResult)session.SetUserGender( gender==SexEnum.M ? "M" : gender==SexEnum.F ? "F" : "U" );
 			#else
 			return AnalyticsResult.UnsupportedPlatform;
 			#endif
@@ -52,9 +76,9 @@ namespace UnityEngine.Cloud.Analytics
 
 		public static AnalyticsResult SetUserBirthYear(int birthYear)
 		{
-			#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID 
+			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			IUnityAnalyticsSession session = UnityAnalytics.GetSingleton();
-			return session.SetUserBirthYear(birthYear);
+			return (AnalyticsResult)session.SetUserBirthYear(birthYear);
 			#else
 			return AnalyticsResult.UnsupportedPlatform;
 			#endif
@@ -62,9 +86,9 @@ namespace UnityEngine.Cloud.Analytics
 
 		public static AnalyticsResult Transaction(string productId, decimal amount, string currency)
 		{
-			#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID 
+			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			IUnityAnalyticsSession session = UnityAnalytics.GetSingleton();
-			return session.Transaction(productId, amount, currency, null, null);
+			return (AnalyticsResult)session.Transaction(productId, amount, currency, null, null);
 			#else
 			return AnalyticsResult.UnsupportedPlatform;
 			#endif
@@ -72,9 +96,9 @@ namespace UnityEngine.Cloud.Analytics
 
 		public static AnalyticsResult Transaction(string productId, decimal amount, string currency, string receiptPurchaseData, string signature)
 		{
-			#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID 
+			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			IUnityAnalyticsSession session = UnityAnalytics.GetSingleton();
-			return session.Transaction(productId, amount, currency, receiptPurchaseData, signature);
+			return (AnalyticsResult)session.Transaction(productId, amount, currency, receiptPurchaseData, signature);
 			#else
 			return AnalyticsResult.UnsupportedPlatform;
 			#endif
@@ -82,27 +106,33 @@ namespace UnityEngine.Cloud.Analytics
 
 		public static AnalyticsResult CustomEvent(string customEventName, IDictionary<string, object> eventData)
 		{
-			#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID 
+			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			IUnityAnalyticsSession session = UnityAnalytics.GetSingleton();
-			return session.CustomEvent(customEventName, eventData);
+			return (AnalyticsResult)session.CustomEvent(customEventName, eventData);
 			#else
 			return AnalyticsResult.UnsupportedPlatform;
 			#endif
 		}
-
+		#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 		private static SessionImpl s_Implementation;
-
 		private static IUnityAnalyticsSession GetSingleton()
 		{
 			if (s_Implementation == null) {
 				Logger.loggerInstance = new UnityLogger();
 				IPlatformWrapper platformWrapper = PlatformWrapper.platform;
+				#if NETFX_CORE
+				IFileSystem fileSystem = new WindowsFileSystem();
+				#elif UNITY_WEBPLAYER || UNITY_WEBGL
+				IFileSystem fileSystem = new VirtualFileSystem();
+				#else
 				IFileSystem fileSystem = new FileSystem();
+				#endif
 				ICoroutineManager coroutineManager = new UnityCoroutineManager();
 				s_Implementation = new SessionImpl(platformWrapper, coroutineManager, fileSystem);
 				GameObserver.CreateComponent(platformWrapper, s_Implementation);
 			}
 			return s_Implementation;
 		}
+		#endif
 	}
 }

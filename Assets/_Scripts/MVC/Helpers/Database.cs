@@ -27,7 +27,15 @@ public class Database : MonoBehaviour
 
 	public delegate void CallbackDatabaseCall (object obj);
 
+#if UNITY_ANDROID && !UNITY_EDITOR 
+
+	public const string wrapperURL = "http://www.visiorama.com.br/uploads/RTS2/database/access.php";
+
+#else
+
 	public const string wrapperURL = "https://www.visiorama.com.br/uploads/RTS2/database/access.php";
+
+#endif
 
 	private float timeToWait = 0.5f;
 

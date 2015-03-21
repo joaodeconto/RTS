@@ -284,7 +284,8 @@ MonoBehaviour:
   defense: 0
   fieldOfView: 0
   sizeOfSelected: 8
-  rendererTeamSubstanceColor: []
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 470224}
   movementActions: []
   pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
   transformParticleDamageReference: {fileID: 470220}
@@ -298,6 +299,11 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 0
   model: {fileID: 170218}
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
   unitsToCreate:
   - unit: {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     buttonName: Neanderthal
@@ -327,7 +333,29 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 0
       gridYIndex: 0
+  - unit: {fileID: 11400000, guid: 1d3e301ff447d644a90dcabff9dfc493, type: 2}
+    buttonName: Triceratops
+    VIP: 0
+    techAvailable: 0
+    gridItemAttributes:
+      gridXIndex: 0
+      gridYIndex: 0
+  - unit: {fileID: 11400010, guid: 0718c2afed22e534e808d3ea1ffd9b8c, type: 2}
+    buttonName: Triceratops
+    VIP: 0
+    techAvailable: 0
+    gridItemAttributes:
+      gridXIndex: 0
+      gridYIndex: 0
+  - unit: {fileID: 11400002, guid: 1ed4c4225e6697943b141276b4844962, type: 2}
+    buttonName: Triceratops
+    VIP: 0
+    techAvailable: 0
+    gridItemAttributes:
+      gridXIndex: 0
+      gridYIndex: 0
   upgradesToCreate: []
+  keys: 
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 170224}
@@ -346,8 +374,10 @@ MonoBehaviour:
     m_rocks: 0
   boostPower: 1.29999995
   TechsToActive: []
+  queueTicket: 0
+  queueCounter: 0
+  checkPopCouter: 0
   wasVisible: 0
-  alreadyCheckedMaxPopulation: 0
 --- !u!114 &11470222
 MonoBehaviour:
   m_ObjectHideFlags: 1

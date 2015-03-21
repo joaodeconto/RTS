@@ -1,10 +1,10 @@
+//Unity 4.5 and above switched WWW to use Dictionary instead of Hashtable
 #if UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 
-#define UNITY_COMPATLEVEL_UNITY4
-//#elif ((UNITY_4_5 || UNITY_4_6) && (!(UNITY_WP8 || UNITY_METRO)) )
-#elif ((UNITY_4_5 || UNITY_4_6) && UNITY_STANDALONE )
-#define UNITY_COMPATLEVEL_UNITY4
+#define UNITY_USE_WWW_HASHTABLE
 #endif
 
+
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_METRO
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,16 +16,14 @@ namespace UnityEngine.Cloud.Analytics
 		public static IPlatformWrapper platform
 		{
 			get {
-				#if USE_ANALYTICS_PLUGIN
 				#if UNITY_ANDROID && !UNITY_EDITOR
 				return new AndroidWrapper();
 				#elif UNITY_IPHONE && !UNITY_EDITOR
 				return new iOSWrapper();
+				#elif UNITY_WEBGL && !UNITY_EDITOR
+				return new WebGLWrapper();
 				#else
 				return new BasePlatformWrapper();
-				#endif
-				#else
-				return new RuntimePlatformWrapper();
 				#endif
 			}
 		}
@@ -78,6 +76,28 @@ namespace UnityEngine.Cloud.Analytics
 			get { return Application.isWebPlayer; }
 		}
 
+		public virtual bool isAndroidPlayer
+		{
+			get { return Application.platform == RuntimePlatform.Android; }
+		}
+
+		public virtual bool isIPhonePlayer
+		{
+			get { return Application.platform == RuntimePlatform.IPhonePlayer; }
+		}
+
+		public virtual bool isWebGLPlayer
+		{
+			get 
+			{
+				#if UNITY_WEBGL     
+				return Application.platform == RuntimePlatform.WebGLPlayer;
+				#else	
+				return false;
+				#endif
+			}
+		}
+
 		public virtual bool isEditor
 		{
 			get { return Application.isEditor; }
@@ -106,86 +126,7 @@ namespace UnityEngine.Cloud.Analytics
 		public virtual string platformName
 		{
 			get {
-				switch (Application.platform)
-				{
-					// OSXEditor	In the Unity editor on Mac OS X.
-					case RuntimePlatform.OSXEditor:
-						return "editor-mac";
-
-					// OSXPlayer	In the player on Mac OS X.
-					case RuntimePlatform.OSXPlayer:
-						return "mac";
-
-					// WindowsPlayer	In the player on Windows.
-					case RuntimePlatform.WindowsPlayer:
-						return "win";
-
-					// OSXWebPlayer	In the web player on Mac OS X.
-					case RuntimePlatform.OSXWebPlayer:
-						return "web-mac";
-
-					// OSXDashboardPlayer	In the Dashboard widget on Mac OS X.
-					case RuntimePlatform.OSXDashboardPlayer:
-						return "dash-mac";
-
-					// WindowsWebPlayer	In the web player on Windows.
-					case RuntimePlatform.WindowsWebPlayer:
-						return "web-win";
-
-					// WindowsEditor	In the Unity editor on Windows.
-					case RuntimePlatform.WindowsEditor:
-						return "editor-win";
-
-					// IPhonePlayer	In the player on the iPhone.
-					case RuntimePlatform.IPhonePlayer:
-						return "ios";
-
-					// XBOX360	In the player on the XBOX360.
-					case RuntimePlatform.XBOX360:
-						return "xbox360";
-
-					// PS3	In the player on the Play Station 3.
-					case RuntimePlatform.PS3:
-						return "ps3";
-
-					// Android	In the player on Android devices.
-					case RuntimePlatform.Android:
-						return "android";
-
-					// LinuxPlayer	In the player on Linux.
-					case RuntimePlatform.LinuxPlayer:
-						return "linux";
-/*
-					// FlashPlayer	Flash Player.
-					case RuntimePlatform.FlashPlayer:
-						return "flash";
-
-					// WP8Player	In the player on Windows Phone 8 device.
-					case RuntimePlatform.WP8Player:
-						return "win8";
-
-					// PSP2	In the player on the PS Vita.
-					case RuntimePlatform.PSP2:
-						return "psp2";
-
-					// PS4	In the player on the Playstation 4.
-					case RuntimePlatform.PS4:
-						return "ps4";
-
-					// PSMPlayer	In the player on the PSM.
-					case RuntimePlatform.PSMPlayer:
-						return "psm";
-
-					// XboxOne	In the player on Xbox One.
-					case RuntimePlatform.XboxOne:
-						return "xboxone";
-
-					// SamsungTVPlayer	In the player on Samsung Smart TV.
-					case RuntimePlatform.SamsungTVPlayer:
-						return "tv";
-*/
-				}
-				return "unity";
+				return Application.platform.ToString();
 			}
 		}
 
@@ -212,7 +153,13 @@ namespace UnityEngine.Cloud.Analytics
 
 		public virtual string deviceUniqueIdentifier
 		{
-			get { return SystemInfo.deviceUniqueIdentifier; }
+			get { 
+				#if UNITY_ANDROID && !UNITY_EDITOR
+				return "";
+				#else
+				return SystemInfo.deviceUniqueIdentifier; 
+				#endif
+			}
 		}
 
 		public virtual string operatingSystem
@@ -231,7 +178,7 @@ namespace UnityEngine.Cloud.Analytics
 		}
 		#endregion
 
-		#if UNITY_COMPATLEVEL_UNITY4
+		#if UNITY_USE_WWW_HASHTABLE
 		public IWWW newWWW(string url, byte[] body, Dictionary<string, string> headers)
 		{
 			WWW www = new WWW(url, body, DictToHash(headers));
@@ -255,10 +202,5 @@ namespace UnityEngine.Cloud.Analytics
 		
 	}
 	
-	#if !USE_ANALYTICS_PLUGIN
-	internal class RuntimePlatformWrapper : BasePlatformWrapper
-	{
-	}
-	#endif
-	
 }
+#endif

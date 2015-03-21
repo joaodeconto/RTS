@@ -393,12 +393,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 16
   sizeOfSelected: 8
-  sizeOfSelectedHealthBar: 9
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400012}
   - subMesh: {fileID: 400008}
@@ -412,21 +411,29 @@ MonoBehaviour:
   subCategory: 
   description: Basic structure, adds 10 rooms to your population limit. Can be upgraded.
   requisites: Tribe Center
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 70
-  group: -1
   model: {fileID: 100010}
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
   unitsToCreate: []
   upgradesToCreate:
   - upgrade: {fileID: 11400002, guid: 340f70900bb288e41af1bf000cbe2964, type: 2}
-    buttonName: CottageGrowth
+    buttonName: cottageUpg
     techAvailable: 0
     VIP: 1
+    isChildtech: 0
+    childTechBtnName: 
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 0
     alreadyUpgraded: 0
+  keys: 
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100004}
@@ -447,8 +454,10 @@ MonoBehaviour:
   TechsToActive:
   - Depot
   - Barracks
+  queueTicket: 0
+  queueCounter: 0
+  checkPopCouter: 0
   wasVisible: 0
-  alreadyCheckedMaxPopulation: 0
   cottagePopulation: 10
 --- !u!114 &11400006
 MonoBehaviour:

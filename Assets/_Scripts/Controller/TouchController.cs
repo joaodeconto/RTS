@@ -20,7 +20,7 @@ public class TouchController : MonoBehaviour
 		Drag,
 		Drop,
 		Ended,
-		None
+		None,
 	}
 	
 	public enum IdTouch
@@ -39,8 +39,11 @@ public class TouchController : MonoBehaviour
 	
 	public bool DragOn {get; private set;}
 	public bool DisableDragOn {get; set;}
+	public bool holdCounting{get; set;}
 	
 	public bool DoubleClick {get; private set;}
+	public bool touchHold {get; private set;}
+	public float touchTimer {get; private set;}
 	
 	public Vector2 RelativePosition {get; private set;}
 	
@@ -88,6 +91,7 @@ public class TouchController : MonoBehaviour
 	{
 		RelativePosition = new Vector2 (Mathf.Clamp (Input.mousePosition.x / Screen.width, 0f, 1f),
 		                                Mathf.Clamp (Input.mousePosition.y / Screen.height, 0f, 1f));
+		if(holdCounting) touchTimer += Time.deltaTime;
 		
 		if (Input.GetMouseButtonDown(0) ||
 		    Input.GetMouseButtonDown(1))
@@ -110,9 +114,11 @@ public class TouchController : MonoBehaviour
 				GetFirstRaycastHit = hit;
 				GetFirstPoint = hit.point;
 			}
-			
+
+
 			touchType = TouchType.First;
-			
+			touchHold = false;
+			holdCounting = true;
 			VerifyTouchID ();
 		}
 		else
@@ -128,17 +134,14 @@ public class TouchController : MonoBehaviour
 			{
 				if (!DragOn)
 				{
-					#if UNITY_ANDROID
-					if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 3f)
-						#else
-						if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 1f)
-							#endif
+					if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 8f)
+
 					{
 						DragOn = true;
 					}
 				}
 			}
-			
+
 			touchType = TouchType.Press;
 			
 			VerifyTouchID ();
@@ -173,8 +176,13 @@ public class TouchController : MonoBehaviour
 			VerifyTouchID ();
 			
 			DoubleClick = GetDoubleClick (doubleClickSpeed);
-			
+		
 			touchType = TouchType.Ended;
+
+			if(touchTimer > 0.3f) touchHold = true;
+			holdCounting = false;
+			Debug.LogWarning(touchTimer);
+			touchTimer = 0;
 		}
 		else
 		{

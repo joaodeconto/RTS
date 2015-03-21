@@ -68,17 +68,6 @@ public class CaveFactory : FactoryBase
 		lUnitsToCreate.RemoveAt (0);
 		lUnitCluster.RemoveAt (0);
 
-		string unitName = "";
-
-		foreach(UnitFactory uf in unitsToCreate)
-		{
-			if(uf.unit == unit)
-			{
-				unitName = uf.buttonName;
-				break;
-			}
-		}
-
 		if (!hasRallypoint) return;
 		Vector3 difference = goRallypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);

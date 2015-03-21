@@ -111,8 +111,10 @@ public class AudioSourcePro : MonoBehaviour {
 		if(audioSource == null)
 			audioSource = gameObject.AddComponent<AudioSource>();
 		if(!Application.isPlaying) return;
-		if(audioIsValid && (clipType == ClipType.ClipFromSoundManager || clipType == ClipType.ClipFromGroup))
-			Play();
+		if(audioIsValid && (clipType == ClipType.ClipFromSoundManager || clipType == ClipType.ClipFromGroup)) {
+			if (playOnAwake)
+				Play();
+		}
 		this.isVisible = false;
 	}
 	
@@ -592,18 +594,24 @@ public class AudioSourcePro : MonoBehaviour {
 			{
 			case ClipType.AudioClip:
 				valid = (audioSource.clip != null);
+				if (!valid)
+					Debug.LogError("ERROR SFX: with SFX: (NULL)");
 				break;
 			case ClipType.ClipFromSoundManager:
 				valid = SoundManager.ClipNameIsValid(clipName);
+				if (!valid)
+					Debug.LogError("ERROR SFX: Clip Name Not Valid: " + clipName);
 				break;
 			case ClipType.ClipFromGroup:
 				valid = SoundManager.GroupNameIsValid(groupName);
+				if (!valid)
+					Debug.LogError("ERROR SFX: Group Name Not Valid: " + groupName);
 				break;
 			default:
 				break;
 			}
 			if(!valid)
-				Debug.LogError("AudioClip setup is not valid.");
+				Debug.LogError("AudioClip setup is not valid on " + this.gameObject.name);
 			return valid;
 		}
 	}

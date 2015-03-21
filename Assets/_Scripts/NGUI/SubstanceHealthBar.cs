@@ -7,7 +7,6 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 {
 	public IHealthObservable Target { private set; get; }
 	private int TargetTeamID;
-	private bool colored = false;
 	private ProceduralMaterial substance;
 	private ProceduralPropertyDescription[] curProperties;
 	private MeshRenderer subMeshRenderer;
@@ -42,10 +41,8 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		
 		this.TargetTeamID = teamID;
 		this.Target = target;
-		this.Target.RegisterHealthObserver (this);
-		//Forçando atualizaçao de vida atual
-		this.Target.NotifyHealthChange ();
-		
+		this.Target.RegisterHealthObserver (this);		//Forçando atualizaçao de vida atual
+		this.Target.NotifyHealthChange ();		
 		subMeshRenderer.enabled = true;
 	}
 	

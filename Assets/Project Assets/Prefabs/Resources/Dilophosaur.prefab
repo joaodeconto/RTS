@@ -1335,7 +1335,7 @@ Renderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100088}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_LightmapIndex: 255
@@ -1449,13 +1449,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d092b737df6aaa40ac3b90c17bf035d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 70
-  defense: 0
+  maxHealth: 60
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 16
   sizeOfSelected: 3.5
-  sizeOfSelectedHealthBar: 3.5
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400084}
   - subMesh: {fileID: 400082}
@@ -1496,14 +1495,19 @@ MonoBehaviour:
   description: Fast moving ranged-attacker, spits poison from a medium distance. Stronger
     agains humans.
   requisites: Workshop
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 230
-  group: -1
   model: {fileID: 100086}
-  force: 6
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
+  force: 3
   distanceView: 15
-  attackRange: 3
+  attackRange: 2
   attackDuration: 1
   numberOfUnits: 2
   guiTextureName: dilopho
@@ -1511,19 +1515,20 @@ MonoBehaviour:
     Idle: {fileID: 7400004, guid: faa0835c348881a4fa17938cdba990a8, type: 3}
     Walk: {fileID: 7400002, guid: faa0835c348881a4fa17938cdba990a8, type: 3}
     walkSpeed: 1.10000002
-    Attack: {fileID: 7400008, guid: faa0835c348881a4fa17938cdba990a8, type: 3}
+    Attack: {fileID: 7400010, guid: faa0835c348881a4fa17938cdba990a8, type: 3}
     DieAnimation: {fileID: 7400006, guid: faa0835c348881a4fa17938cdba990a8, type: 3}
     SpecialAttack: []
   timeToSpawn: 7
   ControllerAnimation: {fileID: 11100000}
   unitSkill: 0
   normalSpeed: 0
-  projectileAttackForce: 0
-  projectileAttackRange: 0
-  prefabProjectile: {fileID: 0}
+  projectileAttackForce: 8
+  projectileAttackRange: 8
+  prefabProjectile: {fileID: 100004, guid: 699719ce50e336b4a83967805e46fab8, type: 2}
   trnsInstantiateLocalPrefab: {fileID: 400092}
-  dummyRangeObject: {fileID: 0}
-  projectileAttackAnimation: {fileID: 0}
+  dummyRangeObject: {fileID: 100088}
+  projectileAttackAnimation: {fileID: 7400008, guid: faa0835c348881a4fa17938cdba990a8,
+    type: 3}
   projectileAnimationSync: .800000012
 --- !u!114 &11400004
 MonoBehaviour:
@@ -1704,7 +1709,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 100004}
   m_Enabled: 1
   m_Radius: 1
-  m_Speed: 6
+  m_Speed: 5
   m_Acceleration: 10
   avoidancePriority: 3
   m_AngularSpeed: 180

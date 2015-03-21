@@ -1,5 +1,5 @@
+#if UNITY_IPHONE && !UNITY_EDITOR
 using UnityEngine;
-using System;
 using System.Runtime.InteropServices;
 using System.Collections;
 
@@ -18,23 +18,47 @@ namespace UnityEngine.Cloud.Analytics
 
 		public override string appVersion
 		{
-			get { return UnityEngine_Cloud_GetAppVersion(); }
+			get { 
+				try{
+					return UnityEngine_Cloud_GetAppVersion(); 
+				}catch(System.Exception){
+					return "UNKNOWN";
+				}
+			}
 		}
 
 		public override string appBundleIdentifier
 		{
-			get { return UnityEngine_Cloud_GetBundleIdentifier(); }
+			get { 
+				try{
+					return UnityEngine_Cloud_GetBundleIdentifier(); 
+				}catch(System.Exception){
+					return "UNKNOWN";
+				}
+			}
 		}
 
 		public override string appInstallMode
 		{
-			get { return UnityEngine_Cloud_GetAppInstallMode(); }
+			get { 
+				try{
+					return UnityEngine_Cloud_GetAppInstallMode(); 
+				}catch(System.Exception){
+					return "UNKNOWN";
+				}
+			}
 		}
 		
 		public override bool isRootedOrJailbroken
 		{
-			get { return UnityEngine_Cloud_IsJailbroken(); }
+			get { 
+				try{
+					return UnityEngine_Cloud_IsJailbroken(); 
+				}catch(System.Exception){
+					return false;
+				}
+			}
 		}		
 	}
 }
-
+#endif

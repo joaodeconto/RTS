@@ -14,8 +14,6 @@ public class InGameMenu : MonoBehaviour
 	public GameObject surrenderPanel;
 	protected GameplayManager gameplayManager;
 
-
-
 	
 	public void OnEnable ()
 	{
@@ -31,10 +29,6 @@ public class InGameMenu : MonoBehaviour
 	public void Open ()
 	{
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
-
-
-
-
 
 		if (gameplayManager.pauseGame)
 		{
@@ -92,8 +86,6 @@ public class InGameMenu : MonoBehaviour
 			});
 		}
 		
-
-		
 		Transform close = this.transform.FindChild ("Resume");
 		
 		if (close != null)
@@ -111,7 +103,7 @@ public class InGameMenu : MonoBehaviour
 	
 	public void Close ()
 	{
-		if (gameplayManager.pauseGame = true)
+		if (gameplayManager.pauseGame == true)
 		{
 			gameplayManager.GamePaused(false);
 		}

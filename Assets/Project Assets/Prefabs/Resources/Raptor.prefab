@@ -1103,12 +1103,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 18
   sizeOfSelected: 3
-  sizeOfSelectedHealthBar: 3
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400004}
   movementActions:
@@ -1147,12 +1146,17 @@ MonoBehaviour:
   subCategory: 
   description: 'Easely addapted to human control, raptors are all-around fighters. '
   requisites: 
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 160
-  group: -1
   model: {fileID: 100000}
-  force: 7
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
+  force: 6
   distanceView: 14
   attackRange: 4
   attackDuration: 3
@@ -1312,7 +1316,7 @@ NavMeshAgent:
   m_Speed: 5
   m_Acceleration: 20
   avoidancePriority: 1
-  m_AngularSpeed: 270
+  m_AngularSpeed: 180
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using OnePF;
 using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
@@ -46,27 +45,27 @@ public class MarketMenu : MonoBehaviour
 	
 	private void OnEnable() {
 		// Listen to all events for illustration purposes
-		OpenIABEventManager.billingSupportedEvent += billingSupportedEvent;
-		OpenIABEventManager.billingNotSupportedEvent += billingNotSupportedEvent;
-		OpenIABEventManager.queryInventorySucceededEvent += queryInventorySucceededEvent;
-		OpenIABEventManager.queryInventoryFailedEvent += queryInventoryFailedEvent;
-		OpenIABEventManager.purchaseSucceededEvent += purchaseSucceededEvent;
-		OpenIABEventManager.purchaseFailedEvent += purchaseFailedEvent;
-		OpenIABEventManager.consumePurchaseSucceededEvent += consumePurchaseSucceededEvent;
-		OpenIABEventManager.consumePurchaseFailedEvent += consumePurchaseFailedEvent;
-		Open();
+//		OpenIABEventManager.billingSupportedEvent += billingSupportedEvent;
+//		OpenIABEventManager.billingNotSupportedEvent += billingNotSupportedEvent;
+//		OpenIABEventManager.queryInventorySucceededEvent += queryInventorySucceededEvent;
+//		OpenIABEventManager.queryInventoryFailedEvent += queryInventoryFailedEvent;
+//		OpenIABEventManager.purchaseSucceededEvent += purchaseSucceededEvent;
+//		OpenIABEventManager.purchaseFailedEvent += purchaseFailedEvent;
+//		OpenIABEventManager.consumePurchaseSucceededEvent += consumePurchaseSucceededEvent;
+//		OpenIABEventManager.consumePurchaseFailedEvent += consumePurchaseFailedEvent;
+//		Open();
 	}
 	private void OnDisable() {
 		// Remove all event handlers
-		OpenIABEventManager.billingSupportedEvent -= billingSupportedEvent;
-		OpenIABEventManager.billingNotSupportedEvent -= billingNotSupportedEvent;
-		OpenIABEventManager.queryInventorySucceededEvent -= queryInventorySucceededEvent;
-		OpenIABEventManager.queryInventoryFailedEvent -= queryInventoryFailedEvent;
-		OpenIABEventManager.purchaseSucceededEvent -= purchaseSucceededEvent;
-		OpenIABEventManager.purchaseFailedEvent -= purchaseFailedEvent;
-		OpenIABEventManager.consumePurchaseSucceededEvent -= consumePurchaseSucceededEvent;
-		OpenIABEventManager.consumePurchaseFailedEvent -= consumePurchaseFailedEvent;
-		Close();
+//		OpenIABEventManager.billingSupportedEvent -= billingSupportedEvent;
+//		OpenIABEventManager.billingNotSupportedEvent -= billingNotSupportedEvent;
+//		OpenIABEventManager.queryInventorySucceededEvent -= queryInventorySucceededEvent;
+//		OpenIABEventManager.queryInventoryFailedEvent -= queryInventoryFailedEvent;
+//		OpenIABEventManager.purchaseSucceededEvent -= purchaseSucceededEvent;
+//		OpenIABEventManager.purchaseFailedEvent -= purchaseFailedEvent;
+//		OpenIABEventManager.consumePurchaseSucceededEvent -= consumePurchaseSucceededEvent;
+//		OpenIABEventManager.consumePurchaseFailedEvent -= consumePurchaseFailedEvent;
+//		Close();
 	}
 	
 //	private void Start() {
@@ -81,21 +80,21 @@ public class MarketMenu : MonoBehaviour
 			return;
 		
 		wasInitialized = true;
-
-		OpenIAB.mapSku(SKU, OpenIAB_iOS.STORE, "some.ios.sku");
-		OpenIAB.mapSku(SKU, OpenIAB_Android.STORE_GOOGLE, "google-play.sku");
-		OpenIAB.mapSku(SKU, STORE_CUSTOM, "onepf.sku");
-
-		var public_key = "key";
-		
-		var options = new Options();
-		options.verifyMode = OptionsVerifyMode.VERIFY_SKIP;
-		options.storeKeys = new Dictionary<string, string> {
-			{OpenIAB_Android.STORE_GOOGLE, public_key}
-		};
+//
+//		OpenIAB.mapSku(SKU, OpenIAB_iOS.STORE, "some.ios.sku");
+//		OpenIAB.mapSku(SKU, OpenIAB_Android.STORE_GOOGLE, "google-play.sku");
+//		OpenIAB.mapSku(SKU, STORE_CUSTOM, "onepf.sku");
+//
+//		var public_key = "key";
+//		
+//		var options = new Options();
+//		options.verifyMode = OptionsVerifyMode.VERIFY_SKIP;
+//		options.storeKeys = new Dictionary<string, string> {
+//			{OpenIAB_Android.STORE_GOOGLE, public_key}
+//		};
 		
 		// Transmit options and start the service
-		OpenIAB.init(options);
+//		OpenIAB.init(options);
 		
 		DefaultCallbackButton dcb;
 		
@@ -114,29 +113,29 @@ public class MarketMenu : MonoBehaviour
 	
 	public void OrichalPurchase (string orichalQuant) 
 	{
-		if (orichalQuant == "100")
-		{
-		
-			OpenIAB.purchaseProduct(SKU);
-		
-		}
-
-		if (orichalQuant == "500")
-		{
-			
-			OpenIAB.purchaseProduct(SKU + "1");
-			
-		}
-
-		if (orichalQuant == "1000")
-		{
-			
-			OpenIAB.purchaseProduct(SKU + "2");
-			
-		}
-
-		OpenIAB.queryInventory();
-	
+//		if (orichalQuant == "100")
+//		{
+//		
+//			OpenIAB.purchaseProduct(SKU);
+//		
+//		}
+//
+//		if (orichalQuant == "500")
+//		{
+//			
+//			OpenIAB.purchaseProduct(SKU + "1");
+//			
+//		}
+//
+//		if (orichalQuant == "1000")
+//		{
+//			
+//			OpenIAB.purchaseProduct(SKU + "2");
+//			
+//		}
+//
+//		OpenIAB.queryInventory();
+//	
 
 //		if (GUI.Button(new Rect(xPos, yPos, width, height), "Initialize OpenIAB")) {
 //			// Application public key
@@ -183,36 +182,36 @@ public class MarketMenu : MonoBehaviour
 //		}
 	}
 	
-	private void billingSupportedEvent() {
-		Debug.Log("billingSupportedEvent");
-	}
-	private void billingNotSupportedEvent(string error) {
-		Debug.Log("billingNotSupportedEvent: " + error);
-	}
-	private void queryInventorySucceededEvent(Inventory inventory) {
-		Debug.Log("queryInventorySucceededEvent: " + inventory);
-	}
-	private void queryInventoryFailedEvent(string error) {
-		Debug.Log("queryInventoryFailedEvent: " + error);
-	}
-	private void purchaseSucceededEvent(Purchase purchase) {
-		Debug.Log("purchaseSucceededEvent: " + purchase);
-	}
-	private void purchaseFailedEvent(string error) {
-		Debug.Log("purchaseFailedEvent: " + error);
-	}
-	private void consumePurchaseSucceededEvent(Purchase purchase) {
-		Debug.Log("consumePurchaseSucceededEvent: " + purchase);
-	}
-	private void consumePurchaseFailedEvent(string error) {
-		Debug.Log("consumePurchaseFailedEvent: " + error);
-	}
-
-	public void Close ()
-	{
-		OpenIAB.unbindService();
-		
-	}
+//	private void billingSupportedEvent() {
+//		Debug.Log("billingSupportedEvent");
+//	}
+//	private void billingNotSupportedEvent(string error) {
+//		Debug.Log("billingNotSupportedEvent: " + error);
+//	}
+//	private void queryInventorySucceededEvent(Inventory inventory) {
+//		Debug.Log("queryInventorySucceededEvent: " + inventory);
+//	}
+//	private void queryInventoryFailedEvent(string error) {
+//		Debug.Log("queryInventoryFailedEvent: " + error);
+//	}
+//	private void purchaseSucceededEvent(Purchase purchase) {
+//		Debug.Log("purchaseSucceededEvent: " + purchase);
+//	}
+//	private void purchaseFailedEvent(string error) {
+//		Debug.Log("purchaseFailedEvent: " + error);
+//	}
+//	private void consumePurchaseSucceededEvent(Purchase purchase) {
+//		Debug.Log("consumePurchaseSucceededEvent: " + purchase);
+//	}
+//	private void consumePurchaseFailedEvent(string error) {
+//		Debug.Log("consumePurchaseFailedEvent: " + error);
+//	}
+//
+//	public void Close ()
+//	{
+//		OpenIAB.unbindService();
+//		
+//	}
 	#endif
 
 

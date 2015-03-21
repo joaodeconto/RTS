@@ -45,6 +45,7 @@ public class TechTreeController : MonoBehaviour
 			ht["subcategory"] 		= fb.subCategory;
 			ht["bonusdefense"] 		= fb.bonusDefense;
 			ht["bonussight"]		= fb.bonusSight;
+			ht["bonusprojectile"]	= fb.bonusProjectile;
 			attribsHash.Add(fb.category,ht);
 		}
 
@@ -67,7 +68,7 @@ public class TechTreeController : MonoBehaviour
 		{
 			techTreeManager.Add(u.category,0);
 
-			if (u.GetType() == typeof(Worker))
+			if (u is Worker)
 			{
 				Worker worker = u as Worker;
 				worker.InitWorkerTechAvailability(); 						// inicializa techs no worker para zerar o prefab;
@@ -81,9 +82,9 @@ public class TechTreeController : MonoBehaviour
 
 	public void AttributeModifier(string category, string attribute, int bonusValue)       // adiciona o valor do bonus a categoria indicada
 	{
-		foreach(Hashtable ht in attribsHash)
+		foreach(Hashtable ht in attribsHash.Values)
 		{
-			if (ht.ContainsKey(category))
+			if (ht.ContainsValue(category))
 			{
 				int oldValue = (int)ht[attribute];
 				ht[attribute] = (oldValue + bonusValue);

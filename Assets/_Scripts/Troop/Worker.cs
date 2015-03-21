@@ -83,6 +83,7 @@ public class Worker : Unit
 	{
 		base.Init ();
 
+		moveAttack = true;
 		resourceId = -1;
 
 	foreach (ResourceWorker rw in resourceWorker)

@@ -11,14 +11,13 @@ public class SubstanceResourceBar : MonoBehaviour
 	private ProceduralMaterial substance;
 	private ProceduralPropertyDescription[] curProperties;
 	private MeshRenderer subMeshRenderer;
-	private bool colored = false;
 	public IStats refTarget;
 	public FactoryBase refFactory;
 	
 	public void Init ()
 	{
 		subMeshRenderer = GetComponent <MeshRenderer> ();
-		subMeshRenderer.enabled = true;	
+		subMeshRenderer.enabled = true;
 		ProceduralMaterial mMaterial = subMeshRenderer.material as ProceduralMaterial;
 		subMeshRenderer.sharedMaterial = mMaterial;
 		substance 	  = mMaterial;
@@ -31,7 +30,7 @@ public class SubstanceResourceBar : MonoBehaviour
 
 	public void CheckInvokingTimer ()
 	{ 			
-		InvokeRepeating ("UpdateInvokingTimer",0, 0.1f);
+		InvokeRepeating ("UpdateInvokingTimer",0, 0.2f);
 	}
 
 	public void UpdateInvokingTimer ()
@@ -47,14 +46,13 @@ public class SubstanceResourceBar : MonoBehaviour
 				substance.SetProceduralFloat(curProperty.name, (percentResource-3.14f));
 			}
 
-			if (!colored)
-				if(!colored)
+			else
 			{
 				int teamID = refFactory.team;
 				Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
 				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
 					substance.SetProceduralColor(curProperty.name, teamColor);
-				colored = true;
+
 			}
 		}
 		substance.RebuildTextures ();

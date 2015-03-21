@@ -24,12 +24,13 @@ public class Login : IController
 		CheckAllViews ();
 		
 		Index ();
+				
+		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
 	}
 	
 	public void Index ()
 	{
-		HideAllViews ();
-		
+		HideAllViews ();		
 		LoginIndex index = GetView <LoginIndex> ("Index");
 		index.SetActive (true);
 		index.Init ();
@@ -106,8 +107,7 @@ public class Login : IController
 	
 	public void EnterInternalMainMenu (string username)
 	{
-		ConfigurationData.Logged = true;
-		
+		ConfigurationData.Logged = true;		
 		HideAllViews ();
 		
 		InternalMainMenu imm = ComponentGetter.Get <InternalMainMenu> ();
@@ -159,8 +159,7 @@ public class Login : IController
 		if (!PlayerPrefs.HasKey("DoubleClickSpeed"))
 		{
 			PlayerPrefs.SetFloat("DoubleClickSpeed", .5f);
-		}
-		
+		}		
 		if (!PlayerPrefs.HasKey("AllVolume"))
 		{
 			PlayerPrefs.SetFloat("AllVolume", 1f);
@@ -172,18 +171,24 @@ public class Login : IController
 		if (!PlayerPrefs.HasKey("SFXVolume"))
 		{
 			PlayerPrefs.SetFloat("SFXVolume", 1f);
-		}
-		
+		}		
 		if (!PlayerPrefs.HasKey("GraphicQuality"))
 		{
-			QualitySettings.SetQualityLevel(2);
+			QualitySettings.SetQualityLevel(3);
 		}
 		
 		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));
 		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
-		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));
-		
+		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));		
 		QualitySettings.SetQualityLevel (PlayerPrefs.GetInt("GraphicQuality"));
 
+	}
+
+	void Update ()
+	{
+		if (Input.GetKeyDown (KeyCode.Escape))
+		{
+			Application.Quit();
+		}
 	}
 }
