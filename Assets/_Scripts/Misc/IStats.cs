@@ -285,20 +285,18 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		else return;
 	}
 
-	void ShowEnemyHealth()
+	void ShowHealth()
 	{
 		firstDamage = true;
-		if (!gameplayManager.IsNotEnemy(team,ally))
-		{
-			if(IsVisible)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
-		}
+		if(IsVisible)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
+
 	}
 
 	public void ReceiveAttack (int Damage)
 	{
 		if (Health > 0)
 		{
-			if(!firstDamage) ShowEnemyHealth();
+			if(!firstDamage) ShowHealth();
 
 			int newDamage = Mathf.Max (0, Damage - (defense+bonusDefense));
 

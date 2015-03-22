@@ -11,6 +11,8 @@ public class StatsController : MonoBehaviour
 	#region Declares e Init
 	public const int MAX_NUMBER_OF_GROUPS = 9;
 	public const string buttonIdleWorkersName = "IdleWorkers";
+	public const string buttonIdleUnitsName = "IdleUnits";
+
 	public enum StatsTypeSelected
 	{
 		None,
@@ -20,8 +22,9 @@ public class StatsController : MonoBehaviour
 	}
 	public StatsTypeSelected statsTypeSelected {get; protected set;}
 	public bool keepFormation {get; set;}
-	public Vector3 idleButtonPosition;
-	public Transform idleWorkerButtonParent = null;
+	public Vector3 idleUnitButtonPosition;
+	public Vector3 idleWorkerButtonPosition;
+	public Transform idleButtonParent = null;
 	public List<IStats> myStats = new List<IStats> ();
 	public List<IStats> otherStats = new List<IStats> ();
 	internal List<IStats> selectedStats;
@@ -34,6 +37,7 @@ public class StatsController : MonoBehaviour
 	protected SelectionController selectionController;
 	private int selectedGroup = -1;   //-1 == null
 	protected List<Worker> idleWorkers;
+	protected List<Unit> idleUnits;
 
 	public void Init ()
 	{
@@ -43,9 +47,11 @@ public class StatsController : MonoBehaviour
 		selectionController = ComponentGetter.Get<SelectionController>();
 		selectedStats 	= new List<IStats> ();
 		idleWorkers     = new List<Worker>();
+		idleUnits       = new List<Unit>();
 		keepFormation = false;		
 		statsTypeSelected = StatsTypeSelected.None;
 		InvokeRepeating("CheckWorkersInIdle",1.0f,1.0f);
+		InvokeRepeating("CheckUnistInIdle",1.0f,2.0f);
 	}
 	#endregion
 
@@ -690,9 +696,103 @@ public class StatsController : MonoBehaviour
 		return feedback;
 	}
 
-	void CheckWorkersInIdle()
-	{
+	void CheckUnistInIdle()
+	{				
+		idleUnits.Clear ();
+		
+		foreach (IStats stat in myStats)
+		{
+			Unit w = stat as Unit;
+			
+			if ( w is Worker || w == null) continue;
+			
+			switch (w.unitState)
+			{
+			case Unit.UnitState.Idle:
+				if (!selectedStats.Contains(w))
+					idleUnits.Add(w);
+				break;			
+			default:
+				break;
+			}
+		}
+		
+		if(idleUnits.Count == 0)
+		{
+			hudController.RemoveButtonInInspector (buttonIdleUnitsName, idleButtonParent);
+		}
+		else
+		{
+			Hashtable ht = new Hashtable();
+			
+			ht["currentIdleUnit"] = 0;
+			ht["counter"] = idleUnits.Count;
+			ht["time"] = 0f;
+			
+			if (idleButtonParent != null)
+			{
+				ht["parent"] = idleButtonParent;
+			}
+			
+			hudController.CreateOrChangeButtonInInspector(buttonIdleUnitsName,
+			                                              idleUnitButtonPosition,
+			                                              ht,
+			                                              idleUnits[0].guiTextureName,
+			                                              (ht_dcb) =>
+			                                              {
+				int currentIdleUnit = (int)ht_dcb["currentIdleUnit"];
 				
+				if(currentIdleUnit < idleUnits.Count)
+				{
+					Vector3 idlePos = idleUnits[currentIdleUnit].transform.position;
+					idlePos.y = 0.0f;
+					
+					Math.CenterCameraInObject (Camera.main, idlePos);
+					
+					//Deselect anything was selected
+					DeselectAllStats();
+					
+					SelectStat(idleUnits[currentIdleUnit], true);
+					
+					idleUnits.RemoveAt(currentIdleUnit);
+				}
+				
+				if((++currentIdleUnit) >= idleUnits.Count)
+					currentIdleUnit = 0;
+				
+				ht_dcb["currentIdleUnit"] = currentIdleUnit;
+			},
+			(ht_dcb, isDown) => 
+			{
+				if (isDown)
+				{
+					ht["time"] = Time.time;
+				}
+				else
+				{
+					if (Time.time - (float)ht["time"] > 0.7f)
+					{															
+						//Deselect anything was selected
+						DeselectAllStats();
+						
+						foreach (Unit iw in idleUnits)
+						{
+							SelectStat (iw, true);
+						}
+						
+						idleUnits.Clear ();
+					}
+				}
+			}
+			,
+			null,
+			null,
+			true);
+		}
+	}
+
+	void CheckWorkersInIdle()
+	{				
 		idleWorkers.Clear ();
 		
 		foreach (IStats stat in myStats)
@@ -707,14 +807,7 @@ public class StatsController : MonoBehaviour
 					if (w.unitState == Unit.UnitState.Idle && !selectedStats.Contains(w))
 						idleWorkers.Add(w);
 					break;
-
 	
-				//idle patch!
-//			case Worker.WorkerState.None:
-//				if (!selectedStats.Contains(w))
-//					idleWorkers.Add(w);
-//				break;
-
 				case Worker.WorkerState.CarryingIdle:
 					if (!selectedStats.Contains(w))
 						idleWorkers.Add(w);
@@ -726,23 +819,25 @@ public class StatsController : MonoBehaviour
 
 		if(idleWorkers.Count == 0)
 		{
-			hudController.RemoveButtonInInspector (buttonIdleWorkersName, idleWorkerButtonParent);
+			hudController.RemoveButtonInInspector (buttonIdleWorkersName, idleButtonParent);
+			BtnGlow(false);
 		}
 		else
 		{
+			BtnGlow(true);
 			Hashtable ht = new Hashtable();
 
 			ht["currentIdleWorker"] = 0;
 			ht["counter"] = idleWorkers.Count;
 			ht["time"] = 0f;
 			
-			if (idleWorkerButtonParent != null)
+			if (idleButtonParent != null)
 			{
-				ht["parent"] = idleWorkerButtonParent;
+				ht["parent"] = idleButtonParent;
 			}
 
 			hudController.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
-												idleButtonPosition,
+												idleWorkerButtonPosition,
 												ht,
 												idleWorkers[0].guiTextureName,
 												(ht_dcb) =>
@@ -777,7 +872,7 @@ public class StatsController : MonoBehaviour
 													}
 													else
 													{
-														if (Time.time - (float)ht["time"] > 3f)
+														if (Time.time - (float)ht["time"] > 0.5f)
 														{															
 															//Deselect anything was selected
 															DeselectAllStats();
@@ -797,5 +892,12 @@ public class StatsController : MonoBehaviour
 												true);
 		}
 	}
+
+	private void BtnGlow (bool state)
+	{
+		GameObject buttonGlow = idleButtonParent.FindChild("ButtonGlow").gameObject;
+		buttonGlow.SetActive(state);
+	}
+
 	#endregion
 }

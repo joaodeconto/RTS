@@ -204,6 +204,32 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		resourceBar.Init();	
 		return resourceBar;
 	}
+
+	public SubstanceResourceBar CreateSubstanceConstructBar (IStats target, float size, float timeToCreateBar, bool noTimer = false)
+	{
+		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
+		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
+		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
+		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
+		
+		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
+		refTransform.referenceObject = target.transform;
+		refTransform.positionX = true;
+		refTransform.positionY = true;
+		refTransform.positionZ = true;
+		refTransform.destroyObjectWhenLoseReference = false;
+		refTransform.offsetPosition += Vector3.up * 0.1f;
+		
+		selectObj.transform.parent = mainTranformSelectedObjects;
+		
+		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
+		
+		resourceBar.refTarget = target;
+		resourceBar.noTimer = noTimer;
+		resourceBar.Init();	
+		return resourceBar;
+	}
+
 		
 	public SubstanceHealthBar CreateSubstanceHealthBar (IStats target, float size, int maxHealth, string referenceChild)
 	{

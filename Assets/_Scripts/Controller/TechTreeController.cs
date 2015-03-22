@@ -93,11 +93,31 @@ public class TechTreeController : MonoBehaviour
 		}
 	}
 	
+	public void UpgradeChildBoolOperator(string category, bool isTechChild) 		//adiciona ou subtrai tokens de tech na lista
+	{
+		Debug.Log (category +"  istechchild? " + isTechChild);
 
+		List<FactoryBase> statsFactories = new List<FactoryBase>();
+		
+		foreach (IStats stat in statsController.myStats) //muda tech nos stats
+		{
+			FactoryBase factory = stat as FactoryBase;
+			if (stat is FactoryBase)statsFactories.Add(factory);
+		}
+		foreach (FactoryBase fb in prefabFactory) // muda Tech no prefab
+		{
+			statsFactories.Add(fb);
+		}
+		
+		foreach (FactoryBase factory in statsFactories) // aplica mudança de tech
+		{		
+			factory.TechChildBool(category, isTechChild);
+		}		
+	}
 		
 	public void TechBoolOperator(string category, bool techAvailality) 		//adiciona ou subtrai tokens de tech na lista
 	{
-		Debug.Log ("Called TechBoolOp for " +category );
+		Debug.Log ("Called TechBoolOp for " + category );
 		int a = techTreeManager[category];
 
 		if (techAvailality) a++; 
@@ -129,12 +149,8 @@ public class TechTreeController : MonoBehaviour
 
 		foreach (IStats stat in statsController.myStats) //muda tech nos stats
 		{
-			if (stat.GetType() == typeof(FactoryBase))
-			{
-				FactoryBase factory = stat as FactoryBase;
-				
-				statsFactories.Add(factory);
-			}
+			FactoryBase factory = stat as FactoryBase;
+			if (stat is FactoryBase)statsFactories.Add(factory);
 		}
 		foreach (FactoryBase fb in prefabFactory) // muda Tech no prefab
 		{

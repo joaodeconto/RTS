@@ -56,7 +56,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public bool pauseGame = false;
 	private int readyCounter;
 	private bool gamestarted = false;
-	public float myTimer = 0f;
+	public float gameTime = 0f;
 	public const int MAX_POPULATION_ALLOWED = 200;
 	public const int BOT_TEAM = 8;
 	public Team[] teams;
@@ -77,9 +77,11 @@ public class GameplayManager : Photon.MonoBehaviour
 	public int MyTeam {get; protected set;}
 	public int Allies {get; protected set;}
 	public int Triggerflag = 1;
+	public bool scoreCounting = true;
 	protected NetworkManager network;
 	protected TouchController touchController;
 	protected SelectionController interactionController;
+	protected Score score;
 
 	#endregion
 
@@ -89,6 +91,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		network = ComponentGetter.Get<NetworkManager>();
 		touchController = ComponentGetter.Get<TouchController>();
 		interactionController = ComponentGetter.Get<SelectionController>();
+
 		hud.uiWaitingPlayers.SetActive(true);
 	
 		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
@@ -114,13 +117,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			Invoke("GameStart",2);
 		}
 
-		for (int i = 0; i != teams.Length; i++)
-		{
-			if (MyTeam == i)
-			{
-				Math.CenterCameraInObject (Camera.main, teams[i].initialPosition.position);
-			}
-		}
 		TribeInstiateNetwork();
 
 		if (mode == Mode.Cooperative)
@@ -189,9 +185,18 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void GameStart()
 	{
+		for (int i = 0; i != teams.Length; i++)
+		{
+			if (MyTeam == i)
+			{
+				Math.CenterCameraInObject (Camera.main, teams[i].initialPosition.position);
+			}
+		}
+		score = ComponentGetter.Get <Score> ("$$$_Score");
 		gamestarted = true;
 		GamePaused(false);
-		hud.uiWaitingPlayers.SetActive(false);
+		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
+		ld.reverseAlpha();
 	}
 	#endregion
 
@@ -200,7 +205,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		if(gamestarted)
 		{
-			ClockGameplay();		
+			if(scoreCounting)ClockGameplay();		
 		}
 		else CheckGameStart();
 		
@@ -210,6 +215,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		
 		if ((loseGame || winGame))
 		{
+			scoreCounting = false;
 			hud.uiVictoryObject.SetActive (winGame);
 			hud.uiDefeatObject.SetActive (loseGame);		
 			//			hud.buttonMatchScore.gameObject.SetActive (true);
@@ -228,6 +234,13 @@ public class GameplayManager : Photon.MonoBehaviour
 			//				}
 			//			);
 		}
+
+		else CheckGameStart();
+		
+		hud.labelMana.text = resources.Mana.ToString ();
+		hud.labelRocks.text = resources.Rocks.ToString ();
+		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
+
 	}
 	#endregion
 		
@@ -420,6 +433,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 		}
 	}
+
 	#endregion
 
 	#region MainBase Methods
@@ -440,7 +454,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		if (IsSameTeam (teamID))
 		{
 			numberOfActiveMainBases--;
-			if (numberOfActiveMainBases == 0)
+			if (numberOfActiveMainBases == 0 && scoreCounting)
 			{
 				hud.uiLostMainBaseObject.SetActive (true);
 				timeLeftToLoseTheGame = 40f;
@@ -469,9 +483,9 @@ public class GameplayManager : Photon.MonoBehaviour
 	#region Gamepause e Clock
 	void ClockGameplay()
 	{
-		myTimer += Time.deltaTime;
-		int minutes = Mathf.FloorToInt(myTimer / 60F);
-		int seconds = Mathf.FloorToInt(myTimer - minutes * 60);
+		gameTime += Time.deltaTime;
+		int minutes = Mathf.FloorToInt(gameTime / 60F);
+		int seconds = Mathf.FloorToInt(gameTime - minutes * 60);
 		string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
 		hud.labelTotalTime.text = niceTime;
 	}
@@ -495,10 +509,10 @@ public class GameplayManager : Photon.MonoBehaviour
 	
 	#region EndMatch
 	public void EndMatch ()
-	{				
+	{
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 		BidManager bm = ComponentGetter.Get <BidManager> ();
-		
+
 		if (winGame)
 		{
 			bm.WonTheGame ();
@@ -522,8 +536,13 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
-				Debug.Log ("LOSEGAME: " + winGame);
+				Debug.Log ("LOSEGAME: " + loseGame);
 			}
+
+			Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed,(int)gameTime, battle.IdBattle);
+			Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+			
+			score.SaveScore();
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
 
@@ -543,6 +562,13 @@ public class GameplayManager : Photon.MonoBehaviour
 			});
 		}
 	}
+
+	public void Surrender ()
+	{	
+		scoreCounting = false;
+		Defeat(MyTeam, Allies);
+		EndMatch ();
+	}
 	#endregion
 
 	#region RPC's
@@ -559,6 +585,8 @@ public class GameplayManager : Photon.MonoBehaviour
 	void Defeat (int teamID, int ally)
 	{
 		if (teams[teamID].lose) return;
+
+		score.SaveScore();
 		
 		StatsController sc = ComponentGetter.Get<StatsController> ();
 		
@@ -585,8 +613,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				{
 					winGame = true;
 					loseGame = false;
-				}
-				
+				}				
 				SendMessage ("EndMatch");
 			}
 			break;

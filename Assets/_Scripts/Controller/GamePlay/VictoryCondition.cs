@@ -124,7 +124,7 @@ public class VictoryCondition : MonoBehaviour
 			case Challenge.EnumComparingType.Time_:
 				
 					//Tempo de jogo atual
-					nTime = gm.myTimer;
+					nTime = gm.gameTime;
 					
 					return CheckValue (enumCondition, (int)nTime, valueToCompare);
 	
@@ -229,6 +229,7 @@ public class VictoryCondition : MonoBehaviour
 		if (nSuccess == ChallengesToWin.Length) 	//Tudo feito
 		{
 			gm.DefeatingEnemyTeamsByObjectives ();
+			CancelInvoke("CheckVictory");
 
 		}
 

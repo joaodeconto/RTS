@@ -429,6 +429,11 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 200
   model: {fileID: 100004}
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
   unitsToCreate:
   - unit: {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     buttonName: Neanderthal
@@ -440,14 +445,14 @@ MonoBehaviour:
   - unit: {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     buttonName: Spearman
     VIP: 0
-    techAvailable: 0
+    techAvailable: 1
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 1
   - unit: {fileID: 11400004, guid: 90dcd66a305546f4d8ce6e0aa6b19e5a, type: 2}
     buttonName: Warlord
     VIP: 0
-    techAvailable: 0
+    techAvailable: 1
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
@@ -457,7 +462,7 @@ MonoBehaviour:
     techAvailable: 1
     VIP: 1
     isChildtech: 0
-    childTechBtnName: bonusAtk2
+    childTech: {fileID: 11442600, guid: 26e5c1621dfaaa8479cf856bd5ae8279, type: 2}
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 2
@@ -467,7 +472,7 @@ MonoBehaviour:
     techAvailable: 0
     VIP: 0
     isChildtech: 1
-    childTechBtnName: bonusAtk3
+    childTech: {fileID: 11480470, guid: d45f45174fd5168438c8334318a0a5d2, type: 2}
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 2
@@ -477,7 +482,7 @@ MonoBehaviour:
     techAvailable: 0
     VIP: 0
     isChildtech: 1
-    childTechBtnName: 
+    childTech: {fileID: 0}
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 2
@@ -487,7 +492,7 @@ MonoBehaviour:
     techAvailable: 1
     VIP: 1
     isChildtech: 0
-    childTechBtnName: bonusDef2
+    childTech: {fileID: 11444648, guid: ce31c7dcfa641374db9a6f684dba355c, type: 2}
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 2
@@ -497,7 +502,7 @@ MonoBehaviour:
     techAvailable: 0
     VIP: 0
     isChildtech: 1
-    childTechBtnName: bonusDef3
+    childTech: {fileID: 11407100, guid: 5604b4c824b050940b6af12d3493fafb, type: 2}
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 2
@@ -507,17 +512,17 @@ MonoBehaviour:
     techAvailable: 0
     VIP: 0
     isChildtech: 1
-    childTechBtnName: 
+    childTech: {fileID: 0}
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 2
     alreadyUpgraded: 0
   - upgrade: {fileID: 11477430, guid: 30a64fb79bdb8c84aa1ea50ee658a2d4, type: 2}
     buttonName: bonusPrj1
-    techAvailable: 1
+    techAvailable: 0
     VIP: 1
     isChildtech: 0
-    childTechBtnName: bonusPrj2
+    childTech: {fileID: 11456894, guid: fde23b008cb367549847964d4f066949, type: 2}
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 2
@@ -527,7 +532,7 @@ MonoBehaviour:
     techAvailable: 0
     VIP: 0
     isChildtech: 1
-    childTechBtnName: bonusPrj3
+    childTech: {fileID: 11444522, guid: 553d86d9222dd644e86f4ae7b4491ff0, type: 2}
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 2
@@ -537,11 +542,12 @@ MonoBehaviour:
     techAvailable: 0
     VIP: 0
     isChildtech: 1
-    childTechBtnName: 
+    childTech: {fileID: 0}
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 2
     alreadyUpgraded: 0
+  keys: 
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100010}
@@ -562,7 +568,6 @@ MonoBehaviour:
   TechsToActive:
   - Lizard Haras
   wasVisible: 0
-  alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1

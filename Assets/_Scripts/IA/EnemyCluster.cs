@@ -71,11 +71,11 @@ public class EnemyCluster : MonoBehaviour
 			cluster.clusterIsBusy = false;
 			cluster.clusterBehaviour = ClusterBehaviour.none;
 
-			if(cluster.triggerDemmand <= gameplayManager.myTimer)
+			if(cluster.triggerDemmand <= gameplayManager.gameTime)
 					CheckClusterFactory(cluster); 
 			else
 				{
-					float minusT = cluster.triggerDemmand - gameplayManager.myTimer +1f;
+				float minusT = cluster.triggerDemmand - gameplayManager.gameTime +1f;
 					Invoke ("CheckClusterTrigger", minusT);
 				}
 			a++;
@@ -115,7 +115,7 @@ public class EnemyCluster : MonoBehaviour
 	{
 		foreach (ClusterModel cluster in clusterModels)
 		{
-			if(!cluster.hasDemanded && cluster.triggerDemmand <= gameplayManager.myTimer)
+			if(!cluster.hasDemanded && cluster.triggerDemmand <= gameplayManager.gameTime)
 			{
 				CheckClusterFactory(cluster); 
 			}

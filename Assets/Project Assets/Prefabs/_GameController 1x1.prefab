@@ -448,6 +448,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae9a1ea39c32d1a40b25ef9ceb4ae14c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sliders:
+  - {fileID: 0}
+  boostProduction: {fileID: 0}
+  grids:
+  - name: actions
+    rootPosition: {x: -323, y: 238, z: 0}
+    xPadding: 1
+    yPadding: 1
+    cellSizeX: 92
+    cellSizeY: 92
   pref_healthBar: {fileID: 100004, guid: 7124a57782363ec4cb6632edc61ab84a, type: 2}
   pref_SubstanceHealthBar: {fileID: 100000, guid: f7fda6822cd7b2743a4f44a261c6f07e,
     type: 2}
@@ -464,16 +474,6 @@ MonoBehaviour:
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   pref_selfFeedback: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   pref_attackFeedback: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
-  sliders:
-  - {fileID: 0}
-  boostProduction: {fileID: 0}
-  grids:
-  - name: actions
-    rootPosition: {x: -323, y: 238, z: 0}
-    xPadding: 1
-    yPadding: 1
-    cellSizeX: 92
-    cellSizeY: 92
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -743,8 +743,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111e42a9f574af1478996c9a5ee4404e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  idleButtonPosition: {x: 0, y: 0, z: 0}
-  idleWorkerButtonParent: {fileID: 0}
+  idleUnitButtonPosition: {x: 94, y: 0, z: 0}
+  idleWorkerButtonPosition: {x: 0, y: 0, z: 0}
+  idleButtonParent: {fileID: 0}
   myStats: []
   otherStats: []
 --- !u!114 &11400014
@@ -891,7 +892,7 @@ MonoBehaviour:
     zoom:
       min: 10
       max: 21
-  doubleClickSpeed: 0
+  doubleClickSpeed: .5
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -927,7 +928,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseGame: 0
-  myTimer: 0
+  gameTime: 0
   teams:
   - name: Time 1
     colors:
@@ -985,6 +986,7 @@ MonoBehaviour:
     labelTime: {fileID: 0}
     uiLostMainBaseObject: {fileID: 0}
   Triggerflag: 1
+  scoreCounting: 1
 --- !u!114 &11400032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1039,9 +1041,8 @@ MonoBehaviour:
     attackTarget: {fileID: 0}
     clusterTarget: {fileID: 0}
     factory: {fileID: 0}
-    desiredBehaviour: 1
+    desiredBehaviour: 2
     clusterDesiredUnits:
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
@@ -1058,7 +1059,7 @@ MonoBehaviour:
     attackTarget: {fileID: 0}
     clusterTarget: {fileID: 0}
     factory: {fileID: 0}
-    desiredBehaviour: 2
+    desiredBehaviour: 3
     clusterDesiredUnits:
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
@@ -1075,7 +1076,7 @@ MonoBehaviour:
     attackTarget: {fileID: 0}
     clusterTarget: {fileID: 0}
     factory: {fileID: 0}
-    desiredBehaviour: 3
+    desiredBehaviour: 4
     clusterDesiredUnits:
     - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     clusterUnits: []

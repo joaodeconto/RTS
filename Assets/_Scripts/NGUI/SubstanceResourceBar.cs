@@ -13,6 +13,7 @@ public class SubstanceResourceBar : MonoBehaviour
 	private MeshRenderer subMeshRenderer;
 	public IStats refTarget;
 	public FactoryBase refFactory;
+	public bool noTimer = false;
 	
 	public void Init ()
 	{
@@ -23,14 +24,15 @@ public class SubstanceResourceBar : MonoBehaviour
 		substance 	  = mMaterial;
 		curProperties = substance.GetProceduralPropertyDescriptions();
 		refFactory = refTarget as FactoryBase;
-		CheckInvokingTimer ();
+        CheckInvokingTimer ();
 
 	}
 
 
 	public void CheckInvokingTimer ()
-	{ 			
-		InvokeRepeating ("UpdateInvokingTimer",0, 0.2f);
+	{ 
+		if (noTimer) InvokeRepeating ("UpdateInvokingConstruct",0, 0.2f);
+		else InvokeRepeating ("UpdateInvokingTimer",0, 0.2f);
 	}
 
 	public void UpdateInvokingTimer ()
@@ -53,6 +55,31 @@ public class SubstanceResourceBar : MonoBehaviour
 				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
 					substance.SetProceduralColor(curProperty.name, teamColor);
 
+			}
+		}
+		substance.RebuildTextures ();
+	}
+
+	public void UpdateInvokingConstruct ()
+	{
+		if(refFactory == null || refFactory.wasBuilt) DestroyImmediate(gameObject);
+		
+		float percentResource = refFactory.Health * (3.14f/refFactory.MaxHealth);
+		
+		foreach (ProceduralPropertyDescription curProperty in curProperties)
+		{
+			if (curProperty.type == ProceduralPropertyType.Float)
+			{
+				substance.SetProceduralFloat(curProperty.name, (percentResource-3.14f));
+			}
+			
+			else
+			{
+				int teamID = refFactory.team;
+				Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
+				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
+					substance.SetProceduralColor(curProperty.name, teamColor);
+				
 			}
 		}
 		substance.RebuildTextures ();

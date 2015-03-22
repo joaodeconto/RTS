@@ -28,6 +28,7 @@ public struct DataScoreEnum
 	
 	public const string Victory = "victory";
 	public const string Defeat  = "defeat";
+	public const string TotalTimeElapsed  = "time-elapsed";
 }
 
 public class Score : MonoBehaviour
@@ -48,21 +49,21 @@ public class Score : MonoBehaviour
 
 	private bool wasInitialized = false;
 	private bool NeedToSave = false;
-	private bool isSaving = false;
+	public bool isSaving = false;
 
 	public void Update ()
 	{
-		if (NeedToSave && !isSaving)
-		{
-			NeedToSave = false;
-			isSaving = true;
-			Invoke ("SaveScore", 10.0f);
-		}
+//		if (NeedToSave && !isSaving)
+//		{
+//			NeedToSave = false;
+//			isSaving = true;
+//			Invoke ("SaveScore", 10.0f);
+//		}
 	}
 	
 	public void SaveScore ()
 	{
-
+		isSaving = true;
 		dataScoreDAO.SaveScores
 		(
 			dicDataScore,

@@ -21,11 +21,6 @@ public class InGameMenu : MonoBehaviour
 
 	}
 	
-	public void OnDisable ()
-	{
-		Close ();
-	}
-	
 	public void Open ()
 	{
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
@@ -51,9 +46,9 @@ public class InGameMenu : MonoBehaviour
 			         (ht_dcb) => 
 			         {
 
-				controlsOptionPanel.SetActive (true);
+						controlsOptionPanel.SetActive (true);
 
-				});
+						});
 		}
 
 		Transform audio = this.transform.FindChild ("Audio");
@@ -78,12 +73,9 @@ public class InGameMenu : MonoBehaviour
 			dcb = quit.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
 			         (ht_dcb) => 
-			         {
-				
-				surrenderPanel.SetActive (true);
-				
-
-			});
+			         {				
+						surrenderPanel.SetActive (true);
+					 });
 		}
 		
 		Transform close = this.transform.FindChild ("Resume");
@@ -94,10 +86,9 @@ public class InGameMenu : MonoBehaviour
 			dcb.Init(null,
 			         (ht_dcb) => 
 			         {
-				Close ();
-				gameObject.SetActive (false);
+						Close ();
 
-			});
+					 });
 		}
 	}
 	
@@ -107,6 +98,7 @@ public class InGameMenu : MonoBehaviour
 		{
 			gameplayManager.GamePaused(false);
 		}
+		gameObject.SetActive(false);
 		
 	}
 }

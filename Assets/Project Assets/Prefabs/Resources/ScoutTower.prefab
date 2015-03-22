@@ -1134,28 +1134,34 @@ MonoBehaviour:
     m_mana: 0
     m_rocks: 150
   model: {fileID: 100062}
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
   unitsToCreate: []
   upgradesToCreate:
   - upgrade: {fileID: 11400000, guid: 2bd0417263348034d9082db562e5f8d4, type: 2}
     buttonName: ClearFog
     techAvailable: 0
     VIP: 0
-    isChildTech: 1
-    childTechButtonName: 
+    isChildtech: 1
+    childTech: {fileID: 0}
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 0
     alreadyUpgraded: 0
   - upgrade: {fileID: 11400002, guid: bbb8ae4ce7132cf41a397f97c2f06abb, type: 2}
     buttonName: ObservationTower
-    techAvailable: 1
+    techAvailable: 0
     VIP: 1
-    isChildTech: 0
-    childTechButtonName: ClearFog
+    isChildtech: 0
+    childTech: {fileID: 11400000, guid: 2bd0417263348034d9082db562e5f8d4, type: 2}
     gridItemAttributes:
       gridXIndex: 2
       gridYIndex: 0
     alreadyUpgraded: 0
+  keys: 
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100004}
@@ -1177,7 +1183,6 @@ MonoBehaviour:
   TechsToActive:
   - Parasaurolophus
   wasVisible: 0
-  alreadyCheckedMaxPopulation: 0
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -4,20 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ExitGame : MonoBehaviour 
-	{
-
-
+{
 	private bool wasInitialized = false;
 
 	public void OnEnable ()
 	{
-
 		Open ();
-	}
-	
-	public void OnDisable ()
-	{
-		Close ();
 	}
 	
 	public void Open ()
@@ -37,20 +29,15 @@ public class ExitGame : MonoBehaviour
 			
 			dcb.Init (null, (ht) =>
 			{
-				if (PhotonNetwork.room != null)
-					PhotonNetwork.LeaveRoom ();
-
 				Time.timeScale = 1f;
+				GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
+				gm.Surrender();
+				Close ();
+				InGameMenu gameMenu = transform.parent.GetComponentInChildren<InGameMenu>();
+				gameMenu.Close();
+									
+			});						
 
-				UnityAnalytics.CustomEvent("whatsTheScene", new Dictionary<string, object>
-				                           {
-					{ "Result", 2 },
-					
-				});
-												
-				Application.LoadLevel (0);
-			}
-			);
 		}
 		
 		Transform no = transform.FindChild ("No");
@@ -61,7 +48,7 @@ public class ExitGame : MonoBehaviour
 			
 			dcb.Init (null, (ht) =>
 			{
-				gameObject.SetActive (false);
+				Close();
 			}
 			);
 		}
@@ -70,7 +57,7 @@ public class ExitGame : MonoBehaviour
 	}
 
 	public void Close ()
-	{
-		
+	{		
+		gameObject.SetActive (false);
 	}
 }
