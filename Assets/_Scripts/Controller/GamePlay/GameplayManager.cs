@@ -212,10 +212,10 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.labelMana.text = resources.Mana.ToString ();
 		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
+		scoreCounting = true;
 		
 		if ((loseGame || winGame))
 		{
-			scoreCounting = false;
 			hud.uiVictoryObject.SetActive (winGame);
 			hud.uiDefeatObject.SetActive (loseGame);		
 			//			hud.buttonMatchScore.gameObject.SetActive (true);

@@ -8,7 +8,7 @@ public class Loading : MonoBehaviour {
 	void OnEnable()
 	{
 		loadAlpha = GetComponent<TweenAlpha>();
-		loadAlpha.Play();
+		loadAlpha.PlayForward();
 	}
 
 	

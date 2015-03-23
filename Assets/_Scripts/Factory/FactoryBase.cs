@@ -825,17 +825,17 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 		
 		int i = 0, factoryChoose = 0, numberToCreate = -1;
-		
+
 		foreach (FactoryBase factory in factories)
 		{
 			if (numberToCreate == -1)
 			{
-				numberToCreate = EnqueuedCount;
+				numberToCreate = factory.EnqueuedCount;
 				factoryChoose = i;
 			}
-			else if (numberToCreate > EnqueuedCount)
+			else if (numberToCreate > factory.EnqueuedCount)
 			{
-				numberToCreate = EnqueuedCount;
+				numberToCreate = factory.EnqueuedCount;
 				factoryChoose = i;
 			}
 			i++;

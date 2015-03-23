@@ -76,6 +76,7 @@ public class Unit : IStats, IMovementObservable,
 	protected bool followingTarget;
 	protected float attackBuff;
 	public bool moveAttack { get; set; }
+	public Vector3 moveAttackDestination{ get; set; };
 	public UnitState unitState { get; set; }
 	public UnitSkill unitSkill;
 	public int skillBonus {get; set;}
@@ -116,8 +117,7 @@ public class Unit : IStats, IMovementObservable,
 	public override void Init ()
 	{
 		base.Init();
-		moveAttack = true;
-
+		moveAttack = false;
 
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -186,6 +186,11 @@ public class Unit : IStats, IMovementObservable,
 		switch (unitState)
 		{
 			case UnitState.Idle:
+				if(moveAttackDestination != null && !MoveComplete(moveAttackDestination))  // depois que batalha no moveAttack checa o destination pendente.
+				{
+					Move(moveAttackDestination);
+				}
+				else moveAttackDestination = null;
 				if (unitAnimation.Idle)
 					ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
 
@@ -199,11 +204,6 @@ public class Unit : IStats, IMovementObservable,
 				{
 					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(NavAgent.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
-				}
-				
-				if (!moveAttack)
-				{
-					CancelCheckEnemy ();
 				}
 
 				if (TargetAttack != null)
@@ -235,9 +235,9 @@ public class Unit : IStats, IMovementObservable,
 					}
 
 				}
+
 				else if (MoveComplete(PathfindTarget))
 				{
-
 //				NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 					StopMove (true);
 					
@@ -267,7 +267,7 @@ public class Unit : IStats, IMovementObservable,
 					if (InMeleeRange (TargetAttack))
 					{
 						StartCoroutine(Attack ());
-						}
+					}
 					else
 					{
 						unitState = UnitState.Walk;
@@ -335,6 +335,12 @@ public class Unit : IStats, IMovementObservable,
 
 		PathfindTarget = destination;
 
+		if (moveAttack)
+		{
+			moveAttackDestination = destination;
+			CancelCheckEnemy ();
+		}
+
 		unitState = UnitState.Walk;
 	}
 
@@ -346,10 +352,11 @@ public class Unit : IStats, IMovementObservable,
 		{
 			unitState = UnitState.Idle;
 		}
+
 		NavAgent.Stop ();
 	}
 
-	internal void ResetPathfindValue ()
+	internal void ResetNavAgentValues ()
 	{
 		NavAgent.acceleration = normalAcceleration;
 		NavAgent.speed = normalSpeed;

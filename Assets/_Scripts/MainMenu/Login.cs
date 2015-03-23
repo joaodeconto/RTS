@@ -7,6 +7,7 @@ public class Login : IController
 {
 	public bool UseRealLogin = true;
 	public UIToggle rememberUser;
+	protected PhotonWrapper pw;
 	
 	public void Start ()
 	{
@@ -19,7 +20,8 @@ public class Login : IController
 		
 		LoadPlayerPrefabs ();
 		
-		ComponentGetter.Get<PhotonWrapper> ().Init ();
+		pw = ComponentGetter.Get<PhotonWrapper>();
+		pw.Init();
 		
 		CheckAllViews ();
 		
@@ -49,9 +51,7 @@ public class Login : IController
 	{
 		string username = (string)ht["username"];
 		string password = (string)ht["password"];
-		string idFacebook = "";
-		
-		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+		string idFacebook = "";		 
 		
 		if (!UseRealLogin)
 		{
@@ -71,37 +71,35 @@ public class Login : IController
 			playerDao.GetPlayer (username, password, idFacebook,
 			                     (player, message) =>
 			                     {
-				ConfigurationData.player = player;
-				
-				Debug.Log ("player: " + player);
-				Debug.Log ("name: " + username);
-				
-				if (player == null)
-				{
-					LoginIndex index = GetView <LoginIndex> ("Index");
-					index.ShowErrorMessage ();
-				}
-				else
-				{
-					if ( rememberUser.value == true)
-					{
-						PlayerPrefs.SetString("ReUser", username);
-						PlayerPrefs.SetString("RePassword", password);
-					}
+									ConfigurationData.player = player;
+									
+									Debug.Log ("player: " + player);
+									Debug.Log ("name: " + username);
+									
+									if (player == null)
+									{
+										LoginIndex index = GetView <LoginIndex> ("Index");
+										index.ShowErrorMessage ("Incorrect User or Password");
+									}
+									else
+									{
+										if ( rememberUser.value == true)
+										{
+											PlayerPrefs.SetString("ReUser", username);
+											PlayerPrefs.SetString("RePassword", password);
+										}
 
-					else
-					{
-						PlayerPrefs.SetString("ReUser", null);
-						PlayerPrefs.SetString("RePassword", null);
+										else
+										{
+											PlayerPrefs.SetString("ReUser", null);
+											PlayerPrefs.SetString("RePassword", null);
+										}
 
-					}
-
-					pw.SetPlayer (username, true);
-					pw.SetPropertyOnPlayer ("player", player.ToString ());
-							
-					EnterInternalMainMenu (username);
-				}
-			});
+										pw.SetPlayer (username, true);
+										pw.SetPropertyOnPlayer ("player", player.ToString ());												
+										EnterInternalMainMenu (username);
+									}
+								});
 		}
 	}
 	
@@ -181,7 +179,6 @@ public class Login : IController
 		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
 		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));		
 		QualitySettings.SetQualityLevel (PlayerPrefs.GetInt("GraphicQuality"));
-
 	}
 
 	void Update ()

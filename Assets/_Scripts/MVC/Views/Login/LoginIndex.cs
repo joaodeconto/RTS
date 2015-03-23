@@ -11,6 +11,7 @@ public class LoginIndex : IView
 	public GameObject FacebookButton;
 	public GameObject SubmitButton;
 	public GameObject NewAccountButton;
+	public bool CanLogin;
 		
 	private FacebookLoginHandler fh;
 
@@ -21,85 +22,63 @@ public class LoginIndex : IView
 
 		errorMessage.enabled = false;
 		
-		FacebookButton
-			.AddComponent<DefaultCallbackButton>()
-			.Init
-			(
-				null,
-				(ht_hud) =>
-				{
-					fh.DoLogin ();
-				}
-			);
-		
+		FacebookButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>
+																		{
+																			fh.DoLogin ();
+																		});		
 		GameObject goFacebookHandler;	
 		goFacebookHandler = new GameObject ("FacebookLoginHandler");
-		goFacebookHandler.transform.parent = this.transform;
-		
+		goFacebookHandler.transform.parent = this.transform;		
 		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();
-
 		fh.OnLoggedIn = Yupy;
-
-
-
-
-
 		
-		SubmitButton
-			.AddComponent<DefaultCallbackButton>()
-			.Init (null,
-			(ht_hud) =>
-			{
-				//TODO lógica de login do jogo
-				if (string.IsNullOrEmpty(username.value) ||
-					string.IsNullOrEmpty(password.value))
-					return;
+		SubmitButton.AddComponent<DefaultCallbackButton>().Init (null, (ht_hud) =>
+																		{
+																			//TODO lógica de login do jogo
+																			if (string.IsNullOrEmpty(username.value) ||
+																				string.IsNullOrEmpty(password.value))
+																				return;
+																			if (CanLogin)
+																			{
+																				Hashtable ht = new Hashtable ();
+																					ht["username"] = username.value;
+																					ht["password"] = password.value;
 
-				Hashtable ht = new Hashtable ();
-					ht["username"] = username.value;
-					ht["password"] = password.value;
+																				controller.SendMessage ("DoLogin", ht, SendMessageOptions.DontRequireReceiver );
+																			}
+																			else ShowErrorMessage("no internet conection");
+																		});
 
-				controller.SendMessage ("DoLogin", ht, SendMessageOptions.DontRequireReceiver );
-			});
-
-		NewAccountButton
-			.AddComponent<DefaultCallbackButton>()
-			.Init
-			(
-				null,
-				(ht_hud) =>
-				{
-					controller.SendMessage ("NewAccount", SendMessageOptions.DontRequireReceiver );
-				}
-			);
+																			NewAccountButton.AddComponent<DefaultCallbackButton>().Init( null,(ht_hud) =>
+																			{
+																				if (CanLogin)
+																				{
+																					controller.SendMessage ("NewAccount", SendMessageOptions.DontRequireReceiver );
+																				}
+																				else ShowErrorMessage("no internet conection");
+																			});
 	}
+
 	public void FBShareRTS ()
 	{
-		FB.AppRequest(
-			message:"3D Real-Time Strategy game for mobile!",
-			title:"Join me in RTS - Rex Tribal Society!"
-			
-			);
+		FB.AppRequest (message:"3D Real-Time Strategy game for mobile!",	title:"Join me in RTS - Rex Tribal Society!");
 	}
 	
 	public bool Yupy ()
 	{
-		FB.AppRequest(
-			message:"3D Real-Time Strategy game for mobile!",
-			title:"Join me in RTS - Rex Tribal Society!"
-			
-			);
+		FB.AppRequest( message:"3D Real-Time Strategy game for mobile!", title:"Join me in RTS - Rex Tribal Society!");
 		errorMessage.enabled = true;
 		errorMessage.text = "Facebook Authorized";
 		Invoke ("CloseErrorMessage", 5.0f);
-	
+	    Login login	= transform.parent.gameObject.GetComponent<Login>();
+		if(PlayerPrefs.GetString("ReUser") == null)  login.NewAccount();
 		return true;
 	}
 
-	public void ShowErrorMessage ()
+	public void ShowErrorMessage (string errorText)
 	{
 		errorMessage.enabled = true;
-		errorMessage.text = "Incorrect User or Password";
+		errorMessage.text = errorText;
 		Invoke ("CloseErrorMessage", 5.0f);
 	}
 
