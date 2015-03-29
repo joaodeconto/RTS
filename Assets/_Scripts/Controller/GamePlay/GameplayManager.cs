@@ -52,6 +52,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		Tutorial
 	}
 
+	public int startingRocks = 0;
 	public static Mode mode;
 	public bool pauseGame = false;
 	private int readyCounter;
@@ -62,7 +63,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public Team[] teams;
 	public ResourcesManager resources;	
 	public HUD hud;	
-	public int numberOfUnits { get; protected set; }
+	public int numberOfUnits {get; protected set;}
 	public int TotalPopulation { get; protected set; }
 	protected int numberOfActiveMainBases;
 	private List<IHouse> houses = new List<IHouse> ();
@@ -77,7 +78,8 @@ public class GameplayManager : Photon.MonoBehaviour
 	public int MyTeam {get; protected set;}
 	public int Allies {get; protected set;}
 	public int Triggerflag = 1;
-	public bool scoreCounting = true;
+	private bool scoreCounting = true;
+	public int clockPontuationLimit;
 	protected NetworkManager network;
 	protected TouchController touchController;
 	protected SelectionController interactionController;
@@ -112,6 +114,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			MyTeam = 0;
 			Allies = 0;
+			numberOfTeams = 2;
 			ComponentGetter.Get<EnemyCluster> ().Init ();
 			pauseGame = true;
 			Invoke("GameStart",2);
@@ -193,10 +196,11 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 		}
 		score = ComponentGetter.Get <Score> ("$$$_Score");
-		gamestarted = true;
+		resources.DeliverResources (Resource.Type.Rock, startingRocks);
 		GamePaused(false);
 		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
 		ld.reverseAlpha();
+		gamestarted = true;
 	}
 	#endregion
 
@@ -205,15 +209,17 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		if(gamestarted)
 		{
-			if(scoreCounting)ClockGameplay();		
+			if(scoreCounting)
+			{
+				ClockGameplay();				
+			}
 		}
 		else CheckGameStart();
-		
+				
 		hud.labelMana.text = resources.Mana.ToString ();
 		hud.labelRocks.text = resources.Rocks.ToString ();
 		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
-		scoreCounting = true;
-		
+				
 		if ((loseGame || winGame))
 		{
 			hud.uiVictoryObject.SetActive (winGame);
@@ -234,12 +240,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			//				}
 			//			);
 		}
-
-		else CheckGameStart();
-		
-		hud.labelMana.text = resources.Mana.ToString ();
-		hud.labelRocks.text = resources.Rocks.ToString ();
-		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
 
 	}
 	#endregion
@@ -454,7 +454,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		if (IsSameTeam (teamID))
 		{
 			numberOfActiveMainBases--;
-			if (numberOfActiveMainBases == 0 && scoreCounting)
+			if (numberOfActiveMainBases == 0 && (!loseGame && !winGame))
 			{
 				hud.uiLostMainBaseObject.SetActive (true);
 				timeLeftToLoseTheGame = 40f;
@@ -529,18 +529,18 @@ public class GameplayManager : Photon.MonoBehaviour
 			if (winGame)
 			{
 				Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
-				Score.AddScorePoints (DataScoreEnum.Victory, 1);
+//				Score.AddScorePoints (DataScoreEnum.Victory, 1);
 				Debug.Log ("WINGAME: " + winGame);
 			}
 			else
 			{
 				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
-				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
+//				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
 				Debug.Log ("LOSEGAME: " + loseGame);
 			}
 
-			Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed,(int)gameTime, battle.IdBattle);
-			Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+			int realTimePoints = Mathf.Max( clockPontuationLimit - (int)gameTime, 0);
+			Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);
 			
 			score.SaveScore();
 
@@ -550,14 +550,14 @@ public class GameplayManager : Photon.MonoBehaviour
 			(playerBattle, message) =>
 			{
 				playerBattle.BlWin = winGame;
-
 				pbDAO.UpdatePlayerBattle (playerBattle,
 				(playerBattle_update, message_update) =>
 				{
-					if (playerBattle_update != null)
-						Debug.Log ("message: " + message);
-					else
-						Debug.Log ("salvou playerBattle");
+//					if (playerBattle_update != null)
+//
+//						Debug.Log ("message: " + message);
+//					else
+//						Debug.Log ("salvou playerBattle" + "inserir contagem de pontos aqui");
 				});
 			});
 		}
@@ -565,9 +565,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public void Surrender ()
 	{	
-		scoreCounting = false;
 		Defeat(MyTeam, Allies);
-		EndMatch ();
 	}
 	#endregion
 
@@ -586,12 +584,10 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		if (teams[teamID].lose) return;
 
-		score.SaveScore();
-		
-		StatsController sc = ComponentGetter.Get<StatsController> ();
-		
-		sc.DestroyAllStatsTeam (teamID);
-		
+//		score.SaveScore();
+				
+		scoreCounting = false;
+				
 		teams[teamID].lose = true;
 		
 		switch (GameplayManager.mode)
@@ -625,6 +621,8 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				loseGame = true;
 			}
+			StatsController sc = ComponentGetter.Get<StatsController> ();
+			sc.DestroyAllStatsTeam (teamID);
 			
 			//se o numero de times que perderam for o mesmo de times adversarios o jogador atual ganhou a partida
 			if (loserTeams == numberOfTeams - 1 && !loseGame)
@@ -637,9 +635,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				SendMessage ("EndMatch");
 			}
 			break;
-			
-			
-			
+						
 		default:
 			break;
 		}

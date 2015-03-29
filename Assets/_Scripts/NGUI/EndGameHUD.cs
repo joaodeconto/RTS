@@ -44,10 +44,9 @@ public class EndGameHUD : MonoBehaviour {
 												linkName: "Victory!",
 												linkCaption: " 'Almighty leader, the enemy was defeated!'",
 												linkDescription: " 'Let us prepare the ritual, gather the gold for the blessing of the gods!..'", 
-												picture: "http://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png"
-									
+												picture: "http://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png"								
 											
-											);
+												);
 										}
 										
 									});		
@@ -77,6 +76,8 @@ public class EndGameHUD : MonoBehaviour {
 		if(pressedQuit)
 		{
 			endGameWait.SetActive(true);
+			Loading ld = endGameWait.GetComponent<Loading>();
+			ld.forwardAlpha();
 			if(!score.isSaving)
 			{
 				if (!PhotonNetwork.offlineMode) PhotonNetwork.LeaveRoom ();

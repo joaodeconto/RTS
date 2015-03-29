@@ -256,7 +256,7 @@ public class Database : MonoBehaviour
 			www.Dispose ();
 			www = null;
 
-			//if (dc.cdc == null) { Debug.Log ("cdc é nulo?"); }
+			if (dc.cdc == null) { Debug.Log ("cdc é nulo?"); }
 
 			dc.cdc (obj);
 		}

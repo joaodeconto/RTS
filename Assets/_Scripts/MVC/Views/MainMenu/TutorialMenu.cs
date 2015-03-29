@@ -33,14 +33,9 @@ public class TutorialMenu : MonoBehaviour
 		}
 	}
 	
-	public TutorialMenuButtons buttons;
-	
+	public TutorialMenuButtons buttons;	
 	public UILabel messageActiveGame;
 	public UILabel errorMessage;
-
-	private int mapScene = 4;
-
-
 	bool wasInitialized      = false;
 	
 	PhotonWrapper pw;

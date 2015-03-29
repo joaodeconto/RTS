@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class Ranking : MonoBehaviour {
 
 	public GameObject rankRowPrefab;
+	public GameObject rankLoading;
 	public Transform rankRowreference;
 	public UIGrid rankGrid;
 	public bool wasInitialized = false;
@@ -27,20 +28,20 @@ public class Ranking : MonoBehaviour {
 			
 		wasInitialized = true;
 
+//		rankLoading.SetActive(true);
+
 		Score.LoadRanking 
 			(
 				(List<Model.DataScoreRanking> ranking) => 
 				{
-					ranking.Sort((x, y) => {return y.NrPoints.CompareTo(x.NrPoints);});
+//					ranking.Sort((x, y) => {return y.NrPoints.CompareTo(x.NrPoints);});
 					int i = 0;
 
 					foreach (Model.DataScoreRanking r in ranking)
-					{					
+					{		
 						i++;
-						
-						if ( i < 200)
+						if ( i < 202)
 						{	
-
 						GameObject rankRow = NGUITools.AddChild (rankGrid.gameObject, rankRowPrefab);
 						rankRowPrefab.GetComponent<RankRow>().player.text = r.SzName;
 						rankRowPrefab.GetComponent<RankRow>().wins.text = r.NrVictory.ToString();
@@ -48,20 +49,24 @@ public class Ranking : MonoBehaviour {
 						rankRowPrefab.GetComponent<RankRow>().score.text = r.NrPoints.ToString();
 						rankRowPrefab.GetComponent<RankRow>().position.text = i.ToString();
 						rankRowPrefab.name = i.ToString();
-						
 						}
-						else break;
+						else 
+						{
+//							rankLoading.SetActive(false);
+//							rankGrid.repositionNow = true;
+							break;
+						}
 					}
 
 				NGUITools.Destroy(rankGrid.transform.GetChild(0).gameObject);
 			}
 			);	
-		rankGrid.repositionNow = true;
+
 	}
 
 	public void Close ()
 	{
-
+//		rankLoading.SetActive(false);
     }
     
 	

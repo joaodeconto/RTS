@@ -79,6 +79,9 @@ namespace DB {
 		[JsonProperty(PropertyName = "battle",Required=Required.Default)]
 		public Battle battle;
 
+		[JsonProperty(PropertyName = "PScore",Required=Required.Default)]
+		public string PScore;
+
 		[JsonProperty(PropertyName = "BlWin",Required=Required.Default)]
 		public string BlWin;
 

@@ -14,7 +14,6 @@ namespace DB {
 		public string SzEmail;
 		[JsonProperty(PropertyName = "SzName",Required=Required.Default)]
 		public string SzName;
-
 		[JsonProperty(PropertyName = "IdFacebookAccount",Required=Required.Default)]
 		public string IdFacebookAccount;
 		[JsonProperty(PropertyName = "SzPassword",Required=Required.Default)]

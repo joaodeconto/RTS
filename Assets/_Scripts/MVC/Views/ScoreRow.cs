@@ -13,7 +13,7 @@ public class ScoreRow : MonoBehaviour
 
 	public UISlider ressourceGold;
 	public UISlider ressourceMana;
-	public UISlider ressourceSpent;
+	public UISlider techsResearched;
 
 	public UISlider unitsBuild;
 	public UISlider unitsLost;

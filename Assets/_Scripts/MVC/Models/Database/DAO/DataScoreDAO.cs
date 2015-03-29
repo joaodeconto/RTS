@@ -80,7 +80,7 @@ public class DataScoreDAO : MonoBehaviour
 			if ((response as List <Model.DataScoreRanking>) != null)
 				{
 				lDataScoreRanking = (response as List <Model.DataScoreRanking>);		
-//					Debug.Log ("lDataScoreRanking.Count: " + lDataScoreRanking.Count);
+					Debug.Log ("lDataScoreRanking.Count: " + lDataScoreRanking.Count);
 				}			
 				//Debug.Break ();
 				callback (lDataScoreRanking);			
@@ -188,7 +188,6 @@ public class DataScoreDAO : MonoBehaviour
 //		Debug.Log ("Antes!");
 		foreach (KeyValuePair <string, Model.DataScore> de in scores)
 		{
-//			Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
 			lScores.Add (de.Value);
 		}
 
@@ -218,7 +217,7 @@ public class DataScoreDAO : MonoBehaviour
 			
 			foreach (KeyValuePair <string, Model.DataScore> de in scores)
 			{
-//				Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
+				Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
 				lScores.Add (de.Value);
 			}
 //			*/

@@ -91,7 +91,7 @@ public class Login : IController
 
 										else
 										{
-											PlayerPrefs.SetString("ReUser", null);
+											PlayerPrefs.SetString("ReUser", username);
 											PlayerPrefs.SetString("RePassword", null);
 										}
 

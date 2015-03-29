@@ -82,8 +82,7 @@ public class Worker : Unit
 	public override void Init ()
 	{
 		base.Init ();
-
-		moveAttack = true;
+		moveAttack = false;
 		resourceId = -1;
 
 	foreach (ResourceWorker rw in resourceWorker)
@@ -205,7 +204,7 @@ public class Worker : Unit
 				{
 					resource = null;
 					resourceWorker[resourceId].carryingObject.SetActive (false);
-					ResetPathfindValue ();
+					ResetNavAgentValues ();
 
 					workerState = WorkerState.Idle;
 
@@ -235,7 +234,7 @@ public class Worker : Unit
 
 					resourceId = -1;
 
-					ResetPathfindValue ();
+					ResetNavAgentValues ();
 
 				}
 				break;

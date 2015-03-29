@@ -4,7 +4,7 @@ public class InternetChecker : MonoBehaviour
 {
 	private const bool allowCarrierDataNetwork = true;
 	private const string pingAddress = "8.8.8.8"; // Google Public DNS server
-	private const float waitingTime = 2.0f;
+	private const float waitingTime = 4.0f;
 	
 	protected LoginIndex li;
 	private Ping ping;
@@ -12,7 +12,8 @@ public class InternetChecker : MonoBehaviour
 	
 	public void Start()
 	{		
-		li = GetComponentInChildren<LoginIndex>();
+		li = GetComponent<LoginIndex>();
+
 		bool internetPossiblyAvailable;
 		switch (Application.internetReachability)
 		{
@@ -61,5 +62,6 @@ public class InternetChecker : MonoBehaviour
 	private void InternetAvailable()
 	{
 		li.CanLogin = true;
+		enabled = false;
 	}
 }

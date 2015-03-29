@@ -8,7 +8,7 @@ public class Loading : MonoBehaviour {
 	void OnEnable()
 	{
 		loadAlpha = GetComponent<TweenAlpha>();
-		loadAlpha.PlayForward();
+		loadAlpha.enabled = false;
 	}
 
 	
@@ -18,9 +18,17 @@ public class Loading : MonoBehaviour {
 	}
 	
 	public void reverseAlpha ()
-	{		 
+	{
+		loadAlpha.enabled = true;
 		loadAlpha = GetComponent<TweenAlpha>();
 		loadAlpha.PlayReverse();
 		Invoke("DisableLoad",2f);
+	}
+
+	public void forwardAlpha ()
+	{
+		loadAlpha.enabled = true;
+		loadAlpha = GetComponent<TweenAlpha>();
+		loadAlpha.Play();
 	}
 }

@@ -30,7 +30,7 @@ public class PlayerDAO : MonoBehaviour
 			else
 			{
 				Model.Player player = dbPlayer.ToModel ();
-				callback (player, "User and passwords matches!");
+				callback (player, "User and passwords match!");
 			}
 		});
 	}

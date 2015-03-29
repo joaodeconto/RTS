@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -175,6 +175,28 @@ public class PlayerBattleDAO : MonoBehaviour
 				playerBattle = pb.ToModel ();
 				callback (playerBattle,  "Model.PlayerBattle has been updated!");
 			}
+		});
+	}
+
+	public delegate void RankingBattleDAODelegate ( List<Model.DataScoreRanking> ranking);
+	public void LoadBattleRankingScores (RankingBattleDAODelegate callback)
+	{
+		//Cria objetos que serao usados durante o chamado ao DB
+		object dummyObject = new object ();
+		
+		List <Model.DataScoreRanking> lDataScoreRanking = new List <Model.DataScoreRanking> ();
+		
+		//Chama todos os datascores de vitoria e derrotas
+		db.Read (dummyObject, lDataScoreRanking.GetType (), "read-ranking-playerbattle",
+		         (response) =>
+		         {
+			if ((response as List <Model.DataScoreRanking>) != null)
+			{
+				lDataScoreRanking = (response as List <Model.DataScoreRanking>);		
+									Debug.Log ("lDataScoreRanking.Count: " + lDataScoreRanking.Count);
+			}			
+//			Debug.Break ();
+			callback (lDataScoreRanking);			
 		});
 	}
 }

@@ -80,7 +80,7 @@ public class NewAccount : IView
 					}
 						
 
-//					if (!Regex.Match(email.value, @"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$").Success)
+					if (!Regex.Match(email.value, @"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$").Success)
 					if (string.IsNullOrEmpty(email.value))
 					{
 						wEmail.SetActive (true);

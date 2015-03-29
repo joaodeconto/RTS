@@ -852,7 +852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
-  m_Team: 8
+  m_Team: 0
   m_Ally: 0
   defense: 0
   fieldOfView: 0
@@ -869,8 +869,13 @@ MonoBehaviour:
   group: -1
   costOfResources:
     m_mana: 0
-    m_rocks: 0
+    m_rocks: 150
   model: {fileID: 192482}
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
   unitsToCreate:
   - unit: {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     buttonName: Neanderthal
@@ -929,6 +934,7 @@ MonoBehaviour:
       gridXIndex: 0
       gridYIndex: 0
   upgradesToCreate: []
+  keys: 
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 160686}
@@ -948,7 +954,6 @@ MonoBehaviour:
   boostPower: 1.29999995
   TechsToActive: []
   wasVisible: 0
-  alreadyCheckedMaxPopulation: 0
 --- !u!114 &11464092
 MonoBehaviour:
   m_ObjectHideFlags: 1

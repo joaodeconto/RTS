@@ -20602,7 +20602,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 364210180}
   m_LocalRotation: {x: 0, y: .978647768, z: 0, w: .205544904}
-  m_LocalPosition: {x: 30.6000004, y: .100000001, z: 105.599998}
+  m_LocalPosition: {x: 30.6000004, y: 0, z: 105.599998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 533496877}
@@ -58479,7 +58479,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1011345762}
   m_LocalRotation: {x: 0, y: -.997594833, z: 0, w: -.0693159178}
-  m_LocalPosition: {x: 87.5999985, y: -.400000006, z: 86.8000031}
+  m_LocalPosition: {x: 87.5999985, y: 0, z: 86.8000031}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 533496877}
@@ -60362,7 +60362,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1053744187}
   m_LocalRotation: {x: 0, y: -.919612586, z: 0, w: .392826557}
-  m_LocalPosition: {x: 110.400002, y: .100000001, z: 47.5999985}
+  m_LocalPosition: {x: 110.400002, y: 0, z: 47.5999985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 533496877}
@@ -70164,7 +70164,7 @@ MonoBehaviour:
     m_PostInfinity: 2
   ignoreTimeScale: 1
   delay: 0
-  duration: 1
+  duration: .699999988
   steeperCurves: 0
   tweenGroup: 0
   onFinished: []
@@ -70213,7 +70213,7 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: .00600000005}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 100
   mHeight: 100
@@ -72298,6 +72298,18 @@ Prefab:
     - target: {fileID: 11400032, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: subId
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400030, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: startingRocks
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400030, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: resources.m_mana
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400030, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: resources.m_rocks
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
@@ -103007,6 +103019,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6a830f3446549408e3bc23cf6bc4be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingRocks: 300
   pauseGame: 0
   gameTime: 0
   teams:
@@ -103053,8 +103066,8 @@ MonoBehaviour:
     - {r: .647058845, g: .647058845, b: .647058845, a: 1}
     initialPosition: {fileID: 533496877}
   resources:
-    m_mana: 5
-    m_rocks: 300
+    m_mana: 0
+    m_rocks: 0
   hud:
     labelRocks: {fileID: 1315244456}
     labelMana: {fileID: 1769225181}
@@ -103066,7 +103079,7 @@ MonoBehaviour:
     labelTime: {fileID: 1042036323}
     uiLostMainBaseObject: {fileID: 1895251618}
   Triggerflag: 1
-  scoreCounting: 1
+  clockPontuationLimit: 0
 --- !u!114 &1690686260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113546,6 +113559,14 @@ Prefab:
       propertyPath: onClick.Array.data[0].mTarget
       value: 
       objectReference: {fileID: 587511660}
+    - target: {fileID: 11481794, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: mColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481798, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: duration
+      value: .699999988
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
   m_RootGameObject: {fileID: 1415154854}

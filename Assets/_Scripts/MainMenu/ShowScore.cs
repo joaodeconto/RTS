@@ -11,51 +11,80 @@ public class ShowScore : MonoBehaviour
 		public int ResourcesSpentPoints { get; private set; }
 		public int UnitsCreatedPoints { get; private set; }
 		public int UnitsLostPoints { get; private set; }
-		public int UnitsDestroyedPoints { get; private set; }
+		public int UnitsKillsPoints { get; private set; }
 		public int StructureCreatedPoints { get; private set; }
 		public int StructureLostPoints { get; private set; }
 		public int StructureDestroyedPoints { get; private set; }
 		public int VictoryPoints { get; private set; }
 		public int TotalTimeElapsed { get; private set; }
+		public int UpgradePoints { get; private set; }
+
+		public int XUnitsCreatedPoints { get; private set; }
+		public int XUnitsLostPoints { get; private set; }
+		public int XUnitsKillsPoints { get; private set; }
+		public int XStructureCreatedPoints { get; private set; }
+		public int XStructureLostPoints { get; private set; }
+		public int XStructureDestroyedPoints { get; private set; }
+		public int XUpgradePoints { get; private set; }
 
 		public int TotalScore
 		{ 
 			get 
 			{
-				return GoldCollectedPoints/100 + ManaCollectedPoints/100 + UnitsCreatedPoints + UnitsDestroyedPoints +StructureCreatedPoints +StructureDestroyedPoints;
+				return (GoldCollectedPoints + ManaCollectedPoints + XUnitsCreatedPoints + XUnitsKillsPoints*2 +XStructureCreatedPoints +XStructureDestroyedPoints*2 + XUpgradePoints)/10;
 			} 
 		}
 		
 		public ScorePlayer ()
 		{
-			GoldCollectedPoints      = 0;
-			ManaCollectedPoints      = 0;
-			ResourcesSpentPoints     = 0;
-			UnitsCreatedPoints     	 = 0;
-			UnitsLostPoints 		 = 0;
-			UnitsDestroyedPoints     = 0;
-			StructureCreatedPoints   = 0;
-			StructureLostPoints 	 = 0;
-			StructureDestroyedPoints = 0;
-			VictoryPoints            = 0;
-			TotalTimeElapsed         = 0;
+			GoldCollectedPoints      	= 0;
+			ManaCollectedPoints      	= 0;
+			ResourcesSpentPoints     	= 0;
+			UnitsCreatedPoints     	 	= 0;
+			UnitsLostPoints 		 	= 0;
+			UnitsKillsPoints     	 	= 0;
+			StructureCreatedPoints   	= 0;
+			StructureLostPoints 	 	= 0;
+			StructureDestroyedPoints 	= 0;
+			VictoryPoints            	= 0;
+			TotalTimeElapsed         	= 0;
+			UpgradePoints			 	= 0;
+
+			XUnitsCreatedPoints     	= 0;
+			XUnitsLostPoints 		 	= 0;
+			XUnitsKillsPoints     		= 0;
+			XStructureCreatedPoints   	= 0;
+			XStructureLostPoints 	 	= 0;
+			XStructureDestroyedPoints 	= 0;
+			XUpgradePoints			 	= 0;
 		}
 		
 		public void AddScorePlayer (string scoreName, int points)
 		{
 			if (scoreName.Equals (DataScoreEnum.ResourcesGathered))			GoldCollectedPoints += points;
 			else if (scoreName.Equals (DataScoreEnum.UnitsCreated))			UnitsCreatedPoints += points;
-			else if (scoreName.Equals (DataScoreEnum.UnitsKilled))			UnitsDestroyedPoints += points;
+			else if (scoreName.Equals (DataScoreEnum.UnitsKilled))			UnitsKillsPoints += points;
 			else if (scoreName.Equals (DataScoreEnum.UnitsLost))			UnitsLostPoints += points;
 			else if (scoreName.Equals (DataScoreEnum.BuildingsCreated))		StructureCreatedPoints += points;
-			else if (scoreName.Equals (DataScoreEnum.DestroyedBuildings))	StructureDestroyedPoints += points;
+			else if (scoreName.Equals (DataScoreEnum.BuildingsDestroyed))	StructureDestroyedPoints += points;
 			else if (scoreName.Equals (DataScoreEnum.BuildingsLost)) 		StructureLostPoints += points;
 			else if (scoreName.Equals (DataScoreEnum.Victory))				VictoryPoints += points;
 			else if (scoreName.Equals (DataScoreEnum.Defeat))				VictoryPoints -= points;
-			else if (scoreName.Equals (DataScoreEnum.TotalTimeElapsed))		TotalTimeElapsed = points;
+			else if (scoreName.Equals (DataScoreEnum.TotalTimeElapsed))		TotalTimeElapsed += points;
+		   	else if (scoreName.Equals (DataScoreEnum.UpgradesCreated))		UpgradePoints += points;  // transforma realmente em pontos de upgrade
+
+			else if (scoreName.Contains (DataScoreEnum.XCreated)) 			XUnitsCreatedPoints += points;
+			else if (scoreName.Contains (DataScoreEnum.XKilled)) 			XUnitsKillsPoints += points;
+			else if (scoreName.Contains (DataScoreEnum.XUnitLost)) 			XUnitsLostPoints += points;
+
+			else if (scoreName.Contains (DataScoreEnum.XBuilt)) 			XStructureCreatedPoints += points;
+			else if (scoreName.Contains (DataScoreEnum.XDestroyed)) 		XStructureDestroyedPoints += points;
+			else if (scoreName.Contains (DataScoreEnum.XBuildLost)) 		XStructureLostPoints += points;
+
+			else if (scoreName.Contains (DataScoreEnum.XUpgraded)) 			XUpgradePoints += points;
 		}		
 	}
-	
+
 	public Transform scoreMenuObject;
 	public GameObject scorePlayerPrefab;
 	public Login login;
@@ -65,7 +94,8 @@ public class ShowScore : MonoBehaviour
 	public UILabel timeLabel;
 	private float playerTime;
 	public string showGameTime 
-	{	get
+	{
+		get
 		{  
 			int minutes = Mathf.FloorToInt(playerTime / 60F);
 			int seconds = Mathf.FloorToInt(playerTime - minutes * 60);
@@ -83,16 +113,20 @@ public class ShowScore : MonoBehaviour
 	private int battleTotalUnitsDestroyed = 0;
 	private int battleTotalStructuresBuild = 0;
 	private int battleTotalStructuresDestroyed = 0;
-		
+	private int battleTotalUpgradePoints = 0;
+
+
+
 	// Use this for initialization
 	public void Init ()
 	{
+		int myPlayerId = ConfigurationData.player.IdPlayer;
 		LoginIndex index = login.GetComponentInChildren<LoginIndex> ();
 		index.SetActive (false);		
 		ActiveScoreMenu (true);		
 		Dictionary<int, ScorePlayer> players = new Dictionary<int, ScorePlayer>();
 
-		BattleTotals(battleTotalGold, battleTotalMana, battleTotalSpent, battleTotalUnitsCreated, battleTotalUnitsDestroyed, battleTotalStructuresBuild, battleTotalStructuresDestroyed);
+		BattleTotals(battleTotalGold, battleTotalMana, battleTotalSpent, battleTotalUnitsCreated, battleTotalUnitsDestroyed, battleTotalStructuresBuild, battleTotalStructuresDestroyed, battleTotalUpgradePoints);
 						
 		Score.LoadBattleScore
 		(
@@ -100,7 +134,7 @@ public class ShowScore : MonoBehaviour
 			{
 				for (int i = 0; i != dicScore.Count; i++)
 				{
-					if (!players.ContainsKey (dicScore[i].IdPlayer))	players.Add (dicScore[i].IdPlayer, new ScorePlayer ());
+					if (!players.ContainsKey (dicScore[i].IdPlayer)) players.Add (dicScore[i].IdPlayer, new ScorePlayer ());
 					
 					players[dicScore[i].IdPlayer].AddScorePlayer (dicScore[i].SzScoreName, dicScore[i].NrPoints);
 				}
@@ -117,29 +151,36 @@ public class ShowScore : MonoBehaviour
 					timeLabel.text = showGameTime;
 
 					sr.playerScoreModifier.text = "+" + sp.Value.TotalScore.ToString();
+
+					if (sp.Key == myPlayerId)
+					{
+						SaveMyTotal(sp.Value);
+					}
 										
 					if (sp.Value.VictoryPoints > 0)  sr.gameResult.text = "Victory";
 					else sr.gameResult.text = "Defeat";
 
-					sr.ressourceGold.GetComponentInChildren<UILabel>().text 		 = sp.Value.GoldCollectedPoints.ToString();
+					sr.ressourceGold.GetComponentInChildren<UILabel>().text 		= sp.Value.GoldCollectedPoints.ToString();
 					sr.ressourceMana.GetComponentInChildren<UILabel>().text  		= sp.Value.ManaCollectedPoints.ToString();
-					sr.ressourceSpent.GetComponentInChildren<UILabel>().text 		= sp.Value.ResourcesSpentPoints.ToString();
+//					sr.ressourceSpent.GetComponentInChildren<UILabel>().text 		= sp.Value.ResourcesSpentPoints.ToString();
 					sr.unitsBuild.GetComponentInChildren<UILabel>().text 	 		= sp.Value.UnitsCreatedPoints.ToString ();
 					sr.unitsLost.GetComponentInChildren<UILabel>().text		 		= sp.Value.UnitsLostPoints.ToString ();
-					sr.unitsDestroyed.GetComponentInChildren<UILabel>().text 		= sp.Value.UnitsDestroyedPoints.ToString ();
+					sr.unitsDestroyed.GetComponentInChildren<UILabel>().text 		= sp.Value.UnitsKillsPoints.ToString ();
 					sr.StructuresBuild.GetComponentInChildren<UILabel>().text		= sp.Value.StructureCreatedPoints.ToString ();
 					sr.StructuresLost.GetComponentInChildren<UILabel>().text 		= sp.Value.StructureLostPoints.ToString ();
 					sr.StructuresDestroyed.GetComponentInChildren<UILabel>().text   = sp.Value.StructureDestroyedPoints.ToString ();
+					sr.techsResearched.GetComponentInChildren<UILabel>().text       = sp.Value.UpgradePoints.ToString();
 
 					sr.ressourceGold.value 	      = ((float)sp.Value.GoldCollectedPoints / (float)battleTotalGold);
 					sr.ressourceMana.value		  = ((float)sp.Value.ManaCollectedPoints / (float)battleTotalMana);
-					sr.ressourceSpent.value 	  = ((float)sp.Value.ResourcesSpentPoints / (float)battleTotalSpent);
+//					sr.ressourceSpent.value 	  = ((float)sp.Value.ResourcesSpentPoints / (float)battleTotalSpent);
 					sr.StructuresBuild.value  	  = ((float)sp.Value.StructureCreatedPoints / (float)battleTotalStructuresBuild);
 					sr.StructuresLost.value 	  = ((float)sp.Value.StructureLostPoints / (float)battleTotalStructuresDestroyed);
 					sr.StructuresDestroyed.value  = ((float)sp.Value.StructureDestroyedPoints / (float)battleTotalStructuresDestroyed);
 					sr.unitsBuild.value  		  = ((float)sp.Value.UnitsCreatedPoints / (float)battleTotalUnitsCreated);
 					sr.unitsLost.value  		  = ((float)sp.Value.UnitsLostPoints / (float)battleTotalUnitsDestroyed);
-					sr.unitsDestroyed.value  	  = ((float)sp.Value.UnitsDestroyedPoints / (float)battleTotalUnitsDestroyed);			
+					sr.unitsDestroyed.value  	  = ((float)sp.Value.UnitsKillsPoints / (float)battleTotalUnitsDestroyed);	
+					sr.techsResearched.value  	  = ((float)sp.Value.UpgradePoints / (float)battleTotalUpgradePoints);	
 
 					positionYInitial -= diferrenceBetweenLabels;
 				}
@@ -158,7 +199,7 @@ public class ShowScore : MonoBehaviour
 		);
 	}
 
-	protected void BattleTotals (int totalGold, int totalMana, int totalSpent, int totalUnitsCreated, int totalUnitsDestroyed, int totalStructuresBuild, int totalStructuresDestroyed)
+	protected void BattleTotals (int totalGold, int totalMana, int totalSpent, int totalUnitsCreated, int totalUnitsDestroyed, int totalStructuresBuild, int totalStructuresDestroyed, int totalUpgradePoints)
 	{
 
 		Dictionary<int, ScorePlayer> players = new Dictionary<int, ScorePlayer>();
@@ -180,13 +221,14 @@ public class ShowScore : MonoBehaviour
 
 			foreach (KeyValuePair<int, ScorePlayer> sp in players)
 			{
-				totalGold +=  sp.Value.GoldCollectedPoints;
-				totalMana +=  sp.Value.ManaCollectedPoints;
-				totalSpent +=  sp.Value.ResourcesSpentPoints;
-				totalUnitsCreated +=  sp.Value.UnitsCreatedPoints;
-				totalUnitsDestroyed +=  sp.Value.UnitsDestroyedPoints;
-				totalStructuresBuild +=  sp.Value.StructureCreatedPoints;
-				totalStructuresDestroyed +=  sp.Value.StructureDestroyedPoints;
+				totalGold					+= sp.Value.GoldCollectedPoints;
+				totalMana 					+= sp.Value.ManaCollectedPoints;
+				totalSpent					+= sp.Value.ResourcesSpentPoints;
+				totalUnitsCreated 			+= sp.Value.UnitsCreatedPoints;
+				totalUnitsDestroyed 		+= sp.Value.UnitsKillsPoints;
+				totalStructuresBuild 		+= sp.Value.StructureCreatedPoints;
+				totalStructuresDestroyed 	+= sp.Value.StructureDestroyedPoints;
+				totalUpgradePoints 			+= sp.Value.UpgradePoints;
 			}							
 		}
 		);
@@ -228,5 +270,26 @@ public class ShowScore : MonoBehaviour
 				}
 			}
 			);		
+	}
+
+	private void SaveMyTotal(ScorePlayer sp)
+	{
+		PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
+		
+		pbDAO.CreatePlayerBattle (ConfigurationData.player, ConfigurationData.battle,
+		                          (playerBattle, message) =>
+		                          {
+										playerBattle.PScore = sp.TotalScore;
+			
+										pbDAO.UpdatePlayerBattle (playerBattle,
+										                          (playerBattle_update, message_update) =>
+										                          {
+											if (playerBattle_update != null)
+												
+												Debug.Log ("message: " + message);
+											else
+												Debug.Log ("salvou playerBattle" + "inserir contagem de pontos aqui");
+										});
+									});
 	}
 }

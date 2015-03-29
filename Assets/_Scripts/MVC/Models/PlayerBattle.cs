@@ -111,17 +111,8 @@ namespace Model {
 		public int IdPlayer;
 		public int IdBattle;
 		public Battle battle;
-
+		public int PScore;
 		public bool BlWin;
-		//public int NrUnitKillsScore;
-		//public int NrUnitKilledScore;
-		//public int NrUnitCreatedScore;
-		//public int NrBuildingCreatedScore;
-		//public int NrBuildingKillsScore;
-		//public int NrBuildingKilledScore;
-		//public int NrGatheredResources;
-		//public int NrAverageUnusedResources;
-		//public int NrWorkersCreated;
 
 		public PlayerBattle () {}
 
@@ -133,6 +124,7 @@ namespace Model {
 			this.IdPlayerBattle = bb.IdPlayerBattle;
 			this.IdBattle       = bb.IdBattle;
 			this.BlWin          = bb.BlWin;
+			this.PScore         = bb.PScore;
 
 			this.battle = bb.battle;
 		}

@@ -182,6 +182,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public bool WasRemoved { get; protected set; }	
 	public int group = -1;	
 	public ResourcesManager costOfResources;
+	public int totalResourceCost {get {return costOfResources.Rocks + costOfResources.Mana;}}
 	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
 	private bool wasInitialized = false;
 	public GameObject model;
@@ -220,12 +221,13 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		if (wasInitialized)	return;
 
 		wasInitialized = true;
-		techTreeController =  ComponentGetter.Get<TechTreeController> ();
-		statsController = ComponentGetter.Get<StatsController> ();
-		hudController   = ComponentGetter.Get<HUDController> ();
-		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-		eventController    = ComponentGetter.Get<EventController> ();
-		minimapController = ComponentGetter.Get<MiniMapController>();		
+		techTreeController	=  ComponentGetter.Get<TechTreeController> ();
+		statsController 	= ComponentGetter.Get<StatsController> ();
+		hudController   	= ComponentGetter.Get<HUDController> ();
+		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
+		eventController    	= ComponentGetter.Get<EventController> ();
+		minimapController 	= ComponentGetter.Get<MiniMapController>();		
+		selectionController = ComponentGetter.Get<SelectionController>();
 		Health = MaxHealth;
 
 

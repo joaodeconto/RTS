@@ -17,7 +17,6 @@ public class InternalMainMenu : MonoBehaviour
 	public GameObject goMainMenu;
 	public UILabel PlayerLabel;
 	public UISprite avatarImg;
-	private bool canQuit = false;	
 	public UILabel CurrentCrystalsLabel;
 	public UILabel CreatedUnitsLabel;
 	public UILabel RankingLabel;	

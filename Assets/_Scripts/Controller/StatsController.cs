@@ -73,7 +73,13 @@ public class StatsController : MonoBehaviour
 			
 			unit.TargetingEnemy (null);
 			unit.UnFollow ();
-			
+
+			if (unit.moveAttack)
+			{			
+				unit.moveAttackDestination		 = destination;
+				unit.hasMoveAttackDestination	 = true;
+			}
+
 			if (keepFormation)
 			{
 				centerOfTroop = Math.CenterOfObjects (selectedStats.ToArray ());

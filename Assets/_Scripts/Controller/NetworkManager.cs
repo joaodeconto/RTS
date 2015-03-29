@@ -31,8 +31,8 @@ public class NetworkManager : Photon.MonoBehaviour {
     {
         Debug.Log("OnDisconnectedFromPhoton");
 
-        // Back to main menu
-        Application.LoadLevel(0);
+		GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
+		gm.hud.uiWaitingPlayers.SetActive(true);
     }
 
     public void OnPhotonPlayerConnected(PhotonPlayer player)

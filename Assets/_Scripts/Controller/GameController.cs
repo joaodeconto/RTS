@@ -32,8 +32,7 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<HUDController> ().Init ();
 		ComponentGetter.Get<FogOfWar> ().Init ();
 		ComponentGetter.Get<MiniMapController> ().Init ();
-//		ComponentGetter.Get<EnemyCluster> ().Init ();
-		
+
 		Score.LoadScores (
 			() => 
 			{

@@ -53,10 +53,10 @@ public class ResourcesManager
 			Mana += numberOfResources;
 			
 			if (battle != null)
-//			{
+			{
 //				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, m_mana);
-				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, m_mana, battle.IdBattle);
-//			}
+				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, numberOfResources, battle.IdBattle);
+			}
 		}
 	}
 	
@@ -66,9 +66,6 @@ public class ResourcesManager
 		
 		Rocks -= resourceCost.Rocks;
 		Mana  -= resourceCost.Mana;		
-		
-//		Score.SubtractScorePoints (DataScoreEnum.ResourcesGathered, resourceCost.Rocks, battle.IdBattle);
-//		Score.SubtractScorePoints (DataScoreEnum.CurrentCrystals, resourceCost.Mana, battle.IdBattle);
 	}
 
 	public bool CanBuy (ResourcesManager resourceCost)

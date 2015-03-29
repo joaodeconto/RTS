@@ -7,28 +7,28 @@ using Visiorama;
 
 public struct DataScoreEnum
 {
-	public const string CurrentCrystals = "current-crystals";
-	public const string TotalCrystals = "total-crystals";
-
-	public const string ResourcesGathered = "Resources gathered";
+	public const string CurrentCrystals		= "current-crystals";
+	public const string TotalCrystals 		= "total-crystals";	
+	public const string Victory		        = "victory";
+	public const string Defeat  			= "defeat";
+	public const string TotalTimeElapsed  	= "time-elapsed";
+	public const string ResourcesGathered 	= "Resources gathered";
 	
-	public const string UnitsCreated = "units-created";
-	public const string BuildingsCreated = "buildings-created";
-	public const string XCreated = "-created"; //example use Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
+	public const string UnitsCreated 		= "units-created";
+	public const string BuildingsCreated	= "buildings-created";
+	public const string UpgradesCreated		= "upgrades-created";
+	public const string UnitsLost 			= "units-lost";
+	public const string BuildingsLost 		= "buildings-lost";	
+	public const string UnitsKilled 		= "units-killed";
+	public const string BuildingsDestroyed  = "buildings-destroyed";
 
-
-	public const string UnitsLost = "units-lost";
-	public const string BuildingsLost = "buildings-lost";
-	public const string XLost = "-lost"; //example of use Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
-	
-	public const string UnitsKilled = "Units killed";
-	public const string XKilled = " killed";
-	public const string DestroyedBuildings = "destroyed-buildings";
-	public const string XDestroyed = " destroyed";
-	
-	public const string Victory = "victory";
-	public const string Defeat  = "defeat";
-	public const string TotalTimeElapsed  = "time-elapsed";
+	public const string XUpgraded			= "-created";
+	public const string XBuilt				= "-built";
+	public const string XCreated 			= "-created"; //example use Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
+	public const string XBuildLost		    = "-build lost"; //example of use Score.AddScorePoints (this.category + DataScoreEnum.XLost, 1);
+	public const string XUnitLost 	   		= "-unit lost";
+	public const string XKilled			    = "-killed";
+	public const string XDestroyed 			= "-destroyed";
 }
 
 public class Score : MonoBehaviour
@@ -39,6 +39,7 @@ public class Score : MonoBehaviour
 	private Model.Player player;
 	private Model.Battle battle;
 	private DataScoreDAO dataScoreDAO;
+	private PlayerBattleDAO playerBattleDAO; 
 	
 	public delegate void CallbackGetDataScore (Model.DataScore score);
 	public delegate void OnLoadScoreCallback ();
@@ -48,19 +49,9 @@ public class Score : MonoBehaviour
 	public delegate void OnLoadRanking (List <Model.DataScoreRanking> ranking);
 
 	private bool wasInitialized = false;
-	private bool NeedToSave = false;
+	public bool NeedToSave = false;
 	public bool isSaving = false;
 
-	public void Update ()
-	{
-//		if (NeedToSave && !isSaving)
-//		{
-//			NeedToSave = false;
-//			isSaving = true;
-//			Invoke ("SaveScore", 10.0f);
-//		}
-	}
-	
 	public void SaveScore ()
 	{
 		isSaving = true;
@@ -91,6 +82,7 @@ public class Score : MonoBehaviour
 		}
 
 		dataScoreDAO = ComponentGetter.Get <DataScoreDAO> ();
+		playerBattleDAO = ComponentGetter.Get <PlayerBattleDAO> ();
 
 		return this;
 	}
@@ -194,7 +186,7 @@ public class Score : MonoBehaviour
 	
 	private void _LoadRanking (OnLoadRanking cb)
 	{
-		dataScoreDAO.LoadRankingScores
+		playerBattleDAO.LoadBattleRankingScores
 		(
 			 (_rankingScores) =>
 			 {

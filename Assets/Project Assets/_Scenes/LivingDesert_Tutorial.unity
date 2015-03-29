@@ -27152,7 +27152,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400030, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: resources.m_rocks
-      value: 200
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11400014, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: visualizationSize.x
@@ -27580,6 +27580,14 @@ Prefab:
     - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: clusterModels.Array.data[0].triggerDemmand
       value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400030, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: resources.m_mana
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400030, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: gameTime
+      value: 300
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
@@ -119134,8 +119142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6a830f3446549408e3bc23cf6bc4be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingRocks: 0
   pauseGame: 0
-  gameTime: 0
+  gameTime: 300
   teams:
   - name: Time 1
     colors:
@@ -119180,8 +119189,8 @@ MonoBehaviour:
     - {r: .338235319, g: .285544693, b: .218858138, a: 1}
     initialPosition: {fileID: 716829499}
   resources:
-    m_mana: 5
-    m_rocks: 200
+    m_mana: 0
+    m_rocks: 0
   hud:
     labelRocks: {fileID: 910777926}
     labelMana: {fileID: 1238666507}
@@ -119193,7 +119202,7 @@ MonoBehaviour:
     labelTime: {fileID: 627830095}
     uiLostMainBaseObject: {fileID: 470723414}
   Triggerflag: 1
-  scoreCounting: 1
+  clockPontuationLimit: 0
 --- !u!1 &1572121320
 GameObject:
   m_ObjectHideFlags: 0
