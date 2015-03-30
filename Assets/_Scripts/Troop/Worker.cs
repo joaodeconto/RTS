@@ -72,6 +72,7 @@ public class Worker : Unit
 	public int lastResourceId;
 	protected Resource lastResource;
 	protected bool isSettingWorkerNull;
+	private bool workerInitialized = false;
 
 	protected FactoryBase factoryChoose, lastFactory;
 	protected bool isMovingToFactory;
@@ -81,6 +82,9 @@ public class Worker : Unit
 
 	public override void Init ()
 	{
+		if (workerInitialized)	return;
+		
+		workerInitialized = true;
 		base.Init ();
 		moveAttack = false;
 		resourceId = -1;
@@ -467,7 +471,7 @@ public class Worker : Unit
 			ghostFactory.AddComponent<GhostFactory>().Init (this, factoryConstruct);
 		}
 		else
-			eventController.AddEvent("out of funds", factoryConstruct.factory.name);
+			eventController.AddEvent("out of funds", hudController.rocksFeedback ,factoryConstruct.factory.name);
 	}
 
 	public void SetResource (Resource newResource)

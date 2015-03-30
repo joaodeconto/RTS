@@ -85,10 +85,11 @@ public class FactoryBase : IStats, IDeathObservable
 	private int queueTicket			 = 0;
 	private int queueCounter	 	 = 0;
 	private int checkPopCouter	 	 = 0;
+	private bool factoryInitialized = false;
 	
 	[HideInInspector]
 	public bool wasVisible = false;
-	private bool alreadyCheckedMaxPopulation	{get { return checkPopCouter > 3;}}
+	private bool alreadyCheckedMaxPopulation	{get { return checkPopCouter > 1;}}
 	private bool needHouse = false;
 	protected float realRangeView;	
 	public bool IsDamaged {	get	{ return Health != MaxHealth;}}
@@ -110,7 +111,8 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	public override void Init ()
 	{
-	
+		if(factoryInitialized) return;
+		factoryInitialized = true;	
 		base.Init();
 
 		timer = 0;
@@ -193,7 +195,7 @@ public class FactoryBase : IStats, IDeathObservable
 						if (!alreadyCheckedMaxPopulation)
 						{
 							checkPopCouter++;
-							eventController.AddEvent("need more houses", transform.position);
+							eventController.AddEvent("need more houses", hudController.houseFeedback);
 						}
 						needHouse = true;
 						return ;
@@ -532,7 +534,7 @@ public class FactoryBase : IStats, IDeathObservable
 																}
 																
 																else
-																	eventController.AddEvent("out of funds", unitFactory.unit.category);																
+																	eventController.AddEvent("out of funds", hudController.rocksFeedback, unitFactory.unit.category);																
 
 															}
 														}
@@ -609,7 +611,7 @@ public class FactoryBase : IStats, IDeathObservable
 																	}
 																	
 																	else
-																		eventController.AddEvent("out of funds", upgrade.upgrade.name);
+																			eventController.AddEvent("out of funds", hudController.rocksFeedback, upgrade.upgrade.name);
 																}	
 															}
 														});
@@ -854,10 +856,7 @@ public class FactoryBase : IStats, IDeathObservable
 			if (!string.IsNullOrEmpty (encodedBattle))
 			{
 				Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
-
-//				Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1);
 				Score.AddScorePoints (DataScoreEnum.UpgradesCreated, 1, battle.IdBattle);
-//				Score.AddScorePoints (unitName + DataScoreEnum.XCreated, 1);
 				Score.AddScorePoints (upgrade.name + DataScoreEnum.XUpgraded, upgrade.costOfResources.Rocks + upgrade.costOfResources.Mana, battle.IdBattle);
 			}
 

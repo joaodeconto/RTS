@@ -13,8 +13,11 @@ public class EventController : MonoBehaviour
 		public string Message;
 		public string spriteName;
 		public Vector3 eventPosition;
+		public GameObject hudFeedback;
 	}
 
+	public float timer = 0f;
+	public bool setTimerCount = false;
 	public List<EventController.Event> events;
 
 	HUDController hudController;
@@ -35,13 +38,7 @@ public class EventController : MonoBehaviour
 		if(string.IsNullOrEmpty(spriteName))
 			spriteName = e.spriteName;
 		
-		hudController.CreateEnqueuedButtonInInspector ( "event-" + Time.time,
-		                                               "Events",
-		                                               ht,
-		                                               spriteName                                             		
-		
-		
-													  );
+		hudController.CreateEnqueuedButtonInInspector ( "event-" + Time.time, "Events", ht,spriteName);
 	}
 
 	public void AddEvent (string eventName, Vector3 eventPosition, string param = "", string spriteName = "" )
@@ -54,22 +51,29 @@ public class EventController : MonoBehaviour
 		if(string.IsNullOrEmpty(spriteName))
 			spriteName = e.spriteName;
 
-		hudController.CreateEnqueuedButtonInInspector ( "event-" + Time.time,
-														"Events",
-														ht,
-														spriteName,
+		hudController.CreateEnqueuedButtonInInspector ( "event-" + Time.time, "Events", ht, spriteName,
 		                                                (ht_dcb) => 
 		                                               {
 															if (eventPosition != null)
 															eventPosition.y = 0.0f;
 																											
 															Math.CenterCameraInObject (Camera.main, eventPosition);
-														}
+														});
+	}
 
+	public void AddEvent (string eventName, GameObject hudFeedback, string param = "", string spriteName = "" )
+	{
+		EventController.Event e = GetEvent(eventName);
+		
+		Hashtable ht = new Hashtable();
+		ht["message"] = string.Format(e.Message, param);
+		
+		if(string.IsNullOrEmpty(spriteName))
+			spriteName = e.spriteName;
 
+		hudFeedback.SetActive(true);
 
-
-													  );
+		hudController.CreateEnqueuedButtonInInspector ( "event-" + Time.time, "Events", ht, spriteName);
 	}
 
 	protected EventController.Event GetEvent(string name)

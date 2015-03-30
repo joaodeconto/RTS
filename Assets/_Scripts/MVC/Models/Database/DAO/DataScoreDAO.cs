@@ -220,7 +220,6 @@ public class DataScoreDAO : MonoBehaviour
 				Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
 				lScores.Add (de.Value);
 			}
-//			*/
 			callback (scores);
 		});
 	}

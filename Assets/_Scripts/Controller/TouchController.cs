@@ -181,7 +181,6 @@ public class TouchController : MonoBehaviour
 
 			if(touchTimer > 0.3f) touchHold = true;
 			holdCounting = false;
-			Debug.LogWarning(touchTimer);
 			touchTimer = 0;
 		}
 		else

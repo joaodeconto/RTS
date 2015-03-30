@@ -539,7 +539,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				Debug.Log ("LOSEGAME: " + loseGame);
 			}
 
-			int realTimePoints = Mathf.Max( clockPontuationLimit - (int)gameTime, 0);
+//			int realTimePoints = Mathf.Max( clockPontuationLimit - (int)gameTime, 0);
 			Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);
 			
 			score.SaveScore();

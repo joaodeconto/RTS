@@ -100,7 +100,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	public GameObject pref_selfFeedback;
 	public GameObject pref_attackFeedback;
 
-
+	public GameObject rocksFeedback;
+	public GameObject manaFeedback;
+	public GameObject houseFeedback;
 
 	private GameObject oldFeedback;
 	private TouchController touchController;
@@ -299,7 +301,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		
 		if(!string.IsNullOrEmpty(textureName))
 			ht["textureName"] = textureName;
-		
+
 		MessageQueue mq = messageInfoManager.GetQueue(queueName);
 		mq.AddMessageInfo ( buttonName, ht,
 		                   onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);

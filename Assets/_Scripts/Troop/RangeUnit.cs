@@ -16,10 +16,13 @@ public class RangeUnit : Unit
 	public AnimationClip projectileAttackAnimation;
 	public float projectileAnimationSync;
 	public bool projectileAttacking {get; set;}
-	public int projectileAnimating 	{get; set;}		           
+	public int projectileAnimating 	{get; set;}		
+	private bool rangeInitialized = false;
 
 	public override void Init ()
 	{
+		if(rangeInitialized) return;
+		rangeInitialized = true;	
 		dummyRangeObject.SetActive(true);
 		dummyRotation = dummyRangeObject.transform.localRotation;
 		base.Init ();

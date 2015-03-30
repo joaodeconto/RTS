@@ -474,6 +474,9 @@ MonoBehaviour:
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   pref_selfFeedback: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   pref_attackFeedback: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
+  rocksFeedback: {fileID: 0}
+  manaFeedback: {fileID: 0}
+  houseFeedback: {fileID: 0}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -832,43 +835,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeacf3f39fe51bf418444dc35a79112b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timer: 0
+  setTimerCount: 0
   events:
   - Name: building finish
     Message: '{0} construction complete'
     spriteName: 
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
   - Name: out of funds
     Message: Insufficient resources
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
   - Name: reach enqueued units
     Message: Training queue is full
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
   - Name: need more houses
     Message: 'need more houses '
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
   - Name: reach max population
     Message: max population reached
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
   - Name: create unit
     Message: '{0} unit train complete'
     spriteName: 
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
   - Name: being attacked
     Message: we are under attack
     spriteName: Atk
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
   - Name: objective completed
     Message: '{0} Completed'
     spriteName: 
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
   - Name: standard message
     Message: '{0}'
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -927,6 +941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6a830f3446549408e3bc23cf6bc4be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingRocks: 300
   pauseGame: 0
   gameTime: 0
   teams:
@@ -973,8 +988,8 @@ MonoBehaviour:
     - {r: .647058845, g: .647058845, b: .647058845, a: 1}
     initialPosition: {fileID: 0}
   resources:
-    m_mana: 5
-    m_rocks: 300
+    m_mana: 0
+    m_rocks: 0
   hud:
     labelRocks: {fileID: 0}
     labelMana: {fileID: 0}
@@ -986,7 +1001,7 @@ MonoBehaviour:
     labelTime: {fileID: 0}
     uiLostMainBaseObject: {fileID: 0}
   Triggerflag: 1
-  scoreCounting: 1
+  clockPontuationLimit: 0
 --- !u!114 &11400032
 MonoBehaviour:
   m_ObjectHideFlags: 1

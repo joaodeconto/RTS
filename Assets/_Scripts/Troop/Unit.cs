@@ -104,6 +104,7 @@ public class Unit : IStats, IMovementObservable,
 	protected int normalAvoidancePriority;
 	protected Hashtable loadAttribs = new Hashtable();
 	protected InteractionController interactionController;
+	private bool unitInitialized = false;
 
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
@@ -117,6 +118,9 @@ public class Unit : IStats, IMovementObservable,
 	#region Init
 	public override void Init ()
 	{
+		if (unitInitialized)	return;
+		
+		unitInitialized = true;
 		base.Init();
 		moveAttack = true;
 
