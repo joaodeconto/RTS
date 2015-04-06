@@ -1,8 +1,6 @@
 using UnityEngine;
-
 using System;
 using System.Collections;
-
 using Visiorama;
 
 public class PlayerDAO : MonoBehaviour
@@ -41,7 +39,8 @@ public class PlayerDAO : MonoBehaviour
 		DB.Player dbPlayer = new DB.Player () { SzName     = username,
 												SzPassword = password,
 												SzEmail    = email,
-												IdFacebookAccount = idFacebook};
+												IdFacebookAccount = idFacebook,
+												};
 		db.Create (dbPlayer,
 		(response) =>
 		{

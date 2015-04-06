@@ -174,18 +174,7 @@ public class SelectionController : MonoBehaviour
 			{
 				return false;			
 			}
-
-			if (hit.transform.CompareTag ("Resource") && statsController.selectedStats.Count == 0)
-			{
-				Debug.Log(statsController.selectedStats.Count);
-
-				Resource selectedResource = hit.transform.GetComponent<Resource>();
-				statsController.DeselectAllStats ();
-				statsController.SelectStat (selectedResource, true);
-								
-				return true;
-				
-			}
+		
 
 			if (hit.transform.CompareTag ("Unit")) // return true
 			{
@@ -530,7 +519,7 @@ public class SelectionController : MonoBehaviour
 						}
 					}				
 
-					if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House")|| hit.transform.CompareTag ("Depot"))
+					if (hit.transform.CompareTag ("TribeCenter")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House")|| hit.transform.CompareTag ("Depot"))
 					{
 						FactoryBase factory = hit.transform.GetComponent<FactoryBase>();
 						
@@ -549,7 +538,37 @@ public class SelectionController : MonoBehaviour
 							return true;
 						}
 					}
-				}
+
+					if(hit.transform.CompareTag ("Obelisk"))
+					{
+						FactoryBase factory = hit.transform.GetComponent<FactoryBase>();
+						
+						if (gameplayManager.IsSameTeam (factory))
+						{
+							if (statsController.selectedStats.Count > 0)
+							{
+								bool hasWorkerInSelection = false;
+
+								foreach (IStats stat in statsController.selectedStats)
+								{
+									Worker worker = stat as Worker;									
+									if (worker == null) continue;
+									hasWorkerInSelection = true;
+									interactionController.Interaction (touchController.GetFinalRaycastHit.transform, true);
+								}
+
+								if(hasWorkerInSelection) return false;
+							}
+
+							else
+							{
+								statsController.SelectStat (factory, true);
+								statsController.PlaySelectSound ();
+								return true;
+							}									
+						}
+					}
+				}			
 				
 				interactionController.Interaction (touchController.GetFinalRaycastHit.transform, true);
 			}

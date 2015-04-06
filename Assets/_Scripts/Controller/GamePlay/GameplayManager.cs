@@ -77,13 +77,12 @@ public class GameplayManager : Photon.MonoBehaviour
 	protected bool beingAttacked = false;
 	public int MyTeam {get; protected set;}
 	public int Allies {get; protected set;}
-	public int Triggerflag = 1;
-	private bool scoreCounting = true;
+	public bool scoreCounting = true;
 	public int clockPontuationLimit;
 	protected NetworkManager network;
 	protected TouchController touchController;
 	protected SelectionController interactionController;
-	protected Score score;
+	public UILabel loadingMessage;
 
 	#endregion
 
@@ -95,9 +94,11 @@ public class GameplayManager : Photon.MonoBehaviour
 		interactionController = ComponentGetter.Get<SelectionController>();
 
 		hud.uiWaitingPlayers.SetActive(true);
+		loadingMessage = hud.uiWaitingPlayers.GetComponentInChildren<UILabel>();
 	
 		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
 		{
+			loadingMessage.text = "synching tribes";
 			gamestarted = false;
 			GameObject tutorialC = GameObject.Find ("Tutorial Manager");
 			tutorialC.SetActive (false);
@@ -112,12 +113,13 @@ public class GameplayManager : Photon.MonoBehaviour
 
 		else
 		{
+			loadingMessage.text = "loading";
 			MyTeam = 0;
 			Allies = 0;
 			numberOfTeams = 2;
 			ComponentGetter.Get<EnemyCluster> ().Init ();
 			pauseGame = true;
-			Invoke("GameStart",2);
+			Invoke("GameStart",2f);
 		}
 
 		TribeInstiateNetwork();
@@ -146,6 +148,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiDefeatObject.SetActive (false);
 		hud.uiVictoryObject.SetActive (false);
 		hud.uiLostMainBaseObject.SetActive (false);
+		loadingMessage.text = "loading";
 
 		if (mode != Mode.Tutorial) CallMySceneReady();
 	}
@@ -156,7 +159,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		if (readyCounter >= numberOfPlayers)
 		{
 			GameStart();
-			CancelInvoke("CheckStart");
+
 		}
 	}
 
@@ -195,7 +198,6 @@ public class GameplayManager : Photon.MonoBehaviour
 				Math.CenterCameraInObject (Camera.main, teams[i].initialPosition.position);
 			}
 		}
-		score = ComponentGetter.Get <Score> ("$$$_Score");
 		resources.DeliverResources (Resource.Type.Rock, startingRocks);
 		GamePaused(false);
 		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
@@ -208,39 +210,22 @@ public class GameplayManager : Photon.MonoBehaviour
 	void Update ()
 	{
 		if(gamestarted)
-		{
+		{	
 			if(scoreCounting)
-			{
-				ClockGameplay();				
+			{				
+				hud.labelMana.text = resources.Mana.ToString ();
+				hud.labelRocks.text = resources.Rocks.ToString ();
+				hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
+				ClockGameplay();
 			}
 		}
 		else CheckGameStart();
-				
-		hud.labelMana.text = resources.Mana.ToString ();
-		hud.labelRocks.text = resources.Rocks.ToString ();
-		hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
-				
+		
 		if ((loseGame || winGame))
 		{
 			hud.uiVictoryObject.SetActive (winGame);
 			hud.uiDefeatObject.SetActive (loseGame);		
-			//			hud.buttonMatchScore.gameObject.SetActive (true);
-			//			
-			//			DefaultCallbackButton dcb = ComponentGetter.Get <DefaultCallbackButton> (hud.buttonMatchScore.transform, false);
-			//			
-			//			dcb.Init
-			//			(
-			//				null,
-			//				(ht_dcb) => 
-			//				{
-			//					if (PhotonNetwork.room != null)
-			//						PhotonNetwork.LeaveRoom ();
-			//					
-			//					Application.LoadLevel (0);
-			//				}
-			//			);
 		}
-
 	}
 	#endregion
 		
@@ -517,6 +502,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			bm.WonTheGame ();
 		}
+		scoreCounting = false;
 
 		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
 		string encodedPlayer = (string)pw.GetPropertyOnPlayer ("player");
@@ -541,7 +527,8 @@ public class GameplayManager : Photon.MonoBehaviour
 
 //			int realTimePoints = Mathf.Max( clockPontuationLimit - (int)gameTime, 0);
 			Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);
-			
+
+			Score score = score = ComponentGetter.Get <Score> ("$$$_Score");
 			score.SaveScore();
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();

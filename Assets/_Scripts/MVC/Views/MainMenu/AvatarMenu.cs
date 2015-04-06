@@ -22,23 +22,6 @@ public class AvatarMenu : MonoBehaviour
 	{
 		Close ();
 	}
-
-//	public void AvatarChange()
-//	{
-//		foreach (Transform button in buttons)
-//		{
-//
-//			dcb = button.gameObject.AddComponent<DefaultCallbackButton>();
-//			dcb.Init(null, (ht_dcb)=>
-//			         {
-//				Transform trnsAvatar = button.FindChild("Sprite (AVATAR)");
-//				avatarImg.spriteName = trnsAvatar.GetComponent<UISprite>().spriteName;
-//				Debug.LogWarning(trnsAvatar.GetComponent<UISprite>().spriteName);
-//				avatarImg.Update();
-//			});
-//		}
-//	}
-//					
 					
 	public void Open ()
 	{
@@ -64,12 +47,11 @@ public class AvatarMenu : MonoBehaviour
 					
 				avatarImg.spriteName = (string)ht_dcb["avatarImg"];
 				PlayerPrefs.SetString("Avatar", avatarImg.spriteName);
-
+				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper>();
+				pw.SetPlayer (ConfigurationData.player.SzName, true);
 				});
 
 		}
-
-
 		
 		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
 		

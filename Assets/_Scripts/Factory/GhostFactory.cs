@@ -105,12 +105,7 @@ public class GhostFactory : MonoBehaviour
 		Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit;
 		NavMeshHit navHit;
-		
-		
-		// Patch transform com hit.point
-		//	transform.position = Vector3.zero;
-		
-		
+
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, terrainLayer))
 		{
 			transform.position = hit.point;
@@ -124,24 +119,7 @@ public class GhostFactory : MonoBehaviour
 		{
 			if (touchController.idTouch == TouchController.IdTouch.Id0)
 			{
-				//		collideOnNavMeshLayer = NavMesh.SamplePosition (hit.point, out navHit, 1f, 1);
-				
-				
-				
-				//				Debug.Break ();
-				
-				#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
-				if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)
-					#else
-					if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)
-						#endif
-				{
-					Apply ();
-				}
-				else
-				{
-					
-				}
+				if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)Apply ();
 			}
 			else
 			{
@@ -166,9 +144,7 @@ public class GhostFactory : MonoBehaviour
 		if (!other.name.Equals ("Terrain"))
 		{
 			numberOfCollisions++;
-		}
-		
-		
+		}		
 	}
 	
 	void OffCollider (Collider other)
@@ -176,10 +152,7 @@ public class GhostFactory : MonoBehaviour
 		if (!other.name.Equals ("Terrain"))
 		{
 			numberOfCollisions--;
-		}
-		
-		
-		
+		}		
 	}
 	
 	void Apply ()
@@ -197,34 +170,27 @@ public class GhostFactory : MonoBehaviour
 			
 			if (isCapsuleCollider)
 			{
-				GetComponent<CapsuleCollider> ().radius = realRadius;
-				
+				GetComponent<CapsuleCollider> ().radius = realRadius;				
 				helperColliderGameObject = gameObject;
 			}
 			else
 			{
-				thisFactory.helperCollider.radius = realRadius;
-				
+				thisFactory.helperCollider.radius = realRadius;				
 				helperColliderGameObject = thisFactory.helperCollider.gameObject;
 			}
 			
 			Destroy (helperColliderGameObject.rigidbody);
-			Destroy (helperColliderGameObject.GetComponent<HelperColliderDetect> ());
-			
+			Destroy (helperColliderGameObject.GetComponent<HelperColliderDetect> ());			
 			collider.isTrigger = false;
-			thisFactory.enabled = true;
-			
+			thisFactory.enabled = true;			
 			thisFactory.name = correctName;
-			
-			thisFactory.GetComponent<PaintAgent>().Paint ();
-			
+				
 			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
 			
 			thisFactory.photonView.RPC ("Instance", PhotonTargets.All);
 			gameObject.SendMessage ("OnInstance", SendMessageOptions.DontRequireReceiver);
 			
 			thisFactory.costOfResources = factoryConstruction.costOfResources;
-			
 			worker.SetMoveToFactory (thisFactory);
 			StatsController troopController = ComponentGetter.Get<StatsController> ();
 			foreach (Unit unit in troopController.selectedStats)
@@ -236,8 +202,7 @@ public class GhostFactory : MonoBehaviour
 				}
 			}
 			
-			DestroyOverdrawModel ();
-			
+			DestroyOverdrawModel ();			
 			Destroy(this);
 		}
 		else
@@ -251,7 +216,8 @@ public class GhostFactory : MonoBehaviour
 		Quaternion factoryRotation = thisFactory.model.transform.rotation;
 		factoryRotation.y = randomRotation;
 		overdrawModel = Instantiate (thisFactory.model, thisFactory.model.transform.position, factoryRotation) as GameObject;
-		overdrawModel.transform.parent = thisFactory.model.transform.parent;
+		overdrawModel.transform.parent = thisFactory.transform;
+		thisFactory.model.transform.rotation = factoryRotation;
 		thisFactory.model.SetActive (false);
 		
 		foreach (Renderer r in overdrawModel.GetComponentsInChildren<Renderer>())
@@ -280,11 +246,7 @@ public class GhostFactory : MonoBehaviour
 	
 	void DestroyOverdrawModel ()
 	{
-		Quaternion factoryRotation = thisFactory.model.transform.rotation;
-		factoryRotation.y = randomRotation;
-		thisFactory.model.transform.rotation = factoryRotation;
 		thisFactory.model.SetActive (true);
-
 		Destroy (overdrawModel);
 	}
 }

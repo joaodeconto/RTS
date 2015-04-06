@@ -78,7 +78,8 @@ public class RangeUnit : Unit
 	}
 
 	IEnumerator Attack ()
-	{			
+	{	
+		SfxAtk();
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * NavAgent.angularSpeed);
 
@@ -98,9 +99,8 @@ public class RangeUnit : Unit
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);											
 			IsAttacking = true;			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
-		}
-			
-		SfxAtk();
+		}			
+
 		IsAttacking = false;
 	}
 

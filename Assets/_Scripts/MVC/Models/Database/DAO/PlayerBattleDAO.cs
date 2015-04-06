@@ -52,7 +52,7 @@ public class PlayerBattleDAO : MonoBehaviour
 		db.Read (dbBattleType,
 		(response) =>
 		{
-			Debug.Log ("Chegou");
+//			Debug.Log ("Chegou");
 			
 			Model.BattleType battleType = null;
 			if ((response as DB.BattleType) != null)
@@ -193,7 +193,7 @@ public class PlayerBattleDAO : MonoBehaviour
 			if ((response as List <Model.DataScoreRanking>) != null)
 			{
 				lDataScoreRanking = (response as List <Model.DataScoreRanking>);		
-									Debug.Log ("lDataScoreRanking.Count: " + lDataScoreRanking.Count);
+//									Debug.Log ("lDataScoreRanking.Count: " + lDataScoreRanking.Count);
 			}			
 //			Debug.Break ();
 			callback (lDataScoreRanking);			

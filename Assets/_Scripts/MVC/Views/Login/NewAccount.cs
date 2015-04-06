@@ -27,6 +27,10 @@ public class NewAccount : IView
 
 	public NewAccount Init ()
 	{
+		if (!PlayerPrefs.HasKey("Avatar"))
+		{
+			PlayerPrefs.SetString("Avatar", "AVA_Gnarl");
+		}
 
 		Login login = ComponentGetter.Get<Login>();
 
@@ -35,11 +39,9 @@ public class NewAccount : IView
 				.Init (null,
 				       (ht_dcb) =>
 				       {
-					AvatarMenu.SetActive (true);
+							AvatarMenu.SetActive (true);
 
-				}
-				
-				);
+						});
 	
 
 
@@ -63,7 +65,6 @@ public class NewAccount : IView
 						wPass.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
 					}
-
 				
 					if (string.IsNullOrEmpty (password_confirmation.value) || password.value != password_confirmation.value)
 					{
@@ -77,8 +78,7 @@ public class NewAccount : IView
 						wUser.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
 						Debug.Log("invalid username");
-					}
-						
+					}						
 
 					if (!Regex.Match(email.value, @"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$").Success)
 					if (string.IsNullOrEmpty(email.value))
@@ -87,11 +87,9 @@ public class NewAccount : IView
 						Invoke ("CloseErrorMessage", 5.0f);
 						Debug.Log("invalid email");
 						return;
-
 					}
 
 					if (AcceptedTerms.value != true)
-
 					{
 						wTerm.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
@@ -100,19 +98,14 @@ public class NewAccount : IView
 					}
 
 					else 
-					{
-								
+					{								
 						Hashtable ht = new Hashtable ();
 						ht["username"]              = username.value;
 						ht["password"]              = password.value;
 						ht["email"]                 = email.value;
 
 						DoNewAccount(ht);
-
 						login.DoLogin(ht);
-
-
-
 					}
 				
 			});
@@ -132,39 +125,31 @@ public class NewAccount : IView
 
 	public void DoNewAccount (Hashtable ht)
 	{
-		string username = (string)ht["username"];
-		string password = (string)ht["password"];
-		string idFacebook = "";
-		string email    = (string)ht["email"];
+		string username 	= (string)ht["username"];
+		string password 	= (string)ht["password"];
+		string idFacebook 	= "";
+		string email    	= (string)ht["email"];
 
 		AccountAlreadyExists = false;
 		
 		PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
 				
-		playerDao.CreatePlayer (username, password, idFacebook, email,
+		playerDao.CreatePlayer (username, password, idFacebook, email, 
 		                        (player, message) =>
 		                        {
-			if (player == null)
-			{
-				AccountAlreadyExists = true;
-			}
-			else
-			{
-				Debug.Log ("Novo DB.Player");
-				
-				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-				
-				pw.SetPlayer (username, true);
-				pw.SetPropertyOnPlayer ("player", player.ToString ());
-								
-				Score.LoadScores
-				( () =>
-				{
-//					Score.SetScorePoints (DataScoreEnum.TotalCrystals,   NumberOfCoinsNewPlayerStartsWith, -1);
-//					Score.AddScorePoints (DataScoreEnum.CurrentCrystals, NumberOfCoinsNewPlayerStartsWith, -1);
-				});
-			}
-		});
+									if (player == null)
+									{
+										AccountAlreadyExists = true;
+									}
+									else
+									{
+										Debug.Log ("Novo DB.Player");
+										PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+										pw.SetPlayer (username, true);
+										pw.SetPropertyOnPlayer ("player", player.ToString ());
+														
+									}
+								});
 	}
 
 

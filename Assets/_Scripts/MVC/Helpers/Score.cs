@@ -12,7 +12,8 @@ public struct DataScoreEnum
 	public const string Victory		        = "victory";
 	public const string Defeat  			= "defeat";
 	public const string TotalTimeElapsed  	= "time-elapsed";
-	public const string ResourcesGathered 	= "Resources gathered";
+	public const string GoldGathered 		= "gold-gathered";
+	public const string ManaGathered 		= "mana-gathered";
 	
 	public const string UnitsCreated 		= "units-created";
 	public const string BuildingsCreated	= "buildings-created";
@@ -83,7 +84,6 @@ public class Score : MonoBehaviour
 
 		dataScoreDAO = ComponentGetter.Get <DataScoreDAO> ();
 		playerBattleDAO = ComponentGetter.Get <PlayerBattleDAO> ();
-
 		return this;
 	}
 

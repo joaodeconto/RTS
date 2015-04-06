@@ -34,6 +34,7 @@ GameObject:
   - 114: {fileID: 11400010}
   - 114: {fileID: 11400012}
   - 82: {fileID: 8200000}
+  - 114: {fileID: 11407562}
   m_Layer: 18
   m_Name: Obelisk
   m_TagString: Obelisk
@@ -174,7 +175,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -195,7 +196,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28.3879013, y: 0, z: 29.3496761}
+  m_LocalPosition: {x: -27.4012489, y: 8.41037941, z: -21.1261539}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400018}
@@ -602,7 +603,7 @@ MonoBehaviour:
   unitsToCreate: []
   upgradesToCreate: []
   keys: 
-  receiveResource: 2
+  receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100006}
     unfinishedObject: {fileID: 100006}
@@ -725,6 +726,22 @@ MonoBehaviour:
   ShowEventTriggers: 1
   numSubscriptions: 0
   audioSubscriptions: []
+--- !u!114 &11407562
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c66778b0e1eb214092be5283b2d61e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  maxResources: 144
+  numberOfResources: 144
+  resistance: 2
+  limitWorkers: 10
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -734,7 +751,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 3.01999998
+  m_Radius: 2.68000007
   m_Height: 4.98999977
   m_Direction: 1
   m_Center: {x: 0, y: -1.05999994, z: 0}

@@ -63,6 +63,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		PhotonPlayer player = PhotonNetwork.player;
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add ("ready", isReady);
+		someCustomPropertiesToSet.Add ("avatar", PlayerPrefs.GetString("Avatar"));
 		player.SetCustomProperties (someCustomPropertiesToSet);
 	}
 

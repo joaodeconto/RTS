@@ -41,22 +41,15 @@ public class ResourcesManager
 		{
 			Rocks += numberOfResources;
 			
-			if (battle != null)
-//			{
-//				Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberOfResources);
-				Score.AddScorePoints (DataScoreEnum.ResourcesGathered, numberOfResources, battle.IdBattle);
-//			}
+			if (battle != null)	Score.AddScorePoints (DataScoreEnum.GoldGathered, numberOfResources, battle.IdBattle);
 		}
 
 		if (resourceType == Resource.Type.Mana)
 		{
 			Mana += numberOfResources;
 			
-			if (battle != null)
-			{
-//				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, m_mana);
-				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, numberOfResources, battle.IdBattle);
-			}
+			if (battle != null) Score.AddScorePoints (DataScoreEnum.ManaGathered, numberOfResources, battle.IdBattle);
+
 		}
 	}
 	
@@ -84,9 +77,8 @@ public class ResourcesManager
 	}
 }
 
-public class Resource : IStats
+public class Resource : Photon.MonoBehaviour
 {
-
 	public enum Type
 	{
 		None,
@@ -118,8 +110,7 @@ public class Resource : IStats
 	public CapsuleCollider capsuleCollider { get; protected set; }
 
 	void Awake ()
-	{
-		hudController         = ComponentGetter.Get<HUDController> ();
+	{	
 		WorkersResistance	  = new Dictionary<Worker, int>();
 		capsuleCollider  	  = GetComponent<CapsuleCollider> ();
 	}
@@ -133,18 +124,15 @@ public class Resource : IStats
 				{
 					DiscountResources (worker.numberMaxGetResources);
 					if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
-					else Destroy (gameObject);
 					worker.GetResource (numberOfResources);
 				}
 				else
 				{
 					DiscountResources (worker.numberMaxGetResources);
 					if (!PhotonNetwork.offlineMode) photonView.RPC ("DiscountResources", PhotonTargets.OthersBuffered, worker.numberMaxGetResources);
-
 					worker.GetResource ();
 				}
-				WorkersResistance[worker] = resistance;
-		    	
+				WorkersResistance[worker] = resistance;		    	
 			}
 	}
 
@@ -184,57 +172,10 @@ public class Resource : IStats
 		return false;
 	}
 
-	public override void SetVisible(bool isVisible)
-	{		
-		statsController.ChangeVisibility (this, isVisible);
-		
-		if(isVisible)
-		{
-			model.transform.parent = this.transform;
-			model.SetActive(true);
-					
-		}
-		else
-		{
-			model.transform.parent = null;
-					
-		}
-	}
-
-	public override bool IsVisible
-	{
-		get
-		{
-			return model.transform.parent != null;
-		}
-	}
-
-	public override void Select ()
-	{
-
-
-		base.Select ();
-		
-//		hudController.CreateSelected (this.transform, sizeOfSelected, Color.yellow);
-//		hudController.CreateSubstanceResourceBar (this, sizeOfHealthBar, maxResources);
-	
-
-	}
-
-	public override void Deselect ()
-	{
-		base.Deselect ();
-				
-
-	}
-
 	public void NotifyResourceChange ()
-	{	
-
+	{
 				
 	}
-
-
 
 }
 

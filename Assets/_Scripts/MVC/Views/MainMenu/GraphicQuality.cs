@@ -8,6 +8,8 @@ public class GraphicQuality : MonoBehaviour
 	public UIPopupList presets;
 	public UIPopupList texture;
 	public UIPopupList shadow;
+	public int QualiSelected;
+	public GameObject confirmCG;
 
 
 	public void OnEnable ()
@@ -20,19 +22,19 @@ public class GraphicQuality : MonoBehaviour
 		Close ();
 	}
 
+	public void BoolActiveConfirm()
+	{
+		if (confirmCG.activeSelf == true) confirmCG.SetActive(false);
+		else	confirmCG.SetActive(true);
+	}
 
 	public void Open ()
 	{
-		if (wasInitialized)
-			return;
-
+		if (wasInitialized)	return;
 		wasInitialized = true;
-
 		DefaultCallbackButton dcb;
-
 		QualityIntConversion(PlayerPrefs.GetInt("GraphicQuality"));
-
-
+	
 		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
 		
 		if (close != null)
@@ -41,95 +43,68 @@ public class GraphicQuality : MonoBehaviour
 			dcb.Init(null,
 			         (ht_dcb) => 
 			         {
-				gameObject.SetActive (false);
-			});
+						Close();
+					});
 		}
 	}
 
 	public void QualityStringConversion (string qualiSelect)
 	{
-		
+
 			if ( qualiSelect =="Fastest")
 			{
-				PlayerPrefs.SetInt("GraphicQuality",0);
+				QualiSelected = 0;
 				QualitySettings.SetQualityLevel (0);
-
 			}
 			
 			if ( qualiSelect == "Fast")
 			{
-				PlayerPrefs.SetInt("GraphicQuality",1);
+				QualiSelected = 1;
 				QualitySettings.SetQualityLevel (1);
-				
 			}
 			
 			if ( qualiSelect == "Good")
 			{
-				PlayerPrefs.SetInt("GraphicQuality",2);
+				QualiSelected = 2;
 				QualitySettings.SetQualityLevel (2);
-				
 			}
 			
 			if ( qualiSelect == "High")
 			{
-				PlayerPrefs.SetInt("GraphicQuality",3);
-				QualitySettings.SetQualityLevel (3);
-				
+				QualiSelected = 3;
+				QualitySettings.SetQualityLevel (3);	
 			}
 			
 			if ( qualiSelect == "Ultra")
 			{
-				PlayerPrefs.SetInt("GraphicQuality",4);
+				QualiSelected = 4;
 				QualitySettings.SetQualityLevel (4);
 			}
-				
-
 	}
 
 	public void QualityIntConversion (int qualiInt)
+	{			
+			if ( qualiInt == 0)presets.value = "Fastest";			
+			if ( qualiInt == 1)presets.value = "Fast";
+			if ( qualiInt == 2)presets.value = "Good";			
+			if ( qualiInt == 3)presets.value = "High";				
+			if ( qualiInt == 4)presets.value = "Ultra";
+	}
 
+	public void SaveGCOptions(int quali)
 	{
-			
-			if ( qualiInt == 0)
-			{
+		PlayerPrefs.SetInt("GraphicQuality",QualiSelected);
+	}
 
-				presets.value = "Fastest";
-				
-			}
-			
-			if ( qualiInt == 1)
-			{
-
-				presets.value = "Fast";
-				
-			}
-			
-			if ( qualiInt == 2)
-			{
-
-				presets.value = "Good";
-				
-			}
-			
-			if ( qualiInt == 3)
-			{
-				
-				presets.value = "High";
-				
-			}
-			
-			if ( qualiInt == 4)
-			{
-				
-				presets.value = "Ultra";
-				
-			}
-
-		
+	public void RevertSetting()
+	{
+		QualiSelected = PlayerPrefs.GetInt("GraphicQuality");
+		QualitySettings.SetQualityLevel (QualiSelected);
+		QualityIntConversion(PlayerPrefs.GetInt("GraphicQuality"));
 	}
 
 	public void Close ()
 	{
-
+		gameObject.SetActive(false);
 	}
 }

@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: Sprite
+  m_Name: sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,7 +26,7 @@ GameObject:
   - 4: {fileID: 400002}
   - 114: {fileID: 11400002}
   m_Layer: 0
-  m_Name: Sprite
+  m_Name: avatar-sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -138,7 +138,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 3
+  m_RootOrder: 1
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -150,7 +150,7 @@ Transform:
   m_LocalScale: {x: .999771416, y: .999771416, z: 1.00007999}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 5
+  m_RootOrder: 0
 --- !u!4 &400004
 Transform:
   m_ObjectHideFlags: 1
@@ -158,7 +158,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -328.283905, y: -71.0063095, z: 0}
+  m_LocalPosition: {x: -401.86084, y: 122.327965, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400014}
@@ -175,7 +175,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!4 &400008
 Transform:
   m_ObjectHideFlags: 1
@@ -187,7 +187,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 2
+  m_RootOrder: 4
 --- !u!4 &400010
 Transform:
   m_ObjectHideFlags: 1
@@ -199,7 +199,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 1
+  m_RootOrder: 3
 --- !u!4 &400012
 Transform:
   m_ObjectHideFlags: 1
@@ -211,7 +211,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 0
+  m_RootOrder: 2
 --- !u!4 &400014
 Transform:
   m_ObjectHideFlags: 1
@@ -222,12 +222,12 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: .699999988, y: .699999988, z: 1}
   m_Children:
+  - {fileID: 400002}
+  - {fileID: 400000}
   - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400008}
-  - {fileID: 400000}
   - {fileID: 400006}
-  - {fileID: 400002}
   m_Father: {fileID: 400004}
   m_RootOrder: 0
 --- !u!111 &11100000
@@ -323,10 +323,10 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: .360294104, g: .360294104, b: .360294104, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 150
-  mHeight: 150
+  mWidth: 128
+  mHeight: 128
   mDepth: 16
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
@@ -527,7 +527,7 @@ MonoBehaviour:
   mPivot: 4
   mWidth: 342
   mHeight: 62
-  mDepth: 19
+  mDepth: 120
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -552,6 +552,9 @@ MonoBehaviour:
   mGradientBottom: {r: .397058845, g: .397058845, b: .397058845, a: 1}
   mSpacingX: 0
   mSpacingY: 0
+  mUseFloatSpacing: 0
+  mFloatSpacingX: 0
+  mFloatSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0

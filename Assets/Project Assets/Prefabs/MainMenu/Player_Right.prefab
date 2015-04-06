@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: Sprite
+  m_Name: avatar-sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -138,7 +138,7 @@ Transform:
   m_LocalScale: {x: .999771416, y: .999771416, z: 1.00007999}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 5
+  m_RootOrder: 0
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -150,7 +150,7 @@ Transform:
   m_LocalScale: {x: 1.00007999, y: 1.00007999, z: 1.00007999}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!4 &400004
 Transform:
   m_ObjectHideFlags: 1
@@ -162,7 +162,7 @@ Transform:
   m_LocalScale: {x: 1.00007999, y: 1.00007999, z: 1.00007999}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!4 &400006
 Transform:
   m_ObjectHideFlags: 1
@@ -170,7 +170,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 500.013885, y: 25.6696091, z: 0}
+  m_LocalPosition: {x: 565.845581, y: 43.5575981, z: -6.67785644e-05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400014}
@@ -187,7 +187,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!4 &400010
 Transform:
   m_ObjectHideFlags: 1
@@ -199,7 +199,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!4 &400012
 Transform:
   m_ObjectHideFlags: 1
@@ -211,7 +211,7 @@ Transform:
   m_LocalScale: {x: 1.00028574, y: 1.00028574, z: 1.00007999}
   m_Children: []
   m_Father: {fileID: 400014}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!4 &400014
 Transform:
   m_ObjectHideFlags: 1
@@ -222,12 +222,12 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: .699999988, y: .699999988, z: 1}
   m_Children:
+  - {fileID: 400000}
   - {fileID: 400008}
   - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400002}
   - {fileID: 400004}
-  - {fileID: 400000}
   m_Father: {fileID: 400006}
   m_RootOrder: 0
 --- !u!111 &11100000
@@ -273,10 +273,10 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: .360294104, g: .360294104, b: .360294104, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 150
-  mHeight: 150
+  mWidth: 128
+  mHeight: 128
   mDepth: 23
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
@@ -452,6 +452,9 @@ MonoBehaviour:
   mGradientBottom: {r: .397058845, g: .397058845, b: .397058845, a: 1}
   mSpacingX: 0
   mSpacingY: 0
+  mUseFloatSpacing: 0
+  mFloatSpacingX: 0
+  mFloatSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0

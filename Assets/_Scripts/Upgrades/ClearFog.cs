@@ -5,10 +5,10 @@ using Visiorama;
 public class ClearFog : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		FogOfWar fogOfWar = ComponentGetter.Get<FogOfWar>();
-		fogOfWar.RemoveBlackFog();
-	
+		fogOfWar.RemoveBlackFog();	
 	}
 	
 	// Update is called once per frame

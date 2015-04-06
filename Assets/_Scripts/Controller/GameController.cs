@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
 			return;
 		}
 
+		Score.LoadScores (() => {ComponentGetter.Get <BidManager> ().PayTheBid ();});
+
 		ComponentGetter.Get<NetworkManager> ().Init ();
 		ComponentGetter.Get<GameplayManager> ().Init ();
 		ComponentGetter.Get<TouchController> ().Init ();
@@ -32,28 +34,7 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<HUDController> ().Init ();
 		ComponentGetter.Get<FogOfWar> ().Init ();
 		ComponentGetter.Get<MiniMapController> ().Init ();
-
-		Score.LoadScores (
-			() => 
-			{
-//				foreach (System.Collections.Generic.KeyValuePair<string, Model.DataScore> de in dicScore)
-//				{
-//					Debug.Log ("de.Key: " + de.Key + " - de.Value: " + de.Value);
-//				}
-
-				ComponentGetter.Get <BidManager> ().PayTheBid ();
-		
-				Score.GetDataScore
-				(
-					DataScoreEnum.CurrentCrystals,
-					(currentCrystals) =>
-					{
-						ComponentGetter.Get<GameplayManager> ().resources.Mana = currentCrystals.NrPoints;
-					}
-				);
-			}
-		);
-		
+					
 	}
 
 	public void GameStartInit()

@@ -58,12 +58,15 @@ public class XTerrainDeformer : MonoBehaviour
     //this has to be done because terrains for some reason or another terrains don't reset after you run the app
     void OnApplicationQuit()
     {
-        
-        
-            terr.terrainData.SetHeights(0, 0, heightMapBackup);
-            terr.terrainData.SetAlphamaps(0, 0, alphaMapBackup);
-        
+    terr.terrainData.SetHeights(0, 0, heightMapBackup);
+    terr.terrainData.SetAlphamaps(0, 0, alphaMapBackup);       
     }
+
+	public void ResetTerrain()
+	{     
+		terr.terrainData.SetHeights(0, 0, heightMapBackup);
+		terr.terrainData.SetAlphamaps(0, 0, alphaMapBackup);        
+	}
 
     public void DestroyTerrain(Vector3 pos, float craterSizeInMeters)
     {

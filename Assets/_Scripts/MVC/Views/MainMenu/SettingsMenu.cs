@@ -79,7 +79,8 @@ public class SettingsMenu : MonoBehaviour {
 		}
 		
 		Transform avatar = pathOption.transform.FindChild ("Avatar");
-		
+
+
 		if (avatar != null)
 		{
 			dcb = avatar.gameObject.AddComponent<DefaultCallbackButton> ();

@@ -282,19 +282,6 @@ public class StatsController : MonoBehaviour
 			selectedStats.Remove (stat);
 		}
 		
-//		if (stat.GetType() == typeof(Unit))
-//		{
-//			Unit unit = stat as Unit;
-//			
-//			ComponentGetter.Get<MiniMapController> ().RemoveUnit (unit.transform, unit.team);
-//			gameplayManager.DecrementUnit (unit.team, unit.numberOfUnits);
-//			
-//		}
-		else
-		{
-			ComponentGetter.Get<MiniMapController> ().RemoveStructure (stat.transform, stat.team);
-		}
-		
 		ComponentGetter.Get<FogOfWar> ().RemoveEntity (stat.transform, stat);
 		
 		if (gameplayManager.IsSameTeam (stat.team))
@@ -558,16 +545,14 @@ public class StatsController : MonoBehaviour
 	#region Visibility
 	public void ChangeVisibility (IStats stat, bool visibility)
 	{
-		MiniMapController mmc = ComponentGetter.Get<MiniMapController> ();
-		
+		MiniMapController mmc = ComponentGetter.Get<MiniMapController> ();		
 		Unit unit = stat as Unit;
+		FactoryBase factory = stat as FactoryBase;
 		
 		if (unit != null)
 		{
 			mmc.SetVisibilityUnit (stat.transform, stat.team, visibility);
 		}
-		
-		FactoryBase factory = stat as FactoryBase;
 		
 		if (factory != null)
 		{
@@ -581,72 +566,53 @@ public class StatsController : MonoBehaviour
 	{
 		if (selectedStats.Count == 1)
 		{
-			IStats statSelected = selectedStats[0];
-			
+			IStats statSelected = selectedStats[0];			
 			if (IsUnit (statSelected))
 			{
-//				soundManager.PlayRandom (statSelected.category);
-										
-		    	Vector3 u = statSelected.transform.position;
-			
+//				soundManager.PlayRandom (statSelected.category);										
+		    	Vector3 u = statSelected.transform.position;			
 				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
-
 				AudioSource smas = SoundManager.PlayCappedSFX (sfxSelect, "Select", 1f, 1f, u);
 
-					if (smas != null)
-					{
-			
-						smas.dopplerLevel = 0f;
-						smas.minDistance = 6.0f;
-						smas.maxDistance = 50.0f;
-						smas.rolloffMode = AudioRolloffMode.Linear;
-				  				    
-					}
-				
+				if (smas != null)
+				{			
+					smas.dopplerLevel = 0f;
+					smas.minDistance = 6.0f;
+					smas.maxDistance = 50.0f;
+					smas.rolloffMode = AudioRolloffMode.Linear;				  				    
+				}				
 			}
-
 
 			else
 			{
-
-				Vector3 u = statSelected.transform.position;
-			
+				Vector3 u = statSelected.transform.position;			
 				AudioClip sfxStructures = SoundManager.LoadFromGroup("Structures");
+				AudioSource smas = SoundManager.PlayCappedSFX (sfxStructures, "Structures", 0.8f, 1f, u);
 
-			AudioSource smas = SoundManager.PlayCappedSFX (sfxStructures, "Structures", 0.8f, 1f, u);
-
-					if (smas != null)
-					{
-				
-						smas.dopplerLevel = 0f;
-						smas.minDistance = 3.0f;
-						smas.maxDistance = 40.0f;
-						smas.rolloffMode = AudioRolloffMode.Logarithmic;
-					  				    
-					}
-
+				if (smas != null)
+				{			
+					smas.dopplerLevel = 0f;
+					smas.minDistance = 3.0f;
+					smas.maxDistance = 40.0f;
+					smas.rolloffMode = AudioRolloffMode.Logarithmic;				  				    
+				}
 			}
 		}
 
 		else
-		{	
-		
+		{		
 			foreach (IStats statSelected in selectedStats)
 			{
-				Vector3 u = statSelected.transform.position;
-				
-				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");
-				
+				Vector3 u = statSelected.transform.position;				
+				AudioClip sfxSelect = SoundManager.LoadFromGroup("Select");				
 				AudioSource smas = SoundManager.PlayCappedSFX (sfxSelect, "Select", 1f, 1f, u);
 				
 				if (smas != null)
-				{
-					
+				{					
 					smas.dopplerLevel = 0f;
 					smas.minDistance = 6.0f;
 					smas.maxDistance = 50.0f;
-					smas.rolloffMode = AudioRolloffMode.Linear;
-					
+					smas.rolloffMode = AudioRolloffMode.Linear;					
 				}
 			}
 		}

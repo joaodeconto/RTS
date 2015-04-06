@@ -117,7 +117,7 @@ public class TechTreeController : MonoBehaviour
 		
 	public void TechBoolOperator(string category, bool techAvailality) 		//adiciona ou subtrai tokens de tech na lista
 	{
-		Debug.Log ("Called TechBoolOp for " + category );
+//		Debug.Log ("Called TechBoolOp for " + category );
 		int a = techTreeManager[category];
 
 		if (techAvailality) a++; 

@@ -55,13 +55,14 @@ public class Login : IController
 		
 		if (!UseRealLogin)
 		{
-			ConfigurationData.player = new Model.Player () { IdPlayer = 5,
+				ConfigurationData.player = new Model.Player () { IdPlayer = 5,
 				SzName			  = username,
 				SzPassword		  = password,
 				IdFacebookAccount = idFacebook };
 			
 			pw.SetPlayer (username, true);
 			pw.SetPropertyOnPlayer ("player", ConfigurationData.player.ToString ());
+			pw.SetPropertyOnPlayer ("avatar", PlayerPrefs.GetString("Avatar"));
 			EnterInternalMainMenu (username);
 		}
 		else
@@ -174,7 +175,17 @@ public class Login : IController
 		{
 			QualitySettings.SetQualityLevel(3);
 		}
-		
+
+		if (!PlayerPrefs.HasKey("Logins"))
+		{
+			PlayerPrefs.SetInt("Logins", 0);
+		}
+		else
+		{
+			int logins = PlayerPrefs.GetInt("Logins");
+			PlayerPrefs.SetInt("Logins", (logins+1));
+		}
+
 		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));
 		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
 		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));		

@@ -53,17 +53,18 @@ public class Ranking : MonoBehaviour {
 						else 
 						{
 //							rankLoading.SetActive(false);
-//							rankGrid.repositionNow = true;
+							rankGrid.repositionNow = true;
 							break;
 						}
 					}
 
 				NGUITools.Destroy(rankGrid.transform.GetChild(0).gameObject);
+				rankGrid.repositionNow = true;
+
 			}
 			);	
-
 	}
-
+		
 	public void Close ()
 	{
 //		rankLoading.SetActive(false);

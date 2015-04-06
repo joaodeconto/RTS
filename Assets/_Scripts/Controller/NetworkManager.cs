@@ -33,6 +33,7 @@ public class NetworkManager : Photon.MonoBehaviour {
 
 		GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
 		gm.hud.uiWaitingPlayers.SetActive(true);
+		gm.loadingMessage.text = "loading scores";
     }
 
     public void OnPhotonPlayerConnected(PhotonPlayer player)
@@ -50,6 +51,7 @@ public class NetworkManager : Photon.MonoBehaviour {
 //        }
 		
 		GameplayManager gameplayManager = Visiorama.ComponentGetter.Get<GameplayManager> ();
+		if(!gameplayManager.scoreCounting) return;
 		if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 		{
 			gameplayManager.photonView.RPC ("Defeat", PhotonNetwork.player,

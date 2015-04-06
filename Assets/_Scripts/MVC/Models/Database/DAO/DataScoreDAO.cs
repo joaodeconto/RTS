@@ -217,7 +217,7 @@ public class DataScoreDAO : MonoBehaviour
 			
 			foreach (KeyValuePair <string, Model.DataScore> de in scores)
 			{
-				Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
+//				Debug.Log ("stringa: " + de.Key + " - IdDataScore: " + de.Value.IdDataScore + " - SzScoreName: " + de.Value.SzScoreName + " - NrPoints: "  + de.Value.NrPoints);
 				lScores.Add (de.Value);
 			}
 			callback (scores);

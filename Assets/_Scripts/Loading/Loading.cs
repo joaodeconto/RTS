@@ -12,7 +12,7 @@ public class Loading : MonoBehaviour {
 	}
 
 	
-	void DisableLoad()
+	public void DisableLoad()
 	{
 		gameObject.SetActive(false);
 	}

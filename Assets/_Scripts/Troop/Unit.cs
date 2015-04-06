@@ -325,13 +325,14 @@ public class Unit : IStats, IMovementObservable,
 
 					if (!gameplayManager.IsSameTeam (team))ControllerAnimation.cullingType = AnimationCullingType.AlwaysAnimate;
 					ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-					Debug.Log(ControllerAnimation.cullingType);
+					SfxAtk();
 
 				break;
 			case UnitState.Die:
 				if (unitAnimation.DieAnimation)
 
 					ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
+					SfxDie();
 
 				break;
 			}
@@ -370,6 +371,7 @@ public class Unit : IStats, IMovementObservable,
 		NavAgent.acceleration = normalAcceleration;
 		NavAgent.speed = normalSpeed;
 		NavAgent.angularSpeed = normalAngularSpeed;
+		NavAgent.avoidancePriority = normalAvoidancePriority;
 	}
 	
 	public void Follow (Unit followed)
@@ -416,7 +418,23 @@ public class Unit : IStats, IMovementObservable,
 		}
 		
 	}
+
+	public void SfxDie ()
+	{
+		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");		
+		Vector3 u = this.transform.position;		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
 		
+		if (smas != null)
+		{
+			smas.dopplerLevel = 0.0f;
+			smas.spread = 0.3f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 30.0f;
+			smas.rolloffMode =AudioRolloffMode.Custom;
+		}	
+	}
+	
 	private IEnumerator Attack ()
 	{
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
@@ -820,22 +838,11 @@ public class Unit : IStats, IMovementObservable,
 	public virtual IEnumerator OnDie ()
 	{
 		NavAgent.Stop ();
-		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;		
+		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;	
+		SfxDie();
 		IsDead = true;		
 		unitState = UnitState.Die;		
-		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");		
-		Vector3 u = this.transform.position;		
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
-		
-		if (smas != null)
-		{
-			smas.dopplerLevel = 0.0f;
-			smas.spread = 0.3f;
-			smas.minDistance = 3.0f;
-			smas.maxDistance = 30.0f;
-			smas.rolloffMode =AudioRolloffMode.Custom;
-			
-		}		
+
 		//IMovementObservable
 		int c = IMOobservers.Count;
 		while (--c != -1)
@@ -909,10 +916,6 @@ public class Unit : IStats, IMovementObservable,
 			hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
 			
 			Deselect ();
-		}
-		if (!WasRemoved && !playerUnit)
-		{
-			statsController.RemoveStats (this);
 		}
 	}
 	#endregion

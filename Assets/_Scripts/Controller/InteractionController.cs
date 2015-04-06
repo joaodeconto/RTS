@@ -22,8 +22,6 @@ public class InteractionController : MonoBehaviour
 		statsController = ComponentGetter.Get<StatsController> ();
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		hudController   = ComponentGetter.Get<HUDController> ();
-
-
 		stackInteractionCallbacks = new Stack<InteractionCallback>();
 	}
 
@@ -77,7 +75,9 @@ public class InteractionController : MonoBehaviour
 	{
 		if (statsController.selectedStats.Count == 0) return;
 
-		if (hit.transform.CompareTag ("TribeCenter")||hit.transform.CompareTag ("Obelisk")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House")|| hit.transform.CompareTag ("Depot"))
+		NavMeshHit navHit;
+
+		if (hit.transform.CompareTag ("TribeCenter")|| hit.transform.CompareTag ("ArmyStructure") || hit.transform.CompareTag ("House")|| hit.transform.CompareTag ("Depot"))
 		{
 			FactoryBase factory = hit.GetComponent<FactoryBase> ();
 			if(GameplayManager.mode == GameplayManager.Mode.Cooperative)
@@ -153,8 +153,9 @@ public class InteractionController : MonoBehaviour
 					}
 				}
 			}
-		}
-		else if (hit.CompareTag ("Resource"))   //TODO conferir esta parte, worker trancando
+		}		
+
+		else if (hit.CompareTag ("Resource") || hit.CompareTag("Obelisk"))   
 		{
 			bool feedback = false;
 
@@ -163,13 +164,19 @@ public class InteractionController : MonoBehaviour
 				Worker worker = stat as Worker;
 				
 				if (worker == null) continue;
-
-				if (worker.IsRepairing ||
-					worker.IsBuilding)
+//				if (worker.IsExtracting)
+//				{
+//					continue;
+//				}
+				worker.WorkerReset();	
+				if (worker.resource != null)
 				{
-					worker.SetMoveToFactory (null);
+					worker.resource.RemoveWorker (worker);
+					worker.SetResource (null);
 				}
-				
+				if (worker.HasFactory ())
+					worker.SetMoveToFactory (null);		
+							
 				worker.SetResource (hit.GetComponent<Resource> ());
 				feedback = true;
 			}
@@ -187,22 +194,17 @@ public class InteractionController : MonoBehaviour
 			{
 				Worker worker = stat as Worker;
 				
-				if (worker == null) continue;
-				
-				if (!worker.hasResource)
+				if (worker == null) continue;				
+				if (worker.resource != null)
 				{
-					if (worker.resource != null)
-					{
-						worker.SetResource (null);
-					}
+					worker.resource.RemoveWorker (worker);
+					worker.SetResource (null);
 				}
-				if (worker.HasFactory ())
-				{
-					worker.SetMoveToFactory (null);
-				}
+				if (worker.HasFactory ())	worker.SetMoveToFactory (null);
+				worker.WorkerReset();
 			}
-		}		
+		}
 
-		if(moveToTarget)statsController.MoveTroop (touchController.GetFinalPoint);
+		if(moveToTarget && NavMesh.SamplePosition (touchController.GetFinalPoint, out navHit, 0.1f, 1))statsController.MoveTroop (touchController.GetFinalPoint);
 	}
 }

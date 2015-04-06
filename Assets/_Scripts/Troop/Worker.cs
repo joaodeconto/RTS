@@ -47,23 +47,20 @@ public class Worker : Unit
 		Carrying	 = 2,
 		CarryingIdle = 3,
 		Building	 = 4,
-		Repairing	 = 5
+		Repairing	 = 5,
+		Praying      = 6
 	}
 
 	public int forceToExtract;
 	public int numberMaxGetResources;
 	public float distanceToExtract = 5f;
-
 	public ResourceWorker[] resourceWorker;
 	public FactoryConstruction[] factoryConstruction;
 	public int constructionAndRepairForce;
-
 	public WorkerState workerState;
-
 	public bool IsExtracting {get; protected set;}
 	public bool IsRepairing {get; protected set;}
 	public bool IsBuilding {get; protected set;}
-
 	public int resourceId = -1;
 	public Resource.Type resourceType {get; protected set;}
 	public Resource resource {get; protected set;}
@@ -73,12 +70,9 @@ public class Worker : Unit
 	protected Resource lastResource;
 	protected bool isSettingWorkerNull;
 	private bool workerInitialized = false;
-
 	protected FactoryBase factoryChoose, lastFactory;
 	protected bool isMovingToFactory;
 	protected bool isCheckedSendResourceToFactory;
-
-
 
 	public override void Init ()
 	{
@@ -116,7 +110,43 @@ public class Worker : Unit
 
 		switch (workerState)
 		{
-			case WorkerState.Extracting:
+			case WorkerState.Praying:
+
+			if (HasFactory ())
+			{
+				resourceWorker[resourceId].extractingObject.SetActive (false);
+				resourceId = -1;
+				resource.RemoveWorker (this);
+				lastResource = resource = null;
+				workerState = WorkerState.Idle;
+				Move (factoryChoose.transform.position);
+			}
+			else if (resource != lastResource || resource == null)
+			{
+				resourceWorker[lastResourceId].extractingObject.SetActive (false);
+				lastResource.RemoveWorker (this);
+				workerState = WorkerState.Idle;
+				return;
+			}
+			else
+			{
+				NavAgent.Stop ();
+				transform.LookAt (resource.transform);
+				if (!IsExtracting) StartCoroutine (Pray ());
+			}
+			
+			if (!IsExtracting) StartCoroutine (Pray ());
+			unitState = UnitState.Idle;
+			
+			
+			
+			break;
+			
+		case WorkerState.Extracting:
+
+				if(unitState == Unit.UnitState.Walk)	NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+				else 									NavAgent.obstacleAvoidanceType = normalObstacleAvoidance;
+				
 				if (HasFactory ())
 				{
 					resourceWorker[resourceId].extractingObject.SetActive (false);
@@ -146,15 +176,11 @@ public class Worker : Unit
 			break;
 
 			case WorkerState.Carrying:
-			case WorkerState.CarryingIdle:
-				
-				NavAgent.obstacleAvoidanceType = this.normalObstacleAvoidance;			
-//				if (resource != null &&
-//					!settingWorkerNull)
-//				{
-//					settingWorkerNull = true;
-//					resource.RemoveWorker (this);
-//				}
+			case WorkerState.CarryingIdle:				
+
+				if(unitState == Unit.UnitState.Walk)	NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+				else 									NavAgent.obstacleAvoidanceType = normalObstacleAvoidance;
+
 			    if (!isCheckedSendResourceToFactory)
 				{
 					if (!isMovingToFactory)
@@ -187,7 +213,6 @@ public class Worker : Unit
 				{
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
-						NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 						ControllerAnimation[resourceWorker[resourceId].workerAnimation.Carrying.name].normalizedSpeed = resourceWorker[resourceId].workerAnimation.carryingAnimSpeed * Mathf.Clamp(NavAgent.velocity.sqrMagnitude, 0f, 1f);
 						ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Carrying, WrapMode.Loop);
 					}
@@ -208,83 +233,51 @@ public class Worker : Unit
 				{
 					resource = null;
 					resourceWorker[resourceId].carryingObject.SetActive (false);
-					ResetNavAgentValues ();
-
+					
 					workerState = WorkerState.Idle;
 
 					return;
 				}
 
-				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+2f)
+				if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius)
 				{
 					gameplayManager.resources.DeliverResources (resourceType, currentNumberOfResources);
+					WorkerReset();
 
 					if (resource != null) SetResource (resource);
 					else
 					{
 						NavAgent.Stop ();
 						unitState = Unit.UnitState.Idle;
-					}
-
-					currentNumberOfResources = 0;
-
-					factoryChoose = null;
-
-					workerState = WorkerState.Idle;
-
-					isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;
-
-					resourceWorker[resourceId].carryingObject.SetActive (false);
-
-					resourceId = -1;
-
-					ResetNavAgentValues ();
-
+					}					
 				}
 				break;
+
 			case WorkerState.Building:
 			case WorkerState.Repairing:
 			
 				if (!HasFactory () || factoryChoose != lastFactory)
 				{
-					// Patch para tirar travada ¬¬
 					Move (transform.position - transform.forward);
-
-					Move (PathfindTarget);
-
 					resourceWorker[0].extractingObject.SetActive (false);
-
 					isMovingToFactory = false;
-
-					if (hasResource)
-					{
-						resource = lastResource;
-						GetResource (currentNumberOfResources);
-					}
-					else
-					{
-						workerState = WorkerState.Idle;
-					}
+					workerState = WorkerState.Idle;
+					break;
 				}
 
 				NavAgent.Stop ();
 				if (workerState == WorkerState.Building)
 				{
-					if (!IsBuilding) StartCoroutine (StartConstruct ());
-					
+					if (!IsBuilding) StartCoroutine (StartConstruct ());					
 				}
-
 				else
-				{
-					if (!IsRepairing) StartCoroutine (StartRepair ());
-					unitState = UnitState.Idle;
-
-				}
-
+				if (!IsRepairing) StartCoroutine (StartRepair ());
 
 			break;
-			case WorkerState.Idle:
-
+			case WorkerState.Idle:				
+				
+				if(unitState == Unit.UnitState.Walk)	NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+				else 									NavAgent.obstacleAvoidanceType = normalObstacleAvoidance;
 				bool WorkerisAttacking = (unitState == Unit.UnitState.Attack);
 				if (WorkerisAttacking)	resourceWorker[0].extractingObject.SetActive (true);
 
@@ -295,8 +288,7 @@ public class Worker : Unit
 				}
 
 				CheckResource ();
-				CheckConstructFactory ();
-				
+				CheckConstructFactory ();				
 				
 				base.IAStep ();
 				break;
@@ -328,7 +320,7 @@ public class Worker : Unit
 						lastResourceId = resourceId;
 					}
 					break;
-
+				case WorkerState.Praying:
 				case WorkerState.Extracting:
 					if (resourceWorker[resourceId].workerAnimation.Extracting)
 					{
@@ -483,7 +475,7 @@ public class Worker : Unit
 			CapsuleCollider col = resource.GetComponent<CapsuleCollider> ();
 			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
 			Vector3 position = resource.transform.position - randomVector;
-			position.y = resource.transform.position.y;
+			position.y = resource.transform.position.y;				
 			Move (position);
 		}
 	}
@@ -522,14 +514,39 @@ public class Worker : Unit
 
 	IEnumerator Extract ()
 	{
+		NavAgent.avoidancePriority = 0;
 		IsExtracting = true;
 		PlayWorkerSfx("Mining");
-		resourceId = 0;
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
-		if (resource != null) resource.ExtractResource (this);
-		else workerState = WorkerState.Idle;
 		IsExtracting = false;
+		if (resource != null && resourceId == 0)
+			resource.ExtractResource (this);
+		else
+		{
+			workerState = WorkerState.Idle;
+		}
+
+		NavAgent.avoidancePriority = normalAvoidancePriority;
+	}
+
+	IEnumerator Pray ()
+	{
+		IsExtracting = true;
+//		PlayWorkerSfx("Mining");
+		resourceId = 1;
+		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
+		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
+		IsExtracting = false;
+		if (resource != null && resourceId == 1)
+		{
+			gameplayManager.resources.DeliverResources (resourceType, resource.resistance);
+		}
+		else
+		{
+			workerState = WorkerState.Idle;
+		}
+
 	}
 #endregion
 
@@ -558,6 +575,28 @@ public class Worker : Unit
 
 		workerState = WorkerState.Carrying;
 	}
+
+	public void WorkerReset()
+	{		
+		currentNumberOfResources = 0;
+		
+		factoryChoose = null;
+		
+		workerState = WorkerState.Idle;
+		
+		isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;
+		
+		resourceWorker[0].carryingObject.SetActive (false);
+		resourceWorker[0].extractingObject.SetActive (false);
+
+		resourceWorker[1].carryingObject.SetActive (false);
+		resourceWorker[1].extractingObject.SetActive (false);
+		
+		resourceId = -1;
+		
+		ResetNavAgentValues ();
+	}
+
 #endregion
 
 #region Mover até factory escolhida
@@ -567,18 +606,9 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-//			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
-//			
-//			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
-//			
-//			Vector3 position = factoryChoose.transform.position - randomVector;
-
 			Vector3 position = factoryChoose.transform.position;
-
-			position.y = factoryChoose.transform.position.y;
-			
+			position.y = factoryChoose.transform.position.y;			
 			Move (position);
-
 			isMovingToFactory = true;
 		}
 		else
@@ -593,17 +623,14 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-//			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
-//			
-//			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
-//			
-//			Vector3 position = factoryChoose.transform.position - randomVector;
 			Vector3 position = factoryChoose.transform.position;
-			position.y = factoryChoose.transform.position.y;
-			
+			position.y = factoryChoose.transform.position.y;			
 			Move (position);
-
 			isMovingToFactory = true;
+		}
+		else
+		{
+			isMovingToFactory = false;
 		}
 	}
 
@@ -613,17 +640,14 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-//			CapsuleCollider col = factoryChoose.GetComponent<CapsuleCollider> ();
-//			
-//			Vector3 randomVector = (Random.onUnitSphere * col.radius * 0.75f);
-//			
-//			Vector3 position = factoryChoose.transform.position - randomVector;
 			Vector3 position = factoryChoose.transform.position;
-			position.y = factoryChoose.transform.position.y;
-			
+			position.y = factoryChoose.transform.position.y;			
 			Move (position);
-
 			isMovingToFactory = true;
+		}
+		else
+		{
+			isMovingToFactory = false;
 		}
 	}
 #endregion
@@ -687,6 +711,9 @@ public class Worker : Unit
 					factoryChoose = factory;
 				}
 			}
+
+			else 
+				CheckConstructFactory();
 		}
 	}
 
@@ -696,13 +723,11 @@ public class Worker : Unit
 		{
 			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+1)
 			{
-
 				if (!factoryChoose.wasBuilt)
 				{
 					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Building;
 				}
-
 
 				else if (factoryChoose.IsDamaged)
 				{
@@ -776,7 +801,8 @@ public class Worker : Unit
 					}
 
 					lastResource = resource;
-					workerState = WorkerState.Extracting;
+					if (resourceType == Resource.Type.Mana) workerState = WorkerState.Praying;
+					else 									workerState = WorkerState.Extracting;
 				}
 			}
 		}

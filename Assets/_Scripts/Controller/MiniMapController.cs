@@ -32,8 +32,7 @@ public class MiniMapController : MonoBehaviour
 	private List<bool>[] WasStructureAlreadyVisible;
 
 	private GameObject mainCameraGO;
-	private bool WasInitialized;	
-	private FogOfWar fogOfWar;
+	private bool WasInitialized;
 	private TouchController tc;
 	InteractionController ic;	
 	private UITexture textureFogOfWar;
@@ -74,7 +73,7 @@ public class MiniMapController : MonoBehaviour
 						MiniMapRefreshInterval);
 
 		tc = ComponentGetter.Get <TouchController> ();
-		fogOfWar = ComponentGetter.Get<FogOfWar>();
+		FogOfWar fogOfWar = ComponentGetter.Get<FogOfWar>();
 
 		mapSize = fogOfWar.terrain.terrainData.size;
 

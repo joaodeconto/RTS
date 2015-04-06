@@ -133,8 +133,7 @@ public class TutorialMenu : MonoBehaviour
 	{
 		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
-		PlayerDAO playerDao = ComponentGetter.Get <PlayerDAO> ();
-						
+								
 		if (bMode == "DeathMatch")
 		{
 			GameplayManager.Mode mode = GameplayManager.Mode.Deathmatch;

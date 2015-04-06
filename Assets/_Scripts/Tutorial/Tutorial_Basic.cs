@@ -14,10 +14,7 @@ public class Tutorial_Basic : MonoBehaviour {
 		public string tutorialTitleText;
 		public string tutorialBoxText;
 		public UIButton nextTutorialBtn;
-
-
 	}
-
 
 	public UIButton nextBtn;
 	public UILabel tutorialBox;
@@ -31,7 +28,6 @@ public class Tutorial_Basic : MonoBehaviour {
 	public void OnEnable ()
 	{
 		Init ();
-
 	}
 	
 	public void OnDisable ()
@@ -45,11 +41,10 @@ public class Tutorial_Basic : MonoBehaviour {
 	{
 
 		tutorialIndex.text = tutorialScreenSelected+1 + " / " + tutorial.Length;
-
 		tutorialMainBg.SetActive (true);
-
-		Invoke("PauseTime",2);
+//		Invoke("PauseTime",3);
 		Invoke("ShowNextTutorialItem",2);
+		ComponentGetter.Get<EnemyCluster>().enabled = false;
 
 
 	}
@@ -60,7 +55,7 @@ public class Tutorial_Basic : MonoBehaviour {
 	public void ShowNextTutorialItem ()
 	
 	{
-		if (tutorialScreenSelected < tutorial.Length)
+		if (tutorialScreenSelected < tutorial.Length-1)
 		{
 			i++;
 			tutorialScreenSelected = i;
@@ -172,7 +167,7 @@ public class Tutorial_Basic : MonoBehaviour {
 				
 				nextBtn = tu.nextTutorialBtn;
 
-				tutorialIndex.text = tutorialScreenSelected + 1 + " / " + tutorial.Length;
+				tutorialIndex.text = tutorialScreenSelected + 1 + " / " + (tutorial.Length -1);
 
 				
 			}
@@ -201,7 +196,7 @@ public class Tutorial_Basic : MonoBehaviour {
 	{
 		if (tutorialMainBg != null)
 		{
-		tutorialMainBg.SetActive (false);
+			tutorialMainBg.SetActive (false);
 		}
 	}
 	

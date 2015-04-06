@@ -111,10 +111,14 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	public override void Init ()
 	{
-		if(factoryInitialized) return;
-		factoryInitialized = true;	
 		base.Init();
+		playerUnit = gameplayManager.IsSameTeam (this);
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
+		enabled = playerUnit;
+		helperCollider = GetComponentInChildren<CapsuleCollider> ();
 
+		if(factoryInitialized || !wasBuilt) return;
+		factoryInitialized = true;	
 		timer = 0;
 		hudController     = ComponentGetter.Get<HUDController> ();
 		buildingSlider    = hudController.GetSlider("Building Unit");
@@ -122,45 +126,34 @@ public class FactoryBase : IStats, IDeathObservable
 								
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
-		
-		helperCollider = GetComponentInChildren<CapsuleCollider> ();
-		
+				
 		if (unitsToCreate.Length != 0)
 		{
-			hasRallypoint = true;
-			
-			GameObject instantiateRallypoint = Resources.Load ("Rallypoint", typeof(GameObject)) as GameObject;
-			
-			instantiateRallypoint = NGUITools.AddChild (gameObject, instantiateRallypoint);
-			
+			hasRallypoint = true;			
+			GameObject instantiateRallypoint = Resources.Load ("Rallypoint", typeof(GameObject)) as GameObject;			
+			instantiateRallypoint = NGUITools.AddChild (gameObject, instantiateRallypoint);			
 			goRallypoint = instantiateRallypoint.transform;
 			goRallypoint.parent = this.transform;
 			goRallypoint.gameObject.SetActive (false);
-			
 			Vector3 pos = goRallypoint.position;
-			pos.z -= transform.collider.bounds.size.z;
-			
+			pos.z -= transform.collider.bounds.size.z;			
 			RallyPoint rallyPoint = goRallypoint.GetComponent<RallyPoint> ();
 			rallyPoint.Init (pos, this.team);
-		}
-		
-		playerUnit = gameplayManager.IsSameTeam (this);
-		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
+		}	
+
 		inUpgrade = false;				
 		buildingState = BuildingState.Finished;
 		if (playerUnit && !gameplayManager.IsBotTeam(this))
 		{
 			if (techTreeController.attribsHash.ContainsKey(category))LoadStandardAttribs();
 		    if(wasBuilt)TechActiveBool(TechsToActive, true);
-
 			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
-			
+			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));			
 			Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
 			Score.AddScorePoints (this.category + DataScoreEnum.XBuilt, this.totalResourceCost, battle.IdBattle);
-		}
-		wasBuilt = true;
-		enabled = playerUnit;
+		}		
+		PaintAgent pa = GetComponent<PaintAgent>();
+		pa.Paint(this.transform.position, (sizeOfSelected * 0.6f));
 		Invoke ("SendMessageInstance", 0.1f);
 						
 	}
@@ -212,18 +205,11 @@ public class FactoryBase : IStats, IDeathObservable
 
 				else
 				{
-					Debug.LogWarning("Pulou a fila  " + queueCounter);
 					queueCounter++;   // passa um na fila, supostamente dequeued				
 					return;
 				}
 
 				inUpgrade = true;
-
-				if (Selected)
-				{
-					buildingSlider.gameObject.SetActive(true);
-					InvokeRepeating ("InvokeSliderUpdate",0.2f,0.2f);
-				}
 
 				hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);					
 			}
@@ -234,6 +220,12 @@ public class FactoryBase : IStats, IDeathObservable
 			if(!Selected && isInvokingSlider)
 			{
 				CancelInvokeSlider();
+			}
+
+			if (Selected)
+			{
+				buildingSlider.gameObject.SetActive(true);
+				InvokeRepeating ("InvokeSliderUpdate",0.2f,0.2f);
 			}
 
 			if (timer > timeToCreate)
@@ -313,7 +305,7 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	void OnDestroy ()
 	{
-		if (!WasRemoved && !playerUnit) statsController.RemoveStats (this);
+		//if (!WasRemoved && !playerUnit) statsController.RemoveStats (this);
 	}	
 		
 	public virtual void SyncAnimation ()
@@ -330,8 +322,8 @@ public class FactoryBase : IStats, IDeathObservable
 			
 	public virtual IEnumerator OnDie ()
 	{
+		minimapController.RemoveStructure(this.transform, this.team);
 		statsController.RemoveStats (this);
-		minimapController.RemoveStructure(this.transformParticleDamageReference, this.team);
 		inUpgrade = false;
 		if (playerUnit && wasBuilt)TechActiveBool(TechsToActive, false);		
 		model.animation.Play ();
@@ -441,13 +433,14 @@ public class FactoryBase : IStats, IDeathObservable
 		if (!playerUnit) return;
 		
 		if (wasBuilt)
-		{	
+		{
+			if (unitsToCreate.Length < 0 || upgradesToCreate.Length < 0) return;
+
 			RestoreOptionsMenu(); //chama os options de upgrade e unit
 			RestoreDequeueMenu();
-			buildingSlider.gameObject.SetActive(true);	
+
 			if (!hasRallypoint) return;			
-			if (!goRallypoint.gameObject.activeSelf) goRallypoint.gameObject.SetActive (true);						
-	
+			if (!goRallypoint.gameObject.activeSelf) goRallypoint.gameObject.SetActive (true);	
 		}
 
 		else

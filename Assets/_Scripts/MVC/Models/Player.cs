@@ -14,6 +14,7 @@ namespace Model {
 		public int IdPlayer;
 		public string SzEmail;
 		public string SzName;
+		public string SzAvatar;
 
 		public string IdFacebookAccount;
 		public string SzPassword;
@@ -33,6 +34,7 @@ namespace Model {
 			this.IdPlayer = pp.IdPlayer;
 			this.SzEmail  = pp.SzEmail;
 			this.SzName   = pp.SzName;
+			this.SzAvatar = pp.SzAvatar;
 
 			this.IdFacebookAccount = pp.IdFacebookAccount;
 			this.SzPassword        = pp.SzPassword;
@@ -44,11 +46,11 @@ namespace Model {
 
 		public DB.Player ToDatabaseModel ()
 		{
-			DB.Player player = new DB.Player ();
-
-			player.IdPlayer = this.IdPlayer.ToString ();
-			player.SzEmail  = this.SzEmail;
-			player.SzName   = this.SzName;
+			DB.Player player 	= new DB.Player ();
+			player.IdPlayer 	= this.IdPlayer.ToString ();
+			player.SzEmail  	= this.SzEmail;
+			player.SzName   	= this.SzName;
+			player.SzAvatar 	= this.SzAvatar;
 
 			player.IdFacebookAccount = this.IdFacebookAccount;
 			player.SzPassword        = this.SzPassword;

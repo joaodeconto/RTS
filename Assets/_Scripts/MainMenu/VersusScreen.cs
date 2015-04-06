@@ -28,7 +28,10 @@ public class VersusScreen : MonoBehaviour
 	public ConfigurationOfScreen[] configurationOfScreen;
 	protected int timeCount;	
 	protected PhotonWrapper pw;
-	
+	public static string mapLabelString;
+	public static string modeLabelString;
+	public static Dictionary<string, string> opponentSprite = new Dictionary<string, string>();
+
 	void Awake ()
 	{
 //		timeCount = timeToWait;
@@ -38,14 +41,14 @@ public class VersusScreen : MonoBehaviour
 	}
 	
 	public void Init ()
-	{
+	{		
+		opponentSprite.Clear();
 		cena = (int)pw.GetPropertyOnRoom("map");
 		cenaSelection();
 		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
 
 		// LOAD GAMEPLAY!
-
 		int totalPlayers = PhotonNetwork.playerList.Length;		
 		int configurationOfScreenSelected = 0;		
 		int i = 0;
@@ -71,6 +74,8 @@ public class VersusScreen : MonoBehaviour
 
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
+				opponentSprite.Add((string)pp.customProperties["name"], (string)pp.customProperties["avatar"]);
+
 				if ((int)pp.customProperties["allies"] == ally)
 				{
 					SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);					
@@ -83,7 +88,7 @@ public class VersusScreen : MonoBehaviour
 				}
 			}
 		}
-		if (GameplayManager.mode == GameplayManager.Mode.Tutorial)
+		else if (GameplayManager.mode == GameplayManager.Mode.Tutorial)
 		{
 			battleMode.text = ("Single Player"); 
 			i = 0;
@@ -96,6 +101,7 @@ public class VersusScreen : MonoBehaviour
 		
 		else
 		{
+			battleMode.text = ("Deathmatch");
 			i = 0;
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
@@ -105,6 +111,8 @@ public class VersusScreen : MonoBehaviour
 		}
 //		InvokeRepeating ("DescountTime", 1f, 1f);
 		Invoke ("InstanceGame",2);
+		mapLabelString 	= mapName.text;
+		modeLabelString	= battleMode.text;	
 	}
 
 	public void cenaSelection ()
@@ -153,8 +161,11 @@ public class VersusScreen : MonoBehaviour
 		if (position.x <= 0)
 		{
 			GameObject button = NGUITools.AddChild (gameObjectPlayerL, prefabPlayerLeft);						
-			button.transform.localPosition = position;			
+			button.transform.localPosition = position;	
 			button.GetComponentInChildren<UILabel> ().text = pp.name;
+			string avatarSprite = (string)pp.customProperties["avatar"];
+			UISprite buttonAvatar = button.transform.FindChild("GameObject").transform.FindChild("avatar-sprite").gameObject.GetComponentInChildren<UISprite>();
+			buttonAvatar.spriteName = avatarSprite;
 		}
 
 		else
@@ -162,6 +173,9 @@ public class VersusScreen : MonoBehaviour
 			GameObject button = NGUITools.AddChild (gameObjectPlayerR, prefabPlayerRight);						
 			button.transform.localPosition = position;			
 			button.GetComponentInChildren<UILabel> ().text = pp.name;
+			string avatarSprite = (string)pp.customProperties["avatar"]; 
+			UISprite buttonAvatar = button.transform.FindChild("GameObject").transform.FindChild("avatar-sprite").gameObject.GetComponentInChildren<UISprite>();
+			buttonAvatar.spriteName = avatarSprite;
 		}
 	}
 	

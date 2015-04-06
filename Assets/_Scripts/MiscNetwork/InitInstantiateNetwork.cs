@@ -41,7 +41,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 			Hashtable setPlayerLoads = new Hashtable() {{"playerLoads", playerLoads}};
 			cRoom.SetCustomProperties (setPlayerLoads);
 
-			InvokeRepeating ("NetworkInstantiatePrefab", 0.1f, 0.5f);
+			InvokeRepeating ("NetworkInstantiatePrefab", 2f, 0.5f);
 		}
 	}
 
@@ -64,11 +64,12 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 				prefab.transform.parent = transform.parent;
 				if (prefab.GetComponent<FactoryBase>() != null)
 				{
-					prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
 					fb.wasBuilt = true;
+					fb.Init();
+					fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
-					Debug.Log ("init instanciate" + fb.playerUnit);
+//					Debug.Log ("init instanciate" + fb.playerUnit);
 				}
 				
 			}

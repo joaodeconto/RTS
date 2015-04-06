@@ -36,7 +36,7 @@ public class InternalMainMenu : MonoBehaviour
 	{
 		if (WasInitialized || ConfigurationData.player == null)
 			return;
-	
+			
 		//Se ja fez um jogo antes
 		if (ConfigurationData.Logged && ConfigurationData.InGame)
 		{

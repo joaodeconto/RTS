@@ -283,6 +283,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			Selected = false;						
 			hudController.DestroyOptionsBtns ();
 			hudController.DestroySelected (transform);
+			if(firstDamage) ShowHealth();
 		}
 		else return;
 	}

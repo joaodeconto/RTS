@@ -17,15 +17,10 @@ public class PaintAgent : MonoBehaviour
 	 
 //	public bool TerrainPaint
 
-	public void Paint ()
-	{
-		xterrainDeformer.DestroyTerrain(this.transform.position,paintSize);
-
-	}
-	void ConstructFinished ()
+	public void Paint (Vector3 paintPosition, float paintRadius)
 	{
 		xterrainDeformer = GameObject.Find (terrainName).GetComponent<XTerrainDeformer>(); 
-		xterrainDeformer.DestroyTerrain(this.transform.position,paintSize);		
+		xterrainDeformer.DestroyTerrain(paintPosition, paintRadius);		
 	}
 
 }
