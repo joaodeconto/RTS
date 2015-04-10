@@ -120,6 +120,7 @@ public class Worker : Unit
 				lastResource = resource = null;
 				workerState = WorkerState.Idle;
 				Move (factoryChoose.transform.position);
+				return;
 			}
 			else if (resource != lastResource || resource == null)
 			{
@@ -155,11 +156,11 @@ public class Worker : Unit
 					lastResource = resource = null;
 					workerState = WorkerState.Idle;
 					Move (factoryChoose.transform.position);
+					return;
 				}
 				else if (resource != lastResource || resource == null)
 				{
-					resourceWorker[resourceId].extractingObject.SetActive (false);
-					resourceId = -1;
+					resourceWorker[lastResourceId].extractingObject.SetActive (false);
 					lastResource.RemoveWorker (this);
 					workerState = WorkerState.Idle;
 					return;

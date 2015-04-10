@@ -614,8 +614,8 @@ public class FactoryBase : IStats, IDeathObservable
 		
 	public override void Deselect ()
 	{
-		base.Deselect ();		
-		buildingSlider.gameObject.SetActive(false);		
+		base.Deselect ();
+
 		int c = IDOobservers.Count;
 		while (--c != -1)
 		{
@@ -624,6 +624,7 @@ public class FactoryBase : IStats, IDeathObservable
 		
 		if (playerUnit && wasBuilt)
 		{
+			buildingSlider.gameObject.SetActive(false);		
 			if (!hasRallypoint) return;			
 			goRallypoint.gameObject.SetActive (false);	
 		

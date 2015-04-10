@@ -27,7 +27,9 @@ public class EnemyIA : MonoBehaviour
 
 	public void EnemyMovement ()
 	{
-		unit.Move (movementTarget.position);
+		float targetRadius = movementTarget.GetComponent<CapsuleCollider>().radius;
+		Vector3 newTargetPos = movementTarget.transform.position.normalized * targetRadius;
+		unit.Move (newTargetPos);
 		isMoving = true;		
 	}
 

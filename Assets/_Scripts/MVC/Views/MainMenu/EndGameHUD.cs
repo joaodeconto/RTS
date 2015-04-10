@@ -1,22 +1,30 @@
 using UnityEngine;
 using System.Collections;
 
-public class EndGameHUD : MonoBehaviour {
-
-	private bool pressedQuit = false;
+public class EndGameHUD : MonoBehaviour
+{
 	private GameObject endGameWait;
+	private bool checkSaving = false;
+	protected Score score;
+	protected XTerrainDeformer xdeformer;
+	public GameObject endGameUI;
 	
-	void Awake ()
+	void Start ()
 	{
-		endGameWait = transform.parent.FindChild("WaitingPlayersUI").gameObject;
+		xdeformer = GameObject.Find ("Terrain").GetComponent<XTerrainDeformer>(); 
+		score = Visiorama.ComponentGetter.Get <Score> ("$$$_Score");
 		DefaultCallbackButton defaultCallbackButton;
 		
 		GameObject option = transform.FindChild ("Defeat").transform.FindChild ("End Game").gameObject;		
 		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
 		defaultCallbackButton.Init (null,
 									(ht_dcb) =>
-									{
-										pressedQuit = true;
+									{	
+										xdeformer.ResetTerrain();
+			endGameUI.SetActive(true);
+			Loading ld = endGameUI.GetComponent<Loading>();
+										ld.forwardAlpha();										
+										checkSaving = true;
 									});
 
 
@@ -25,8 +33,12 @@ public class EndGameHUD : MonoBehaviour {
 		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
 		defaultCallbackButton.Init (null,
 									(ht_dcb) =>
-									{
-										pressedQuit = true;
+									{	
+										xdeformer.ResetTerrain();
+			endGameUI.SetActive(true);
+			Loading ld = endGameUI.GetComponent<Loading>();
+										ld.forwardAlpha();										
+										checkSaving = true;
 									});
 
 		option = transform.FindChild ("Victory").transform.FindChild ("Facebook Win1").gameObject;		
@@ -71,18 +83,12 @@ public class EndGameHUD : MonoBehaviour {
 
 	void Update()
 	{
-		if(pressedQuit)
+		if(checkSaving)
 		{
-			Score score = Visiorama.ComponentGetter.Get <Score> ("$$$_Score");
-			endGameWait.SetActive(true);
-			Loading ld = endGameWait.GetComponent<Loading>();
-			ld.forwardAlpha();
-			XTerrainDeformer xdeformer = GameObject.Find ("Terrain").GetComponent<XTerrainDeformer>(); 
-			xdeformer.ResetTerrain();
 			if(!score.isSaving)
 			{
-				if (!PhotonNetwork.offlineMode) PhotonNetwork.LeaveRoom ();
 				Application.LoadLevel (0);
+				checkSaving = false;
 			}
 		}
 	}

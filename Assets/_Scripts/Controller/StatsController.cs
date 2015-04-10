@@ -70,15 +70,23 @@ public class StatsController : MonoBehaviour
 			Unit unit = stat as Unit;
 			
 			if (unit == null) continue;
-			
-			unit.TargetingEnemy (null);
-			unit.UnFollow ();
 
-			if (unit.moveAttack)
+
+			if (unit.followingTarget)
+			{
+				unit.CancelCheckEnemy();
+				unit.hasMoveAttackDestination = false;
+				unit.followingTarget = false;
+				unit.CallInvokeCheckEnemy();
+			}
+			else if (unit.moveAttack)
 			{			
 				unit.moveAttackDestination		 = destination;
 				unit.hasMoveAttackDestination	 = true;
 			}
+
+			unit.TargetingEnemy (null);
+			unit.UnFollow ();
 
 			if (keepFormation)
 			{
@@ -91,7 +99,6 @@ public class StatsController : MonoBehaviour
 			}
 			else
 			{
-				//Vector3 newDestination = destination + (Random.insideUnitSphere * soldier.pathfind.radius * selectedSoldiers.Count);
 				Vector3 newDestination = destination;
 				if (i != 0)
 				{
@@ -155,7 +162,8 @@ public class StatsController : MonoBehaviour
 			
 			//Nao permite seguir a si mesmo nem alguma unidade nula
 			if (unit == null || unit == allyUnit) continue;
-			
+
+			unit.UnFollow();			
 			unit.Follow (allyUnit);
 			
 			feedback = true;

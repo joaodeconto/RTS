@@ -133,7 +133,7 @@ public class ShowScore : MonoBehaviour
 		mapLabel.text = VersusScreen.mapLabelString;
 		modeLabel.text = VersusScreen.modeLabelString;
 
-		BattleTotals(battleTotalGold, battleTotalMana, battleTotalSpent, battleTotalUnitsCreated, battleTotalUnitsDestroyed, battleTotalStructuresBuild, battleTotalStructuresDestroyed, battleTotalUpgradePoints);
+//		BattleTotals(battleTotalGold, battleTotalMana, battleTotalSpent, battleTotalUnitsCreated, battleTotalUnitsDestroyed, battleTotalStructuresBuild, battleTotalStructuresDestroyed, battleTotalUpgradePoints);
 						
 		Score.LoadBattleScore
 		(
@@ -145,20 +145,26 @@ public class ShowScore : MonoBehaviour
 					
 					players[dicScore[i].IdPlayer].AddScorePlayer (dicScore[i].SzScoreName, dicScore[i].NrPoints);
 
-				}
-				
+				}											
+										
 				float positionYInitial = startLabelPoisition;
 				foreach (KeyValuePair<int, ScorePlayer> sp in players)
 				{
+					battleTotalGold						+= sp.Value.GoldCollectedPoints;
+					battleTotalMana 					+= sp.Value.ManaCollectedPoints;
+					battleTotalSpent					+= sp.Value.ResourcesSpentPoints;
+					battleTotalUnitsCreated 			+= sp.Value.UnitsCreatedPoints;
+					battleTotalUnitsDestroyed 			+= sp.Value.UnitsKillsPoints;
+					battleTotalStructuresBuild 			+= sp.Value.StructureCreatedPoints;
+					battleTotalStructuresDestroyed 		+= sp.Value.StructureDestroyedPoints;
+					battleTotalUpgradePoints 			+= sp.Value.UpgradePoints;
+
 					GameObject scorePlayerObject = NGUITools.AddChild (scoreMenuObject.gameObject, scorePlayerPrefab);
 					scorePlayerObject.transform.localPosition = Vector3.up * positionYInitial;
 					ScoreRow sr = scorePlayerObject.GetComponent<ScoreRow>();					
 					SetPlayerRank(sp.Key, sr);
-
-
-					playerTime = (float)sp.Value.TotalTimeElapsed;     //TODO timer do proprio player
+					playerTime = (float)sp.Value.TotalTimeElapsed;
 					timeLabel.text = showGameTime;
-
 					sr.playerScoreModifier.text = "+" + sp.Value.TotalScore.ToString();
 
 					if (sp.Key == myPlayerId)
@@ -180,17 +186,16 @@ public class ShowScore : MonoBehaviour
 					sr.StructuresDestroyed.GetComponentInChildren<UILabel>().text   = sp.Value.StructureDestroyedPoints.ToString ();
 					sr.techsResearched.GetComponentInChildren<UILabel>().text       = sp.Value.UpgradePoints.ToString();
 
-					sr.ressourceGold.value 	      = ((float)sp.Value.GoldCollectedPoints / (float)battleTotalGold);
-					sr.ressourceMana.value		  = ((float)sp.Value.ManaCollectedPoints / (float)battleTotalMana);
+//					sr.ressourceGold.value 	      = ((float)sp.Value.GoldCollectedPoints / (float)battleTotalGold);
+//					sr.ressourceMana.value		  = ((float)sp.Value.ManaCollectedPoints / (float)battleTotalMana);
 //					sr.ressourceSpent.value 	  = ((float)sp.Value.ResourcesSpentPoints / (float)battleTotalSpent);
-					sr.StructuresBuild.value  	  = ((float)sp.Value.StructureCreatedPoints / (float)battleTotalStructuresBuild);
-					sr.StructuresLost.value 	  = ((float)sp.Value.StructureLostPoints / (float)battleTotalStructuresDestroyed);
-					sr.StructuresDestroyed.value  = ((float)sp.Value.StructureDestroyedPoints / (float)battleTotalStructuresDestroyed);
-					sr.unitsBuild.value  		  = ((float)sp.Value.UnitsCreatedPoints / (float)battleTotalUnitsCreated);
-					sr.unitsLost.value  		  = ((float)sp.Value.UnitsLostPoints / (float)battleTotalUnitsDestroyed);
-					sr.unitsDestroyed.value  	  = ((float)sp.Value.UnitsKillsPoints / (float)battleTotalUnitsDestroyed);	
-					sr.techsResearched.value  	  = ((float)sp.Value.UpgradePoints / (float)battleTotalUpgradePoints);	
-
+//					sr.StructuresBuild.value  	  = ((float)sp.Value.StructureCreatedPoints / (float)battleTotalStructuresBuild);
+//					sr.StructuresLost.value 	  = ((float)sp.Value.StructureLostPoints / (float)battleTotalStructuresDestroyed);
+//					sr.StructuresDestroyed.value  = ((float)sp.Value.StructureDestroyedPoints / (float)battleTotalStructuresDestroyed);
+//					sr.unitsBuild.value  		  = ((float)sp.Value.UnitsCreatedPoints / (float)battleTotalUnitsCreated);
+//					sr.unitsLost.value  		  = ((float)sp.Value.UnitsLostPoints / (float)battleTotalUnitsDestroyed);
+//					sr.unitsDestroyed.value  	  = ((float)sp.Value.UnitsKillsPoints / (float)battleTotalUnitsDestroyed);	
+//					sr.techsResearched.value  	  = ((float)sp.Value.UpgradePoints / (float)battleTotalUpgradePoints);	
 
 					positionYInitial -= diferrenceBetweenLabels;
 				}
@@ -252,19 +257,17 @@ public class ShowScore : MonoBehaviour
 	public void SetPlayerRank(int playerId, ScoreRow scoreRow)
 	{
 		int i = 0;
-		Score.LoadRanking 
-			(
-				(List<Model.DataScoreRanking> ranking) => 	
+		Score.LoadRanking((List<Model.DataScoreRanking> ranking) => 	
+		{
+			foreach (Model.DataScoreRanking r in ranking)
+			{
+				i++;
+				if (r.IdPlayer == playerId)
 				{
-				foreach (Model.DataScoreRanking r in ranking)
-				{
-					i++;
-					if (r.IdPlayer == playerId)
-					{
-						int rankDif = (PlayerPrefs.GetInt("Rank")- i);
-						scoreRow.playerName.text  = r.SzName;
-						scoreRow.playerNewRank.text  = i.ToString();
-						scoreRow.rankLadder.text  = rankDif.ToString();
+					int rankDif = (PlayerPrefs.GetInt("Rank")- i);
+					scoreRow.playerName.text  = r.SzName;
+					scoreRow.playerNewRank.text  = i.ToString();
+					scoreRow.rankLadder.text  = rankDif.ToString();
 
 //						if (rankDif < 0)
 //							scoreRow.rankLadderSignal.spriteName  = "Minus";
@@ -273,21 +276,21 @@ public class ShowScore : MonoBehaviour
 //						else
 //							scoreRow.rankLadderSignal.enabled = false;
 
-						PlayerPrefs.SetInt("Rank", i);
+					PlayerPrefs.SetInt("Rank", i);
 
-						foreach (KeyValuePair <string,string> name in VersusScreen.opponentSprite)
+					foreach (KeyValuePair <string,string> name in VersusScreen.opponentSprite)
+					{
+
+						if (r.SzName == name.Key)
 						{
-							if (r.SzName == name.Key)
-							{
-								scoreRow.playerAvatar.spriteName = name.Value;
-								break;
-							}
+							scoreRow.playerAvatar.spriteName = name.Value;
+							break;
 						}
-						break;													
 					}
+					break;													
 				}
 			}
-			);		
+		});		
 	}
 
 	private void SaveMyTotal(ScorePlayer sp)
@@ -302,11 +305,7 @@ public class ShowScore : MonoBehaviour
 										pbDAO.UpdatePlayerBattle (playerBattle,
 										                          (playerBattle_update, message_update) =>
 										                          {
-											if (playerBattle_update != null)
-												
-												Debug.Log ("message: " + message);
-											else
-												Debug.Log ("salvou playerBattle" + "inserir contagem de pontos aqui");
+										
 										});
 									});
 	}

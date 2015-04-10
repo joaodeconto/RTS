@@ -55,37 +55,25 @@ public class Tutorial_Basic : MonoBehaviour {
 	public void ShowNextTutorialItem ()
 	
 	{
-		if (tutorialScreenSelected < tutorial.Length-1)
+		if (tutorialScreenSelected < tutorial.Length)
 		{
 			i++;
 			tutorialScreenSelected = i;
-
 		}
 
 		foreach (Tutorial tu in tutorial)
 		{
 
-			if (tu.tutorialItem != null)
-			{
-
-			tu.tutorialItem.SetActive (false);
-
-			}
+			if (tu.tutorialItem != null)	tu.tutorialItem.SetActive (false);
 
 			if (tu.order == tutorialScreenSelected)
 			{
-				if (tu.timeScaleItem != null)
-				{
 
 				Time.timeScale = tu.timeScaleItem;
-				
-				}
 
 				if (tu.tutorialItem != null)
 				{
-
-				tu.tutorialItem.SetActive (true);
-				
+				tu.tutorialItem.SetActive (true);				
 				}
 
 				if (tu.tutorialTitleText != null)
@@ -99,6 +87,7 @@ public class Tutorial_Basic : MonoBehaviour {
 				{
 
 				tutorialBox.text = tu.tutorialBoxText;
+				tutorialBox.parent.GetComponent<UIScrollView>().ResetPosition();
 				
 				}
 
@@ -136,43 +125,17 @@ public class Tutorial_Basic : MonoBehaviour {
 			}
 			
 			if (tu.order == tutorialScreenSelected)
-			{
-				if (tu.timeScaleItem != null)
-				{
-					
-					Time.timeScale = tu.timeScaleItem;
-					
-				}
-				
-				if (tu.tutorialItem != null)
-				{
-					
-					tu.tutorialItem.SetActive (true);
-					
-				}
-				
-				if (tu.tutorialTitleText != null)
-				{
-					
-					tutorialTitle.text = tu.tutorialTitleText;
-					
-				}
-				
-				if (tu.tutorialBoxText != null)
-				{
-					
-					tutorialBox.text = tu.tutorialBoxText;
-					
-				}
-				
+			{			
+				if (tu.tutorialItem != null)	tu.tutorialItem.SetActive (true);					
+
+				if (tu.tutorialTitleText != null)	tutorialTitle.text = tu.tutorialTitleText;					
+
+				if (tu.tutorialBoxText != null)	tutorialBox.text = tu.tutorialBoxText;
+
 				nextBtn = tu.nextTutorialBtn;
-
-				tutorialIndex.text = tutorialScreenSelected + 1 + " / " + (tutorial.Length -1);
-
+				tutorialIndex.text = tutorialScreenSelected + 1 + " / " + (tutorial.Length);
 				
-			}
-			
-			
+			}			
 			
 		}
 		

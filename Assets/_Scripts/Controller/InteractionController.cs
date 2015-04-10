@@ -148,6 +148,15 @@ public class InteractionController : MonoBehaviour
 				{
 					if (unit.IsVisible)
 					{
+						foreach (IStats stat in statsController.selectedStats)
+						{
+							Unit myUnit = stat as Unit;
+							
+							//Nao permite seguir a si mesmo nem alguma unidade nula
+							if (myUnit == null ) continue;
+							
+							myUnit.UnFollow();	
+						}
 						statsController.AttackTroop (unit.gameObject);
 						return;
 					}

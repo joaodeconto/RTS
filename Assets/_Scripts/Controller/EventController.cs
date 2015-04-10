@@ -54,7 +54,7 @@ public class EventController : MonoBehaviour
 		hudController.CreateEnqueuedButtonInInspector ( "event-" + Time.time, "Events", ht, spriteName,
 		                                                (ht_dcb) => 
 		                                               {
-															if (eventPosition != null)
+															if (eventPosition != Vector3.zero)
 															eventPosition.y = 0.0f;
 																											
 															Math.CenterCameraInObject (Camera.main, eventPosition);

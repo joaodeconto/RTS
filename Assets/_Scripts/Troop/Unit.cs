@@ -73,7 +73,7 @@ public class Unit : IStats, IMovementObservable,
 			}
 		}
 	}
-	protected bool followingTarget;
+	public bool followingTarget;
 	protected float attackBuff;
 	public bool moveAttack					{get; set;}
 	public Vector3 moveAttackDestination	{get; set;}
@@ -84,8 +84,9 @@ public class Unit : IStats, IMovementObservable,
 	protected bool invokeCheckEnemy;
 	protected NavMeshAgent NavAgent;
 	public float GetAgentRadius {
-		get	{
+		get	{if(NavAgent != null)
 			return NavAgent.radius;
+			else		return 0f;
 		}
 	}
 	protected Vector3 PathfindTarget {
@@ -180,7 +181,6 @@ public class Unit : IStats, IMovementObservable,
 		if (!IsDead) IAStep ();
 	}
 
-
 	public virtual void IAStep ()
 	{
 		if (gameplayManager.IsBotTeam (this))
@@ -205,17 +205,16 @@ public class Unit : IStats, IMovementObservable,
 				if (TargetAttack != null) unitState = UnitState.Walk;
 
 				break;
+
 			case UnitState.Walk:
+
 				if (unitAnimation.Walk)
 				{
 					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(NavAgent.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
 
-				if(!moveAttack)
-				{
-					CancelCheckEnemy();	
-				}
+				if(!moveAttack)	CancelCheckEnemy();	
 
 				if (TargetAttack != null)
 				{
@@ -625,13 +624,17 @@ public class Unit : IStats, IMovementObservable,
 			invokeCheckEnemy = true;
 		}
 	}
-	private void CancelCheckEnemy ()
+	public void CancelCheckEnemy ()
 	{
 		if (invokeCheckEnemy)
 		{
 			CancelInvoke ("CheckEnemyIsClose");
 			invokeCheckEnemy = false;
 		}
+	}
+	public void CallInvokeCheckEnemy()
+	{
+		Invoke ("StartCheckEnemy",5f);
 	}
 	
 	public bool InMeleeRange (GameObject target)
@@ -922,24 +925,12 @@ public class Unit : IStats, IMovementObservable,
 
 	#region IMovementObservable implementation
 
-	/// <summary>
-	/// Registers the movement observer.
-	/// </summary>
-	/// <param name="observer">Observer.</param>
-	/// <description>
-	/// Avoid using this method use the Follow method instead
-	/// </description>
 
 	public void RegisterMovementObserver (IMovementObserver observer)
 	{
 		IMOobservers.Add (observer);
 	}
 
-	/// <summary>
-	/// Unregister the movement observer.
-	/// </summary>
-	/// <param name="observer">Observer.</param>
-	/// Avoid using this method use the UnFollow method instead
 	public void UnRegisterMovementObserver (IMovementObserver observer)
 	{
 		bool success = IMOobservers.Remove (observer);
@@ -972,16 +963,10 @@ public class Unit : IStats, IMovementObservable,
 
 		if(followedUnit.NavAgent != null) 
 		{
-			float minDistanceBetweenFollowedUnit = (followedUnit.GetAgentRadius + this.GetAgentRadius) * 1.2f;
+			float minDistanceBetweenFollowedUnit = (followedUnit.GetAgentRadius + this.GetAgentRadius)*3f;
 			
-			Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized * 2.0f))
-									* minDistanceBetweenFollowedUnit;
-			
-			//		forwardVec = Vector3.Angle (followedUnit.transform.forward.normalized, 
-			//		                            this.transform.forward.normalized)		
-			//		forwardVec.x += Random.Range (minDistanceBetweenFollowedUnit / 2.0f, minDistanceBetweenFollowedUnit);
-			//		forwardVec.z += Random.Range (minDistanceBetweenFollowedUnit / 2.0f, minDistanceBetweenFollowedUnit);
-			
+			Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized))* minDistanceBetweenFollowedUnit;
+
 			newPosition = newPosition + forwardVec;
 
 			if (Vector3.Distance (this.transform.position, newPosition) < minDistanceBetweenFollowedUnit)
@@ -994,7 +979,7 @@ public class Unit : IStats, IMovementObservable,
 
 	public void OnUnRegisterMovementObserver ()
 	{
-		 Move (LastPosition);
+		 Debug.Log(LastPosition);
 	}
 
 	public Vector3 LastPosition {

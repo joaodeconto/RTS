@@ -80,9 +80,14 @@ public class GameplayManager : Photon.MonoBehaviour
 	public bool scoreCounting = true;
 	public int clockPontuationLimit;
 	protected NetworkManager network;
+	protected PhotonWrapper pw;
+	protected BidManager bm;
 	protected TouchController touchController;
-	protected SelectionController interactionController;
+	protected SelectionController selectionController;
 	public UILabel loadingMessage;
+	protected Score score;
+	protected string encodedBattle;
+	protected string encodedPlayer;
 
 	#endregion
 
@@ -91,7 +96,12 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		network = ComponentGetter.Get<NetworkManager>();
 		touchController = ComponentGetter.Get<TouchController>();
-		interactionController = ComponentGetter.Get<SelectionController>();
+		selectionController = ComponentGetter.Get<SelectionController>();
+		pw = ComponentGetter.Get <PhotonWrapper> ();
+		bm = ComponentGetter.Get <BidManager> ();
+	    score = ComponentGetter.Get <Score> ("$$$_Score");
+		encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
+		encodedPlayer = (string)pw.GetPropertyOnPlayer ("player");
 
 		hud.uiWaitingPlayers.SetActive(true);
 		loadingMessage = hud.uiWaitingPlayers.GetComponentInChildren<UILabel>();
@@ -100,8 +110,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			loadingMessage.text = "synching tribes";
 			gamestarted = false;
-			GameObject tutorialC = GameObject.Find ("Tutorial Manager");
-			tutorialC.SetActive (false);
+
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
 			if (mode == Mode.Cooperative)
 			{
@@ -113,6 +122,8 @@ public class GameplayManager : Photon.MonoBehaviour
 
 		else
 		{
+			GameObject tutorialC = GameObject.Find ("Components/Tutorial Manager");
+			if (tutorialC)	tutorialC.SetActive (true);
 			loadingMessage.text = "loading";
 			MyTeam = 0;
 			Allies = 0;
@@ -326,7 +337,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				if (!isInCamera)
 				{
 					beingAttacked = true;
-					Invoke ("BeingAttackedToFalse", 5f);
+					Invoke ("BeingAttackedToFalse", 3f);
 					
 					SoundSource ss = GetComponent<SoundSource> ();
 					if (ss)
@@ -480,13 +491,13 @@ public class GameplayManager : Photon.MonoBehaviour
 		if(state)
 		{
 			touchController.mainCamera.GetComponent<CameraMovement>().enabled = false;
-			interactionController.enabled = false;
+			selectionController.enabled = false;
 			Time.timeScale = 0.0f;
 		}
 		else
 		{
 			touchController.mainCamera.GetComponent<CameraMovement>().enabled = true;
-			interactionController.enabled = true;
+			selectionController.enabled = true;
 			Time.timeScale = 1.0f;
 		}
 	}
@@ -495,41 +506,25 @@ public class GameplayManager : Photon.MonoBehaviour
 	#region EndMatch
 	public void EndMatch ()
 	{
-		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
-		BidManager bm = ComponentGetter.Get <BidManager> ();
-
 		if (winGame)
 		{
 			bm.WonTheGame ();
 		}
-		scoreCounting = false;
-
-		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
-		string encodedPlayer = (string)pw.GetPropertyOnPlayer ("player");
 
 		if (!string.IsNullOrEmpty (encodedBattle) && !string.IsNullOrEmpty (encodedPlayer))
 		{
 			Model.Battle battle = new Model.Battle (encodedBattle);
 			Model.Player player = new Model.Player(encodedPlayer);
-			
-			if (winGame)
-			{
-				Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
-//				Score.AddScorePoints (DataScoreEnum.Victory, 1);
-				Debug.Log ("WINGAME: " + winGame);
-			}
-			else
-			{
-				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
-//				Score.AddScorePoints (DataScoreEnum.Defeat, 1);
-				Debug.Log ("LOSEGAME: " + loseGame);
-			}
 
-//			int realTimePoints = Mathf.Max( clockPontuationLimit - (int)gameTime, 0);
-			Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);
+			if(scoreCounting)
+			{
+				if (winGame)	Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
+				else			Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
 
-			Score score = score = ComponentGetter.Get <Score> ("$$$_Score");
-			score.SaveScore();
+				Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);
+				score.SaveScore();
+				scoreCounting = false;
+			}
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
 
@@ -540,14 +535,11 @@ public class GameplayManager : Photon.MonoBehaviour
 				pbDAO.UpdatePlayerBattle (playerBattle,
 				(playerBattle_update, message_update) =>
 				{
-//					if (playerBattle_update != null)
-//
-//						Debug.Log ("message: " + message);
-//					else
-//						Debug.Log ("salvou playerBattle" + "inserir contagem de pontos aqui");
+
 				});
 			});
 		}
+		if (!PhotonNetwork.offlineMode) PhotonNetwork.LeaveRoom ();
 	}
 
 	public void Surrender ()
@@ -570,10 +562,6 @@ public class GameplayManager : Photon.MonoBehaviour
 	void Defeat (int teamID, int ally)
 	{
 		if (teams[teamID].lose) return;
-
-//		score.SaveScore();
-				
-		scoreCounting = false;
 				
 		teams[teamID].lose = true;
 		
@@ -602,16 +590,23 @@ public class GameplayManager : Photon.MonoBehaviour
 			break;
 		case Mode.Tutorial:	
 		case Mode.Deathmatch:
-			loserTeams++;
-			
+
 			if (MyTeam == teamID)
 			{
 				loseGame = true;
+				if (!string.IsNullOrEmpty (encodedBattle) && !string.IsNullOrEmpty (encodedPlayer))
+				{
+					Model.Battle battle = new Model.Battle (encodedBattle);											
+					Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);					
+					Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);					
+					score.SaveScore();
+					scoreCounting = false;
+				}
 			}
 			StatsController sc = ComponentGetter.Get<StatsController> ();
-			sc.DestroyAllStatsTeam (teamID);
-			
-			//se o numero de times que perderam for o mesmo de times adversarios o jogador atual ganhou a partida
+			sc.DestroyAllStatsTeam (teamID);			
+			loserTeams++;			
+
 			if (loserTeams == numberOfTeams - 1 && !loseGame)
 			{
 				winGame = true;

@@ -81,23 +81,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &100010
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400010}
-  - 114: {fileID: 11400008}
-  - 114: {fileID: 11400016}
-  m_Layer: 0
-  m_Name: Tutorial Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &100012
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,10 +169,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400024}
-  - 114: {fileID: 11400030}
-  - 114: {fileID: 11400032}
+  - 114: {fileID: 11466618}
   m_Layer: 0
-  m_Name: GameplayManager
+  m_Name: Victory Condition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -207,6 +189,23 @@ GameObject:
   m_Layer: 0
   m_Name: _GameController 1x1
   m_TagString: GameController
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &136084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 436084}
+  - 114: {fileID: 11400030}
+  - 114: {fileID: 11400032}
+  m_Layer: 0
+  m_Name: GameplayManager
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -303,18 +302,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 400026}
   m_RootOrder: 9
---- !u!4 &400010
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100010}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400026}
-  m_RootOrder: 11
 --- !u!4 &400012
 Transform:
   m_ObjectHideFlags: 1
@@ -338,7 +325,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 13
+  m_RootOrder: 12
 --- !u!4 &400018
 Transform:
   m_ObjectHideFlags: 1
@@ -386,7 +373,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 1
+  m_RootOrder: 13
 --- !u!4 &400026
 Transform:
   m_ObjectHideFlags: 1
@@ -398,7 +385,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400006}
-  - {fileID: 400024}
+  - {fileID: 436084}
   - {fileID: 444844}
   - {fileID: 400004}
   - {fileID: 400020}
@@ -408,11 +395,23 @@ Transform:
   - {fileID: 400000}
   - {fileID: 400008}
   - {fileID: 400002}
-  - {fileID: 400010}
   - {fileID: 444842}
   - {fileID: 400014}
+  - {fileID: 400024}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!4 &436084
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 136084}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400026}
+  m_RootOrder: 1
 --- !u!4 &444842
 Transform:
   m_ObjectHideFlags: 1
@@ -424,7 +423,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
-  m_RootOrder: 12
+  m_RootOrder: 11
 --- !u!4 &444844
 Transform:
   m_ObjectHideFlags: 1
@@ -497,7 +496,7 @@ MonoBehaviour:
     padding: {x: 0, y: 0}
     labelSize: 0
     IsVerticalQueue: 1
-    maxPerLine: 5
+    maxPerLine: 6
     maxItems: 150
     IsTemporizedQueue: 0
     temporizedQueueAttributes:
@@ -520,7 +519,7 @@ MonoBehaviour:
       messageCap: 0
   - queueName: Events
     panel: {fileID: 0}
-    rootPosition: {x: 0, y: 0}
+    rootPosition: {x: 46, y: 46}
     cellSize: {x: 92, y: 92}
     padding: {x: 1, y: 1}
     labelSize: 24
@@ -569,161 +568,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7018cb370f31fc8438abf2be7601ebd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11400008
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72e3bb9dd87e615468daa4808f812081, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextBtn: {fileID: 0}
-  tutorialBox: {fileID: 0}
-  tutorialTitle: {fileID: 0}
-  tutorial:
-  - order: 0
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: Salux Rex eolix!
-    tutorialBoxText: 'Learn how to use your powers, control your people, and lead
-      them to survival and perpetuation.
-
-
-      Follow each step carefully, feel free to review any instructions, before going
-      into real battle!'
-    nextTutorialBtn: {fileID: 0}
-  - order: 1
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Interface
-    tutorialBoxText: 'The interactive interface provides information about your resources,
-      group buttons, a minimap and option buttons.
-
-
-      you can try the options and objectives menu before moving on!'
-    nextTutorialBtn: {fileID: 0}
-  - order: 5
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Minimap
-    tutorialBoxText: game paused
-    nextTutorialBtn: {fileID: 0}
-  - order: -1
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Zoom
-    tutorialBoxText: game paused
-    nextTutorialBtn: {fileID: 0}
-  - order: 2
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Status
-    tutorialBoxText: game paused
-    nextTutorialBtn: {fileID: 0}
-  - order: 3
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Status
-    tutorialBoxText: game paused
-    nextTutorialBtn: {fileID: 0}
-  - order: 4
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Status
-    tutorialBoxText: game paused
-    nextTutorialBtn: {fileID: 0}
-  - order: 9
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: Selection
-    tutorialBoxText: "To select some of your units, \"click and drag\" drawing an
-      area over them and let go. \n\nTo Deselect your selected units, quickly click
-      with two fingers on the screen, or drag a small rectangle with no units in it. "
-    nextTutorialBtn: {fileID: 0}
-  - order: 10
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: Actions Menu
-    tutorialBoxText: 'When selecting a unit, new buttons will pop-up on the interface.
-
-      On the Botton Right, the "Action Buttons"'
-    nextTutorialBtn: {fileID: 0}
-  - order: 13
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: Workers
-    tutorialBoxText: If the unit have a special hability, those buttons will also
-      appear on the "Actions Menu". In this case, you have selected some workers,
-      wich can build "Structures".
-    nextTutorialBtn: {fileID: 0}
-  - order: 11
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: Mining
-    tutorialBoxText: Developing your tribe demands gold, select your workers and click
-      on a " Gold Resource" to begin extracting.
-    nextTutorialBtn: {fileID: 0}
-  - order: 15
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: Building
-    tutorialBoxText: It's time to extend the population limit. Select a single worker
-      by clicking in it, and click on the "Hut" button. Click and drag on the terrain
-      to select a suitable location for your structure. Green means you can release
-      the touch to build.
-    nextTutorialBtn: {fileID: 0}
-  - order: 12
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: Creating Units
-    tutorialBoxText: Click on the "Tribe Center" structure to show the available units
-      for construction. Each time you click for creating a unit, the described amount
-      of gold is subtracted from your total stack, even if the population limit has
-      been reached. To cancel the creation, click on the creation button queue.
-    nextTutorialBtn: {fileID: 0}
-  - order: 14
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Structures
-    tutorialBoxText: 'The Structures are under development, for now:'
-    nextTutorialBtn: {fileID: 0}
-  - order: 16
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: New Objetives!
-    tutorialBoxText: That's all for now, stash 500 gold units and expand population
-      limit to 30 units to win this level, check your "Objective Panel" for victory
-      condition and quests!
-    nextTutorialBtn: {fileID: 0}
-  - order: 8
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 1
-    tutorialTitleText: Scrolling
-    tutorialBoxText: " For scrolling the screen, touch with TWO fingers on an empty
-      terrain area, and \"drag\" one of them. It provides movement for your view over
-      the scenario.                            \n\t     Clicking and dragging on the
-      \"minimap\" also enable moving your vision to an especific point or event."
-    nextTutorialBtn: {fileID: 0}
-  - order: 6
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Idle Button
-    tutorialBoxText: "Whenever a  worker unit is in idle state, this button will apear.
-      \nClicking on it, will centralize and select the first idle unity. Hold the
-      button and release for selecting all idle units."
-    nextTutorialBtn: {fileID: 0}
-  - order: 7
-    tutorialItem: {fileID: 0}
-    timeScaleItem: 0
-    tutorialTitleText: Groups
-    tutorialBoxText: under this menu... :(
-    nextTutorialBtn: {fileID: 0}
-  tutorialScreenSelected: 0
-  tutorialIndex: {fileID: 0}
-  tutorialMainBg: {fileID: 0}
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -771,61 +615,15 @@ MonoBehaviour:
   MapGUICamera: {fileID: 0}
   miniMapPanel: {fileID: 0}
   MiniMapRoot: {fileID: 0}
-  minimapAnchor: {fileID: 0}
   CamPositionMiniMap: {fileID: 0}
   CamPositionTexture: {fileID: 0}
   mapTransform: {fileID: 0}
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 6d689bc25bc28e347a367c3883aeaf9a, type: 2}
   minimapAtlas: {fileID: 11400000, guid: 1ad367796a1accb419f17d3ea071ca02, type: 2}
-  visualizationSize: {x: 95, y: 70, z: 0}
-  visualizationPosition: {x: 0, y: 0, z: 60}
+  visualizationSize: {x: 70, y: 42, z: 0}
+  visualizationPosition: {x: 0, y: 0, z: 68}
   MiniMapRefreshInterval: .200000003
---- !u!114 &11400016
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c4b840000f121241a531eee11351c04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ChallengesToWin:
-  - IsActive: 0
-    objectiveCompleted: 0
-    Name: Stash 500 Gold
-    enumComparingType: 4
-    specificStat: gold
-    valueToCompare: 500
-    enumCondition: 2
-    objDescription: 'Guide your workers to a gold mine, extract more and more! Save
-      enought gold for the next tutorial! '
-    objSprite: Achiv_Battle1
-  - IsActive: 0
-    objectiveCompleted: 0
-    Name: Build shelter for 40 units
-    enumComparingType: 2
-    specificStat: 
-    valueToCompare: 39
-    enumCondition: 2
-    objDescription: Learn to grow your tribe, contructing huts its fundamental for
-      a future army growth.
-    objSprite: cottage
-  - IsActive: 0
-    objectiveCompleted: 0
-    Name: Defeat All Enemies
-    enumComparingType: 8
-    specificStat: 
-    valueToCompare: 0
-    enumCondition: 1
-    objDescription: Destroy the enemy tribe.
-    objSprite: Achiv_Battle1
-  Ativar: 1
-  objectiveLog: {fileID: 0}
-  objSubpanel: {fileID: 0}
-  objectiveRow: {fileID: 100016, guid: 8ddc659078696134ba3dbf1fcba7838c, type: 2}
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -937,7 +735,7 @@ MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100024}
+  m_GameObject: {fileID: 136084}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c6a830f3446549408e3bc23cf6bc4be, type: 3}
@@ -962,14 +760,14 @@ MonoBehaviour:
   - name: Time 3
     colors:
     - {r: .568627477, g: 0, b: 1, a: 1}
-    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: .41911763, g: .191068336, b: .191068336, a: 1}
     - {r: 1, g: 1, b: 1, a: 1}
     initialPosition: {fileID: 0}
   - name: super time
     colors:
-    - {r: 1, g: .784313738, b: 0, a: 1}
-    - {r: 1, g: 1, b: 1, a: 1}
-    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: .0344827175, g: 1, b: 0, a: 1}
+    - {r: .213235319, g: .213235319, b: .213235319, a: 1}
+    - {r: .29411763, g: .185300067, b: .0475778431, a: 1}
     initialPosition: {fileID: 0}
   - name: super time
     colors: []
@@ -985,9 +783,9 @@ MonoBehaviour:
     initialPosition: {fileID: 0}
   - name: selvagens
     colors:
-    - {r: 0, g: 1, b: .0896551609, a: 1}
-    - {r: .364925146, g: .1703071, b: .367647052, a: 1}
-    - {r: .647058845, g: .647058845, b: .647058845, a: 1}
+    - {r: .867647052, g: .332891256, b: .210531995, a: 1}
+    - {r: 1, g: .641379237, b: 0, a: 1}
+    - {r: .558823526, g: .497160226, b: .41911763, a: 1}
     initialPosition: {fileID: 0}
   resources:
     m_mana: 0
@@ -1002,14 +800,15 @@ MonoBehaviour:
     uiWaitingPlayers: {fileID: 0}
     labelTime: {fileID: 0}
     uiLostMainBaseObject: {fileID: 0}
-  Triggerflag: 1
+  scoreCounting: 1
   clockPontuationLimit: 0
+  loadingMessage: {fileID: 0}
 --- !u!114 &11400032
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100024}
+  m_GameObject: {fileID: 136084}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
@@ -1051,8 +850,8 @@ MonoBehaviour:
   clusterModels:
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 60
-    bravery: 6
+    triggerDemmand: 380
+    bravery: 5
     defendTarget: {fileID: 0}
     exploreTarget: {fileID: 0}
     attackTarget: {fileID: 0}
@@ -1062,8 +861,8 @@ MonoBehaviour:
     clusterDesiredUnits:
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
+    - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
@@ -1079,15 +878,18 @@ MonoBehaviour:
     desiredBehaviour: 3
     clusterDesiredUnits:
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
+    - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 20
-    bravery: 3
+    triggerDemmand: 180
+    bravery: 5
     defendTarget: {fileID: 0}
     exploreTarget: {fileID: 0}
     attackTarget: {fileID: 0}
@@ -1095,7 +897,27 @@ MonoBehaviour:
     factory: {fileID: 0}
     desiredBehaviour: 4
     clusterDesiredUnits:
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    clusterUnits: []
+    clusterIsBusy: 0
+    hasDemanded: 0
+  - clusterComplete: 0
+    clusterNumber: 0
+    triggerDemmand: 600
+    bravery: 5
+    defendTarget: {fileID: 0}
+    exploreTarget: {fileID: 0}
+    attackTarget: {fileID: 0}
+    clusterTarget: {fileID: 0}
+    factory: {fileID: 0}
+    desiredBehaviour: 2
+    clusterDesiredUnits:
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+    - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
@@ -1144,6 +966,51 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
   - {fileID: 11400004, guid: 90dcd66a305546f4d8ce6e0aa6b19e5a, type: 2}
   - {fileID: 11400000, guid: 097090cf2466e1b408f34f8b34778481, type: 2}
+--- !u!114 &11466618
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c4b840000f121241a531eee11351c04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChallengesToWin:
+  - IsActive: 0
+    objectiveCompleted: 0
+    Name: Stash 500 Gold
+    enumComparingType: 4
+    specificStat: gold
+    valueToCompare: 500
+    enumCondition: 2
+    objDescription: 'Guide your workers to a gold mine, extract more and more! Save
+      enought gold for the next tutorial! '
+    objSprite: Achiv_Battle1
+  - IsActive: 0
+    objectiveCompleted: 0
+    Name: Build shelter for 40 units
+    enumComparingType: 2
+    specificStat: 
+    valueToCompare: 39
+    enumCondition: 2
+    objDescription: Learn to grow your tribe, contructing huts its fundamental for
+      a future army growth.
+    objSprite: cottage
+  - IsActive: 0
+    objectiveCompleted: 0
+    Name: Defeat All Enemies
+    enumComparingType: 8
+    specificStat: 
+    valueToCompare: 0
+    enumCondition: 1
+    objDescription: Destroy the enemy tribe.
+    objSprite: Achiv_Battle1
+  Ativar: 1
+  objectiveLog: {fileID: 0}
+  objSubpanel: {fileID: 0}
+  objectiveRow: {fileID: 100016, guid: 8ddc659078696134ba3dbf1fcba7838c, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

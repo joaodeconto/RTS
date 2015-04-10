@@ -14,8 +14,6 @@ namespace DB {
 		public string SzEmail;
 		[JsonProperty(PropertyName = "SzName",Required=Required.Default)]
 		public string SzName;
-		[JsonProperty(PropertyName = "SzAvatar",Required=Required.Default)]
-		public string SzAvatar;
 		[JsonProperty(PropertyName = "IdFacebookAccount",Required=Required.Default)]
 		public string IdFacebookAccount;
 		[JsonProperty(PropertyName = "SzPassword",Required=Required.Default)]
@@ -40,7 +38,6 @@ namespace DB {
 			player.IdPlayer = int.Parse(this.IdPlayer);
 			player.SzEmail  = this.SzEmail;
 			player.SzName   = this.SzName;
-			player.SzAvatar = this.SzAvatar;
 
 			player.IdFacebookAccount = this.IdFacebookAccount;
 			player.SzPassword        = this.SzPassword;

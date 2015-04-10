@@ -38,7 +38,7 @@ public class ObjectQualitySettingsInspector : Editor
 			EditorGUILayout.BeginVertical ("box");
 			EditorGUI.indentLevel = 0;
 			EditorGUILayout.LabelField ("GameObject Reference:");
-			objectQuality.gameObject = EditorGUILayout.ObjectField (objectQuality.gameObject, typeof(GameObject)) as GameObject;
+///			objectQuality.gameObject = EditorGUILayout.ObjectField (objectQuality.gameObject, typeof(GameObject)) as GameObject;
 			EditorGUILayout.Space ();
 			
 			if (objectQuality.gameObject != null)

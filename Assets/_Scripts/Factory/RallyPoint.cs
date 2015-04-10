@@ -13,7 +13,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 	public Texture2D lineTexture;
 	public float start = 1.0f; 
 	public float end = 0.5f;
-	public string[] AllowedLayersToFollow = new string[3] { "Terrain", "Unit","Resources" };//Layers de objetos que podem ser seguidos 
+	public string[] AllowedLayersToFollow = new string[4] { "Terrain", "Unit","Resources", "Obelisk" };//Layers de objetos que podem ser seguidos 
 
 	public Transform subMesh;
 
@@ -21,8 +21,6 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 	protected LineRenderer lineRenderer;
 	protected HUDController hudController;
 	protected GameplayManager gameplayManager;
-	protected InteractionController interactionController;
-
 	public Resource observedResource { get; private set;}
 	public Unit observedUnit { get; private set; }
 	private IMovementObservable observed { get; set; }
@@ -45,9 +43,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 		lineRenderer.SetColors (lineRenderer.material.color, lineRenderer.material.color);
 		lineRenderer.SetWidth (start, end);
 		transform.GetChild (0).renderer.material.color = lineRenderer.material.color;
-
 		ChangeColor (team);
-
 		//Atualizar a primeira vez
 		SavePosition (initialPosition);
 		UpdatePosition (initialPosition);
@@ -146,7 +142,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 			{
 				UpdatePosition (hit.point);
 
-				if (goHit.name == "Resource")
+				if (goHit.name == "Resource" || goHit.tag == "Obelisk")
 				{
 					observedResource = goHit.GetComponent<Resource>();
 					hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.transform.localPosition,
@@ -158,21 +154,18 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 				{
 					observed.UnRegisterMovementObserver (this);
 					observed = null;
+					observedUnit = null;
 				}
 
 				Unit unit = goHit.GetComponent<Unit> ();
-
-
 
 				if (unit == null)
 				{
 					SavePosition (hit.point);
 				}
 				else
-				{
-					GameplayManager gm = ComponentGetter.Get<GameplayManager> ();
-					
-					if (gm.IsSameTeam (unit) || gm.IsAlly (unit))
+				{									
+					if (gameplayManager.IsSameTeam (unit) || gameplayManager.IsAlly (unit))
 					{
 						MonoBehaviour[] scripts = goHit.GetComponents<MonoBehaviour> ();
 						

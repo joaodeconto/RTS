@@ -30,6 +30,7 @@ public class EnemyCluster : MonoBehaviour
 	private Transform teamNine;
 	private Transform teamZero;
 	private bool gotMainBase = false;
+	private bool enemyFactoryExists;
 	protected GameplayManager gameplayManager;
 	protected StatsController statsController;
 	public ClusterModel[] clusterModels;
@@ -130,6 +131,8 @@ public class EnemyCluster : MonoBehaviour
 		}
 		else
 		{
+			enemyFactoryExists = true;
+
 			foreach (IStats stat in statsController.otherStats)
 			{
 				if (stat.GetType() == typeof(CaveFactory))
@@ -137,7 +140,10 @@ public class EnemyCluster : MonoBehaviour
 					CaveFactory factory = stat as CaveFactory;
 					cluster.factory = factory;
 					ClusterDemand(cluster);
-				}						
+					break;
+				}
+				if (cluster.factory == null)
+					enemyFactoryExists = false;
 			}
 
 			if (cluster.factory == null) return;
@@ -146,6 +152,8 @@ public class EnemyCluster : MonoBehaviour
 
 	public void ClusterDemand (ClusterModel cluster)
 	{
+		if(!enemyFactoryExists) return;
+
 		if (!cluster.hasDemanded)
 		{
 			if(cluster.factory == null)

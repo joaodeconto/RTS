@@ -388,12 +388,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 300
-  defense: 0
   m_Team: 0
   m_Ally: 0
+  defense: 0
   fieldOfView: 22
   sizeOfSelected: 9
-  sizeOfSelectedHealthBar: 11
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400012}
   - subMesh: {fileID: 400008}
@@ -421,36 +420,41 @@ MonoBehaviour:
   description: Train and mounted dinosaurs as Raptors, Dilophos, Triceratops, T-Rex
     and Paralophos.
   requisites: Barracks
+  group: -1
   costOfResources:
     m_mana: 0
     m_rocks: 250
-  group: -1
   model: {fileID: 100010}
+  bonusDefense: 0
+  bonusProjectile: 0
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
   unitsToCreate:
   - unit: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     buttonName: Raptor
     VIP: 1
-    techAvailable: 0
+    techAvailable: 1
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
   - unit: {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
     buttonName: Triceratops
     VIP: 1
-    techAvailable: 0
+    techAvailable: 1
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 1
   - unit: {fileID: 11400000, guid: 1d3e301ff447d644a90dcabff9dfc493, type: 2}
     buttonName: T-Rex
-    VIP: 0
+    VIP: 1
     techAvailable: 0
     gridItemAttributes:
       gridXIndex: 0
       gridYIndex: 1
   - unit: {fileID: 11400010, guid: 0718c2afed22e534e808d3ea1ffd9b8c, type: 2}
     buttonName: Parasauro
-    VIP: 0
+    VIP: 1
     techAvailable: 0
     gridItemAttributes:
       gridXIndex: 2
@@ -463,6 +467,7 @@ MonoBehaviour:
       gridXIndex: 3
       gridYIndex: 2
   upgradesToCreate: []
+  keys: 
   receiveResource: 0
   buildingObjects:
     baseObject: {fileID: 100000}
@@ -483,7 +488,6 @@ MonoBehaviour:
   TechsToActive:
   - Warlord
   wasVisible: 0
-  alreadyCheckedMaxPopulation: 0
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
