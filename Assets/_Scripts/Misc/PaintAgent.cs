@@ -11,7 +11,7 @@ public class PaintAgent : MonoBehaviour
 	public void Start ()
 	{
 		xterrainDeformer = GameObject.Find (terrainName).GetComponent<XTerrainDeformer>(); 
-		paintSize = GetComponent<CapsuleCollider>().radius * 2;	
+		paintSize = GetComponent<CapsuleCollider>().radius * 3;	
 	}
 
 	 

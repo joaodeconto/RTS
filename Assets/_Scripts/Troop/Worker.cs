@@ -203,11 +203,8 @@ public class Worker : Unit
 
 				if (isMovingToFactory)
 				{
-					if (!HasFactory ())
-					{
-						isMovingToFactory = false;
-						Move (transform.position);
-					}
+					if (!HasFactory ())	isMovingToFactory = false;
+									
 				}
 
 				if (!MoveComplete ())
@@ -484,6 +481,7 @@ public class Worker : Unit
 #region Funções que o Worker pode fazer
 	IEnumerator StartConstruct ()
 	{
+		NavAgent.avoidancePriority = 0;
 		IsBuilding = true;
 		PlayWorkerSfx("Building");
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
@@ -499,6 +497,7 @@ public class Worker : Unit
 
 	IEnumerator StartRepair ()
 	{
+		NavAgent.avoidancePriority = 0;
 		IsRepairing = true;
 		PlayWorkerSfx("Building");
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
@@ -533,6 +532,7 @@ public class Worker : Unit
 
 	IEnumerator Pray ()
 	{
+		NavAgent.avoidancePriority = 0;
 		IsExtracting = true;
 //		PlayWorkerSfx("Mining");
 		resourceId = 1;

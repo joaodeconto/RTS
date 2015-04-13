@@ -13,6 +13,7 @@ public class EnemyCluster : MonoBehaviour
 		public bool clusterComplete = false;
 		public int clusterNumber;
 		public float triggerDemmand = 60f; // ativa demanda de determinado cluster
+		public float repeatDemmand = 10f;
 		public int bravery = 5; // numero dividido pelo total de unidades ate demandar novas unidades.
 		public Transform defendTarget;
 		public Transform exploreTarget;
@@ -25,6 +26,8 @@ public class EnemyCluster : MonoBehaviour
 		public List<Unit> clusterUnits = new List<Unit>();
 		public bool clusterIsBusy = false;
 		public bool hasDemanded;
+		public bool isCheckingRepeatDemmand = false;
+		public float minusTRepeat = 0f;
 	}
 
 	private Transform teamNine;
@@ -35,7 +38,8 @@ public class EnemyCluster : MonoBehaviour
 	protected StatsController statsController;
 	public ClusterModel[] clusterModels;
 	private int exploreIndex = 0;
-	private Dictionary<int, Transform> exploreTargets = new Dictionary<int, Transform>();	
+	private Dictionary<int, Transform> exploreTargets = new Dictionary<int, Transform>();
+
 	public enum ClusterBehaviour
 	{
 		none,
@@ -76,7 +80,7 @@ public class EnemyCluster : MonoBehaviour
 					CheckClusterFactory(cluster); 
 			else
 				{
-				float minusT = cluster.triggerDemmand - gameplayManager.gameTime +1f;
+					float minusT = cluster.triggerDemmand - gameplayManager.gameTime +1f;
 					Invoke ("CheckClusterTrigger", minusT);
 				}
 			a++;
@@ -96,7 +100,9 @@ public class EnemyCluster : MonoBehaviour
 					toInit.Init();
 					Debug.Log("transform  "+ trns.name);					
 				}
-			}			
+			}
+
+			enemyFactoryExists = true;
 		}
 	}
 	private void InitExploreTargets()
@@ -124,7 +130,9 @@ public class EnemyCluster : MonoBehaviour
 	}
 
 	private void CheckClusterFactory(ClusterModel cluster)
-	{			
+	{
+		if (!enemyFactoryExists) return;
+
 		if (cluster.factory != null)
 		{
 			ClusterDemand(cluster);
@@ -145,31 +153,19 @@ public class EnemyCluster : MonoBehaviour
 				if (cluster.factory == null)
 					enemyFactoryExists = false;
 			}
-
-			if (cluster.factory == null) return;
 		}
 	}
 
 	public void ClusterDemand (ClusterModel cluster)
 	{
-		if(!enemyFactoryExists) return;
-
 		if (!cluster.hasDemanded)
 		{
-			if(cluster.factory == null)
+			foreach (Unit desiredUnit in cluster.clusterDesiredUnits)
 			{
-				CheckClusterFactory(cluster);		
+				cluster.factory.BuildEnemy(desiredUnit, cluster.clusterNumber);
 			}
-			
-			else
-			{	
-				foreach (Unit desiredUnit in cluster.clusterDesiredUnits)
-				{
-					cluster.factory.BuildEnemy(desiredUnit, cluster.clusterNumber);
-				}
-				
-				cluster.hasDemanded = true;
-			}
+
+			cluster.hasDemanded = true;
 		}
 	}
 
@@ -193,7 +189,7 @@ public class EnemyCluster : MonoBehaviour
 		foreach (ClusterModel cluster in clusterModels)             //chama os grupos
 		{
 			cluster.clusterUnits.RemoveAll(item => item == null);
-			
+
 			if(cluster.clusterComplete)
 			{
 				cluster.clusterBehaviour = cluster.desiredBehaviour;
@@ -201,13 +197,20 @@ public class EnemyCluster : MonoBehaviour
 				
 				if (cluster.clusterUnits.Count <= clusterMinimum)
 				{
+					if(!cluster.isCheckingRepeatDemmand) cluster.minusTRepeat = cluster.repeatDemmand + gameplayManager.gameTime;
 					cluster.clusterComplete = false;
 					cluster.clusterIsBusy = false;
 					cluster.hasDemanded = false;
 					cluster.clusterBehaviour = ClusterBehaviour.none;
-					ClusterDemand(cluster);
-
+					if (cluster.minusTRepeat < gameplayManager.gameTime)
+					{						
+						CheckClusterFactory(cluster);
+						cluster.isCheckingRepeatDemmand = false;
+					}
+					else
+						cluster.isCheckingRepeatDemmand = true;
 				}
+
 			}
 			else 
 			{

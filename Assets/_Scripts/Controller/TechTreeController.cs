@@ -12,12 +12,13 @@ public class TechTreeController : MonoBehaviour
 	public List<FactoryBase> prefabFactory = new List<FactoryBase>();
 	public List<Unit> prefabUnit = new List<Unit>();
 	public Dictionary<string, int> techTreeManager;
-	public Hashtable attribsHash = new Hashtable();
+	public Hashtable attribsHash;
 
 	public void Init ()
 	{
 		techTreeManager = new Dictionary<string, int>();
 		statsController = ComponentGetter.Get<StatsController>();
+		attribsHash = new Hashtable();
 		InitCategoryList();
 		InitAtribList ();
 	}
@@ -61,6 +62,7 @@ public class TechTreeController : MonoBehaviour
 
 		foreach(Upgrade up in prefabUpgrade)
 		{
+			up.uniquelyUpgraded = false;
 			techTreeManager.Add(up.name,0);
 		}
 

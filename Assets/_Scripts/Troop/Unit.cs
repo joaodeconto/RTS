@@ -54,25 +54,19 @@ public class Unit : IStats, IMovementObservable,
 	public bool IsDead { get; set; }
 	public Animation ControllerAnimation;
 	private bool canHit;
-	public bool CanHit {
-		get {
-			if (!canHit) canHit = (IsDead);
-
-			return canHit;
-		}
-	}   
+	public bool CanHit {  get {	if (!canHit) canHit = (IsDead);	return canHit;}}   
 	protected PhotonPlayer playerTargetAttack;
 	protected GameObject m_targetAttack;
 	protected GameObject TargetAttack {
 		get { return m_targetAttack; }
 		set {
-			if (m_targetAttack != value)
-			{
-				m_targetAttack = value;
-				NotifyBeginAttack ();
+				if (m_targetAttack != value)
+				{
+					m_targetAttack = value;
+					NotifyBeginAttack ();
+				}
 			}
 		}
-	}
 	public bool followingTarget;
 	protected float attackBuff;
 	public bool moveAttack					{get; set;}
@@ -86,7 +80,7 @@ public class Unit : IStats, IMovementObservable,
 	public float GetAgentRadius {
 		get	{if(NavAgent != null)
 			return NavAgent.radius;
-			else		return 0f;
+			else		return 1f;
 		}
 	}
 	protected Vector3 PathfindTarget {
@@ -106,6 +100,7 @@ public class Unit : IStats, IMovementObservable,
 	protected Hashtable loadAttribs = new Hashtable();
 	protected InteractionController interactionController;
 	private bool unitInitialized = false;
+	private bool isFollowed = false;
 
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
@@ -119,8 +114,7 @@ public class Unit : IStats, IMovementObservable,
 	#region Init
 	public override void Init ()
 	{
-		if (unitInitialized)	return;
-		
+		if (unitInitialized)	return;		
 		unitInitialized = true;
 		base.Init();
 		moveAttack = true;
@@ -142,8 +136,6 @@ public class Unit : IStats, IMovementObservable,
 		PathfindTarget = transform.position;
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
-		InvokeRepeating ("NotifyMovement", 0.1f, 0.1f);
-//		unitState = UnitState.Idle;	
 		if (playerUnit)
 		{	enabled = true;
 			if (techTreeController.attribsHash.ContainsKey(category)) LoadStandardAttribs();
@@ -214,6 +206,8 @@ public class Unit : IStats, IMovementObservable,
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
 
+				if(isFollowed) NotifyMovement();
+
 				if(!moveAttack)	CancelCheckEnemy();	
 
 				if (TargetAttack != null)
@@ -267,9 +261,7 @@ public class Unit : IStats, IMovementObservable,
 
 				if (IsAttacking) return;
 
-				StopMove ();
-
-				PathfindTarget = transform.position;
+				StopMove (false);
 
 				if (TargetAttack != null)
 				{
@@ -377,13 +369,14 @@ public class Unit : IStats, IMovementObservable,
 	{
 		TargetAttack    = null;
 		followingTarget = false;
-		
-		followed.RegisterMovementObserver (this);
-		followed.RegisterAttackObserver (this);
-		followedUnit = followed;
-		
+		followedUnit = followed;		
 		if (followed.followedUnit == this)
 			followed.UnFollow ();
+
+		Move(followed.transform.position);
+		followed.RegisterMovementObserver (this);
+		followed.RegisterAttackObserver (this);
+
 	}
 	
 	public void UnFollow  ()
@@ -657,8 +650,13 @@ public class Unit : IStats, IMovementObservable,
 	public bool MoveComplete (Vector3 destination)
 	{
 		float distanceToDestination = Vector3.Distance(transform.position, destination);
-		
-		return (distanceToDestination <= NavAgent.stoppingDistance);
+
+		if (distanceToDestination <= NavAgent.stoppingDistance) return true;
+
+		if ((distanceToDestination <= NavAgent.stoppingDistance * 2) && NavAgent.velocity.sqrMagnitude < 0.2f)  return true;	
+
+		return false;
+
 	}
 	
 	public bool MoveComplete ()
@@ -844,21 +842,16 @@ public class Unit : IStats, IMovementObservable,
 		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;	
 		SfxDie();
 		IsDead = true;		
-		unitState = UnitState.Die;		
+		unitState = UnitState.Die;
+		if (followedUnit != null) UnFollow();		
 
 		//IMovementObservable
 		int c = IMOobservers.Count;
-		while (--c != -1)
-		{
-			UnRegisterMovementObserver (IMOobservers[c]);
-		}
+		while (--c != -1){	UnRegisterMovementObserver (IMOobservers[c]);}
 		
 		//IAttackObservable
 		c = IAOobservers.Count;
-		while (--c != -1)
-		{
-			UnRegisterAttackObserver (IAOobservers[c]);
-		}
+		while (--c != -1){	UnRegisterAttackObserver (IAOobservers[c]);	}
 		
 		statsController.RemoveStats(this);		
 		minimapController.RemoveUnit (this.transform, this.team);
@@ -925,12 +918,25 @@ public class Unit : IStats, IMovementObservable,
 
 	#region IMovementObservable implementation
 
+	/// <summary>
+	/// Registers the movement observer.
+	/// </summary>
+	/// <param name="observer">Observer.</param>
+	/// <description>
+	/// Avoid using this method use the Follow method instead
+	/// </description>
 
 	public void RegisterMovementObserver (IMovementObserver observer)
 	{
 		IMOobservers.Add (observer);
+		isFollowed = true;
 	}
 
+	/// <summary>
+	/// Unregister the movement observer.
+	/// </summary>
+	/// <param name="observer">Observer.</param>
+	/// Avoid using this method use the UnFollow method instead
 	public void UnRegisterMovementObserver (IMovementObserver observer)
 	{
 		bool success = IMOobservers.Remove (observer);
@@ -979,7 +985,7 @@ public class Unit : IStats, IMovementObservable,
 
 	public void OnUnRegisterMovementObserver ()
 	{
-		 Debug.Log(LastPosition);
+		if (IMOobservers.Count == 0) isFollowed = false;
 	}
 
 	public Vector3 LastPosition {

@@ -54,7 +54,7 @@ public class InteractionController : MonoBehaviour
 		switch (touchController.idTouch)
 		{
 		case TouchController.IdTouch.Id1:
-			Interaction (touchController.GetFinalRaycastHit.transform, true);
+			Interaction (touchController.GetFinalRaycastHit.transform);
 			break;
 		case TouchController.IdTouch.Id0:
 			while(stackInteractionCallbacks.Count != 0)
@@ -71,7 +71,7 @@ public class InteractionController : MonoBehaviour
 #endif
 	}
 
-	public void Interaction (Transform hit, bool moveToTarget)
+	public void Interaction (Transform hit)
 	{
 		if (statsController.selectedStats.Count == 0) return;
 
@@ -214,6 +214,11 @@ public class InteractionController : MonoBehaviour
 			}
 		}
 
-		if(moveToTarget && NavMesh.SamplePosition (touchController.GetFinalPoint, out navHit, 0.1f, 1))statsController.MoveTroop (touchController.GetFinalPoint);
+		if(NavMesh.SamplePosition (touchController.GetFinalPoint, out navHit, 0.1f, 1))statsController.MoveTroop (touchController.GetFinalPoint);
+
+		else 
+		{
+			hudController.CreateFeedback (HUDController.Feedbacks.Invalid, touchController.GetFinalPoint, 1f, Color.red);
+		}
 	}
 }

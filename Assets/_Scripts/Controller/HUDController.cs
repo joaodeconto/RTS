@@ -80,7 +80,8 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		Move,
 		Attack,
-		Self
+		Self,
+		Invalid
 	}
 
 	public GameObject pref_healthBar;
@@ -99,6 +100,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	public GameObject pref_moveFeedback;
 	public GameObject pref_selfFeedback;
 	public GameObject pref_attackFeedback;
+	public GameObject pref_invalidFeedback;
 
 	public GameObject rocksFeedback;
 	public GameObject manaFeedback;
@@ -573,6 +575,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 				break;
 			case Feedbacks.Attack:
 				pref_feedback = pref_attackFeedback;
+				break;
+			case Feedbacks.Invalid:
+				pref_feedback = pref_invalidFeedback;
 				break;
 		}
 

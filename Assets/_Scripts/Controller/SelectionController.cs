@@ -514,7 +514,7 @@ public class SelectionController : MonoBehaviour
 						}
 						else
 						{
-							interactionController.Interaction (selectedUnit.transform, true);
+							interactionController.Interaction (selectedUnit.transform);
 							return false;
 						}
 					}				
@@ -554,7 +554,7 @@ public class SelectionController : MonoBehaviour
 									Worker worker = stat as Worker;									
 									if (worker == null) continue;
 									hasWorkerInSelection = true;
-									interactionController.Interaction (touchController.GetFinalRaycastHit.transform, true);
+									interactionController.Interaction (touchController.GetFinalRaycastHit.transform);
 								}
 
 								if(hasWorkerInSelection) return false;
@@ -570,7 +570,7 @@ public class SelectionController : MonoBehaviour
 					}
 				}			
 				
-				interactionController.Interaction (touchController.GetFinalRaycastHit.transform, true);
+				interactionController.Interaction (touchController.GetFinalRaycastHit.transform);
 			}
 		}
 		

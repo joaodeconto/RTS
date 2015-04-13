@@ -337,7 +337,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				if (!isInCamera)
 				{
 					beingAttacked = true;
-					Invoke ("BeingAttackedToFalse", 3f);
+					Invoke ("BeingAttackedToFalse", 5f);
 					
 					SoundSource ss = GetComponent<SoundSource> ();
 					if (ss)
@@ -376,7 +376,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		houses.Add (house);
 		VerifyPopulation ();
 	}
-		
+
 	public void VerifyPopulation ()
 	{	
 		int allowedPopulation = 0;
@@ -564,6 +564,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		if (teams[teamID].lose) return;
 				
 		teams[teamID].lose = true;
+
+		StatsController sc = ComponentGetter.Get<StatsController> ();
 		
 		switch (GameplayManager.mode)
 		{
@@ -588,7 +590,30 @@ public class GameplayManager : Photon.MonoBehaviour
 				SendMessage ("EndMatch");
 			}
 			break;
-		case Mode.Tutorial:	
+		case Mode.Tutorial:
+			
+			if (MyTeam == teamID)
+			{
+				loseGame = true;
+				if (!string.IsNullOrEmpty (encodedBattle) && !string.IsNullOrEmpty (encodedPlayer))
+				{
+					Model.Battle battle = new Model.Battle (encodedBattle);											
+					Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);					
+					Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);					
+					score.SaveScore();
+					scoreCounting = false;
+				}			
+			
+			
+			sc.DestroyAllStatsTeam (teamID);
+			sc.DestroyAllStatsTeam (BOT_TEAM);
+			ComponentGetter.Get<EnemyCluster>().enabled = false;
+			loserTeams++;			
+			SendMessage ("EndMatch");
+			}
+
+			break;
+
 		case Mode.Deathmatch:
 
 			if (MyTeam == teamID)
@@ -603,7 +628,7 @@ public class GameplayManager : Photon.MonoBehaviour
 					scoreCounting = false;
 				}
 			}
-			StatsController sc = ComponentGetter.Get<StatsController> ();
+
 			sc.DestroyAllStatsTeam (teamID);			
 			loserTeams++;			
 

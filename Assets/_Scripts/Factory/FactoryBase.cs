@@ -839,26 +839,28 @@ public class FactoryBase : IStats, IDeathObservable
 
 	void InvokeUpgrade (Upgrade upgrade)
 	{
+		eventController.AddEvent("standard message",transform.position , upgrade.name + " technology complete", upgrade.guiTextureName);	
+
 		if (Selected)
 		{
 			hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 			Invoke("RestoreDequeueMenu",0);
-			Invoke("RestoreOptionsMenu",0);
-			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();		
-			string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
-
-			if (!string.IsNullOrEmpty (encodedBattle))
-			{
-				Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
-				Score.AddScorePoints (DataScoreEnum.UpgradesCreated, 1, battle.IdBattle);
-				Score.AddScorePoints (upgrade.name + DataScoreEnum.XUpgraded, upgrade.costOfResources.Rocks + upgrade.costOfResources.Mana, battle.IdBattle);
-			}
-
+			Invoke("RestoreOptionsMenu",0);		
 		}
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();		
+		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
+		
+		if (!string.IsNullOrEmpty (encodedBattle))
+		{
+			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+			Score.AddScorePoints (DataScoreEnum.UpgradesCreated, 1, battle.IdBattle);
+			Score.AddScorePoints (upgrade.name + DataScoreEnum.XUpgraded, upgrade.costOfResources.Rocks + upgrade.costOfResources.Mana, battle.IdBattle);
+		}
+
 		Upgrade upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
 		upg.transform.parent = this.transform;
 		if (upgrade.modelUpgrade) buildingState = BuildingState.Upgraded;
-		eventController.AddEvent("standard message",transformParticleDamageReference.position , upgrade.name + " technology complete", upgrade.guiTextureName);	
+
 	}
 	
 	public virtual void InvokeUnit (Unit unit)
@@ -868,7 +870,7 @@ public class FactoryBase : IStats, IDeathObservable
 			hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 			Invoke("RestoreDequeueMenu",0);
 		}
-		eventController.AddEvent("create unit",  transformParticleDamageReference.position, unit.category, unit.guiTextureName);	
+		eventController.AddEvent("create unit", transform.position, unit.category, unit.guiTextureName);	
 
 		if (!hasRallypoint) return;
 		
@@ -993,8 +995,7 @@ public class FactoryBase : IStats, IDeathObservable
 		foreach ( UnitFactory uc in unitsToCreate)
 		{
 			uc.techAvailable = uc.VIP;			
-		}
-		
+		}		
 		
 		foreach (UpgradeItem up in upgradesToCreate)
 		{	
