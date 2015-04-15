@@ -161,6 +161,13 @@ public class RankedBattle : MonoBehaviour
 			dcb.Init ( null, (ht_hud) => { if (pw.LeaveRoom ()) Close (); } );
 
 		}
+		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
+		{
+			PhotonNetwork.ConnectToMaster ( PhotonNetwork.PhotonServerSettings.ServerAddress,
+			                               PhotonNetwork.PhotonServerSettings.ServerPort,
+			                               PhotonNetwork.PhotonServerSettings.AppID,
+			                               ConfigurationData.VERSION);
+		}
 	}
 
 	public void Close ()
@@ -175,14 +182,11 @@ public class RankedBattle : MonoBehaviour
 		mapSelection.gameObject.SetActive (true);
 		toggleButtons.gameObject.SetActive(true);
 		bidInput.gameObject.SetActive(true);
-
 		createRoom.gameObject.SetActive (true);
-
 		messageActiveGame.gameObject.SetActive (false);
-
 		marketGlow.SetActive (false);
-
 		gameObject.SetActive (false);
+		PhotonNetwork.Disconnect();
 	}
 
 
@@ -196,8 +200,6 @@ public class RankedBattle : MonoBehaviour
 		{
 			GameplayManager.Mode mode = GameplayManager.Mode.Deathmatch;
 			GameplayManager.mode = mode;
-
-
 		}
 
 		if (bMode == "Cooperative")
@@ -205,8 +207,6 @@ public class RankedBattle : MonoBehaviour
 			GameplayManager.Mode mode = GameplayManager.Mode.Cooperative;
 			GameplayManager.mode = mode;
 		}
-
-
 
 		//TODO refazer as battles
 		playerBattleDao.CreateBattle (battleTypeName, bid, DateTime.Now, maxPlayers,

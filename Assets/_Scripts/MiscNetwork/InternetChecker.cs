@@ -4,13 +4,14 @@ public class InternetChecker : MonoBehaviour
 {
 	private const bool allowCarrierDataNetwork = true;
 	private const string pingAddress = "8.8.8.8"; // Google Public DNS server
-	private const float waitingTime = 4.0f;
+	private const float waitingTime = 2.0f;
 	
 	protected LoginIndex li;
 	private Ping ping;
 	private float pingStartTime;
+	private bool checkingConection = true;
 	
-	public void Start()
+	public void OnEnable()
 	{		
 		li = GetComponent<LoginIndex>();
 
@@ -32,6 +33,7 @@ public class InternetChecker : MonoBehaviour
 			InternetIsNotAvailable();
 			return;
 		}
+
 		ping = new Ping(pingAddress);
 		pingStartTime = Time.time;
 	}
@@ -40,22 +42,39 @@ public class InternetChecker : MonoBehaviour
 	{
 		if (ping != null)
 		{
-			bool stopCheck = true;
 			if (ping.isDone)
-				InternetAvailable();
-			else if (Time.time - pingStartTime < waitingTime)
-				stopCheck = false;
-			else
-				InternetIsNotAvailable();
-			if (stopCheck)
+			{
 				ping = null;
+				InternetAvailable();
+			}
+
+			else if (Time.time - pingStartTime < waitingTime) 
+			{
+				if (!li.CanLogin)	CheckingConection();
+			}
+
+			else
+			{
+				InternetIsNotAvailable();
+				ping = new Ping(pingAddress);
+				pingStartTime = Time.time;
+			}
+
 		}
+	
 	}
 	
 	private void InternetIsNotAvailable()
 	{
 		UILabel labelWarning = li.errorMessage;
 		li.ShowErrorMessage("no internet conection");
+		li.CanLogin = false;
+	}
+
+	private void CheckingConection()
+	{
+		UILabel labelWarning = li.errorMessage;
+		li.ShowErrorMessage("checking conection");
 		li.CanLogin = false;
 	}
 	

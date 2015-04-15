@@ -136,21 +136,19 @@ public class Unit : IStats, IMovementObservable,
 		PathfindTarget = transform.position;
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
+
 		if (playerUnit)
-		{	enabled = true;
+		{	
+			enabled = true;
+			interactionController = ComponentGetter.Get<InteractionController>();
+
 			if (techTreeController.attribsHash.ContainsKey(category)) LoadStandardAttribs();
 			
-			if (!gameplayManager.IsBotTeam (this))
+			if (!PhotonNetwork.offlineMode && !ConfigurationData.Offline)
 			{
-				interactionController = ComponentGetter.Get<InteractionController>();
-				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();		
-				string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");		
-				if (!string.IsNullOrEmpty (encodedBattle))
-				{
-					Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
-					Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);
-					Score.AddScorePoints (category + DataScoreEnum.XCreated, totalResourceCost, battle.IdBattle);
-				}
+				Model.Battle battle = ConfigurationData.battle;
+				Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);
+				Score.AddScorePoints (category + DataScoreEnum.XCreated, totalResourceCost, battle.IdBattle);
 			}
 		}
 	}
@@ -313,17 +311,13 @@ public class Unit : IStats, IMovementObservable,
 				break;
 			case UnitState.Attack:
 				if (unitAnimation.Attack)
-
 					if (!gameplayManager.IsSameTeam (team))ControllerAnimation.cullingType = AnimationCullingType.AlwaysAnimate;
-					ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-					SfxAtk();
+					ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);					
 
 				break;
 			case UnitState.Die:
 				if (unitAnimation.DieAnimation)
-
-					ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);
-					SfxDie();
+					ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever);					
 
 				break;
 			}
@@ -391,24 +385,36 @@ public class Unit : IStats, IMovementObservable,
 	#endregion
 
 	#region Attack, Targeting 
-	public void SfxAtk ()
+	[RPC]
+	public void SfxAtk (Vector3 sourcePosition)
 	{
 		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
-		
-		Vector3 u = this.transform.position;
-		
-		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, sourcePosition);
 
 		if (smas != null)
 		{
-
 			smas.dopplerLevel = 0f;
 			smas.minDistance = 6.0f;
 			smas.maxDistance = 60.0f;
-			smas.rolloffMode = AudioRolloffMode.Logarithmic;
+			smas.rolloffMode = AudioRolloffMode.Logarithmic;		
+		}		
+	}
+
+	[RPC]
+	public void SfxDie (Vector3 sourcePosition)
+	{
+		AudioClip sfxDeath = SoundManager.LoadFromGroup("Death");		
+		Vector3 u = this.transform.position;		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
 		
-		}
-		
+		if (smas != null)
+		{
+			smas.dopplerLevel = 0.0f;
+			smas.spread = 0.3f;
+			smas.minDistance = 3.0f;
+			smas.maxDistance = 30.0f;
+			smas.rolloffMode =AudioRolloffMode.Custom;
+		}	
 	}
 
 	public void SfxDie ()
@@ -426,6 +432,23 @@ public class Unit : IStats, IMovementObservable,
 			smas.rolloffMode =AudioRolloffMode.Custom;
 		}	
 	}
+
+	public void SfxAtk ()
+	{
+		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");		
+		Vector3 u = this.transform.position;		
+		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
+		
+		if (smas != null)
+		{
+			smas.dopplerLevel = 0f;
+			smas.minDistance = 6.0f;
+			smas.maxDistance = 60.0f;
+			smas.rolloffMode = AudioRolloffMode.Logarithmic;		
+		}		
+	}
+	
+
 	
 	private IEnumerator Attack ()
 	{
@@ -434,6 +457,8 @@ public class Unit : IStats, IMovementObservable,
 
 		SfxAtk();
 
+		IStats targetStats = TargetAttack.GetComponent<IStats>();
+
 		if (unitAnimation.Attack)
 		{
 			if (!gameplayManager.IsSameTeam (team))ControllerAnimation.cullingType = AnimationCullingType.AlwaysAnimate;
@@ -441,20 +466,23 @@ public class Unit : IStats, IMovementObservable,
 
 			IsAttacking = true;
 
+			if (unitSkill != UnitSkill.none)
+			{	
+				if	(CheckNemesis(targetStats))
+				{
+					skillBonus  = Mathf.FloorToInt((force + bonusForce)*0.25f);                                   
+				}
+			}
+			
 			if (PhotonNetwork.offlineMode)
 			{
-				TargetAttack.GetComponent<IStats>().ReceiveAttack(force + bonusForce);
+				targetStats.ReceiveAttack(force + bonusForce + skillBonus);
 			}
 			else
 			{
-				if (unitSkill != UnitSkill.none)
-				{	
-					if	(CheckNemesis(TargetAttack.GetComponent<IStats>()))
-					{
-						skillBonus  = Mathf.FloorToInt((force + bonusForce)*0.25f);                                   
-					}
-				}
 				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + bonusForce + skillBonus);
+				photonView.RPC ("SfxAtk", PhotonTargets.All,transform.position); 
+				if(!targetStats.firstDamage) targetStats.ShowHealth();
 			}
 			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (unitAnimation.Attack));
@@ -468,7 +496,7 @@ public class Unit : IStats, IMovementObservable,
 
 	public void TargetingEnemy (GameObject enemy)
 	{
-		if (enemy != null)
+		if (enemy != null && !PhotonNetwork.offlineMode)
 		{
 			if (!gameplayManager.IsBotTeam (enemy.GetComponent<IStats>()))
 			{
@@ -484,6 +512,7 @@ public class Unit : IStats, IMovementObservable,
 
 			followingTarget = true;
 		}
+
 		else playerTargetAttack = null;
 
 		TargetAttack = enemy;
@@ -836,11 +865,13 @@ public class Unit : IStats, IMovementObservable,
 	#endregion
 
 	#region Ondie
+
 	public virtual IEnumerator OnDie ()
 	{
+		if (!PhotonNetwork.offlineMode) photonView.RPC ("SfxDie", PhotonTargets.All,transform.position); 
+		else SfxDie();
 		NavAgent.Stop ();
 		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;	
-		SfxDie();
 		IsDead = true;		
 		unitState = UnitState.Die;
 		if (followedUnit != null) UnFollow();		
@@ -866,29 +897,23 @@ public class Unit : IStats, IMovementObservable,
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
 		
-		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
+		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);		
 		
-		
-		if (Selected)
-		{
-			Deselect ();
-		}
-		
+		if (Selected)	Deselect ();
+			
 		if (unitAnimation.DieAnimation)
 		{
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
-		
+
 		if (IsNetworkInstantiate)
 		{
-			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+			Model.Battle battle = ConfigurationData.battle;
 			
-			if (photonView.isMine && !gameplayManager.IsBotTeam (this))
+			if (playerUnit)
 			{
-				PhotonNetwork.Destroy(gameObject);				
-
+				PhotonNetwork.Destroy(gameObject);
 				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1, battle.IdBattle);				
 				Score.AddScorePoints (this.category + DataScoreEnum.XUnitLost, this.totalResourceCost, battle.IdBattle);
 			}

@@ -27,7 +27,7 @@ public class BidManager : MonoBehaviour
 		PhotonWrapper pw = ComponentGetter.Get <PhotonWrapper> ();
 		
 		int currentBid = (int)pw.GetPropertyOnRoom ("bid");
-		
+
 		Score.SubtractScorePoints (DataScoreEnum.CurrentCrystals, currentBid);
 	}
 
@@ -49,7 +49,7 @@ public class BidManager : MonoBehaviour
 		
 		Debug.Log ("currentBid :" + currentBid);
 		Debug.Log ("TaxFactor: "  + TaxFactor);
-		
-		Score.AddScorePoints (DataScoreEnum.CurrentCrystals, (int)(currentBid * TaxFactor));
+
+		if (!PhotonNetwork.offlineMode || !ConfigurationData.Offline)	Score.AddScorePoints (DataScoreEnum.CurrentCrystals, (int)(currentBid * TaxFactor));
 	}
 }

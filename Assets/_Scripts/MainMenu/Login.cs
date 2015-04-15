@@ -8,6 +8,7 @@ public class Login : IController
 	public bool UseRealLogin = true;
 	public UIToggle rememberUser;
 	protected PhotonWrapper pw;
+
 	
 	public void Start ()
 	{
@@ -37,6 +38,11 @@ public class Login : IController
 		index.SetActive (true);
 		index.Init ();
 	}
+
+	public void HiddeViews ()
+	{
+		HideAllViews ();
+	}
 	
 	public void NewAccount ()
 	{
@@ -45,6 +51,15 @@ public class Login : IController
 		NewAccount newAccount = GetView <NewAccount> ("NewAccount");
 		newAccount.SetActive (true);
 		newAccount.Init ();
+	}
+
+	public void EnterOfflineMode ()
+	{
+		HideAllViews ();		
+		ConfigurationData.Offline = true;
+		OfflineMode offlineMode = GetView <OfflineMode> ("OfflineMode");
+		offlineMode.SetActive (true);
+		offlineMode.Init ();
 	}
 	
 	public void DoLogin (Hashtable ht)
@@ -97,7 +112,8 @@ public class Login : IController
 										}
 
 										pw.SetPlayer (username, true);
-										pw.SetPropertyOnPlayer ("player", player.ToString ());												
+										pw.SetPropertyOnPlayer ("player", player.ToString ());	
+										ConfigurationData.Offline = false;
 										EnterInternalMainMenu (username);
 									}
 								});

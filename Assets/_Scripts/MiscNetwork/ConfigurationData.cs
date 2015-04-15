@@ -3,9 +3,10 @@ using System.Collections;
 
 public class ConfigurationData
 {
-	public const string VERSION = "1.2.4.1";
+	public const string VERSION = "3.0";
 	
 	public static bool Logged = false;
+	public static bool Offline = false;
 	public static bool InGame = false;
 	
 	public static Model.Player player;

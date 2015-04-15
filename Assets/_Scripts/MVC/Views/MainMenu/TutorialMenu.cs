@@ -2,9 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Visiorama;
-
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class TutorialMenu : MonoBehaviour
@@ -38,7 +36,8 @@ public class TutorialMenu : MonoBehaviour
 	public UILabel errorMessage;
 	bool wasInitialized      = false;
 	
-	PhotonWrapper pw;
+	protected PhotonWrapper pw;
+	protected VersusScreen vs;
 
 	public void OnEnable ()
 	{
@@ -47,183 +46,83 @@ public class TutorialMenu : MonoBehaviour
 	
 	public void Open ()
 	{
-		//		Debug.Log ("player na segunda cena: " + ComponentGetter.Get<PhotonWrapper> ().GetPropertyOnPlayer ("player"));
-		//		if (wasInitialized)
-		//			return;
-		
-		//		wasInitialized = true;
-		if (wasInitialized)
-			return;
-		
-		wasInitialized = true;
-		
+
 		messageActiveGame.gameObject.SetActive (false);
 		
 		errorMessage.gameObject.SetActive (false);
 
-		pw = ComponentGetter.Get<PhotonWrapper> ();
+		pw = ComponentGetter.Get<PhotonWrapper>();
+		vs = ComponentGetter.Get<VersusScreen>();
 		
 		DefaultCallbackButton dcb;
 		
 		if (buttons.Btn0)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn0, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "Basics", "Tutorial", 1);  } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 1);  } );
 		}
 		
 		if (buttons.Btn1)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Combat", "Tutorial", 2); } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 2); } );
 		}
 		
 		if (buttons.Btn2)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0,"Domination", "Tutorial", 3); } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 3); } );
 		}
 		
 		if (buttons.Btn3)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "TreeTest", "Tutorial", 4); } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 4); } );
 		}
 
 		if (buttons.Btn3)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4, false);
-			dcb.Init ( null, (ht_hud) => { CreateRoom (1, 0, "Apocalipse", "Tutorial", 5); } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 5); } );
 		}
 		
 				
 		if (buttons.BtnLeaveRoom)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.BtnLeaveRoom, false);
-			dcb.Init ( null, (ht_hud) => { if (pw.LeaveRoom ()) Close (); } );
+			dcb.Init ( null, (ht_hud) => { Close (); } );
 
 		}
 	}
 
 	public void Close ()
 	{
-		CancelInvoke ("TryToEnterGame");
-		
-		foreach (GameObject menu in pw.menusDissapearWhenLogged)
+		if (!ConfigurationData.Offline)
 		{
-			menu.SetActive (true);
-		}
+			foreach (GameObject menu in pw.menusDissapearWhenLogged)
+			{
+				menu.SetActive (true);
+			}
 
-		if (buttons == null) return;
-				
-				foreach (Transform button in buttons.Iterate)
-				{
-					if (button)
-					{
-						button.gameObject.SetActive (true);
-					}
-				}
-		
-		messageActiveGame.gameObject.SetActive (false);
+			if (buttons == null) return;
 					
-		gameObject.SetActive (false);
-	}
-	
-	
-	private void CreateRoom (int maxPlayers, int bid, string battleTypeName, string bMode, int map)
-	{
-		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
-		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
-								
-		if (bMode == "DeathMatch")
-		{
-			GameplayManager.Mode mode = GameplayManager.Mode.Deathmatch;
-			GameplayManager.mode = mode;
+					foreach (Transform button in buttons.Iterate)
+					{
+						if (button)
+						{
+							button.gameObject.SetActive (true);
+						}
+					}
 			
-			
+			messageActiveGame.gameObject.SetActive (false);
+						
+			gameObject.SetActive (false);
 		}
-		
-		if (bMode == "Cooperative")
+		else
 		{
-			GameplayManager.Mode mode = GameplayManager.Mode.Cooperative;
-			GameplayManager.mode = mode;
+			Login login = ComponentGetter.Get<Login>();
+			ConfigurationData.Offline = false;
+			login.Index();
 		}
-
-		if (bMode == "Tutorial")
-		{
-			GameplayManager.Mode mode = GameplayManager.Mode.Tutorial;
-			GameplayManager.mode = mode;
-		}
-		
-		
-		
-		//TODO refazer as battles
-		playerBattleDao.CreateBattle (battleTypeName, bid, DateTime.Now, maxPlayers,
-		                              (battle) =>
-		                              {
-			//			Debug.Log ("message: " + message);
-			//			Debug.Log ("playerBattle: " + playerBattle);
-			
-			string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1 + DateTime.Now.Second + DateTime.Now.Millisecond + " : " + bMode);
-			bool isVisible = true, isOpen = true;
-			
-			ConfigurationData.battle = battle;
-			
-			Hashtable properties = new Hashtable ();
-			properties.Add ("battle", battle.ToString ());
-			
-			pw.CreateRoom (roomName, bid, isVisible, isOpen, maxPlayers, map, properties);
-			
-			pw.SetPropertyOnPlayer ("team", 0);
-			pw.SetPropertyOnPlayer ("ready", true);
-			
-			//	VDebug.Log ("battle: " + properties["battle"]);
-
-			foreach (Transform button in buttons.Iterate)
-			{
-				if (button)
-				{
-					button.gameObject.SetActive (false);
-				}
-			}
-			
-			messageActiveGame.gameObject.SetActive (true);
-			messageActiveGame.text = "Game Created";
-			
-			if (buttons.BtnLeaveRoom)
-			{
-				buttons.BtnLeaveRoom.gameObject.SetActive (true);
-			}
-
-			pw.TryToEnterGame (10000.0f,
-			                   (other_message) =>
-			                   {
-				Debug.Log("message: " + other_message);
-				
-				messageActiveGame.gameObject.SetActive (true);
-				
-				errorMessage.gameObject.SetActive (false);
-				
-				Invoke ("CloseErrorMessage", 5.0f);
-			},
-			(playersReady, nMaxPlayers) =>
-			{
-				messageActiveGame.text = "Ready to play";
-			});
-		});
-	}
-	
-	private void CloseErrorMessage ()
-	{
-		errorMessage.gameObject.SetActive (false);
-		if (buttons == null) return;
-		
-		foreach (Transform button in buttons.Iterate)
-		{
-			if (button)
-			{
-				button.gameObject.SetActive (true);
-			}
-		}
-		
 	}
 }

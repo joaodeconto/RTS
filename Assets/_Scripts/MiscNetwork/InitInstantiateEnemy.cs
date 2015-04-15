@@ -1,4 +1,5 @@
 using UnityEngine;
+using Visiorama;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -37,16 +38,19 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 
 	void InstantiatePrefab ()
 	{
+		IStats prefSetTeam = prefabInstantiate.GetComponent<IStats>();
+		prefSetTeam.SetTeam (8,8);
 		GameObject prefab = Instantiate (prefabInstantiate, transform.position, transform.rotation) as GameObject;
+		prefSetTeam.SetTeam (0,0);
 		prefab.transform.parent = transform.parent;
 		IStats stats = prefab.GetComponent<IStats>();
-		stats.SetTeam (8,8);
 		stats.Init ();
 		if (prefab.GetComponent<FactoryBase>() != null)
 		{
 			prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
+			ComponentGetter.Get<StatsController>().AddStats(fb);
 		}				
 		CancelInvoke ("NetworkInstantiatePrefab");
 		Destroy (this.gameObject);
@@ -67,6 +71,7 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 			prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
+			ComponentGetter.Get<StatsController>().AddStats(fb);
 		}	
 
 		CancelInvoke ("NetworkInstantiatePrefab");

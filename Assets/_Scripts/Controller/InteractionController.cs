@@ -214,7 +214,7 @@ public class InteractionController : MonoBehaviour
 			}
 		}
 
-		if(NavMesh.SamplePosition (touchController.GetFinalPoint, out navHit, 0.1f, 1))statsController.MoveTroop (touchController.GetFinalPoint);
+		if(NavMesh.SamplePosition (touchController.GetFinalPoint, out navHit, 0.8f, 1))statsController.MoveTroop (touchController.GetFinalPoint);
 
 		else 
 		{

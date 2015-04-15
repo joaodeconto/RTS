@@ -88,7 +88,8 @@ public class TechTreeController : MonoBehaviour
 		{
 			if (ht.ContainsValue(category))
 			{
-				int oldValue = (int)ht[attribute];
+				int oldValue = 0;
+				if( ht[attribute] != null)	oldValue = (int)ht[attribute];
 				ht[attribute] = (oldValue + bonusValue);
 				break;
 			}

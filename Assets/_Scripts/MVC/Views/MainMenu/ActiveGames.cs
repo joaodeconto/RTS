@@ -113,7 +113,7 @@ public class ActiveGames : MonoBehaviour
 							ClearRows ();
 
 							messageActiveGame.enabled = true;
-							messageActiveGame.text = "Waiting For Other Players...";
+							messageActiveGame.text = "Joined Battle";
 
 							GameObject cancel = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
 
@@ -141,11 +141,10 @@ public class ActiveGames : MonoBehaviour
 												},
 												(playersReady, maxPlayers) =>
 												{
-													messageActiveGame.text = "Searching for Other Players - "
-																				+ playersReady + "/" + maxPlayers;
+													messageActiveGame.text = "Waiting For Players - "+playersReady+"/"+maxPlayers;
 
 												});
-						});
+												});
 					}
 				}
 			}

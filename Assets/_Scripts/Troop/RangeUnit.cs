@@ -155,7 +155,7 @@ public class RangeUnit : Unit
 			{
 				if (!PhotonNetwork.offlineMode)
 				{
-					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + bonusForce);
+					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + bonusProjectile);
 				}
 				else
 				{

@@ -22,41 +22,30 @@ public class ResourcesManager
 		set { m_mana = value;}
 	}
 	
-	private Model.Battle GetCurrentBattle  ()
-	{
-		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-		Model.Battle battle = null;
-		if (pw.GetPropertyOnRoom ("battle") != null)
-		{
-			battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
-		}
-		return battle;
-	}
-	
 	public void DeliverResources (Resource.Type resourceType, int numberOfResources)
 	{
-		Model.Battle battle = GetCurrentBattle ();
-		
+
+		Model.Battle battle = ConfigurationData.battle;
+
 		if (resourceType == Resource.Type.Rock)
 		{
 			Rocks += numberOfResources;
 			
-			if (battle != null)	Score.AddScorePoints (DataScoreEnum.GoldGathered, numberOfResources, battle.IdBattle);
+			if (!PhotonNetwork.offlineMode)	 
+				Score.AddScorePoints (DataScoreEnum.GoldGathered, numberOfResources, battle.IdBattle);
 		}
 
 		if (resourceType == Resource.Type.Mana)
 		{
 			Mana += numberOfResources;
 			
-			if (battle != null) Score.AddScorePoints (DataScoreEnum.ManaGathered, numberOfResources, battle.IdBattle);
-
+			if (!PhotonNetwork.offlineMode)
+				Score.AddScorePoints (DataScoreEnum.ManaGathered, numberOfResources, battle.IdBattle);
 		}
 	}
 	
 	public void UseResources (ResourcesManager resourceCost)
-	{
-		Model.Battle battle = GetCurrentBattle ();
-		
+	{				
 		Rocks -= resourceCost.Rocks;
 		Mana  -= resourceCost.Mana;		
 	}

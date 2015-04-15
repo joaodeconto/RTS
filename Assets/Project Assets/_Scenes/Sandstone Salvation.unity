@@ -12081,6 +12081,10 @@ Prefab:
       propertyPath: ChallengesToWin.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400026, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -12585,6 +12589,30 @@ Prefab:
       propertyPath: pref_invalidFeedback
       value: 
       objectReference: {fileID: 165202, guid: 70d7716542db1ba4cbc6d02de869e4cc, type: 2}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].Name
+      value: Defeat all Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].specificStat
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].valueToCompare
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].objDescription
+      value: Defeat all Enemies
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11400010, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
     - {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
@@ -24580,32 +24608,12 @@ MonoBehaviour:
   ChallengesToWin:
   - IsActive: 0
     objectiveCompleted: 0
-    Name: Stash 500 Gold
-    enumComparingType: 4
-    specificStat: gold
-    valueToCompare: 500
-    enumCondition: 2
-    objDescription: 'Guide your workers to a gold mine, extract more and more! Save
-      enought gold for the next tutorial! '
-    objSprite: Achiv_Battle1
-  - IsActive: 0
-    objectiveCompleted: 0
-    Name: Build shelter for 40 units
-    enumComparingType: 2
-    specificStat: 
-    valueToCompare: 39
-    enumCondition: 2
-    objDescription: Learn to grow your tribe, contructing huts its fundamental for
-      a future army growth.
-    objSprite: cottage
-  - IsActive: 0
-    objectiveCompleted: 0
-    Name: Defeat All Enemies
+    Name: Defeat all Enemies
     enumComparingType: 8
     specificStat: 
     valueToCompare: 0
     enumCondition: 1
-    objDescription: Destroy the enemy tribe.
+    objDescription: Defeat all Enemies
     objSprite: Achiv_Battle1
   Ativar: 1
   objectiveLog: {fileID: 2025413185}
@@ -31551,7 +31559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5199a5a76aa1992479c7401ba1bb3cad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SIZE_TEXTURE: 256
+  SIZE_TEXTURE: 128
   UseFog: 1
   DarkFog: 1
   pref_plane: {fileID: 100000, guid: e110e4594c30be740861d48334d615be, type: 2}

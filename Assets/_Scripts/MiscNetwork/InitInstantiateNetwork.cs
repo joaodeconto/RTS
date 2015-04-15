@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using Visiorama;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 [System.Serializable]
@@ -50,8 +50,19 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 		GameObject prefab = Instantiate (prefabInstantiate, transform.position, prefabInstantiate.transform.rotation) as GameObject;
 		
 		IStats stats = prefab.GetComponent<IStats>();
-		stats.SetTeam (int.Parse (transform.parent.name), Random.Range (0, 9999));
-		stats.Init ();
+		stats.SetTeam (0, 0);
+		stats.transform.parent = transform.parent;
+		FactoryBase fb = prefab.GetComponent<FactoryBase>();
+
+		if (fb != null)
+		{
+			fb.wasBuilt = true;
+			ComponentGetter.Get<StatsController>().AddStats(fb);
+			fb.Init();
+			fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
+			if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
+		}
+		Destroy (this.gameObject);
 	}
 
 	void NetworkInstantiatePrefab ()
@@ -67,11 +78,11 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
 					fb.wasBuilt = true;
 					fb.Init();
+					ComponentGetter.Get<StatsController>().AddStats(fb);
 					fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 //					Debug.Log ("init instanciate" + fb.playerUnit);
-				}
-				
+				}				
 			}
 			CancelInvoke ("NetworkInstantiatePrefab");
 			Destroy (this.gameObject);

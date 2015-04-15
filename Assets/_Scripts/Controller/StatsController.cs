@@ -31,20 +31,22 @@ public class StatsController : MonoBehaviour
 	internal Dictionary<int, List<IStats>> statsGroups = new Dictionary<int, List<IStats>>();
 	protected bool otherSelected = false;
 	protected Vector3 centerOfTroop;
-	protected GameplayManager gameplayManager;
-	protected SoundManager soundManager;
-	protected HUDController hudController;
-	protected SelectionController selectionController;
+	protected GameplayManager 		gameplayManager;
+	protected SoundManager 			soundManager;
+	protected HUDController 		hudController;
+	protected SelectionController 	selectionController;
+	protected MiniMapController 	miniMapController;
 	private int selectedGroup = -1;   //-1 == null
 	protected List<Worker> idleWorkers;
 	protected List<Unit> idleUnits;
 
 	public void Init ()
 	{
-		gameplayManager = ComponentGetter.Get<GameplayManager> ();
-		soundManager    = ComponentGetter.Get<SoundManager> ();
-		hudController   = ComponentGetter.Get<HUDController> ();
+		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
+		soundManager    	= ComponentGetter.Get<SoundManager> ();
+		hudController   	= ComponentGetter.Get<HUDController> ();
 		selectionController = ComponentGetter.Get<SelectionController>();
+		miniMapController	= ComponentGetter.Get<MiniMapController> ();	
 		selectedStats 	= new List<IStats> ();
 		idleWorkers     = new List<Worker>();
 		idleUnits       = new List<Unit>();
@@ -247,10 +249,7 @@ public class StatsController : MonoBehaviour
 	#region Stats Control Methods
  	
 	public void AddStats (IStats stat)
-	{
-		//Inicializar antes de usar o gameplayManager
-		if (!gameplayManager)
-			Init ();
+	{	
 
 		if (gameplayManager.IsSameTeam (stat.team))
 		{
@@ -265,7 +264,7 @@ public class StatsController : MonoBehaviour
 		
 		if (unit != null)
 		{
-			ComponentGetter.Get<MiniMapController> ().AddUnit (stat.transform, stat.team);
+			miniMapController.AddUnit (stat.transform, stat.team);
 			gameplayManager.IncrementUnit (stat.team, unit.numberOfUnits);
 
 		}
@@ -274,8 +273,7 @@ public class StatsController : MonoBehaviour
 		
 		if (factory != null)
 		{
-			ComponentGetter.Get<MiniMapController> ().AddStructure (stat.transform, stat.team);
-
+			miniMapController.AddStructure (stat.transform, stat.team);
 		}
 			
 		ComponentGetter.Get<FogOfWar> ().AddEntity (stat.transform, stat);
@@ -553,18 +551,18 @@ public class StatsController : MonoBehaviour
 	#region Visibility
 	public void ChangeVisibility (IStats stat, bool visibility)
 	{
-		MiniMapController mmc = ComponentGetter.Get<MiniMapController> ();		
+			
 		Unit unit = stat as Unit;
 		FactoryBase factory = stat as FactoryBase;
 		
 		if (unit != null)
 		{
-			mmc.SetVisibilityUnit (stat.transform, stat.team, visibility);
+			miniMapController.SetVisibilityUnit (stat.transform, stat.team, visibility);
 		}
 		
 		if (factory != null)
 		{
-			mmc.SetVisibilityStructure (stat.transform, stat.team, visibility);
+			miniMapController.SetVisibilityStructure (stat.transform, stat.team, visibility);
         }
 	}
 	#endregion

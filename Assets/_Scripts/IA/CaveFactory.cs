@@ -77,10 +77,11 @@ public class CaveFactory : FactoryBase
 
 		if (PhotonNetwork.offlineMode)
 		{
-
+			int teamInt = this.team;
+			unit.SetTeam(teamInt,teamInt);
 			Unit u = Instantiate (unit, transformParticleDamageReference.position, Quaternion.identity) as Unit;
 			newUnit = u;
-
+			unit.SetTeam(0,0);
 		}
 		else
 		{

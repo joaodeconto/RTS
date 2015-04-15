@@ -112,7 +112,6 @@ public class FactoryBase : IStats, IDeathObservable
 	public override void Init ()
 	{
 		base.Init();
-		playerUnit = gameplayManager.IsSameTeam (this);
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
 		enabled = playerUnit;
 		helperCollider = GetComponentInChildren<CapsuleCollider> ();
@@ -143,15 +142,17 @@ public class FactoryBase : IStats, IDeathObservable
 
 		inUpgrade = false;				
 		buildingState = BuildingState.Finished;
-		if (playerUnit && !gameplayManager.IsBotTeam(this))
+		if (playerUnit)
 		{
 			if (techTreeController.attribsHash.ContainsKey(category))LoadStandardAttribs();
 		    if(wasBuilt)TechActiveBool(TechsToActive, true);
-			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));			
-			Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
-			Score.AddScorePoints (this.category + DataScoreEnum.XBuilt, this.totalResourceCost, battle.IdBattle);
-		}		
+			if (!PhotonNetwork.offlineMode && !ConfigurationData.Offline)
+			{
+				Model.Battle battle = ConfigurationData.battle;	
+				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
+				Score.AddScorePoints (this.category + DataScoreEnum.XBuilt, this.totalResourceCost, battle.IdBattle);		
+			}
+		}
 		PaintAgent pa = GetComponent<PaintAgent>();
 		pa.Paint(this.transform.position, (sizeOfSelected * 0.6f));
 		Invoke ("SendMessageInstance", 0.1f);
@@ -345,10 +346,9 @@ public class FactoryBase : IStats, IDeathObservable
 		yield return new WaitForSeconds (2f);
 		if (IsNetworkInstantiate)
 		{
-			PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+			Model.Battle battle = ConfigurationData.battle;
 			
-			if (playerUnit && !gameplayManager.IsBotTeam (this))
+			if (playerUnit)
 			{
 				PhotonNetwork.Destroy(gameObject);
 				Score.AddScorePoints (DataScoreEnum.BuildingsLost, 1, battle.IdBattle);
@@ -459,7 +459,9 @@ public class FactoryBase : IStats, IDeathObservable
 			                                       (ht_hud) =>
 			                                       {
 														gameplayManager.resources.ReturnResources (costOfResources, 0.75f);
-														photonView.RPC ("SendRemove", PhotonTargets.All);
+														if (!PhotonNetwork.offlineMode) photonView.RPC ("SendRemove", PhotonTargets.All);
+														else SendRemove();
+
 													});
 		}
 	}
@@ -847,16 +849,12 @@ public class FactoryBase : IStats, IDeathObservable
 			Invoke("RestoreDequeueMenu",0);
 			Invoke("RestoreOptionsMenu",0);		
 		}
-		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();		
-		string encodedBattle = (string)pw.GetPropertyOnRoom ("battle");
-		
-		if (!string.IsNullOrEmpty (encodedBattle))
+		if (!PhotonNetwork.offlineMode || !ConfigurationData.Offline)
 		{
-			Model.Battle battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+			Model.Battle battle = ConfigurationData.battle;
 			Score.AddScorePoints (DataScoreEnum.UpgradesCreated, 1, battle.IdBattle);
 			Score.AddScorePoints (upgrade.name + DataScoreEnum.XUpgraded, upgrade.costOfResources.Rocks + upgrade.costOfResources.Mana, battle.IdBattle);
 		}
-
 		Upgrade upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
 		upg.transform.parent = this.transform;
 		if (upgrade.modelUpgrade) buildingState = BuildingState.Upgraded;
@@ -1029,24 +1027,23 @@ public class FactoryBase : IStats, IDeathObservable
 	[RPC]
 	public void InstanceOverdraw (int teamID, int allyID)
 	{
-		wasBuilt = false;
+		wasBuilt = false;		
+		gameObject.layer = LayerMask.NameToLayer ("Gizmos");
+
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (false);
 		}
-		
+
 		SetTeam (teamID, allyID);
 		
-		levelConstruct = Health = 1;
-		
-		
-		statsController.RemoveStats (GetComponent<FactoryBase> ());
-		
+		levelConstruct = Health = 1;			
+
+		wasVisible = false;		
 		GetComponent<NavMeshObstacle> ().enabled = false;
 		
 		if (!playerUnit) model.SetActive (false);
-		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;
-		
+		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;		
 		
 	}
 	
@@ -1056,19 +1053,16 @@ public class FactoryBase : IStats, IDeathObservable
 		realRangeView  = this.fieldOfView;		
 		GetComponent<NavMeshObstacle> ().enabled = true;		
 		statsController.AddStats(this);		
-		this.fieldOfView = 0.5f;
-		
+		this.fieldOfView = 0.5f;		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);
-		}
-		
+		}		
 		buildingState = BuildingState.Base;		
-		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
-		
-		if (!gameplayManager.IsSameTeam (team)) model.SetActive (true);
+		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);		
+		if (!gameplayManager.IsSameTeam (team))		model.SetActive (true);
+		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 
-		hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 	}
 
 	#endregion

@@ -11,6 +11,7 @@ public class LoginIndex : IView
 	public GameObject FacebookButton;
 	public GameObject SubmitButton;
 	public GameObject NewAccountButton;
+	public GameObject OfflineButton;
 	public bool CanLogin;
 		
 	private FacebookLoginHandler fh;
@@ -18,9 +19,17 @@ public class LoginIndex : IView
 	// Use this for initialization
 	public void Init ()
 	{
+		InternetChecker internetChecker = GetComponent<InternetChecker>();
+		internetChecker.enabled = true;
 		LoadRePrefs();
 
 		errorMessage.enabled = false;
+		Login login = ComponentGetter.Get<Login>();
+
+		OfflineButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>
+		                                                         {
+																	login.EnterOfflineMode();
+																});
 		
 		FacebookButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>
 																		{
@@ -41,19 +50,20 @@ public class LoginIndex : IView
 																			if (CanLogin)
 																			{
 																				Hashtable ht = new Hashtable ();
-																					ht["username"] = username.value;
-																					ht["password"] = password.value;
-
+																				ht["username"] = username.value;
+																				ht["password"] = password.value;																							
+																				internetChecker.enabled = false;
 																				controller.SendMessage ("DoLogin", ht, SendMessageOptions.DontRequireReceiver );
 																			}
 																			else ShowErrorMessage("no internet conection");
 																		});
 
-																			NewAccountButton.AddComponent<DefaultCallbackButton>().Init( null,(ht_hud) =>
+		NewAccountButton.AddComponent<DefaultCallbackButton>().Init( null,(ht_hud) =>
 																			{
 																				if (CanLogin)
 																				{
 																					controller.SendMessage ("NewAccount", SendMessageOptions.DontRequireReceiver );
+																					internetChecker.enabled = false;
 																				}
 																				else ShowErrorMessage("no internet conection");
 																			});
@@ -79,7 +89,7 @@ public class LoginIndex : IView
 	{
 		errorMessage.enabled = true;
 		errorMessage.text = errorText;
-		Invoke ("CloseErrorMessage", 5.0f);
+		Invoke ("CloseErrorMessage", 2.0f);
 	}
 
 	private void CloseErrorMessage ()

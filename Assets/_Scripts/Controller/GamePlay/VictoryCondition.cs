@@ -55,31 +55,13 @@ public class VictoryCondition : MonoBehaviour
 	private int nCollected = 0;
 
 
-
-	void Update ()
-	{
-		if (Ativar && !FoiAtivado)
-		{
-			ActiveAllChallenges ();
-		}
-	}
-
-	public void ActiveAllChallenges ()
-	{
-		if (!FoiAtivado) 
-		foreach (Challenge ch in ChallengesToWin)
-		{
-			ch.IsActive = true;
-			AddToObjectiveLog(ch.Name, ch.objSprite, ch.valueToCompare, ch.objDescription, ch.objectiveCompleted);
-		}
-		FoiAtivado = true;
-	}
-		
-	public void Start ()
+	public void Init ()
 	{
 		gm = ComponentGetter.Get<GameplayManager> ();
 		em = ComponentGetter.Get<EventController> ();
 		sc = ComponentGetter.Get<StatsController>();
+
+		if (Ativar && !FoiAtivado)	ActiveAllChallenges ();	
 
 		InvokeRepeating ("CheckVictory", 10.0f, 2.0f);
 	}
@@ -197,7 +179,18 @@ public class VictoryCondition : MonoBehaviour
 			default: return true;
 		}
 	}
-	
+
+	public void ActiveAllChallenges ()
+	{
+		if (!FoiAtivado) 
+			foreach (Challenge ch in ChallengesToWin)
+		{
+			ch.IsActive = true;
+			AddToObjectiveLog(ch.Name, ch.objSprite, ch.valueToCompare, ch.objDescription, ch.objectiveCompleted);
+		}
+		FoiAtivado = true;
+	}
+
 	public void CheckVictory ()
 	{
 		bool success = false;

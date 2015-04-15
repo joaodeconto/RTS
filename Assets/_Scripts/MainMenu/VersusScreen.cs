@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
@@ -17,14 +18,12 @@ public class VersusScreen : MonoBehaviour
 	public GameObject gameObjectPlayerL;
 	public GameObject gameObjectPlayerR;
 	public UISlider progBar;
-	public UISprite mapSprite;	
-//	public UILabel timeLabel;
+	public UISprite mapSprite;
 	public UILabel mapName;
 	public UILabel battleMode;
 	public int cena;	
 	public GameObject prefabPlayerRight;
 	public GameObject prefabPlayerLeft;
-//	public int timeToWait;	
 	public ConfigurationOfScreen[] configurationOfScreen;
 	protected int timeCount;	
 	protected PhotonWrapper pw;
@@ -37,10 +36,10 @@ public class VersusScreen : MonoBehaviour
 //		timeCount = timeToWait;
 //		timeLabel.text = timeCount.ToString ();		
 		pw = ComponentGetter.Get<PhotonWrapper> ();		
-		pw.SetStartGame (() => Init ());
+		pw.SetStartGame (() => InitOnlineGame ());
 	}
 	
-	public void Init ()
+	public void InitOnlineGame ()
 	{		
 		opponentSprite.Clear();
 		cena = (int)pw.GetPropertyOnRoom("map");
@@ -109,10 +108,39 @@ public class VersusScreen : MonoBehaviour
 				i++;
 			}
 		}
-//		InvokeRepeating ("DescountTime", 1f, 1f);
 		Invoke ("InstanceGame",2);
 		mapLabelString 	= mapName.text;
 		modeLabelString	= battleMode.text;	
+	}
+
+	public void InitOfflineGame (int maxPlayers, int bid, string battleTypeName, int map)
+	{
+		PhotonNetwork.Disconnect();
+		PhotonNetwork.offlineMode = true;
+		GameplayManager.mode = GameplayManager.Mode.Tutorial;
+		opponentSprite.Clear();
+		cena = map;
+		cenaSelection();
+		if (!ConfigurationData.Offline)
+		{
+		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();	
+		playerBattleDao.CreateBattle (battleTypeName, bid, DateTime.Now, maxPlayers,
+		                              (battle) => { ConfigurationData.battle = battle;});
+		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
+		}
+		else ComponentGetter.Get<Login>().HiddeViews();
+		goVersusScreen.SetActive (true);
+		
+		// LOAD GAMEPLAY!
+		int totalPlayers = 2;		
+		int i = 0;
+		battleMode.text = ("Single Player"); 
+		i = 0;
+		Invoke ("InstanceGame",2);
+		mapLabelString 	= mapName.text;
+		modeLabelString	= battleMode.text;
+
+		//TODO carregar img do player e AI
 	}
 
 	public void cenaSelection ()
@@ -147,14 +175,6 @@ public class VersusScreen : MonoBehaviour
 			mapSprite.spriteName = "Dementia Forest";			
 		}
 	}	
-	
-//	void DescountTime ()
-//	{
-//		--timeCount;
-//		timeLabel.text = timeCount.ToString();
-//		
-//		if (timeCount == 0) CancelInvoke ("DescountTime");
-//	}
 
 	void SetPlayer (Vector3 position, PhotonPlayer pp)
 	{	
@@ -183,11 +203,12 @@ public class VersusScreen : MonoBehaviour
 	{
 		pw.StartGame ();
 		StartCoroutine (LoadingScene ());
+
+
 	}
 
 	private IEnumerator LoadingScene ()
 	{
-
 		AsyncOperation async = Application.LoadLevelAsync(cena);
 
 		while (!async.isDone)

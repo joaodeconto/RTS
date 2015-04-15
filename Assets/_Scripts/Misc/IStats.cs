@@ -245,18 +245,21 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 				}
 				else
 				{
-					team = GameplayManager.BOT_TEAM;
+					playerUnit = true;
+					team = 0;
 				}
 			}
 		}
 		else
 		{
 			playerUnit = false;
+			team = 8;
 		}
 		firstDamage = false;
 		SetColorTeam ();		
 		WasRemoved = false;
-		statsController.AddStats (this);
+		FactoryBase fb = GetComponent<FactoryBase>();
+		if(fb == null)	statsController.AddStats (this);
 	}
 	#endregion
 
@@ -288,7 +291,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		else return;
 	}
 
-	void ShowHealth()
+	public void ShowHealth()
 	{
 		firstDamage = true;
 		if(IsVisible)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
@@ -307,7 +310,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 			if (pref_ParticleDamage != null)
 			{
-				photonView.RPC ("InstantiatParticleDamage", PhotonTargets.All);
+				if(!PhotonNetwork.offlineMode)	photonView.RPC ("InstantiatParticleDamage", PhotonTargets.All);
+
+				else InstantiatParticleDamage();
 			}
 			
 			if (gameplayManager.IsBeingAttacked (this))
@@ -322,7 +327,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		if (Health == 0 && !WasRemoved)
 		{
 			SendRemove ();
-			photonView.RPC ("SendRemove", PhotonTargets.Others);
+			if(!PhotonNetwork.offlineMode)	photonView.RPC ("SendRemove", PhotonTargets.Others);
 		}
 	}
 

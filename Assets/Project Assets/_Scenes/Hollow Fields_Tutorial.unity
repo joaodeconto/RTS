@@ -1248,6 +1248,10 @@ Prefab:
       propertyPath: ChallengesToWin.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: clusterModels.Array.data[0].clusterDesiredUnits.Array.size
       value: 6
@@ -2114,6 +2118,30 @@ Prefab:
       propertyPath: pref_invalidFeedback
       value: 
       objectReference: {fileID: 165202, guid: 70d7716542db1ba4cbc6d02de869e4cc, type: 2}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].Name
+      value: Defeat all Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].specificStat
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].valueToCompare
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].objDescription
+      value: Defeat all Enemies
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11400010, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
@@ -32256,12 +32284,12 @@ MonoBehaviour:
   mColor: {r: .823529422, g: .617646992, b: 0, a: 1}
   mPivot: 1
   mWidth: 18
-  mHeight: 86
+  mHeight: 263
   mDepth: 39
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .209302321
+  aspectRatio: .0684410632
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -32298,8 +32326,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0, y: 0, z: 0}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 17.5499992, y: 257.100006, z: 0}
+  m_Center: {x: 0, y: -129.5, z: 0}
 --- !u!1 &506592295
 GameObject:
   m_ObjectHideFlags: 0
@@ -34878,7 +34906,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3017
+  startingRenderQueue: 3018
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -53018,7 +53046,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3025
+  startingRenderQueue: 3026
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -57394,8 +57422,8 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1152233874}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -247, y: -3, z: -1}
-  m_LocalScale: {x: .800000012, y: 1, z: 1}
+  m_LocalPosition: {x: -254, y: -3, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1665369890}
   m_RootOrder: 5
@@ -67642,7 +67670,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3017
+  startingRenderQueue: 3018
   mClipTexture: {fileID: 2800000, guid: e24044e73b677214faafd0571d776ed6, type: 3}
   mAlpha: 1
   mClipping: 4
@@ -67731,8 +67759,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 1303139600}
   - 114: {fileID: 1303139603}
-  - 65: {fileID: 1303139602}
-  - 114: {fileID: 1303139601}
   m_Layer: 8
   m_Name: Background
   m_TagString: Untagged
@@ -67752,31 +67778,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1630919049}
   m_RootOrder: 2
---- !u!114 &1303139601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11460846, guid: b28762052f7d8e1478b78ea7e749de1b,
-    type: 2}
-  m_PrefabInternal: {fileID: 692353592}
-  m_GameObject: {fileID: 1303139599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1bd99dcf43f97d48bb6215c70f0cd40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!65 &1303139602
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 6560864, guid: b28762052f7d8e1478b78ea7e749de1b,
-    type: 2}
-  m_PrefabInternal: {fileID: 692353592}
-  m_GameObject: {fileID: 1303139599}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 20.2399998, y: 146.399994, z: 0}
-  m_Center: {x: 0, y: -83.9800034, z: 0}
 --- !u!114 &1303139603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70254,7 +70255,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3020
+  startingRenderQueue: 3021
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -70552,7 +70553,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3020
+  startingRenderQueue: 3021
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -82150,7 +82151,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3017
+  startingRenderQueue: 3018
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -83729,32 +83730,12 @@ MonoBehaviour:
   ChallengesToWin:
   - IsActive: 0
     objectiveCompleted: 0
-    Name: Stash 500 Gold
-    enumComparingType: 4
-    specificStat: gold
-    valueToCompare: 500
-    enumCondition: 2
-    objDescription: 'Guide your workers to a gold mine, extract more and more! Save
-      enought gold for the next tutorial! '
-    objSprite: Achiv_Battle1
-  - IsActive: 0
-    objectiveCompleted: 0
-    Name: Build shelter for 40 units
-    enumComparingType: 2
-    specificStat: 
-    valueToCompare: 39
-    enumCondition: 2
-    objDescription: Learn to grow your tribe, contructing huts its fundamental for
-      a future army growth.
-    objSprite: cottage
-  - IsActive: 0
-    objectiveCompleted: 0
-    Name: Defeat All Enemies
+    Name: Defeat all Enemies
     enumComparingType: 8
     specificStat: 
     valueToCompare: 0
     enumCondition: 1
-    objDescription: Destroy the enemy tribe.
+    objDescription: Defeat all Enemies
     objSprite: Achiv_Battle1
   Ativar: 1
   objectiveLog: {fileID: 1516857563}
@@ -86278,7 +86259,7 @@ MonoBehaviour:
   thumb: {fileID: 0}
   mBG: {fileID: 739610110}
   mFG: {fileID: 504861365}
-  mValue: .111111112
+  mValue: 0
   mFill: 3
   numberOfSteps: 0
   onChange: []
@@ -86286,7 +86267,7 @@ MonoBehaviour:
   rawValue: 1
   direction: 2
   mInverted: 0
-  mSize: .953125
+  mSize: .958333313
   mScroll: 0
   mDir: 2
 --- !u!1001 &1635521521
@@ -87314,7 +87295,7 @@ Transform:
   m_GameObject: {fileID: 1665369889}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -344, z: 0}
-  m_LocalScale: {x: 1.20000005, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2056272081}
   - {fileID: 137764383}
@@ -87925,7 +87906,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1690433969}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .0199999996, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -90677,7 +90658,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1750316847}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: .699999988, y: .699999988, z: 1}
   m_Children: []
   m_Father: {fileID: 1812143109}
@@ -90714,12 +90695,12 @@ MonoBehaviour:
   mColor: {r: .573529422, g: .573529422, b: .573529422, a: 1}
   mPivot: 4
   mWidth: 190
-  mHeight: 104
+  mHeight: 106
   mDepth: 28
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.82692313
+  aspectRatio: 1.79245281
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -90889,7 +90870,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1756739674}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 197, y: -4, z: 0}
+  m_LocalPosition: {x: 192.600006, y: -3, z: 0}
   m_LocalScale: {x: .699999988, y: .699999988, z: 1}
   m_Children: []
   m_Father: {fileID: 1855928374}
@@ -100139,7 +100120,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3020
+  startingRenderQueue: 3021
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -101400,7 +101381,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 1938290921}
   - 65: {fileID: 1938290924}
-  - 114: {fileID: 1938290922}
   - 114: {fileID: 1938290923}
   m_Layer: 8
   m_Name: MapButton
@@ -101421,18 +101401,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1762856191}
   m_RootOrder: 0
---- !u!114 &1938290922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11400024, guid: b28762052f7d8e1478b78ea7e749de1b,
-    type: 2}
-  m_PrefabInternal: {fileID: 692353592}
-  m_GameObject: {fileID: 1938290920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4f61c89cfc718f4c809deef4738a63d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1938290923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109341,7 +109309,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 2051590792}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24, y: -146, z: 0}
+  m_LocalPosition: {x: 24, y: -143.000046, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1603182708}

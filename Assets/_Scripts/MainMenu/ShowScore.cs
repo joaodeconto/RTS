@@ -37,7 +37,7 @@ public class ShowScore : MonoBehaviour
 			            XUnitsKillsPoints*3 +
 			            XStructureCreatedPoints +
 			            XStructureDestroyedPoints*3 +
-			            XUpgradePoints)/10;
+			            XUpgradePoints + (VictoryPoints * 1000))/10;
 			}
 		}
 		
@@ -162,7 +162,7 @@ public class ShowScore : MonoBehaviour
 					GameObject scorePlayerObject = NGUITools.AddChild (scoreMenuObject.gameObject, scorePlayerPrefab);
 					scorePlayerObject.transform.localPosition = Vector3.up * positionYInitial;
 					ScoreRow sr = scorePlayerObject.GetComponent<ScoreRow>();					
-					SetPlayerRank(sp.Key, sr);
+
 					playerTime = (float)sp.Value.TotalTimeElapsed;
 					timeLabel.text = showGameTime;
 					sr.playerScoreModifier.text = "+" + sp.Value.TotalScore.ToString();
@@ -198,6 +198,7 @@ public class ShowScore : MonoBehaviour
 //					sr.techsResearched.value  	  = ((float)sp.Value.UpgradePoints / (float)battleTotalUpgradePoints);	
 
 					positionYInitial -= diferrenceBetweenLabels;
+					SetPlayerRank(sp.Key, sr);
 				}
 			}
 		);

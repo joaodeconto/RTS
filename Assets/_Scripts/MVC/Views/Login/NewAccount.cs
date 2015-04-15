@@ -23,6 +23,7 @@ public class NewAccount : IView
 	public int NumberOfCoinsNewPlayerStartsWith = 500;
 
 	public bool AccountAlreadyExists;
+	private FacebookLoginHandler fh;
 
 
 	public NewAccount Init ()
@@ -33,6 +34,11 @@ public class NewAccount : IView
 		}
 
 		Login login = ComponentGetter.Get<Login>();
+		GameObject goFacebookHandler;	
+		goFacebookHandler = new GameObject ("FacebookLoginHandler");
+		goFacebookHandler.transform.parent = this.transform;		
+		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();
+		fh.OnLoggedIn = Yupy;
 
 		AvatarButton
 			.AddComponent<DefaultCallbackButton> ()
@@ -103,8 +109,8 @@ public class NewAccount : IView
 						ht["username"]              = username.value;
 						ht["password"]              = password.value;
 						ht["email"]                 = email.value;
-
 						DoNewAccount(ht);
+						fh.DoLogin ();
 						login.DoLogin(ht);
 					}
 				
@@ -152,8 +158,6 @@ public class NewAccount : IView
 								});
 	}
 
-
-
 //	public void ShowErrorMessage ()
 //	{
 //		errorMessage.enabled = true;
@@ -169,12 +173,9 @@ public class NewAccount : IView
 		wTerm.SetActive(false);
 	}
 
-//	public void Index ()
-//	{
-//		HideAllViews ();
-//		
-//		LoginIndex index = GetView <LoginIndex> ("Index");
-//		index.SetActive (true);
-//		index.Init ();
-//	}
+	public bool Yupy ()
+	{
+		FB.AppRequest( message:"3D Real-Time Strategy game for mobile!", title:"Join me in RTS - Rex Tribal Society!");
+		return true;
+	}
 }

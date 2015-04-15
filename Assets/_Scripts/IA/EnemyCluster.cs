@@ -62,7 +62,7 @@ public class EnemyCluster : MonoBehaviour
 		InitExploreTargets();
 		InitInicialEnemies ();
 		Invoke("InitClusters",3f);
-		InvokeRepeating ("IABehaviour",2,1);
+		InvokeRepeating ("IABehaviour",4f,1f);
 	}
 		
 	public void InitClusters()
@@ -197,23 +197,26 @@ public class EnemyCluster : MonoBehaviour
 				
 				if (cluster.clusterUnits.Count <= clusterMinimum)
 				{
-					if(!cluster.isCheckingRepeatDemmand) cluster.minusTRepeat = cluster.repeatDemmand + gameplayManager.gameTime;
+					cluster.minusTRepeat = cluster.repeatDemmand + gameplayManager.gameTime;
 					cluster.clusterComplete = false;
 					cluster.clusterIsBusy = false;
 					cluster.hasDemanded = false;
-					cluster.clusterBehaviour = ClusterBehaviour.none;
+					cluster.clusterBehaviour = ClusterBehaviour.none;	
+					cluster.isCheckingRepeatDemmand = true;
+				}
+			}
+			else 
+			{
+				if(cluster.isCheckingRepeatDemmand) 
+				{
 					if (cluster.minusTRepeat < gameplayManager.gameTime)
 					{						
 						CheckClusterFactory(cluster);
 						cluster.isCheckingRepeatDemmand = false;
+						return;
 					}
-					else
-						cluster.isCheckingRepeatDemmand = true;
-				}
+				}								
 
-			}
-			else 
-			{
 				if (cluster.clusterUnits.Count >= cluster.clusterDesiredUnits.Count)
 				{
 					cluster.clusterComplete = true;
