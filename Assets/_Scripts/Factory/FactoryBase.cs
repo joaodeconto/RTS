@@ -146,7 +146,7 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			if (techTreeController.attribsHash.ContainsKey(category))LoadStandardAttribs();
 		    if(wasBuilt)TechActiveBool(TechsToActive, true);
-			if (!PhotonNetwork.offlineMode && !ConfigurationData.Offline)
+			if (!PhotonNetwork.offlineMode)
 			{
 				Model.Battle battle = ConfigurationData.battle;	
 				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
@@ -154,7 +154,7 @@ public class FactoryBase : IStats, IDeathObservable
 			}
 		}
 		PaintAgent pa = GetComponent<PaintAgent>();
-		pa.Paint(this.transform.position, (sizeOfSelected * 0.6f));
+		pa.Paint(this.transform.position, sizeOfHealthBar * 0.8f);
 		Invoke ("SendMessageInstance", 0.1f);
 						
 	}
@@ -385,10 +385,9 @@ public class FactoryBase : IStats, IDeathObservable
 			if (!wasBuilt)
 			{
 				wasBuilt = true;												
-				this.fieldOfView = realRangeView;				
-							
+				this.fieldOfView = realRangeView;	
+				if(Selected) RestoreOptionsMenu();							
 				Init ();
-				
 				eventController.AddEvent("building finish",transformParticleDamageReference.position, this.category, this.guiTextureName);
 				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);			
 
@@ -849,7 +848,7 @@ public class FactoryBase : IStats, IDeathObservable
 			Invoke("RestoreDequeueMenu",0);
 			Invoke("RestoreOptionsMenu",0);		
 		}
-		if (!PhotonNetwork.offlineMode || !ConfigurationData.Offline)
+		if (!PhotonNetwork.offlineMode)
 		{
 			Model.Battle battle = ConfigurationData.battle;
 			Score.AddScorePoints (DataScoreEnum.UpgradesCreated, 1, battle.IdBattle);

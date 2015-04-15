@@ -50,6 +50,6 @@ public class BidManager : MonoBehaviour
 		Debug.Log ("currentBid :" + currentBid);
 		Debug.Log ("TaxFactor: "  + TaxFactor);
 
-		if (!PhotonNetwork.offlineMode || !ConfigurationData.Offline)	Score.AddScorePoints (DataScoreEnum.CurrentCrystals, (int)(currentBid * TaxFactor));
+		if (!PhotonNetwork.offlineMode)	Score.AddScorePoints (DataScoreEnum.CurrentCrystals, (int)(currentBid * TaxFactor));
 	}
 }

@@ -31,7 +31,7 @@ public class ExitGame : MonoBehaviour
 			{
 				Time.timeScale = 1f;
 				GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
-				gm.Surrender();
+				if(gm.scoreCounting) gm.Surrender();
 				Close ();
 				InGameMenu gameMenu = transform.parent.GetComponentInChildren<InGameMenu>();
 				gameMenu.Close();

@@ -43,14 +43,14 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	
 	void Update ()
 	{
-		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
-        {
-			PhotonNetwork.ConnectToMaster ( PhotonNetwork.PhotonServerSettings.ServerAddress,
-											PhotonNetwork.PhotonServerSettings.ServerPort,
-											PhotonNetwork.PhotonServerSettings.AppID,
-											ConfigurationData.VERSION);
-		}
-		
+//		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
+//        {
+//			PhotonNetwork.ConnectToMaster ( PhotonNetwork.PhotonServerSettings.ServerAddress,
+//											PhotonNetwork.PhotonServerSettings.ServerPort,
+//											PhotonNetwork.PhotonServerSettings.AppID,
+//											ConfigurationData.VERSION);
+//		}
+//		
 //		Debug.Log ("PhotonNetwork.connectionState:" + PhotonNetwork.connectionState);
 //		Debug.Log ("PhotonNetwork.connectionStateDetailed:" + PhotonNetwork.connectionStateDetailed);
 	}
@@ -125,11 +125,13 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		customProperties.Add ("map", map);
 		
 		string[] roomPropsInLobby = { "closeRoom", "bool", "bid", "int" };
-
-		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, customProperties, roomPropsInLobby);
-		
+		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, customProperties, roomPropsInLobby);		
 		roomNameTemp = roomName;
-		
+		CloseIMM();
+	}
+
+	public void CloseIMM()
+	{
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (false);

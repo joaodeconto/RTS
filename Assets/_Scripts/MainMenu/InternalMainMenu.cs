@@ -104,7 +104,7 @@ public class InternalMainMenu : MonoBehaviour
 		goMainMenu.SetActive (true);
 	}
 
-	void InitScore ()
+	public void InitScore ()
 	{
 		Score.LoadScores
 		(

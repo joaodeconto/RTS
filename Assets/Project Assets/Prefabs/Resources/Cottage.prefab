@@ -397,7 +397,7 @@ MonoBehaviour:
   m_Ally: 0
   defense: 0
   fieldOfView: 16
-  sizeOfSelected: 8
+  sizeOfSelected: 6
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400012}
   - subMesh: {fileID: 400008}
@@ -409,7 +409,7 @@ MonoBehaviour:
   playerUnit: 0
   category: Hut
   subCategory: 
-  description: Basic structure, adds 10 rooms to your population limit. Can be upgraded.
+  description: Housing structure, adds 10 rooms to your population limit. Upgradable.
   requisites: Tribe Center
   group: -1
   costOfResources:
@@ -425,10 +425,10 @@ MonoBehaviour:
   upgradesToCreate:
   - upgrade: {fileID: 11400002, guid: 340f70900bb288e41af1bf000cbe2964, type: 2}
     buttonName: cottageUpg
-    techAvailable: 0
+    techAvailable: 1
     VIP: 1
     isChildtech: 0
-    childTechBtnName: 
+    childTech: {fileID: 0}
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 0
@@ -454,9 +454,6 @@ MonoBehaviour:
   TechsToActive:
   - Depot
   - Barracks
-  queueTicket: 0
-  queueCounter: 0
-  checkPopCouter: 0
   wasVisible: 0
   cottagePopulation: 10
 --- !u!114 &11400006

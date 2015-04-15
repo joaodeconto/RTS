@@ -171,7 +171,7 @@ GameObject:
   - 4: {fileID: 400024}
   - 114: {fileID: 11466618}
   m_Layer: 0
-  m_Name: Victory Condition
+  m_Name: VictoryCondition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -473,6 +473,7 @@ MonoBehaviour:
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   pref_selfFeedback: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   pref_attackFeedback: {fileID: 100000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
+  pref_invalidFeedback: {fileID: 165202, guid: 70d7716542db1ba4cbc6d02de869e4cc, type: 2}
   rocksFeedback: {fileID: 0}
   manaFeedback: {fileID: 0}
   houseFeedback: {fileID: 0}
@@ -519,7 +520,7 @@ MonoBehaviour:
       messageCap: 0
   - queueName: Events
     panel: {fileID: 0}
-    rootPosition: {x: 46, y: 46}
+    rootPosition: {x: 46, y: -46}
     cellSize: {x: 92, y: 92}
     padding: {x: 1, y: 1}
     labelSize: 24
@@ -621,8 +622,8 @@ MonoBehaviour:
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 6d689bc25bc28e347a367c3883aeaf9a, type: 2}
   minimapAtlas: {fileID: 11400000, guid: 1ad367796a1accb419f17d3ea071ca02, type: 2}
-  visualizationSize: {x: 70, y: 42, z: 0}
-  visualizationPosition: {x: 0, y: 0, z: 68}
+  visualizationSize: {x: 100, y: 70, z: 0}
+  visualizationPosition: {x: 0, y: 0, z: 60}
   MiniMapRefreshInterval: .200000003
 --- !u!114 &11400018
 MonoBehaviour:
@@ -850,7 +851,8 @@ MonoBehaviour:
   clusterModels:
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 380
+    triggerDemmand: 240
+    repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 0}
     exploreTarget: {fileID: 0}
@@ -866,9 +868,12 @@ MonoBehaviour:
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
+    isCheckingRepeatDemmand: 0
+    minusTRepeat: 0
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 180
+    triggerDemmand: 15
+    repeatDemmand: 30
     bravery: 3
     defendTarget: {fileID: 0}
     exploreTarget: {fileID: 0}
@@ -878,17 +883,19 @@ MonoBehaviour:
     desiredBehaviour: 3
     clusterDesiredUnits:
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
+    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
-    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
-    - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
     - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
+    isCheckingRepeatDemmand: 0
+    minusTRepeat: 0
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 180
+    triggerDemmand: 40
+    repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 0}
     exploreTarget: {fileID: 0}
@@ -897,30 +904,33 @@ MonoBehaviour:
     factory: {fileID: 0}
     desiredBehaviour: 4
     clusterDesiredUnits:
-    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
-    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
+    isCheckingRepeatDemmand: 0
+    minusTRepeat: 0
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 600
+    triggerDemmand: 30
+    repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 0}
     exploreTarget: {fileID: 0}
     attackTarget: {fileID: 0}
     clusterTarget: {fileID: 0}
     factory: {fileID: 0}
-    desiredBehaviour: 2
+    desiredBehaviour: 3
     clusterDesiredUnits:
-    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
+    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
-    - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
-    - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
+    isCheckingRepeatDemmand: 0
+    minusTRepeat: 0
 --- !u!114 &11444844
 MonoBehaviour:
   m_ObjectHideFlags: 1

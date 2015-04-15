@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
-
 using Visiorama;
 
 public class VictoryCondition : MonoBehaviour
@@ -54,6 +52,10 @@ public class VictoryCondition : MonoBehaviour
 	private int eneBuilds = 0;
 	private int nCollected = 0;
 
+	void Start()
+	{
+		if(PhotonNetwork.offlineMode) Init();
+	}
 
 	public void Init ()
 	{
@@ -189,6 +191,16 @@ public class VictoryCondition : MonoBehaviour
 			AddToObjectiveLog(ch.Name, ch.objSprite, ch.valueToCompare, ch.objDescription, ch.objectiveCompleted);
 		}
 		FoiAtivado = true;
+	}
+
+	public void InactiveAllChallenges ()
+	{
+		if (FoiAtivado) 
+			foreach (Challenge ch in ChallengesToWin)
+		{
+			ch.IsActive = false;
+		}
+		FoiAtivado = false;
 	}
 
 	public void CheckVictory ()

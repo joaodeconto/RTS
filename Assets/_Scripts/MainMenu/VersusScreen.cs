@@ -115,20 +115,13 @@ public class VersusScreen : MonoBehaviour
 
 	public void InitOfflineGame (int maxPlayers, int bid, string battleTypeName, int map)
 	{
-		PhotonNetwork.Disconnect();
+		if(PhotonNetwork.connected) PhotonNetwork.Disconnect();
 		PhotonNetwork.offlineMode = true;
 		GameplayManager.mode = GameplayManager.Mode.Tutorial;
 		opponentSprite.Clear();
 		cena = map;
 		cenaSelection();
-		if (!ConfigurationData.Offline)
-		{
-		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();	
-		playerBattleDao.CreateBattle (battleTypeName, bid, DateTime.Now, maxPlayers,
-		                              (battle) => { ConfigurationData.battle = battle;});
-		ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
-		}
-		else ComponentGetter.Get<Login>().HiddeViews();
+		if (!ConfigurationData.Offline)	ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
 		
 		// LOAD GAMEPLAY!

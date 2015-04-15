@@ -83,6 +83,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	protected BidManager bm;
 	protected TouchController touchController;
 	protected SelectionController selectionController;
+	protected StatsController sc;
 	public UILabel loadingMessage;
 	protected Score score;
 	protected string encodedBattle;
@@ -94,7 +95,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public void Init ()
 	{
 	
-		if (!ConfigurationData.Offline)
+		if (!PhotonNetwork.offlineMode)
 		{
 		    score = ComponentGetter.Get <Score> ("$$$_Score");
 			encodedBattle = ConfigurationData.battle.ToString();
@@ -104,6 +105,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		loadingMessage = hud.uiWaitingPlayers.GetComponentInChildren<UILabel>();
 		touchController = ComponentGetter.Get<TouchController>();
 		selectionController = ComponentGetter.Get<SelectionController>();
+		sc = ComponentGetter.Get<StatsController> ();
 
 		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
 		{
@@ -131,9 +133,9 @@ public class GameplayManager : Photon.MonoBehaviour
 			MyTeam = 0;
 			Allies = 0;
 			numberOfTeams = 1;
-			ComponentGetter.Get<EnemyCluster> ().Init ();
 			pauseGame = true;
 			TribeInstiate ();
+			ComponentGetter.Get<EnemyCluster> ().Init ();
 			Invoke("GameStart",2f);
 		}
 
@@ -162,8 +164,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		hud.uiVictoryObject.SetActive (false);
 		hud.uiLostMainBaseObject.SetActive (false);
 		loadingMessage.text = "loading";
-
-		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode) CallMySceneReady();
+		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode) Invoke("CallMySceneReady",1f);
 	}
 
 	void CheckGameStart()
@@ -179,6 +180,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	void TribeInstiateNetwork ()
 	{
 		foreach (Team t in teams)
+
 		{
 			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
 			{
@@ -230,7 +232,6 @@ public class GameplayManager : Photon.MonoBehaviour
 				Math.CenterCameraInObject (Camera.main, teams[i].initialPosition.position);
 			}
 		}
-		if(PhotonNetwork.offlineMode) ComponentGetter.Get<VictoryCondition>().Init();
 		GamePaused(false);
 		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
 		ld.reverseAlpha();
@@ -530,7 +531,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public void EndMatch ()
 	{
 
-		if (!PhotonNetwork.offlineMode || !ConfigurationData.Offline)
+		if (!PhotonNetwork.offlineMode)
 		{
 			if (winGame)
 			{
@@ -585,13 +586,11 @@ public class GameplayManager : Photon.MonoBehaviour
 	[RPC]
 	void Defeat (int teamID, int ally)
 	{
-		ComponentGetter.Get<VictoryCondition>().enabled = false;
+		ComponentGetter.Get<VictoryCondition>().InactiveAllChallenges();
 
 		if (teams[teamID].lose) return;
 				
-		teams[teamID].lose = true;
-
-		StatsController sc = ComponentGetter.Get<StatsController> ();
+		teams[teamID].lose = true;	
 		
 		switch (GameplayManager.mode)
 		{
@@ -622,10 +621,9 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				loseGame = true;
 				scoreCounting = false;
-				sc.DestroyAllStatsTeam (teamID);
-				sc.DestroyAllStatsTeam (BOT_TEAM);
 				ComponentGetter.Get<EnemyCluster>().enabled = false;
-				loserTeams++;			
+				loserTeams++;	
+				Invoke("DestroyAllStats", 1f);
 				SendMessage ("EndMatch");
 			}
 
@@ -635,11 +633,16 @@ public class GameplayManager : Photon.MonoBehaviour
 
 			if (MyTeam == teamID)
 			{
+
 				loseGame = true;		
-				Model.Battle battle = ConfigurationData.battle;										
-				Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);					
-				Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);					
-				score.SaveScore();
+				Model.Battle battle = ConfigurationData.battle;
+				if (scoreCounting)
+				{
+					Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);					
+					Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);					
+					score.SaveScore();
+				}
+
 				scoreCounting = false;
 
 			}
@@ -662,12 +665,17 @@ public class GameplayManager : Photon.MonoBehaviour
 			break;
 		}
 	}
+	void DestroyAllStats()
+	{
+		sc.DestroyAllStatsTeam (MyTeam);
+		sc.DestroyAllStatsTeam (BOT_TEAM);
+	}
 	
 	[RPC]
 	void MySceneReady()
 	{
 		readyCounter++;
-		GamePaused(false);
+		GamePaused(true);
 	}
 	#endregion
 }

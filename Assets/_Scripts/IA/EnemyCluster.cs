@@ -76,15 +76,10 @@ public class EnemyCluster : MonoBehaviour
 			cluster.clusterIsBusy = false;
 			cluster.clusterBehaviour = ClusterBehaviour.none;
 
-			if(cluster.triggerDemmand <= gameplayManager.gameTime)
-					CheckClusterFactory(cluster); 
-			else
-				{
-					float minusT = cluster.triggerDemmand - gameplayManager.gameTime +1f;
-					Invoke ("CheckClusterTrigger", minusT);
-				}
+			if(cluster.triggerDemmand <= gameplayManager.gameTime)	CheckClusterFactory(cluster); 				
 			a++;
 		}
+		InvokeRepeating ("CheckClusterTrigger", 1, 1);
 	}
 
 	private void InitInicialEnemies ()            
@@ -126,6 +121,11 @@ public class EnemyCluster : MonoBehaviour
 			{
 				CheckClusterFactory(cluster); 
 			}
+			else if (cluster.isCheckingRepeatDemmand && cluster.minusTRepeat <= gameplayManager.gameTime)
+			{
+				cluster.isCheckingRepeatDemmand = false;
+				CheckClusterFactory(cluster); 
+			}
 		}		
 	}
 
@@ -150,9 +150,10 @@ public class EnemyCluster : MonoBehaviour
 					ClusterDemand(cluster);
 					break;
 				}
-				if (cluster.factory == null)
-					enemyFactoryExists = false;
+
 			}
+			if (cluster.factory == null)
+				enemyFactoryExists = false;
 		}
 	}
 
@@ -206,17 +207,7 @@ public class EnemyCluster : MonoBehaviour
 				}
 			}
 			else 
-			{
-				if(cluster.isCheckingRepeatDemmand) 
-				{
-					if (cluster.minusTRepeat < gameplayManager.gameTime)
-					{						
-						CheckClusterFactory(cluster);
-						cluster.isCheckingRepeatDemmand = false;
-						return;
-					}
-				}								
-
+			{	
 				if (cluster.clusterUnits.Count >= cluster.clusterDesiredUnits.Count)
 				{
 					cluster.clusterComplete = true;

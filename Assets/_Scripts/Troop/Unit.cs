@@ -101,6 +101,7 @@ public class Unit : IStats, IMovementObservable,
 	protected InteractionController interactionController;
 	private bool unitInitialized = false;
 	private bool isFollowed = false;
+	private NavMeshPath path;
 
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
@@ -135,7 +136,8 @@ public class Unit : IStats, IMovementObservable,
 		normalAvoidancePriority = NavAgent.avoidancePriority;
 		PathfindTarget = transform.position;
 		this.gameObject.tag   = "Unit";
-		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
+		path = new NavMeshPath();
 
 		if (playerUnit)
 		{	
@@ -144,7 +146,7 @@ public class Unit : IStats, IMovementObservable,
 
 			if (techTreeController.attribsHash.ContainsKey(category)) LoadStandardAttribs();
 			
-			if (!PhotonNetwork.offlineMode && !ConfigurationData.Offline)
+			if (!PhotonNetwork.offlineMode)
 			{
 				Model.Battle battle = ConfigurationData.battle;
 				Score.AddScorePoints (DataScoreEnum.UnitsCreated, 1, battle.IdBattle);
@@ -328,14 +330,23 @@ public class Unit : IStats, IMovementObservable,
 	#region Move NavAgent, Follow
 	public void Move (Vector3 destination)
 	{
+		NavMeshPath newPath = new NavMeshPath();
+
 		NavAgent.avoidancePriority = normalAvoidancePriority;
 	
 		if (!NavAgent.updatePosition) NavAgent.updatePosition = true;
 
-		if (PathfindTarget != destination) NavAgent.SetDestination (destination);
+		if (NavAgent.CalculatePath(destination, newPath))
+		{
+			if(newPath != null && newPath != path)
+			{
+				path = newPath;
+				NavAgent.SetPath(path);
+			}
+		}
+		else NavAgent.SetDestination (destination);
 
 		PathfindTarget = destination;
-
 		unitState = UnitState.Walk;
 	}
 

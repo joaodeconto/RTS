@@ -31,6 +31,7 @@ public class ActiveGames : MonoBehaviour
 		leaveRoom.SetActive (false);
 
 		InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
+
 	}
 
 	public void Close ()
@@ -39,9 +40,9 @@ public class ActiveGames : MonoBehaviour
 		ClearRows ();
 
 		messageActiveGame.enabled = errorMessage.enabled = false;
-
 		GameObject leaveRoom = transform.FindChild ("Menu").FindChild ("Button Leave Room").gameObject;
 		leaveRoom.SetActive (false);
+		PhotonNetwork.Disconnect();
 	}
 
 	private void ClearRows ()
@@ -54,6 +55,14 @@ public class ActiveGames : MonoBehaviour
 
 	private void Refresh ()
 	{
+		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
+		{
+			PhotonNetwork.ConnectToMaster ( PhotonNetwork.PhotonServerSettings.ServerAddress,
+			                               PhotonNetwork.PhotonServerSettings.ServerPort,
+			                               PhotonNetwork.PhotonServerSettings.AppID,
+			                               ConfigurationData.VERSION);
+		}
+
 		ClearRows ();
 
 		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
@@ -141,7 +150,7 @@ public class ActiveGames : MonoBehaviour
 												},
 												(playersReady, maxPlayers) =>
 												{
-													messageActiveGame.text = "Waiting For Players - "+playersReady+"/"+maxPlayers;
+													messageActiveGame.text = "Waiting Players - "+playersReady+"/"+maxPlayers;
 
 												});
 												});

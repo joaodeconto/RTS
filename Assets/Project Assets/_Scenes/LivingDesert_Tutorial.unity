@@ -9484,7 +9484,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -35006,6 +35006,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: clusterModels.Array.data[0].clusterDesiredUnits.Array.size
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 400026, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -35316,11 +35320,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: clusterModels.Array.data[0].triggerDemmand
-      value: 240
+      value: 280
       objectReference: {fileID: 0}
     - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: clusterModels.Array.data[3].triggerDemmand
-      value: 380
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: clusterModels.Array.data[3].repeatDemmand
@@ -35344,6 +35348,29 @@ Prefab:
       value: 
       objectReference: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee,
         type: 2}
+    - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: clusterModels.Array.data[3].desiredBehaviour
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: clusterModels.Array.data[0].clusterDesiredUnits.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998,
+        type: 2}
+    - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: clusterModels.Array.data[0].clusterDesiredUnits.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee,
+        type: 2}
+    - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: clusterModels.Array.data[0].clusterDesiredUnits.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400010, guid: 0718c2afed22e534e808d3ea1ffd9b8c,
+        type: 2}
+    - target: {fileID: 11444842, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: clusterModels.Array.data[0].repeatDemmand
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
   m_RootGameObject: {fileID: 602199571}
@@ -43919,7 +43946,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 2800000, guid: e24044e73b677214faafd0571d776ed6, type: 3}
   mAlpha: 1
   mClipping: 4
@@ -49075,8 +49102,8 @@ MonoBehaviour:
   clusterModels:
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 240
-    repeatDemmand: 10
+    triggerDemmand: 280
+    repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 1274889677}
     exploreTarget: {fileID: 0}
@@ -49085,10 +49112,12 @@ MonoBehaviour:
     factory: {fileID: 0}
     desiredBehaviour: 2
     clusterDesiredUnits:
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
+    - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
     - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400010, guid: 0718c2afed22e534e808d3ea1ffd9b8c, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
@@ -49138,7 +49167,7 @@ MonoBehaviour:
     minusTRepeat: 0
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 380
+    triggerDemmand: 30
     repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 788751615}
@@ -49146,7 +49175,7 @@ MonoBehaviour:
     attackTarget: {fileID: 0}
     clusterTarget: {fileID: 0}
     factory: {fileID: 0}
-    desiredBehaviour: 2
+    desiredBehaviour: 3
     clusterDesiredUnits:
     - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
     - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
@@ -53226,7 +53255,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3026
+  startingRenderQueue: 3028
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -87544,7 +87573,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -89342,7 +89371,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -94785,7 +94814,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -96803,7 +96832,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -102009,6 +102038,34 @@ Prefab:
     - target: {fileID: 100006, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400020, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 520.792786
+      objectReference: {fileID: 0}
+    - target: {fileID: 400042, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 519.792786
+      objectReference: {fileID: 0}
+    - target: {fileID: 400890, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 637.792786
+      objectReference: {fileID: 0}
+    - target: {fileID: 443964, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 520.792786
+      objectReference: {fileID: 0}
+    - target: {fileID: 460840, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -641.792786
+      objectReference: {fileID: 0}
+    - target: {fileID: 400024, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 413.792786
+      objectReference: {fileID: 0}
+    - target: {fileID: 400162, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -647.792786
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}

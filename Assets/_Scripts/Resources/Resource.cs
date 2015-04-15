@@ -22,11 +22,21 @@ public class ResourcesManager
 		set { m_mana = value;}
 	}
 	
+	private Model.Battle GetCurrentBattle  ()
+	{
+		PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
+		Model.Battle battle = null;
+		if (pw.GetPropertyOnRoom ("battle") != null)
+		{
+			battle = (new Model.Battle((string)pw.GetPropertyOnRoom ("battle")));
+		}
+		return battle;
+	}
+	
 	public void DeliverResources (Resource.Type resourceType, int numberOfResources)
 	{
-
-		Model.Battle battle = ConfigurationData.battle;
-
+		Model.Battle battle = GetCurrentBattle ();
+		
 		if (resourceType == Resource.Type.Rock)
 		{
 			Rocks += numberOfResources;

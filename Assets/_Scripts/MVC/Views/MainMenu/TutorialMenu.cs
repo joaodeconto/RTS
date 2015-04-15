@@ -38,7 +38,7 @@ public class TutorialMenu : MonoBehaviour
 	
 	protected PhotonWrapper pw;
 	protected VersusScreen vs;
-
+	protected Login login;
 	public void OnEnable ()
 	{
 		Open ();
@@ -53,44 +53,47 @@ public class TutorialMenu : MonoBehaviour
 
 		pw = ComponentGetter.Get<PhotonWrapper>();
 		vs = ComponentGetter.Get<VersusScreen>();
+		login = ComponentGetter.Get<Login>();
 		
 		DefaultCallbackButton dcb;
 		
 		if (buttons.Btn0)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn0, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 1);  } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 1);  Close ();} );
 		}
 		
 		if (buttons.Btn1)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 2); } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 2); Close ();} );
 		}
 		
 		if (buttons.Btn2)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 3); } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 3);Close ();} );
 		}
 		
 		if (buttons.Btn3)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 4); } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 4); Close ();} );
 		}
 
 		if (buttons.Btn3)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 5); } );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 5); Close ();} );
 		}
 		
 				
 		if (buttons.BtnLeaveRoom)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.BtnLeaveRoom, false);
-			dcb.Init ( null, (ht_hud) => { Close (); } );
+			dcb.Init ( null, (ht_hud) => { 
+				if(!ConfigurationData.Offline) Close();
+				else CloseOffline();} );
 
 		}
 	}
@@ -118,11 +121,14 @@ public class TutorialMenu : MonoBehaviour
 						
 			gameObject.SetActive (false);
 		}
-		else
-		{
-			Login login = ComponentGetter.Get<Login>();
-			ConfigurationData.Offline = false;
-			login.Index();
-		}
+
+		else	login.HiddeViews();
+
+	}
+
+	public void CloseOffline ()
+	{
+		ConfigurationData.Offline = false;
+		login.Index();
 	}
 }

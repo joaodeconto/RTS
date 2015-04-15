@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Facebook.MiniJSON;
 using Visiorama;
 
 public class MarketMenu : MonoBehaviour
 {
 
-
+	private bool receivedBonus = false; 
 	private bool wasInitialized = false;
+	private FacebookLoginHandler fh;
 
 	void Awake()
 	{
@@ -15,28 +17,62 @@ public class MarketMenu : MonoBehaviour
 		DefaultCallbackButton defaultCallbackButton;
 		
 		GameObject option = transform.FindChild ("Menu").transform.FindChild ("Button (Facebook)").gameObject;
-		
+		GameObject goFacebookHandler;	
+		goFacebookHandler = new GameObject ("FacebookLoginHandler");
+		goFacebookHandler.transform.parent = this.transform;		
+		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();		
 		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
-		defaultCallbackButton.Init (null,
-		                            (ht_dcb) =>
-		                            {
-			if (FB.IsLoggedIn)
-			{
+		if (!receivedBonus)
+		{
+			defaultCallbackButton.Init (null,
+			                            (ht_dcb) =>
+			                            {
+				if (FB.IsLoggedIn)
+				{
+					
+					FB.Feed(
+						link: "https://play.google.com/store/apps/details?id=com.Visiorama.RTS",
+						linkName: "Join Rex Tribal Society!",
+						linkCaption: " 'Gruuuarhhh!!!, can you SAY the word of our salvation? '",
+						linkDescription: " Join RTS, Alpha testing with free gameplay and coins!", 
+						picture: "https://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png",
+						callback: AddBonusFacebook
+						
+						);
+
+
 				
-				FB.Feed(
-					link: "https://play.google.com/store/apps/details?id=com.Visiorama.RTS",
-					linkName: "Join Rex Tribal Society!",
-					linkCaption: " 'Gruuuarhhh!!!, can you SAY the word of our salvation? '",
-					linkDescription: " Join RTS, Alpha testing with free gameplay and coins!", 
-					picture: "http://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png"
-					
-					
-					);
-			
-			}
-			
-		});
+				}
+				else fh.DoLogin ();
+				
+			});
+		}
 	}
+
+	void AddBonusFacebook(FBResult response)
+	{
+		bool pay = true;
+		Debug.Log("Result: " + response.Text);
+		if (response != null)
+		{
+			var responseObject = Json.Deserialize(response.Text) as Dictionary<string, object>;                                                              
+			object obj = 0;                                                                                                        
+			if (!responseObject.TryGetValue ("cancelled", out obj))                                                                 
+			{
+				pay = false;
+				Debug.Log("cancelled");                                                                             
+			}   
+			if (pay == true)
+			{
+				receivedBonus = true;
+				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, 50);
+				ComponentGetter.Get<Score>("$$$_Score").SaveScore();
+				ComponentGetter.Get<InternalMainMenu>().InitScore ();
+			}
+	
+		}
+	}
+
 
 
 	#if UNITY_ANDROID
