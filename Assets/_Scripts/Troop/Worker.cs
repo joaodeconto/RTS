@@ -188,23 +188,28 @@ public class Worker : Unit
 					{
 						if (!HasFactory ())
 						{
-							SetMoveToFactory (resource.type);
-							SetMoveToFactory (typeof(MainFactory));
+							SearchFactory (resource.type);						
+							SetMoveToFactory (factoryChoose);
 						}
 
-						if (!HasFactory ())
+						else 
 						{
-							isMovingToFactory = true;
-							Move (transform.position);
+							unitState = UnitState.Idle;
+							Debug.Log("nao achou nenhuma factory");
 						}
 					}
+
 					isCheckedSendResourceToFactory = true;
 				}
 
 				if (isMovingToFactory)
 				{
-					if (!HasFactory ())	isMovingToFactory = false;
-									
+					if (!HasFactory ())
+					{
+						isMovingToFactory = false;
+						SearchFactory (resource.type);						
+						SetMoveToFactory (factoryChoose);
+					}									
 				}
 
 				if (!MoveComplete ())
@@ -660,7 +665,7 @@ public class Worker : Unit
 		{
 			FactoryBase fb = stat as FactoryBase;
 
-			if (fb == null) continue;
+			if (fb == null || !fb.wasBuilt) continue;
 
 			if (gameplayManager.IsSameTeam (fb))
 			{

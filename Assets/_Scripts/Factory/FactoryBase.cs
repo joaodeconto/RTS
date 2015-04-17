@@ -78,7 +78,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public bool inUpgrade {get;set;}
 	public List<string> TechsToActive = new List<string>();	
 	public Animation ControllerAnimation { get; private set; }	
-	public bool wasBuilt { get; set; }	
+	public bool wasBuilt = false;
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;	
 	protected bool isInvokingSlider{get; set;}
