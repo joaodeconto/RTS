@@ -1,4 +1,4 @@
-#if UNITY_IPHONE && !UNITY_EDITOR
+#if UNITY_IPHONE && !UNITY_EDITOR && (UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_4_8 || UNITY_4_9 || UNITY_5_0)
 using UnityEngine;
 using System.Runtime.InteropServices;
 using System.Collections;

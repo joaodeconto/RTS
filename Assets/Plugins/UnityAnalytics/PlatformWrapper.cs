@@ -3,8 +3,7 @@
 #define UNITY_USE_WWW_HASHTABLE
 #endif
 
-
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_METRO
+#if (UNITY_IPHONE || UNITY_ANDROID || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_METRO) && (UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_4_8 || UNITY_4_9 || UNITY_5_0)
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +21,8 @@ namespace UnityEngine.Cloud.Analytics
 				return new iOSWrapper();
 				#elif UNITY_WEBGL && !UNITY_EDITOR
 				return new WebGLWrapper();
+				#elif UNITY_WEBPLAYER && !UNITY_EDITOR
+				return new WebPlayerWrapper();
 				#else
 				return new BasePlatformWrapper();
 				#endif
@@ -120,7 +121,11 @@ namespace UnityEngine.Cloud.Analytics
 
 		public virtual string persistentDataPath
 		{
+			#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN || UNITY_METRO || UNITY_WP8
+			get { return Application.persistentDataPath.Replace ('/', '\\'); }
+			#else
 			get { return Application.persistentDataPath; }
+			#endif
 		}
 
 		public virtual string platformName
@@ -143,9 +148,12 @@ namespace UnityEngine.Cloud.Analytics
 			m_Random.NextBytes(buffer);
 			return (long)(System.BitConverter.ToUInt64(buffer, 0) & System.Int64.MaxValue);
 		}
-		#endregion
 
-		#region ISystemInfo
+		public virtual string NewGuid()
+		{
+			return System.Guid.NewGuid().ToString();
+		}
+
 		public virtual string deviceModel
 		{
 			get { return SystemInfo.deviceModel; }

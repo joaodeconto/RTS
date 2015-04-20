@@ -1,4 +1,4 @@
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_METRO
+#if (UNITY_IPHONE || UNITY_ANDROID || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_METRO) && (UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_4_8 || UNITY_4_9 || UNITY_5_0)
 #define UNITY_ANALYTICS_SUPPORTED_PLATFORM
 #endif
 
@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace UnityEngine.Cloud.Analytics
 {
-	public enum SexEnum
+	public enum Gender
 	{
-		M,
-		F,
-		U
+		Male,
+		Female,
+		Unknown
 	}
 
 	public enum AnalyticsResult
@@ -64,11 +64,11 @@ namespace UnityEngine.Cloud.Analytics
 			#endif
 		}
 
-		public static AnalyticsResult SetUserGender(SexEnum gender)
+		public static AnalyticsResult SetUserGender(Gender gender)
 		{
 			#if UNITY_ANALYTICS_SUPPORTED_PLATFORM
 			IUnityAnalyticsSession session = UnityAnalytics.GetSingleton();
-			return (AnalyticsResult)session.SetUserGender( gender==SexEnum.M ? "M" : gender==SexEnum.F ? "F" : "U" );
+			return (AnalyticsResult)session.SetUserGender( gender==Gender.Male ? "M" : gender==Gender.Female ? "F" : "U" );
 			#else
 			return AnalyticsResult.UnsupportedPlatform;
 			#endif

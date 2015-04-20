@@ -75,38 +75,38 @@ namespace UnityEngine.Cloud.Analytics
 			return hashString.PadLeft(32, '0');
 		}
 
-		public override string deviceUniqueIdentifier
-		{
-			get 
-			{ 
-				try 
-				{
-					AndroidJavaClass clsUnity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-					AndroidJavaObject objActivity = clsUnity.GetStatic<AndroidJavaObject>("currentActivity");
-					AndroidJavaObject objResolver = objActivity.Call<AndroidJavaObject>("getContentResolver");
-					AndroidJavaClass clsSecure = new AndroidJavaClass("android.provider.Settings$Secure");
-					string ANDROID_ID = clsSecure.GetStatic<string>("ANDROID_ID");
-					string androidId = clsSecure.CallStatic<string>("getString", objResolver, ANDROID_ID);
+        public override string deviceUniqueIdentifier
+        {
+            get 
+            { 
+                try 
+                {
+                    AndroidJavaClass clsUnity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+                    AndroidJavaObject objActivity = clsUnity.GetStatic<AndroidJavaObject>("currentActivity");
+                    AndroidJavaObject objResolver = objActivity.Call<AndroidJavaObject>("getContentResolver");
+                    AndroidJavaClass clsSecure = new AndroidJavaClass("android.provider.Settings$Secure");
+                    string ANDROID_ID = clsSecure.GetStatic<string>("ANDROID_ID");
+                    string androidId = clsSecure.CallStatic<string>("getString", objResolver, ANDROID_ID);
 
-					return Md5Hex(androidId);
-				} 
-			#if UNITY_4_0 || UNITY_4_1 || UNITY_4_2
-				catch (System.Exception)
-				{
-					return "";
-				}
-			#else
-				catch (UnityEngine.AndroidJavaException)
-				{
-					return "";
-				}
-				catch (System.Exception)
-				{
-					return "";
-				}
-			#endif
-			}
-		}
+                    return Md5Hex(androidId);
+                } 
+            #if UNITY_4_0 || UNITY_4_1 || UNITY_4_2
+                catch (System.Exception)
+                {
+                    return "";
+                }
+            #else
+                catch (UnityEngine.AndroidJavaException)
+                {
+                    return "";
+                }
+                catch (System.Exception)
+                {
+                    return "";
+                }
+            #endif
+            }
+        }
 	}
 }
 #endif

@@ -1,7 +1,7 @@
-#if UNITY_WEBGL && !UNITY_EDITOR
+﻿#if UNITY_WEBPLAYER && !UNITY_EDITOR
 namespace UnityEngine.Cloud.Analytics
 {
-	internal class WebGLWrapper : BasePlatformWrapper
+	internal class WebPlayerWrapper : BasePlatformWrapper
 	{
 		public override string NewGuid()
 		{
