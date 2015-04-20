@@ -753,6 +753,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 269223476}
   activeAnimation: {fileID: 269223475}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -2335,6 +2336,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 326564489}
   activeAnimation: {fileID: 326564488}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -14439,6 +14441,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 1660832865}
   activeAnimation: {fileID: 1660832864}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -16660,7 +16663,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 279550247}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: -2.5, z: 0}
+  m_LocalPosition: {x: 1, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1724192020}
@@ -17034,6 +17037,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 95070020}
   activeAnimation: {fileID: 95070019}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -23131,6 +23135,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 761439342}
   activeAnimation: {fileID: 761439341}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -25742,6 +25747,7 @@ MonoBehaviour:
   useController: 1
   stickyTooltip: 1
   tooltipDelay: 1
+  longPressTooltip: 0
   mouseDragThreshold: 4
   mouseClickThreshold: 10
   touchDragThreshold: 40
@@ -34903,14 +34909,14 @@ MonoBehaviour:
   widgetsAreStatic: 0
   cullWhileDragging: 1
   alwaysOnScreen: 0
-  anchorOffset: 0
-  softBorderPadding: 1
+  anchorOffset: 1
+  softBorderPadding: 0
   renderQueue: 0
   startingRenderQueue: 3018
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
-  mClipRange: {x: 520.792786, y: 245, z: 206, w: 205.999985}
+  mClipRange: {x: 521, y: 245, z: 206, w: 205.999985}
   mClipSoftness: {x: 4, y: 4}
   mDepth: 2
   mSortingOrder: 0
@@ -37536,7 +37542,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 677226221}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: -2.5, z: 0}
+  m_LocalPosition: {x: -1, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2056272081}
@@ -37615,7 +37621,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 681693621}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 405.792786, y: 98.0000153, z: 0}
+  m_LocalPosition: {x: 406, y: 98, z: 0}
   m_LocalScale: {x: .839999974, y: .839999974, z: .839999974}
   m_Children:
   - {fileID: 987910767}
@@ -37834,19 +37840,95 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400890, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 637.792786
+      value: 638
       objectReference: {fileID: 0}
     - target: {fileID: 400046, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 413.792786
+      value: 414
       objectReference: {fileID: 0}
     - target: {fileID: 400024, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 413.792786
+      value: 414
       objectReference: {fileID: 0}
     - target: {fileID: 400042, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 519.792786
+      value: 520
+      objectReference: {fileID: 0}
+    - target: {fileID: 412446, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 443968, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 412576, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 406
+      objectReference: {fileID: 0}
+    - target: {fileID: 412576, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 98
+      objectReference: {fileID: 0}
+    - target: {fileID: 443970, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 460840, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -642
+      objectReference: {fileID: 0}
+    - target: {fileID: 443972, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 400590, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 521
+      objectReference: {fileID: 0}
+    - target: {fileID: 400046, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 138
+      objectReference: {fileID: 0}
+    - target: {fileID: 443974, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 443966, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -108
+      objectReference: {fileID: 0}
+    - target: {fileID: 400024, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 138
+      objectReference: {fileID: 0}
+    - target: {fileID: 400042, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 460864, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 519
+      objectReference: {fileID: 0}
+    - target: {fileID: 460864, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -47
+      objectReference: {fileID: 0}
+    - target: {fileID: 412636, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 521
+      objectReference: {fileID: 0}
+    - target: {fileID: 400162, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -648
+      objectReference: {fileID: 0}
+    - target: {fileID: 400020, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 521
+      objectReference: {fileID: 0}
+    - target: {fileID: 443964, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 521
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
@@ -37876,7 +37958,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 692356948}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalPosition: {x: 0, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 137764383}
@@ -42348,19 +42430,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leftAnchor:
-    target: {fileID: 1918647582}
+    target: {fileID: 0}
     relative: 0
     absolute: 382
   rightAnchor:
-    target: {fileID: 1918647582}
+    target: {fileID: 0}
     relative: 1
     absolute: -382
   bottomAnchor:
-    target: {fileID: 1918647582}
+    target: {fileID: 0}
     relative: 0
     absolute: 142
   topAnchor:
-    target: {fileID: 1918647582}
+    target: {fileID: 0}
     relative: 1
     absolute: -142
   updateAnchors: 0
@@ -45106,7 +45188,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 811048702}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 637.792786, y: -358, z: 0}
+  m_LocalPosition: {x: 638, y: -358, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 168801440}
@@ -46485,7 +46567,7 @@ MonoBehaviour:
   mPivot: 3
   mWidth: 441
   mHeight: 182
-  mDepth: 5
+  mDepth: 19
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -46684,8 +46766,8 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 880498160}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 457.112793, y: -13.8799744, z: 0}
-  m_LocalScale: {x: .800000012, y: .800000012, z: .800000012}
+  m_LocalPosition: {x: 477.112793, y: -.879974365, z: 0}
+  m_LocalScale: {x: .699999988, y: .699999988, z: .800000012}
   m_Children:
   - {fileID: 1553223258}
   - {fileID: 435725793}
@@ -46712,19 +46794,19 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 681693622}
     relative: 1
-    absolute: -404
+    absolute: -384
   rightAnchor:
     target: {fileID: 681693622}
     relative: 1
-    absolute: 48
+    absolute: 68
   bottomAnchor:
     target: {fileID: 681693622}
     relative: 0
-    absolute: -190
+    absolute: -177
   topAnchor:
     target: {fileID: 681693622}
     relative: 0
-    absolute: 20
+    absolute: 33
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
@@ -49622,12 +49704,12 @@ MonoBehaviour:
   mColor: {r: .191176474, g: .191176474, b: .191176474, a: 1}
   mPivot: 4
   mWidth: 2193
-  mHeight: 1356
+  mHeight: 1276
   mDepth: 98
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.61725664
+  aspectRatio: 1.71865201
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -51319,6 +51401,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 448555933}
   activeAnimation: {fileID: 448555932}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -51666,7 +51749,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1003649203}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -641.792786, y: -363, z: 0}
+  m_LocalPosition: {x: -642, y: -363, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1735417757}
@@ -53001,6 +53084,7 @@ MonoBehaviour:
   iOSDragEmulation: 1
   scrollWheelFactor: 1
   momentumAmount: 35
+  dampenStrength: 9
   horizontalScrollBar: {fileID: 0}
   verticalScrollBar: {fileID: 918159811}
   showScrollBars: 0
@@ -53990,7 +54074,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1114496573}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: -2.5, z: 0}
+  m_LocalPosition: {x: 1, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 976123767}
@@ -62177,6 +62261,7 @@ GameObject:
   - 114: {fileID: 1213419728}
   - 114: {fileID: 1213419727}
   - 114: {fileID: 1213419729}
+  - 54: {fileID: 1213419730}
   m_Layer: 8
   m_Name: WaitingPlayers Panel
   m_TagString: Untagged
@@ -62289,7 +62374,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3027
+  startingRenderQueue: 3026
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -62298,6 +62383,22 @@ MonoBehaviour:
   mDepth: 18
   mSortingOrder: 0
   mClipOffset: {x: 0, y: 0}
+--- !u!54 &1213419730
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 5432038, guid: b28762052f7d8e1478b78ea7e749de1b,
+    type: 2}
+  m_PrefabInternal: {fileID: 692353592}
+  m_GameObject: {fileID: 1213419725}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: .0500000007
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1213565216
 GameObject:
   m_ObjectHideFlags: 0
@@ -63558,7 +63659,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1228997199}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 520.792786, y: 245, z: 0}
+  m_LocalPosition: {x: 521, y: 245, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1348368403}
@@ -64056,7 +64157,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1234128227}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 413.792786, y: 138.000015, z: 0}
+  m_LocalPosition: {x: 414, y: 138, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 630704960}
@@ -67611,6 +67712,7 @@ MonoBehaviour:
   iOSDragEmulation: 1
   scrollWheelFactor: .25
   momentumAmount: 35
+  dampenStrength: 9
   horizontalScrollBar: {fileID: 0}
   verticalScrollBar: {fileID: 1547995007}
   showScrollBars: 1
@@ -69249,7 +69351,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1316001283}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalPosition: {x: 0, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 45591}
@@ -70259,7 +70361,7 @@ MonoBehaviour:
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
-  mClipRange: {x: 520.792786, y: 245, z: 206, w: 205.999985}
+  mClipRange: {x: 521, y: 245, z: 206, w: 205.999985}
   mClipSoftness: {x: 4, y: 4}
   mDepth: 6
   mSortingOrder: 0
@@ -70611,18 +70713,13 @@ MonoBehaviour:
     m_Curve:
     - time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: .659834325
-      value: .340029866
-      inSlope: 1.28865242
-      outSlope: 1.28865242
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
     - time: 1
       value: 1
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -70635,7 +70732,7 @@ MonoBehaviour:
   eventReceiver: {fileID: 0}
   callWhenFinished: 
   from: {x: -0, y: 0, z: 0}
-  to: {x: -0, y: 0, z: 359}
+  to: {x: -0, y: 0, z: -359}
   quaternionLerp: 0
 --- !u!1 &1357666276
 GameObject:
@@ -71861,6 +71958,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 1172430325}
   activeAnimation: {fileID: 1172430324}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -77296,7 +77394,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1462862502}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 100, y: -108.500015, z: 0}
+  m_LocalPosition: {x: 100, y: -108, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1855928374}
@@ -77375,7 +77473,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1466283320}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 413.792786, y: 138.000015, z: 0}
+  m_LocalPosition: {x: 414, y: 138, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762856191}
@@ -83350,7 +83448,7 @@ MonoBehaviour:
   - clusterComplete: 0
     clusterNumber: 0
     triggerDemmand: 180
-    repeatDemmand: 10
+    repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 1673194794}
     exploreTarget: {fileID: 0}
@@ -83373,7 +83471,7 @@ MonoBehaviour:
   - clusterComplete: 0
     clusterNumber: 0
     triggerDemmand: 60
-    repeatDemmand: 10
+    repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 1673194794}
     exploreTarget: {fileID: 0}
@@ -83394,7 +83492,7 @@ MonoBehaviour:
   - clusterComplete: 0
     clusterNumber: 0
     triggerDemmand: 60
-    repeatDemmand: 10
+    repeatDemmand: 30
     bravery: 7
     defendTarget: {fileID: 372438577}
     exploreTarget: {fileID: 0}
@@ -83416,7 +83514,7 @@ MonoBehaviour:
   - clusterComplete: 0
     clusterNumber: 0
     triggerDemmand: 120
-    repeatDemmand: 10
+    repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 372438577}
     exploreTarget: {fileID: 0}
@@ -83602,7 +83700,7 @@ GameObject:
   - 4: {fileID: 1571938496}
   - 114: {fileID: 1571938499}
   m_Layer: 0
-  m_Name: Victory Condition
+  m_Name: VictoryCondition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84524,7 +84622,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1611903033}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 519.792786, y: 23.0000153, z: 0}
+  m_LocalPosition: {x: 520, y: 23, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 895686768}
@@ -90065,7 +90163,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1727901793}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 518.952759, y: -47.1199913, z: 0}
+  m_LocalPosition: {x: 519, y: -47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1516857564}
@@ -90938,7 +91036,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1761514039}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 520.792786, y: 245, z: 0}
+  m_LocalPosition: {x: 521, y: 245, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762856191}
@@ -95088,7 +95186,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1855928373}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -647.792786, y: 364, z: 0}
+  m_LocalPosition: {x: -648, y: 364, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 189699454}
@@ -101396,7 +101494,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1938290920}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 520.792786, y: 245, z: 0}
+  m_LocalPosition: {x: 521, y: 245, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762856191}
@@ -108395,7 +108493,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 2025493517}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 520.792786, y: 245, z: 0}
+  m_LocalPosition: {x: 521, y: 245, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762856191}
@@ -109335,6 +109433,7 @@ MonoBehaviour:
   iOSDragEmulation: 1
   scrollWheelFactor: .25
   momentumAmount: 35
+  dampenStrength: 9
   horizontalScrollBar: {fileID: 0}
   verticalScrollBar: {fileID: 1630919050}
   showScrollBars: 1

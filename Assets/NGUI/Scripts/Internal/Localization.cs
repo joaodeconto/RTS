@@ -108,7 +108,6 @@ public static class Localization
 		{
 			if (string.IsNullOrEmpty(mLanguage))
 			{
-				localizationHasBeenSet = true;
 				mLanguage = PlayerPrefs.GetString("Language", "English");
 				LoadAndSelect(mLanguage);
 			}
@@ -478,20 +477,30 @@ public static class Localization
 
 		string val;
 		string[] vals;
-#if UNITY_IPHONE || UNITY_ANDROID
-		string mobKey = key + " Mobile";
 
-		if (mLanguageIndex != -1 && mDictionary.TryGetValue(mobKey, out vals))
-		{
-			if (mLanguageIndex < vals.Length)
-				return vals[mLanguageIndex];
-		}
-		if (mOldDictionary.TryGetValue(mobKey, out val)) return val;
+#if !UNITY_IPHONE && !UNITY_ANDROID && !UNITY_WP8 && !UNITY_BLACKBERRY
+		if (UICamera.currentScheme == UICamera.ControlScheme.Touch)
 #endif
+		{
+			string mobKey = key + " Mobile";
+
+			if (mLanguageIndex != -1 && mDictionary.TryGetValue(mobKey, out vals))
+			{
+				if (mLanguageIndex < vals.Length)
+					return vals[mLanguageIndex];
+			}
+			if (mOldDictionary.TryGetValue(mobKey, out val)) return val;
+		}
+
 		if (mLanguageIndex != -1 && mDictionary.TryGetValue(key, out vals))
 		{
 			if (mLanguageIndex < vals.Length)
-				return vals[mLanguageIndex];
+			{
+				string s = vals[mLanguageIndex];
+				if (string.IsNullOrEmpty(s)) s = vals[0];
+				return s;
+			}
+			return vals[0];
 		}
 		if (mOldDictionary.TryGetValue(key, out val)) return val;
 

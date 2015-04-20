@@ -338,13 +338,19 @@ public class Unit : IStats, IMovementObservable,
 
 		if (NavAgent.CalculatePath(destination, newPath))
 		{
-			if(newPath != null && newPath != path)
+			if(path.status == NavMeshPathStatus.PathPartial)		
+			{
+				NavAgent.SetDestination (destination);
+			}
+		
+			else 
 			{
 				path = newPath;
 				NavAgent.SetPath(path);
 			}
 		}
-		else NavAgent.SetDestination (destination);
+		else
+			NavAgent.SetDestination (destination);
 
 		PathfindTarget = destination;
 		unitState = UnitState.Walk;

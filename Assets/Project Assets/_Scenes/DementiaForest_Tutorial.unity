@@ -1750,7 +1750,7 @@ MonoBehaviour:
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
-  mClipRange: {x: 520.681274, y: 245, z: 206, w: 205.999985}
+  mClipRange: {x: 521, y: 245, z: 206, w: 205.999985}
   mClipSoftness: {x: 4, y: 4}
   mDepth: 6
   mSortingOrder: 0
@@ -2184,7 +2184,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 82660786}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalPosition: {x: 0, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 675615137}
@@ -2910,7 +2910,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 98941150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalPosition: {x: 0, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 144828863}
@@ -5934,6 +5934,7 @@ MonoBehaviour:
   iOSDragEmulation: 1
   scrollWheelFactor: .25
   momentumAmount: 35
+  dampenStrength: 9
   horizontalScrollBar: {fileID: 0}
   verticalScrollBar: {fileID: 962565571}
   showScrollBars: 1
@@ -6376,6 +6377,7 @@ MonoBehaviour:
   useController: 1
   stickyTooltip: 1
   tooltipDelay: 1
+  longPressTooltip: 0
   mouseDragThreshold: 4
   mouseClickThreshold: 10
   touchDragThreshold: 40
@@ -7157,6 +7159,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 952569077}
   activeAnimation: {fileID: 952569076}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -7257,7 +7260,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 218285003}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 637.681274, y: -358, z: 0}
+  m_LocalPosition: {x: 638, y: -358, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1946272687}
@@ -8482,7 +8485,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 274766379}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 520.681274, y: 245, z: 0}
+  m_LocalPosition: {x: 521, y: 245, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 631981956}
@@ -8973,6 +8976,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 1885860356}
   activeAnimation: {fileID: 1885860355}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -12747,6 +12751,98 @@ Prefab:
       propertyPath: onClick.Array.data[0].mTarget
       value: 
       objectReference: {fileID: 757680938}
+    - target: {fileID: 443974, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 443970, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 400890, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 638
+      objectReference: {fileID: 0}
+    - target: {fileID: 443964, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 521
+      objectReference: {fileID: 0}
+    - target: {fileID: 400590, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 521
+      objectReference: {fileID: 0}
+    - target: {fileID: 443968, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 443966, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -108
+      objectReference: {fileID: 0}
+    - target: {fileID: 443972, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 400162, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -648
+      objectReference: {fileID: 0}
+    - target: {fileID: 400046, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 414
+      objectReference: {fileID: 0}
+    - target: {fileID: 400046, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 138
+      objectReference: {fileID: 0}
+    - target: {fileID: 412636, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 521
+      objectReference: {fileID: 0}
+    - target: {fileID: 400020, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 521
+      objectReference: {fileID: 0}
+    - target: {fileID: 412576, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 406
+      objectReference: {fileID: 0}
+    - target: {fileID: 412576, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 98
+      objectReference: {fileID: 0}
+    - target: {fileID: 400024, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 414
+      objectReference: {fileID: 0}
+    - target: {fileID: 400024, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 138
+      objectReference: {fileID: 0}
+    - target: {fileID: 460864, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 519
+      objectReference: {fileID: 0}
+    - target: {fileID: 460864, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -47
+      objectReference: {fileID: 0}
+    - target: {fileID: 400042, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 520
+      objectReference: {fileID: 0}
+    - target: {fileID: 400042, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 460840, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -642
+      objectReference: {fileID: 0}
+    - target: {fileID: 412446, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
   m_RootGameObject: {fileID: 1415154854}
@@ -13422,7 +13518,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 395473084}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 520.681274, y: 245, z: 0}
+  m_LocalPosition: {x: 521, y: 245, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 64367153}
@@ -19873,7 +19969,7 @@ MonoBehaviour:
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
-  mClipRange: {x: 520.681335, y: 245, z: 206.000031, w: 205.999985}
+  mClipRange: {x: 521, y: 245, z: 206, w: 205.999985}
   mClipSoftness: {x: 4, y: 4}
   mDepth: 2
   mSortingOrder: 0
@@ -24471,7 +24567,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 744896185}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: -2.5, z: 0}
+  m_LocalPosition: {x: -1, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2081002853}
@@ -29392,7 +29488,7 @@ MonoBehaviour:
     enumComparingType: 2
     specificStat: 
     valueToCompare: 39
-    enumCondition: 0
+    enumCondition: 2
     objDescription: Constructing huts is fundamental for supporting a large army.
     objSprite: cottage
   - IsActive: 0
@@ -29431,7 +29527,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 846472148}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 100, y: -108.500015, z: 0}
+  m_LocalPosition: {x: 100, y: -108, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1256166763}
@@ -30208,6 +30304,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 400026, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -30450,7 +30550,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: ChallengesToWin.Array.data[1].enumCondition
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: ChallengesToWin.Array.data[1].objDescription
@@ -30459,6 +30559,806 @@ Prefab:
     - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: ChallengesToWin.Array.data[0].objDescription
       value: Guide your workers to a gold spot.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[4].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[4].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[4].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[4].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[4].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[5].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[5].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[5].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[5].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[5].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[6].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[6].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[6].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[6].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[6].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[7].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[7].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[7].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[7].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[7].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[8].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[8].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[8].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[8].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[8].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[9].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[9].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[9].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[9].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[9].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[10].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[10].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[10].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[10].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[10].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[11].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[11].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[11].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[11].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[11].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[12].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[12].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[12].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[12].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[12].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[13].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[13].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[13].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[13].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[13].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[14].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[14].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[14].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[14].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[14].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[15].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[15].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[15].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[15].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[15].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[16].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[16].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[16].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[16].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[16].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[17].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[17].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[17].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[17].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[17].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[18].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[18].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[18].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[18].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[18].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[19].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[19].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[19].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[19].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[19].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[20].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[20].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[20].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[20].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[20].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[21].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[21].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[21].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[21].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[21].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[22].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[22].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[22].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[22].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[22].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[23].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[23].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[23].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[23].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[23].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[24].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[24].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[24].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[24].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[24].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[25].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[25].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[25].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[25].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[25].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[26].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[26].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[26].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[26].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[26].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[27].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[27].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[27].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[27].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[27].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[28].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[28].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[28].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[28].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[28].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[29].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[29].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[29].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[29].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[29].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[30].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[30].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[30].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[30].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[30].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[31].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[31].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[31].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[31].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[31].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[32].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[32].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[32].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[32].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[32].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[33].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[33].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[33].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[33].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[33].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[34].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[34].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[34].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[34].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[34].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[35].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[35].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[35].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[35].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[35].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[36].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[36].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[36].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[36].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[36].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[37].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[37].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[37].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[37].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[37].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[38].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[38].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[38].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[38].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[38].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[39].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[39].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[39].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[39].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[39].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[40].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[40].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[40].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[40].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[40].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[41].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[41].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[41].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[41].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[41].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[42].Name
+      value: Defeat All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[42].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[42].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[42].objDescription
+      value: Destroy the enemy tribe.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[42].objSprite
+      value: Achiv_Battle1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
@@ -37239,6 +38139,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 1308927171}
   activeAnimation: {fileID: 1308927170}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -37522,7 +38423,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1059052130}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: -2.5, z: 0}
+  m_LocalPosition: {x: 1, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1760022927}
@@ -40022,6 +40923,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 1689987578}
   activeAnimation: {fileID: 1689987577}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -44595,7 +45497,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1256166762}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -647.681274, y: 364, z: 0}
+  m_LocalPosition: {x: -648, y: 364, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1806773307}
@@ -46041,7 +46943,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1281266504}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 413.681274, y: 138.000015, z: 0}
+  m_LocalPosition: {x: 414, y: 138, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 595703075}
@@ -46215,7 +47117,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1302139493}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 520.681274, y: 245, z: 0}
+  m_LocalPosition: {x: 521, y: 245, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 631981956}
@@ -48170,6 +49072,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 1974352082}
   activeAnimation: {fileID: 1974352081}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -51212,7 +52115,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1384577424}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 520.681274, y: 245, z: 0}
+  m_LocalPosition: {x: 521, y: 245, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 631981956}
@@ -53531,6 +54434,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 841301365}
   activeAnimation: {fileID: 841301364}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -55511,7 +56415,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1483161958}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 405.681274, y: 98.0000153, z: 0}
+  m_LocalPosition: {x: 406, y: 98, z: 0}
   m_LocalScale: {x: .839999974, y: .839999974, z: .839999974}
   m_Children:
   - {fileID: 2030245667}
@@ -55713,7 +56617,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1493421827}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 413.681274, y: 138.000015, z: 0}
+  m_LocalPosition: {x: 414, y: 138, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 631981956}
@@ -59828,6 +60732,7 @@ MonoBehaviour:
   iOSDragEmulation: 1
   scrollWheelFactor: 1
   momentumAmount: 35
+  dampenStrength: 9
   horizontalScrollBar: {fileID: 0}
   verticalScrollBar: {fileID: 143916801}
   showScrollBars: 0
@@ -64795,7 +65700,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1695250722}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 518.841309, y: -47.1199913, z: 0}
+  m_LocalPosition: {x: 519, y: -47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 931020110}
@@ -66877,6 +67782,7 @@ MonoBehaviour:
   iOSDragEmulation: 1
   scrollWheelFactor: .25
   momentumAmount: 35
+  dampenStrength: 9
   horizontalScrollBar: {fileID: 0}
   verticalScrollBar: {fileID: 554096140}
   showScrollBars: 1
@@ -70981,7 +71887,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1910483177}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 519.681274, y: 23.0000153, z: 0}
+  m_LocalPosition: {x: 520, y: 23, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 976468683}
@@ -72714,7 +73620,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 1973604043}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -641.681274, y: -363, z: 0}
+  m_LocalPosition: {x: -642, y: -363, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 801116534}
@@ -73229,6 +74135,7 @@ MonoBehaviour:
   group: 0
   activeSprite: {fileID: 251101580}
   activeAnimation: {fileID: 251101579}
+  animator: {fileID: 0}
   startsActive: 1
   instantTween: 0
   optionCanBeNone: 0
@@ -75003,7 +75910,7 @@ Transform:
   m_PrefabInternal: {fileID: 363646559}
   m_GameObject: {fileID: 2022589636}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: -2.5, z: 0}
+  m_LocalPosition: {x: 1, y: -3, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2026862319}

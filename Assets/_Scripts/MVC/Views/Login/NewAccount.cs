@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Text.RegularExpressions;
 using Visiorama;
 
 public class NewAccount : IView
@@ -84,9 +83,8 @@ public class NewAccount : IView
 						wUser.SetActive (true);
 						Invoke ("CloseErrorMessage", 5.0f);
 						Debug.Log("invalid username");
-					}						
+					}
 
-					if (!Regex.Match(email.value, @"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$").Success)
 					if (string.IsNullOrEmpty(email.value))
 					{
 						wEmail.SetActive (true);

@@ -133,6 +133,7 @@ public class Worker : Unit
 			{
 				NavAgent.Stop ();
 				transform.LookAt (resource.transform);
+				NavAgent.obstacleAvoidanceType = normalObstacleAvoidance;
 				if (!IsExtracting) StartCoroutine (Pray ());
 			}
 			
@@ -258,6 +259,9 @@ public class Worker : Unit
 
 			case WorkerState.Building:
 			case WorkerState.Repairing:
+
+				if(unitState == Unit.UnitState.Walk)	NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+				else 									NavAgent.obstacleAvoidanceType = normalObstacleAvoidance;
 			
 				if (!HasFactory () || factoryChoose != lastFactory)
 				{

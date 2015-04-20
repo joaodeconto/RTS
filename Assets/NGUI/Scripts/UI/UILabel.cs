@@ -1371,6 +1371,9 @@ public class UILabel : UIWidget
 				minX = Mathf.Max(minX, base.minWidth);
 				minY = Mathf.Max(minY, base.minHeight);
 
+				if ((minX & 1) == 1) ++minX;
+				if ((minY & 1) == 1) ++minY;
+
 				mWidth = Mathf.Max(w, minX);
 				mHeight = Mathf.Max(h, minY);
 
@@ -1728,9 +1731,9 @@ public class UILabel : UIWidget
 
 		if (QualitySettings.activeColorSpace == ColorSpace.Linear)
 		{
-			col.r = Mathf.Pow(col.r, 2.2f);
-			col.g = Mathf.Pow(col.g, 2.2f);
-			col.b = Mathf.Pow(col.b, 2.2f);
+			col.r = Mathf.GammaToLinearSpace(col.r);
+			col.g = Mathf.GammaToLinearSpace(col.g);
+			col.b = Mathf.GammaToLinearSpace(col.b);
 		}
 
 		string text = processedText;

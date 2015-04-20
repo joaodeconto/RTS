@@ -27,7 +27,7 @@ public class EnemyIA : MonoBehaviour
 
 	public void EnemyMovement ()
 	{
-		unit.Move (movementTarget.position - movementTarget.forward);
+		unit.Move (movementTarget.position + movementTarget.forward *3f);
 		isMoving = true;		
 	}
 

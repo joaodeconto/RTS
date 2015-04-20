@@ -16,6 +16,7 @@ public class Upgrade : MonoBehaviour {
 	public string requisites;	
 	public bool modelUpgrade = false;
 	public bool unique = false;
+	public bool ChildTech = true;
 	public bool uniquelyUpgraded = false;
 	public List<string> TechsToActive = new List<string>();	
 	public ResourcesManager costOfResources;

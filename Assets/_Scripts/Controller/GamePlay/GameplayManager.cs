@@ -675,7 +675,6 @@ public class GameplayManager : Photon.MonoBehaviour
 	void MySceneReady()
 	{
 		readyCounter++;
-		GamePaused(true);
 	}
 	#endregion
 }

@@ -2,257 +2,213 @@
 using System.Collections;
 using System.Collections.Generic;
 using Facebook.MiniJSON;
+using System;
+using Soomla;
 using Visiorama;
 
-public class MarketMenu : MonoBehaviour
-{
+namespace Soomla.Store.RTSStoreAssets {
 
-	private bool receivedBonus = false; 
-	private bool wasInitialized = false;
-	private FacebookLoginHandler fh;
-
-	void Awake()
+	public class MarketMenu : MonoBehaviour
 	{
-		
-		DefaultCallbackButton defaultCallbackButton;
-		
-		GameObject option = transform.FindChild ("Menu").transform.FindChild ("Button (Facebook)").gameObject;
-		GameObject goFacebookHandler;	
-		goFacebookHandler = new GameObject ("FacebookLoginHandler");
-		goFacebookHandler.transform.parent = this.transform;		
-		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();		
-		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
-		if (!receivedBonus)
+
+		private static MarketMenu instance = null;
+		private bool checkAffordable = false;	
+		private Dictionary<string, bool> itemsAffordability;
+
+		private bool receivedBonus = false; 
+		private bool wasInitialized = false;
+		private FacebookLoginHandler fh;
+
+		void Awake()
 		{
-			defaultCallbackButton.Init (null,
-			                            (ht_dcb) =>
-			                            {
-				if (FB.IsLoggedIn)
-				{
-					
-					FB.Feed(
-						link: "https://play.google.com/store/apps/details?id=com.Visiorama.RTS",
-						linkName: "Join Rex Tribal Society!",
-						linkCaption: " 'Gruuuarhhh!!!, can you SAY the word of our salvation? '",
-						linkDescription: " Join RTS, Alpha testing with free gameplay and coins!", 
-						picture: "https://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png",
-						callback: AddBonusFacebook
-						
-						);
-
-
-				
-				}
-				else fh.DoLogin ();
-				
-			});
-		}
-	}
-
-	void AddBonusFacebook(FBResult response)
-	{
-		bool pay = true;
-		Debug.Log("Result: " + response.Text);
-		if (response != null)
-		{
-			var responseObject = Json.Deserialize(response.Text) as Dictionary<string, object>;                                                              
-			object obj = 0;                                                                                                        
-			if (!responseObject.TryGetValue ("cancelled", out obj))                                                                 
-			{
-				pay = false;
-				Debug.Log("cancelled");                                                                             
-			}   
-			if (pay == true)
-			{
-				receivedBonus = true;
-				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, 50);
-				ComponentGetter.Get<Score>("$$$_Score").SaveScore();
-				ComponentGetter.Get<InternalMainMenu>().InitScore ();
+			if(instance == null)
+			{ 	
+				instance = this;
+				GameObject.DontDestroyOnLoad(this.gameObject);
 			}
-	
+
+			else 	GameObject.Destroy(this);
 		}
-	}
 
-
-
-	#if UNITY_ANDROID
-	const string STORE_CUSTOM = "store";
-	const string SKU = "orichal";
-	
-	private void OnEnable() {
-		// Listen to all events for illustration purposes
-//		OpenIABEventManager.billingSupportedEvent += billingSupportedEvent;
-//		OpenIABEventManager.billingNotSupportedEvent += billingNotSupportedEvent;
-//		OpenIABEventManager.queryInventorySucceededEvent += queryInventorySucceededEvent;
-//		OpenIABEventManager.queryInventoryFailedEvent += queryInventoryFailedEvent;
-//		OpenIABEventManager.purchaseSucceededEvent += purchaseSucceededEvent;
-//		OpenIABEventManager.purchaseFailedEvent += purchaseFailedEvent;
-//		OpenIABEventManager.consumePurchaseSucceededEvent += consumePurchaseSucceededEvent;
-//		OpenIABEventManager.consumePurchaseFailedEvent += consumePurchaseFailedEvent;
-//		Open();
-	}
-	private void OnDisable() {
-		// Remove all event handlers
-//		OpenIABEventManager.billingSupportedEvent -= billingSupportedEvent;
-//		OpenIABEventManager.billingNotSupportedEvent -= billingNotSupportedEvent;
-//		OpenIABEventManager.queryInventorySucceededEvent -= queryInventorySucceededEvent;
-//		OpenIABEventManager.queryInventoryFailedEvent -= queryInventoryFailedEvent;
-//		OpenIABEventManager.purchaseSucceededEvent -= purchaseSucceededEvent;
-//		OpenIABEventManager.purchaseFailedEvent -= purchaseFailedEvent;
-//		OpenIABEventManager.consumePurchaseSucceededEvent -= consumePurchaseSucceededEvent;
-//		OpenIABEventManager.consumePurchaseFailedEvent -= consumePurchaseFailedEvent;
-//		Close();
-	}
-	
-//	private void Start() {
-//		// Map sku for different stores
-//		OpenIAB.mapSku(SKU, OpenIAB_Android.STORE_GOOGLE, "google-play.sku");
-//		OpenIAB.mapSku(SKU, STORE_CUSTOM, "onepf.sku");
-//	}
-
-	public void Open ()
-	{
-		if (wasInitialized)
-			return;
-		
-		wasInitialized = true;
-//
-//		OpenIAB.mapSku(SKU, OpenIAB_iOS.STORE, "some.ios.sku");
-//		OpenIAB.mapSku(SKU, OpenIAB_Android.STORE_GOOGLE, "google-play.sku");
-//		OpenIAB.mapSku(SKU, STORE_CUSTOM, "onepf.sku");
-//
-//		var public_key = "key";
-//		
-//		var options = new Options();
-//		options.verifyMode = OptionsVerifyMode.VERIFY_SKIP;
-//		options.storeKeys = new Dictionary<string, string> {
-//			{OpenIAB_Android.STORE_GOOGLE, public_key}
-//		};
-		
-		// Transmit options and start the service
-//		OpenIAB.init(options);
-		
-		DefaultCallbackButton dcb;
-		
-		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
-		
-		if (close != null)
+		void Start()
 		{
-			dcb = close.gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-				gameObject.SetActive (false);
-			});
+			StoreEvents.OnSoomlaStoreInitialized += onSoomlaStoreInitialized;
+			StoreEvents.OnCurrencyBalanceChanged += onCurrencyBalanceChanged;
+		
+			SoomlaStore.Initialize(new RTSStoreAssets());
+			
+			DefaultCallbackButton defaultCallbackButton;		
+			GameObject option = transform.FindChild ("Menu").transform.FindChild ("Button (Facebook)").gameObject;
+			GameObject goFacebookHandler;	
+			goFacebookHandler = new GameObject ("FacebookLoginHandler");
+			goFacebookHandler.transform.parent = this.transform;		
+			fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();		
+			defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
+			if (!receivedBonus)
+			{
+				defaultCallbackButton.Init (null,
+				                            (ht_dcb) =>
+				                            {
+												if (FB.IsLoggedIn)
+												{					
+													FB.Feed(
+														link: "https://play.google.com/store/apps/details?id=com.Visiorama.RTS",
+														linkName: "Join Rex Tribal Society!",
+														linkCaption: " 'Gruuuarhhh!!!, can you SAY the word of our salvation? '",
+														linkDescription: " Join RTS, Alpha testing with free gameplay and coins!", 
+														picture: "https://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png",
+														callback: AddBonusFacebook
+														
+														);				
+												}
+												else fh.DoLogin ();
+												
+											});
+			}
 		}
-	}
-	
-	public void OrichalPurchase (string orichalQuant) 
-	{
-//		if (orichalQuant == "100")
-//		{
-//		
-//			OpenIAB.purchaseProduct(SKU);
-//		
-//		}
-//
-//		if (orichalQuant == "500")
-//		{
-//			
-//			OpenIAB.purchaseProduct(SKU + "1");
-//			
-//		}
-//
-//		if (orichalQuant == "1000")
-//		{
-//			
-//			OpenIAB.purchaseProduct(SKU + "2");
-//			
-//		}
-//
-//		OpenIAB.queryInventory();
-//	
 
-//		if (GUI.Button(new Rect(xPos, yPos, width, height), "Initialize OpenIAB")) {
-//			// Application public key
-//			var public_key = "key";
-//			
-//			var options = new Options();
-//			options.verifyMode = OptionsVerifyMode.VERIFY_SKIP;
-//			options.storeKeys = new Dictionary<string, string> {
-//				{OpenIAB_Android.STORE_GOOGLE, public_key}
-//			};
-//			
-//			// Transmit options and start the service
-//			OpenIAB.init(options);
-//		}
-//		if (GUI.Button(new Rect(xPos, yPos += heightPlus, width, height), "Test Purchase")) {
-//			OpenIAB.purchaseProduct("android.test.purchased");
-//		}
-//		
-//		if (GUI.Button(new Rect(xPos, yPos += heightPlus, width, height), "Test Refund")) {
-//			OpenIAB.purchaseProduct("android.test.refunded");
-//		}
-//		
-//		if (GUI.Button(new Rect(xPos, yPos += heightPlus, width, height), "Test Item Unavailable")) {
-//			OpenIAB.purchaseProduct("android.test.item_unavailable");
-//		}
-//		
-//		xPos = Screen.width - width - 5.0f;
-//		yPos = 5.0f;
-//		
-//		if (GUI.Button(new Rect(xPos, yPos, width, height), "Test Purchase Canceled")) {
-//			OpenIAB.purchaseProduct("android.test.canceled");
-//		}
-//		
-//		if (GUI.Button(new Rect(xPos, yPos += heightPlus, width, height), "Query Inventory")) {
-//			OpenIAB.queryInventory();
-//		}
-//		
-//		if (GUI.Button(new Rect(xPos, yPos += heightPlus, width, height), "Purchase Real Product")) {
-//			OpenIAB.purchaseProduct(SKU);
-//		}
+		void AddBonusFacebook(FBResult response)
+		{
+			bool pay = true;
+			Debug.Log("Result: " + response.Text);
+			if (response != null)
+			{
+				var responseObject = Json.Deserialize(response.Text) as Dictionary<string, object>;                                                              
+				object obj = 0;                                                                                                        
+				if (!responseObject.TryGetValue ("cancelled", out obj))                                                                 
+				{
+					pay = false;
+					Debug.Log("cancelled");                                                                             
+				}   
+				if (pay == true)
+				{
+					StoreInventory.GiveItem("currency_orichal",10);
+					receivedBonus = true;
+					Score.AddScorePoints (DataScoreEnum.CurrentCrystals, 10);
+					ComponentGetter.Get<Score>("$$$_Score").SaveScore();
+					ComponentGetter.Get<InternalMainMenu>().InitScore ();
+				}
 		
-//		if (GUI.Button(new Rect(xPos, yPos += heightPlus, width, height), "Stop Billing Service")) {
-//			OpenIAB.unbindService();
-//		}
-	}
-	
-//	private void billingSupportedEvent() {
-//		Debug.Log("billingSupportedEvent");
-//	}
-//	private void billingNotSupportedEvent(string error) {
-//		Debug.Log("billingNotSupportedEvent: " + error);
-//	}
-//	private void queryInventorySucceededEvent(Inventory inventory) {
-//		Debug.Log("queryInventorySucceededEvent: " + inventory);
-//	}
-//	private void queryInventoryFailedEvent(string error) {
-//		Debug.Log("queryInventoryFailedEvent: " + error);
-//	}
-//	private void purchaseSucceededEvent(Purchase purchase) {
-//		Debug.Log("purchaseSucceededEvent: " + purchase);
-//	}
-//	private void purchaseFailedEvent(string error) {
-//		Debug.Log("purchaseFailedEvent: " + error);
-//	}
-//	private void consumePurchaseSucceededEvent(Purchase purchase) {
-//		Debug.Log("consumePurchaseSucceededEvent: " + purchase);
-//	}
-//	private void consumePurchaseFailedEvent(string error) {
-//		Debug.Log("consumePurchaseFailedEvent: " + error);
-//	}
-//
-//	public void Close ()
-//	{
-//		OpenIAB.unbindService();
-//		
-//	}
-	#endif
+			}
+		}
 
+		public void onSoomlaStoreInitialized()
+		{
+			
+			// some usage examples for add/remove currency
+			// some examples
+			if (StoreInfo.Currencies.Count>0) {
+				try {
+					StoreInventory.GiveItem(StoreInfo.Currencies[0].ItemId,1);
+					SoomlaUtils.LogDebug("SOOMLA ExampleEventHandler", "Currency balance:" + StoreInventory.GetItemBalance(StoreInfo.Currencies[0].ItemId));
+				} catch (VirtualItemNotFoundException ex){
+					SoomlaUtils.LogError("SOOMLA ExampleEventHandler", ex.Message);
+				}
+			}
 
+			setupItemsAffordability ();
+		}
+
+		public void setupItemsAffordability()
+		{
+			itemsAffordability = new Dictionary<string, bool> ();
+			
+			foreach (VirtualGood vg in StoreInfo.Goods) {
+				itemsAffordability.Add(vg.ID, StoreInventory.CanAfford(vg.ID));
+			}
+		}
+
+		public void onCurrencyBalanceChanged(VirtualCurrency virtualCurrency, int balance, int amountAdded) {
+			if (itemsAffordability != null)
+			{
+				List<string> keys = new List<string> (itemsAffordability.Keys);
+				foreach(string key in keys)
+					itemsAffordability[key] = StoreInventory.CanAfford(key);
+			}
+			Score.AddScorePoints (DataScoreEnum.CurrentCrystals, amountAdded);
+			ComponentGetter.Get<Score>("$$$_Score").SaveScore();
+			ComponentGetter.Get<InternalMainMenu>().CurrentCrystalsLabel.text = balance.ToString();
+		}
 		
+		public void Open ()
+		{
+			if (wasInitialized)
+				return;
+			
+			wasInitialized = true;
+			DefaultCallbackButton dcb;
+			
+			Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
+			
+			if (close != null)
+			{
+				dcb = close.gameObject.AddComponent<DefaultCallbackButton> ();
+				dcb.Init(null,
+				         (ht_dcb) => 
+				         {
+					gameObject.SetActive (false);
+				});
+			}
+		}
 		
-		
-		
+		public void OrichalPurchase (string orichalQuant) 
+		{			
+			if (orichalQuant == "100")
+			{				
+				foreach(VirtualCurrencyPack cp in StoreInfo.CurrencyPacks)
+				{			
+					if (cp.Name == "100 Orichals")
+					{
+						Debug.Log("SOOMLA/UNITY Wants to buy: " + cp.Name);
+						try
+						{
+							StoreInventory.BuyItem(cp.ItemId);
+						}
+
+						catch (Exception e)
+						{
+							Debug.Log ("SOOMLA/UNITY " + e.Message);
+						}
+					}
+				}
+			}
+			if (orichalQuant == "500")
+			{				
+				foreach(VirtualCurrencyPack cp in StoreInfo.CurrencyPacks)
+				{			
+					if (cp.Name == "500 Orichals")
+					{
+						Debug.Log("SOOMLA/UNITY Wants to buy: " + cp.Name);
+						try
+						{
+							StoreInventory.BuyItem(cp.ItemId);
+						}
+						catch (Exception e)
+						{
+							Debug.Log ("SOOMLA/UNITY " + e.Message);
+						}
+					}
+				}
+			}
+
+			if (orichalQuant == "1000")
+			{				
+				foreach(VirtualCurrencyPack cp in StoreInfo.CurrencyPacks)
+				{			
+					if (cp.Name == "1000 Orichals")
+					{
+						Debug.Log("SOOMLA/UNITY Wants to buy: " + cp.Name);
+						try
+						{
+							StoreInventory.BuyItem(cp.ItemId);
+						}
+						catch (Exception e)
+						{
+							Debug.Log ("SOOMLA/UNITY " + e.Message);
+						}
+					}
+				}
+			}
+		}	
+	}			
 }

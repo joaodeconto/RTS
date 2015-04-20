@@ -78,7 +78,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public bool inUpgrade {get;set;}
 	public List<string> TechsToActive = new List<string>();	
 	public Animation ControllerAnimation { get; private set; }	
-	public bool wasBuilt = false;
+	public bool wasBuilt { get; set; }	
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;	
 	protected bool isInvokingSlider{get; set;}
@@ -997,6 +997,7 @@ public class FactoryBase : IStats, IDeathObservable
 		foreach (UpgradeItem up in upgradesToCreate)
 		{	
 			up.techAvailable = up.VIP;
+			up.isChildtech = up.upgrade.ChildTech;
 		}		
 	}
 
