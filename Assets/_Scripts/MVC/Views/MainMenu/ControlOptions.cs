@@ -7,6 +7,8 @@ public class ControlOptions : MonoBehaviour
 {
 
 	protected TouchController touchController;
+	private UISlider touchSlider;
+	private UISlider clickSlider;
 		
 
 	public void OnEnable ()
@@ -23,24 +25,21 @@ public class ControlOptions : MonoBehaviour
 	public void Open ()
 	{
 
-
 		touchController = ComponentGetter.Get<TouchController> ();
-
-		Transform slider;
 
 		DefaultCallbackButton dcb;
 		
-		Transform touch = this.transform.FindChild ("Menu").FindChild ("TouchSense");
+		Transform touch = this.transform.FindChild ("Menu").FindChild ("TouchSense").FindChild ("Slider");;
 		
-		slider = touch.FindChild ("Slider");
-		
-		slider.GetComponent<UISlider>().value = PlayerPrefs.GetFloat("TouchSense");
+		touchSlider = touch.GetComponent<UISlider>();
 
-		Transform doubleClick = this.transform.FindChild ("Menu").FindChild ("DoubleClick");
-		
-		slider = doubleClick.FindChild ("Slider");
-		
-		slider.GetComponent<UISlider>().value = PlayerPrefs.GetFloat("DoubleClickSpeed");
+		touchSlider.value = PlayerPrefs.GetFloat("TouchSense");
+
+		Transform doubleClick = this.transform.FindChild ("Menu").FindChild ("DoubleClick").FindChild ("Slider");;
+				
+		clickSlider =  doubleClick.GetComponent<UISlider>();
+
+		clickSlider.value = PlayerPrefs.GetFloat("DoubleClickSpeed");
 
 		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
 		
@@ -68,7 +67,7 @@ public class ControlOptions : MonoBehaviour
 
 	public void SetPlayerDoubleClickSpeed (float doubleClick)
 	{
-		PlayerPrefs.SetFloat("DoubleClickSpeed", doubleClick + 0.1f);
+		PlayerPrefs.SetFloat("DoubleClickSpeed", doubleClick);
 
 		if (touchController != null)
 		{
@@ -82,6 +81,7 @@ public class ControlOptions : MonoBehaviour
 
 	public void Close ()
 	{
+		PlayerPrefs.Save();
 		gameObject.SetActive (false);
 	}
 }

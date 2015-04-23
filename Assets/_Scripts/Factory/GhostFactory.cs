@@ -175,6 +175,7 @@ public class GhostFactory : MonoBehaviour
 				FactoryNetworkTransform fnt = GetComponent<FactoryNetworkTransform>();
 				GetComponent<PhotonView>().observed = fnt;
 				thisFactory.photonView.RPC ("Instance", PhotonTargets.All);
+
 			}
 			else thisFactory.Instance();
 			gameObject.SendMessage ("OnInstance", SendMessageOptions.DontRequireReceiver);

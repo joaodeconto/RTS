@@ -55,9 +55,6 @@ public class FogOfWar : MonoBehaviour
 		FogTexture    = new Texture2D (SIZE_TEXTURE, SIZE_TEXTURE, TextureFormat.ARGB32, false);
 		matrixFogFlag = new FogFlag[SIZE_TEXTURE,SIZE_TEXTURE];
 
-		//GameplayManager
-//		TerrainData td = terrain.terrainData;
-
 		for (i = 0; i != SIZE_TEXTURE; ++i)
 			for (j = 0; j != SIZE_TEXTURE; ++j)
 			{
@@ -71,9 +68,6 @@ public class FogOfWar : MonoBehaviour
 
 		FogTexture.Apply();
 
-		// posicionando FogOfWar no local correto
-//		this.transform.position = new Vector3(mapSize.x * 0.5f , 0, mapSize.z * 0.5f);
-		
 #if UNITY_ANDROID || UNITY_IPHONE || true	
 		GameObject poly = Instantiate(pref_plane, Vector3.zero, Quaternion.identity) as GameObject;
 

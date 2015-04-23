@@ -1060,9 +1060,14 @@ public class FactoryBase : IStats, IDeathObservable
 		}		
 		buildingState = BuildingState.Base;		
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);		
-		if (!gameplayManager.IsSameTeam (team))		model.SetActive (true);
+		if (!gameplayManager.IsSameTeam (team))	model.SetActive (true);
 		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 
+	}
+	[RPC]
+	public void InstanceAddStats ()
+	{		
+		statsController.AddStats(this);
 	}
 
 	#endregion

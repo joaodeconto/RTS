@@ -12,7 +12,6 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	public virtual void Init ()
 	{
 		if(!wasInitialized) InvokeRepeating ("CheckNetwork", 0.1f, 0.5f);
-
 		wasInitialized = true;
 	}
 
@@ -27,20 +26,13 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 
 		if (PhotonNetwork.isMessageQueueRunning)
 		{
-			CancelInvoke ("CheckNetwork");
-			
-			int playerLoads = 0;
-			
+			CancelInvoke ("CheckNetwork");			
+			int playerLoads = 0;			
 			Room cRoom = PhotonNetwork.room;
-
-			if (cRoom.customProperties.ContainsKey ("playerLoads"))
-				playerLoads = (int)cRoom.customProperties["playerLoads"];
-
-			playerLoads += 1;
-			
+			if (cRoom.customProperties.ContainsKey ("playerLoads"))	playerLoads = (int)cRoom.customProperties["playerLoads"];
+			playerLoads += 1;			
 			Hashtable setPlayerLoads = new Hashtable() {{"playerLoads", playerLoads}};
 			cRoom.SetCustomProperties (setPlayerLoads);
-
 			InvokeRepeating ("NetworkInstantiatePrefab", 2f, 0.5f);
 		}
 	}
@@ -80,10 +72,12 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 					fb.Init();
 					ComponentGetter.Get<StatsController>().AddStats(fb);
 					fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
+					fb.photonView.RPC("InstanceAddStats", PhotonTargets.OthersBuffered);
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 //					Debug.Log ("init instanciate" + fb.playerUnit);
 				}				
 			}
+		
 			CancelInvoke ("NetworkInstantiatePrefab");
 			Destroy (this.gameObject);
 		}
