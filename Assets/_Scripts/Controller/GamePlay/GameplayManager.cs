@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Cloud.Analytics;
+using UnityEngine.Advertisements;
 using Visiorama;
 using Visiorama.Utils;
 
@@ -538,6 +539,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	#region EndMatch
 	public void EndMatch ()
 	{
+		if(!ConfigurationData.addPass) Advertisement.Show(null, new ShowOptions{pause = true,resultCallback = result => {}});
 
 		if (!PhotonNetwork.offlineMode)
 		{

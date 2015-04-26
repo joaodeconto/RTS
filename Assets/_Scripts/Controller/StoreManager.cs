@@ -12,8 +12,6 @@ namespace Soomla.Store.RTSStoreAssets
 		private static StoreManager instance = null;
 		private bool checkAffordable = false;	
 		private Dictionary<string, bool> itemsAffordability;
-
-		private bool receivedBonus = false; 
 		private bool wasInitialized = false;
 
 		void Awake()
@@ -43,6 +41,11 @@ namespace Soomla.Store.RTSStoreAssets
 					SoomlaUtils.LogError("SOOMLA ExampleEventHandler", ex.Message);
 				}
 			}
+			int mPass = StoreInventory.GetItemBalance("multiplayer_pass");
+			if(mPass >=1) ConfigurationData.multiPass = true;
+
+			int nAdd = StoreInventory.GetItemBalance("no_adds");
+			if(nAdd >=1) ConfigurationData.addPass = true;
 
 			setupItemsAffordability ();
 		}
@@ -64,8 +67,38 @@ namespace Soomla.Store.RTSStoreAssets
 					itemsAffordability[key] = StoreInventory.CanAfford(key);
 			}
 			Score.AddScorePoints (DataScoreEnum.CurrentCrystals, amountAdded);
-			ComponentGetter.Get<Score>("$$$_Score").SaveScore();
+			ComponentGetter.Get<Score>("$$$_Score").SaveScore();			
+			if(!ConfigurationData.InGame) ComponentGetter.Get<InternalMainMenu>().InitScore ();
 		}
+		public void MultiPlayerPassPurchase()
+		{
+			try
+			{
+				StoreInventory.BuyItem("multiplayer_pass");
+			}
+			
+			catch (Exception e)
+			{
+				Debug.Log ("SOOMLA/UNITY " + e.Message);
+			}
+		}
+
+		public void GiveOrichalBonus(int bonusQuant)
+		{
+			try
+			{
+				StoreInventory.GiveItem("currency_orichal", bonusQuant);
+			}
+			
+			catch (Exception e)
+			{
+				Debug.Log ("SOOMLA/UNITY " + e.Message);
+			}
+
+		}
+
+		public int GetBalance {get{return StoreInventory.GetItemBalance(StoreInfo.Currencies[0].ItemId);}}
+
 		
 		public void OrichalPurchase (string orichalQuant) 
 		{			

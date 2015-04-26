@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Advertisements;
 using System.Collections;
 using System.Collections.Generic;
+using Soomla.Store.RTSStoreAssets;
 
 using Visiorama;
 
@@ -86,18 +87,15 @@ public class InternalMainMenu : MonoBehaviour
 			{
 				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
 				dcb.ChangeParams (null, (ht_dcb) =>
-				                  { QuitGame();
-
-//					Advertisement.Show(null, new ShowOptions {
-//						pause = true,
-//						resultCallback = result => {
-//
-//
-//
-//						}
-//					});
-								
-				});
+				                  { 
+										QuitGame();
+										Advertisement.Show(null, new ShowOptions
+					                    {
+											pause = true,
+											resultCallback = result => {}
+										});
+													
+									});
 			}
 		}
 		
@@ -115,12 +113,14 @@ public class InternalMainMenu : MonoBehaviour
 					DataScoreEnum.CurrentCrystals,
 					(currentCrystals) =>
 					{
-						CurrentCrystalsLabel.text  = currentCrystals.NrPoints.ToString ();
+						Debug.LogWarning("OrichalsDB: " + currentCrystals.NrPoints.ToString ());
 					}
 				);
 			}
 		);	
 		SetPlayerRank();
+		StoreManager sm = ComponentGetter.Get<StoreManager>();		
+		CurrentCrystalsLabel.text  = sm.GetBalance.ToString();
 	}
 
 	private void QuitGame ()

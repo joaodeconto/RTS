@@ -50,7 +50,7 @@ public class InternetChecker : MonoBehaviour
 
 			else if (Time.time - pingStartTime < waitingTime) 
 			{
-				if (!li.CanLogin)	CheckingConection();
+				if (!li.hasInternet)	CheckingConection();
 			}
 
 			else
@@ -68,19 +68,19 @@ public class InternetChecker : MonoBehaviour
 	{
 		UILabel labelWarning = li.errorMessage;
 		li.ShowErrorMessage("no internet conection");
-		li.CanLogin = false;
+		li.hasInternet = false;
 	}
 
 	private void CheckingConection()
 	{
 		UILabel labelWarning = li.errorMessage;
 		li.ShowErrorMessage("checking conection");
-		li.CanLogin = false;
+		li.hasInternet = false;
 	}
 	
 	private void InternetAvailable()
 	{
-		li.CanLogin = true;
+		li.hasInternet = true;
 		enabled = false;
 	}
 }

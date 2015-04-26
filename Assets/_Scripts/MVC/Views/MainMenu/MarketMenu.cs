@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Facebook.MiniJSON;
 using Visiorama;
+using Soomla.Store.RTSStoreAssets;
+
 
 public class MarketMenu : MonoBehaviour
 {
@@ -57,8 +59,10 @@ public class MarketMenu : MonoBehaviour
 			}   
 			else 
 			{
+				StoreManager sm = ComponentGetter.Get<StoreManager>();
+				sm.GiveOrichalBonus(10);
 				receivedBonus = true;
-				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, 50);
+				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, 10);
 				ComponentGetter.Get<Score>("$$$_Score").SaveScore();
 				ComponentGetter.Get<InternalMainMenu>().InitScore ();
 			}	
