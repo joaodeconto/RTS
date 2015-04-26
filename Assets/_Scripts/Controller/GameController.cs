@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
 
 	void Awake ()
 	{
-		Application.targetFrameRate = 60;
+		//Application.targetFrameRate = 60;
 
 		if (autoload && !wasInitialized)
 		{

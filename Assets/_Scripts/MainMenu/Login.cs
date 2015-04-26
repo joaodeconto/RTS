@@ -189,7 +189,7 @@ public class Login : IController
 		}		
 		if (!PlayerPrefs.HasKey("GraphicQuality"))
 		{
-			QualitySettings.SetQualityLevel(3);
+			QualitySettings.SetQualityLevel(4);
 		}
 
 		if (!PlayerPrefs.HasKey("Logins"))

@@ -495,8 +495,16 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void DecrementTime ()
 	{
-		timeLeftToLoseTheGame -= 1f;
-		hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
+		if (sc.myStats.Count == 0)
+		{
+			CancelInvoke("NoMainbase");
+			NoMainBase();
+		}
+		else
+		{
+			timeLeftToLoseTheGame -= 1f;
+			hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
+		}
 	}
 	#endregion
 
@@ -569,7 +577,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public void Surrender ()
 	{	
-		Defeat(MyTeam, Allies);
+		if(!winGame && !loseGame)	Defeat(MyTeam, Allies);
 	}
 	#endregion
 

@@ -1,12 +1,75 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Visiorama;
+using Visiorama.Collections.Generics;
+using System.Linq;
 
 public class FogOfWar : MonoBehaviour
 {
+	public struct Point 
+	{
+		public int X {get; set;}
+		public int Y {get; set;}
+
+		public int DistanceSqrt()
+		{
+			return X * X + Y * Y;
+		}
+	}
+	public static PriorityQueue<int,Point> _pToAdd = new PriorityQueue<int, Point>();
+	public static HashSet<Point> _addedPoints = new HashSet<Point>();
+
+	public static List<Point> FillCircle(int radius)
+	{
+		List<Point> points = new List<Point>();
+
+		_pToAdd.Enqueue(1, new Point { X = 1, Y = 0});
+		_pToAdd.Enqueue(2, new Point { X = 1, Y = 1});
+		points.Add(new Point {X=0, Y=0});
+
+		while(true)
+		{
+			var point = _pToAdd.Dequeue();
+			_addedPoints.Remove(point.Value);
+
+			if (point.Value.X >= radius)
+				break;
 			
+			points.Add(new Point() { X = -point.Value.X, Y = point.Value.Y });
+			points.Add(new Point() { X = point.Value.Y, Y = point.Value.X });
+			points.Add(new Point() { X = -point.Value.Y, Y = -point.Value.X });
+			points.Add(new Point() { X = point.Value.X, Y = -point.Value.Y });
+			
+			// if the pixel is on border of octant, then add it only to even half of octants
+			bool isBorder = point.Value.Y == 0 || point.Value.X == point.Value.Y;
+			if(!isBorder)
+			{
+				points.Add(new Point() {X = point.Value.X, Y = point.Value.Y});
+				points.Add(new Point() {X = -point.Value.X, Y = -point.Value.Y});
+				points.Add(new Point() {X = -point.Value.Y, Y = point.Value.X});
+				points.Add(new Point() {X = point.Value.Y, Y = -point.Value.X});
+			}
+			
+			Point pointToLeft = new Point() {X = point.Value.X + 1, Y = point.Value.Y};
+			Point pointToLeftTop = new Point() {X = point.Value.X + 1, Y = point.Value.Y + 1};
+			
+			if(_addedPoints.Add(pointToLeft))
+			{
+				// if it is first time adding this point
+				_pToAdd.Enqueue(pointToLeft.DistanceSqrt(), pointToLeft);
+			}
+			
+			if(_addedPoints.Add(pointToLeftTop))
+			{
+				// if it is first time adding this point
+				_pToAdd.Enqueue(pointToLeftTop.DistanceSqrt(), pointToLeftTop);
+			}
+		}
+		return points;	
+	}
+
 	public int SIZE_TEXTURE = 128;
 
 	public bool UseFog  = true;
@@ -23,9 +86,13 @@ public class FogOfWar : MonoBehaviour
 
 	public float fogHeight = 0.0f;
 	public float fogUpdate = 0.6f;
+	private float terrainLastVisibleHeight;
+	private float terrainLastX;
+	private float terrainLastY;
 
 	public Texture2D FogTexture { get; private set; }
 
+	private TerrainData td;
 	private List<Transform> allies = new List<Transform> ();
 	private List<Transform> enemies = new List<Transform> ();
 	private List<IStats> entityAllies = new List<IStats> ();
@@ -40,10 +107,7 @@ public class FogOfWar : MonoBehaviour
 
 	//Temporary var	iables
 	Transform trns = null;
-	int maxX, maxY, minX, minY,
-		  range, xRange = 0,
-		  posX, posY,
-		  i,j,k;
+	int maxX, maxY, minX, minY, range, xRange = 0, posX, posY, i, j, k;	      
 
 	FogFlag[,] matrixFogFlag;
 
@@ -54,6 +118,7 @@ public class FogOfWar : MonoBehaviour
 
 		FogTexture    = new Texture2D (SIZE_TEXTURE, SIZE_TEXTURE, TextureFormat.ARGB32, false);
 		matrixFogFlag = new FogFlag[SIZE_TEXTURE,SIZE_TEXTURE];
+		td = terrain.terrainData;
 
 		for (i = 0; i != SIZE_TEXTURE; ++i)
 			for (j = 0; j != SIZE_TEXTURE; ++j)
@@ -105,6 +170,8 @@ public class FogOfWar : MonoBehaviour
 				continue;
 			}
 
+			float agentHeightView = trns.position.y + 2;
+
 			posX = (int)(SIZE_TEXTURE * (trns.position.x / mapSize.x));
 			posY = (int)(SIZE_TEXTURE * (trns.position.z / mapSize.z));
 
@@ -112,6 +179,16 @@ public class FogOfWar : MonoBehaviour
 
 			maxY = (Mathf.Clamp(posY + range, 0, SIZE_TEXTURE));
 			minY = (Mathf.Clamp(posY - range, 0, SIZE_TEXTURE));
+			int middleY = (int)(minY - maxY)/2; 
+
+//			List <Point> points = FillCircle(range);
+//
+//			foreach (Point p in points)
+//			{
+//				j = (Mathf.Clamp(p.X  + posX, 0, SIZE_TEXTURE));
+//				k = (Mathf.Clamp(p.Y  + posY, 0, SIZE_TEXTURE));
+//				matrixFogFlag [j,k] = FogFlag.VISIBLE;
+//			}
 
 			for (k = minY; k != maxY; ++k)//, angle += changeAngleRate)
 			{
@@ -119,10 +196,18 @@ public class FogOfWar : MonoBehaviour
 
 				maxX = (Mathf.Clamp(posX + xRange, 0, SIZE_TEXTURE));
 				minX = (Mathf.Clamp(posX - xRange, 0, SIZE_TEXTURE));
+				int middleX = (int)(minX - maxX)/2;
 
 				for (j = minX; j != maxX; ++j)
 				{
-					matrixFogFlag [j,k] = FogFlag.VISIBLE;
+//					float terrainPosX = (j/SIZE_TEXTURE)* mapSize.x;
+//					float terrainPosY = (k/SIZE_TEXTURE)* mapSize.z;
+//					float pixelHeight = td.GetHeight (j,k);
+//
+//					if (pixelHeight <= agentHeightView)
+//					{
+						matrixFogFlag [j,k] = FogFlag.VISIBLE;
+//					}
 				}
 			}
 		}

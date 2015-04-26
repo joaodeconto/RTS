@@ -19212,8 +19212,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1383
-  mHeight: 848
+  mWidth: 1385
+  mHeight: 849
   mDepth: -1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
@@ -20920,7 +20920,7 @@ MonoBehaviour:
   disabledSprite2D: {fileID: 0}
   pixelSnap: 0
   onClick:
-  - mTarget: {fileID: 1389828483}
+  - mTarget: {fileID: 1460286462}
     mMethodName: OrichalPurchase
     mParameters:
     - obj: {fileID: 78376051}
@@ -21684,7 +21684,7 @@ MonoBehaviour:
   disabledSprite2D: {fileID: 0}
   pixelSnap: 0
   onClick:
-  - mTarget: {fileID: 1389828483}
+  - mTarget: {fileID: 1460286462}
     mMethodName: OrichalPurchase
     mParameters:
     - obj: {fileID: 1770042664}
@@ -41475,7 +41475,7 @@ Transform:
   m_GameObject: {fileID: 605160436}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .00277777785, y: .00277777785, z: .00277777785}
+  m_LocalScale: {x: .00248756213, y: .00248756213, z: .00248756213}
   m_Children:
   - {fileID: 995831720}
   m_Father: {fileID: 0}
@@ -94738,6 +94738,45 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!1 &1460286461
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1460286463}
+  - 114: {fileID: 1460286462}
+  m_Layer: 0
+  m_Name: StoreManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1460286462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1460286461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6744e2d337cc32c4599f0c5fa17e2d1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1460286463
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1460286461}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1989771934}
+  m_RootOrder: 1
 --- !u!1 &1462592301
 GameObject:
   m_ObjectHideFlags: 0
@@ -108802,7 +108841,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1629780209}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -299, y: 0, z: 418}
+  m_LocalPosition: {x: -300, y: 0, z: 418}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 433030090}
@@ -133062,6 +133101,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2037246733}
+  - {fileID: 1460286463}
   m_Father: {fileID: 0}
   m_RootOrder: 1
 --- !u!1 &1991730287
@@ -136122,7 +136162,7 @@ MonoBehaviour:
   disabledSprite2D: {fileID: 0}
   pixelSnap: 0
   onClick:
-  - mTarget: {fileID: 1389828483}
+  - mTarget: {fileID: 1460286462}
     mMethodName: OrichalPurchase
     mParameters:
     - obj: {fileID: 2009867264}
