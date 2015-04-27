@@ -13,7 +13,7 @@ public class MarketMenu : MonoBehaviour
 	private bool wasInitialized = false;
 	private FacebookLoginHandler fh;
 
-	void Awake()
+	void OnEnabled()
 	{		
 		DefaultCallbackButton defaultCallbackButton;		
 		GameObject option = transform.FindChild ("Menu").transform.FindChild ("Button (Facebook)").gameObject;
@@ -64,7 +64,6 @@ public class MarketMenu : MonoBehaviour
 				receivedBonus = true;
 				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, 10);
 				ComponentGetter.Get<Score>("$$$_Score").SaveScore();
-				ComponentGetter.Get<InternalMainMenu>().InitScore ();
 			}	
 		}
 	}

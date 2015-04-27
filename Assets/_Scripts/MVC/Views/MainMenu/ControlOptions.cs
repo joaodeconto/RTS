@@ -24,8 +24,7 @@ public class ControlOptions : MonoBehaviour
 
 	public void Open ()
 	{
-
-		touchController = ComponentGetter.Get<TouchController> ();
+		if(ConfigurationData.InGame) touchController = ComponentGetter.Get<TouchController> ();
 
 		DefaultCallbackButton dcb;
 		

@@ -28,9 +28,9 @@ public class InternalMainMenu : MonoBehaviour
 	private List<Transform> listChildOptions;
 	private bool WasInitialized = false;
 
-	public void Awake ()
+	public void Start ()
 	{
-		Init ();	
+		if (ConfigurationData.Logged) Init ();	
 	}
 	
 	public void Init ()
@@ -88,15 +88,17 @@ public class InternalMainMenu : MonoBehaviour
 				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
 				dcb.ChangeParams (null, (ht_dcb) =>
 				                  { 
-										QuitGame();
-										Advertisement.Show(null, new ShowOptions
-					                    {
-											pause = true,
-											resultCallback = result => {}
-										});
-													
-									});
+										if(!ConfigurationData.addPass)
+										{
+											Advertisement.Show(null, new ShowOptions
+						                    {
+												pause = true,
+												resultCallback = result => {QuitGame();}
+											});
+										}
+								 });
 			}
+			
 		}
 		
 		goMainMenu.SetActive (true);

@@ -73,7 +73,7 @@ namespace Soomla.Store.RTSStoreAssets {
 	    
 		public const string NO_ADS_LIFETIME_PRODUCT_ID = "no_ads";
 
-		public const string MULTIPLAYER_PASS_LIFETIME_PRODUCT_ID = "multiplayer_pass";
+		public const string MULTIPLAYER_PASS_LIFETIME_PRODUCT_ID = "pass_multiplayer";
 
 
 	    /** Virtual Currencies **/
@@ -119,8 +119,8 @@ namespace Soomla.Store.RTSStoreAssets {
 		public static VirtualGood MULTIPLAYER_PASS = new LifetimeVG(
 	            "Multiplayer Pass",                                       		// name
 	            "Whole new gameplay, with multiplayer, ranks and bets", // description
-	            "multiplayer_pass",                                       		// item id
-			new PurchaseWithMarket(MULTIPLAYER_PASS_LIFETIME_PRODUCT_ID, 2.99)); // the way this virtual good is purchased
+				"pass_multiplayer",                                       		// item id
+			new PurchaseWithMarket(MULTIPLAYER_PASS_LIFETIME_PRODUCT_ID, 3.99)); // the way this virtual good is purchased
 
 		public static VirtualGood NO_ADS = new LifetimeVG(
 				"No Ads", 														// name

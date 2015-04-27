@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Advertisements;
 
 using Visiorama;
 
@@ -20,6 +21,7 @@ public class Login : IController
 		if (ConfigurationData.Logged) return;
 		
 		LoadPlayerPrefabs ();
+		Advertisement.Initialize("18990", false);
 		
 		pw = ComponentGetter.Get<PhotonWrapper>();
 		pw.Init();
@@ -57,10 +59,10 @@ public class Login : IController
 	{
 		HideAllViews ();		
 		ConfigurationData.Offline = true;
-		OfflineMode offlineMode = GetView <OfflineMode> ("OfflineMode");
-		offlineMode.SetActive (true);
-		offlineMode.Init ();
+		OfflineMenu offlineMenu = ComponentGetter.Get <OfflineMenu> ();
+		offlineMenu.Init();
 	}
+
 	
 	public void DoLogin (Hashtable ht)
 	{

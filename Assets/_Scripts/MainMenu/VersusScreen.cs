@@ -132,6 +132,7 @@ public class VersusScreen : MonoBehaviour
 		Invoke ("InstanceGame",2);
 		mapLabelString 	= mapName.text;
 		modeLabelString	= battleMode.text;
+		ConfigurationData.InGame = true;
 
 		//TODO carregar img do player e AI
 	}

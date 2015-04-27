@@ -19,6 +19,7 @@ public class NewAccount : IView
 	public GameObject CreateAccountButton;
 	public GameObject AvatarButton;
 	public GameObject AvatarMenu;
+	public GameObject FacebookButton;
 	public int NumberOfCoinsNewPlayerStartsWith = 500;
 
 	public bool AccountAlreadyExists;
@@ -33,10 +34,8 @@ public class NewAccount : IView
 		}
 
 		Login login = ComponentGetter.Get<Login>();
-		GameObject goFacebookHandler;	
-		goFacebookHandler = new GameObject ("FacebookLoginHandler");
-		goFacebookHandler.transform.parent = this.transform;		
-		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();
+			
+		fh = ComponentGetter.Get<FacebookLoginHandler> ();
 		fh.OnLoggedIn = Yupy;
 
 		AvatarButton
@@ -47,6 +46,11 @@ public class NewAccount : IView
 							AvatarMenu.SetActive (true);
 
 						});
+
+		FacebookButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>
+		                                                          {
+			fh.DoLogin ();
+		});	
 	
 
 
@@ -108,7 +112,6 @@ public class NewAccount : IView
 						ht["password"]              = password.value;
 						ht["email"]                 = email.value;
 						DoNewAccount(ht);
-						fh.DoLogin ();
 						login.DoLogin(ht);
 					}
 				

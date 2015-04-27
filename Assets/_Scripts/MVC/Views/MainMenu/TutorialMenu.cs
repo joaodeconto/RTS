@@ -60,31 +60,36 @@ public class TutorialMenu : MonoBehaviour
 		if (buttons.Btn0)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn0, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 1);  Close ();} );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 1); if (ConfigurationData.Logged) Close ();
+																					else CloseOffline();} );
 		}
 		
 		if (buttons.Btn1)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 2); Close ();} );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 2); if (ConfigurationData.Logged) Close ();
+				else CloseOffline();} );
 		}
 		
 		if (buttons.Btn2)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 3);Close ();} );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 3);if (ConfigurationData.Logged) Close ();
+				else CloseOffline();} );
 		}
 		
 		if (buttons.Btn3)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 4); Close ();} );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 4); if (ConfigurationData.Logged) Close ();
+				else CloseOffline();} );
 		}
 
 		if (buttons.Btn3)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 5); Close ();} );
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 5); if (ConfigurationData.Logged) Close ();
+				else CloseOffline();} );
 		}
 		
 				
@@ -121,14 +126,11 @@ public class TutorialMenu : MonoBehaviour
 						
 			gameObject.SetActive (false);
 		}
-
-		else	login.HiddeViews();
-
 	}
 
 	public void CloseOffline ()
 	{
-		ConfigurationData.Offline = false;
-		login.Index();
+		OfflineMenu om = ComponentGetter.Get<OfflineMenu>();
+		om.goMainMenu.SetActive(false);
 	}
 }

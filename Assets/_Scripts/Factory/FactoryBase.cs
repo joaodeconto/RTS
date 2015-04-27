@@ -482,7 +482,7 @@ public class FactoryBase : IStats, IDeathObservable
 			                                       {
 														UnitFactory unitFactory = (UnitFactory)ht_dcb["buttonType"];
 														
-														hudController.OpenInfoBoxUnit(unitFactory.unit,true);
+														hudController.OpenInfoBoxUnit(unitFactory.unit,false);
 													});							
 			
 		}
@@ -513,7 +513,7 @@ public class FactoryBase : IStats, IDeathObservable
 														{
 															if (Time.time - (float)ht["time"] > 0.5f)
 															{	
-																hudController.OpenInfoBoxUnit(unitFactory.unit, false);																		
+																hudController.OpenInfoBoxUnit(unitFactory.unit, true);																		
 															}
 															else
 															{						
