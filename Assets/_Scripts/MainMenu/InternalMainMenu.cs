@@ -88,14 +88,12 @@ public class InternalMainMenu : MonoBehaviour
 				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
 				dcb.ChangeParams (null, (ht_dcb) =>
 				                  { 
-										if(!ConfigurationData.addPass)
-										{
-											Advertisement.Show(null, new ShowOptions
-						                    {
-												pause = true,
-												resultCallback = result => {QuitGame();}
-											});
-										}
+									if(ConfigurationData.addPass || ConfigurationData.multiPass){ QuitGame();}
+									else	Advertisement.Show(null, new ShowOptions
+										                    {
+																pause = true,
+																resultCallback = result => {QuitGame();}
+															});														
 								 });
 			}
 			

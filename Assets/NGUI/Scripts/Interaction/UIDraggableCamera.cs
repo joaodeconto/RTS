@@ -4,6 +4,7 @@
 //----------------------------------------------
 
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Works together with UIDragCamera script, allowing you to drag a secondary camera while keeping it constrained to a certain area.
@@ -57,7 +58,9 @@ public class UIDraggableCamera : MonoBehaviour
 	float mScroll = 0f;
 	UIRoot mRoot;
 	bool mDragStarted = false;
+	public List<Transform> gridPositions ;
 
+	
 	/// <summary>
 	/// Current momentum, exposed just in case it's needed.
 	/// </summary>
@@ -70,6 +73,7 @@ public class UIDraggableCamera : MonoBehaviour
 
 	void Start ()
 	{
+
 		mCam = GetComponent<Camera>();
 		mTrans = transform;
 		mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
@@ -79,6 +83,8 @@ public class UIDraggableCamera : MonoBehaviour
 			Debug.LogError(NGUITools.GetHierarchy(gameObject) + " needs the 'Root For Bounds' parameter to be set", this);
 			enabled = false;
 		}
+		UIGrid dragGrid = rootForBounds.GetComponent<UIGrid>();
+		gridPositions = dragGrid.GetChildList();	
 	}
 
 	/// <summary>
@@ -129,6 +135,50 @@ public class UIDraggableCamera : MonoBehaviour
 		return false;
 	}
 
+	public bool ConstrainToItem (bool immediate)
+	{
+
+		if (mTrans != null && gridPositions != null)
+		{
+			int nearestItem = 0;
+			float nearestPos = 0;
+			float distance = 0;
+			Vector3 offset = Vector3.zero;
+
+			for (int i=0; i < gridPositions.Count;i++)
+			{
+				distance = Vector3.Distance (transform.position, gridPositions[i].position);
+				if (i==0) 
+				{
+					nearestItem = i;
+					nearestPos = distance;
+				}
+
+				else if ( distance < nearestPos)
+				 {
+					nearestItem = i;
+					nearestPos = distance;
+
+				}
+			}
+		
+
+			offset = gridPositions[nearestItem].position - mTrans.position;
+			offset.z = mTrans.position.z;
+			Vector3 goPos = new Vector3(gridPositions[nearestItem].position.x,gridPositions[nearestItem].position.y, mTrans.position.z);
+			if (offset.sqrMagnitude > 0f)
+			{
+
+				SpringPosition sp = SpringPosition.Begin(gameObject, goPos , 13f);
+					sp.ignoreTimeScale = true;
+					sp.worldSpace = true;
+
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/// <summary>
 	/// Calculate the bounds of all widgets under this game object.
 	/// </summary>
@@ -156,7 +206,8 @@ public class UIDraggableCamera : MonoBehaviour
 			}
 			else if (dragEffect == UIDragObject.DragEffect.MomentumAndSpring)
 			{
-				ConstrainToBounds(false);
+				ConstrainToItem(false);
+				//ConstrainToBounds(false);
 			}
 		}
 	}
@@ -184,7 +235,7 @@ public class UIDraggableCamera : MonoBehaviour
 		mMomentum = Vector2.Lerp(mMomentum, mMomentum + offset * (0.01f * momentumAmount), 0.67f);
 
 		// Constrain the UI to the bounds, and if done so, eliminate the momentum
-		if (dragEffect != UIDragObject.DragEffect.MomentumAndSpring && ConstrainToBounds(true))
+		if (dragEffect != UIDragObject.DragEffect.MomentumAndSpring && ConstrainToItem(true))
 		{
 			mMomentum = Vector2.zero;
 			mScroll = 0f;
@@ -230,7 +281,7 @@ public class UIDraggableCamera : MonoBehaviour
 				mTrans.localPosition += (Vector3)NGUIMath.SpringDampen(ref mMomentum, 9f, delta);
 				mBounds = NGUIMath.CalculateAbsoluteWidgetBounds(rootForBounds);
 
-				if (!ConstrainToBounds(dragEffect == UIDragObject.DragEffect.None))
+				if (!ConstrainToItem(dragEffect == UIDragObject.DragEffect.None))
 				{
 					SpringPosition sp = GetComponent<SpringPosition>();
 					if (sp != null) sp.enabled = false;

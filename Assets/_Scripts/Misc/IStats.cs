@@ -213,7 +213,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	void Awake ()
 	{
-		Init ();
+		if(ConfigurationData.InGame)Init ();
 	}
 
 	public virtual void Init ()

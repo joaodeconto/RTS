@@ -12,6 +12,7 @@ public class MarketMenu : MonoBehaviour
 	private bool receivedBonus = false; 
 	private bool wasInitialized = false;
 	private FacebookLoginHandler fh;
+	public UIGrid ButtonsGrid;
 
 	void OnEnabled()
 	{		

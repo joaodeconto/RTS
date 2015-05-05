@@ -170,7 +170,7 @@ public class Unit : IStats, IMovementObservable,
 
 	void Update ()
 	{
-		if (!IsDead) IAStep ();
+		if (!IsDead && ConfigurationData.InGame) IAStep ();
 	}
 
 	public virtual void IAStep ()

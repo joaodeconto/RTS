@@ -14,6 +14,7 @@ public class StoreManager : MonoBehaviour
 	private bool checkAffordable = false;	
 	private Dictionary<string, bool> itemsAffordability;
 	private bool wasInitialized = false;
+	public GameObject noAdsButton;
 
 
 	void Awake()
@@ -57,7 +58,7 @@ public class StoreManager : MonoBehaviour
 		if(mPass >=1) ConfigurationData.multiPass = true;
 		
 		int nAdd = StoreInventory.GetItemBalance("no_ads");
-		if(nAdd >=1) ConfigurationData.addPass = true;
+		if(nAdd >=1) {ConfigurationData.addPass = true; noAdsButton.SetActive(false);}
 	}
 
 	public void setupItemsAffordability()
@@ -97,6 +98,7 @@ public class StoreManager : MonoBehaviour
 		{
 			int nAdd = StoreInventory.GetItemBalance("no_ads");
 			if(nAdd >=1) ConfigurationData.addPass = true;
+			noAdsButton.SetActive(false);
 		}
 	}
 

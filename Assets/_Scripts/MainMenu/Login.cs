@@ -21,8 +21,11 @@ public class Login : IController
 		if (ConfigurationData.Logged) return;
 		
 		LoadPlayerPrefabs ();
+		#if UNITY_IOS
+		Advertisement.Initialize("35534", false);
+		#else
 		Advertisement.Initialize("18990", false);
-		
+		#endif
 		pw = ComponentGetter.Get<PhotonWrapper>();
 		pw.Init();
 		

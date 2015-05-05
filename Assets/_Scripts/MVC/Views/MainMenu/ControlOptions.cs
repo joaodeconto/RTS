@@ -21,7 +21,6 @@ public class ControlOptions : MonoBehaviour
 		Close ();
 	}
 
-
 	public void Open ()
 	{
 		if(ConfigurationData.InGame) touchController = ComponentGetter.Get<TouchController> ();
@@ -57,7 +56,7 @@ public class ControlOptions : MonoBehaviour
 	{
 		PlayerPrefs.SetFloat("TouchSense", touchSense);
 
-		if (touchController.mainCamera != null)
+		if (ConfigurationData.InGame && touchController.mainCamera != null)
 		{
 		touchController.mainCamera.GetComponent<CameraMovement>().SetSpeed();
 		}
@@ -68,7 +67,7 @@ public class ControlOptions : MonoBehaviour
 	{
 		PlayerPrefs.SetFloat("DoubleClickSpeed", doubleClick);
 
-		if (touchController != null)
+		if (ConfigurationData.InGame && touchController != null)
 		{
 			touchController.SetDoubleClick (doubleClick);
 		}
