@@ -338,7 +338,7 @@ public class Unit : IStats, IMovementObservable,
 
 		if (NavAgent.CalculatePath(destination, newPath))
 		{
-			if(path.status == NavMeshPathStatus.PathPartial)		
+			if(path.status != NavMeshPathStatus.PathComplete)		
 			{
 				NavAgent.SetDestination (destination);
 			}
