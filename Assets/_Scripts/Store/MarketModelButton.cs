@@ -39,12 +39,19 @@ public class MarketModelButton : MonoBehaviour {
 //  private UILabel enableLabel;
 	private UILabel goldLabel;
 	private UILabel manaLabel;
+	private bool wasInitialized = false;
 
 
 	#endregion
 
 	void OnEnable()
 	{
+		if(!wasInitialized)	Init();
+	}
+	public void Init()	
+	{
+		wasInitialized = true;
+
 		infoPanel 		= transform.FindChild("Panel Info Box");
 		itemName 		= transform.FindChild("itemName").GetComponent<UILabel>();
 		itemDescription = transform.FindChild("itemDescription").GetComponent<UILabel>();
@@ -69,6 +76,7 @@ public class MarketModelButton : MonoBehaviour {
 				itemSprite.spriteName = unitModel.guiTextureName;
 				itemClass.text = "Unit";
 				ShowInfoUnit(unitModel);
+				InstanceModel(itemModel);
 				break;
 
 			case ItemType.factory:
@@ -162,6 +170,26 @@ public class MarketModelButton : MonoBehaviour {
 		manaLabel.text 		= upgrade.costOfResources.Mana.ToString();
 
 	}	
+
+	public void InstanceModel(GameObject model)
+	{
+
+		Transform parentPos = transform.FindChild("refInstance");
+		GameObject instance = Instantiate(Resources.Load(model.name, typeof(GameObject)), parentPos.position, parentPos.rotation) as GameObject;
+		instance.transform.parent = parentPos;
+		instance.transform.localScale = new Vector3(1f,1f,1f);
+
+		Worker w = itemModel.GetComponent<Worker>(); if(w != null) w.DisableResourceTools();
+		FactoryBase fb = itemModel.GetComponent<FactoryBase>();
+		if(fb != null) foreach(GameObject go in fb.buildingObjects.desactiveObjectsWhenInstance){ go.SetActive(false);} 
+
+		MonoBehaviour[] comps = instance.GetComponents<MonoBehaviour>();		
+		foreach(MonoBehaviour c in comps){	c.enabled = false;}
+		NavMeshAgent na = instance.GetComponent<NavMeshAgent>(); if (na != null) na.enabled = false;
+		Collider co = instance.GetComponent<Collider>(); if (co != null) co.enabled = false;
+		instance.AddComponent("AnimateInQueue");
+		instance.GetComponent<AnimateInQueue>().Init();
+	}
 
 	// Update is called once per frame
 	void Update () {

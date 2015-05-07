@@ -83,11 +83,7 @@ public class Worker : Unit
 		moveAttack = false;
 		resourceId = -1;
 
-	foreach (ResourceWorker rw in resourceWorker)
-		{
-			rw.carryingObject.SetActive (false);
-			rw.extractingObject.SetActive (false);
-		}
+		DisableResourceTools();
 
 		hasResource = isSettingWorkerNull = false;
 
@@ -841,6 +837,15 @@ public class Worker : Unit
 			smas.minDistance = 3.0f;
 			smas.maxDistance = 30.0f;
 			smas.rolloffMode =AudioRolloffMode.Linear;
+		}
+	}
+
+	public void  DisableResourceTools()
+	{
+		foreach (ResourceWorker rw in resourceWorker)
+		{
+			rw.carryingObject.SetActive (false);
+			rw.extractingObject.SetActive (false);
 		}
 	}
 

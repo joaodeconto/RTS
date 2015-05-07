@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
 		if (autoload && !wasInitialized)
 		{
 			wasInitialized = true;
-			Application.LoadLevel(0);
+			Application.LoadLevel(1);
 			return;
 		}
 		if(!PhotonNetwork.offlineMode)
