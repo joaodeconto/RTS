@@ -187,8 +187,8 @@ public class MarketModelButton : MonoBehaviour {
 		foreach(MonoBehaviour c in comps){	c.enabled = false;}
 		NavMeshAgent na = instance.GetComponent<NavMeshAgent>(); if (na != null) na.enabled = false;
 		Collider co = instance.GetComponent<Collider>(); if (co != null) co.enabled = false;
-		instance.AddComponent("AnimateInQueue");
-		instance.GetComponent<AnimateInQueue>().Init();
+//		instance.AddComponent("AnimateInQueue");
+//		instance.GetComponent<AnimateInQueue>().Init();
 	}
 
 	// Update is called once per frame

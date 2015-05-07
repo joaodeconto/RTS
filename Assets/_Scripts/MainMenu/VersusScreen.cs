@@ -119,7 +119,7 @@ public class VersusScreen : MonoBehaviour
 		PhotonNetwork.offlineMode = true;
 		GameplayManager.mode = GameplayManager.Mode.Tutorial;
 		opponentSprite.Clear();
-		cena = map;
+		cena = map+1;
 		cenaSelection();
 		if (!ConfigurationData.Offline)	ComponentGetter.Get<InternalMainMenu> ().goMainMenu.SetActive (false);
 		goVersusScreen.SetActive (true);
@@ -197,7 +197,6 @@ public class VersusScreen : MonoBehaviour
 	{
 		pw.StartGame ();
 		StartCoroutine (LoadingScene ());
-
 
 	}
 
