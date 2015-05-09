@@ -139,6 +139,12 @@ public class VersusScreen : MonoBehaviour
 
 	public void cenaSelection ()
 	{
+		if (cena == 7)
+		{
+			mapName.text = "Gargantua";
+			mapSprite.spriteName = "Gargantua";			
+		}
+
 		if (cena == 6)
 		{
 			mapName.text = "Sandstone Salvation";
