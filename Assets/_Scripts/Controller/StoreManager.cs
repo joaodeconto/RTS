@@ -43,6 +43,24 @@ public class StoreManager : MonoBehaviour
 		}
 	}	
 
+	public void ToggleAdsPass(bool passAdded)
+	{
+
+		if(passAdded)
+		{
+			StoreInventory.TakeItem("pass_multiplayer", 1);
+		
+			StoreInventory.TakeItem("no_ads", 1);
+		}
+		else
+		{
+			StoreInventory.GiveItem("pass_multiplayer", 1);
+			StoreInventory.GiveItem("no_ads", 1);
+		}
+
+
+	}
+
 	public void onSoomlaStoreInitialized()
 	{
 		if (StoreInfo.Currencies.Count>0) {
