@@ -48,14 +48,13 @@ public class StoreManager : MonoBehaviour
 
 		if(passAdded)
 		{
-			StoreInventory.TakeItem("pass_multiplayer", 1);
-		
-			StoreInventory.TakeItem("no_ads", 1);
+			ConfigurationData.multiPass = true ;
+			ConfigurationData.addPass = true ;
 		}
 		else
 		{
-			StoreInventory.GiveItem("pass_multiplayer", 1);
-			StoreInventory.GiveItem("no_ads", 1);
+			ConfigurationData.multiPass = false ;
+			ConfigurationData.addPass = false ;
 		}
 
 
