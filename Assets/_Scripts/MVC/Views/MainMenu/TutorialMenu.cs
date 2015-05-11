@@ -105,7 +105,7 @@ public class TutorialMenu : MonoBehaviour
 
 		if (buttons.Btn6)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn5, false);
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn6, false);
 			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 7); if (ConfigurationData.Logged) Close ();
 				else CloseOffline();} );
 		}
