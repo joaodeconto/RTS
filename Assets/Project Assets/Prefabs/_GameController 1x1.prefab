@@ -138,7 +138,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400020}
   - 114: {fileID: 11400020}
-  - 114: {fileID: 11486438}
+  - 114: {fileID: 11457164}
   m_Layer: 0
   m_Name: TouchController
   m_TagString: Untagged
@@ -751,7 +751,7 @@ MonoBehaviour:
     colors:
     - {r: 0, g: 0, b: 1, a: 1}
     - {r: 1, g: .558620691, b: 0, a: 1}
-    - {r: .558823526, g: .47857058, b: .460207611, a: 1}
+    - {r: .79411763, g: .7614187, b: .624783754, a: 1}
     initialPosition: {fileID: 0}
   - name: Time 2
     colors:
@@ -981,6 +981,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
   - {fileID: 11400004, guid: 90dcd66a305546f4d8ce6e0aa6b19e5a, type: 2}
   - {fileID: 11400000, guid: 097090cf2466e1b408f34f8b34778481, type: 2}
+--- !u!114 &11457164
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf44e0c9031cf54fb14f47f10d18871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomInButton: {fileID: 0}
+  zoomOutButton: {fileID: 0}
 --- !u!114 &11466618
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1000,7 +1013,7 @@ MonoBehaviour:
     specificStat: Mana
     valueToCompare: 300
     enumCondition: 2
-    objDescription: Oblige the creator Collect 300 mana
+    objDescription: Guide your workers to a gold spot.
     objSprite: Achiv_Battle1
   - IsActive: 0
     objectiveCompleted: 0
@@ -1008,8 +1021,8 @@ MonoBehaviour:
     enumComparingType: 6
     specificStat: Obelisk
     valueToCompare: 0
-    enumCondition: 1
-    objDescription: 'Destroy every enemy monolith '
+    enumCondition: 2
+    objDescription: Constructing huts is fundamental for supporting a large army.
     objSprite: cottage
   - IsActive: 0
     objectiveCompleted: 0
@@ -1024,19 +1037,6 @@ MonoBehaviour:
   objectiveLog: {fileID: 0}
   objSubpanel: {fileID: 0}
   objectiveRow: {fileID: 100016, guid: 8ddc659078696134ba3dbf1fcba7838c, type: 2}
---- !u!114 &11486438
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccf44e0c9031cf54fb14f47f10d18871, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  zoomInButton: {fileID: 0}
-  zoomOutButton: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

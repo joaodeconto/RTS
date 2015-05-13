@@ -89,7 +89,7 @@ public class RankedBattle : MonoBehaviour
 
 								if (CurrentBid <= orichals && CurrentBid >= minimumBet)
 								{
-									CreateRoom (players, CurrentBid, battleName, battleMode, mapScene);
+									CreateRoom (players, CurrentBid, battleName, battleMode, mapScene+1);
 									createRoom.gameObject.SetActive (false);
 									mapSelection.gameObject.SetActive (false);
 									toggleButtons.gameObject.SetActive(false);
@@ -290,6 +290,16 @@ public class RankedBattle : MonoBehaviour
 		if (popSelect == "Sandstone Salvation")
 		{
 			mapScene = 5;
+		}
+
+		if (popSelect == "Gargantua")
+		{
+			mapScene = 6;
+		}
+
+		if (popSelect == "Crank Lagoon")
+		{
+			mapScene = 7;
 		}
 	}
 }

@@ -44,7 +44,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100004
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -78,7 +78,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100008
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -95,7 +95,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100012
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -112,7 +112,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100016
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -187,6 +187,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400006}
+  - {fileID: 400016}
+  - {fileID: 400012}
+  - {fileID: 400008}
+  - {fileID: 400004}
   m_Father: {fileID: 400002}
   m_RootOrder: 1
 --- !u!4 &400002
@@ -202,11 +206,7 @@ Transform:
   - {fileID: 400018}
   - {fileID: 400000}
   - {fileID: 400020}
-  - {fileID: 400016}
   - {fileID: 413144}
-  - {fileID: 400012}
-  - {fileID: 400008}
-  - {fileID: 400004}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &400004
@@ -216,11 +216,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: .264270812, y: -.889867008, z: .220558897, w: .299418598}
-  m_LocalPosition: {x: .104606323, y: -.122147083, z: -.382003665}
-  m_LocalScale: {x: .628737688, y: .628737628, z: .628738046}
+  m_LocalPosition: {x: .104606628, y: -.122146606, z: -.382003784}
+  m_LocalScale: {x: .628737688, y: .628737569, z: .628738105}
   m_Children: []
-  m_Father: {fileID: 400002}
-  m_RootOrder: 7
+  m_Father: {fileID: 400000}
+  m_RootOrder: 4
 --- !u!4 &400006
 Transform:
   m_ObjectHideFlags: 1
@@ -240,11 +240,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: 0, y: .64174062, z: 0, w: -.766921818}
-  m_LocalPosition: {x: 1.22972977, y: -.303974152, z: -.0252551697}
+  m_LocalPosition: {x: 1.22973061, y: -.303974152, z: -.0252552032}
   m_LocalScale: {x: .490587801, y: .490587711, z: .490587741}
   m_Children: []
-  m_Father: {fileID: 400002}
-  m_RootOrder: 6
+  m_Father: {fileID: 400000}
+  m_RootOrder: 3
 --- !u!4 &400012
 Transform:
   m_ObjectHideFlags: 1
@@ -252,11 +252,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_LocalRotation: {x: .0998950973, y: 1.21749801e-08, z: 1.11811657e-10, w: .994997978}
-  m_LocalPosition: {x: -.456339866, y: -.502212763, z: .798023641}
+  m_LocalPosition: {x: -.45634079, y: -.502212524, z: .798023224}
   m_LocalScale: {x: .366720438, y: .366720527, z: .366720438}
   m_Children: []
-  m_Father: {fileID: 400002}
-  m_RootOrder: 5
+  m_Father: {fileID: 400000}
+  m_RootOrder: 2
 --- !u!4 &400016
 Transform:
   m_ObjectHideFlags: 1
@@ -264,11 +264,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100016}
   m_LocalRotation: {x: -.707106829, y: 1.21411847e-09, z: 1.21411847e-09, w: .707106829}
-  m_LocalPosition: {x: -.140368775, y: .922696114, z: .252640367}
+  m_LocalPosition: {x: -.140369415, y: .922696114, z: .252639771}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 400002}
-  m_RootOrder: 3
+  m_Father: {fileID: 400000}
+  m_RootOrder: 1
 --- !u!4 &400018
 Transform:
   m_ObjectHideFlags: 1
@@ -304,7 +304,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -457,7 +457,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!82 &8200000
 AudioSource:
-  m_ObjectHideFlags: 10
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
