@@ -223,12 +223,6 @@ public class FactoryBase : IStats, IDeathObservable
 				CancelInvokeSlider();
 			}
 
-			if (Selected)
-			{
-				buildingSlider.gameObject.SetActive(true);
-				InvokeRepeating ("InvokeSliderUpdate",0.2f,0.2f);
-			}
-
 			if (timer > timeToCreate)
 			{
 				CancelInvokeSlider();
@@ -252,8 +246,13 @@ public class FactoryBase : IStats, IDeathObservable
 			}
 			else
 			{
-				timer += Time.deltaTime;	
-				if(Selected && !isInvokingSlider) InvokeRepeating ("InvokeSliderUpdate",0.2f,0.2f);
+				timer += Time.deltaTime;
+
+				if(Selected && !isInvokingSlider) 
+				{
+					buildingSlider.gameObject.SetActive(true);
+					InvokeRepeating ("InvokeSliderUpdate",0.1f,0.4f);
+				}
 			}
 		}
 	}
@@ -632,7 +631,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 	}
 	
-	private void RestoreOptionsMenu()
+	public void RestoreOptionsMenu()
 	{
 		hudController.DestroyOptionsBtns();
 		
@@ -646,7 +645,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 	}
 
-	private void RestoreDequeueMenu()
+	public void RestoreDequeueMenu()
 	{
 		hudController.DestroyInspector("factory");
 		keys.Clear();
@@ -841,7 +840,7 @@ public class FactoryBase : IStats, IDeathObservable
 	void InvokeUpgrade (Upgrade upgrade)
 	{
 		eventController.AddEvent("standard message",transform.position , upgrade.name + " technology complete", upgrade.guiTextureName);	
-
+		Upgrade upg = null;
 		if (Selected)
 		{
 			hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
@@ -853,8 +852,15 @@ public class FactoryBase : IStats, IDeathObservable
 			Model.Battle battle = ConfigurationData.battle;
 			Score.AddScorePoints (DataScoreEnum.UpgradesCreated, 1, battle.IdBattle);
 			Score.AddScorePoints (upgrade.name + DataScoreEnum.XUpgraded, upgrade.costOfResources.Rocks + upgrade.costOfResources.Mana, battle.IdBattle);
+
+			if (upgrade.name == "Guard Tower" || upgrade.name == "Defense Tower")
+			{
+				GameObject u = PhotonNetwork.Instantiate(upgrade.gameObject.name, transform.position, transform.rotation, 0);
+				upg = u.GetComponent<Upgrade>();
+			}
 		}
-		Upgrade upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
+		else upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
+
 		upg.transform.parent = this.transform;
 		if (upgrade.modelUpgrade) buildingState = BuildingState.Upgraded;
 

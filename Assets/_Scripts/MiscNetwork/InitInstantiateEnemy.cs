@@ -15,7 +15,6 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 	public void Init ()
 	{
 		if(!wasInitialized) InvokeRepeating ("CheckNetwork", 0.1f, 0.5f);
-
 		wasInitialized = true;
 	}
 
@@ -50,6 +49,7 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 			prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
+			fb.Init();
 			ComponentGetter.Get<StatsController>().AddStats(fb);
 		}				
 		CancelInvoke ("NetworkInstantiatePrefab");

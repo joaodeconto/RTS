@@ -28,7 +28,8 @@ public class GhostFactory : MonoBehaviour
 		randomRotation = Random.rotation.y;		
 		this.worker 			 = worker;
 		this.factoryConstruction = factoryConstruction;		
-		thisFactory = GetComponent<FactoryBase>();
+		thisFactory = GetComponent<FactoryBase>();		
+		thisFactory.Init();
 //		if (!PhotonNetwork.offlineMode)thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team, worker.ally);
 		thisFactory.InstanceOverdraw(worker.team, worker.ally);
 		correctName = thisFactory.name;
@@ -62,18 +63,7 @@ public class GhostFactory : MonoBehaviour
 		helperColliderGameObject.rigidbody.isKinematic = true;
 		
 		HelperColliderDetect hcd = helperColliderGameObject.AddComponent<HelperColliderDetect> ();
-		hcd.Init
-			(
-				(other) =>
-				{
-				OnCollider (other);
-			},
-			(other) => 
-			{
-				OffCollider (other);
-			}
-			);
-		
+		hcd.Init((other) =>	{OnCollider (other);}, (other) => {OffCollider (other);});		
 		SetOverdraw (worker.team);
 	}
 	
@@ -127,18 +117,12 @@ public class GhostFactory : MonoBehaviour
 	
 	void OnCollider (Collider other)
 	{
-		if (!other.name.Equals ("Terrain"))
-		{
-			numberOfCollisions++;
-		}		
+		if (!other.name.Equals ("Terrain"))	numberOfCollisions++;
 	}
 	
 	void OffCollider (Collider other)
 	{
-		if (!other.name.Equals ("Terrain"))
-		{
-			numberOfCollisions--;
-		}		
+		if (!other.name.Equals ("Terrain"))	numberOfCollisions--;			
 	}
 	
 	void Apply ()

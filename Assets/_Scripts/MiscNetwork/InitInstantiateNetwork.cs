@@ -53,7 +53,11 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 			fb.Init();
 			fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
+			fb.wasVisible = false;
 		}
+		else
+			stats.Init();
+
 		Destroy (this.gameObject);
 	}
 
@@ -75,7 +79,12 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 					fb.photonView.RPC("InstanceAddStats", PhotonTargets.OthersBuffered);
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 //					Debug.Log ("init instanciate" + fb.playerUnit);
-				}				
+				}	
+				else 
+				{
+					IStats stats = prefab.GetComponent<IStats>();
+					stats.Init();
+				}
 			}
 		
 			CancelInvoke ("NetworkInstantiatePrefab");

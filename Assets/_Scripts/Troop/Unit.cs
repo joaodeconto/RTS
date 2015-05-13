@@ -586,7 +586,7 @@ public class Unit : IStats, IMovementObservable,
 
 	#region Unit Check's
 	
-	private void CheckEnemyIsClose ()
+	public void CheckEnemyIsClose ()
 	{		
 		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1 << LayerMask.NameToLayer ("Unit"));
 		
@@ -655,7 +655,7 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 	
-	private void StartCheckEnemy ()
+	public void StartCheckEnemy ()
 	{
 		if (!invokeCheckEnemy)
 		{
@@ -945,7 +945,7 @@ public class Unit : IStats, IMovementObservable,
 		else Destroy (gameObject);
 	}
 
-	void OnDestroy ()
+	public virtual void OnDestroy ()
 	{
 		if (gameplayManager.IsBotTeam (this)) return;
 		

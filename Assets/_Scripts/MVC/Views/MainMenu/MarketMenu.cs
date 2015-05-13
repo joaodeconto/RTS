@@ -14,7 +14,7 @@ public class MarketMenu : MonoBehaviour
 	private FacebookLoginHandler fh;
 	public UIGrid ButtonsGrid;
 
-	void OnEnabled()
+	void OnEnable()
 	{		
 		DefaultCallbackButton defaultCallbackButton;		
 		GameObject option = transform.FindChild ("Menu").transform.FindChild ("Button (Facebook)").gameObject;

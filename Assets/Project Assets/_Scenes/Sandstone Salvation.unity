@@ -10396,7 +10396,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.03864741
+  aspectRatio: 1.70850205
 --- !u!1001 &231209159
 Prefab:
   m_ObjectHideFlags: 0
@@ -23062,7 +23062,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 10800000, guid: be0b57c842a10384eaed647b66375b22, type: 2}
       propertyPath: m_Shadows.m_Bias
-      value: .697000027
+      value: .720000029
       objectReference: {fileID: 0}
     - target: {fileID: 10800000, guid: be0b57c842a10384eaed647b66375b22, type: 2}
       propertyPath: m_Shadows.m_Softness
@@ -30521,6 +30521,8 @@ MonoBehaviour:
   - {fileID: 11444522, guid: 553d86d9222dd644e86f4ae7b4491ff0, type: 2}
   - {fileID: 11440944, guid: cae909b94144d4846b8b99d0e9feb5f7, type: 2}
   - {fileID: 11455230, guid: 80101564578c88542a4ad2b8eaec0d9d, type: 2}
+  - {fileID: 11478150, guid: f61fab55a733a5b4b84358a068e0a334, type: 2}
+  - {fileID: 11460170, guid: 6dc69d465dce2294bb72488a4b25e228, type: 2}
   prefabFactory:
   - {fileID: 11400000, guid: 74c85a2adc76ed644b091d367b2acdfc, type: 2}
   - {fileID: 11400004, guid: 5e1b63fa02d6b9b4fb77e80864c091dd, type: 2}
@@ -32401,7 +32403,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SIZE_TEXTURE: 256
   UseFog: 1
-  DarkFog: 1
+  DarkFog: 0
   pref_plane: {fileID: 100000, guid: e110e4594c30be740861d48334d615be, type: 2}
   terrain: {fileID: 1713371239}
   mapSize: {x: 260, y: 60, z: 260}
@@ -33304,7 +33306,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 778985185}
-  m_LocalRotation: {x: .841099441, y: -.00256050308, z: -.00380638777, w: .540861011}
+  m_LocalRotation: {x: .841099501, y: -.00256050332, z: -.00380638801, w: .54086107}
   m_LocalPosition: {x: 128.190002, y: 1.94000006, z: 154.059998}
   m_LocalScale: {x: 5.65326166, y: 10.1145658, z: .630227447}
   m_Children: []
@@ -36696,7 +36698,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_Strength: .805999994
-    m_Bias: .697000027
+    m_Bias: .720000029
     m_Softness: 3.6099999
     m_SoftnessFade: 1.90999997
   m_Cookie: {fileID: 0}
@@ -36747,8 +36749,8 @@ Transform:
   m_PrefabParentObject: {fileID: 492408, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
   m_PrefabInternal: {fileID: 697858363}
   m_GameObject: {fileID: 837518920}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 199, y: -99, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: .707106829, w: .707106829}
+  m_LocalPosition: {x: 202, y: -100, z: 0}
   m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children: []
   m_Father: {fileID: 686722270}
@@ -36782,15 +36784,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: .235294104, g: .235294104, b: .235294104, a: 1}
+  mColor: {r: .264705896, g: .264705896, b: .264705896, a: 1}
   mPivot: 4
-  mWidth: 264
-  mHeight: 250
-  mDepth: 36
+  mWidth: 246
+  mHeight: 244
+  mDepth: 105
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.05599999
+  aspectRatio: 1.00819671
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -37196,6 +37198,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 859815231}
   - 114: {fileID: 859815230}
+  - 114: {fileID: 859815233}
   - 114: {fileID: 859815232}
   m_Layer: 0
   m_Name: TouchController
@@ -37254,6 +37257,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoomInButton: {fileID: 1484597459}
   zoomOutButton: {fileID: 530058079}
+--- !u!114 &859815233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 11486438, guid: 91bda7b9880381042a66f16ab314140d,
+    type: 2}
+  m_PrefabInternal: {fileID: 268541248}
+  m_GameObject: {fileID: 859815229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf44e0c9031cf54fb14f47f10d18871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomInButton: {fileID: 0}
+  zoomOutButton: {fileID: 0}
 --- !u!1 &861016533
 GameObject:
   m_ObjectHideFlags: 0
@@ -48506,13 +48523,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: .800000012, g: .600000024, b: 0, a: 1}
   mPivot: 3
-  mWidth: 226
+  mWidth: 262
   mHeight: 26
   mDepth: 31
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 8.69230747
+  aspectRatio: 10.0769234
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -55944,7 +55961,7 @@ Transform:
   m_PrefabInternal: {fileID: 697858363}
   m_GameObject: {fileID: 1342575509}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 204, y: -61, z: 0}
+  m_LocalPosition: {x: 199, y: -9, z: 0}
   m_LocalScale: {x: 1, y: .999899983, z: .999899983}
   m_Children: []
   m_Father: {fileID: 686722270}
@@ -55962,36 +55979,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leftAnchor:
-    target: {fileID: 837518921}
+    target: {fileID: 0}
     relative: 0
-    absolute: 10
+    absolute: -67
   rightAnchor:
-    target: {fileID: 837518921}
+    target: {fileID: 0}
     relative: 1
-    absolute: 0
+    absolute: 67
   bottomAnchor:
-    target: {fileID: 837518921}
+    target: {fileID: 0}
     relative: 0
-    absolute: 100
+    absolute: 45
   topAnchor:
-    target: {fileID: 837518921}
+    target: {fileID: 0}
     relative: 1
-    absolute: -24
+    absolute: 79
   updateAnchors: 0
   mColor: {r: 1, g: .74999994, b: 0, a: 1}
   mPivot: 4
-  mWidth: 148
-  mHeight: 26
-  mDepth: 37
+  mWidth: 142
+  mHeight: 34
+  mDepth: 123
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5.69230747
+  aspectRatio: 4.17647076
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
   mText: require
-  mFontSize: 20
+  mFontSize: 34
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1
@@ -57619,7 +57636,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 94, y: 90, z: 0}
+  m_Size: {x: 94, y: 106.669998, z: 0}
   m_Center: {x: 8.39233398e-05, y: .0124511719, z: 0}
 --- !u!1 &1381196322
 GameObject:
@@ -58598,7 +58615,7 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: .792156875}
+  mColor: {r: 1, g: 1, b: 1, a: .937254906}
   mPivot: 4
   mWidth: 128
   mHeight: 126
@@ -64333,7 +64350,7 @@ Transform:
   m_PrefabInternal: {fileID: 697858363}
   m_GameObject: {fileID: 1476273408}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: 0}
+  m_LocalPosition: {x: -0, y: -2, z: 0}
   m_LocalScale: {x: .833333313, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 127102042}
@@ -71269,8 +71286,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 75.8099976, y: 71, z: 0}
-  m_Center: {x: 8.39233398e-05, y: .0124511719, z: 0}
+  m_Size: {x: 104.599998, y: 110.410004, z: 0}
+  m_Center: {x: 13.1999998, y: .0124511719, z: 0}
 --- !u!1 &1703747422
 GameObject:
   m_ObjectHideFlags: 0
@@ -72070,7 +72087,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3027
+  startingRenderQueue: 3028
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -72135,7 +72152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4019bc145ce354ea2c135cb1a4a957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsModifyingMesh: 1
+  IsModifyingMesh: 0
   DefaultMaterial: {fileID: 2100000, guid: ad1a2f3e640783041971fadacb288367, type: 2}
   Settings: {fileID: 0}
 --- !u!4 &1724703050
@@ -76430,11 +76447,11 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 1568119149}
     relative: 0
-    absolute: -213
+    absolute: -197
   rightAnchor:
     target: {fileID: 1568119149}
     relative: 1
-    absolute: 210
+    absolute: 194
   bottomAnchor:
     target: {fileID: 1568119149}
     relative: 1
@@ -76446,13 +76463,13 @@ MonoBehaviour:
   updateAnchors: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 652
+  mWidth: 620
   mHeight: 342
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.90643275
+  aspectRatio: 1.8128655
 --- !u!1 &1814857302
 GameObject:
   m_ObjectHideFlags: 0
@@ -80870,7 +80887,7 @@ Transform:
   m_PrefabInternal: {fileID: 697858363}
   m_GameObject: {fileID: 1893690296}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 459, y: -12, z: 0}
+  m_LocalPosition: {x: 459, y: 27, z: 0}
   m_LocalScale: {x: .800000012, y: .800000012, z: 1}
   m_Children:
   - {fileID: 211236922}
@@ -81348,7 +81365,7 @@ Transform:
   m_PrefabInternal: {fileID: 697858363}
   m_GameObject: {fileID: 1913766444}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 203, y: -118, z: 0}
+  m_LocalPosition: {x: 203, y: -93, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 686722270}
@@ -81366,36 +81383,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leftAnchor:
-    target: {fileID: 837518921}
+    target: {fileID: 0}
     relative: 0
-    absolute: 8
+    absolute: -71
   rightAnchor:
-    target: {fileID: 837518921}
+    target: {fileID: 0}
     relative: 1
-    absolute: 0
+    absolute: 79
   bottomAnchor:
-    target: {fileID: 837518921}
+    target: {fileID: 0}
     relative: 0
-    absolute: 4
+    absolute: -71
   topAnchor:
-    target: {fileID: 837518921}
+    target: {fileID: 0}
     relative: 1
-    absolute: -42
+    absolute: 45
   updateAnchors: 0
-  mColor: {r: 1, g: .397058845, b: .397058845, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 150
-  mHeight: 104
-  mDepth: 37
+  mWidth: 136
+  mHeight: 130
+  mDepth: 127
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.44230771
+  aspectRatio: 1.0461539
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
-  mText: LIZARD HARAS
-  mFontSize: 26
+  mText: 
+  mFontSize: 33
   mFontStyle: 0
   mAlignment: 2
   mEncoding: 1
@@ -81406,10 +81423,10 @@ MonoBehaviour:
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
   mMaterial: {fileID: 0}
-  mApplyGradient: 1
+  mApplyGradient: 0
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .433823526, g: .433823526, b: .433823526, a: 1}
-  mSpacingX: -1
+  mGradientBottom: {r: .617647052, g: .617647052, b: .617647052, a: 1}
+  mSpacingX: -3
   mSpacingY: 0
   mUseFloatSpacing: 0
   mFloatSpacingX: 0

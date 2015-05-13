@@ -211,11 +211,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	#region Awake, Init
 
-	void Awake ()
-	{
-		if(ConfigurationData.InGame)Init ();
-	}
-
 	public virtual void Init ()
 	{
 		if (wasInitialized)	return;

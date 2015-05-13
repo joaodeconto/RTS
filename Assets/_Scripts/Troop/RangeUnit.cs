@@ -12,12 +12,12 @@ public class RangeUnit : Unit
 	public GameObject prefabProjectile;
 	public Transform trnsInstantiateLocalPrefab;
 	public GameObject dummyRangeObject;
-	private Quaternion dummyRotation;
+	public Quaternion dummyRotation;
 	public AnimationClip projectileAttackAnimation;
 	public float projectileAnimationSync;
 	public bool projectileAttacking {get; set;}
 	public int projectileAnimating 	{get; set;}		
-	private bool rangeInitialized = false;
+	public bool rangeInitialized = false;
 
 	public override void Init ()
 	{
@@ -77,7 +77,7 @@ public class RangeUnit : Unit
 		}
 	}
 
-	IEnumerator Attack ()
+	public IEnumerator Attack ()
 	{	
 		SfxAtk();
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
@@ -168,11 +168,11 @@ public class RangeUnit : Unit
 		Invoke ("DummyActive",1);
 	}
 
-	private void DummyActive()
+	public void DummyActive()
 	{
 		dummyRangeObject.SetActive(true);
 	}
-	private void DummyReset()
+	public void DummyReset()
 	{
 		dummyRangeObject.SetActive(true);
 		dummyRangeObject.transform.localRotation = dummyRotation;

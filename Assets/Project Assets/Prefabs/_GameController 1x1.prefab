@@ -138,6 +138,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400020}
   - 114: {fileID: 11400020}
+  - 114: {fileID: 11486438}
   m_Layer: 0
   m_Name: TouchController
   m_TagString: Untagged
@@ -622,7 +623,7 @@ MonoBehaviour:
   fogMiniMap: {fileID: 0}
   beingAttackedMiniMap: {fileID: 100000, guid: 6d689bc25bc28e347a367c3883aeaf9a, type: 2}
   minimapAtlas: {fileID: 11400000, guid: 1ad367796a1accb419f17d3ea071ca02, type: 2}
-  visualizationSize: {x: 100, y: 70, z: 0}
+  visualizationSize: {x: 100, y: 68, z: 0}
   visualizationPosition: {x: 0, y: 0, z: 60}
   MiniMapRefreshInterval: .200000003
 --- !u!114 &11400018
@@ -851,7 +852,7 @@ MonoBehaviour:
   clusterModels:
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 240
+    triggerDemmand: 280
     repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 0}
@@ -861,10 +862,12 @@ MonoBehaviour:
     factory: {fileID: 0}
     desiredBehaviour: 2
     clusterDesiredUnits:
-    - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
+    - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400000, guid: e4d625eb15c63c44dbbc9fdd0d83c5b7, type: 2}
     - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400010, guid: 0718c2afed22e534e808d3ea1ffd9b8c, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
     hasDemanded: 0
@@ -872,7 +875,7 @@ MonoBehaviour:
     minusTRepeat: 0
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 15
+    triggerDemmand: 5
     repeatDemmand: 30
     bravery: 3
     defendTarget: {fileID: 0}
@@ -885,7 +888,7 @@ MonoBehaviour:
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: 3e77ef68a81e7ca4bad0a6fac922ce19, type: 2}
     - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
-    - {fileID: 11400004, guid: bac20da015e39aa46b48a1827a1a5998, type: 2}
+    - {fileID: 11400010, guid: 0718c2afed22e534e808d3ea1ffd9b8c, type: 2}
     - {fileID: 11400000, guid: abfa5013109a3f447bf3ee2f281fa1ee, type: 2}
     clusterUnits: []
     clusterIsBusy: 0
@@ -894,7 +897,7 @@ MonoBehaviour:
     minusTRepeat: 0
   - clusterComplete: 0
     clusterNumber: 0
-    triggerDemmand: 40
+    triggerDemmand: 60
     repeatDemmand: 30
     bravery: 5
     defendTarget: {fileID: 0}
@@ -958,6 +961,8 @@ MonoBehaviour:
   - {fileID: 11444522, guid: 553d86d9222dd644e86f4ae7b4491ff0, type: 2}
   - {fileID: 11440944, guid: cae909b94144d4846b8b99d0e9feb5f7, type: 2}
   - {fileID: 11455230, guid: 80101564578c88542a4ad2b8eaec0d9d, type: 2}
+  - {fileID: 11478150, guid: f61fab55a733a5b4b84358a068e0a334, type: 2}
+  - {fileID: 11460170, guid: 6dc69d465dce2294bb72488a4b25e228, type: 2}
   prefabFactory:
   - {fileID: 11400000, guid: 74c85a2adc76ed644b091d367b2acdfc, type: 2}
   - {fileID: 11400004, guid: 5e1b63fa02d6b9b4fb77e80864c091dd, type: 2}
@@ -990,37 +995,48 @@ MonoBehaviour:
   ChallengesToWin:
   - IsActive: 0
     objectiveCompleted: 0
-    Name: Stash 500 Gold
+    Name: Faithfull
     enumComparingType: 4
-    specificStat: gold
-    valueToCompare: 500
+    specificStat: Mana
+    valueToCompare: 300
     enumCondition: 2
-    objDescription: 'Guide your workers to a gold mine, extract more and more! Save
-      enought gold for the next tutorial! '
+    objDescription: Oblige the creator Collect 300 mana
     objSprite: Achiv_Battle1
   - IsActive: 0
     objectiveCompleted: 0
-    Name: Build shelter for 40 units
-    enumComparingType: 2
-    specificStat: 
-    valueToCompare: 39
-    enumCondition: 2
-    objDescription: Learn to grow your tribe, contructing huts its fundamental for
-      a future army growth.
+    Name: Infidels
+    enumComparingType: 6
+    specificStat: Obelisk
+    valueToCompare: 0
+    enumCondition: 1
+    objDescription: 'Destroy every enemy monolith '
     objSprite: cottage
   - IsActive: 0
     objectiveCompleted: 0
-    Name: Defeat All Enemies
-    enumComparingType: 8
-    specificStat: 
-    valueToCompare: 0
+    Name: Army up
+    enumComparingType: 5
+    specificStat: ArmyStructure
+    valueToCompare: 3
     enumCondition: 1
-    objDescription: Destroy the enemy tribe.
+    objDescription: Build at least 3 army structures of any kind
     objSprite: Achiv_Battle1
   Ativar: 1
   objectiveLog: {fileID: 0}
   objSubpanel: {fileID: 0}
   objectiveRow: {fileID: 100016, guid: 8ddc659078696134ba3dbf1fcba7838c, type: 2}
+--- !u!114 &11486438
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf44e0c9031cf54fb14f47f10d18871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomInButton: {fileID: 0}
+  zoomOutButton: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

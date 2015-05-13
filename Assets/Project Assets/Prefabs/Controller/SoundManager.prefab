@@ -1,0 +1,566 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400000}
+  - 114: {fileID: 11400000}
+  - 82: {fileID: 8200004}
+  - 82: {fileID: 8200002}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: GameController
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &400000
+Transform:
+  m_ObjectHideFlags: 10
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!82 &8200002
+AudioSource:
+  m_ObjectHideFlags: 2
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+--- !u!82 &8200004
+AudioSource:
+  m_ObjectHideFlags: 2
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 617da7e6dc6c82f43988a70b1b7fd69e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  helpOn: 0
+  showInfo: 1
+  showDev: 1
+  showList: 0
+  showAdd: 1
+  showSFX: 1
+  showSFXDetails: 01010101010101010101010101010101010101010101010101010101010101010101010101010101
+  groupAddIndex: 8
+  autoPrepoolAmount: 0
+  autoBaseVolume: 1
+  autoVolumeVariation: 0
+  autoPitchVariation: 0
+  showAsGrouped: 1
+  soundConnections:
+  - level: 2x2_Swamp_King
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
+    baseVolumes:
+    - 1
+    playMethod: 5
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
+  - level: main_menu
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: fe403fd12ba51eb47a3a7e46fd6d75a9, type: 3}
+    - {fileID: 8300000, guid: 03a2c95c0951b40499bf5a2df255caae, type: 3}
+    baseVolumes:
+    - 1
+    - 1
+    playMethod: 0
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
+  - level: 1x1_Medium_TheLivingDesert
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
+    playMethod: 3
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
+  - level: autoload_main_menu
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: 03a2c95c0951b40499bf5a2df255caae, type: 3}
+    baseVolumes:
+    - 1
+    playMethod: 0
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
+  - level: 2x2_Swamp_King_Tutorial
+    isCustomLevel: 0
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
+    playMethod: 3
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
+  audios:
+  - {fileID: 8200004}
+  - {fileID: 8200002}
+  currentLevel: 
+  currentSoundConnection:
+    level: 
+    isCustomLevel: 0
+    soundsToPlay: []
+    baseVolumes: []
+    playMethod: 0
+    minDelay: 0
+    maxDelay: 0
+    delay: 0
+  crossDuration: 0
+  showDebug: 0
+  offTheBGM: 0
+  isPaused: 0
+  movingOnFromSong: 0
+  ignoreLevelLoad: 0
+  resourcesPath: Sounds/SFX
+  storedSFXs:
+  - {fileID: 8300000, guid: 73ca32c0bf4877e478024223ef9b40be, type: 3}
+  - {fileID: 8300000, guid: 96036e7288a524b4b8360d37e964c0b0, type: 3}
+  - {fileID: 8300000, guid: a7a17999a186508489c7b866c00889d6, type: 3}
+  - {fileID: 8300000, guid: 6c6ac58a969bc7f4d9255f3ece2ce382, type: 3}
+  - {fileID: 8300000, guid: f5a8302c6ac4eae41821e349ee00123c, type: 3}
+  - {fileID: 8300000, guid: 764db8f6e7d4a284a924513dce0794de, type: 3}
+  - {fileID: 8300000, guid: 6a054a65daa324e498cfb685352a992d, type: 3}
+  - {fileID: 8300000, guid: 5257049f7fdaa004e91980821c5fafb5, type: 3}
+  - {fileID: 8300000, guid: d583c5c0a6edf6a4eb2b6d2557ab872e, type: 3}
+  - {fileID: 8300000, guid: 709b9680e98cb8c4e88ed6ad172815ff, type: 3}
+  - {fileID: 8300000, guid: ded7a26b35179d646b87dd2185df2ef7, type: 3}
+  - {fileID: 8300000, guid: 6f6ad43210456ca43b4f9e04e12fed1c, type: 3}
+  - {fileID: 8300000, guid: a7d499e89f728b2469f551401db790a6, type: 3}
+  - {fileID: 8300000, guid: c7ac946ca172d4d4499d904f48503f2f, type: 3}
+  - {fileID: 8300000, guid: 3a620befb956c494b9dd63d38d77a762, type: 3}
+  - {fileID: 8300000, guid: 9235895b9d53e6047bdf7d3afb151283, type: 3}
+  - {fileID: 8300000, guid: bcce0844ce35e954da24a0e85de7500b, type: 3}
+  - {fileID: 8300000, guid: 3c23caa2e198c794fa5748cc5238a3cd, type: 3}
+  - {fileID: 8300000, guid: b34f0c5f4eb798f42b3c02a86cf0530e, type: 3}
+  - {fileID: 8300000, guid: 8ebefed03f7f60744930183f962e619a, type: 3}
+  - {fileID: 8300000, guid: 806ed8704588b2240bdbb6215537e714, type: 3}
+  - {fileID: 8300000, guid: 394962629db919e49a6d94208e68e1d6, type: 3}
+  - {fileID: 8300000, guid: 9c5776d93fd4c294d83c7fa7ddbe4289, type: 3}
+  - {fileID: 8300000, guid: 1f71a9f921b2a314ca0b2a72b02ff27f, type: 3}
+  - {fileID: 8300000, guid: 52751d399cb09754f8e568a1a2bba58e, type: 3}
+  - {fileID: 8300000, guid: feae78c8694cda5478b3b0b0af0e023f, type: 3}
+  - {fileID: 8300000, guid: abb9b77d8e6ef734f9ba589608fdef51, type: 3}
+  - {fileID: 8300000, guid: 6cba2095361979e4daf2ba3c8b8dbb45, type: 3}
+  - {fileID: 8300000, guid: a9e6cc645f7bf4949b2ad4579aa098a8, type: 3}
+  - {fileID: 8300000, guid: 86fb9d8aaaf93ec4d8288fbd7262ca0e, type: 3}
+  - {fileID: 8300000, guid: a71e21e806294f14f8055b0c3c9d81b0, type: 3}
+  - {fileID: 8300000, guid: 0a8a6838bde934d4080e2c5c95f756b9, type: 3}
+  - {fileID: 8300000, guid: 0e810f772b793ae459f1a3e0fcbc5003, type: 3}
+  - {fileID: 8300000, guid: 2ce0f6d18f6f321489978698f73bdaf5, type: 3}
+  - {fileID: 8300000, guid: 6b580fd0115d2dd4a9b1cfdb73cea8f1, type: 3}
+  - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+  - {fileID: 8300000, guid: 1ddb9feb0ae17cc4f80c98d8ea490dbe, type: 3}
+  - {fileID: 8300000, guid: 2e806d8075447554ba96aa602c48c2b6, type: 3}
+  - {fileID: 8300000, guid: 62c5c4450d5b0dc4b97cdb2fbcb4d8d1, type: 3}
+  - {fileID: 8300000, guid: f86a2f5e202643b4d9ad6e1b7daadc5c, type: 3}
+  unOwnedSFXObjects: []
+  sfxGroups:
+  - groupName: Select
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Confirm
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Attack
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Death
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Structures
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Charge
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Mining
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Building
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 0
+    pitch: 0
+  - groupName: Building_Ambient
+    specificCapAmount: -1
+    clips: []
+    independentVolume: 0
+    independentPitch: 0
+    volume: 1
+    pitch: 1
+  clipToGroupKeys:
+  - T_Rex_Fala
+  - Tricera_Death
+  - Nean_Ja
+  - Nean_Fala
+  - Nean_Nao
+  - Nean_Beat
+  - Hunter_Hurt
+  - T_Rex_Atk
+  - T_Rex_AtkDouble
+  - 'Bear Growl #2'
+  - drums_buildings
+  - tum
+  - troop_select
+  - Fast_Atk
+  - Tricera_Select
+  - Hunter_Oque
+  - TribalFinish1
+  - Nean_Gorn
+  - Nean_Tesurra
+  - Nean_Vamoluta
+  - mining_Edt
+  - Parassa_Breath1
+  - Parassa_Breath
+  - Worker_Hammer
+  - mining_2
+  - mining_4
+  - mining_3
+  - Man_Yes
+  - Parassa_Woman_Confirm
+  - Parassa_Woman_Death
+  - Parassa_Woman_Yes
+  - Nean_Varum
+  - Ritual
+  - MainBase_BG
+  - Nean_Cross
+  - Worker_Saw
+  clipToGroupValues:
+  - Select
+  - Death
+  - Confirm
+  - Select
+  - Death
+  - Attack
+  - Death
+  - Attack
+  - Attack
+  - Attack
+  - Structures
+  - Structures
+  - Structures
+  - Attack
+  - Select
+  - Select
+  - Structures
+  - Charge
+  - Charge
+  - Charge
+  - Mining
+  - Death
+  - Death
+  - Building
+  - Mining
+  - Mining
+  - Mining
+  - Confirm
+  - Confirm
+  - Death
+  - Select
+  - Confirm
+  - Building_Ambient
+  - Building_Ambient
+  - Select
+  - Building
+  offTheSFX: 0
+  capAmount: 4
+  sfxPrePoolAmounts: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  sfxBaseVolumes:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  sfxVolumeVariations:
+  - 0
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - 0
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  sfxPitchVariations:
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  - .0299999993
+  SFXObjectLifetime: 2
+  currentPockets:
+  - Default
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 100000}
+  m_IsPrefabParent: 1
+  m_IsExploded: 1
