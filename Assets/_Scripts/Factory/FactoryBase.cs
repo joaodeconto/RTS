@@ -152,9 +152,10 @@ public class FactoryBase : IStats, IDeathObservable
 				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
 				Score.AddScorePoints (this.category + DataScoreEnum.XBuilt, this.totalResourceCost, battle.IdBattle);		
 			}
+			PaintAgent pa = GetComponent<PaintAgent>();
+			pa.Paint(this.transform.position, sizeOfHealthBar * 0.8f);
 		}
-		PaintAgent pa = GetComponent<PaintAgent>();
-		pa.Paint(this.transform.position, sizeOfHealthBar * 0.8f);
+
 		Invoke ("SendMessageInstance", 0.1f);
 						
 	}
@@ -278,6 +279,11 @@ public class FactoryBase : IStats, IDeathObservable
 			{
 				wasVisible = true;
 				model.SetActive(true);
+				if(!playerUnit)
+				{
+					PaintAgent pa = GetComponent<PaintAgent>();
+					pa.Paint(this.transform.position, sizeOfHealthBar * 0.8f);
+				}
 			}
 		}
 		else
