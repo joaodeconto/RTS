@@ -50,7 +50,6 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
 			fb.Init();
-			ComponentGetter.Get<StatsController>().AddStats(fb);
 		}				
 		CancelInvoke ("NetworkInstantiatePrefab");
 		Destroy (this.gameObject);
@@ -71,7 +70,6 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 			prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
-			ComponentGetter.Get<StatsController>().AddStats(fb);
 		}	
 
 		CancelInvoke ("NetworkInstantiatePrefab");
