@@ -29,8 +29,8 @@ public class GhostFactory : MonoBehaviour
 		this.worker 			 = worker;
 		this.factoryConstruction = factoryConstruction;		
 		thisFactory = GetComponent<FactoryBase>();
-//		if (!PhotonNetwork.offlineMode)thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team, worker.ally);
-		thisFactory.InstanceOverdraw(worker.team, worker.ally);
+		if (!PhotonNetwork.offlineMode)thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team, worker.ally);
+		else thisFactory.InstanceOverdraw(worker.team, worker.ally);
 		correctName = thisFactory.name;
 		thisFactory.name = "GhostFactory";		
 		ComponentGetter.Get<InteractionController> ().enabled = false;

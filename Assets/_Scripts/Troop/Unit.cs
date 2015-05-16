@@ -290,10 +290,10 @@ public class Unit : IStats, IMovementObservable,
 
 	public virtual void SyncAnimation ()
 	{
+		if (!gameplayManager.IsSameTeam (team))ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
+
 		if (IsVisible)
 		{
-			if (!gameplayManager.IsSameTeam (team))ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
-
 			switch (unitState)
 			{
 			case UnitState.Idle:
