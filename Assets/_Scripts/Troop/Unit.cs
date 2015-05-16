@@ -101,7 +101,6 @@ public class Unit : IStats, IMovementObservable,
 	protected InteractionController interactionController;
 	private bool unitInitialized = false;
 	private bool isFollowed = false;
-	private NavMeshPath path;
 
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
@@ -137,7 +136,7 @@ public class Unit : IStats, IMovementObservable,
 		PathfindTarget = transform.position;
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
-		path = new NavMeshPath();
+
 
 		if (playerUnit)
 		{	
@@ -338,15 +337,14 @@ public class Unit : IStats, IMovementObservable,
 
 		if (NavAgent.CalculatePath(destination, newPath))
 		{
-			if(path.status != NavMeshPathStatus.PathComplete)		
+			if(newPath.status != NavMeshPathStatus.PathComplete)		
 			{
 				NavAgent.SetDestination (destination);
 			}
 		
 			else 
 			{
-				path = newPath;
-				NavAgent.SetPath(path);
+				NavAgent.SetPath(newPath);
 			}
 		}
 		else

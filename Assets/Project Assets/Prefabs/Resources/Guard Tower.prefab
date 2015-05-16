@@ -634,6 +634,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 425668}
   - 114: {fileID: 11425588}
+  - 114: {fileID: 11416138}
+  - 114: {fileID: 11418138}
   m_Layer: 0
   m_Name: Spearman1
   m_TagString: Untagged
@@ -1343,6 +1345,37 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 1
+--- !u!114 &11416138
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  subId: 0
+  ownerId: 0
+  group: 0
+  prefixBackup: -1
+  observed: {fileID: 11418138}
+  synchronization: 1
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  instantiationId: 0
+--- !u!114 &11418138
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf7044280fc213649a582e2de4c3faee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11425588
 MonoBehaviour:
   m_ObjectHideFlags: 1

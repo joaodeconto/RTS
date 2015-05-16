@@ -113,11 +113,11 @@ public class FactoryBase : IStats, IDeathObservable
 	public override void Init ()
 	{
 		base.Init();
-		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
 		enabled = playerUnit;
 		helperCollider = GetComponentInChildren<CapsuleCollider> ();
 
 		if(factoryInitialized || !wasBuilt) return;
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
 		factoryInitialized = true;	
 		timer = 0;
 		hudController     = ComponentGetter.Get<HUDController> ();

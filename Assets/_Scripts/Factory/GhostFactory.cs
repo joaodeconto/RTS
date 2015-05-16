@@ -28,9 +28,7 @@ public class GhostFactory : MonoBehaviour
 		randomRotation = Random.rotation.y;		
 		this.worker 			 = worker;
 		this.factoryConstruction = factoryConstruction;		
-		thisFactory = GetComponent<FactoryBase>();	
-		thisFactory.ghostFactory = true;
-		thisFactory.Init();
+		thisFactory = GetComponent<FactoryBase>();
 //		if (!PhotonNetwork.offlineMode)thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team, worker.ally);
 		thisFactory.InstanceOverdraw(worker.team, worker.ally);
 		correctName = thisFactory.name;
@@ -40,8 +38,7 @@ public class GhostFactory : MonoBehaviour
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		touchController = ComponentGetter.Get<TouchController> ();		
 		touchController.DisableDragOn = true;		
-		isCapsuleCollider = true;		
-		thisFactory.gameObject.layer = LayerMask.NameToLayer ("Gizmos");
+		isCapsuleCollider = true;
 		if (!PhotonNetwork.offlineMode) GetComponent<PhotonView>().observed = null;	
 		GameObject helperColliderGameObject;
 		
@@ -65,7 +62,7 @@ public class GhostFactory : MonoBehaviour
 		
 		HelperColliderDetect hcd = helperColliderGameObject.AddComponent<HelperColliderDetect> ();
 		hcd.Init((other) =>	{OnCollider (other);}, (other) => {OffCollider (other);});		
-		SetOverdraw (worker.team);
+		SetOverdraw ();
 	}
 	
 	void Update ()
@@ -156,6 +153,8 @@ public class GhostFactory : MonoBehaviour
 
 			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;
 			
+			this.gameObject.layer = LayerMask.NameToLayer ("Unit");
+			
 			if (!PhotonNetwork.offlineMode)
 			{
 				FactoryNetworkTransform fnt = GetComponent<FactoryNetworkTransform>();
@@ -188,14 +187,17 @@ public class GhostFactory : MonoBehaviour
 		}
 	}
 	
-	void SetOverdraw (int teamId)
+	void SetOverdraw ()
 	{
-		Quaternion factoryRotation = thisFactory.model.transform.rotation;
+		
+		this.gameObject.layer = LayerMask.NameToLayer ("Gizmos");
+		Quaternion factoryRotation = thisFactory.transform.rotation;
 		factoryRotation.y = randomRotation;
 		overdrawModel = Instantiate (thisFactory.model, thisFactory.model.transform.position, factoryRotation) as GameObject;
 		overdrawModel.transform.parent = thisFactory.transform;
-		thisFactory.model.transform.rotation = factoryRotation;
+		thisFactory.transform.rotation = factoryRotation;
 		thisFactory.model.SetActive (false);
+		overdrawModel.SetActive(true);
 		
 		foreach (Renderer r in overdrawModel.GetComponentsInChildren<Renderer>())
 		{

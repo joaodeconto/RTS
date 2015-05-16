@@ -25,6 +25,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 460094}
   - 114: {fileID: 11460174}
+  - 114: {fileID: 11498956}
+  - 114: {fileID: 11494998}
   m_Layer: 0
   m_Name: Spearman3
   m_TagString: Untagged
@@ -1436,6 +1438,37 @@ MonoBehaviour:
     type: 3}
   projectileAnimationSync: 1
   rangeInitialized: 0
+--- !u!114 &11494998
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 160094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a742b143fc497dc429fc2b9685de61c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11498956
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 160094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  subId: 0
+  ownerId: 0
+  group: 0
+  prefixBackup: -1
+  observed: {fileID: 11494998}
+  synchronization: 1
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  instantiationId: 0
 --- !u!137 &13760176
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
