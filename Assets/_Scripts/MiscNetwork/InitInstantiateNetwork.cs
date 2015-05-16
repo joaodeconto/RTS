@@ -8,6 +8,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 {
 	public GameObject prefabInstantiate;
 	private bool wasInitialized = false;
+	private GameObject prefab;
 
 	public virtual void Init ()
 	{
@@ -39,7 +40,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 
 	void InstantiatePrefab ()
 	{
-		GameObject prefab = Instantiate (prefabInstantiate, transform.position, prefabInstantiate.transform.rotation) as GameObject;
+		prefab = Instantiate (prefabInstantiate, transform.position, prefabInstantiate.transform.rotation) as GameObject;
 		
 		IStats stats = prefab.GetComponent<IStats>();
 		stats.SetTeam (0, 0);
@@ -74,9 +75,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
 					fb.wasBuilt = true;
 					fb.Init();
-					ComponentGetter.Get<StatsController>().AddStats(fb);
 					fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
-					fb.photonView.RPC("InstanceAddStats", PhotonTargets.OthersBuffered);
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 //					Debug.Log ("init instanciate" + fb.playerUnit);
 				}	

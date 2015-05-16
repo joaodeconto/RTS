@@ -211,6 +211,11 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	#region Awake, Init
 
+	void Awake ()
+	{
+		Init ();
+	}
+
 	public virtual void Init ()
 	{
 		if (wasInitialized)	return;
@@ -254,7 +259,8 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		SetColorTeam ();		
 		WasRemoved = false;
 		FactoryBase fb = GetComponent<FactoryBase>();
-		if(fb == null)	statsController.AddStats (this);
+		if(fb == null ) statsController.AddStats (this);
+		else if (!fb.ghostFactory) statsController.AddStats(this);
 	}
 	#endregion
 

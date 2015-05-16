@@ -28,7 +28,8 @@ public class GhostFactory : MonoBehaviour
 		randomRotation = Random.rotation.y;		
 		this.worker 			 = worker;
 		this.factoryConstruction = factoryConstruction;		
-		thisFactory = GetComponent<FactoryBase>();		
+		thisFactory = GetComponent<FactoryBase>();	
+		thisFactory.ghostFactory = true;
 		thisFactory.Init();
 //		if (!PhotonNetwork.offlineMode)thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team, worker.ally);
 		thisFactory.InstanceOverdraw(worker.team, worker.ally);
@@ -149,7 +150,8 @@ public class GhostFactory : MonoBehaviour
 			Destroy (helperColliderGameObject.rigidbody);
 			Destroy (helperColliderGameObject.GetComponent<HelperColliderDetect> ());			
 			collider.isTrigger = false;
-			thisFactory.enabled = true;			
+			thisFactory.enabled = true;	
+			thisFactory.ghostFactory = false;
 			thisFactory.name = correctName;
 
 			if (GetComponent<NavMeshObstacle> () != null) GetComponent<NavMeshObstacle>().enabled = true;

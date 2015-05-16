@@ -79,6 +79,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public List<string> TechsToActive = new List<string>();	
 	public Animation ControllerAnimation { get; private set; }	
 	public bool wasBuilt { get; set; }	
+	public bool ghostFactory { get; set; }
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;	
 	protected bool isInvokingSlider{get; set;}
@@ -1075,11 +1076,6 @@ public class FactoryBase : IStats, IDeathObservable
 		if (!gameplayManager.IsSameTeam (team))	model.SetActive (true);
 		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 
-	}
-	[RPC]
-	public void InstanceAddStats ()
-	{		
-		statsController.AddStats(this);
 	}
 
 	#endregion
