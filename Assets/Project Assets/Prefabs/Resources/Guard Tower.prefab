@@ -595,7 +595,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &125664
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -625,24 +625,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &125668
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 425668}
-  - 114: {fileID: 11425588}
-  - 114: {fileID: 11416138}
-  - 114: {fileID: 11418138}
-  m_Layer: 0
-  m_Name: Spearman1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &178152
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,6 +634,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 478152}
   - 114: {fileID: 11478150}
+  - 114: {fileID: 11429936}
+  - 114: {fileID: 11429938}
+  - 114: {fileID: 11429940}
   m_Layer: 0
   m_Name: Guard Tower
   m_TagString: Untagged
@@ -1183,25 +1168,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 125664}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -8.42937027e-08, y: 0, z: 2.45762226e-15, w: 1}
+  m_LocalPosition: {x: -.600000679, y: 4.38000011, z: .527998745}
+  m_LocalScale: {x: .700000048, y: .699999988, z: .700000048}
   m_Children:
   - {fileID: 425602}
   - {fileID: 425664}
-  m_Father: {fileID: 425668}
-  m_RootOrder: 0
---- !u!4 &425668
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125668}
-  m_LocalRotation: {x: -8.42936956e-08, y: 1.24555042e-08, z: 1.52925605e-15, w: 1}
-  m_LocalPosition: {x: -.600000024, y: 4.38000011, z: .527999997}
-  m_LocalScale: {x: .699999988, y: .699999988, z: .699999988}
-  m_Children:
-  - {fileID: 425666}
   m_Father: {fileID: 478152}
   m_RootOrder: 0
 --- !u!4 &478152
@@ -1214,7 +1186,7 @@ Transform:
   m_LocalPosition: {x: 42.6362801, y: 2.89934683, z: 36.6237144}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 425668}
+  - {fileID: 425666}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!23 &2325586
@@ -1345,43 +1317,12 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 1
---- !u!114 &11416138
+--- !u!114 &11429936
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  subId: 0
-  ownerId: 0
-  group: 0
-  prefixBackup: -1
-  observed: {fileID: 11418138}
-  synchronization: 1
-  onSerializeTransformOption: 3
-  onSerializeRigidBodyOption: 2
-  instantiationId: 0
---- !u!114 &11418138
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf7044280fc213649a582e2de4c3faee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &11425588
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125668}
+  m_GameObject: {fileID: 178152}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d1a46da1691e0b43846d8318335b7c8, type: 3}
@@ -1441,6 +1382,37 @@ MonoBehaviour:
     type: 3}
   projectileAnimationSync: 1
   rangeInitialized: 0
+--- !u!114 &11429938
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  subId: 0
+  ownerId: 0
+  group: 0
+  prefixBackup: -1
+  observed: {fileID: 11429940}
+  synchronization: 1
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  instantiationId: 0
+--- !u!114 &11429940
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf7044280fc213649a582e2de4c3faee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11478150
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1453,7 +1425,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upgradeName: Guard Tower
-  description: Increases Tower Field of View
+  description: A spearman is added to your tower, attacking enemies within his range.
   stats1Value: 8
   stats1Text: ATK
   stats2Value: 

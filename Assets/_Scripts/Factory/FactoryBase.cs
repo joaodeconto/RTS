@@ -1066,7 +1066,7 @@ public class FactoryBase : IStats, IDeathObservable
 		realRangeView  = this.fieldOfView;		
 		GetComponent<NavMeshObstacle> ().enabled = true;		
 		statsController.AddStats(this);		
-		this.fieldOfView = 0.5f;		
+		this.fieldOfView = 5f;		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);

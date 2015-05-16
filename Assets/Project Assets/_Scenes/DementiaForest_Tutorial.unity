@@ -1825,7 +1825,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -6186,7 +6186,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 2800000, guid: e24044e73b677214faafd0571d776ed6, type: 3}
   mAlpha: 1
   mClipping: 4
@@ -16665,7 +16665,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -20432,7 +20432,7 @@ MonoBehaviour:
   anchorOffset: 1
   softBorderPadding: 0
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -24808,7 +24808,7 @@ Transform:
   m_PrefabInternal: {fileID: 1913984812}
   m_GameObject: {fileID: 721890086}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 60, y: 0, z: 64}
+  m_LocalPosition: {x: 60, y: 0, z: 60}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1531786243}
@@ -29944,30 +29944,39 @@ MonoBehaviour:
   ChallengesToWin:
   - IsActive: 0
     objectiveCompleted: 0
-    Name: Faithfull
+    Name: Miner
     enumComparingType: 4
-    specificStat: Mana
-    valueToCompare: 300
+    specificStat: Gold
+    valueToCompare: 500
     enumCondition: 2
-    objDescription: Guide your workers to a gold spot.
+    objDescription: Guide your workers to a gold spot. Create a surplus of 500 gold.
     objSprite: Achiv_Battle1
   - IsActive: 0
     objectiveCompleted: 0
-    Name: Infidels
-    enumComparingType: 6
-    specificStat: Obelisk
-    valueToCompare: 0
+    Name: Prayer
+    enumComparingType: 4
+    specificStat: Mana
+    valueToCompare: 200
+    enumCondition: 2
+    objDescription: Guide your workers to a sacret spot. Generate 200 mana.
+    objSprite: Achiv_Battle1
+  - IsActive: 0
+    objectiveCompleted: 0
+    Name: Settling
+    enumComparingType: 5
+    specificStat: 
+    valueToCompare: 39
     enumCondition: 2
     objDescription: Constructing huts is fundamental for supporting a large army.
     objSprite: cottage
   - IsActive: 0
     objectiveCompleted: 0
-    Name: Army up
-    enumComparingType: 5
-    specificStat: ArmyStructure
-    valueToCompare: 3
+    Name: Destroy All Enemies
+    enumComparingType: 8
+    specificStat: 
+    valueToCompare: 0
     enumCondition: 1
-    objDescription: Build at least 3 army structures of any kind
+    objDescription: Destroy the local tribes and its structures.
     objSprite: Achiv_Battle1
   Ativar: 1
   objectiveLog: {fileID: 931020109}
@@ -32870,7 +32879,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -60355,7 +60364,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3028
+  startingRenderQueue: 3029
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -62090,7 +62099,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -71812,7 +71821,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 2bdf8360728e4b64d9167a7db10483fe, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 64
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 2bdf8360728e4b64d9167a7db10483fe, type: 2}
       propertyPath: m_LocalRotation.x
@@ -72283,6 +72292,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 400026, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -72530,6 +72543,98 @@ Prefab:
     - target: {fileID: 11400032, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: subId
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].Name
+      value: Miner
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].specificStat
+      value: Gold
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].valueToCompare
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[1].Name
+      value: Prayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[1].enumComparingType
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[1].specificStat
+      value: Mana
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[1].valueToCompare
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[1].enumCondition
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[0].objDescription
+      value: Guide your workers to a gold spot. Create a surplus of 500 gold.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[2].Name
+      value: Settling
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[2].specificStat
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[2].valueToCompare
+      value: 39
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[2].enumCondition
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[2].objDescription
+      value: Constructing huts is fundamental for supporting a large army.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[2].objSprite
+      value: cottage
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[1].objDescription
+      value: Guide your workers to a sacret spot. Generate 200 mana.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[1].objSprite
+      value: Achiv_Battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].Name
+      value: Destroy All Enemies
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].enumComparingType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].valueToCompare
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].enumCondition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].objDescription
+      value: Destroy the local tribes and its structures.
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466618, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: ChallengesToWin.Array.data[3].objSprite
+      value: Achiv_Battle1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
