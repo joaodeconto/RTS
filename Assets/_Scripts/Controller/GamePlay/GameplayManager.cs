@@ -180,8 +180,9 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void TribeInstiateNetwork ()
 	{
+		
+		Debug.Log ("Tribe Network");
 		foreach (Team t in teams)
-
 		{
 			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
 			{
@@ -202,6 +203,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void TribeInstiate ()
 	{
+		Debug.Log ("Tribe Instantiate");
 		foreach (Transform trns in teams[0].initialPosition)
 		{
 			if(trns.gameObject.activeSelf == true)

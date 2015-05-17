@@ -7,17 +7,11 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 	private Vector3 correctPlayerPos; 
 	private Quaternion correctPlayerRot;
 	private bool wasInitialized = false; 
-	
-	void Awake ()
-	{
-		if(!wasInitialized)
-		{
-			Init ();
-		}
-	}
+
 	
 	public void Init ()
 	{
+		if(wasInitialized) return;
 		wasInitialized = true;
 		correctPlayerPos = transform.position; 
 		correctPlayerRot = transform.rotation;
@@ -25,6 +19,7 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 		if (PhotonNetwork.offlineMode)
 		{
 			enabled = false;
+			Debug.Log("offline???  " + enabled);
 		}
 		else
 		{
@@ -32,8 +27,18 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 			
 	        gameObject.name = gameObject.name + photonView.viewID;
 			
-			if (workerScript.IsNetworkInstantiate) enabled = !photonView.isMine;
-			else enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(workerScript);
+			if (workerScript.IsNetworkInstantiate)
+			{
+				enabled = !photonView.isMine;
+				Debug.Log("pelo photonview  " + enabled);
+			}
+
+			else 
+			{
+				enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(workerScript);
+				Debug.Log("pelo gameplay  " + enabled);
+		
+			}
 		}
     }
 

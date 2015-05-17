@@ -178,7 +178,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public string description;
 	public string requisites;	
 	public bool Selected { get; protected set; }
-	public bool IsNetworkInstantiate { get; protected set; }
+	public bool IsNetworkInstantiate { get; set; }
 	public bool WasRemoved { get; protected set; }	
 	public int group = -1;	
 	public ResourcesManager costOfResources;
@@ -334,6 +334,8 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public void OnPhotonInstantiate(PhotonMessageInfo info)
 	{
 		IsNetworkInstantiate = true;
+		Debug.Log("I was just spawned!"+gameObject.name+ " netinstance? " + IsNetworkInstantiate);
+
 	}
 	
 	public void SetHealth (int health)

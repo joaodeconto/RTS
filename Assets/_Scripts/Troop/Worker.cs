@@ -82,8 +82,8 @@ public class Worker : Unit
 		base.Init ();
 		moveAttack = false;
 		resourceId = -1;
-
 		DisableResourceTools();
+		if (!PhotonNetwork.offlineMode) GetComponent<WorkerTransformNetwork>().Init();
 
 		hasResource = isSettingWorkerNull = false;
 
