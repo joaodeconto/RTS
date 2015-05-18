@@ -269,7 +269,7 @@ public class FactoryBase : IStats, IDeathObservable
 		
 		if(isVisible)
 		{
-			model.transform.parent = this.transform;
+//			model.transform.parent = this.transform;
 			model.SetActive(true);
 			if (firstDamage)
 			{
@@ -289,7 +289,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 		else
 		{
-			model.transform.parent = null;
+//			model.transform.parent = null;
 			
 			if(!wasVisible)
 				model.SetActive(false);
@@ -1073,8 +1073,9 @@ public class FactoryBase : IStats, IDeathObservable
 		}		
 		buildingState = BuildingState.Base;		
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);		
-		if (!gameplayManager.IsSameTeam (team))	model.SetActive (true);
-		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
+		if (gameplayManager.IsSameTeam (team))	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
+//		model.SetActive (true);
+//		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 
 	}
 
