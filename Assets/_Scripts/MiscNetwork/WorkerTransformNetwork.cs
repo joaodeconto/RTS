@@ -9,6 +9,14 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 	private bool wasInitialized = false; 
 
 	
+	void Awake ()
+	{
+		if(!wasInitialized)
+		{
+			Init ();
+		}
+	}
+	
 	public void Init ()
 	{
 		if(wasInitialized) return;
