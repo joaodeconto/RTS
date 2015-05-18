@@ -108,7 +108,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		selectionController = ComponentGetter.Get<SelectionController>();
 		sc = ComponentGetter.Get<StatsController> ();
 
-		if (!PhotonNetwork.offlineMode)
+		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
 		{
 			network = ComponentGetter.Get<NetworkManager>();
 			bm = ComponentGetter.Get <BidManager> ();
@@ -184,7 +184,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		Debug.Log ("Tribe Network");
 		foreach (Team t in teams)
 		{
-			if(t.initialPosition.name == MyTeam.ToString())
+			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
 			{
 				foreach (Transform trns in t.initialPosition)
 				{
