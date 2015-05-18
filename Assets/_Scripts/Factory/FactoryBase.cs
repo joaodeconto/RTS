@@ -1048,14 +1048,9 @@ public class FactoryBase : IStats, IDeathObservable
 			obj.SetActive (false);
 		}
 
-		SetTeam (teamID, allyID);
-		statsController.RemoveStats(this);	
-		
-		levelConstruct = Health = 1;			
-
-		wasVisible = false;		
-		GetComponent<NavMeshObstacle> ().enabled = false;
-		
+		SetTeam (teamID, allyID);		
+		levelConstruct = Health = 1;				
+		GetComponent<NavMeshObstacle> ().enabled = false;		
 		if (!playerUnit) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;		
 		
@@ -1064,15 +1059,17 @@ public class FactoryBase : IStats, IDeathObservable
 	[RPC]
 	public void Instance ()
 	{
+		
+		gameObject.layer = LayerMask.NameToLayer ("Unit");
+		wasVisible = false;		
+		statsController.AddStats(this);	
 		realRangeView  = this.fieldOfView;		
-		GetComponent<NavMeshObstacle> ().enabled = true;		
-		statsController.AddStats(this);		
+		GetComponent<NavMeshObstacle> ().enabled = true;	
 		this.fieldOfView = 5f;		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);
 		}	
-		statsController.AddStats(this);	
 		buildingState = BuildingState.Base;		
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);		
 		if (!gameplayManager.IsSameTeam (team))	model.SetActive (true);
