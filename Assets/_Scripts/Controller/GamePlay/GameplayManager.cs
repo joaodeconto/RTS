@@ -122,6 +122,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 			numberOfTeams = PhotonNetwork.room.maxPlayers;
 			pauseGame = false;
+			TribeInstiateNetwork();
 		}
 
 		else
@@ -155,7 +156,6 @@ public class GameplayManager : Photon.MonoBehaviour
 				}
 			}
 		}
-
 		else
 		{
 			loserTeams = 0;
@@ -203,6 +203,7 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void TribeInstiate ()
 	{
+		Debug.Log ("Tribe Instantiate");
 		foreach (Transform trns in teams[0].initialPosition)
 		{
 			if(trns.gameObject.activeSelf == true)
@@ -237,8 +238,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		GamePaused(false);
 		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
 		ld.reverseAlpha();
-		resources.DeliverResources (Resource.Type.Rock, startingRocks);		
-		TribeInstiateNetwork();
+		resources.DeliverResources (Resource.Type.Rock, startingRocks);
 	}
 	#endregion
 

@@ -211,7 +211,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	#region Awake, Init
 
-	void Start ()
+	void Awake()
 	{
 		Init();
 	}
