@@ -61,7 +61,8 @@ public class NetworkManager : Photon.MonoBehaviour {
 		else
 		{
 			gameplayManager.photonView.RPC ("Defeat", PhotonNetwork.player,
-				player.customProperties["team"],0);
+				player.customProperties["team"], 
+				0);
 		}
     }
 

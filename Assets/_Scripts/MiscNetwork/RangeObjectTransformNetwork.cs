@@ -23,6 +23,10 @@ public class RangeObjectTransformNetwork : Photon.MonoBehaviour
 		{
 			enabled = false;
 		}
+		else
+		{
+			gameObject.name = gameObject.name + photonView.viewID;
+		}
 
 	}
 

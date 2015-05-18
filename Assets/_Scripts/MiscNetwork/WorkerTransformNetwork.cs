@@ -29,6 +29,10 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 			enabled = false;
 			Debug.Log("offline???  " + enabled);
 		}
+		else
+		{
+		 gameObject.name = gameObject.name + photonView.viewID;
+		 }
     }
 
 	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)

@@ -27,6 +27,11 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 		{
 			enabled = false;
 		}
+
+		else
+		{
+			gameObject.name = gameObject.name + photonView.viewID;
+		}
     }
 
     void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
