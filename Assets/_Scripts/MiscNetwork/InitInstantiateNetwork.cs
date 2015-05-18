@@ -71,6 +71,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 				prefab.transform.parent = transform.parent;
 				if (prefab.GetComponent<FactoryBase>() != null)
 				{
+					prefab.transform.parent = transform.parent;
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
 					fb.wasBuilt = true;		
 					fb.Init();
