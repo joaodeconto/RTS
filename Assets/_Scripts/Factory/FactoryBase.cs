@@ -1058,8 +1058,7 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	[RPC]
 	public void Instance ()
-	{
-		
+	{		
 		gameObject.layer = LayerMask.NameToLayer ("Unit");
 		wasVisible = false;		
 		statsController.AddStats(this);	
@@ -1072,10 +1071,10 @@ public class FactoryBase : IStats, IDeathObservable
 		}	
 		buildingState = BuildingState.Base;		
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);		
-		if (!gameplayManager.IsSameTeam (team))	model.SetActive (true);
+		if (!gameplayManager.IsSameTeam (this.team))	model.SetActive (true);
 		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
-
 	}
+
 
 	#endregion
 }

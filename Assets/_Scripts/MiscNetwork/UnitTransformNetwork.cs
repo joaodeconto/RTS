@@ -27,25 +27,6 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 		{
 			enabled = false;
 		}
-		else
-		{
-			unitScript = GetComponent <Unit> ();
-			
-	        gameObject.name = gameObject.name + photonView.viewID;
-			
-			if (unitScript.IsNetworkInstantiate) enabled = !photonView.isMine;
-			else
-			{
-				GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
-				
-				enabled = !gm.IsSameTeam(unitScript);
-				
-				if (gm.IsBotTeam (unitScript) && PhotonNetwork.isMasterClient)
-				{
-					enabled = false;
-				}
-			}
-		}
     }
 
     void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)

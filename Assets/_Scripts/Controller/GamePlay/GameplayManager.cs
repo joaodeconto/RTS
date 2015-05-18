@@ -108,7 +108,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		selectionController = ComponentGetter.Get<SelectionController>();
 		sc = ComponentGetter.Get<StatsController> ();
 
-		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
+		if (!PhotonNetwork.offlineMode)
 		{
 			network = ComponentGetter.Get<NetworkManager>();
 			bm = ComponentGetter.Get <BidManager> ();
@@ -122,7 +122,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 			numberOfTeams = PhotonNetwork.room.maxPlayers;
 			pauseGame = false;
-			TribeInstiateNetwork();
 		}
 
 		else
@@ -156,6 +155,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				}
 			}
 		}
+
 		else
 		{
 			loserTeams = 0;
@@ -184,7 +184,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		Debug.Log ("Tribe Network");
 		foreach (Team t in teams)
 		{
-			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
+			if(t.initialPosition.name == MyTeam.ToString())
 			{
 				foreach (Transform trns in t.initialPosition)
 				{
@@ -203,7 +203,6 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void TribeInstiate ()
 	{
-		Debug.Log ("Tribe Instantiate");
 		foreach (Transform trns in teams[0].initialPosition)
 		{
 			if(trns.gameObject.activeSelf == true)
@@ -238,7 +237,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		GamePaused(false);
 		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
 		ld.reverseAlpha();
-		resources.DeliverResources (Resource.Type.Rock, startingRocks);
+		resources.DeliverResources (Resource.Type.Rock, startingRocks);		
+		TribeInstiateNetwork();
 	}
 	#endregion
 

@@ -29,25 +29,6 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 			enabled = false;
 			Debug.Log("offline???  " + enabled);
 		}
-		else
-		{
-			workerScript = GetComponent <Worker> ();
-			
-	        gameObject.name = gameObject.name + photonView.viewID;
-			
-			if (workerScript.IsNetworkInstantiate)
-			{
-				enabled = !photonView.isMine;
-				Debug.Log("pelo photonview  " + enabled);
-			}
-
-			else 
-			{
-				enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(workerScript);
-				Debug.Log("pelo gameplay  " + enabled);
-		
-			}
-		}
     }
 
 	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)

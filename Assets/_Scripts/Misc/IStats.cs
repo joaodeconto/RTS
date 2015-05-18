@@ -213,7 +213,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	void Start ()
 	{
-		Init();
+		Invoke ("Init", 0.1f);
 	}
 
 	public virtual void Init ()
