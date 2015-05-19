@@ -137,7 +137,7 @@ public class Unit : IStats, IMovementObservable,
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
 
-		if (!enabled) enabled = playerUnit;
+		enabled = playerUnit;
 
 		if (playerUnit)
 		{
@@ -169,7 +169,7 @@ public class Unit : IStats, IMovementObservable,
 
 	void Update ()
 	{
-		if (!IsDead && ConfigurationData.InGame) IAStep ();
+		if (playerUnit && !IsDead && ConfigurationData.InGame) IAStep ();
 	}
 
 	public virtual void IAStep ()

@@ -278,6 +278,7 @@ public class FactoryBase : IStats, IDeathObservable
 			if (firstDamage)
 			{
 				hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
+
 			}
 			
 			if(!wasVisible)
@@ -294,6 +295,7 @@ public class FactoryBase : IStats, IDeathObservable
 		else
 		{
 			model.transform.parent = null;
+			hudController.DestroySelected(transform);
 			
 			if(!wasVisible)
 				model.SetActive(false);
@@ -1062,8 +1064,15 @@ public class FactoryBase : IStats, IDeathObservable
 	[RPC]
 	public void Instance ()
 	{		
+		if (!gameplayManager.IsSameTeam (this.team))
+		{
+			wasVisible = false;		
+			model.transform.parent = null;
+			model.SetActive (true);
+		}
+		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
+
 		gameObject.layer = LayerMask.NameToLayer ("Unit");
-		wasVisible = false;		
 		statsController.AddStats(this);	
 		realRangeView  = this.fieldOfView;		
 		GetComponent<NavMeshObstacle> ().enabled = true;	
@@ -1074,8 +1083,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}	
 		buildingState = BuildingState.Base;		
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);		
-		if (!gameplayManager.IsSameTeam (this.team))	model.SetActive (true);
-		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
+
 	}
 
 
