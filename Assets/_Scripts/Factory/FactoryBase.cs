@@ -1054,17 +1054,15 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 
 		SetTeam (teamID, allyID);		
-		wasVisible = false;
 		levelConstruct = Health = 1;				
-		GetComponent<NavMeshObstacle> ().enabled = false;		
-		if (!playerUnit) model.SetActive (false);
+		GetComponent<NavMeshObstacle>().enabled = false;		
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;		
 		
-		if (!gameplayManager.IsSameTeam (this.team))
+		if (!gameplayManager.IsSameTeam (teamID))
 		{
 			model.transform.parent = null;
 			wasVisible = false;		
-			model.SetActive (false);
+			model.SetActive (false); 
 		}
 	}
 	
@@ -1075,9 +1073,10 @@ public class FactoryBase : IStats, IDeathObservable
 
 		if (!gameplayManager.IsSameTeam (this.team))
 		{
+			model.SetActive (true);
 			model.transform.position = transform.position;
 			wasVisible = false;		
-			model.SetActive (true);
+
 		}
 		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 	
