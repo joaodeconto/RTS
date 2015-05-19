@@ -182,20 +182,14 @@ public class GameplayManager : Photon.MonoBehaviour
 	{
 		
 		Debug.Log ("Tribe Network");
-		foreach (Team t in teams)
+		foreach (Transform trns in teams[MyTeam].initialPosition)
 		{
-			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
+			if(trns.gameObject.activeSelf == true)
 			{
-				foreach (Transform trns in t.initialPosition)
+				InitInstantiateNetwork toInit = trns.GetComponent<InitInstantiateNetwork>();
+				if (toInit.GetType() == typeof(InitInstantiateNetwork))
 				{
-					if(trns.gameObject.activeSelf == true)
-					{
-						InitInstantiateNetwork toInit = trns.GetComponent<InitInstantiateNetwork>();
-						if (toInit.GetType() == typeof(InitInstantiateNetwork))
-						{
-							toInit.Init();											
-						}
-					}
+					toInit.Init();											
 				}
 			}
 		}

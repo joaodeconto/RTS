@@ -10,7 +10,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	private bool wasInitialized = false;
 	private GameObject prefab;
 
-	public virtual void Init ()
+	public void Init ()
 	{
 		if(!wasInitialized) InvokeRepeating ("CheckNetwork", 0.1f, 0.5f);
 		wasInitialized = true;
@@ -63,7 +63,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 
 	void NetworkInstantiatePrefab ()
 	{
-		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.countOfPlayersInRooms)
+		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.room.maxPlayers)
 		{
 			if ((int)PhotonNetwork.player.customProperties["team"] == (int.Parse (transform.parent.name)))
 			{

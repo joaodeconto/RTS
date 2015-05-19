@@ -12,7 +12,7 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 	void Awake ()
 	{
 		if (PhotonNetwork.offlineMode)	enabled = false;
-		else	Init ();
+		else	Invoke("Init",0.2f);
 	}
 
 	public void Init ()
