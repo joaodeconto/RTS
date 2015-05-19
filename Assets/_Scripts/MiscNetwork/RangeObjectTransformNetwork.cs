@@ -25,24 +25,9 @@ public class RangeObjectTransformNetwork : Photon.MonoBehaviour
 		}
 		else
 		{
-			rangeObjectScript = GetComponent <RangeObject> ();
-			
-	        gameObject.name = gameObject.name + photonView.viewID;
-			
-//			if (rangeObjectScript.IsNetworkInstantiate) enabled = !photonView.isMine;
-//
-//			else
-//			{
-//				GameplayManager gm = Visiorama.ComponentGetter.Get<GameplayManager>();
-//				
-//				enabled = !gm.IsSameTeam(rangeObjectScript);
-//				
-//				if (gm.IsBotTeam (rangeObjectScript) && PhotonNetwork.isMasterClient)
-//				{
-//					enabled = false;
-//				}
-//			}
+			gameObject.name = gameObject.name + photonView.viewID;
 		}
+
 	}
 
 

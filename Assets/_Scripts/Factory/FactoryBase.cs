@@ -116,7 +116,9 @@ public class FactoryBase : IStats, IDeathObservable
 		enabled = playerUnit;
 		helperCollider = GetComponentInChildren<CapsuleCollider> ();
 
+		// before construction
 		if(factoryInitialized || !wasBuilt) return;
+		SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);	
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
 		factoryInitialized = true;	
 		timer = 0;
@@ -394,8 +396,7 @@ public class FactoryBase : IStats, IDeathObservable
 				this.fieldOfView = realRangeView;	
 				if(Selected) RestoreOptionsMenu();							
 				Init ();
-				eventController.AddEvent("building finish",transformParticleDamageReference.position, this.category, this.guiTextureName);
-				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);			
+				eventController.AddEvent("building finish",transformParticleDamageReference.position, this.category, this.guiTextureName);				
 
 			}
 			return false;
@@ -1048,13 +1049,9 @@ public class FactoryBase : IStats, IDeathObservable
 			obj.SetActive (false);
 		}
 
-		SetTeam (teamID, allyID);
-		
-		levelConstruct = Health = 1;			
-
-		wasVisible = false;		
-		GetComponent<NavMeshObstacle> ().enabled = false;
-		
+		SetTeam (teamID, allyID);		
+		levelConstruct = Health = 1;				
+		GetComponent<NavMeshObstacle> ().enabled = false;		
 		if (!playerUnit) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;		
 		
@@ -1062,21 +1059,23 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	[RPC]
 	public void Instance ()
-	{
+	{		
+		gameObject.layer = LayerMask.NameToLayer ("Unit");
+		wasVisible = false;		
+		statsController.AddStats(this);	
 		realRangeView  = this.fieldOfView;		
-		GetComponent<NavMeshObstacle> ().enabled = true;		
-		statsController.AddStats(this);		
+		GetComponent<NavMeshObstacle> ().enabled = true;	
 		this.fieldOfView = 5f;		
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);
-		}		
+		}	
 		buildingState = BuildingState.Base;		
 		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);		
-		if (!gameplayManager.IsSameTeam (team))	model.SetActive (true);
+		if (!gameplayManager.IsSameTeam (this.team))	model.SetActive (true);
 		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
-
 	}
+
 
 	#endregion
 }
