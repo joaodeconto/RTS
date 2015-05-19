@@ -10,7 +10,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	private bool wasInitialized = false;
 	private GameObject prefab;
 
-	public virtual void Init ()
+	public void Init ()
 	{
 		if(!wasInitialized) InvokeRepeating ("CheckNetwork", 0.1f, 0.5f);
 		wasInitialized = true;
@@ -70,13 +70,18 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 				GameObject prefab = PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, prefabInstantiate.transform.rotation, 0);
 				prefab.transform.parent = transform.parent;
 				if (prefab.GetComponent<FactoryBase>() != null)
-				{
+				{				
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
-					fb.wasBuilt = true;					
+					fb.wasBuilt = true;	
 					fb.IsNetworkInstantiate = true;
-					prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
+
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 				}	
+				else 
+				{
+					IStats stats = prefab.GetComponent<IStats>();
+					stats.Init();
+				}
 			}
 		
 			CancelInvoke ("NetworkInstantiatePrefab");

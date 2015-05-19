@@ -11,43 +11,17 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 	
 	void Awake ()
 	{
-		if(!wasInitialized)
-		{
-			Init ();
-		}
+		if (PhotonNetwork.offlineMode)	enabled = false;
+		else	Invoke("Init",0.2f);
 	}
-	
+
 	public void Init ()
 	{
 		if(wasInitialized) return;
 		wasInitialized = true;
 		correctPlayerPos = transform.position; 
 		correctPlayerRot = transform.rotation;
-
-		if (PhotonNetwork.offlineMode)
-		{
-			enabled = false;
-			Debug.Log("offline???  " + enabled);
-		}
-		else
-		{
-			workerScript = GetComponent <Worker> ();
-			
-	        gameObject.name = gameObject.name + photonView.viewID;
-			
-			if (workerScript.IsNetworkInstantiate)
-			{
-				enabled = !photonView.isMine;
-				Debug.Log("pelo photonview  " + enabled);
-			}
-
-			else 
-			{
-				enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(workerScript);
-				Debug.Log("pelo gameplay  " + enabled);
-		
-			}
-		}
+		gameObject.name = gameObject.name + photonView.viewID;
     }
 
 	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
@@ -78,8 +52,8 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
     {
 		if (!photonView.isMine)
 		{
-			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 3);
+			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 3);
 			workerScript.SyncAnimation ();
 		}
 

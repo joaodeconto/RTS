@@ -12,7 +12,7 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
 		
         gameObject.name = gameObject.name + photonView.viewID;
 		
-        enabled = !photonView.isMine;
+		enabled = !PhotonNetwork.offlineMode;
     }
 	
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -41,9 +41,11 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
     void Update()
     {
 		if (!photonView.isMine)
-        transform.position = correctPlayerPos;
-        transform.rotation = correctPlayerRot;
-		
-		factory.SyncAnimation ();
+		{
+	        transform.position = correctPlayerPos;
+	        transform.rotation = correctPlayerRot;
+			
+			factory.SyncAnimation ();
+		}
     }
 }
