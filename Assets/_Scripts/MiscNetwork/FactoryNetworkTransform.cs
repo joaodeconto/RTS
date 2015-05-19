@@ -40,9 +40,12 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
 
     void Update()
     {
-        transform.position = correctPlayerPos;
-        transform.rotation = correctPlayerRot;
-		
-		factory.SyncAnimation ();
+		if (!photonView.isMine)
+		{
+	        transform.position = correctPlayerPos;
+	        transform.rotation = correctPlayerRot;
+			
+			factory.SyncAnimation ();
+		}
     }
 }

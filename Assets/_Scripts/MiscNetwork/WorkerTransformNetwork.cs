@@ -11,28 +11,17 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 	
 	void Awake ()
 	{
-		if(!wasInitialized)
-		{
-			Init ();
-		}
+		if (PhotonNetwork.offlineMode)	enabled = false;
+		else	Init ();
 	}
-	
+
 	public void Init ()
 	{
 		if(wasInitialized) return;
 		wasInitialized = true;
 		correctPlayerPos = transform.position; 
 		correctPlayerRot = transform.rotation;
-
-		if (PhotonNetwork.offlineMode)
-		{
-			enabled = false;
-			Debug.Log("offline???  " + enabled);
-		}
-		else
-		{
-		 gameObject.name = gameObject.name + photonView.viewID;
-		 }
+		gameObject.name = gameObject.name + photonView.viewID;
     }
 
 	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
@@ -63,8 +52,8 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
     {
 		if (!photonView.isMine)
 		{
-			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 3);
+			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 3);
 			workerScript.SyncAnimation ();
 		}
 
