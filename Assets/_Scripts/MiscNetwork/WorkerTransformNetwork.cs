@@ -8,22 +8,34 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 	private Quaternion correctPlayerRot;
 	private bool wasInitialized = false; 
 
-	
 	void Awake ()
 	{
-		if (PhotonNetwork.offlineMode)	enabled = false;
-		else	Invoke("Init",2f);
+		if(!wasInitialized)
+		{
+			Init ();
+		}
 	}
-
+	
 	public void Init ()
 	{
-		if(wasInitialized) return;
 		wasInitialized = true;
 		correctPlayerPos = transform.position; 
 		correctPlayerRot = transform.rotation;
-		gameObject.name = gameObject.name + photonView.viewID;
-    }
-
+		
+		if (PhotonNetwork.offlineMode)
+		{
+			enabled = false;
+		}
+		else
+		{
+			workerScript = GetComponent <Worker> ();
+			
+			gameObject.name = gameObject.name + photonView.viewID;
+			
+			if (workerScript.IsNetworkInstantiate) enabled = !photonView.isMine;
+			else enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(workerScript);
+		}
+	}
 	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
 	{
 		if (stream.isWriting)

@@ -122,7 +122,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 			numberOfTeams = PhotonNetwork.room.maxPlayers;
 			pauseGame = false;
-			TribeInstiateNetwork();
 		}
 
 		else
@@ -173,6 +172,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		int numberOfPlayers = PhotonNetwork.playerList.Length;
 		if (readyCounter >= numberOfPlayers)
 		{		
+			TribeInstiateNetwork();
 			gamestarted = true;
 			GameStart();
 		}
