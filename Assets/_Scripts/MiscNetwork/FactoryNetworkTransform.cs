@@ -5,14 +5,23 @@ using System.Collections;
 public class FactoryNetworkTransform : Photon.MonoBehaviour
 {
 	FactoryBase factory;
+	private Vector3 correctPlayerPos;
+	private Quaternion correctPlayerRot;
 	
 	void Awake()
     {
+		if (PhotonNetwork.offlineMode)
+		{
+			enabled = false;
+		}
+
 		factory = GetComponent <FactoryBase> ();
+
+		correctPlayerPos = factory.transform.position; //We lerp towards this
+		correctPlayerRot = factory.transform.rotation; //We lerp towards this
 		
         gameObject.name = gameObject.name + photonView.viewID;
-		
-        enabled = !photonView.isMine;
+
     }
 	
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -35,14 +44,15 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
         }
     }
 	
-	private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
-    private Quaternion correctPlayerRot = Quaternion.identity; //We lerp towards this
+
 
     void Update()
     {
-        transform.position = correctPlayerPos;
-        transform.rotation = correctPlayerRot;
-		
-		factory.SyncAnimation ();
+		if (!photonView.isMine)
+		{
+        	transform.position = correctPlayerPos;
+        	transform.rotation = correctPlayerRot;
+			factory.SyncAnimation ();
+		}
     }
 }

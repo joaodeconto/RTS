@@ -63,7 +63,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 
 	void NetworkInstantiatePrefab ()
 	{
-		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.countOfPlayersInRooms)
+		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.room.maxPlayers)
 		{
 			if ((int)PhotonNetwork.player.customProperties["team"] == (int.Parse (transform.parent.name)))
 			{
@@ -74,10 +74,17 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
 					fb.wasBuilt = true;					
 					fb.IsNetworkInstantiate = true;
+					fb.Init();
 					prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 				}	
 			}
+				else 
+				{
+					IStats stats = prefab.GetComponent<IStats>();					
+					stats.IsNetworkInstantiate = true;
+					stats.Init();
+				}
 		
 			CancelInvoke ("NetworkInstantiatePrefab");
 			Destroy (this.gameObject);

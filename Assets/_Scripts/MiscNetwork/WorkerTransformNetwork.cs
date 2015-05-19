@@ -78,8 +78,8 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
     {
 		if (!photonView.isMine)
 		{
-			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 3);
+			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 3);
 			workerScript.SyncAnimation ();
 		}
 
