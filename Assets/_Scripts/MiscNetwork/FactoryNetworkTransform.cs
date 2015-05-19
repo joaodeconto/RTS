@@ -15,12 +15,30 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
 			enabled = false;
 		}
 
-		factory = GetComponent <FactoryBase> ();
-
-		correctPlayerPos = factory.transform.position; //We lerp towards this
-		correctPlayerRot = factory.transform.rotation; //We lerp towards this
+		else
+		{
+			factory = GetComponent <FactoryBase> ();
+			
+			correctPlayerPos = factory.transform.position; //We lerp towards this
+			correctPlayerRot = factory.transform.rotation; //We lerp towards this
+			
+			gameObject.name = gameObject.name + photonView.viewID;
+						
+			if (factory.IsNetworkInstantiate)
+			{
+				enabled = !photonView.isMine;
+				Debug.Log("pelo photonview  " + enabled);
+			}
+			
+			else 
+			{
+				enabled = !photonView.isMine;
+				Debug.Log("pelo gameplay  " + enabled);
+				
+			}
+		}
 		
-        gameObject.name = gameObject.name + photonView.viewID;
+
 
     }
 	

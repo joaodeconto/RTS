@@ -19,18 +19,34 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
 	
 	public void Init ()
 	{
+		if(wasInitialized) return;
 		wasInitialized = true;
-
 		correctPlayerPos = transform.position; 
 		correctPlayerRot = transform.rotation;
-
+		
 		if (PhotonNetwork.offlineMode)
 		{
 			enabled = false;
+			Debug.Log("offline???  " + enabled);
 		}
 		else
 		{
+			rangeUnitScript = GetComponent<RangeUnit>();
+			
 			gameObject.name = gameObject.name + photonView.viewID;
+			
+			if (rangeUnitScript.IsNetworkInstantiate)
+			{
+				enabled = !photonView.isMine;
+				Debug.Log("pelo photonview  " + enabled);
+			}
+			
+			else 
+			{
+				enabled = !photonView.isMine;
+				Debug.Log("pelo gameplay  " + enabled);
+				
+			}
 		}
 	}
 	

@@ -462,7 +462,7 @@ public class Worker : Unit
 
 				ghostFactory = Instantiate (factoryConstruct.factory.gameObject, Vector3.zero, factoryConstruct.factory.transform.rotation) as GameObject;
 			else
-				ghostFactory = PhotonNetwork.Instantiate ( factoryConstruct.factory.gameObject.name, Vector3.zero, factoryConstruct.factory.transform.rotation, 0);
+				ghostFactory = PhotonNetwork.Instantiate ( factoryConstruct.factory.gameObject.name, transform.position, factoryConstruct.factory.transform.rotation, 0);
 
 			ghostFactory.AddComponent<GhostFactory>().Init (this, factoryConstruct);
 		}

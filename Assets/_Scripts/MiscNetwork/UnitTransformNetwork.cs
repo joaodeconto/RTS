@@ -9,7 +9,7 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 	private Quaternion correctPlayerRot;
 	private bool wasInitialized = false; 
 
-    void Awake ()
+	void Awake ()
 	{
 		if(!wasInitialized)
 		{
@@ -17,22 +17,38 @@ public class UnitTransformNetwork : Photon.MonoBehaviour
 		}
 	}
 	
-    public void Init ()
-    {
+	public void Init ()
+	{
+		if(wasInitialized) return;
 		wasInitialized = true;
 		correctPlayerPos = transform.position; 
 		correctPlayerRot = transform.rotation;
-
+		
 		if (PhotonNetwork.offlineMode)
 		{
 			enabled = false;
+			Debug.Log("offline???  " + enabled);
 		}
-
 		else
 		{
+			unitScript = GetComponent <Unit> ();
+			
 			gameObject.name = gameObject.name + photonView.viewID;
+			
+			if (unitScript.IsNetworkInstantiate)
+			{
+				enabled = !photonView.isMine;
+				Debug.Log("pelo photonview  " + enabled);
+			}
+			
+			else 
+			{
+				enabled = !photonView.isMine;
+				Debug.Log("pelo gameplay  " + enabled);
+				
+			}
 		}
-    }
+	}
 
     void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
     {

@@ -43,7 +43,7 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 
 			else 
 			{
-				enabled = !Visiorama.ComponentGetter.Get<GameplayManager>().IsSameTeam(workerScript);
+				enabled = !photonView.isMine;
 				Debug.Log("pelo gameplay  " + enabled);
 		
 			}
