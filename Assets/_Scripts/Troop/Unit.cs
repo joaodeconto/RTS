@@ -137,10 +137,10 @@ public class Unit : IStats, IMovementObservable,
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
 
+		if (!enabled) enabled = playerUnit;
 
 		if (playerUnit)
-		{	
-			enabled = true;
+		{
 			interactionController = ComponentGetter.Get<InteractionController>();
 
 			if (techTreeController.attribsHash.ContainsKey(category)) LoadStandardAttribs();

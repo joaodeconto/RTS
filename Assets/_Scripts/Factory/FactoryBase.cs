@@ -113,7 +113,6 @@ public class FactoryBase : IStats, IDeathObservable
 	public override void Init ()
 	{
 		base.Init();
-		enabled = playerUnit;
 		helperCollider = GetComponentInChildren<CapsuleCollider> ();
 
 		// before construction
@@ -128,6 +127,9 @@ public class FactoryBase : IStats, IDeathObservable
 								
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
+
+		
+		enabled = playerUnit;
 				
 		if (unitsToCreate.Length != 0)
 		{

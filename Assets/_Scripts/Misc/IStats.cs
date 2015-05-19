@@ -211,9 +211,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	#region Awake, Init
 
-void Start ()
+	void Awake ()
 	{
-		Init();
+		Invoke ("Init", 0.1f);
 	}
 
 	public virtual void Init ()
@@ -253,7 +253,6 @@ void Start ()
 		else
 		{
 			playerUnit = false;
-			team = 8;
 		}
 		firstDamage = false;
 		SetColorTeam ();		
@@ -286,7 +285,7 @@ void Start ()
 			Selected = false;						
 			hudController.DestroyOptionsBtns ();
 			hudController.DestroySelected (transform);
-			if(firstDamage) ShowHealth();
+			if(firstDamage) Invoke("ShowHealth",0.2f);
 		}
 		else return;
 	}
@@ -334,8 +333,6 @@ void Start ()
 	public void OnPhotonInstantiate(PhotonMessageInfo info)
 	{
 		IsNetworkInstantiate = true;
-		Debug.Log("I was just spawned!"+gameObject.name+ " netinstance? " + IsNetworkInstantiate);
-
 	}
 	
 	public void SetHealth (int health)
