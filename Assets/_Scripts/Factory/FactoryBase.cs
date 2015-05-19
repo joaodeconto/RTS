@@ -1054,25 +1054,33 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 
 		SetTeam (teamID, allyID);		
+		wasVisible = false;
 		levelConstruct = Health = 1;				
 		GetComponent<NavMeshObstacle> ().enabled = false;		
 		if (!playerUnit) model.SetActive (false);
 		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;		
 		
+		if (!gameplayManager.IsSameTeam (this.team))
+		{
+			model.transform.parent = null;
+			wasVisible = false;		
+			model.SetActive (false);
+		}
 	}
 	
 	[RPC]
 	public void Instance ()
-	{		
+	{	
+		gameObject.layer = LayerMask.NameToLayer ("Unit");
+
 		if (!gameplayManager.IsSameTeam (this.team))
 		{
+			model.transform.position = transform.position;
 			wasVisible = false;		
-			model.transform.parent = null;
 			model.SetActive (true);
 		}
 		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
-
-		gameObject.layer = LayerMask.NameToLayer ("Unit");
+	
 		statsController.AddStats(this);	
 		realRangeView  = this.fieldOfView;		
 		GetComponent<NavMeshObstacle> ().enabled = true;	
@@ -1082,10 +1090,7 @@ public class FactoryBase : IStats, IDeathObservable
 			obj.SetActive (true);
 		}	
 		buildingState = BuildingState.Base;		
-		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);		
-
+		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 	}
-
-
 	#endregion
 }
