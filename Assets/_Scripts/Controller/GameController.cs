@@ -27,16 +27,15 @@ public class GameController : MonoBehaviour
 		}
 
 		ComponentGetter.Get<GameplayManager> ().Init ();
-		ComponentGetter.Get<StatsController> ().Init ();
+		ComponentGetter.Get<TouchController> ().Init ();
 		ComponentGetter.Get<SelectionController> ().Init ();
+		ComponentGetter.Get<StatsController> ().Init ();
 		ComponentGetter.Get<EventController> ().Init ();
 		ComponentGetter.Get<TechTreeController> ().Init ();
 		ComponentGetter.Get<HUDController> ().Init ();
 		ComponentGetter.Get<FogOfWar> ().Init ();
 		ComponentGetter.Get<MiniMapController> ().Init ();
-		ComponentGetter.Get<TouchController> ().Init ();
 		ComponentGetter.Get<InteractionController> ().Init ();
-
 					
 	}
 }

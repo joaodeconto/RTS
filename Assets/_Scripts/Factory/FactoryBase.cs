@@ -116,7 +116,9 @@ public class FactoryBase : IStats, IDeathObservable
 		enabled = playerUnit;
 		helperCollider = GetComponentInChildren<CapsuleCollider> ();
 
+		// before construction
 		if(factoryInitialized || !wasBuilt) return;
+		SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);	
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
 		factoryInitialized = true;	
 		timer = 0;
@@ -394,8 +396,7 @@ public class FactoryBase : IStats, IDeathObservable
 				this.fieldOfView = realRangeView;	
 				if(Selected) RestoreOptionsMenu();							
 				Init ();
-				eventController.AddEvent("building finish",transformParticleDamageReference.position, this.category, this.guiTextureName);
-				SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);			
+				eventController.AddEvent("building finish",transformParticleDamageReference.position, this.category, this.guiTextureName);				
 
 			}
 			return false;

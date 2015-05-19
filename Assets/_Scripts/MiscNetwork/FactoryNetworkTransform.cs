@@ -11,6 +11,8 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
 		factory = GetComponent <FactoryBase> ();
 		
         gameObject.name = gameObject.name + photonView.viewID;
+		
+		enabled = !PhotonNetwork.offlineMode;
     }
 	
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

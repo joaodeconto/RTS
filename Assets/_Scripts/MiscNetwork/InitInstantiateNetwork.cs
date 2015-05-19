@@ -70,21 +70,18 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 				GameObject prefab = PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, prefabInstantiate.transform.rotation, 0);
 				prefab.transform.parent = transform.parent;
 				if (prefab.GetComponent<FactoryBase>() != null)
-				{
-				
+				{				
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
-					fb.wasBuilt = true;		
-					fb.Init();
+					fb.wasBuilt = true;	
 					fb.IsNetworkInstantiate = true;
 					fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 				}	
-				else
+				else 
 				{
 					IStats stats = prefab.GetComponent<IStats>();
 					stats.Init();
 				}
-
 			}
 		
 			CancelInvoke ("NetworkInstantiatePrefab");
