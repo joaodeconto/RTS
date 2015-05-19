@@ -63,7 +63,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 
 	void NetworkInstantiatePrefab ()
 	{
-		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.countOfPlayersInRooms)
+		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.room.maxPlayers)
 		{
 			if ((int)PhotonNetwork.player.customProperties["team"] == (int.Parse (transform.parent.name)))
 			{
