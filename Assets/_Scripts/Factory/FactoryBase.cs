@@ -1056,13 +1056,13 @@ public class FactoryBase : IStats, IDeathObservable
 	[RPC]
 	public void Instance (int teamID, int allyID)
 	{
-		Init();
+		Init();	
 
 		if (!PhotonNetwork.offlineMode)
 		{
 			IsNetworkInstantiate = true;
 			SetTeam (teamID, allyID);
-
+			model.transform.parent = null;
 		}
 		else SendMessageInstance();
 

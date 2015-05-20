@@ -158,7 +158,7 @@ public class GhostFactory : MonoBehaviour
 			
 			if (!PhotonNetwork.offlineMode)
 			{
-				GameObject realFactoryObj = PhotonNetwork.Instantiate (thisFactory.name, thisFactory.transform.position, thisFactory.transform.rotation, 0);
+				GameObject realFactoryObj = PhotonNetwork.Instantiate (factoryConstruction.factory.name, thisFactory.transform.position, thisFactory.transform.rotation, 0);
 				thisFactory = realFactoryObj.GetComponent<FactoryBase>();
 				thisFactory.photonView.RPC ("Instance", PhotonTargets.All, worker.team, worker.ally);
 			}
