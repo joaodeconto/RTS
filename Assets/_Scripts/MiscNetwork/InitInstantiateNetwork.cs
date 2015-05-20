@@ -50,8 +50,8 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 		if (fb != null)
 		{
 			fb.wasBuilt = true;
-			fb.Init();
 			fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
+			fb.SendMessageInstance();
 			if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 			fb.wasVisible = false;
 		}

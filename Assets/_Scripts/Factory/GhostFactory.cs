@@ -29,10 +29,7 @@ public class GhostFactory : MonoBehaviour
 		this.worker 			 = worker;
 		this.factoryConstruction = factoryConstruction;		
 		thisFactory = GetComponent<FactoryBase>();
-		thisFactory.wasBuilt = false;
-		thisFactory.Init();
-		if (!PhotonNetwork.offlineMode)thisFactory.photonView.RPC ("InstanceOverdraw", PhotonTargets.All, worker.team, worker.ally);
-		else thisFactory.InstanceOverdraw(worker.team, worker.ally);
+		thisFactory.InstanceOverdraw();
 		correctName = thisFactory.name;
 		thisFactory.name = "GhostFactory";		
 		ComponentGetter.Get<InteractionController> ().enabled = false;
@@ -41,7 +38,6 @@ public class GhostFactory : MonoBehaviour
 		touchController = ComponentGetter.Get<TouchController> ();		
 		touchController.DisableDragOn = true;		
 		isCapsuleCollider = true;
-		if (!PhotonNetwork.offlineMode) GetComponent<PhotonView>().observed = null;	
 		GameObject helperColliderGameObject;
 		
 		if (gameObject.GetComponent<CapsuleCollider> () == null)
@@ -69,6 +65,7 @@ public class GhostFactory : MonoBehaviour
 	
 	void Update ()
 	{
+		this.gameObject.layer = LayerMask.NameToLayer ("Gizmos");
 		#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
 		if (!touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id1)
 		{
@@ -77,7 +74,9 @@ public class GhostFactory : MonoBehaviour
 			PhotonNetwork.Destroy (gameObject);			
 		}
 		#endif
+
 		
+
 		Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit;
 		NavMeshHit navHit;
@@ -159,15 +158,13 @@ public class GhostFactory : MonoBehaviour
 			
 			if (!PhotonNetwork.offlineMode)
 			{
-				FactoryNetworkTransform fnt = GetComponent<FactoryNetworkTransform>();
-				GetComponent<PhotonView>().observed = fnt;
-				thisFactory.photonView.RPC ("Instance", PhotonTargets.All);
-
+				GameObject realFactoryObj = PhotonNetwork.Instantiate (thisFactory.name, thisFactory.transform.position, thisFactory.transform.rotation, 0);
+				thisFactory = realFactoryObj.GetComponent<FactoryBase>();
+				thisFactory.photonView.RPC ("Instance", PhotonTargets.All, worker.team, worker.ally);
 			}
-			else thisFactory.Instance();
+			else thisFactory.Instance(worker.team, worker.ally);
+
 			gameObject.SendMessage ("OnInstance", SendMessageOptions.DontRequireReceiver);
-	
-			thisFactory.costOfResources = factoryConstruction.costOfResources;
 			StatsController statsController = ComponentGetter.Get<StatsController> ();
 			foreach (Unit unit in statsController.selectedStats)
 			{
@@ -178,8 +175,15 @@ public class GhostFactory : MonoBehaviour
 				}
 			}
 
-			DestroyOverdrawModel ();			
-			Destroy(this);
+			if (!PhotonNetwork.offlineMode)
+			{
+				Destroy(gameObject);	
+			}
+			else
+			{
+				DestroyOverdrawModel ();			
+				Destroy(this);		
+			}
 		}
 
 		else
@@ -189,9 +193,7 @@ public class GhostFactory : MonoBehaviour
 	}
 	
 	void SetOverdraw ()
-	{
-		
-		this.gameObject.layer = LayerMask.NameToLayer ("Gizmos");
+	{	
 		Quaternion factoryRotation = thisFactory.transform.rotation;
 		factoryRotation.y = randomRotation;
 		overdrawModel = Instantiate (thisFactory.model, thisFactory.model.transform.position, factoryRotation) as GameObject;

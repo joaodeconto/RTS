@@ -87,8 +87,6 @@ public class FactoryBase : IStats, IDeathObservable
 	private int queueCounter	 	 = 0;
 	private int checkPopCouter	 	 = 0;
 	private bool factoryInitialized = false;
-	
-	[HideInInspector]
 	public bool wasVisible = false;
 	private bool alreadyCheckedMaxPopulation	{get { return checkPopCouter > 1;}}
 	private bool needHouse = false;
@@ -114,11 +112,11 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		base.Init();
 		helperCollider = GetComponentInChildren<CapsuleCollider> ();
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
 
 		// before construction
 		if(factoryInitialized || !wasBuilt) return;
 		SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);	
-		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
 		factoryInitialized = true;	
 		timer = 0;
 		hudController     = ComponentGetter.Get<HUDController> ();
@@ -161,7 +159,7 @@ public class FactoryBase : IStats, IDeathObservable
 			pa.Paint(this.transform.position, sizeOfHealthBar * 0.8f);
 		}
 
-		Invoke ("SendMessageInstance", 0.1f);
+
 						
 	}
 	#endregion
@@ -310,8 +308,9 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 	}
 
-	void SendMessageInstance ()
+	public void SendMessageInstance ()
 	{
+
 		if (GetComponent<GhostFactory> () == null)
 			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 	}
@@ -1042,54 +1041,49 @@ public class FactoryBase : IStats, IDeathObservable
 		base.SendRemove ();
 	}
 
-	[RPC]
-	public void InstanceOverdraw (int teamID, int allyID)
+	public void InstanceOverdraw ()
 	{
 		wasBuilt = false;		
-		gameObject.layer = LayerMask.NameToLayer ("Gizmos");
+		this.gameObject.layer = 19;
 
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (false);
 		}
-
-		SetTeam (teamID, allyID);		
-		levelConstruct = Health = 1;				
-		GetComponent<NavMeshObstacle>().enabled = false;		
-		if (!PhotonNetwork.offlineMode) IsNetworkInstantiate = true;		
-		
-		if (!gameplayManager.IsSameTeam (teamID))
-		{
-			model.transform.parent = null;
-			wasVisible = false;		
-			model.SetActive (false); 
-		}
+		GetComponent<NavMeshObstacle>().enabled = false;
 	}
 	
 	[RPC]
-	public void Instance ()
-	{	
-		gameObject.layer = LayerMask.NameToLayer ("Unit");
+	public void Instance (int teamID, int allyID)
+	{
+		Init();
 
-		if (!gameplayManager.IsSameTeam (this.team))
+		if (!PhotonNetwork.offlineMode)
 		{
-			model.SetActive (true);
-			model.transform.position = transform.position;
-			wasVisible = false;		
+			IsNetworkInstantiate = true;
+			SetTeam (teamID, allyID);
 
 		}
-		else	hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
-	
+		else SendMessageInstance();
+
+		levelConstruct = Health = 1;
+
+		if (gameplayManager.IsSameTeam (this.team))
+		{
+			hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
+			realRangeView  = this.fieldOfView;		
+			this.fieldOfView = 5f;		
+		}	
 		statsController.AddStats(this);	
-		realRangeView  = this.fieldOfView;		
+
 		GetComponent<NavMeshObstacle> ().enabled = true;	
-		this.fieldOfView = 5f;		
+
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{
 			obj.SetActive (true);
 		}	
 		buildingState = BuildingState.Base;		
-		SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
+
 	}
 	#endregion
 }
