@@ -631,7 +631,7 @@ public class Worker : Unit
 		if (HasFactory ())
 		{
 			Vector3 position = factoryChoose.transform.position;
-			position.y = factoryChoose.transform.position.y;			
+					
 			Move (position);
 			isMovingToFactory = true;
 		}
@@ -648,7 +648,7 @@ public class Worker : Unit
 		if (HasFactory ())
 		{
 			Vector3 position = factoryChoose.transform.position;
-			position.y = factoryChoose.transform.position.y;			
+						
 			Move (position);
 			isMovingToFactory = true;
 		}

@@ -137,7 +137,7 @@ public class Unit : IStats, IMovementObservable,
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
 
-		enabled = playerUnit;
+		if (gameplayManager.IsBotTeam(this)|| playerUnit) enabled = true;
 
 		if (playerUnit)
 		{
@@ -169,7 +169,7 @@ public class Unit : IStats, IMovementObservable,
 
 	void Update ()
 	{
-		if (playerUnit && !IsDead && ConfigurationData.InGame) IAStep ();
+		if (!IsDead && ConfigurationData.InGame) IAStep ();
 	}
 
 	public virtual void IAStep ()

@@ -168,7 +168,6 @@ public class GhostFactory : MonoBehaviour
 			gameObject.SendMessage ("OnInstance", SendMessageOptions.DontRequireReceiver);
 	
 			thisFactory.costOfResources = factoryConstruction.costOfResources;
-			worker.SetMoveToFactory (thisFactory);
 			StatsController statsController = ComponentGetter.Get<StatsController> ();
 			foreach (Unit unit in statsController.selectedStats)
 			{
