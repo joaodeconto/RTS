@@ -112,8 +112,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		base.Init();
 		helperCollider = GetComponentInChildren<CapsuleCollider> ();
-		this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
-
+		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 		// before construction
 		if(factoryInitialized || !wasBuilt) return;
 		SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);	
@@ -1062,7 +1061,7 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			IsNetworkInstantiate = true;
 			SetTeam (teamID, allyID);
-			model.transform.parent = null;
+
 		}
 		else SendMessageInstance();
 
@@ -1070,11 +1069,11 @@ public class FactoryBase : IStats, IDeathObservable
 
 		if (gameplayManager.IsSameTeam (this.team))
 		{
+			statsController.AddStats(this);
 			hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 			realRangeView  = this.fieldOfView;		
 			this.fieldOfView = 5f;		
 		}	
-		statsController.AddStats(this);	
 
 		GetComponent<NavMeshObstacle> ().enabled = true;	
 
@@ -1083,7 +1082,6 @@ public class FactoryBase : IStats, IDeathObservable
 			obj.SetActive (true);
 		}	
 		buildingState = BuildingState.Base;		
-
 	}
 	#endregion
 }

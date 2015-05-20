@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Advertisements;
 
 public class EndGameHUD : MonoBehaviour
 {
@@ -21,10 +22,12 @@ public class EndGameHUD : MonoBehaviour
 									(ht_dcb) =>
 									{	
 										xdeformer.ResetTerrain();
-			endGameUI.SetActive(true);
-			Loading ld = endGameUI.GetComponent<Loading>();
-										ld.forwardAlpha();										
-										checkSaving = true;
+										endGameUI.SetActive(true);
+										Loading ld = endGameUI.GetComponent<Loading>();
+										ld.forwardAlpha();	
+										if(ConfigurationData.addPass || ConfigurationData.multiPass) {QuitSave();}
+										else Advertisement.Show(null, new ShowOptions{pause = true,resultCallback = result => {QuitSave();} });
+										
 									});
 
 
@@ -35,10 +38,11 @@ public class EndGameHUD : MonoBehaviour
 									(ht_dcb) =>
 									{	
 										xdeformer.ResetTerrain();
-			endGameUI.SetActive(true);
-			Loading ld = endGameUI.GetComponent<Loading>();
-										ld.forwardAlpha();										
-										checkSaving = true;
+										endGameUI.SetActive(true);
+										Loading ld = endGameUI.GetComponent<Loading>();
+										ld.forwardAlpha();	
+										if(ConfigurationData.addPass || ConfigurationData.multiPass) {QuitSave();}
+										else Advertisement.Show(null, new ShowOptions{pause = true,resultCallback = result => {QuitSave();} });
 									});
 
 		option = transform.FindChild ("Victory").transform.FindChild ("Facebook Win1").gameObject;		
@@ -79,6 +83,11 @@ public class EndGameHUD : MonoBehaviour
 //		                            {
 //			gameObject.SetActive (false);
 //		});
+	}
+
+	void QuitSave()
+	{											
+		checkSaving = true;
 	}
 
 	void Update()

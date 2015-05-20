@@ -455,10 +455,6 @@ public class SelectionController : MonoBehaviour
 				if (statsController.selectedStats.Count != 0)
 				{
 					statsController.PlaySelectSound ();
-					if (statsController.selectedStats.Count == 1)
-					{
-						ComponentGetter.Get<HUDController>().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit, true);
-					}
 					return true;
 				}
 				
@@ -498,6 +494,8 @@ public class SelectionController : MonoBehaviour
 									    touchController.IsInCamera (stat.transform.position))
 									{
 										statsController.SelectStat (stat, true);
+										ComponentGetter.Get<HUDController>().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit, true);
+									
 									}
 								}
 							}

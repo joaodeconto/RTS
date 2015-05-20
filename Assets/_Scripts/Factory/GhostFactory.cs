@@ -188,7 +188,7 @@ public class GhostFactory : MonoBehaviour
 
 		else
 		{
-			PhotonNetwork.Destroy (gameObject);
+			Destroy (gameObject);
 		}
 	}
 	

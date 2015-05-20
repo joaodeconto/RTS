@@ -639,6 +639,7 @@ public class StatsController : MonoBehaviour
 				
 				if (!factory.wasBuilt)
 				{
+					w.WorkerReset();
 					w.SetMoveToFactory(factory);
 					feedback = true;
 				}
@@ -662,6 +663,7 @@ public class StatsController : MonoBehaviour
 				}
 				else if (factory.IsDamaged)
 				{
+					w.WorkerReset();
 					w.SetMoveToFactory(factory);
 					feedback = true;					
 				}

@@ -5,8 +5,8 @@ using Visiorama;
 
 public class RangedStructure : RangeUnit
 {
-	void Start ()
-	{	
+	public override void Init ()
+	{
 		dummyRangeObject.SetActive(true);
 		dummyRotation = dummyRangeObject.transform.localRotation;
 		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();

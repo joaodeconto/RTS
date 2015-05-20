@@ -38,7 +38,9 @@ public class RangeUnit : Unit
 			if (InMeleeRange (TargetAttack)) projectileAttacking = false;
 
 			else if (InProjectileRange (TargetAttack)) projectileAttacking = true;
-		
+
+			else projectileAttacking = false;
+					
 		}
 		else
 		{

@@ -46,7 +46,6 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 		stats.Init ();
 		if (prefab.GetComponent<FactoryBase>() != null)
 		{
-			prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
 			fb.Init();
@@ -67,7 +66,6 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 		stats.Init ();
 		if (prefab.GetComponent<FactoryBase>() != null)
 		{
-			prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
 		}	

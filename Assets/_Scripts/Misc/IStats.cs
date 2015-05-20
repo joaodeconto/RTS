@@ -213,6 +213,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	void Awake ()
 	{
+		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
 		Invoke ("Init", 0.1f);
 	}
 
@@ -224,7 +225,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		techTreeController	=  ComponentGetter.Get<TechTreeController> ();
 		statsController 	= ComponentGetter.Get<StatsController> ();
 		hudController   	= ComponentGetter.Get<HUDController> ();
-		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
 		eventController    	= ComponentGetter.Get<EventController> ();
 		minimapController 	= ComponentGetter.Get<MiniMapController>();		
 		selectionController = ComponentGetter.Get<SelectionController>();
@@ -258,7 +258,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		SetColorTeam ();		
 		WasRemoved = false;
 		GhostFactory gf = GetComponent<GhostFactory>();
-		if(gf == null ) statsController.AddStats (this);
+		RangedStructure rs = GetComponent<RangedStructure>();
+		if(gf != null || rs != null) return;
+		else statsController.AddStats (this);
 	}
 	#endregion
 

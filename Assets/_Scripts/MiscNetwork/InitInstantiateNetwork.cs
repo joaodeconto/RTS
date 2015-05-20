@@ -50,7 +50,6 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 		if (fb != null)
 		{
 			fb.wasBuilt = true;
-			fb.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 			fb.SendMessageInstance();
 			if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 			fb.wasVisible = false;
@@ -76,7 +75,6 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 					fb.collider.isTrigger = false;
 					fb.IsNetworkInstantiate = true;
 					fb.Init();
-					prefab.SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 				}			
 				else 
