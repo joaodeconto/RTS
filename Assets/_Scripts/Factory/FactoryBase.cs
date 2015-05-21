@@ -1068,7 +1068,7 @@ public class FactoryBase : IStats, IDeathObservable
 
 		if (gameplayManager.IsSameTeam (this.team))
 		{
-			statsController.AddStats(this);
+			if (PhotonNetwork.offlineMode) statsController.AddStats(this);
 			hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 			realRangeView  = this.fieldOfView;		
 			this.fieldOfView = 5f;
