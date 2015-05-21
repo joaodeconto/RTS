@@ -327,8 +327,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 		if (Health == 0 && !WasRemoved)
 		{
-			SendRemove ();
-			if(!PhotonNetwork.offlineMode)	photonView.RPC ("SendRemove", PhotonTargets.Others);
+
+			if(!PhotonNetwork.offlineMode)	photonView.RPC ("SendRemove", PhotonTargets.All);
+			else SendRemove ();
 		}
 	}
 

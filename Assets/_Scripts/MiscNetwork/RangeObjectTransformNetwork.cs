@@ -11,10 +11,7 @@ public class RangeObjectTransformNetwork : Photon.MonoBehaviour
 	
 	void Awake ()
 	{
-		if(!wasInitialized)
-		{
-			Init ();
-		}
+		if(!wasInitialized)	Init ();
 	}
 	
 	public void Init ()
@@ -24,21 +21,13 @@ public class RangeObjectTransformNetwork : Photon.MonoBehaviour
 		correctPlayerPos = transform.position; 
 		correctPlayerRot = transform.rotation;
 		
-		if (PhotonNetwork.offlineMode)
-		{
-			enabled = false;
-			Debug.Log("offline???  " + enabled);
-		}
+		if (PhotonNetwork.offlineMode)	enabled = false;
+	
 		else
 		{
-			rangeObjectScript = GetComponent <RangeObject> ();
-			
-			gameObject.name = gameObject.name + photonView.viewID;
-			
+			rangeObjectScript = GetComponent <RangeObject> ();			
+			gameObject.name = gameObject.name + photonView.viewID;			
 			enabled = !photonView.isMine;
-
-			Debug.Log("pelo gameplay  " + enabled);
-
 		}
 	}
 	
@@ -60,9 +49,8 @@ public class RangeObjectTransformNetwork : Photon.MonoBehaviour
 	   
     void Update()
     {
-		transform.position = Vector3.Slerp(transform.position, correctPlayerPos, 2f);
-		transform.rotation = Quaternion.Slerp(transform.rotation, correctPlayerRot, 2f);
-			
+		transform.position = Vector3.Slerp(transform.position, correctPlayerPos, 3f);
+		transform.rotation = correctPlayerRot;			
     }
 }
 

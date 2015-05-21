@@ -7,14 +7,11 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 	private Vector3 correctPlayerPos; 
 	private Quaternion correctPlayerRot;
 	private bool wasInitialized = false; 
-
+	public float interpolationPos = 3f;
 	
 	void Awake ()
 	{
-		if(!wasInitialized)
-		{
-			Init ();
-		}
+		if(!wasInitialized)	Init ();
 	}
 	
 	public void Init ()
@@ -24,29 +21,16 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 		correctPlayerPos = transform.position; 
 		correctPlayerRot = transform.rotation;
 
-		if (PhotonNetwork.offlineMode)
-		{
-			enabled = false;
-			Debug.Log("offline???  " + enabled);
-		}
+		if (PhotonNetwork.offlineMode)	enabled = false;
+
 		else
 		{
-			workerScript = GetComponent <Worker> ();
-			
+			workerScript = GetComponent <Worker> ();			
 	        gameObject.name = gameObject.name + photonView.viewID;
 			
-			if (workerScript.IsNetworkInstantiate)
-			{
-				enabled = !photonView.isMine;
-				Debug.Log("pelo photonview  " + enabled);
-			}
+			if (workerScript.IsNetworkInstantiate)	enabled = !photonView.isMine;
 
-			else 
-			{
-				enabled = !photonView.isMine;
-				Debug.Log("pelo gameplay  " + enabled);
-		
-			}
+			else 	enabled = !photonView.isMine;
 		}
     }
 
@@ -61,6 +45,7 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
             stream.SendNext (transform.rotation);
             stream.SendNext ((int)workerScript.workerState);
             stream.SendNext (workerScript.resourceId);
+
         }
         else
         {
@@ -78,8 +63,8 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
     {
 		if (!photonView.isMine)
 		{
-			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * interpolationPos);
+			transform.rotation = correctPlayerRot;
 			workerScript.SyncAnimation ();
 		}
 

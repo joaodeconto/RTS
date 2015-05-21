@@ -91,7 +91,4 @@ public class RangedStructure : RangeUnit
 		IsAttacking = false;
 	}
 
-	public override void OnDestroy ()
-	{
-	}
 }

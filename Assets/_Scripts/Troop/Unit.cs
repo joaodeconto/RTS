@@ -943,7 +943,7 @@ public class Unit : IStats, IMovementObservable,
 		else Destroy (gameObject);
 	}
 
-	public virtual void OnDestroy ()
+	void OnDestroy ()
 	{
 		if (gameplayManager.IsBotTeam (this)) return;
 		

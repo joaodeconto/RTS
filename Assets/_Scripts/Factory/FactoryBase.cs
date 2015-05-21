@@ -316,7 +316,7 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	void OnDestroy ()
 	{
-		//if (!WasRemoved && !playerUnit) statsController.RemoveStats (this);
+		if (!WasRemoved && !playerUnit) statsController.RemoveStats (this);
 	}	
 		
 	public virtual void SyncAnimation ()
@@ -1063,7 +1063,6 @@ public class FactoryBase : IStats, IDeathObservable
 			SetTeam (teamID, allyID);
 
 		}
-		else SendMessageInstance();
 
 		levelConstruct = Health = 1;
 
@@ -1072,7 +1071,8 @@ public class FactoryBase : IStats, IDeathObservable
 			statsController.AddStats(this);
 			hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 			realRangeView  = this.fieldOfView;		
-			this.fieldOfView = 5f;		
+			this.fieldOfView = 5f;
+			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 		}	
 
 		GetComponent<NavMeshObstacle> ().enabled = true;	
