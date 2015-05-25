@@ -868,6 +868,7 @@ public class FactoryBase : IStats, IDeathObservable
 				GameObject u = PhotonNetwork.Instantiate(upgrade.gameObject.name, transform.position, transform.rotation, 0);
 				upg = u.GetComponent<Upgrade>();
 			}
+			else upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
 		}
 		else upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
 
