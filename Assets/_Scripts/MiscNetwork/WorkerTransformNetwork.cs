@@ -6,8 +6,10 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
     Worker workerScript;
 	private Vector3 correctPlayerPos; 
 	private Quaternion correctPlayerRot;
+	private Vector3 lastPlayerPos; 
 	private bool wasInitialized = false; 
 	public float interpolationPos = 3f;
+
 	
 	void Awake ()
 	{
@@ -63,8 +65,10 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
     {
 		if (!photonView.isMine)
 		{
-			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * interpolationPos);
-			transform.rotation = correctPlayerRot;
+//			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * interpolationPos);
+			if(correctPlayerPos != lastPlayerPos)	workerScript.Move(correctPlayerPos);
+//			transform.rotation = correctPlayerRot;
+			lastPlayerPos = correctPlayerPos;
 			workerScript.SyncAnimation ();
 		}
 

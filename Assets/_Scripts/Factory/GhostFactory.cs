@@ -96,7 +96,7 @@ public class GhostFactory : MonoBehaviour
 			{
 				ComponentGetter.Get<SelectionController> ().enabled = true;
 				ComponentGetter.Get<InteractionController> ().enabled = true;
-				PhotonNetwork.Destroy (gameObject);
+				Destroy (gameObject);
 			}
 		}
 		if (numberOfCollisions != 0 || collideOnNavMeshLayer == false)

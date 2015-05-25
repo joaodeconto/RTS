@@ -351,7 +351,7 @@ public class Unit : IStats, IMovementObservable,
 			NavAgent.SetDestination (destination);
 
 		PathfindTarget = destination;
-		unitState = UnitState.Walk;
+		if (PhotonNetwork.offlineMode || playerUnit) unitState = UnitState.Walk;
 	}
 
 	public void StopMove (bool changeState = false)
