@@ -73,9 +73,9 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
 					fb.wasBuilt = true;		
 					fb.collider.isTrigger = false;
-					fb.IsNetworkInstantiate = true;					
-					fb.SendMessageInstance();
+					fb.IsNetworkInstantiate = true;
 					fb.Init();
+					fb.SendMessageInstance();
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 				}			
 				else 
