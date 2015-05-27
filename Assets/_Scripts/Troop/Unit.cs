@@ -101,6 +101,7 @@ public class Unit : IStats, IMovementObservable,
 	protected InteractionController interactionController;
 	private bool unitInitialized = false;
 	private bool isFollowed = false;
+	public NavMeshPath newPath;
 
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
@@ -127,6 +128,16 @@ public class Unit : IStats, IMovementObservable,
 			else ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
 		}
 
+		if (gameplayManager.IsBotTeam(this)|| playerUnit) enabled = true;
+		if (GetComponent<RangedStructure>() != null) return;
+
+		if (PhotonNetwork.offlineMode)
+		{
+			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+			oScore.oPlayers[team].AddScorePlayer("units-created",  1);			
+			oScore.oPlayers[team].AddScorePlayer(category + DataScoreEnum.XCreated, totalResourceCost);
+		}
+
 		NavAgent = GetComponent<NavMeshAgent>();
 		normalAcceleration = NavAgent.acceleration;
 		normalSpeed        = NavAgent.speed;
@@ -137,7 +148,7 @@ public class Unit : IStats, IMovementObservable,
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
 
-		if (gameplayManager.IsBotTeam(this)|| playerUnit) enabled = true;
+
 
 		if (playerUnit)
 		{
@@ -243,7 +254,13 @@ public class Unit : IStats, IMovementObservable,
 
 					StopMove (true);					
 				}
-
+				
+				if (NavAgent.pathStatus != NavMeshPathStatus.PathComplete) Debug.LogWarning("pathstatus:  " + NavAgent.pathStatus + "  ____ da unidade: " + gameObject.name);
+				if(NavAgent.isPathStale)
+				{
+					Debug.Log("path stalllllL" + NavAgent.pathStatus + "  ____ da unidade: " + gameObject.name);
+					Move(PathfindTarget);	
+				}
 				break;
 			case UnitState.Attack:
 
@@ -329,7 +346,7 @@ public class Unit : IStats, IMovementObservable,
 	#region Move NavAgent, Follow
 	public void Move (Vector3 destination)
 	{
-		NavMeshPath newPath = new NavMeshPath();
+		newPath = new NavMeshPath();
 
 		NavAgent.avoidancePriority = normalAvoidancePriority;
 	
@@ -697,7 +714,7 @@ public class Unit : IStats, IMovementObservable,
 
 		if (distanceToDestination <= NavAgent.stoppingDistance) return true;
 
-		if ((distanceToDestination <= NavAgent.stoppingDistance * 2) && NavAgent.velocity.sqrMagnitude < 0.2f)  return true;	
+		if ((distanceToDestination <= NavAgent.stoppingDistance * 2) && NavAgent.velocity.sqrMagnitude < 0.2f)  return true;
 
 		return false;
 
@@ -922,7 +939,7 @@ public class Unit : IStats, IMovementObservable,
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
 
-		if (IsNetworkInstantiate)
+		if (!PhotonNetwork.offlineMode)
 		{
 			Model.Battle battle = ConfigurationData.battle;
 			
@@ -940,7 +957,29 @@ public class Unit : IStats, IMovementObservable,
 			}
 			
 		}
-		else Destroy (gameObject);
+
+		else 
+		{
+			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+			if (playerUnit)
+			{
+				PhotonNetwork.Destroy(gameObject);
+				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.UnitsLost, 1);				
+				oScore.oPlayers[0].AddScorePlayer (this.category + DataScoreEnum.XUnitLost, this.totalResourceCost);
+				oScore.oPlayers[8].AddScorePlayer (DataScoreEnum.UnitsKilled, 1);
+				oScore.oPlayers[8].AddScorePlayer (this.category + DataScoreEnum.XKilled, this.totalResourceCost);
+			}
+			else
+			{
+				if(gameplayManager.IsBotTeam (this)) Destroy(gameObject);
+				oScore.oPlayers[8].AddScorePlayer (DataScoreEnum.UnitsLost, 1);				
+				oScore.oPlayers[8].AddScorePlayer (this.category + DataScoreEnum.XUnitLost, this.totalResourceCost);
+				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.UnitsKilled, 1);
+				oScore.oPlayers[0].AddScorePlayer (this.category + DataScoreEnum.XKilled, this.totalResourceCost);
+			}
+
+		}
+		Destroy (gameObject);
 	}
 
 	void OnDestroy ()

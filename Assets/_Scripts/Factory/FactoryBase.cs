@@ -154,6 +154,12 @@ public class FactoryBase : IStats, IDeathObservable
 				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
 				Score.AddScorePoints (this.category + DataScoreEnum.XBuilt, this.totalResourceCost, battle.IdBattle);		
 			}
+			else
+			{
+				OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+				oScore.oPlayers[team].AddScorePlayer(DataScoreEnum.BuildingsCreated,  1);			
+				oScore.oPlayers[team].AddScorePlayer(this.category + DataScoreEnum.XBuilt, totalResourceCost);
+			}
 			PaintAgent pa = GetComponent<PaintAgent>();
 			pa.Paint(this.transform.position, sizeOfHealthBar * 0.8f);
 		}
@@ -354,7 +360,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}		
 			
 		yield return new WaitForSeconds (2f);
-		if (IsNetworkInstantiate)
+		if (!PhotonNetwork.offlineMode)
 		{
 			Model.Battle battle = ConfigurationData.battle;
 			
@@ -372,7 +378,29 @@ public class FactoryBase : IStats, IDeathObservable
 				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, this.totalResourceCost, battle.IdBattle);
 			}
 		}
-		else Destroy (gameObject);
+		else
+		{
+			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+			if (playerUnit)
+			{
+				Destroy(gameObject);
+				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.BuildingsLost, 1);
+				oScore.oPlayers[0].AddScorePlayer (this.category + DataScoreEnum.XBuildLost, this.totalResourceCost);
+				oScore.oPlayers[8].AddScorePlayer (DataScoreEnum.BuildingsDestroyed, 1);
+				oScore.oPlayers[8].AddScorePlayer (this.category + DataScoreEnum.XDestroyed, this.totalResourceCost);
+			}
+			
+			else
+			{
+				if(gameplayManager.IsBotTeam (this)) Destroy(gameObject);
+				oScore.oPlayers[8].AddScorePlayer (DataScoreEnum.BuildingsLost, 1);
+				oScore.oPlayers[8].AddScorePlayer (this.category + DataScoreEnum.XBuildLost, this.totalResourceCost);
+				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.BuildingsDestroyed, 1);
+				oScore.oPlayers[0].AddScorePlayer (this.category + DataScoreEnum.XDestroyed, this.totalResourceCost);
+			}	
+		}
+
+		Destroy (gameObject);
 	}	
 
 	public bool Construct (Worker worker)

@@ -582,6 +582,7 @@ public class Worker : Unit
 	public void WorkerReset()
 	{		
 		currentNumberOfResources = 0;
+		NavAgent.speed = normalSpeed;
 		
 		factoryChoose = null;
 		

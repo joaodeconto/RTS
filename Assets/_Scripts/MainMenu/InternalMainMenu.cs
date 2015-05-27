@@ -31,6 +31,11 @@ public class InternalMainMenu : MonoBehaviour
 	public void Start ()
 	{
 		if (ConfigurationData.Logged) Init ();	
+		if (ConfigurationData.Offline) 
+		{
+			ConfigurationData.InGame = false;
+			score.Init ();
+		}
 	}
 	
 	public void Init ()

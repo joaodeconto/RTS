@@ -6,17 +6,14 @@ using Visiorama;
 public class RangedStructure : RangeUnit
 {
 	public override void Init ()
-	{
-		dummyRangeObject.SetActive(true);
-		dummyRotation = dummyRangeObject.transform.localRotation;
-		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
-		IStats factoryParent = transform.parent.gameObject.GetComponentInParent<IStats>();
-		SetTeam(factoryParent.team, factoryParent.ally);
-		playerUnit = factoryParent.playerUnit;
-		FactoryBase fb = factoryParent.GetComponent<FactoryBase>();
+	{		
+		base.Init();
+		GameObject factoryParent = transform.parent.gameObject;
+		FactoryBase fb = factoryParent.GetComponent<FactoryBase>();	
 		fb.upgradesToCreate[1].techAvailable = false;
 		fb.upgradesToCreate[3].techAvailable = true;
 		fb.RestoreOptionsMenu();
+		moveAttack = false;
 	//	this.gameObject.layer = LayerMask.NameToLayer ("Unit");	
 	}
 		
@@ -27,6 +24,9 @@ public class RangedStructure : RangeUnit
 		{
 			if (InProjectileRange (TargetAttack)) projectileAttacking = true;	
 			else TargetAttack = null;
+
+			
+			Debug.Log(TargetAttack);
 		}
 		else
 		{

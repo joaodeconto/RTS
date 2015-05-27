@@ -19,12 +19,12 @@ public class OfflineMenu : MonoBehaviour
 	public UILabel CurrentCrystalsLabel;
 	public Transform options;
 	public Transform menus;	
+	public GameObject noAddBtn;
 	protected ShowScore score;
 	private List<Transform> listChildOptions;
 		
 	public void Init ()
 	{
-
 		listChildOptions = new List<Transform>();
 		foreach (Transform child in options)
 		{
@@ -32,6 +32,8 @@ public class OfflineMenu : MonoBehaviour
 
 			Transform button = child.FindChild ("Button");
 			DefaultCallbackButton dcb;
+
+			if ( ConfigurationData.addPass == true) noAddBtn.SetActive(false);
 
 			if (button)
 			{

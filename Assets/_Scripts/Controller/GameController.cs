@@ -25,6 +25,11 @@ public class GameController : MonoBehaviour
 			ComponentGetter.Get<NetworkManager> ().Init ();
 			Score.LoadScores (() => {ComponentGetter.Get <BidManager>().PayTheBid(); });
 		}
+		else
+		{
+			GameObject oScore = new GameObject("OfflineScore"); 
+			oScore.AddComponent("OfflineScore");
+		}
 
 		ComponentGetter.Get<GameplayManager> ().Init ();
 		ComponentGetter.Get<TouchController> ().Init ();
@@ -37,5 +42,6 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<InteractionController> ().Init ();
 					
+
 	}
 }

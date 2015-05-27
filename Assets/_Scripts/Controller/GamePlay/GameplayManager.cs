@@ -133,8 +133,9 @@ public class GameplayManager : Photon.MonoBehaviour
 			Allies = 0;
 			numberOfTeams = 1;
 			pauseGame = true;
-			TribeInstiate ();
+			Invoke("TribeInstiate",1f);
 			ComponentGetter.Get<EnemyCluster> ().Init ();
+			ComponentGetter.Get<OfflineScore> ().Init ();
 			Invoke("GameStart",2f);
 		}
 
@@ -551,13 +552,25 @@ public class GameplayManager : Photon.MonoBehaviour
 			Model.Player player = new Model.Player(encodedPlayer);
 
 			if(scoreCounting)
-			{				
-				if (winGame)	Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
-				else			Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
+			{	
+				if (PhotonNetwork.offlineMode)
+				{
+					OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+					if (winGame)	oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Victory, 1);
+					else			oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Defeat, 1);
+					
+					oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+				}
+				else
+				{
+					if (winGame)	Score.AddScorePoints (DataScoreEnum.Victory, 1);
+					else			Score.AddScorePoints (DataScoreEnum.Defeat, 1);
 
-				Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);
-				score.SaveScore();
-				scoreCounting = false;			
+					Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+					score.SaveScore();
+
+				}
+				scoreCounting = false;		
 			}
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
@@ -634,6 +647,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				loserTeams++;	
 				Invoke("DestroyAllStats", 1f);
 				SendMessage ("EndMatch");
+				ComponentGetter.Get<OfflineScore> ().oPlayers[8].AddScorePlayer(DataScoreEnum.Victory, 1);
 			}
 
 			break;
