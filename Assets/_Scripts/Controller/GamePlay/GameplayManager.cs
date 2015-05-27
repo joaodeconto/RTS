@@ -552,14 +552,13 @@ public class GameplayManager : Photon.MonoBehaviour
 			Model.Player player = new Model.Player(encodedPlayer);
 
 			if(scoreCounting)
-			{	
+			{				
+				if (winGame)	Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
+				else			Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
 
-				if (winGame)	Score.AddScorePoints (DataScoreEnum.Victory, 1);
-				else			Score.AddScorePoints (DataScoreEnum.Defeat, 1);
-
-				Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+				Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);
 				score.SaveScore();
-				scoreCounting = false;		
+				scoreCounting = false;			
 			}
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
@@ -642,12 +641,12 @@ public class GameplayManager : Photon.MonoBehaviour
 			if (MyTeam == teamID)
 			{
 				loseGame = true;
-				scoreCounting = false;
 				ComponentGetter.Get<EnemyCluster>().enabled = false;
 				loserTeams++;
 				SendMessage ("EndMatch");
 				ComponentGetter.Get<OfflineScore> ().oPlayers[8].AddScorePlayer(DataScoreEnum.Victory, 1);
 				ComponentGetter.Get<OfflineScore> ().oPlayers[0].AddScorePlayer(DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+				scoreCounting = false;
 				Invoke("DestroyAllStats", 1f);
 			}
 
