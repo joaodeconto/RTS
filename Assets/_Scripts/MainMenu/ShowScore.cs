@@ -33,9 +33,6 @@ public class ShowScore : MonoBehaviour
 	private int battleTotalStructuresBuild = 0;
 	private int battleTotalStructuresDestroyed = 0;
 	private int battleTotalUpgradePoints = 0;
-	protected VersusScreen vsScreen;
-
-
 
 	// Use this for initialization
 	public void Init ()
@@ -45,13 +42,13 @@ public class ShowScore : MonoBehaviour
 		index.SetActive (false);		
 		ActiveScoreMenu (true);		
 		Dictionary<int, ScorePlayer> players = new Dictionary<int, ScorePlayer>();
-		vsScreen = ComponentGetter.Get<VersusScreen>();
 		mapLabel.text = VersusScreen.mapLabelString;
 		modeLabel.text = VersusScreen.modeLabelString;
 
-		OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
-		if (oScore != null)
+
+		if (VersusScreen.modeLabelString == "Single Player")
 		{
+			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
 			float positionYInitial = startLabelPoisition;
 			foreach (KeyValuePair<int, ScorePlayer> sp in oScore.oPlayers)
 			{
@@ -69,7 +66,7 @@ public class ShowScore : MonoBehaviour
 				ScoreRow sr = scorePlayerObject.GetComponent<ScoreRow>();					
 				
 				playerTime = (float)sp.Value.TotalTimeElapsed;
-				timeLabel.text = showGameTime;
+				if(sp.Key == 0) timeLabel.text = showGameTime;
 				sr.playerScoreModifier.text = "+" + sp.Value.TotalScore.ToString();								
 				if (sp.Value.VictoryPoints > 0)  sr.gameResult.text = "Victory";
 				else sr.gameResult.text = "Defeat";
@@ -102,13 +99,28 @@ public class ShowScore : MonoBehaviour
 			}
 			oScore.DestroyMe();
 
-			DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init (null,
-			          (ht_dcb) =>
-			          {
-						ActiveScoreMenu (false);
-						login.Index();					
-					  });
+			if(ConfigurationData.Offline)
+			{
+
+				DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
+				dcb.Init (null,
+				          (ht_dcb) =>
+				          {
+							ActiveScoreMenu (false);
+							login.Index();					
+						  });
+			}
+			else
+			{
+				DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
+				dcb.Init (null,
+				          (ht_dcb) =>
+				          {
+								ActiveScoreMenu (false);
+								imm.Init ();
+								
+							});
+			}
 		}
 
 		else
@@ -185,11 +197,10 @@ public class ShowScore : MonoBehaviour
 			dcb.Init (null,
 			          (ht_dcb) =>
 			          {
-				ActiveScoreMenu (false);
-				imm.Init ();
-				
-			}
-			);
+							ActiveScoreMenu (false);
+							imm.Init ();
+							
+						});
 		}
 
 

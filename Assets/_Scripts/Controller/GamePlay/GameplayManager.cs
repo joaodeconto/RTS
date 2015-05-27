@@ -553,23 +553,12 @@ public class GameplayManager : Photon.MonoBehaviour
 
 			if(scoreCounting)
 			{	
-				if (PhotonNetwork.offlineMode)
-				{
-					OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
-					if (winGame)	oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Victory, 1);
-					else			oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Defeat, 1);
-					
-					oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
-				}
-				else
-				{
-					if (winGame)	Score.AddScorePoints (DataScoreEnum.Victory, 1);
-					else			Score.AddScorePoints (DataScoreEnum.Defeat, 1);
 
-					Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
-					score.SaveScore();
+				if (winGame)	Score.AddScorePoints (DataScoreEnum.Victory, 1);
+				else			Score.AddScorePoints (DataScoreEnum.Defeat, 1);
 
-				}
+				Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+				score.SaveScore();
 				scoreCounting = false;		
 			}
 
@@ -584,6 +573,17 @@ public class GameplayManager : Photon.MonoBehaviour
 
 				});
 			});
+		}
+		else
+		{
+			if (PhotonNetwork.offlineMode && scoreCounting)
+			{
+				OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+				if (winGame)	oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Victory, 1);
+				else			oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Defeat, 1);
+				
+				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+			}
 		}
 
 		if (!PhotonNetwork.offlineMode) PhotonNetwork.LeaveRoom ();
@@ -644,10 +644,11 @@ public class GameplayManager : Photon.MonoBehaviour
 				loseGame = true;
 				scoreCounting = false;
 				ComponentGetter.Get<EnemyCluster>().enabled = false;
-				loserTeams++;	
-				Invoke("DestroyAllStats", 1f);
+				loserTeams++;
 				SendMessage ("EndMatch");
 				ComponentGetter.Get<OfflineScore> ().oPlayers[8].AddScorePlayer(DataScoreEnum.Victory, 1);
+				ComponentGetter.Get<OfflineScore> ().oPlayers[0].AddScorePlayer(DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+				Invoke("DestroyAllStats", 1f);
 			}
 
 			break;

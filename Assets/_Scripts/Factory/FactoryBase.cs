@@ -154,7 +154,7 @@ public class FactoryBase : IStats, IDeathObservable
 				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
 				Score.AddScorePoints (this.category + DataScoreEnum.XBuilt, this.totalResourceCost, battle.IdBattle);		
 			}
-			else
+			else if (gameplayManager.scoreCounting)
 			{
 				OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
 				oScore.oPlayers[team].AddScorePlayer(DataScoreEnum.BuildingsCreated,  1);			
@@ -378,7 +378,7 @@ public class FactoryBase : IStats, IDeathObservable
 				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, this.totalResourceCost, battle.IdBattle);
 			}
 		}
-		else
+		else if(gameplayManager.scoreCounting)
 		{
 			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
 			if (playerUnit)
@@ -400,7 +400,7 @@ public class FactoryBase : IStats, IDeathObservable
 			}	
 		}
 
-		Destroy (gameObject);
+		else Destroy (gameObject);
 	}	
 
 	public bool Construct (Worker worker)

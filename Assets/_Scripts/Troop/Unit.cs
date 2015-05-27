@@ -131,7 +131,7 @@ public class Unit : IStats, IMovementObservable,
 		if (gameplayManager.IsBotTeam(this)|| playerUnit) enabled = true;
 		if (GetComponent<RangedStructure>() != null) return;
 
-		if (PhotonNetwork.offlineMode)
+		if (PhotonNetwork.offlineMode && gameplayManager.scoreCounting)
 		{
 			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
 			oScore.oPlayers[team].AddScorePlayer("units-created",  1);			
@@ -958,7 +958,7 @@ public class Unit : IStats, IMovementObservable,
 			
 		}
 
-		else 
+		else if (gameplayManager.scoreCounting)
 		{
 			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
 			if (playerUnit)
