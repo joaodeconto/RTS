@@ -214,11 +214,11 @@ public class InteractionController : MonoBehaviour
 			}
 		}
 
-		if(NavMesh.SamplePosition (touchController.GetFinalPoint, out navHit, 0.8f, 1))statsController.MoveTroop (touchController.GetFinalPoint);
+		if(NavMesh.SamplePosition (touchController.GetFinalPoint, out navHit, 0.6f, 1))statsController.MoveTroop (touchController.GetFinalPoint);
 
 		else 
 		{
-			hudController.CreateFeedback (HUDController.Feedbacks.Invalid, touchController.GetFinalPoint, 1f, Color.red);
+			hudController.CreateFeedback (HUDController.Feedbacks.Invalid, touchController.GetFinalPoint, 1f, Color.red); // nao pode mover
 		}
 	}
 }

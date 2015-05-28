@@ -106,7 +106,6 @@ public class GameplayManager : Photon.MonoBehaviour
 		touchController = ComponentGetter.Get<TouchController>();
 		selectionController = ComponentGetter.Get<SelectionController>();
 		sc = ComponentGetter.Get<StatsController> ();
-
 		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
 		{
 			network = ComponentGetter.Get<NetworkManager>();

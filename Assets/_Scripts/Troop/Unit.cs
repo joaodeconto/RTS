@@ -259,6 +259,13 @@ public class Unit : IStats, IMovementObservable,
 				if(NavAgent.isPathStale)
 				{
 					Debug.Log("path stalllllL" + NavAgent.pathStatus + "  ____ da unidade: " + gameObject.name);
+					NavMeshHit hit;
+					Debug.Log("old pathfindtarget =  " + PathfindTarget); 
+					if(!NavMesh.SamplePosition (PathfindTarget, out hit, 0.6f, 1))
+				   	{
+						if(NavMesh.FindClosestEdge(PathfindTarget,out hit,1)) PathfindTarget = hit.position; 
+					}
+					Debug.Log("new pathfindtarget =  " + PathfindTarget); 
 					Move(PathfindTarget);	
 				}
 				break;
