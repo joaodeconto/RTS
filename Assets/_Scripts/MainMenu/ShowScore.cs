@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Advertisements;
 using Visiorama;
 
 public class ShowScore : MonoBehaviour
@@ -37,6 +38,8 @@ public class ShowScore : MonoBehaviour
 	// Use this for initialization
 	public void Init ()
 	{
+		if(ConfigurationData.addPass || ConfigurationData.multiPass) {}
+		else Advertisement.Show(null, new ShowOptions{pause = false,resultCallback = result => {}});
 	
 		LoginIndex index = login.GetComponentInChildren<LoginIndex> ();
 		index.SetActive (false);		
