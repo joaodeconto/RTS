@@ -88,6 +88,7 @@ public class EndGameHUD : MonoBehaviour
 	void QuitSave()
 	{											
 		checkSaving = true;
+		Application.LoadLevel (1);
 	}
 
 	void Update()

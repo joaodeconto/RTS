@@ -27,7 +27,16 @@ public class EnemyIA : MonoBehaviour
 
 	public void EnemyMovement ()
 	{
-		unit.Move (movementTarget.position + movementTarget.forward *3f);
+		CapsuleCollider facCol = movementTarget.GetComponent<CapsuleCollider>();
+		if(facCol != null)
+		{
+			Vector3 randomVector = (Random.onUnitSphere * facCol.radius * 0.98f);
+			Vector3 position = movementTarget.position - randomVector;
+			position.y = movementTarget.position.y;			
+			unit.Move (position);
+		}
+		else unit.Move(movementTarget.position);
+
 		isMoving = true;		
 	}
 

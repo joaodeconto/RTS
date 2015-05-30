@@ -148,8 +148,6 @@ public class Unit : IStats, IMovementObservable,
 		this.gameObject.tag   = "Unit";
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");		
 
-
-
 		if (playerUnit)
 		{
 			interactionController = ComponentGetter.Get<InteractionController>();
@@ -255,18 +253,21 @@ public class Unit : IStats, IMovementObservable,
 					StopMove (true);					
 				}
 				
-				if (NavAgent.pathStatus != NavMeshPathStatus.PathComplete) Debug.LogWarning("pathstatus:  " + NavAgent.pathStatus + "  ____ da unidade: " + gameObject.name);
 				if(NavAgent.isPathStale)
 				{
-					Debug.Log("path stalllllL" + NavAgent.pathStatus + "  ____ da unidade: " + gameObject.name);
-					NavMeshHit hit;
-					Debug.Log("old pathfindtarget =  " + PathfindTarget); 
-					if(!NavMesh.SamplePosition (PathfindTarget, out hit, 0.6f, 1))
-				   	{
-						if(NavMesh.FindClosestEdge(PathfindTarget,out hit,1)) PathfindTarget = hit.position; 
-					}
-					Debug.Log("new pathfindtarget =  " + PathfindTarget); 
-					Move(PathfindTarget);	
+					Debug.Log("path stale  " + NavAgent.pathStatus + " |  da unidade: " + gameObject.name + " |  old pathfindtarget =  " + PathfindTarget);	
+
+					if (NavAgent.pathStatus == NavMeshPathStatus.PathInvalid)
+					{						
+						Vector3 randomVector = Random.onUnitSphere;
+						Vector3 position = PathfindTarget - randomVector;
+						position.y = PathfindTarget.y;
+						NavMeshHit hit;
+						if(NavMesh.SamplePosition(position,out hit,1,1))
+						{
+							Move (position);
+						}						
+					}					
 				}
 				break;
 			case UnitState.Attack:
@@ -359,22 +360,11 @@ public class Unit : IStats, IMovementObservable,
 	
 		if (!NavAgent.updatePosition) NavAgent.updatePosition = true;
 
-		if (NavAgent.CalculatePath(destination, newPath))
+		if (NavAgent.SetDestination (destination))
 		{
-			if(newPath.status != NavMeshPathStatus.PathComplete)		
-			{
-				NavAgent.SetDestination (destination);
-			}
-		
-			else 
-			{
-				NavAgent.SetPath(newPath);
-			}
+			PathfindTarget = destination;
 		}
-		else
-			NavAgent.SetDestination (destination);
 
-		PathfindTarget = destination;
 		if (PhotonNetwork.offlineMode || playerUnit) unitState = UnitState.Walk;
 	}
 
@@ -403,20 +393,15 @@ public class Unit : IStats, IMovementObservable,
 		TargetAttack    = null;
 		followingTarget = false;
 		followedUnit = followed;		
-		if (followed.followedUnit == this)
-			followed.UnFollow ();
-
+		if (followed.followedUnit == this)	followed.UnFollow ();
 		Move(followed.transform.position);
 		followed.RegisterMovementObserver (this);
 		followed.RegisterAttackObserver (this);
-
 	}
 	
 	public void UnFollow  ()
 	{
-		if (followedUnit == null)
-			return;
-		
+		if (followedUnit == null)	return;		
 		followedUnit.UnRegisterMovementObserver (this);
 		followedUnit.UnRegisterAttackObserver (this);
 		followedUnit = null;

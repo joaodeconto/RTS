@@ -115,7 +115,8 @@ public class FactoryBase : IStats, IDeathObservable
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 		// before construction
 		if(factoryInitialized || !wasBuilt) return;
-		SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);	
+		SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);			
+		GetComponent<NavMeshObstacle> ().enabled = true;
 		factoryInitialized = true;	
 		timer = 0;
 		hudController     = ComponentGetter.Get<HUDController> ();
@@ -124,10 +125,8 @@ public class FactoryBase : IStats, IDeathObservable
 								
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
-
 		
-		enabled = playerUnit;
-				
+		enabled = playerUnit;				
 		if (unitsToCreate.Length != 0)
 		{
 			hasRallypoint = true;			
@@ -162,10 +161,7 @@ public class FactoryBase : IStats, IDeathObservable
 			}
 			PaintAgent pa = GetComponent<PaintAgent>();
 			pa.Paint(this.transform.position, sizeOfHealthBar * 0.8f);
-		}
-
-
-						
+		}						
 	}
 	#endregion
 
@@ -945,7 +941,7 @@ public class FactoryBase : IStats, IDeathObservable
 		if(newUnit.category == "Worker" && rallypoint.observedResource != null)
 		{
 			Worker workerUnit = (Worker)newUnit;
-			workerUnit.SetResource (rallypoint.observedResource);
+			workerUnit.SetMoveResource (rallypoint.observedResource);
 					
 		}
 		newUnit.Move (goRallypoint.position);
@@ -1078,7 +1074,6 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			obj.SetActive (false);
 		}
-		GetComponent<NavMeshObstacle>().enabled = false;
 	}
 	
 	[RPC]
@@ -1094,7 +1089,8 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 
 		levelConstruct = Health = 1;
-
+		
+		GetComponent<NavMeshObstacle> ().enabled = true;	
 		if (gameplayManager.IsSameTeam (this.team))
 		{
 			if (PhotonNetwork.offlineMode) statsController.AddStats(this);
@@ -1102,9 +1098,19 @@ public class FactoryBase : IStats, IDeathObservable
 			realRangeView  = this.fieldOfView;		
 			this.fieldOfView = 5f;
 			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
+
+			foreach (Unit unit in statsController.selectedStats)
+			{
+				if (unit.GetType() == typeof(Worker))
+				{
+					Worker builder = unit as Worker;
+					builder.TargetingEnemy(null);
+					builder.WorkerReset();
+					builder.SetMoveToFactory (this);
+				}
+			}
 		}	
 
-		GetComponent<NavMeshObstacle> ().enabled = true;	
 
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{

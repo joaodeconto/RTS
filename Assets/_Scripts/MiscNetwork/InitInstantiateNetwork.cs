@@ -53,6 +53,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 			fb.SendMessageInstance();
 			if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 			fb.wasVisible = false;
+			GetComponent<NavMeshObstacle> ().enabled = true;
 		}
 		else
 			stats.Init();

@@ -29,7 +29,7 @@ public class GhostFactory : MonoBehaviour
 		thisFactory = GetComponent<FactoryBase>();
 		thisFactory.InstanceOverdraw();
 		correctName = thisFactory.name;
-		thisFactory.name = "GhostFactory";		
+		thisFactory.name = "GhostFactory";
 		ComponentGetter.Get<InteractionController> ().enabled = false;
 		ComponentGetter.Get<SelectionController> ().enabled = false;
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
@@ -161,15 +161,6 @@ public class GhostFactory : MonoBehaviour
 			else thisFactory.Instance(worker.team, worker.ally);
 
 			gameObject.SendMessage ("OnInstance", SendMessageOptions.DontRequireReceiver);
-			StatsController statsController = ComponentGetter.Get<StatsController> ();
-			foreach (Unit unit in statsController.selectedStats)
-			{
-				if (unit.GetType() == typeof(Worker))
-				{
-					Worker otherWorker = unit as Worker;
-					otherWorker.SetMoveToFactory (thisFactory);
-				}
-			}
 
 			if (!PhotonNetwork.offlineMode)
 			{

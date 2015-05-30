@@ -210,6 +210,7 @@ public class StatsController : MonoBehaviour
 			if (unit == null) continue;
 			
 			unit.TargetingEnemy (enemy);
+			unit.hasMoveAttackDestination = false;
 			
 			feedback = true;
 
@@ -232,9 +233,7 @@ public class StatsController : MonoBehaviour
 
 		
 			if (feedback)
-			{
-
-			
+			{			
 				IStats enemyStats = enemy.GetComponent<IStats> ();
 			
 				hudController.CreateFeedback (HUDController.Feedbacks.Attack,

@@ -181,12 +181,8 @@ public class InteractionController : MonoBehaviour
 				if (worker.resource != null)
 				{
 					worker.resource.RemoveWorker (worker);
-					worker.SetResource (null);
-				}
-				if (worker.HasFactory ())
-					worker.SetMoveToFactory (null);		
-							
-				worker.SetResource (hit.GetComponent<Resource> ());
+				}							
+				worker.SetMoveResource (hit.GetComponent<Resource> ());
 				feedback = true;
 			}
 
@@ -207,9 +203,7 @@ public class InteractionController : MonoBehaviour
 				if (worker.resource != null)
 				{
 					worker.resource.RemoveWorker (worker);
-					worker.SetResource (null);
 				}
-				if (worker.HasFactory ())	worker.SetMoveToFactory (null);
 				worker.WorkerReset();
 			}
 		}

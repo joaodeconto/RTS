@@ -94,8 +94,7 @@ public class Worker : Unit
 	{
 		foreach (FactoryConstruction fc in factoryConstruction)
 		{
-			fc.techAvailable = fc.VIP;
-			
+			fc.techAvailable = fc.VIP;			
 		}
 	}
 
@@ -185,8 +184,7 @@ public class Worker : Unit
 					{
 						if (!HasFactory ())
 						{
-							SearchFactory (resource.type);						
-							SetMoveToFactory (factoryChoose);
+							SetMoveToFactory (resource.type);
 						}
 
 						else 
@@ -202,14 +200,13 @@ public class Worker : Unit
 				if (isMovingToFactory)
 				{
 					if (!HasFactory ())
-					{
-						isMovingToFactory = false;
-						SearchFactory (resource.type);						
-						SetMoveToFactory (factoryChoose);
-					}									
-				}
-
-				if (!MoveComplete ())
+					{					
+						SetMoveToFactory (resource.type);
+					}		
+					
+			}
+			
+			if (!MoveComplete ())
 				{
 					if (resourceWorker[resourceId].workerAnimation.Carrying)
 					{
@@ -244,7 +241,7 @@ public class Worker : Unit
 					gameplayManager.resources.DeliverResources (resourceType, currentNumberOfResources);
 					WorkerReset();
 
-					if (resource != null) SetResource (resource);
+					if (resource != null) SetMoveResource (resource);
 					else
 					{
 						NavAgent.Stop ();
@@ -466,7 +463,7 @@ public class Worker : Unit
 			eventController.AddEvent("out of funds", hudController.rocksFeedback ,factoryConstruct.factory.name);
 	}
 
-	public void SetResource (Resource newResource)
+	public void SetMoveResource (Resource newResource)
 	{
 		resource = newResource;
 
@@ -610,10 +607,15 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			Vector3 position = factoryChoose.transform.position;
+			
+			Debug.Log("after-setmove-factory  " + factoryChoose.transform.position);
+			CapsuleCollider facCol = factoryChoose.GetComponent<CapsuleCollider>();
+			Vector3 randomVector = (Random.onUnitSphere * facCol.radius * 0.98f);
+			Vector3 position = factoryChoose.transform.position - randomVector;
 			position.y = factoryChoose.transform.position.y;			
 			Move (position);
 			isMovingToFactory = true;
+			Debug.Log("before-setmove-factory  " + position);
 		}
 		else
 		{
@@ -627,8 +629,10 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			Vector3 position = factoryChoose.transform.position;
-					
+			CapsuleCollider facCol = factoryChoose.GetComponent<CapsuleCollider>();
+			Vector3 randomVector = (Random.onUnitSphere * facCol.radius * 0.9f);
+			Vector3 position = factoryChoose.transform.position - randomVector;
+			position.y = factoryChoose.transform.position.y;			
 			Move (position);
 			isMovingToFactory = true;
 		}
@@ -644,10 +648,13 @@ public class Worker : Unit
 
 		if (HasFactory ())
 		{
-			Vector3 position = factoryChoose.transform.position;
-						
+			CapsuleCollider facCol = factoryChoose.GetComponent<CapsuleCollider>();
+			Vector3 randomVector = (Random.onUnitSphere * facCol.radius * 0.98f);
+			Vector3 position = factoryChoose.transform.position - randomVector;
+			position.y = factoryChoose.transform.position.y;			
 			Move (position);
 			isMovingToFactory = true;
+			Debug.LogError("setmove-type" + position);
 		}
 		else
 		{
@@ -716,14 +723,23 @@ public class Worker : Unit
 				}
 			}
 
-			else 
-				CheckConstructFactory();
+//			else 
+//				CheckConstructFactory();
 		}
 	}
 
 	void CheckConstructFactory ()
 	{
-		if (HasFactory ())
+		if(isMovingToFactory && !HasFactory())
+		{
+			NavAgent.Stop ();
+			unitState = UnitState.Idle;
+			factoryChoose = null;
+			isMovingToFactory = false;
+			return;
+		}
+		if (!HasFactory ()) return;
+		else
 		{
 			if (Vector3.Distance (transform.position, factoryChoose.transform.position) < transform.GetComponent<CapsuleCollider>().radius + factoryChoose.helperCollider.radius+1)
 			{
@@ -731,45 +747,44 @@ public class Worker : Unit
 				{
 					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Building;
+					lastFactory = factoryChoose;
 				}
 
 				else if (factoryChoose.IsDamaged)
 				{
 					resourceWorker[0].extractingObject.SetActive (true);
 					workerState = WorkerState.Repairing;
+					lastFactory = factoryChoose;
 				}
 
-				lastFactory = factoryChoose;
+				else
+				{
+					factoryChoose = null;
+					NavAgent.Stop ();
+					unitState = UnitState.Idle;
+					isMovingToFactory = false;
+				}
 			}
 
 			else
 			{
 				if (!factoryChoose.wasBuilt ||	factoryChoose.IsDamaged)
-				{   														
-					Move (factoryChoose.transform.position);
+				{   		
+					if(!isMovingToFactory)
+						SetMoveToFactory(factoryChoose);
 				}
 
 				else
 				{
 					NavAgent.Stop ();
-					workerState = WorkerState.Idle;
+					unitState = UnitState.Idle;
 					factoryChoose = null;
 					isMovingToFactory = false;
 				}
 			}
 		}
 
-		else if (factoryChoose != null)
-		{
-			if (factoryChoose.WasRemoved)
-			{
-				factoryChoose = null;
-				NavAgent.Stop ();
-				workerState = WorkerState.Idle;
-				factoryChoose = null;
-				isMovingToFactory = false;
-			}
-		}
+//		
 	}
 
 	public bool HasFactory ()
