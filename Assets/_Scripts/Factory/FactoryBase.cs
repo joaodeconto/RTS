@@ -412,6 +412,8 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			buildingState = BuildingState.Finished;
 		}
+
+		SyncAnimation ();
 		
 		if (levelConstruct == MaxHealth)
 		{
@@ -420,7 +422,7 @@ public class FactoryBase : IStats, IDeathObservable
 				wasBuilt = true;												
 				this.fieldOfView = realRangeView;	
 				if(Selected) RestoreOptionsMenu();							
-				Init ();
+				Init();
 				eventController.AddEvent("building finish",transformParticleDamageReference.position, this.category, this.guiTextureName);				
 
 			}
@@ -1096,6 +1098,8 @@ public class FactoryBase : IStats, IDeathObservable
 			hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 			realRangeView  = this.fieldOfView;		
 			this.fieldOfView = 5f;
+			buildingState = BuildingState.Base;
+			SyncAnimation ();
 			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 
 			foreach (Unit unit in statsController.selectedStats)
