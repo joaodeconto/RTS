@@ -14,6 +14,7 @@ public class SubstanceResourceBar : MonoBehaviour
 	public IStats refTarget;
 	public FactoryBase refFactory;
 	public bool noTimer = false;
+	public float refreshRate = 0.3f;
 	
 	public void Init ()
 	{
@@ -25,64 +26,43 @@ public class SubstanceResourceBar : MonoBehaviour
 		curProperties = substance.GetProceduralPropertyDescriptions();
 		refFactory = refTarget as FactoryBase;
         CheckInvokingTimer ();
-
 	}
 
 
 	public void CheckInvokingTimer ()
 	{ 
-		if (noTimer) InvokeRepeating ("UpdateInvokingConstruct",0, 0.2f);
-		else InvokeRepeating ("UpdateInvokingTimer",0, 0.2f);
+
+		if (noTimer) 
+		{
+			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (refFactory.team, 1);
+			substance.SetProceduralColor("outputcolor", teamColor);
+			InvokeRepeating ("UpdateInvokingConstruct",0, refreshRate);
+		}
+
+		else
+		{
+			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (refFactory.team, 1);
+			substance.SetProceduralColor("outputcolor", teamColor);
+			InvokeRepeating ("UpdateInvokingTimer",0, refreshRate);
+		}
+
 	}
 
 	public void UpdateInvokingTimer ()
 	{
 		if(refFactory == null || !refFactory.inUpgrade) DestroyImmediate(gameObject);
-
 		float percentResource = refFactory.timer * (3.14f/refFactory.timeToCreate);
-
-		foreach (ProceduralPropertyDescription curProperty in curProperties)
-		{
-			if (curProperty.type == ProceduralPropertyType.Float)
-			{
-				substance.SetProceduralFloat(curProperty.name, (percentResource-3.14f));
-			}
-
-			else
-			{
-				int teamID = refFactory.team;
-				Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
-				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
-					substance.SetProceduralColor(curProperty.name, teamColor);
-
-			}
-		}
+		substance.SetProceduralFloat("Rotate", (percentResource-3.14f));
 		substance.RebuildTextures ();
 	}
 
 	public void UpdateInvokingConstruct ()
 	{
-		if(refFactory == null || refFactory.wasBuilt) DestroyImmediate(gameObject);
-		
+		if(refFactory == null || refFactory.wasBuilt) DestroyImmediate(gameObject);		
 		float percentResource = refFactory.Health * (3.14f/refFactory.MaxHealth);
-		
-		foreach (ProceduralPropertyDescription curProperty in curProperties)
-		{
-			if (curProperty.type == ProceduralPropertyType.Float)
-			{
-				substance.SetProceduralFloat(curProperty.name, (percentResource-3.14f));
-			}
-			
-			else
-			{
-				int teamID = refFactory.team;
-				Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
-				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
-					substance.SetProceduralColor(curProperty.name, teamColor);
-				
-			}
-		}
+		substance.SetProceduralFloat("Rotate", (percentResource-3.14f));
 		substance.RebuildTextures ();
+
 	}
 
 	
