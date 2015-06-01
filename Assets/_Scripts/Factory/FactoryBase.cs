@@ -168,7 +168,7 @@ public class FactoryBase : IStats, IDeathObservable
 	#region Update
 	void Update ()
 	{
-		SyncAnimation ();
+		//SyncAnimation ();
 				
 		if (!wasBuilt)	return;
 
@@ -311,7 +311,6 @@ public class FactoryBase : IStats, IDeathObservable
 
 	public void SendMessageInstance ()
 	{
-
 		if (GetComponent<GhostFactory> () == null)
 			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 	}
