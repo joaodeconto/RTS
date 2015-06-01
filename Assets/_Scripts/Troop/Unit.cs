@@ -1124,6 +1124,12 @@ public class Unit : IStats, IMovementObservable,
 		}
 	}
 
+	public void WarpToPos(Vector3 warpPos)
+	{
+		NavAgent.Warp(warpPos);
+	}
+
+
 	#endregion
 
 	#region RPC's

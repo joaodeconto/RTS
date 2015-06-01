@@ -149,9 +149,9 @@ public class Worker : Unit
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
 					resource.RemoveWorker (this);
-					lastResource = resource = null;
+					resource = null;
 					workerState = WorkerState.Idle;
-					Move (factoryChoose.transform.position);
+					SetMoveToFactory(resource.type);
 					return;
 				}
 				else if (resource != lastResource || resource == null)
@@ -524,6 +524,8 @@ public class Worker : Unit
 		else
 		{
 			workerState = WorkerState.Idle;
+			unitState   = UnitState.Idle;
+			WorkerReset();
 		}
 
 		NavAgent.avoidancePriority = normalAvoidancePriority;

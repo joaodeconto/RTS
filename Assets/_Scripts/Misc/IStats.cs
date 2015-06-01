@@ -229,7 +229,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		minimapController 	= ComponentGetter.Get<MiniMapController>();		
 		selectionController = ComponentGetter.Get<SelectionController>();
 		Health = MaxHealth;
-
+		GhostFactory gf = GetComponent<GhostFactory>();
 
 		if (!gameplayManager.IsBotTeam (this))
 		{
@@ -237,7 +237,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			{
 				SetTeamInNetwork ();
 			}
-			else
+			else if (gf == null)
 			{
 				if (!PhotonNetwork.offlineMode)
 				{
@@ -257,7 +257,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		firstDamage = false;
 		SetColorTeam ();		
 		WasRemoved = false;
-		GhostFactory gf = GetComponent<GhostFactory>();
+
 		RangedStructure rs = GetComponent<RangedStructure>();
 		if(gf != null || rs != null) return;
 		else statsController.AddStats (this);

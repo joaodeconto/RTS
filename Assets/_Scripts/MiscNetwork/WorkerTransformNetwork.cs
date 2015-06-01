@@ -8,7 +8,8 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 	private Quaternion correctPlayerRot;
 	private Vector3 lastPlayerPos; 
 	private bool wasInitialized = false; 
-	public float interpolationPos = 3f;
+	public float interpolationPos = 3f;	
+	public float maxDistanceToIntervain = 3f;
 
 	
 	void Awake ()
@@ -63,6 +64,11 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
 
     void Update()
     {
+		if (Vector3.Distance(correctPlayerPos, transform.position) > maxDistanceToIntervain)
+		{
+			workerScript.WarpToPos(correctPlayerPos);
+		}
+
 		if (!photonView.isMine)
 		{
 			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * interpolationPos);
