@@ -91,8 +91,6 @@ public class FogOfWar : MonoBehaviour
 	private float terrainLastY;
 
 	public Texture2D FogTexture { get; private set; }
-
-	private TerrainData td;
 	private List<Transform> allies = new List<Transform> ();
 	private List<Transform> enemies = new List<Transform> ();
 	private List<IStats> entityAllies = new List<IStats> ();
@@ -118,7 +116,7 @@ public class FogOfWar : MonoBehaviour
 
 		FogTexture    = new Texture2D (SIZE_TEXTURE, SIZE_TEXTURE, TextureFormat.ARGB32, false);
 		matrixFogFlag = new FogFlag[SIZE_TEXTURE,SIZE_TEXTURE];
-		td = terrain.terrainData;
+
 
 		for (i = 0; i != SIZE_TEXTURE; ++i)
 			for (j = 0; j != SIZE_TEXTURE; ++j)

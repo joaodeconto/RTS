@@ -29,6 +29,6 @@ public class Loading : MonoBehaviour {
 	{
 		loadAlpha.enabled = true;
 		loadAlpha = GetComponent<TweenAlpha>();
-		loadAlpha.Play();
+		loadAlpha.PlayForward();
 	}
 }

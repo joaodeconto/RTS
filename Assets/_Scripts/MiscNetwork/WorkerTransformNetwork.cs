@@ -65,10 +65,8 @@ public class WorkerTransformNetwork : Photon.MonoBehaviour
     {
 		if (!photonView.isMine)
 		{
-//			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * interpolationPos);
-			if(correctPlayerPos != lastPlayerPos)	workerScript.Move(correctPlayerPos);
-//			transform.rotation = correctPlayerRot;
-			lastPlayerPos = correctPlayerPos;
+			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * interpolationPos);
+			transform.rotation = correctPlayerRot;
 			workerScript.SyncAnimation ();
 		}
 

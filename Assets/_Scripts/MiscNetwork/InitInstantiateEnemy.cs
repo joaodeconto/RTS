@@ -49,7 +49,7 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
 			fb.wasBuilt = true;
 			fb.Init();			
-			GetComponent<NavMeshObstacle> ().enabled = true;
+			fb.GetComponent<NavMeshObstacle> ().enabled = true;
 		}				
 		CancelInvoke ("NetworkInstantiatePrefab");
 		Destroy (this.gameObject);

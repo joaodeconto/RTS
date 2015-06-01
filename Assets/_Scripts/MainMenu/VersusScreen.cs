@@ -104,7 +104,7 @@ public class VersusScreen : MonoBehaviour
 			i = 0;
 			foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 			{
-				SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[i], pp);				
+				SetPlayer (configurationOfScreen[configurationOfScreenSelected].positions[(int)pp.customProperties["team"]], pp);				
 				i++;
 			}
 		}
@@ -125,10 +125,8 @@ public class VersusScreen : MonoBehaviour
 		goVersusScreen.SetActive (true);
 		
 		// LOAD GAMEPLAY!
-		int totalPlayers = 2;		
-		int i = 0;
+		int totalPlayers = 2;
 		battleMode.text = ("Single Player"); 
-		i = 0;
 		Invoke ("InstanceGame",2);
 		mapLabelString 	= mapName.text;
 		modeLabelString	= battleMode.text;

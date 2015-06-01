@@ -5,28 +5,27 @@ using Visiorama;
 
 public class InGameAd : MonoBehaviour {
 
-	public GameObject AdPanel;
 	protected GameplayManager gameplayManager;
-	private float adTrigger;
-
+	private float adTrigger = 320f;
 
 	void Start () 
 	{
-		gameplayManager = ComponentGetter.Get<GameplayManager>();
-	
+		if(PlayerPrefs.GetInt("Logins") <= 3) enabled = false;
+		gameplayManager = ComponentGetter.Get<GameplayManager>();	
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if(gameplayManager.gameTime > adTrigger)
+		if(gameplayManager.gameTime >= adTrigger)
 		{
 			Advertisement.Show(null, new ShowOptions{pause = true,resultCallback = result => {} });
 		}	
 	}
 
-	void ActiveAdPanel()
+	void DestroyAd()
 	{
+		Destroy(gameObject);
 	}
 
 }

@@ -191,10 +191,8 @@ public class RankedBattle : MonoBehaviour
 
 
 	private void CreateRoom (int maxPlayers, int bid, string battleTypeName, string bMode, int map)
-	{
-		Model.Player player = ComponentGetter.Get <InternalMainMenu>().player;
+	{	
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
-		PlayerDAO playerDao = ComponentGetter.Get <PlayerDAO> ();
 
 		if (bMode == "DeathMatch")
 		{

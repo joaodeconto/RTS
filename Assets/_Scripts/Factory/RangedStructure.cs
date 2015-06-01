@@ -64,7 +64,7 @@ public class RangedStructure : RangeUnit
 		}
 	}
 
-	public IEnumerator Attack ()
+	private IEnumerator Attack ()
 	{	
 		SfxAtk();
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);

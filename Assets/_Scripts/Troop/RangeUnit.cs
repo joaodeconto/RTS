@@ -79,7 +79,7 @@ public class RangeUnit : Unit
 		}
 	}
 
-	public IEnumerator Attack ()
+	private IEnumerator Attack ()
 	{	
 		SfxAtk();
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);

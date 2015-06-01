@@ -11,7 +11,6 @@ public class OfflineScore : MonoBehaviour
 	{
 		DontDestroyOnLoad(transform.gameObject);
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
-		int myPlayerId = gameplayManager.MyTeam;
 		foreach (Team t in gameplayManager.teams)
 		{
 			if (t.initialPosition != null && (t.initialPosition.name == "0" || t.initialPosition.name == "8"))

@@ -257,16 +257,23 @@ public class Unit : IStats, IMovementObservable,
 				{
 					Debug.Log("path stale  " + NavAgent.pathStatus + " |  da unidade: " + gameObject.name + " |  old pathfindtarget =  " + PathfindTarget);	
 
-					if (NavAgent.pathStatus == NavMeshPathStatus.PathInvalid)
+					if (NavAgent.pathStatus != NavMeshPathStatus.PathComplete)
 					{						
-						Vector3 randomVector = Random.onUnitSphere;
-						Vector3 position = PathfindTarget - randomVector;
-						position.y = PathfindTarget.y;
-						NavMeshHit hit;
-						if(NavMesh.SamplePosition(position,out hit,1,1))
+						if (NavAgent.pathStatus != NavMeshPathStatus.PathInvalid)
 						{
-							Move (position);
-						}						
+							Vector3 randomVector = Random.onUnitSphere;
+							Vector3 position = PathfindTarget - randomVector;
+							position.y = PathfindTarget.y;
+							NavMeshHit hit;
+							if(NavMesh.SamplePosition(position,out hit,1,1))
+							{
+								Move (position);
+							}		
+						}
+						else 
+						{
+							Move (PathfindTarget);
+						}
 					}					
 				}
 				break;
@@ -974,17 +981,6 @@ public class Unit : IStats, IMovementObservable,
 		Destroy (gameObject);
 	}
 
-	void OnDestroy ()
-	{
-		if (gameplayManager.IsBotTeam (this)) return;
-		
-		if (Selected && !playerUnit)
-		{
-			hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);
-			
-			Deselect ();
-		}
-	}
 	#endregion
 
 	#region IMovementObservable implementation

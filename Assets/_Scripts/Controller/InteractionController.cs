@@ -168,20 +168,34 @@ public class InteractionController : MonoBehaviour
 		{
 			bool feedback = false;
 
+			if(hit.CompareTag("Obelisk"))
+			{
+				IStats obelisk = hit.GetComponent<IStats>();
+				if(!gameplayManager.IsSameTeam(obelisk.team))
+				{
+					if (obelisk.IsVisible)
+					{
+						statsController.AttackTroop (obelisk.gameObject);
+						return;
+					}
+				}
+			}
+
 			foreach (IStats stat in statsController.selectedStats)
 			{
 				Worker worker = stat as Worker;
 				
 				if (worker == null) continue;
-//				if (worker.IsExtracting)
-//				{
-//					continue;
-//				}
+
 				worker.WorkerReset();	
 				if (worker.resource != null)
 				{
 					worker.resource.RemoveWorker (worker);
-				}							
+					worker.SetMoveResource (null);
+				}
+				if (worker.HasFactory ())
+					worker.SetMoveToFactory (null);		
+							
 				worker.SetMoveResource (hit.GetComponent<Resource> ());
 				feedback = true;
 			}
@@ -203,7 +217,9 @@ public class InteractionController : MonoBehaviour
 				if (worker.resource != null)
 				{
 					worker.resource.RemoveWorker (worker);
+					worker.SetMoveResource (null);
 				}
+				if (worker.HasFactory ())	worker.SetMoveToFactory (null);
 				worker.WorkerReset();
 			}
 		}
