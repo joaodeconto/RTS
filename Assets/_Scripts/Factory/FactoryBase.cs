@@ -119,10 +119,7 @@ public class FactoryBase : IStats, IDeathObservable
 		GetComponent<NavMeshObstacle> ().enabled = true;
 		factoryInitialized = true;	
 		timer = 0;
-		hudController     = ComponentGetter.Get<HUDController> ();
-		buildingSlider    = hudController.GetSlider("Building Unit");
-		buildingSlider.gameObject.SetActive(false);
-								
+										
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 		
@@ -141,10 +138,13 @@ public class FactoryBase : IStats, IDeathObservable
 			rallyPoint.Init (pos, this.team);
 		}	
 
-		inUpgrade = false;				
-		buildingState = BuildingState.Finished;
+		inUpgrade = false;	
 		if (playerUnit)
 		{
+			hudController     = ComponentGetter.Get<HUDController> ();
+			buildingSlider    = hudController.GetSlider("Building Unit");
+			buildingSlider.gameObject.SetActive(false);
+
 			if (techTreeController.attribsHash.ContainsKey(category))LoadStandardAttribs();
 		    if(wasBuilt)TechActiveBool(TechsToActive, true);
 			if (!PhotonNetwork.offlineMode)
@@ -272,6 +272,7 @@ public class FactoryBase : IStats, IDeathObservable
 		
 		if(isVisible)
 		{
+			SyncAnimation ();
 			model.transform.parent = this.transform;
 			model.SetActive(true);
 			if (firstDamage)
@@ -1086,7 +1087,6 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			IsNetworkInstantiate = true;
 			SetTeam (teamID, allyID);
-
 		}
 
 		levelConstruct = Health = 1;
@@ -1098,8 +1098,6 @@ public class FactoryBase : IStats, IDeathObservable
 			hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 			realRangeView  = this.fieldOfView;		
 			this.fieldOfView = 5f;
-			buildingState = BuildingState.Base;
-			SyncAnimation ();
 			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 
 			foreach (Unit unit in statsController.selectedStats)
@@ -1120,6 +1118,7 @@ public class FactoryBase : IStats, IDeathObservable
 			obj.SetActive (true);
 		}	
 		buildingState = BuildingState.Base;		
+		SyncAnimation ();
 	}
 	#endregion
 }

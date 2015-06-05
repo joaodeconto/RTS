@@ -255,7 +255,7 @@ public class Unit : IStats, IMovementObservable,
 				
 				if(NavAgent.isPathStale)
 				{
-					Debug.Log("path stale  " + NavAgent.pathStatus + " |  da unidade: " + gameObject.name + " |  old pathfindtarget =  " + PathfindTarget);	
+			//		Debug.Log("path stale  " + NavAgent.pathStatus + " |  da unidade: " + gameObject.name + " |  old pathfindtarget =  " + PathfindTarget);	
 
 					if (NavAgent.pathStatus != NavMeshPathStatus.PathComplete)
 					{						

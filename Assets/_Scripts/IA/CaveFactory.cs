@@ -13,9 +13,9 @@ public class CaveFactory : FactoryBase
 	private int unitToCreateCluster;
 
 	public override void Init ()
-	{
-		base.Init();
+	{		
 		wasBuilt = true;
+		base.Init();		
 		enabled = true;
 		enemyCluster      = ComponentGetter.Get<EnemyCluster>();
 	}

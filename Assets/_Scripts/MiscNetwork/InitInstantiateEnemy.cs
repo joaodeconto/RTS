@@ -42,18 +42,15 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 		GameObject prefab = Instantiate (prefabInstantiate, transform.position, transform.rotation) as GameObject;
 		prefSetTeam.SetTeam (0,0);
 		prefab.transform.parent = transform.parent;
-		IStats stats = prefab.GetComponent<IStats>();
-		stats.Init ();
 		if (prefab.GetComponent<FactoryBase>() != null)
 		{
 			FactoryBase fb = prefab.GetComponent<FactoryBase>();
-			fb.wasBuilt = true;
-			fb.Init();			
-			fb.GetComponent<NavMeshObstacle> ().enabled = true;
+			fb.wasBuilt = true;	
+			fb.wasVisible = false;
+			fb.GetComponent<NavMeshObstacle> ().enabled = true;		
 		}				
 		CancelInvoke ("NetworkInstantiatePrefab");
 		Destroy (this.gameObject);
-
 	}
 
 	void NetworkInstantiatePrefab ()

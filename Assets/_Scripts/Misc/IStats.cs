@@ -249,6 +249,11 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 					team = 0;
 				}
 			}
+			else
+			{
+				playerUnit = true;
+				team = 0;
+			}
 		}
 		else
 		{

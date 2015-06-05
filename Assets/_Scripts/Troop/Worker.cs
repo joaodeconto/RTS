@@ -149,9 +149,9 @@ public class Worker : Unit
 					resourceWorker[resourceId].extractingObject.SetActive (false);
 					resourceId = -1;
 					resource.RemoveWorker (this);
-					resource = null;
+					lastResource = resource = null;
 					workerState = WorkerState.Idle;
-					SetMoveToFactory(resource.type);
+					SetMoveToFactory(factoryChoose);
 					return;
 				}
 				else if (resource != lastResource || resource == null)
@@ -524,8 +524,6 @@ public class Worker : Unit
 		else
 		{
 			workerState = WorkerState.Idle;
-			unitState   = UnitState.Idle;
-			WorkerReset();
 		}
 
 		NavAgent.avoidancePriority = normalAvoidancePriority;
@@ -610,18 +608,21 @@ public class Worker : Unit
 		if (HasFactory ())
 		{
 			
-			Debug.Log("after-setmove-factory  " + factoryChoose.transform.position);
+//			Debug.Log("before-setmove-factory  " + factoryChoose.transform.position);
 			CapsuleCollider facCol = factoryChoose.GetComponent<CapsuleCollider>();
 			Vector3 randomVector = (Random.onUnitSphere * facCol.radius * 0.98f);
 			Vector3 position = factoryChoose.transform.position - randomVector;
 			position.y = factoryChoose.transform.position.y;			
 			Move (position);
+			workerState = WorkerState.Idle;
 			isMovingToFactory = true;
-			Debug.Log("before-setmove-factory  " + position);
+//			Debug.Log("after-setmove-factory  " + position);
 		}
 		else
 		{
 			isMovingToFactory = false;
+			unitState 	= UnitState.Idle;
+			workerState = WorkerState.Idle;
 		}
 	}
 
@@ -634,13 +635,16 @@ public class Worker : Unit
 			CapsuleCollider facCol = factoryChoose.GetComponent<CapsuleCollider>();
 			Vector3 randomVector = (Random.onUnitSphere * facCol.radius * 0.9f);
 			Vector3 position = factoryChoose.transform.position - randomVector;
-			position.y = factoryChoose.transform.position.y;			
+			position.y = factoryChoose.transform.position.y;
+			workerState = WorkerState.Idle;
 			Move (position);
 			isMovingToFactory = true;
 		}
 		else
 		{
 			isMovingToFactory = false;
+			unitState 	= UnitState.Idle;
+			workerState = WorkerState.Idle;
 		}
 	}
 
@@ -655,12 +659,16 @@ public class Worker : Unit
 			Vector3 position = factoryChoose.transform.position - randomVector;
 			position.y = factoryChoose.transform.position.y;			
 			Move (position);
+			workerState = WorkerState.Idle;
 			isMovingToFactory = true;
 			Debug.LogError("setmove-type" + position);
 		}
+
 		else
 		{
 			isMovingToFactory = false;
+			unitState 	= UnitState.Idle;
+			workerState = WorkerState.Idle;
 		}
 	}
 #endregion
@@ -774,12 +782,14 @@ public class Worker : Unit
 				{   		
 					if(!isMovingToFactory)
 						SetMoveToFactory(factoryChoose);
+				
 				}
 
 				else
 				{
 					NavAgent.Stop ();
 					unitState = UnitState.Idle;
+					workerState = WorkerState.Idle;
 					factoryChoose = null;
 					isMovingToFactory = false;
 				}
