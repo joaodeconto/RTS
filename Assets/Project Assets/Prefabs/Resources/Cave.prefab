@@ -19,14 +19,14 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &142000
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 442000}
   m_Layer: 18
-  m_Name: Reference
+  m_Name: dummyBuild
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -255,6 +255,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967262
   m_IsActive: 1
+--- !u!1 &194274
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 494274}
+  m_Layer: 18
+  m_Name: dummyBuild
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967262
+  m_IsActive: 1
+--- !u!1 &194276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 494276}
+  m_Layer: 18
+  m_Name: Reference
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967262
+  m_IsActive: 1
 --- !u!1 &195876
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,11 +321,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 142000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .25, y: 0, z: -.109999999}
+  m_LocalPosition: {x: 0, y: -3.03983688e-06, z: -1.71363354e-06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 464090}
-  m_RootOrder: 0
+  m_Father: {fileID: 492482}
+  m_RootOrder: 1
 --- !u!4 &460686
 Transform:
   m_ObjectHideFlags: 1
@@ -316,7 +346,7 @@ Transform:
   - {fileID: 488326}
   - {fileID: 464106}
   m_Father: {fileID: 492482}
-  m_RootOrder: 0
+  m_RootOrder: 2
 --- !u!4 &464090
 Transform:
   m_ObjectHideFlags: 1
@@ -324,10 +354,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 164090}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.58796167, y: -.406155109, z: 39.1699982}
+  m_LocalPosition: {x: 15.8354998, y: 159.327148, z: 34.8849068}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 442000}
+  - {fileID: 494276}
   - {fileID: 464098}
   - {fileID: 492482}
   - {fileID: 495876}
@@ -464,9 +494,35 @@ Transform:
   m_LocalPosition: {x: 0, y: -.300000012, z: -.310000002}
   m_LocalScale: {x: .800000012, y: 1, z: .800000012}
   m_Children:
+  - {fileID: 494274}
+  - {fileID: 442000}
   - {fileID: 460686}
   m_Father: {fileID: 464090}
   m_RootOrder: 2
+--- !u!4 &494274
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 194274}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -3.03983688e-06, z: -1.71363354e-06}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 492482}
+  m_RootOrder: 0
+--- !u!4 &494276
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 194276}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .25, y: 0, z: -.109999999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 464090}
+  m_RootOrder: 0
 --- !u!4 &495876
 Transform:
   m_ObjectHideFlags: 1
@@ -860,7 +916,7 @@ MonoBehaviour:
   rendererTeamSubstanceColor: []
   movementActions: []
   pref_ParticleDamage: {fileID: 100012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
-  transformParticleDamageReference: {fileID: 442000}
+  transformParticleDamageReference: {fileID: 494276}
   playerUnit: 0
   category: Cave
   subCategory: 
@@ -937,10 +993,10 @@ MonoBehaviour:
   keys: 
   receiveResource: 0
   buildingObjects:
-    baseObject: {fileID: 160686}
-    unfinishedObject: {fileID: 160686}
+    baseObject: {fileID: 194274}
+    unfinishedObject: {fileID: 142000}
     finishedObject: {fileID: 160686}
-    upgradedObject: {fileID: 160686}
+    upgradedObject: {fileID: 0}
     desactiveObjectsWhenInstance: []
   buttonName: Cave
   guiTextureName: neanderthal

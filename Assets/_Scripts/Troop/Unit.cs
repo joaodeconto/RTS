@@ -770,10 +770,7 @@ public class Unit : IStats, IMovementObservable,
 														},
 														(ht_dcb, isDown) => 
 														{
-															if (isDown)
-															{
-																ht["time"] = Time.time;
-															}
+															if (isDown)	ht["time"] = Time.time;
 															else
 															{
 																if (Time.time - (float)ht["time"] > 0.1f)
@@ -782,77 +779,78 @@ public class Unit : IStats, IMovementObservable,
 																}																
 															}
 														});		
-		
-		foreach (MovementAction ma in movementActions)
-		{
-			ht = new Hashtable();
-			ht["actionType"] = ma.actionType;
-			
-			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
-			                                       ma.buttonAttributes.gridItemAttributes.Position,
-			                                       ht,
-			                                       ma.buttonAttributes.spriteName,
-			                                       (_ht) =>
-			                                       {
-				MovementAction.ActionType action = (MovementAction.ActionType)_ht["actionType"];
-				switch(action)
-				{
-				case MovementAction.ActionType.Move:
-					interactionController.AddCallback(TouchController.IdTouch.Id0,
-					                                  (position, hit) =>
-					                                  {
-						statsController.MoveTroop(position);
-					});
-					break;
-				case MovementAction.ActionType.Patrol:
-					//					
-					//															interactionController.AddCallback(TouchController.IdTouch.Id0,
-					//															                                 	(position, hit) =>
-					//															                                  	{
-					//																									IStats istats = hit.GetComponent <IStats> ();
-					//																									
-					//																									//Nao pode ser nulo e nao pode atacar aliados
-					//																									//so do mesmo time ou inimigo
-					//																									if (istats != null && 
-					//																									    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
-					//																									{
-					//																										statsController.AttackTroop (istats.gameObject);
-					//																									}
-					//																								});
-					break;
-				case MovementAction.ActionType.CancelMovement:
-					StopMove (true);
-					break;
-				case MovementAction.ActionType.Follow:
-					interactionController.AddCallback(TouchController.IdTouch.Id0,
-					                                  (position, hit) =>
-					                                  {
-						Unit unit = hit.GetComponent <Unit> ();																									
-						
-						if (unit != null && gameplayManager.IsSameTeam (unit))
-						{
-							statsController.FollowTroop (unit);
-						}
-					});
-					break;
-				case MovementAction.ActionType.Attack:
-					interactionController.AddCallback(TouchController.IdTouch.Id0,
-					                                  (position, hit) =>
-					                                  {
-						IStats istats = hit.GetComponent <IStats> ();
-						
-						//Nao pode ser nulo e nao pode atacar aliados
-						//so do mesmo time ou inimigo
-						if (istats != null && 
-						    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
-						{
-							statsController.AttackTroop (istats.gameObject);
-						}
-					});
-					break;
-				}
-			});
-		}
+//MOVE ACTION DISABLE
+
+//		foreach (MovementAction ma in movementActions)
+//		{
+//			ht = new Hashtable();
+//			ht["actionType"] = ma.actionType;
+//			
+//			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
+//			                                       ma.buttonAttributes.gridItemAttributes.Position,
+//			                                       ht,
+//			                                       ma.buttonAttributes.spriteName,
+//			                                       (_ht) =>
+//			                                       {
+//				MovementAction.ActionType action = (MovementAction.ActionType)_ht["actionType"];
+//				switch(action)
+//				{
+//				case MovementAction.ActionType.Move:
+//					interactionController.AddCallback(TouchController.IdTouch.Id0,
+//					                                  (position, hit) =>
+//					                                  {
+//						statsController.MoveTroop(position);
+//					});
+//					break;
+//				case MovementAction.ActionType.Patrol:
+//					//					
+//					//															interactionController.AddCallback(TouchController.IdTouch.Id0,
+//					//															                                 	(position, hit) =>
+//					//															                                  	{
+//					//																									IStats istats = hit.GetComponent <IStats> ();
+//					//																									
+//					//																									//Nao pode ser nulo e nao pode atacar aliados
+//					//																									//so do mesmo time ou inimigo
+//					//																									if (istats != null && 
+//					//																									    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
+//					//																									{
+//					//																										statsController.AttackTroop (istats.gameObject);
+//					//																									}
+//					//																								});
+//					break;
+//				case MovementAction.ActionType.CancelMovement:
+//					StopMove (true);
+//					break;
+//				case MovementAction.ActionType.Follow:
+//					interactionController.AddCallback(TouchController.IdTouch.Id0,
+//					                                  (position, hit) =>
+//					                                  {
+//						Unit unit = hit.GetComponent <Unit> ();																									
+//						
+//						if (unit != null && gameplayManager.IsSameTeam (unit))
+//						{
+//							statsController.FollowTroop (unit);
+//						}
+//					});
+//					break;
+//				case MovementAction.ActionType.Attack:
+//					interactionController.AddCallback(TouchController.IdTouch.Id0,
+//					                                  (position, hit) =>
+//					                                  {
+//						IStats istats = hit.GetComponent <IStats> ();
+//						
+//						//Nao pode ser nulo e nao pode atacar aliados
+//						//so do mesmo time ou inimigo
+//						if (istats != null && 
+//						    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
+//						{
+//							statsController.AttackTroop (istats.gameObject);
+//						}
+//					});
+//					break;
+//				}
+//			});
+//		}
 	}
 	
 	public override void Deselect ()

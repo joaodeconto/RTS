@@ -169,7 +169,7 @@ Transform:
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: .850000024, y: .850000024, z: .850000024}
   m_Children:
   - {fileID: 400010}
   - {fileID: 400006}
@@ -456,97 +456,7 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 3
       gridYIndex: 1
-  upgradesToCreate:
-  - upgrade: {fileID: 11469890, guid: 106f7905ea964c64bb565955c1e2a515, type: 2}
-    buttonName: bonusAtk1
-    techAvailable: 1
-    VIP: 1
-    isChildtech: 0
-    childTech: {fileID: 11442600, guid: 26e5c1621dfaaa8479cf856bd5ae8279, type: 2}
-    gridItemAttributes:
-      gridXIndex: 1
-      gridYIndex: 2
-    alreadyUpgraded: 0
-  - upgrade: {fileID: 11442600, guid: 26e5c1621dfaaa8479cf856bd5ae8279, type: 2}
-    buttonName: bonusAtk2
-    techAvailable: 0
-    VIP: 0
-    isChildtech: 1
-    childTech: {fileID: 11480470, guid: d45f45174fd5168438c8334318a0a5d2, type: 2}
-    gridItemAttributes:
-      gridXIndex: 1
-      gridYIndex: 2
-    alreadyUpgraded: 0
-  - upgrade: {fileID: 11480470, guid: d45f45174fd5168438c8334318a0a5d2, type: 2}
-    buttonName: bonusAtk3
-    techAvailable: 0
-    VIP: 0
-    isChildtech: 1
-    childTech: {fileID: 0}
-    gridItemAttributes:
-      gridXIndex: 1
-      gridYIndex: 2
-    alreadyUpgraded: 0
-  - upgrade: {fileID: 11436992, guid: 5812d67955342d84397298b8bb3acb74, type: 2}
-    buttonName: bonusDef1
-    techAvailable: 1
-    VIP: 1
-    isChildtech: 0
-    childTech: {fileID: 11444648, guid: ce31c7dcfa641374db9a6f684dba355c, type: 2}
-    gridItemAttributes:
-      gridXIndex: 2
-      gridYIndex: 2
-    alreadyUpgraded: 0
-  - upgrade: {fileID: 11444648, guid: ce31c7dcfa641374db9a6f684dba355c, type: 2}
-    buttonName: bonusDef2
-    techAvailable: 0
-    VIP: 0
-    isChildtech: 1
-    childTech: {fileID: 11407100, guid: 5604b4c824b050940b6af12d3493fafb, type: 2}
-    gridItemAttributes:
-      gridXIndex: 2
-      gridYIndex: 2
-    alreadyUpgraded: 0
-  - upgrade: {fileID: 11407100, guid: 5604b4c824b050940b6af12d3493fafb, type: 2}
-    buttonName: bonusDef3
-    techAvailable: 0
-    VIP: 0
-    isChildtech: 1
-    childTech: {fileID: 0}
-    gridItemAttributes:
-      gridXIndex: 2
-      gridYIndex: 2
-    alreadyUpgraded: 0
-  - upgrade: {fileID: 11477430, guid: 30a64fb79bdb8c84aa1ea50ee658a2d4, type: 2}
-    buttonName: bonusPrj1
-    techAvailable: 1
-    VIP: 1
-    isChildtech: 0
-    childTech: {fileID: 11456894, guid: fde23b008cb367549847964d4f066949, type: 2}
-    gridItemAttributes:
-      gridXIndex: 3
-      gridYIndex: 2
-    alreadyUpgraded: 0
-  - upgrade: {fileID: 11456894, guid: fde23b008cb367549847964d4f066949, type: 2}
-    buttonName: bonusPrj2
-    techAvailable: 0
-    VIP: 0
-    isChildtech: 1
-    childTech: {fileID: 11444522, guid: 553d86d9222dd644e86f4ae7b4491ff0, type: 2}
-    gridItemAttributes:
-      gridXIndex: 3
-      gridYIndex: 2
-    alreadyUpgraded: 0
-  - upgrade: {fileID: 11444522, guid: 553d86d9222dd644e86f4ae7b4491ff0, type: 2}
-    buttonName: bonusPrj3
-    techAvailable: 0
-    VIP: 0
-    isChildtech: 1
-    childTech: {fileID: 0}
-    gridItemAttributes:
-      gridXIndex: 3
-      gridYIndex: 2
-    alreadyUpgraded: 0
+  upgradesToCreate: []
   keys: 
   receiveResource: 0
   buildingObjects:
@@ -566,6 +476,7 @@ MonoBehaviour:
     m_rocks: 150
   boostPower: 1.29999995
   TechsToActive:
+  - Armory
   - Lizard Haras
   wasVisible: 0
 --- !u!114 &11400006
@@ -619,8 +530,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 3.43000007
-  m_Height: .889999986
+  m_Radius: 3.0999999
+  m_Height: 1.35000002
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!208 &20800000
@@ -630,7 +541,7 @@ NavMeshObstacle:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100018}
   m_Enabled: 0
-  m_Radius: 2
+  m_Radius: 2.20000005
   m_Height: 2
   m_MoveThreshold: 0
   m_Carve: 1

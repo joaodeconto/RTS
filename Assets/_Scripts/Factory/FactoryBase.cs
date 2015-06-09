@@ -115,6 +115,8 @@ public class FactoryBase : IStats, IDeathObservable
 		this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 		// before construction
 		if(factoryInitialized || !wasBuilt) return;
+		buildingState = BuildingState.Finished;		
+		SyncAnimation ();
 		SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);			
 		GetComponent<NavMeshObstacle> ().enabled = true;
 		factoryInitialized = true;	
@@ -899,7 +901,11 @@ public class FactoryBase : IStats, IDeathObservable
 		else upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
 
 		upg.transform.parent = this.transform;
-		if (upgrade.modelUpgrade) buildingState = BuildingState.Upgraded;
+		if (upgrade.modelUpgrade) 
+		{
+			buildingState = BuildingState.Upgraded;
+			SyncAnimation();
+		}
 
 	}
 	

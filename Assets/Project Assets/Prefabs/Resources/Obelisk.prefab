@@ -101,10 +101,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400012}
-  - 33: {fileID: 3300008}
-  - 23: {fileID: 2300008}
   m_Layer: 18
-  m_Name: rockBlobFour
+  m_Name: dummyObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -176,6 +174,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!1 &187066
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 487066}
+  - 33: {fileID: 3300008}
+  - 23: {fileID: 2300008}
+  m_Layer: 18
+  m_Name: rockBlobFour
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 30
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -186,9 +201,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 400012}
   - {fileID: 400006}
   - {fileID: 400016}
-  - {fileID: 400012}
+  - {fileID: 487066}
   - {fileID: 400008}
   - {fileID: 400004}
   m_Father: {fileID: 400002}
@@ -220,7 +236,7 @@ Transform:
   m_LocalScale: {x: .628737688, y: .628737569, z: .628738105}
   m_Children: []
   m_Father: {fileID: 400000}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!4 &400006
 Transform:
   m_ObjectHideFlags: 1
@@ -232,7 +248,7 @@ Transform:
   m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children: []
   m_Father: {fileID: 400000}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!4 &400008
 Transform:
   m_ObjectHideFlags: 1
@@ -244,19 +260,19 @@ Transform:
   m_LocalScale: {x: .490587801, y: .490587711, z: .490587741}
   m_Children: []
   m_Father: {fileID: 400000}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!4 &400012
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
-  m_LocalRotation: {x: .0998950973, y: 1.21749801e-08, z: 1.11811657e-10, w: .994997978}
-  m_LocalPosition: {x: -.45634079, y: -.502212524, z: .798023224}
-  m_LocalScale: {x: .366720438, y: .366720527, z: .366720438}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
-  m_RootOrder: 2
+  m_RootOrder: 0
 --- !u!4 &400016
 Transform:
   m_ObjectHideFlags: 1
@@ -268,7 +284,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!4 &400018
 Transform:
   m_ObjectHideFlags: 1
@@ -304,6 +320,18 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
+  m_RootOrder: 3
+--- !u!4 &487066
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 187066}
+  m_LocalRotation: {x: .0998950973, y: 1.21749801e-08, z: 1.11811657e-10, w: .994997978}
+  m_LocalPosition: {x: -.45634079, y: -.502212524, z: .798023224}
+  m_LocalScale: {x: .366720438, y: .366720527, z: .366720438}
+  m_Children: []
+  m_Father: {fileID: 400000}
   m_RootOrder: 3
 --- !u!23 &2300000
 Renderer:
@@ -370,7 +398,7 @@ Renderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100012}
+  m_GameObject: {fileID: 187066}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -431,7 +459,7 @@ MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100012}
+  m_GameObject: {fileID: 187066}
   m_Mesh: {fileID: 4300000, guid: 05eab95d91a0143cbb7c813fb8f2c89e, type: 3}
 --- !u!33 &3300010
 MeshFilter:
@@ -457,7 +485,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!82 &8200000
 AudioSource:
-  m_ObjectHideFlags: 10
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
@@ -605,8 +633,8 @@ MonoBehaviour:
   keys: 
   receiveResource: 0
   buildingObjects:
-    baseObject: {fileID: 100006}
-    unfinishedObject: {fileID: 100006}
+    baseObject: {fileID: 100012}
+    unfinishedObject: {fileID: 100012}
     finishedObject: {fileID: 100006}
     upgradedObject: {fileID: 0}
     desactiveObjectsWhenInstance: []

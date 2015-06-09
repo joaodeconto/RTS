@@ -1499,13 +1499,22 @@ MonoBehaviour:
       gridYIndex: 1
   - factory: {fileID: 11400008, guid: 5959741365e43614f99fc41eed01fd0a, type: 2}
     costOfResources:
-      m_mana: 0
+      m_mana: 50
       m_rocks: 250
     VIP: 0
     m_techActive: 1
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 1
+  - factory: {fileID: 11403572, guid: a13984de8b32ff54aa88c0ba2e6c7241, type: 2}
+    costOfResources:
+      m_mana: 30
+      m_rocks: 200
+    VIP: 0
+    m_techActive: 0
+    gridItemAttributes:
+      gridXIndex: 3
+      gridYIndex: 2
   constructionAndRepairForce: 5
   workerState: 0
   resourceId: -1
@@ -1542,6 +1551,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interpolationPos: 3
+  maxDistanceToIntervain: 3
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1655,7 +1665,7 @@ NavMeshAgent:
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
-  m_AutoRepath: 0
+  m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 1

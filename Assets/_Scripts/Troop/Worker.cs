@@ -417,19 +417,13 @@ public class Worker : Unit
 				                                        null,
 				                                       	(ht_dcb, isDown) =>
 														{
-																FactoryConstruction factory = (FactoryConstruction)ht_dcb["factory"];
-															
-																if (isDown)
-																{
-																	ht["time"] = Time.time;
-																}
+																FactoryConstruction factory = (FactoryConstruction)ht_dcb["factory"];															
+																if (isDown)	ht["time"] = Time.time;
+																
 																else
 																{
-																	if (Time.time - (float)ht["time"] > 0.4f)
-																	{	
-																		hudController.OpenInfoBoxFactory(factory.factory, true);
+																	if (Time.time - (float)ht["time"] > 0.4f)	hudController.OpenInfoBoxFactory(factory.factory, true);
 																		
-																	}
 																	else
 																	{
 																		hudController.CloseInfoBox();
@@ -454,9 +448,7 @@ public class Worker : Unit
 		if (gameplayManager.resources.CanBuy (factoryConstruct.costOfResources))
 		{
 			GameObject ghostFactory = null;
-
 			ghostFactory = Instantiate (factoryConstruct.factory.gameObject, Vector3.zero, factoryConstruct.factory.transform.rotation) as GameObject;
-
 			ghostFactory.AddComponent<GhostFactory>().Init (this, factoryConstruct);
 		}
 		else
@@ -486,10 +478,7 @@ public class Worker : Unit
 		ControllerAnimation.PlayCrossFade (resourceWorker[0].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
 
-		if (HasFactory () && !factoryChoose.Construct (this))
-		{
-			factoryChoose = null;
-		}
+		if (HasFactory () && !factoryChoose.Construct (this))	factoryChoose = null;
 
 		IsBuilding = false;
 	}
@@ -503,10 +492,7 @@ public class Worker : Unit
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
 		if (HasFactory ())
 		{
-			if (!factoryChoose.Repair (this))
-			{
-				factoryChoose = null;
-			}
+			if (!factoryChoose.Repair (this))	factoryChoose = null;
 		}
 		IsRepairing = false;
 	}
@@ -519,13 +505,8 @@ public class Worker : Unit
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 		IsExtracting = false;
-		if (resource != null && resourceId == 0)
-			resource.ExtractResource (this);
-		else
-		{
-			workerState = WorkerState.Idle;
-		}
-
+		if (resource != null && resourceId == 0)	resource.ExtractResource (this);
+		else	workerState = WorkerState.Idle;
 		NavAgent.avoidancePriority = normalAvoidancePriority;
 	}
 
@@ -538,15 +519,9 @@ public class Worker : Unit
 		ControllerAnimation.PlayCrossFade (resourceWorker[resourceId].workerAnimation.Extracting, WrapMode.Once);
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[resourceId].workerAnimation.Extracting));
 		IsExtracting = false;
-		if (resource != null && resourceId == 1)
-		{
-			gameplayManager.resources.DeliverResources (resourceType, resource.resistance);
-		}
-		else
-		{
-			workerState = WorkerState.Idle;
-		}
 
+		if (resource != null && resourceId == 1)	gameplayManager.resources.DeliverResources (resourceType, resource.resistance);
+		else	workerState = WorkerState.Idle;
 	}
 #endregion
 
@@ -560,18 +535,13 @@ public class Worker : Unit
 	{
 		currentNumberOfResources = gotNumberResources;
 		hasResource = true;
-
 		NavAgent.acceleration = resourceWorker[resourceId].carryingAcceleration;
 		NavAgent.speed = resourceWorker[resourceId].carryingSpeed;
 		NavAgent.angularSpeed = resourceWorker[resourceId].carryingAngularSpeed;
-
 		resourceWorker[resourceId].extractingObject.SetActive (false);
 		resourceWorker[resourceId].carryingObject.SetActive (true);
 
-		if (resource != null)
-		{
-			resource.RemoveWorker (this);
-		}
+		if (resource != null)	resource.RemoveWorker (this);
 
 		workerState = WorkerState.Carrying;
 	}
@@ -579,22 +549,15 @@ public class Worker : Unit
 	public void WorkerReset()
 	{		
 		currentNumberOfResources = 0;
-		NavAgent.speed = normalSpeed;
-		
-		factoryChoose = null;
-		
-		workerState = WorkerState.Idle;
-		
-		isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;
-		
+		NavAgent.speed = normalSpeed;		
+		factoryChoose = null;		
+		workerState = WorkerState.Idle;		
+		isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;		
 		resourceWorker[0].carryingObject.SetActive (false);
 		resourceWorker[0].extractingObject.SetActive (false);
-
 		resourceWorker[1].carryingObject.SetActive (false);
-		resourceWorker[1].extractingObject.SetActive (false);
-		
-		resourceId = -1;
-		
+		resourceWorker[1].extractingObject.SetActive (false);		
+		resourceId = -1;		
 		ResetNavAgentValues ();
 	}
 

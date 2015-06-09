@@ -18,6 +18,7 @@ public class CaveFactory : FactoryBase
 		base.Init();		
 		enabled = true;
 		enemyCluster      = ComponentGetter.Get<EnemyCluster>();
+
 	}
 	#endregion
 

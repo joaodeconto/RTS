@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &126890
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 426890}
+  m_Layer: 18
+  m_Name: dummyBuild
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967262
+  m_IsActive: 1
+--- !u!1 &126892
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 426892}
+  m_Layer: 18
+  m_Name: dummyBuild
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967262
+  m_IsActive: 1
 --- !u!1 &170216
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,6 +118,30 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 30
   m_IsActive: 1
+--- !u!4 &426890
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 126890}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 470218}
+  m_RootOrder: 0
+--- !u!4 &426892
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 126892}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 470218}
+  m_RootOrder: 1
 --- !u!4 &470216
 Transform:
   m_ObjectHideFlags: 1
@@ -113,6 +167,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 426890}
+  - {fileID: 426892}
   - {fileID: 470224}
   m_Father: {fileID: 470216}
   m_RootOrder: 2
@@ -151,7 +207,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 470218}
-  m_RootOrder: 0
+  m_RootOrder: 2
 --- !u!23 &2370224
 Renderer:
   m_ObjectHideFlags: 1
@@ -372,10 +428,10 @@ MonoBehaviour:
   keys: 
   receiveResource: 0
   buildingObjects:
-    baseObject: {fileID: 170224}
-    unfinishedObject: {fileID: 170224}
+    baseObject: {fileID: 126890}
+    unfinishedObject: {fileID: 126892}
     finishedObject: {fileID: 170224}
-    upgradedObject: {fileID: 170224}
+    upgradedObject: {fileID: 0}
     desactiveObjectsWhenInstance: []
   buttonName: Cave
   guiTextureName: neanderthal
