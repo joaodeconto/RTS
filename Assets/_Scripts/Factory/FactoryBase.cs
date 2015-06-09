@@ -218,8 +218,7 @@ public class FactoryBase : IStats, IDeathObservable
 				}
 
 				inUpgrade = true;
-
-				hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);					
+				hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);
 			}
 		}		                           
 			
@@ -237,12 +236,14 @@ public class FactoryBase : IStats, IDeathObservable
 				if (unitToCreate != null) 
 				{
 					InvokeUnit (unitToCreate);
+					hudController.DestroyResourceBar(transform);
 					unitToCreate = null;
 				}
 
 				if (upgradeToCreate != null) 
 				{
 					InvokeUpgrade (upgradeToCreate);
+					hudController.DestroyResourceBar(transform);
 					upgradeToCreate = null;
 				}
 
@@ -946,13 +947,13 @@ public class FactoryBase : IStats, IDeathObservable
 			newUnit.Follow (rallypoint.observedUnit);
 		}
 
-		if(newUnit.category == "Worker" && rallypoint.observedResource != null)
+		else if(newUnit.category == "Worker" && rallypoint.observedResource != null)
 		{
 			Worker workerUnit = (Worker)newUnit;
-			workerUnit.SetMoveResource (rallypoint.observedResource);
-					
+			workerUnit.SetMoveResource (rallypoint.observedResource);					
 		}
-		newUnit.Move (goRallypoint.position);
+
+		else	newUnit.Move (goRallypoint.position);
 		newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
 	}
 

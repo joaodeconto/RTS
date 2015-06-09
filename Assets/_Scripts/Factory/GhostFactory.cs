@@ -51,7 +51,7 @@ public class GhostFactory : MonoBehaviour
 		{
 			GetComponent<CapsuleCollider> ().isTrigger = true;
 			realRadius = GetComponent<CapsuleCollider> ().radius;
-			GetComponent<CapsuleCollider> ().radius += 2f;			
+			if(gameObject.tag == "Depot" || gameObject.tag == "TribeCenter")GetComponent<CapsuleCollider> ().radius += 2f;			
 			helperColliderGameObject = gameObject;
 		}
 

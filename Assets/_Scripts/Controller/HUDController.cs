@@ -382,6 +382,18 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			}
 		}
 	}
+
+	public void DestroyResourceBar (Transform target)
+	{
+		foreach (Transform child in mainTranformSelectedObjects)
+		{
+			if (child.GetComponent<ReferenceTransform>().referenceObject == target && child.GetComponent<SubstanceResourceBar>() != null)
+			{
+				DestroyObject (child.gameObject);
+			}
+		}
+
+	}
 	#endregion
 
 	#region Button Creation Methods
