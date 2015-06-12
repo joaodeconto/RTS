@@ -2,9 +2,95 @@ fileFormatVersion: 2
 guid: 457b10dd92388be48930c744824fb6b0
 ModelImporter:
   serializedVersion: 16
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    100000: Arm1_L
+    100002: Arm1_R
+    100004: Arm2_L
+    100006: Arm2_R
+    100008: Arm3_L
+    100010: Arm3_R
+    100012: Armature_Brachi
+    100014: BrachiMesh
+    100016: BrachiMesh_001
+    100018: //RootNode
+    100020: head
+    100022: hip
+    100024: Ik_Head
+    100026: jaw
+    100028: jaw_001
+    100030: Leg1_L
+    100032: Leg1_R
+    100034: Leg2_L
+    100036: Leg2_R
+    100038: Leg3_L
+    100040: Leg3_R
+    100042: Mover
+    100044: neck1
+    100046: neck2
+    100048: neck3
+    100050: neck4
+    100052: neck5
+    100054: neck6
+    100056: neck7
+    100058: neckBase
+    100060: spine1
+    100062: spine2
+    100064: tail1
+    100066: tail2
+    100068: tail3
+    100070: tail4
+    100072: tail5
+    400000: Arm1_L
+    400002: Arm1_R
+    400004: Arm2_L
+    400006: Arm2_R
+    400008: Arm3_L
+    400010: Arm3_R
+    400012: Armature_Brachi
+    400014: BrachiMesh
+    400016: BrachiMesh_001
+    400018: //RootNode
+    400020: head
+    400022: hip
+    400024: Ik_Head
+    400026: jaw
+    400028: jaw_001
+    400030: Leg1_L
+    400032: Leg1_R
+    400034: Leg2_L
+    400036: Leg2_R
+    400038: Leg3_L
+    400040: Leg3_R
+    400042: Mover
+    400044: neck1
+    400046: neck2
+    400048: neck3
+    400050: neck4
+    400052: neck5
+    400054: neck6
+    400056: neck7
+    400058: neckBase
+    400060: spine1
+    400062: spine2
+    400064: tail1
+    400066: tail2
+    400068: tail3
+    400070: tail4
+    400072: tail5
+    4300000: BrachiMesh_001
+    4300002: BrachiMesh
+    7400000: Default Take
+    7400002: Attack_Brachio
+    7400004: death_Brachio
+    7400006: Extract_Brachio
+    7400008: Idle_Brachio
+    7400010: walk_Brachio_1
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: BrachiMesh
+    13700002: BrachiMesh_001
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -18,11 +104,611 @@ ModelImporter:
     animationScaleError: .5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Default Take
+      takeName: Default Take
+      firstFrame: -1
+      lastFrame: 99
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_Brachi
+        weight: 1
+      - path: Armature_Brachi/Ik_Head
+        weight: 1
+      - path: Armature_Brachi/Ik_Head/jaw_001
+        weight: 1
+      - path: Armature_Brachi/Mover
+        weight: 1
+      - path: Armature_Brachi/Mover/hip
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L/Arm3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R/Arm3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head/jaw
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4/tail5
+        weight: 1
+      - path: BrachiMesh
+        weight: 1
+      - path: BrachiMesh_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Attack_Brachio
+      takeName: Attack_Brachio
+      firstFrame: -1
+      lastFrame: 79
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_Brachi
+        weight: 1
+      - path: Armature_Brachi/Ik_Head
+        weight: 1
+      - path: Armature_Brachi/Ik_Head/jaw_001
+        weight: 1
+      - path: Armature_Brachi/Mover
+        weight: 1
+      - path: Armature_Brachi/Mover/hip
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L/Arm3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R/Arm3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head/jaw
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4/tail5
+        weight: 1
+      - path: BrachiMesh
+        weight: 1
+      - path: BrachiMesh_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: death_Brachio
+      takeName: death_Brachio
+      firstFrame: -1
+      lastFrame: 69
+      wrapMode: 8
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_Brachi
+        weight: 1
+      - path: Armature_Brachi/Ik_Head
+        weight: 1
+      - path: Armature_Brachi/Ik_Head/jaw_001
+        weight: 1
+      - path: Armature_Brachi/Mover
+        weight: 1
+      - path: Armature_Brachi/Mover/hip
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L/Arm3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R/Arm3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head/jaw
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4/tail5
+        weight: 1
+      - path: BrachiMesh
+        weight: 1
+      - path: BrachiMesh_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Extract_Brachio
+      takeName: Extract_Brachio
+      firstFrame: -1
+      lastFrame: 99
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_Brachi
+        weight: 1
+      - path: Armature_Brachi/Ik_Head
+        weight: 1
+      - path: Armature_Brachi/Ik_Head/jaw_001
+        weight: 1
+      - path: Armature_Brachi/Mover
+        weight: 1
+      - path: Armature_Brachi/Mover/hip
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L/Arm3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R/Arm3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head/jaw
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4/tail5
+        weight: 1
+      - path: BrachiMesh
+        weight: 1
+      - path: BrachiMesh_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle_Brachio
+      takeName: Idle_Brachio
+      firstFrame: -1
+      lastFrame: 300
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_Brachi
+        weight: 1
+      - path: Armature_Brachi/Ik_Head
+        weight: 1
+      - path: Armature_Brachi/Ik_Head/jaw_001
+        weight: 1
+      - path: Armature_Brachi/Mover
+        weight: 1
+      - path: Armature_Brachi/Mover/hip
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L/Arm3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R/Arm3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head/jaw
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4/tail5
+        weight: 1
+      - path: BrachiMesh
+        weight: 1
+      - path: BrachiMesh_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: walk_Brachio_1
+      takeName: walk_Brachio_1
+      firstFrame: -1
+      lastFrame: 59
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_Brachi
+        weight: 1
+      - path: Armature_Brachi/Ik_Head
+        weight: 1
+      - path: Armature_Brachi/Ik_Head/jaw_001
+        weight: 1
+      - path: Armature_Brachi/Mover
+        weight: 1
+      - path: Armature_Brachi/Mover/hip
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_L/Leg2_L/Leg3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/Leg1_R/Leg2_R/Leg3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_L/Arm2_L/Arm3_L
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/Arm1_R/Arm2_R/Arm3_R
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/spine1/spine2/neckBase/neck1/neck2/neck3/neck4/neck5/neck6/neck7/head/jaw
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4
+        weight: 1
+      - path: Armature_Brachi/Mover/hip/tail1/tail2/tail3/tail4/tail5
+        weight: 1
+      - path: BrachiMesh
+        weight: 1
+      - path: BrachiMesh_001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: .349999994
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -38,7 +724,7 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
-    normalImportMode: 0
+    normalImportMode: 1
     tangentImportMode: 1
   importAnimation: 1
   copyAvatar: 0
@@ -54,6 +740,6 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   additionalBone: 0
   userData: 

@@ -552,11 +552,13 @@ public class Worker : Unit
 		NavAgent.speed = normalSpeed;		
 		factoryChoose = null;		
 		workerState = WorkerState.Idle;		
-		isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;		
-		resourceWorker[0].carryingObject.SetActive (false);
-		resourceWorker[0].extractingObject.SetActive (false);
-		resourceWorker[1].carryingObject.SetActive (false);
-		resourceWorker[1].extractingObject.SetActive (false);		
+		isCheckedSendResourceToFactory = isMovingToFactory = hasResource = isSettingWorkerNull = false;	
+
+		foreach (ResourceWorker rw in resourceWorker)
+		{
+			rw.carryingObject.SetActive (false);
+			rw.extractingObject.SetActive (false);
+		}
 		resourceId = -1;		
 		ResetNavAgentValues ();
 	}
