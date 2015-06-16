@@ -758,27 +758,27 @@ public class Unit : IStats, IMovementObservable,
 		
 		if (!gameplayManager.IsSameTeam (this.team))
 			return;
-		
-		hudController.CreateEnqueuedButtonInInspector ( this.name,
-		                                               Unit.UnitGroupQueueName,
-		                                               ht,
-		                                               this.guiTextureName,
-		                                               (hud_ht) =>
-		                                               {
-															statsController.DeselectAllStats();
-															statsController.SelectStat(this, true);
-														},
-														(ht_dcb, isDown) => 
-														{
-															if (isDown)	ht["time"] = Time.time;
-															else
-															{
-																if (Time.time - (float)ht["time"] > 0.1f)
-																{	
-																	selectionController.SelectSameCategory(this.category);						
-																}																
-															}
-														});		
+		//SHOW SELECTED STATS DISABLE		
+//		hudController.CreateEnqueuedButtonInInspector ( this.name,
+//		                                               Unit.UnitGroupQueueName,
+//		                                               ht,
+//		                                               this.guiTextureName,
+//		                                               (hud_ht) =>
+//		                                               {
+//															statsController.DeselectAllStats();
+//															statsController.SelectStat(this, true);
+//														},
+//														(ht_dcb, isDown) => 
+//														{
+//															if (isDown)	ht["time"] = Time.time;
+//															else
+//															{
+//																if (Time.time - (float)ht["time"] > 0.3f)
+//																{	
+//																	selectionController.SelectSameCategory(this.category);						
+//																}																
+//															}
+//														});		
 //MOVE ACTION DISABLE
 
 //		foreach (MovementAction ma in movementActions)
