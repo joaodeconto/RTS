@@ -16,7 +16,8 @@ public class TutorialMenu : MonoBehaviour
 		public Transform Btn3;
 		public Transform Btn4;
 		public Transform Btn5;
-		public Transform Btn6;
+		public Transform Btn6;		
+		public Transform Btn7;
 		public Transform BtnLeaveRoom;
 		
 		public IEnumerable<Transform> Iterate
@@ -30,6 +31,7 @@ public class TutorialMenu : MonoBehaviour
 				yield return Btn4;				
 				yield return Btn5;				
 				yield return Btn6;
+				yield return Btn7;
 				yield return BtnLeaveRoom;
 			}
 		}
@@ -110,15 +112,19 @@ public class TutorialMenu : MonoBehaviour
 				else CloseOffline();} );
 		}
 
-		
-				
+		if (buttons.Btn7)
+		{
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn7, false);
+			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 8); if (ConfigurationData.Logged) Close ();
+				else CloseOffline();} );
+		}
+						
 		if (buttons.BtnLeaveRoom)
 		{
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.BtnLeaveRoom, false);
 			dcb.Init ( null, (ht_hud) => { 
 				if(!ConfigurationData.Offline) Close();
 				else CloseOffline();} );
-
 		}
 	}
 

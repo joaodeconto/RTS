@@ -89,6 +89,7 @@ public class FactoryBase : IStats, IDeathObservable
 	private bool factoryInitialized = false;
 	public bool wasVisible = false;
 	private bool alreadyCheckedMaxPopulation	{get { return checkPopCouter > 1;}}
+	private float lastTimeMaxPopPressed;
 	private bool needHouse = false;
 	protected float realRangeView;	
 	public bool IsDamaged {	get	{ return Health != MaxHealth;}}
@@ -193,9 +194,17 @@ public class FactoryBase : IStats, IDeathObservable
 				{
 					if (gameplayManager.NeedMoreHouses (unitToCreate.numberOfUnits))
 					{
+						lastTimeMaxPopPressed = gameplayManager.gameTime;
+
 						if (!alreadyCheckedMaxPopulation)
 						{
 							checkPopCouter++;
+							eventController.AddEvent("need more houses", hudController.houseFeedback);
+							lastTimeMaxPopPressed = gameplayManager.gameTime;
+						}
+						else if (gameplayManager.gameTime - 3 > lastTimeMaxPopPressed)
+						{
+							checkPopCouter = 1;
 							eventController.AddEvent("need more houses", hudController.houseFeedback);
 						}
 						needHouse = true;
@@ -779,7 +788,6 @@ public class FactoryBase : IStats, IDeathObservable
 		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
 		{
 			inUpgrade = false;
-			Debug.LogWarning("is first in queue");
 			timer = 0;
 			CancelInvokeSlider();
 			unitToCreate = null;
@@ -787,8 +795,6 @@ public class FactoryBase : IStats, IDeathObservable
 		
 		hudController.RemoveEnqueuedButtonInInspector (btnName, FactoryBase.FactoryQueueName);
 		invokeQueue.Remove(queueBtnSpot);
-		Debug.LogWarning("invokeQueue removido  = "+ queueBtnSpot);
-		//		lUnitsToCreate.Remove (unit);
 	}
 	
 	private void DequeueUpgrade (Hashtable ht)

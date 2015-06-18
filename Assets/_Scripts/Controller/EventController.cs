@@ -85,12 +85,9 @@ public class EventController : MonoBehaviour
 		}
 
 		EventController.Event newEvent = new EventController.Event();
-
 		newEvent.Name    = name;
 		newEvent.Message = "standard message : argument => {0}";
-
 		events.Add(newEvent);
-
 		return newEvent;
 	}
 }
