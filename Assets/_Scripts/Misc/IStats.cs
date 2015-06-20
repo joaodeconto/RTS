@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Visiorama;
+using PathologicalGames;
 
 public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 {
@@ -360,15 +361,15 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	[RPC]
 	public virtual void InstantiatParticleDamage ()
 	{
-		GameObject newParticleDamage;
+		Transform newParticleDamage;
 
 		if (transformParticleDamageReference != null)
 		{
-			newParticleDamage = Instantiate (pref_ParticleDamage, transformParticleDamageReference.position, transformParticleDamageReference.rotation) as GameObject;
+			newParticleDamage = PoolManager.Pools["Particles"].Spawn(pref_ParticleDamage, transformParticleDamageReference.position, transformParticleDamageReference.rotation);
 		}
 		else
 		{
-			newParticleDamage = Instantiate (pref_ParticleDamage, transform.position, Quaternion.Euler (transform.forward)) as GameObject;
+			newParticleDamage = PoolManager.Pools["Particles"].Spawn(pref_ParticleDamage,transform.position, Quaternion.Euler (transform.forward));
 		}
 	}
 	

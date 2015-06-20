@@ -539,8 +539,31 @@ namespace PathologicalGames
         {
             return this.Spawn(prefab, Vector3.zero, Quaternion.identity, parent);
         }
-
-
+		
+		
+		#region GameObject Overloads
+		public Transform Spawn(GameObject prefab, Vector3 pos, Quaternion rot, Transform parent)
+		{
+			return Spawn(prefab.transform, pos, rot, parent);
+		}
+		
+		public Transform Spawn(GameObject prefab, Vector3 pos, Quaternion rot)
+		{
+			return Spawn(prefab.transform, pos, rot);
+		}
+		
+		public Transform Spawn(GameObject prefab)
+		{
+			return Spawn(prefab.transform);
+		}
+		
+		public Transform Spawn(GameObject prefab, Transform parent)
+		{
+			return Spawn(prefab.transform, parent);
+		}
+		#endregion GameObject Overloads
+		
+		
         /// <summary>
         /// See primary Spawn method for documentation.
         /// 

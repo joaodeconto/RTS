@@ -286,7 +286,7 @@ namespace PathologicalGames
         /// <param name="spawnPool"></param>
         internal bool Remove(SpawnPool spawnPool)
         {
-            if (!this.ContainsKey(spawnPool.poolName))
+            if (!this.ContainsKey(spawnPool.poolName) & Application.isPlaying)
             {
                 Debug.LogError(string.Format("PoolManager: Unable to remove '{0}'. " +
                                                 "Pool not in PoolManager",

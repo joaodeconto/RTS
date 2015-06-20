@@ -1,5 +1,5 @@
 /// <Licensing>
-/// © 2011 (Copyright) Path-o-logical Games, LLC
+/// Â©2011-2014 (Copyright) Path-o-logical Games, LLC
 /// If purchased from the Unity Asset Store, the following license is superseded 
 /// by the Asset Store license.
 /// Licensed under the Unity Asset Package Product License (the "License");
@@ -56,16 +56,64 @@ public static class PGEditorUtils
     /// Does the same thing as EditorGUIUtility.LookLikeControls but with a defaut 
     /// label width closer to the regular inspector look
     /// </summary>
-    public static void LookLikeControls()
+    public static void SetLabelWidth()
     {
 #if (UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
         EditorGUIUtility.LookLikeControls(CONTROLS_DEFAULT_LABEL_WIDTH);
 #else
 		EditorGUIUtility.labelWidth = CONTROLS_DEFAULT_LABEL_WIDTH;
 #endif
+	}    
+	
+	public static void SetLabelWidth(int width)
+    {
+#if (UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+        EditorGUIUtility.LookLikeControls(width);
+#else
+		EditorGUIUtility.labelWidth = width;
+#endif
 	}
+	
+	// For backwards compatability.
+	public static void LookLikeControls()
+	{
+		SetLabelWidth();
+	}
+	
+	/// <summary>
+	/// A toggle button for a Bool type SerializedProperty. Nothing is returned because the 
+	/// property is set by reference.
+	/// </summary>
+	/// <param name='property'>
+	/// SerializedProperty.
+	/// </param>
+	/// <param name='content'>
+	/// GUIContent(label, tooltip)
+	/// </param>
+	/// <param name='width'>
+	/// Width of the button
+	/// </param>
+	public static void ToggleButton(SerializedProperty property, GUIContent content, int width)
+	{
+		GUIStyle style = new GUIStyle(EditorStyles.miniButton);
+        style.alignment = TextAnchor.MiddleCenter;
+        style.fixedWidth = width;
+		
+		// Not sure why we need this return value. Just copied from the Unity docs.
+		content = EditorGUI.BeginProperty(new Rect(0, 0, 0, 0), content, property);
 
+		EditorGUI.BeginChangeCheck();
+		bool newValue = GUILayout.Toggle(property.boolValue, content, style);
 
+		// Only assign the value back if it was actually changed by the user.
+		// Otherwise a single value will be assigned to all objects when multi-object editing,
+		// even when the user didn't touch the control.
+		if (EditorGUI.EndChangeCheck())
+			property.boolValue = newValue;
+		
+		EditorGUI.EndProperty();
+	}
+	
     /// <summary>
     /// A generic version of EditorGUILayout.ObjectField.
     /// Allows objects to be drag and dropped or picked.
@@ -913,7 +961,7 @@ public static class PGEditorUtils
     /// Used by AddFoldOutListItemButtons to return which button was pressed, and by 
     /// UpdateFoldOutListOnButtonPressed to process the pressed button for regular lists
     /// </summary>
-    private enum LIST_BUTTONS { None, Up, Down, Add, Remove }
+    protected enum LIST_BUTTONS { None, Up, Down, Add, Remove }
 
     /// <summary>
     /// Adds the buttons which control a list item
@@ -1016,7 +1064,7 @@ public static class PGEditorUtils
 #endif
         var content = new GUIContent(label, FOLD_OUT_TOOL_TIP);
         expanded = EditorGUILayout.Foldout(expanded, content);
-        LookLikeControls();
+        SetLabelWidth();
 
         return expanded;
     }
