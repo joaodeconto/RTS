@@ -110,7 +110,7 @@ public class RangeUnit : Unit
 	{
 		if (!IsVisible) return;
 		
-		Debug.Log ("projectileAnimating: " + projectileAttacking + "  " + projectileAnimating);
+	//	Debug.Log ("projectileAnimating: " + projectileAttacking + "  " + projectileAnimating);
 		
 		if (projectileAnimating == 1)
 		{

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Text.RegularExpressions;
+using PathologicalGames;
 
 public abstract class MessageQueue : MonoBehaviour
 {
@@ -75,33 +76,31 @@ public abstract class MessageQueue : MonoBehaviour
 //										DefaultCallbackButton.OnClickDelegate onGroupClick = null)
 	{
 		++nQueueItems;
-		
-//		Debug.Log ("Sem botoes");
-//		return;
-		
-		GameObject button = NGUITools.AddChild (uiGrid.gameObject,
-		                                        Pref_button);
+				
+//		GameObject button = NGUITools.AddChild (uiGrid.gameObject, Pref_button);
+		Transform button = PoolManager.Pools["Buttons"].Spawn(Pref_button, uiGrid.transform);		
+		button.localScale = Vector3.one;
+		PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();		
+		if ( pcb == null )
+		{
+			pcb = ht.ContainsKey ("observableHealth") ? button.gameObject.AddComponent<HealthObserverButton> ()
+				: button.gameObject.AddComponent<PersonalizedCallbackButton> ();
 
-		PersonalizedCallbackButton cb = null;
-
-		cb = ht.ContainsKey ("observableHealth") ? button.AddComponent<HealthObserverButton> ()
-												 : button.AddComponent<PersonalizedCallbackButton> ();
+			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
+		}
 		
 		if (nQueueItems > MaxItems)
 		{
 			// Refazendo o calculo
-			if (nQueueItems - 1 == MaxItems) ChangeToGroupMessageInfo ();
-			
-			buttonName = RegexClone (buttonName);
-			
-			if (CheckExistMessageInfo (buttonName)) return;
-			
+			if (nQueueItems - 1 == MaxItems) ChangeToGroupMessageInfo ();			
+			buttonName = RegexClone (buttonName);			
+			if (CheckExistMessageInfo (buttonName)) return;			
 			button.name  = buttonName;
 //			button.layer = gameObject.layer;
 			button.transform.localPosition = Vector3.up * 10000;//Coloca em um lugar em distante para somente aparecer no reposition grid
 //			button.transform.FindChild("Foreground"). = new Vector3(CellSize.x, CellSize.y, 1);
 
-			cb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
+			pcb.ChangeParams(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 		}
 		else
 		{			
@@ -112,7 +111,7 @@ public abstract class MessageQueue : MonoBehaviour
 	
 			//button.transform.localPosition = Vector3.zero;
 	
-			cb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
+			pcb.ChangeParams(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 		}
 		
 		Invoke("RepositionGrid", 0.1f);
@@ -120,25 +119,14 @@ public abstract class MessageQueue : MonoBehaviour
 
 	public void DequeueMessageInfo()
 	{
-		if(uiGrid.transform.childCount == 0)
-			return;
+		if(uiGrid.transform.childCount == 0)	return;
 
 		--nQueueItems;
-
 		int childIndex = uiGrid.transform.childCount - 1;
-
-		GameObject goMessageInfo = uiGrid
-									.transform
-										.GetChild(childIndex)
-										.gameObject;
-
+		Transform goMessageInfo = uiGrid.transform.GetChild(childIndex);
 		HealthObserverButton hbo = goMessageInfo.GetComponent<HealthObserverButton> ();
-
-		if (hbo != null)
-			hbo.StopToObserve ();
-
-		Destroy (goMessageInfo);
-
+		if (hbo != null) hbo.StopToObserve ();
+		DespawnBtn(goMessageInfo);	
 		Invoke("RepositionGrid", 0.1f);
 	}
 
@@ -150,8 +138,6 @@ public abstract class MessageQueue : MonoBehaviour
 		{
 			return false;
 		}
-
-		Debug.Log("trnsButton.localPosition: " + trnsButton.localPosition);
 		return trnsButton.localPosition == Vector3.zero;
 	}
 
@@ -162,8 +148,7 @@ public abstract class MessageQueue : MonoBehaviour
 		if(trnsButton != null)
 		{
 			--nQueueItems;
-
-			Destroy (trnsButton.gameObject);
+			DespawnBtn(trnsButton);	
 			Invoke("RepositionGrid", 0.1f);
 		}
 	}
@@ -179,7 +164,7 @@ public abstract class MessageQueue : MonoBehaviour
 
 		foreach (Transform child in uiGrid.transform)
 		{
-			Destroy (child.gameObject);
+			DespawnBtn(child);	
 		}
 	}
 
@@ -220,13 +205,21 @@ public abstract class MessageQueue : MonoBehaviour
 				if (uiGrid.transform.GetChild (k).name.Equals (uiGrid.transform.GetChild (i).name))
 				{
 					--nQueueItems;
-					Destroy (uiGrid.transform.GetChild (i));
-					
+//					Destroy (uiGrid.transform.GetChild (i));
+					Transform child = uiGrid.transform.GetChild(i);				
+					DespawnBtn(child);					
 					--i;
 					break;
 				}
 			}
 		}
+	}
+
+	public void DespawnBtn(Transform btnTrns)
+	{
+		btnTrns.parent = PoolManager.Pools["Buttons"].group;
+		btnTrns.name = "alreadyUsed" + (int)Time.time;
+		PoolManager.Pools["Buttons"].Despawn (btnTrns);		
 	}
 	
 	protected bool CheckExistMessageInfo (string name)

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Visiorama;
+using PathologicalGames;
 
 [RequireComponent(typeof (MeshRenderer))]
 public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
@@ -11,7 +12,7 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 	private ProceduralPropertyDescription[] curProperties;
 	private MeshRenderer subMeshRenderer;
 
-	void Awake ()
+	void OnSpawned ()
 	{
 		subMeshRenderer = GetComponent <MeshRenderer> ();
 		subMeshRenderer.enabled = false;
@@ -28,28 +29,16 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		curProperties = substance.GetProceduralPropertyDescriptions();
 		
 	}
-	
-	void OnDestroy ()
-	{
-		Close ();
-	}
-	
+
 	public void SetTarget (IHealthObservable target, int teamID)
 	{
-		if (substance == null)
-			Awake ();
+		if (substance == null) OnSpawned ();
 		
 		this.TargetTeamID = teamID;
 		this.Target = target;
 		this.Target.RegisterHealthObserver (this);		//Forçando atualizaçao de vida atual
 		this.Target.NotifyHealthChange ();		
 		subMeshRenderer.enabled = true;
-	}
-	
-	public void Close ()
-	{
-		if (Target != null)
-			Target.UnRegisterHealthObserver (this);
 	}
 	
 #region IHealthObserver implementation
@@ -60,10 +49,9 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		{
 			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
 		}
-		if (currentHealth <= 0)
+		if (currentHealth == 0)
 		{
-			DestroyObject (this.gameObject);
-			
+			Debug.Log ("morreu");
 		}
 		
 		//so mostra o submesh da substance healthbar se tiver vida, se nao nao
@@ -97,6 +85,5 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		substance.RebuildTextures ();
 	}
 
-	
 #endregion
 }

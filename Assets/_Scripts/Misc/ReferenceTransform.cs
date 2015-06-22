@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using PathologicalGames;
 
 public class ReferenceTransform : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class ReferenceTransform : MonoBehaviour
 		{
 			if (destroyObjectWhenLoseReference)
 			{
-				Destroy (gameObject);
+				PoolManager.Pools["Selection"].Despawn(transform);
 			}
 			else
 			{

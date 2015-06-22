@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
 using Visiorama.Utils;
+using PathologicalGames;
 
 public class SelectionController : MonoBehaviour
 {
@@ -17,6 +18,11 @@ public class SelectionController : MonoBehaviour
 	public Transform groupButtonsObj;
 	private int groupNumberCounter = 0;
 	public GameObject groupFeedback {get; set;}
+	private Transform selectionBox;
+	public Transform selectionBoxParentRef;
+	private UISprite selectBoxSprite;
+	private bool hasSelectionBox =false;
+ 
 
 
 	public void Init ()
@@ -25,7 +31,6 @@ public class SelectionController : MonoBehaviour
 		statsController       = ComponentGetter.Get<StatsController>();
 		gameplayManager       = ComponentGetter.Get<GameplayManager>();
 		interactionController = ComponentGetter.Get<InteractionController>();
-
 		listChildGroupBtns = new List<Transform>();
 		groupFeedback = new GameObject();
 
@@ -69,9 +74,7 @@ public class SelectionController : MonoBehaviour
 							}
 
 						);
-
 			}
-
 			groupNumberCounter ++;
 			
 		}
@@ -79,10 +82,28 @@ public class SelectionController : MonoBehaviour
 	
 	bool WebPlayerAndPcSelection()
 	{
-		//EDITOR ou PC
+		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
+		{
+			if(!hasSelectionBox)
+			{
+			    selectionBox = PoolManager.Pools["Buttons"].Spawn("SelectionBox", selectionBoxParentRef);				
+				selectBoxSprite = selectionBox.GetComponent<UISprite>();
+				hasSelectionBox = true;
+			}
+			selectBoxSprite.SetRect(touchController.GetDragRect().x,touchController.GetDragRect().y,touchController.GetDragRect().width,touchController.GetDragRect().height);
+
+		}
+		else if (hasSelectionBox)
+		{
+			selectionBox.parent = PoolManager.Pools["Buttons"].group;
+			PoolManager.Pools["Buttons"].Despawn(selectionBox);
+			hasSelectionBox = false;
+			return false;
+		}
+
 		if ((touchController.touchType != TouchController.TouchType.Ended) ||
 		    (touchController.idTouch != TouchController.IdTouch.Id0))
-			return true;
+			return false;
 		
 		bool leftShift = Input.GetKey (KeyCode.LeftShift);
 		bool leftCtrl = Input.GetKey (KeyCode.LeftControl);
@@ -91,18 +112,15 @@ public class SelectionController : MonoBehaviour
 		
 		if (touchController.DragOn)
 		{
+			
+			Debug.Log("dragoff editor");
 			statsController.DeselectAllStats ();
-
 			Bounds b = touchController.GetTouchBounds ();
-
-			//VDebug.DrawCube (b, Color.green);
 
 			foreach (IStats stat in statsController.myStats)
 			{
-				Unit unit = stat as Unit;
-				
-				if (unit == null) continue;
-				
+				Unit unit = stat as Unit;				
+				if (unit == null) continue;				
 				if (unit.collider == null)
 				{
 					Debug.Log("unidade sem colisor!");
@@ -114,17 +132,13 @@ public class SelectionController : MonoBehaviour
 					statsController.SelectStat (unit, true);
 				}
 			}
-			
-			//Verificando se foram selecionadas unidades
 			if (statsController.selectedStats.Count != 0)
 			{
 				statsController.PlaySelectSound ();
-
 				return true;
 			}
 
 			foreach (IStats stat in statsController.myStats)
-
 			{
 				FactoryBase factory = stat as FactoryBase;
 				
@@ -154,9 +168,7 @@ public class SelectionController : MonoBehaviour
 			{
 				if (b.Intersects (stat.collider.bounds))
 				{
-					statsController.SelectStat (stat, true);
-
-					break;
+					if (stat.GetType() == typeof(Unit))	statsController.SelectStat (stat, true);
 				}
 			}
 		}
@@ -218,11 +230,9 @@ public class SelectionController : MonoBehaviour
 					}
 					else
 					{
-						if (touchController.DoubleClick &&
-							selectedUnit == lastStatClick)
+						if (touchController.DoubleClick && selectedUnit == lastStatClick)
 						{
-							statsController.DeselectAllStats ();
-						
+							statsController.DeselectAllStats ();						
 							string category = selectedUnit.category;
 							foreach (IStats stat in statsController.myStats)
 							{
@@ -393,9 +403,7 @@ public class SelectionController : MonoBehaviour
 							}
 						}
 						statsController.SelectStat (factorySelected, true);
-						statsController.PlaySelectSound ();
-
-						
+						statsController.PlaySelectSound ();						
 						lastStatClick = factorySelected;
 //						ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (statsController.selectedStats[0] as FactoryBase);
 					}
@@ -409,12 +417,29 @@ public class SelectionController : MonoBehaviour
 
 	bool AndroidAndIphoneSelection()
 	{
+		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
+		{
+			if(!hasSelectionBox)
+			{
+				selectionBox = PoolManager.Pools["Buttons"].Spawn("SelectionBox", selectionBoxParentRef);				
+				selectBoxSprite = selectionBox.GetComponent<UISprite>();
+				hasSelectionBox = true;
+			}
+			selectBoxSprite.SetRect(touchController.GetDragRect().x,touchController.GetDragRect().y,touchController.GetDragRect().width,touchController.GetDragRect().height);
+		}
+		else if (hasSelectionBox)
+		{
+			selectionBox.parent = PoolManager.Pools["Buttons"].group;
+			PoolManager.Pools["Buttons"].Despawn(selectionBox);
+			hasSelectionBox = false;
+			return false;
+		}
+
 		if (touchController.touchType != TouchController.TouchType.Ended) //return
 			return true;
 
 		if (!touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id1) //return
 		{
-			//colocar cancelamento da ghostfactory aqui!!!TODO
 			statsController.DeselectAllStats ();
 			ComponentGetter.Get<HUDController> ().CloseInfoBox ();
 			return true;
@@ -425,6 +450,7 @@ public class SelectionController : MonoBehaviour
 		{
 			if (touchController.DragOn)
 			{
+				Debug.Log("dragoff android");
 				ComponentGetter.Get<HUDController> ().CloseInfoBox ();
 				statsController.DeselectAllStats ();
 
@@ -589,8 +615,8 @@ public class SelectionController : MonoBehaviour
 			}
 	}
 		
-		void Update ()
-		{
+	void Update ()
+	{
 #if (!UNITY_IPHONE && !UNITY_ANDROID) || UNITY_EDITOR
 			WebPlayerAndPcSelection();
 #else
@@ -750,13 +776,13 @@ public class SelectionController : MonoBehaviour
 //		tempTime = Time.time;
 	}
 
-	void OnGUI ()
-	{
-		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
-		{
-			GUI.Box (touchController.GetDragRect (), "");
-		}
-	}
+//	void OnGUI ()
+//	{
+//		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
+//		{
+//			GUI.Box (touchController.GetDragRect(), "");
+//		}
+//	}
 
 	Plane[] CalculateRect (Rect r)
 	{

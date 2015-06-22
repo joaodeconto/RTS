@@ -363,6 +363,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	{
 		Transform newParticleDamage;
 
+
 		if (transformParticleDamageReference != null)
 		{
 			newParticleDamage = PoolManager.Pools["Particles"].Spawn(pref_ParticleDamage, transformParticleDamageReference.position, transformParticleDamageReference.rotation);

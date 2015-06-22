@@ -12,14 +12,7 @@ public class StatsController : MonoBehaviour
 	public const int MAX_NUMBER_OF_GROUPS = 9;
 	public const string buttonIdleWorkersName = "IdleWorkers";
 	public const string buttonIdleUnitsName = "IdleUnits";
-
-	public enum StatsTypeSelected
-	{
-		None,
-		Unit,
-		Factory,
-		Resource
-	}
+	public enum StatsTypeSelected{None, Unit, Factory, Resource}
 	public StatsTypeSelected statsTypeSelected {get; protected set;}
 	public bool keepFormation {get; set;}
 	public Vector3 idleUnitButtonPosition;
@@ -93,10 +86,8 @@ public class StatsController : MonoBehaviour
 			if (keepFormation)
 			{
 				centerOfTroop = Math.CenterOfObjects (selectedStats.ToArray ());
-
 				Vector3 t = centerOfTroop - unit.transform.position;
-				unit.Move (destination - t);
-				
+				unit.Move (destination - t);				
 				feedback = true;
 			}
 			else
@@ -121,14 +112,10 @@ public class StatsController : MonoBehaviour
 					}
 				}
 				 
-				unit.Move (newDestination); 
-				
+				unit.Move (newDestination); 				
 				feedback = true;
-
-				Vector3 u = unit.transform.position;
-				
-				AudioClip sfxConfirm = SoundManager.LoadFromGroup("Confirm");
-				
+				Vector3 u = unit.transform.position;				
+				AudioClip sfxConfirm = SoundManager.LoadFromGroup("Confirm");				
 				AudioSource smas = SoundManager.PlayCappedSFX (sfxConfirm, "Confirm", 1f, 1f, u);
 				
 				if (smas != null)
@@ -428,17 +415,16 @@ public class StatsController : MonoBehaviour
 				
 		foreach (IStats stat in selectedStats)
 		{
-			if (stat != null)
-			{
-				stat.Deselect ();
-			}
+			if (stat != null)	stat.Deselect ();		
 		}
-		
-		hudController.DestroyInspector ("all");
-		hudController.DestroyOptionsBtns();
+		if (hudController.trnsOptionsMenu.childCount > 0 || hudController.trnsPanelUnitStats.childCount > 0)
+		{
+			Debug.LogError("sobrou child option");
+			hudController.DestroyInspector ("all");
+			hudController.DestroyOptionsBtns();
+		}
 
-		selectedStats.Clear ();
-		
+		selectedStats.Clear ();		
 		statsTypeSelected = StatsTypeSelected.None;
 	}
 	#endregion
@@ -815,10 +801,7 @@ public class StatsController : MonoBehaviour
 				ht["parent"] = idleButtonParent;
 			}
 
-			hudController.CreateOrChangeButtonInInspector(buttonIdleWorkersName,
-												idleWorkerButtonPosition,
-												ht,
-												idleWorkers[0].guiTextureName,
+			hudController.CreateOrChangeButtonInInspector(buttonIdleWorkersName, idleWorkerButtonPosition, ht, idleWorkers[0].guiTextureName,
 												(ht_dcb) =>
 												{
 													int currentIdleWorker = (int)ht_dcb["currentIdleWorker"];

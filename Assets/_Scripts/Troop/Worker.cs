@@ -626,7 +626,7 @@ public class Worker : Unit
 			Move (position);
 			workerState = WorkerState.Idle;
 			isMovingToFactory = true;
-			Debug.LogError("setmove-type" + position);
+			//Debug.LogError("setmove-type" + position);
 		}
 
 		else

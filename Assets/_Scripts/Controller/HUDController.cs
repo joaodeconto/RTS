@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using PathologicalGames;
 using Visiorama;
 using Visiorama.Utils;
 
@@ -106,7 +106,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	public GameObject manaFeedback;
 	public GameObject houseFeedback;
 
-	private GameObject oldFeedback;
+	private Transform oldFeedback;
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
 	private FactoryBase factoryBase;
@@ -187,23 +187,16 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	#region Feedback Creation Methods
 	public SubstanceResourceBar CreateSubstanceResourceBar (IStats target, float size, float timeToCreateBar)
 	{
-		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
+		Transform selectObj = PoolManager.Pools["Selection"].Spawn(pref_SubstanceResourceBar, target.transform.position, Quaternion.identity);
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
 		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
-		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
-		
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target.transform;
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.destroyObjectWhenLoseReference = false;
-		refTransform.offsetPosition += Vector3.up * 0.1f;
-		
-		selectObj.transform.parent = mainTranformSelectedObjects;
-		
+		refTransform.offsetPosition += Vector3.up * 0.1f;	
 		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
-
 		resourceBar.refTarget = target;
 		resourceBar.Init();	
 		return resourceBar;
@@ -211,23 +204,16 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public SubstanceResourceBar CreateSubstanceConstructBar (IStats target, float size, float timeToCreateBar, bool noTimer = false)
 	{
-		GameObject selectObj = Instantiate (pref_SubstanceResourceBar, target.transform.position, Quaternion.identity) as GameObject;
+		Transform selectObj = PoolManager.Pools["Selection"].Spawn(pref_SubstanceResourceBar, target.transform.position, Quaternion.identity);
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
-		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
-		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
-		
+		selectObj.transform.localEulerAngles = new Vector3(90,0,0);		
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target.transform;
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.destroyObjectWhenLoseReference = false;
 		refTransform.offsetPosition += Vector3.up * 0.1f;
-		
-		selectObj.transform.parent = mainTranformSelectedObjects;
-		
 		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
-		
 		resourceBar.refTarget = target;
 		resourceBar.noTimer = noTimer;
 		resourceBar.Init();	
@@ -237,53 +223,39 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		
 	public SubstanceHealthBar CreateSubstanceHealthBar (IStats target, float size, int maxHealth, string referenceChild)
 	{
-		GameObject selectObj = Instantiate (pref_SubstanceHealthBar, target.transform.position, Quaternion.identity) as GameObject;
+		Transform selectObj = PoolManager.Pools["Selection"].Spawn(pref_SubstanceHealthBar, target.transform.position, Quaternion.identity);
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
 		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
-		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
-
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target.transform;
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.destroyObjectWhenLoseReference = true;
-		refTransform.offsetPosition += Vector3.up * 0.1f;
-		
-		selectObj.transform.parent = mainTranformSelectedObjects;
-		
-		SubstanceHealthBar subHealthBar = selectObj.GetComponent<SubstanceHealthBar> ();
-		
-		subHealthBar.SetTarget (target, target.team);
-
-				
+		refTransform.offsetPosition += Vector3.up * 0.1f;		
+		SubstanceHealthBar subHealthBar = selectObj.GetComponent<SubstanceHealthBar> ();		
+		subHealthBar.SetTarget (target, target.team);				
 		return subHealthBar;
 	}
 
 	public void CreateSelected (Transform target, float size, Color color)
 	{
-		GameObject selectObj = Instantiate (pref_selectedObject, target.position, Quaternion.identity) as GameObject;
+		Transform selectObj = PoolManager.Pools["Selection"].Spawn(pref_selectedObject, target.position, Quaternion.identity);
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
 		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
-			
+					
 		foreach (ParticleSystem ps in selectObj.GetComponentsInChildren<ParticleSystem>())
 		{
 			ps.startSize = Mathf.Clamp (size * 1.2f, 2, 10);
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
 		}
-		selectObj.AddComponent<ReferenceTransform>().inUpdate = true;
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
 		refTransform.referenceObject = target;
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.destroyObjectWhenLoseReference = true;
 		refTransform.offsetPosition += Vector3.up * 0.1f;
-
 		selectObj.renderer.material.SetColor ("_TintColor", color);
-
-		selectObj.transform.parent = mainTranformSelectedObjects;
 	}
 
 	public void CreateEnqueuedButtonInInspector(string buttonName,
@@ -298,8 +270,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	                                            DefaultCallbackButton.OnDragDelegate onDrag = null,
 	                                            DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-		if (ht == null)
-			ht = new Hashtable();
+		ht = new Hashtable();
 		
 		if(!string.IsNullOrEmpty(textureName))
 			ht["textureName"] = textureName;
@@ -326,29 +297,20 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			}
 		}
 		
-		if (!hasSelected)
-		{
-			foreach (Transform child in trnsPanelUnitStats)
-			{
-				if (child.GetComponent<HealthBar>())
-				{
-					if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
-					{
-						hasSelected = true;
-                        break;
-					}
-				}
-				
-				if (child.GetComponent<SubstanceHealthBar>())
-	            {
-	                if (child.GetComponent<SubstanceHealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
-					{
-						hasSelected = true;
-						break;
-                    }
-	            }
-	        }
-		}
+//		if (!hasSelected)
+//		{
+//			foreach (Transform child in trnsPanelUnitStats)
+//			{
+//				if (child.GetComponent<HealthBar>())
+//				{
+//					if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+//					{
+//						hasSelected = true;
+//                        break;
+//					}
+//				}	
+//	        }
+//		}
 		
 		return hasSelected;
 	}
@@ -357,9 +319,12 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		foreach (Transform child in mainTranformSelectedObjects)
 		{
-			if (child.GetComponent<ReferenceTransform>().referenceObject == target && child.GetComponent<SubstanceResourceBar>() == null)
+			ReferenceTransform refTrans= child.GetComponent<ReferenceTransform>();
+			if(refTrans == null) continue;
+			else if (refTrans.referenceObject == target && child.GetComponent<SubstanceResourceBar>() == null)
 			{
-				DestroyObject (child.gameObject);
+				refTrans.referenceObject = null;
+				PoolManager.Pools["Selection"].Despawn (child);
 			}
 		}
 
@@ -368,18 +333,10 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			if (child.GetComponent<HealthBar>())
 			{
 				if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
-				{
-					Destroy (child.gameObject);
+				{					
+					DespawnBtn(child);					
 				}
-			}
-			
-			if (child.GetComponent<SubstanceHealthBar>())
-			{
-				if (child.GetComponent<SubstanceHealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
-				{
-					Destroy (child.gameObject);
-				}
-			}
+			}			
 		}
 	}
 
@@ -387,12 +344,14 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		foreach (Transform child in mainTranformSelectedObjects)
 		{
-			if (child.GetComponent<ReferenceTransform>().referenceObject == target && child.GetComponent<SubstanceResourceBar>() != null)
+			ReferenceTransform refTrans= child.GetComponent<ReferenceTransform>();
+			if(refTrans == null) continue;
+			if (refTrans.referenceObject == target && child.GetComponent<SubstanceResourceBar>() != null)
 			{
-				DestroyObject (child.gameObject);
+				refTrans.referenceObject = null;
+				PoolManager.Pools["Selection"].Despawn (child);
 			}
 		}
-
 	}
 	#endregion
 
@@ -400,8 +359,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public bool CheckQueuedButtonIsFirst(string buttonName, string queueName)
 	{
-		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-		
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);		
 		return mq.CheckQueuedButtonIsFirst(buttonName);
 	}
 
@@ -473,34 +431,27 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			buttonParent = trnsOptionsMenu;
 		}
 
-		GameObject button = GetButtonInHUD (buttonName, buttonParent);
+		Transform button = GetButtonInHUD (buttonName, buttonParent);
 
 		button.name = buttonName;
-		button.transform.localPosition = bs.position;
+		button.localPosition = bs.position;
+		button.localScale = Vector3.one;
 
 		PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();
 
 		if ( pcb == null )
 		{
-			pcb = button.AddComponent<PersonalizedCallbackButton>();
+			pcb = button.gameObject.AddComponent<PersonalizedCallbackButton>();
 			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
 		}
 		else
-			pcb.ChangeParams(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
+			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
 	}
 
-	GameObject GetButtonInHUD (string buttonName, Transform parentButton)
-	{
-		GameObject button = null;
-		
-		Transform trns = parentButton.Find(buttonName);
-		if (trns != null)
-			button = trns.gameObject;
-		else
-			//button = prefabCache.Get(trnsOptionsMenu, "Button");
-			button = NGUITools.AddChild(parentButton.gameObject,
-                                        pref_button);
-                                        
+	Transform GetButtonInHUD (string buttonName, Transform parentButton)
+	{		
+		Transform button = parentButton.Find(buttonName);
+		if (button == null)	button = PoolManager.Pools["Buttons"].Spawn(pref_button, parentButton); 
 		return button;
 	}
 	#endregion
@@ -530,7 +481,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			if (child.gameObject.name.Equals(buttonName) ||
 				child.gameObject.name.Equals(PERSIST_STRING + buttonName))
 			{
-				Destroy (child.gameObject);
+				DespawnBtn(child);		
 				break;
 			}
 		}
@@ -538,17 +489,17 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void DestroyOptionsBtns ()
 	{
-		IsDestroying = true;
+		IsDestroying = false;
 
 		foreach (Transform child in trnsOptionsMenu)
-		{
-				Destroy (child.gameObject);
+		{			
+			DespawnBtn(child);
 		}
 	}
 
 	public void DestroyInspector (string type)
 	{
-		IsDestroying = true;
+		IsDestroying = false;
 
 		if (type.ToLower ().Equals ("factory"))
 			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
@@ -572,9 +523,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void CreateFeedback (Feedbacks feedback, Vector3 position, float size, Color color)
 	{
-		if (oldFeedback != null) Destroy (oldFeedback);
-
-		GameObject newFeedback   = null;
+		Transform newFeedback   = null;
 		GameObject pref_feedback = null;
 
 		switch (feedback)
@@ -593,27 +542,21 @@ public class HUDController : MonoBehaviour, IDeathObserver
 				break;
 		}
 
-		newFeedback = Instantiate (pref_feedback, position + offesetFeedback, Quaternion.identity) as GameObject;
-		newFeedback.name = "Feedback";
-
-//		newFeedback.transform.localScale = size * newFeedback.transform.localScale;
+		newFeedback = PoolManager.Pools["Selection"].Spawn (pref_feedback, position + offesetFeedback, Quaternion.identity);
 		newFeedback.transform.eulerAngles = new Vector3 (90,0,0);
 		newFeedback.renderer.material.SetColor ("_TintColor", color);
-
-		float duration = 0;
+		float duration = 2;
 
 		foreach (ParticleSystem ps in newFeedback.GetComponentsInChildren<ParticleSystem>())
 		{
-
 			ps.startSize = size * ps.startSize;
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
-			if (ps.duration > duration) duration = ps.duration;
+			duration = ps.duration;
 		}
 
 		oldFeedback = newFeedback;
-
-		Destroy (newFeedback, duration);
+		PoolManager.Pools["Selection"].Despawn(newFeedback, duration);
 	}
 	#endregion
 
@@ -726,6 +669,13 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		infoFactory.gameObject.SetActive (false);
 		trnsPanelInfoBox.gameObject.SetActive (false);
 	}
+
+	public void DespawnBtn(Transform btnTrns)
+	{
+		btnTrns.parent = PoolManager.Pools["Buttons"].group;
+		btnTrns.name = "alreadyUsed" + (int)Time.time;
+		PoolManager.Pools["Buttons"].Despawn (btnTrns);		
+	}
 	#endregion
 
 	#region HealthBar
@@ -753,10 +703,10 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void OnObservableDie (GameObject dyingGO)
 	{
-//		if (dyingGO.name.Equals (cGODisplayedOnInfoBox))
-//		{
-//			CloseInfoBox ();
-//		}
+		if (dyingGO.name.Equals (cGODisplayedOnInfoBox))
+		{
+			CloseInfoBox ();
+		}
 	}
 
 	#endregion

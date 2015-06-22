@@ -861,14 +861,12 @@ public class Unit : IStats, IMovementObservable,
 		}
 		
 		base.Deselect ();
-		
+
 		int c = IDOobservers.Count;
 		while (--c != -1)
 		{
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
-		
-		hudController.DestroySelected (transform);
 	}
 	#endregion
 

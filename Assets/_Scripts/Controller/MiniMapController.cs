@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
+using PathologicalGames;
 
 public class MiniMapController : MonoBehaviour
 {
@@ -233,27 +234,20 @@ public class MiniMapController : MonoBehaviour
 
 	public void InstantiatePositionBeingAttacked (Transform target)
 	{
-		GameObject miniMapObject = Instantiate (beingAttackedMiniMap) as GameObject;
-
-		miniMapObject.transform.parent     = miniMapPanel.transform;
-		miniMapObject.transform.localScale = new Vector3 (1,1,1);
-		miniMapObject.GetComponent <UISprite>().height = beingAttackedMiniMap.GetComponent <UISprite>().height;
-		miniMapObject.GetComponent <UISprite>().width = beingAttackedMiniMap.GetComponent <UISprite>().width;
+		Transform miniMapObject = PoolManager.Pools["Minimap"].Spawn(beingAttackedMiniMap);
 		miniMapObject.GetComponent<TweenHeight> ().Play (true);
 		miniMapObject.GetComponent<UISprite> ().depth = 60;
-		UpdatePosition (miniMapObject, target);
+		UpdatePosition (miniMapObject.gameObject, target);
 	}
 	#endregion
 
 	#region Add and Remove Structures/Units
-	GameObject InstantiateMiniMapObject(GameObject pref_go, Transform trns, int teamId)
+	Transform InstantiateMiniMapObject(GameObject pref_go, Transform trns, int teamId)
 	{
-		GameObject _go = Instantiate(pref_go, Vector3.zero, Quaternion.identity) as GameObject;
-		_go.transform.parent     = miniMapPanel.transform;
-		_go.transform.localScale = Vector3.one;
+		Transform _go = PoolManager.Pools["Minimap"].Spawn(pref_go, Vector3.zero, Quaternion.identity);
 		Color teamColor = ComponentGetter.Get<GameplayManager>().teams[teamId].colors[0];
 		_go.GetComponent<UISprite>().color = teamColor;
-		UpdatePosition(_go, trns);
+		UpdatePosition(_go.gameObject, trns);
 		return _go;
 	}
 
@@ -268,9 +262,9 @@ public class MiniMapController : MonoBehaviour
 		}
 #endif
 
-		GameObject miniMapObject = InstantiateMiniMapObject(pref_StructureMiniMap, trns, teamId);
+		Transform miniMapObject = InstantiateMiniMapObject(pref_StructureMiniMap, trns, teamId);
 		structureList[teamId].Add(trns);
-		StructureMiniMapList[teamId].Add(miniMapObject);
+		StructureMiniMapList[teamId].Add(miniMapObject.gameObject);
 		WasStructureAlreadyVisible[teamId].Add(false);
 	}
 
@@ -287,10 +281,10 @@ public class MiniMapController : MonoBehaviour
 			Debug.Break();
 		}
 #endif
-		GameObject miniMapObject = InstantiateMiniMapObject(pref_UnitMiniMap, trns, teamId);
+		Transform miniMapObject = InstantiateMiniMapObject(pref_UnitMiniMap, trns, teamId);
 
 		unitList[teamId].Add(trns);
-		UnitMiniMapList[teamId].Add(miniMapObject);
+		UnitMiniMapList[teamId].Add(miniMapObject.gameObject);
 	}
 
 	public void RemoveStructure (Transform trns, int teamId)
@@ -299,7 +293,7 @@ public class MiniMapController : MonoBehaviour
 		int index = structureList[teamId].IndexOf(trns) != null ? structureList[teamId].IndexOf(trns) : -1;
 		if (index == -1) return;
 		GameObject obj = StructureMiniMapList[teamId][index];
-		Destroy(obj);
+		PoolManager.Pools["Minimap"].Despawn(obj.transform);
 		structureList[teamId].RemoveAt(index);
 		StructureMiniMapList[teamId].RemoveAt(index);
 	}
@@ -310,7 +304,7 @@ public class MiniMapController : MonoBehaviour
 		int index = unitList[teamId].IndexOf(trns) != null ? unitList[teamId].IndexOf(trns) : -1;
 		if (index == -1) return;
 		GameObject obj = UnitMiniMapList[teamId][index];
-		Destroy(obj);
+		PoolManager.Pools["Minimap"].Despawn(obj.transform);
 		unitList[teamId].RemoveAt(index);
 		UnitMiniMapList[teamId].RemoveAt(index);
 	}

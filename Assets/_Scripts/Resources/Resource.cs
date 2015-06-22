@@ -62,8 +62,8 @@ public class ResourcesManager
 
 	public bool CanBuy (ResourcesManager resourceCost)
 	{
-		Debug.Log ("Rocks: " + Rocks + " - resourceCost.Rocks: " + resourceCost.Rocks);
-		Debug.Log ("Mana: " + Mana + " - resourceCost.Mana: " + resourceCost.Mana);
+//		Debug.Log ("Rocks: " + Rocks + " - resourceCost.Rocks: " + resourceCost.Rocks);
+//		Debug.Log ("Mana: " + Mana + " - resourceCost.Mana: " + resourceCost.Mana);
 		
 		return ((Rocks - resourceCost.Rocks) >= 0 &&
 				(Mana  - resourceCost.Mana)  >= 0);

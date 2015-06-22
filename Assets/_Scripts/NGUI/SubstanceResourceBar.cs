@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Visiorama.Utils;
 using Visiorama;
+using PathologicalGames;
+
 
 [RequireComponent(typeof (MeshRenderer))]
 public class SubstanceResourceBar : MonoBehaviour
@@ -50,7 +52,12 @@ public class SubstanceResourceBar : MonoBehaviour
 
 	public void UpdateInvokingTimer ()
 	{
-		if(refFactory == null || !refFactory.inUpgrade) DestroyImmediate(gameObject);
+		if(refFactory == null || !refFactory.inUpgrade)
+		{
+			CancelInvoke("UpdateInvokingTimer");
+			PoolManager.Pools["Selection"].Despawn(transform);
+			return;
+		}
 		float percentResource = refFactory.timer * (3.14f/refFactory.timeToCreate);
 		substance.SetProceduralFloat("Rotate", (percentResource-3.14f));
 		substance.RebuildTextures ();
@@ -58,7 +65,12 @@ public class SubstanceResourceBar : MonoBehaviour
 
 	public void UpdateInvokingConstruct ()
 	{
-		if(refFactory == null || refFactory.wasBuilt) DestroyImmediate(gameObject);		
+		if(refFactory == null || refFactory.wasBuilt) 
+		{			
+			CancelInvoke("UpdateInvokingConstruct");
+			PoolManager.Pools["Selection"].Despawn(transform);
+			return;
+		}
 		float percentResource = refFactory.Health * (3.14f/refFactory.MaxHealth);
 		substance.SetProceduralFloat("Rotate", (percentResource-3.14f));
 		substance.RebuildTextures ();

@@ -306,11 +306,8 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 		else
 		{
-			model.transform.parent = null;
-			hudController.DestroySelected(transform);
-			
-			if(!wasVisible)
-				model.SetActive(false);
+			model.transform.parent = null;			
+			if(!wasVisible)	model.SetActive(false);
 		}
 	}
 	

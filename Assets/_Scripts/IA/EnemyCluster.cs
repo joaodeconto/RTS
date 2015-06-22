@@ -92,8 +92,7 @@ public class EnemyCluster : MonoBehaviour
 				if (!toInit)continue;
 				if (toInit.GetType() == typeof(InitInstantiateEnemy))
 				{					
-					toInit.Init();
-					Debug.Log("transform  "+ trns.name);					
+					toInit.Init();									
 				}
 			}
 

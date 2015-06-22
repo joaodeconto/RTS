@@ -93,8 +93,7 @@ public class TouchController : MonoBehaviour
 		                                Mathf.Clamp (Input.mousePosition.y / Screen.height, 0f, 1f));
 		if(holdCounting) touchTimer += Time.deltaTime;
 		
-		if (Input.GetMouseButtonDown(0) ||
-		    Input.GetMouseButtonDown(1))
+		if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
 		{
 			if (NGUIUtils.ClickedInGUI (camerasUI, "GUI"))
 			{
@@ -114,21 +113,16 @@ public class TouchController : MonoBehaviour
 				GetFirstRaycastHit = hit;
 				GetFirstPoint = hit.point;
 			}
-
-
 			touchType = TouchType.First;
 			touchHold = false;
 			holdCounting = true;
 			VerifyTouchID ();
 		}
-		else
-			if (Input.GetMouseButton(0) ||
-			    Input.GetMouseButton(1))
+		else if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
 		{
 			if (ignoreTouch) return;
 			
-			CurrentPosition = new Vector2(Input.mousePosition.x,
-			                              Screen.height - Input.mousePosition.y);
+			CurrentPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
 			
 			if (!DisableDragOn)
 			{
@@ -173,21 +167,16 @@ public class TouchController : MonoBehaviour
 				GetFinalPoint = hit.point;
 			}
 			
-			VerifyTouchID ();
-			
-			DoubleClick = GetDoubleClick (doubleClickSpeed);
-		
+			VerifyTouchID ();			
+			DoubleClick = GetDoubleClick (doubleClickSpeed);		
 			touchType = TouchType.Ended;
-
 			if(touchTimer > 0.3f) touchHold = true;
 			holdCounting = false;
 			touchTimer = 0;
 		}
 		else
 		{
-			CurrentPosition = new Vector2(Input.mousePosition.x,
-			                              Screen.height - Input.mousePosition.y);
-			
+			CurrentPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);			
 			touchType = TouchType.None;
 			#if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 			VerifyTouchID ();
@@ -203,8 +192,7 @@ public class TouchController : MonoBehaviour
 		get
 		{
 			float x = ((Input.GetTouch(0).deltaPosition.x+Input.GetTouch(1).deltaPosition.x));
-			float z = ((Input.GetTouch(0).deltaPosition.y+Input.GetTouch(1).deltaPosition.y));
-			
+			float z = ((Input.GetTouch(0).deltaPosition.y+Input.GetTouch(1).deltaPosition.y));			
 			return new Vector3(x, 0, z);
 		}
 	}
@@ -262,7 +250,7 @@ public class TouchController : MonoBehaviour
 	
 	public Rect GetDragRect ()
 	{
-		return new Rect(Mathf.Min(FirstPosition.x, CurrentPosition.x),  Mathf.Min(FirstPosition.y, CurrentPosition.y),
+		return new Rect(FirstPosition.x - CurrentPosition.x, FirstPosition.y - CurrentPosition.y,
 		                Mathf.Abs(FirstPosition.x - CurrentPosition.x), Mathf.Abs(FirstPosition.y - CurrentPosition.y));
 	}
 	
