@@ -191,6 +191,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
 		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
+		refTransform.inUpdate = false;
 		refTransform.referenceObject = target.transform;
 		refTransform.positionX = true;
 		refTransform.positionY = true;
@@ -199,6 +200,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
 		resourceBar.refTarget = target;
 		resourceBar.Init();	
+		refTransform.Init();
 		return resourceBar;
 	}
 
@@ -208,6 +210,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
 		selectObj.transform.localEulerAngles = new Vector3(90,0,0);		
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
+		refTransform.inUpdate = false;
 		refTransform.referenceObject = target.transform;
 		refTransform.positionX = true;
 		refTransform.positionY = true;
@@ -216,7 +219,8 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
 		resourceBar.refTarget = target;
 		resourceBar.noTimer = noTimer;
-		resourceBar.Init();	
+		resourceBar.Init();
+		refTransform.Init();
 		return resourceBar;
 	}
 
@@ -227,13 +231,17 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
 		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
+		bool isInUpgrade = true;
+		if(target.GetComponent<FactoryBase>() != null) isInUpgrade = false;
+		refTransform.inUpdate = isInUpgrade;
 		refTransform.referenceObject = target.transform;
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
 		refTransform.offsetPosition += Vector3.up * 0.1f;		
 		SubstanceHealthBar subHealthBar = selectObj.GetComponent<SubstanceHealthBar> ();		
-		subHealthBar.SetTarget (target, target.team);				
+		subHealthBar.SetTarget (target, target.team);
+		refTransform.Init();
 		return subHealthBar;
 	}
 
@@ -249,13 +257,18 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
 		}
+
 		ReferenceTransform refTransform = selectObj.GetComponent<ReferenceTransform> ();
+		bool isInUpgrade = true;
+		if(target.GetComponent<FactoryBase>() != null) isInUpgrade = false;
+		refTransform.inUpdate = isInUpgrade;
 		refTransform.referenceObject = target;
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
 		refTransform.offsetPosition += Vector3.up * 0.1f;
 		selectObj.renderer.material.SetColor ("_TintColor", color);
+		refTransform.Init();
 	}
 
 	public void CreateEnqueuedButtonInInspector(string buttonName,

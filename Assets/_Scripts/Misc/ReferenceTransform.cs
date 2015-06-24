@@ -16,31 +16,37 @@ public class ReferenceTransform : MonoBehaviour
 	public bool inUpdate;
 	public bool destroyObjectWhenLoseReference;
 	
-	void Start ()
+	public void Init ()
 	{
 		CalculeReference ();
 		enabled = inUpdate;
 	}
-	
-	void Update ()
+
+	void OnDespawned()
 	{
-		CalculeReference ();
+		referenceObject = null;
+		offsetPosition = Vector3.zero;
 	}
 	
-	void CalculeReference ()
+	void Update ()
 	{
 		if (referenceObject == null)
 		{
 			if (destroyObjectWhenLoseReference)
 			{
 				PoolManager.Pools["Selection"].Despawn(transform);
+				return;
 			}
 			else
 			{
 				return;
 			}
 		}
-		
+		CalculeReference ();
+	}
+	
+	void CalculeReference ()
+	{
 		if (local)
 		{
 			
