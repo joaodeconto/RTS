@@ -7,7 +7,7 @@ namespace UnityEngine.Advertisements {
   using System.Runtime.InteropServices;
 
   internal abstract class UnityAdsPlatform {
-    public abstract void init(string gameId, bool testModeEnabled, string gameObjectName);
+    public abstract void init(string gameId, bool testModeEnabled, string gameObjectName, string unityVersion);
     public abstract bool show(string zoneId, string rewardItemKey, string options);
     public abstract void hide();
     public abstract bool isSupported();

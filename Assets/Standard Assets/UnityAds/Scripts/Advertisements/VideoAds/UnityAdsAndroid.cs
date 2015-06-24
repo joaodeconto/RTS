@@ -21,7 +21,7 @@ namespace UnityEngine.Advertisements {
 		return unityAdsUnity;
 	}
 
-	public override void init (string gameId, bool testModeEnabled, string gameObjectName) {
+	public override void init (string gameId, bool testModeEnabled, string gameObjectName, string unityVersion) {
 		Utils.LogDebug("UnityAndroid: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName);
 		
 		if(Advertisement.UnityDeveloperInternalTestMode) {
@@ -29,7 +29,7 @@ namespace UnityEngine.Advertisements {
 		}
 
 		currentActivity = (new AndroidJavaClass("com.unity3d.player.UnityPlayer")).GetStatic<AndroidJavaObject>("currentActivity");
-		getAndroidWrapper().Call("init", gameId, currentActivity, testModeEnabled, (int) Advertisement.debugLevel, gameObjectName);
+		getAndroidWrapper().Call("init", gameId, currentActivity, testModeEnabled, (int) Advertisement.debugLevel, gameObjectName, unityVersion);
 	}
 		
 	public override bool show (string zoneId, string rewardItemKey, string options) {

@@ -14,7 +14,6 @@ public class MiniMapController : MonoBehaviour
 	public GameObject miniMapPanel;
 	public UIRoot MiniMapRoot;
 	public GameObject CamPositionMiniMap;
-	public Texture2D CamPositionTexture;
 	public Transform mapTransform;
 	public GameObject fogMiniMap;
 	public GameObject beingAttackedMiniMap;
@@ -31,37 +30,42 @@ public class MiniMapController : MonoBehaviour
 	private List<GameObject>[] StructureMiniMapList;
 	private List<bool>[] WasStructureAlreadyVisible;
 
-	private GameObject mainCameraGO;
+
 	private bool WasInitialized;
-	private TouchController tc;
-	InteractionController ic;	
+	private GameObject mainCameraGO;
 	private UITexture textureFogOfWar;
+	private UISprite us;
+
 	protected FogOfWar fogOfWar;
+	protected GameplayManager gm;
+	protected CameraBounds cb;
+	protected TouchController tc;
+	protected InteractionController ic;	
+
 	#endregion
 
 	#region Init
 	public void Init()
 	{
-		if (WasInitialized)
-		{
-			return;
-		}		
+		if (WasInitialized) return;			
 		WasInitialized = true;
-		GameplayManager gm = ComponentGetter.Get<GameplayManager>();
+		
+		mainCameraGO = Camera.main.gameObject;	
+		gm = ComponentGetter.Get<GameplayManager>();
 		tc = ComponentGetter.Get <TouchController> ();
+		cb = mainCameraGO.GetComponent<CameraBounds>();
 		fogOfWar = ComponentGetter.Get<FogOfWar>();
 		int nTeams = gm.teams.Length;
-
-		unitList      = new List<Transform>[nTeams];
-		structureList = new List<Transform>[nTeams];
-		UnitMiniMapList      = new List<GameObject>[nTeams];
-		StructureMiniMapList = new List<GameObject>[nTeams];
+		unitList      		 	= new List<Transform>[nTeams];
+		structureList 		 	= new List<Transform>[nTeams];
+		UnitMiniMapList      	= new List<GameObject>[nTeams];
+		StructureMiniMapList 	= new List<GameObject>[nTeams];
 		WasStructureAlreadyVisible = new List<bool>[nTeams];
 
 		for(int i = structureList.Length - 1; i != -1; --i)
 		{
-			unitList[i]      = new List<Transform>();
-			structureList[i] = new List<Transform>();
+			unitList[i]      		= new List<Transform>();
+			structureList[i] 		= new List<Transform>();
 			UnitMiniMapList[i]      = new List<GameObject>();
 			StructureMiniMapList[i] = new List<GameObject>();
 			WasStructureAlreadyVisible[i] = new List<bool>();
@@ -80,17 +84,13 @@ public class MiniMapController : MonoBehaviour
 			textureFogOfWar.material = new Material (Shader.Find ("Unlit/Transparent Colored"));
 			textureFogOfWar.material.mainTexture = fogOfWar.FogTexture;
 		}
-
-		UISprite us;
 		us = NGUITools.AddWidget<UISprite> (CamPositionMiniMap);
 		us.atlas = minimapAtlas;
 		us.spriteName = "camera-mini-mapa";
-        //ut.transform.localPosition = Vector3.forward * -1;
         us.depth = 10;
 		us.width = (int)visualizationSize.x;
 		us.height = (int)visualizationSize.y;
-		us.type = UISprite.Type.Sliced;
-		mainCameraGO = Camera.main.gameObject;		
+		us.type = UISprite.Type.Sliced;	
 		DefaultCallbackButton dcb;
 		dcb = ComponentGetter.Get <DefaultCallbackButton> (miniMapButton, false);		
 		dcb.Init
@@ -110,7 +110,7 @@ public class MiniMapController : MonoBehaviour
 
 	void RefreshMiniMapSize()
 	{
-		miniMapSize = mapTransform.GetComponent<UISprite>().localSize;   //miniMapCollider.bounds.max - miniMapCollider.bounds.min;//.size;//(miniMapMaxPoint - miniMapMinPoint);
+		miniMapSize = mapTransform.GetComponent<UISprite>().localSize;  
 				
 		Vector3 newScale = new Vector3( visualizationSize.x / mapSize.x,
 										visualizationSize.y / mapSize.z,
@@ -119,21 +119,16 @@ public class MiniMapController : MonoBehaviour
 		newScale.x *= mapTransform.localScale.x;
 		newScale.y *= mapTransform.localScale.y;
 		newScale.z *= mapTransform.localScale.z;
-		
-		//CamPositionMiniMap.transform.localScale = newScale;
 	}
 	#endregion
 
 	#region Minimap updates	
 	void UpdateMiniMap()
 	{
-		#if UNITY_EDITOR
-				//RefreshMiniMapSize();
-		#endif
-		//		Debug.Log(FOWSystem.instance.texture1.width);
-		
-		//Update camera mini map position
 		UpdateMiniMapCameraPosition();
+
+		us.width = (int)(visualizationSize.x*(1-cb.zoomModifier));
+		us.height = (int)(visualizationSize.y*(1-cb.zoomModifier));
 
 		//iterate by teams
 		for(int i = structureList.Length - 1; i != -1; --i)
@@ -170,17 +165,13 @@ public class MiniMapController : MonoBehaviour
 
 	void UpdateMiniMapCameraPosition()
 	{
-		//CamPositionMiniMap, mainCameraGO.transform
-
 		Vector3 percentPos = new Vector3 (  (mainCameraGO.transform.position.x) / mapSize.x,
 											(visualizationPosition.z + mainCameraGO.transform.position.z) / mapSize.z,
 											0);
 
-		//Debug.Log("percentPos (" + referenceTrns.name + "): " + percentPos);
 
 		CamPositionMiniMap.transform.localPosition = new Vector3((mapTransform.localPosition.x + (miniMapSize.x * percentPos.x)),
-																 (mapTransform.localPosition.y + (miniMapSize.y * percentPos.y)),
-																 (-18));
+																 (mapTransform.localPosition.y + (miniMapSize.y * percentPos.y)),0);
 	}
 
 	void UpdatePosition(GameObject miniMapObject, Transform referenceTrns, float transformZ = 0)
@@ -199,8 +190,7 @@ public class MiniMapController : MonoBehaviour
 
 	public void UpdateCameraPosition()
 	{        
-        CameraBounds camBounds = mainCameraGO.GetComponent<CameraBounds>();
-		Vector3 camBoundsSize = mapSize;					
+		Vector3 camBoundsSize = mapSize;	
 				
 		float touchLocalPointX = UICamera.lastTouchPosition.x;
 		float touchLocalPointY = UICamera.lastTouchPosition.y;

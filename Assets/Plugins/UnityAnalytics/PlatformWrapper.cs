@@ -19,10 +19,12 @@ namespace UnityEngine.Cloud.Analytics
 				return new AndroidWrapper();
 				#elif UNITY_IPHONE && !UNITY_EDITOR
 				return new iOSWrapper();
-				#elif UNITY_WEBGL && !UNITY_EDITOR
+				#elif UNITY_WEBGL
 				return new WebGLWrapper();
-				#elif UNITY_WEBPLAYER && !UNITY_EDITOR
+				#elif UNITY_WEBPLAYER
 				return new WebPlayerWrapper();
+				#elif UNITY_METRO
+				return new WindowsMetroWrapper();
 				#else
 				return new BasePlatformWrapper();
 				#endif
@@ -121,7 +123,7 @@ namespace UnityEngine.Cloud.Analytics
 
 		public virtual string persistentDataPath
 		{
-			#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN || UNITY_METRO || UNITY_WP8
+			#if (UNITY_STANDALONE_WIN&&!UNITY_EDITOR) || UNITY_EDITOR_WIN || UNITY_METRO || UNITY_WP8
 			get { return Application.persistentDataPath.Replace ('/', '\\'); }
 			#else
 			get { return Application.persistentDataPath; }
@@ -139,6 +141,11 @@ namespace UnityEngine.Cloud.Analytics
 		{
 			get { return Application.unityVersion; }
 		}
+
+		public bool isDebugBuild
+		{
+			get { return Debug.isDebugBuild; }
+		}
 		#endregion
 
 		#region ISystemInfo
@@ -152,6 +159,29 @@ namespace UnityEngine.Cloud.Analytics
 		public virtual string NewGuid()
 		{
 			return System.Guid.NewGuid().ToString();
+		}
+			
+		public virtual string Md5Hex(string input){
+			#if !UNITY_METRO
+			System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
+			byte[] bytes = ue.GetBytes(input);
+
+			// encrypt bytes
+			System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+			byte[] hashBytes = md5.ComputeHash(bytes);
+
+			// Convert the encrypted bytes back to a string (base 16)
+			string hashString = "";
+
+			for (int i = 0; i < hashBytes.Length; i++)
+			{
+				hashString += System.Convert.ToString(hashBytes[i], 16).PadLeft(2, '0');
+			}
+
+			return hashString.PadLeft(32, '0');
+			#else
+			return null;
+			#endif			
 		}
 
 		public virtual string deviceModel

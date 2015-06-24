@@ -1,4 +1,4 @@
-﻿#if UNITY_WEBPLAYER && !UNITY_EDITOR
+﻿#if UNITY_WEBPLAYER
 namespace UnityEngine.Cloud.Analytics
 {
 	internal class WebPlayerWrapper : BasePlatformWrapper

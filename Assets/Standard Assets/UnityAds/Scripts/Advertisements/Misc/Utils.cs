@@ -8,25 +8,25 @@ namespace UnityEngine.Advertisements {
 
   internal static class Utils {
     private static void Log(DebugLevel debugLevel, string message) {
-      if((Advertisement.debugLevel & debugLevel) != DebugLevel.NONE) {
+      if((Advertisement.debugLevel & debugLevel) != DebugLevel.None) {
         Debug.Log(message);
       }
     }
 
     public static void LogDebug(string message) {
-      Log (DebugLevel.DEBUG,"Debug: " + message);
+      Log (DebugLevel.Debug,"Debug: " + message);
     }
     
     public static void LogInfo(string message) {
-      Log (DebugLevel.INFO, "Info:" + message);
+      Log (DebugLevel.Info, "Info:" + message);
     }
     
     public static void LogWarning(string message) {
-      Log (DebugLevel.WARNING,"Warning:" + message);
+      Log (DebugLevel.Warning,"Warning:" + message);
     }
     
     public static void LogError(string message) {
-      Log (DebugLevel.ERROR, "Error: " + message);
+      Log (DebugLevel.Error, "Error: " + message);
     }
   }
 }

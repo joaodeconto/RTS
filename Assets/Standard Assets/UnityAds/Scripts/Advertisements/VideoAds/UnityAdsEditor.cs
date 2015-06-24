@@ -9,13 +9,13 @@ namespace UnityEngine.Advertisements {
   	private static bool initialized = false;
   	private static bool ready = false;
 		private UnityAdsEditorPlaceholder placeHolder = null;
-    public override void init (string gameId, bool testModeEnabled, string gameObjectName) {
+    public override void init (string gameId, bool testModeEnabled, string gameObjectName, string unityVersion) {
 	    if(initialized) return;
     	initialized = true;
 
       Utils.LogDebug ("UnityEditor: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName);
 
-    	string url = "https://impact.applifier.com/mobile/campaigns?platform=editor&gameId=" + WWW.EscapeURL(gameId) + "&unityVersion=" + WWW.EscapeURL(Application.unityVersion);
+    	string url = "https://impact.applifier.com/mobile/campaigns?platform=editor&gameId=" + WWW.EscapeURL(gameId) + "&unityVersion=" + WWW.EscapeURL(unityVersion);
     	
 		AsyncExec.runWithCallback<string,WWW> (getAdPlan, url, handleResponse);
   	}

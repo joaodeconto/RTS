@@ -1,4 +1,4 @@
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
 namespace UnityEngine.Cloud.Analytics
 {
 	internal class WebGLWrapper : BasePlatformWrapper

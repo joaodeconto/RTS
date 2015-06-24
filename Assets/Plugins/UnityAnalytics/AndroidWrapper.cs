@@ -56,25 +56,6 @@ namespace UnityEngine.Cloud.Analytics
 			}
 		}
 
-		private string Md5Hex(string input){
-			System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
-			byte[] bytes = ue.GetBytes(input);
-
-			// encrypt bytes
-			MD5 md5 = new MD5CryptoServiceProvider();
-			byte[] hashBytes = md5.ComputeHash(bytes);
-
-			// Convert the encrypted bytes back to a string (base 16)
-			string hashString = "";
-
-			for (int i = 0; i < hashBytes.Length; i++)
-			{
-				hashString += System.Convert.ToString(hashBytes[i], 16).PadLeft(2, '0');
-			}
-
-			return hashString.PadLeft(32, '0');
-		}
-
         public override string deviceUniqueIdentifier
         {
             get 

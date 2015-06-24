@@ -28,8 +28,8 @@ namespace UnityEngine.Advertisements {
     return impl;
   }
 
-    public static void init (string gameId, bool testModeEnabled, string gameObjectName) {
-      getImpl().init(gameId, testModeEnabled, gameObjectName);
+    public static void init (string gameId, bool testModeEnabled, string gameObjectName, string unityVersion) {
+      getImpl().init(gameId, testModeEnabled, gameObjectName, unityVersion);
     }
 
     public static bool show (string zoneId, string rewardItemKey, string options) {

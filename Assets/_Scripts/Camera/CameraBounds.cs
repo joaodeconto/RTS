@@ -6,39 +6,29 @@ public class CameraBounds : MonoBehaviour
 {
 	// Editor
 	public Vector3MinMax scenario;
-	public float height = 15f;
-	public float relativeSize = 15f;
-	
-	private Vector3 positionInitial;
-	private bool wasInitialized;
 	private float fieldOfViewInitial;
+	private Vector3 boundsArea;
+	public float zoomModifier = 0;
 	
 	void Start ()
 	{
-		fieldOfViewInitial = camera.fieldOfView;
-		
-		// Pegando posição inicial
-		positionInitial = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-		
-		wasInitialized = true;
+		fieldOfViewInitial = camera.GetComponent<CameraMovement>().zoom.max;	
+		boundsArea = new Vector3((Mathf.Abs(scenario.x.min)+scenario.x.max)/3,60,(Mathf.Abs(scenario.z.min)+scenario.z.max)/3);
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
-		// Cálculo em torno da área que está no cubo ciano	
+
 		transform.position = ClampScenario (transform.position);
 	}
 	
 	public Vector3 ClampScenario (Vector3 position)
 	{
-//		Debug.Log (relativeSize/camera.orthographicSize);
-//		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min + (relativeSize/camera.orthographicSize), scenario.x.max + (relativeSize/camera.orthographicSize)), 
-//		                    height, 
-//		                    Mathf.Clamp (position.z, scenario.z.min + (relativeSize/camera.orthographicSize), scenario.z.max + (relativeSize/camera.orthographicSize)));
-		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min, scenario.x.max), 
+
+		zoomModifier = 1f-(camera.fieldOfView/fieldOfViewInitial);
+
+		return new Vector3 (Mathf.Clamp (position.x, scenario.x.min -(boundsArea.x*zoomModifier), scenario.x.max +(boundsArea.x*zoomModifier)), 
 		                    Mathf.Clamp (position.y, scenario.y.min, scenario.y.max), 
-		                    Mathf.Clamp (position.z, scenario.z.min, scenario.z.max));
-		
+		                    Mathf.Clamp (position.z, scenario.z.min -(boundsArea.z*zoomModifier), scenario.z.max + (boundsArea.z*zoomModifier)));		
 	}
 	
 	void OnDrawGizmosSelected ()

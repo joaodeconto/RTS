@@ -11,6 +11,6 @@ extern UIViewController* UnityGetGLViewController();
 @interface UnityAdsUnityWrapper : NSObject <UnityAdsDelegate> {
 }
 
-- (id)initWithGameId:(NSString*)gameId testModeOn:(bool)testMode debugModeOn:(bool)debugMode withGameObjectName:(NSString*)gameObjectName;
+- (id)initWithGameId:(NSString*)gameId testModeOn:(bool)testMode debugModeOn:(bool)debugMode withGameObjectName:(NSString*)gameObjectName withUnityVersion:(NSString *)unityVersion;
 
 @end

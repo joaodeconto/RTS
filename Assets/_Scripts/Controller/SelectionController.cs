@@ -112,8 +112,6 @@ public class SelectionController : MonoBehaviour
 		
 		if (touchController.DragOn)
 		{
-			
-			Debug.Log("dragoff editor");
 			statsController.DeselectAllStats ();
 			Bounds b = touchController.GetTouchBounds ();
 
@@ -124,7 +122,7 @@ public class SelectionController : MonoBehaviour
 				if (unit.collider == null)
 				{
 					Debug.Log("unidade sem colisor!");
-					Debug.Break();
+
 				}
 
 				if (b.Intersects (unit.collider.bounds))
@@ -147,7 +145,7 @@ public class SelectionController : MonoBehaviour
 				if (factory.collider == null)
 				{
 					Debug.Log("estrutura sem colisor!");
-					Debug.Break();
+
 				}
 
 //				if (touchController.GetDragRect ().Contains (factory.transform.position))
@@ -426,6 +424,7 @@ public class SelectionController : MonoBehaviour
 				hasSelectionBox = true;
 			}
 			selectBoxSprite.SetRect(touchController.GetDragRect().x,touchController.GetDragRect().y,touchController.GetDragRect().width,touchController.GetDragRect().height);
+			
 		}
 		else if (hasSelectionBox)
 		{
@@ -450,7 +449,6 @@ public class SelectionController : MonoBehaviour
 		{
 			if (touchController.DragOn)
 			{
-				Debug.Log("dragoff android");
 				ComponentGetter.Get<HUDController> ().CloseInfoBox ();
 				statsController.DeselectAllStats ();
 
@@ -468,7 +466,7 @@ public class SelectionController : MonoBehaviour
 					if (unit.collider == null)
 					{
 						Debug.Log("soldado sem colisor!");
-						Debug.Break();
+					
 					}
 
 					if (b.Intersects (unit.collider.bounds))

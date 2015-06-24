@@ -3,15 +3,27 @@ namespace UnityEngine.Advertisements {
 
   public static class Advertisement {
 
+  	public static readonly string version = "1.2.0";
+
     public enum DebugLevel {
+      None = 0,
+      Error = 1,
+      Warning = 2,
+      Info = 4,
+      Debug = 8,
+      [System.ObsoleteAttribute("Use Advertisement.DebugLevel.None instead")]
       NONE = 0,
+      [System.ObsoleteAttribute("Use Advertisement.DebugLevel.Error instead")]
       ERROR = 1,
+      [System.ObsoleteAttribute("Use Advertisement.DebugLevel.Warning instead")]
       WARNING = 2,
+      [System.ObsoleteAttribute("Use Advertisement.DebugLevel.Info instead")]
       INFO = 4,
+      [System.ObsoleteAttribute("Use Advertisement.DebugLevel.Debug instead")]
       DEBUG = 8
     }
-	
-    static private DebugLevel _debugLevel = Debug.isDebugBuild ? DebugLevel.ERROR | DebugLevel.WARNING | DebugLevel.INFO | DebugLevel.DEBUG : DebugLevel.ERROR | DebugLevel.WARNING | DebugLevel.INFO;
+		
+    static private DebugLevel _debugLevel = Debug.isDebugBuild ? DebugLevel.Error | DebugLevel.Warning | DebugLevel.Info | DebugLevel.Debug : DebugLevel.Error | DebugLevel.Warning | DebugLevel.Info;
 	
     static public DebugLevel debugLevel {
       get {
@@ -55,12 +67,13 @@ namespace UnityEngine.Advertisements {
 #if UNITY_ANDROID || UNITY_IOS
       UnityAds.SharedInstance.Show(zoneId, options);
 #else
-      if(options.resultCallback != null) {
+      if(options != null && options.resultCallback != null) {
         options.resultCallback(ShowResult.Failed);
       }
 #endif
     }
 
+    [System.Obsolete("Advertisement.allowPrecache is no longer supported and does nothing")]
     static public bool allowPrecache { 
       get {
 #if UNITY_ANDROID || UNITY_IOS
@@ -76,13 +89,18 @@ namespace UnityEngine.Advertisements {
       }
     }
 
-    static public bool isReady(string zoneId = null) {
+    static public bool IsReady(string zoneId = null) {
 #if UNITY_ANDROID || UNITY_IOS
       return UnityAds.canShowZone(zoneId);
 #else
       return false;
 #endif
     }
+
+	[System.Obsolete("Use Advertisement.IsReady method instead")]
+    static public bool isReady(string zoneId = null) {
+      return IsReady(zoneId);
+	}
 
     static public bool isShowing { 
       get {

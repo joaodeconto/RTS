@@ -4986,6 +4986,54 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: f4a23cec399fa7045aa83d1db18e9378, type: 2}
   mSpriteName: box
   mFillCenter: 1
+--- !u!1001 &106706168
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 11420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[0].preloadAmount
+      value: 20
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+  m_RootGameObject: {fileID: 866263307}
+  m_IsPrefabParent: 0
+  m_IsExploded: 1
 --- !u!1 &109142978
 GameObject:
   m_ObjectHideFlags: 0
@@ -17200,6 +17248,138 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeToDisable: 5
+--- !u!1 &326013793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 156210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+  m_PrefabInternal: {fileID: 1782815245}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 326013794}
+  - 114: {fileID: 326013795}
+  m_Layer: 0
+  m_Name: SelectedObjects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &326013794
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+  m_PrefabInternal: {fileID: 1782815245}
+  m_GameObject: {fileID: 326013793}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+--- !u!114 &326013795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0,
+    type: 2}
+  m_PrefabInternal: {fileID: 1782815245}
+  m_GameObject: {fileID: 326013793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59dfbc0f4f3a98b4ebf4ad40fc3f43aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolName: Selection
+  matchPoolScale: 0
+  matchPoolLayer: 0
+  dontReparent: 0
+  _dontDestroyOnLoad: 0
+  logMessages: 0
+  _perPrefabPoolOptions:
+  - prefab: {fileID: 465202, guid: 70d7716542db1ba4cbc6d02de869e4cc, type: 2}
+    preloadAmount: 1
+    preloadTime: 0
+    preloadFrames: 2
+    preloadDelay: 0
+    limitInstances: 0
+    limitAmount: 100
+    limitFIFO: 0
+    cullDespawned: 0
+    cullAbove: 50
+    cullDelay: 60
+    cullMaxPerPass: 5
+    _logMessages: 0
+    spawnPool: {fileID: 0}
+  - prefab: {fileID: 400002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
+    preloadAmount: 50
+    preloadTime: 0
+    preloadFrames: 2
+    preloadDelay: 0
+    limitInstances: 0
+    limitAmount: 50
+    limitFIFO: 1
+    cullDespawned: 0
+    cullAbove: 50
+    cullDelay: 60
+    cullMaxPerPass: 5
+    _logMessages: 0
+    spawnPool: {fileID: 0}
+  - prefab: {fileID: 400004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
+    preloadAmount: 2
+    preloadTime: 0
+    preloadFrames: 2
+    preloadDelay: 0
+    limitInstances: 1
+    limitAmount: 2
+    limitFIFO: 1
+    cullDespawned: 0
+    cullAbove: 50
+    cullDelay: 60
+    cullMaxPerPass: 5
+    _logMessages: 0
+    spawnPool: {fileID: 0}
+  - prefab: {fileID: 400000, guid: 9694c3cc13da4744ca0fb5a89a8e759c, type: 2}
+    preloadAmount: 10
+    preloadTime: 0
+    preloadFrames: 2
+    preloadDelay: 0
+    limitInstances: 0
+    limitAmount: 100
+    limitFIFO: 0
+    cullDespawned: 0
+    cullAbove: 50
+    cullDelay: 60
+    cullMaxPerPass: 5
+    _logMessages: 0
+    spawnPool: {fileID: 0}
+  - prefab: {fileID: 400000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
+    preloadAmount: 2
+    preloadTime: 0
+    preloadFrames: 2
+    preloadDelay: 0
+    limitInstances: 0
+    limitAmount: 100
+    limitFIFO: 0
+    cullDespawned: 0
+    cullAbove: 50
+    cullDelay: 60
+    cullMaxPerPass: 5
+    _logMessages: 0
+    spawnPool: {fileID: 0}
+  - prefab: {fileID: 400000, guid: f7fda6822cd7b2743a4f44a261c6f07e, type: 2}
+    preloadAmount: 50
+    preloadTime: 0
+    preloadFrames: 2
+    preloadDelay: 0
+    limitInstances: 0
+    limitAmount: 100
+    limitFIFO: 0
+    cullDespawned: 0
+    cullAbove: 50
+    cullDelay: 60
+    cullMaxPerPass: 5
+    _logMessages: 0
+    spawnPool: {fileID: 0}
+  maxParticleDespawnTime: 300
 --- !u!1 &326998733
 GameObject:
   m_ObjectHideFlags: 0
@@ -17873,50 +18053,6 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: f4a23cec399fa7045aa83d1db18e9378, type: 2}
   mSpriteName: VignetteMask 1
   mFillCenter: 1
---- !u!1001 &342882332
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-      propertyPath: m_RootOrder
-      value: 9
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-  m_RootGameObject: {fileID: 980878544}
-  m_IsPrefabParent: 0
-  m_IsExploded: 1
 --- !u!1 &345206466
 GameObject:
   m_ObjectHideFlags: 0
@@ -22220,7 +22356,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 2800000, guid: e24044e73b677214faafd0571d776ed6, type: 3}
   mAlpha: 1
   mClipping: 4
@@ -32207,7 +32343,7 @@ MonoBehaviour:
   anchorOffset: 1
   softBorderPadding: 0
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -39926,6 +40062,82 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 861580859}
   m_Mesh: {fileID: 4300000, guid: 3c0e67ad8dbdfd04ca50eb9fa05dafad, type: 3}
+--- !u!1 &866263307
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 120768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+  m_PrefabInternal: {fileID: 106706168}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 866263309}
+  - 114: {fileID: 866263308}
+  m_Layer: 1
+  m_Name: ParticlePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &866263308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 11420768, guid: c5e89e960bb8c4972801a288c8c99fce,
+    type: 2}
+  m_PrefabInternal: {fileID: 106706168}
+  m_GameObject: {fileID: 866263307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59dfbc0f4f3a98b4ebf4ad40fc3f43aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolName: Particles
+  matchPoolScale: 0
+  matchPoolLayer: 0
+  dontReparent: 0
+  _dontDestroyOnLoad: 1
+  logMessages: 1
+  _perPrefabPoolOptions:
+  - prefab: {fileID: 400012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
+    preloadAmount: 20
+    preloadTime: 0
+    preloadFrames: 2
+    preloadDelay: 0
+    limitInstances: 1
+    limitAmount: 20
+    limitFIFO: 1
+    cullDespawned: 0
+    cullAbove: 50
+    cullDelay: 60
+    cullMaxPerPass: 5
+    _logMessages: 1
+    spawnPool: {fileID: 0}
+  - prefab: {fileID: 400004, guid: 20747cbb589a10f418c2fd1d67647962, type: 2}
+    preloadAmount: 50
+    preloadTime: 0
+    preloadFrames: 2
+    preloadDelay: 0
+    limitInstances: 1
+    limitAmount: 50
+    limitFIFO: 1
+    cullDespawned: 0
+    cullAbove: 50
+    cullDelay: 60
+    cullMaxPerPass: 5
+    _logMessages: 1
+    spawnPool: {fileID: 0}
+  maxParticleDespawnTime: 300
+--- !u!4 &866263309
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
+  m_PrefabInternal: {fileID: 106706168}
+  m_GameObject: {fileID: 866263307}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
 --- !u!1 &874826857
 GameObject:
   m_ObjectHideFlags: 0
@@ -43020,7 +43232,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3019
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -46573,7 +46785,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3027
+  startingRenderQueue: 3028
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -46876,109 +47088,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 974848145}
   m_Mesh: {fileID: 4300000, guid: e2dbb5b944c4057449e331c3f6bf48eb, type: 3}
---- !u!1 &980878544
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 120768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-  m_PrefabInternal: {fileID: 342882332}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 980878546}
-  - 114: {fileID: 980878545}
-  m_Layer: 1
-  m_Name: ParticlePool
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &980878545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11420768, guid: c5e89e960bb8c4972801a288c8c99fce,
-    type: 2}
-  m_PrefabInternal: {fileID: 342882332}
-  m_GameObject: {fileID: 980878544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59dfbc0f4f3a98b4ebf4ad40fc3f43aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  poolName: Particles
-  matchPoolScale: 0
-  matchPoolLayer: 0
-  dontReparent: 0
-  _dontDestroyOnLoad: 1
-  logMessages: 1
-  _perPrefabPoolOptions:
-  - prefab: {fileID: 400012, guid: e7bea06e7619c354d9f0d6db09fd995f, type: 2}
-    preloadAmount: 5
-    preloadTime: 0
-    preloadFrames: 2
-    preloadDelay: 0
-    limitInstances: 1
-    limitAmount: 20
-    limitFIFO: 1
-    cullDespawned: 0
-    cullAbove: 50
-    cullDelay: 60
-    cullMaxPerPass: 5
-    _logMessages: 1
-    spawnPool: {fileID: 0}
-  - prefab: {fileID: 400004, guid: 20747cbb589a10f418c2fd1d67647962, type: 2}
-    preloadAmount: 50
-    preloadTime: 0
-    preloadFrames: 2
-    preloadDelay: 0
-    limitInstances: 1
-    limitAmount: 50
-    limitFIFO: 1
-    cullDespawned: 0
-    cullAbove: 50
-    cullDelay: 60
-    cullMaxPerPass: 5
-    _logMessages: 1
-    spawnPool: {fileID: 0}
-  maxParticleDespawnTime: 300
---- !u!4 &980878546
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 420768, guid: c5e89e960bb8c4972801a288c8c99fce, type: 2}
-  m_PrefabInternal: {fileID: 342882332}
-  m_GameObject: {fileID: 980878544}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
---- !u!1 &986523893
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 986523894}
-  m_Layer: 0
-  m_Name: SelectedObjects
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &986523894
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 986523893}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
 --- !u!1 &988119107
 GameObject:
   m_ObjectHideFlags: 0
@@ -64212,7 +64321,7 @@ Prefab:
     - target: {fileID: 11400000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: mainTranformSelectedObjects
       value: 
-      objectReference: {fileID: 986523894}
+      objectReference: {fileID: 326013794}
     - target: {fileID: 11400000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
       propertyPath: trnsOptionsMenu
       value: 
@@ -65019,6 +65128,10 @@ Prefab:
       propertyPath: ChallengesToWin.Array.data[0].specificStat
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 11400026, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
+      propertyPath: selectionBoxParentRef
+      value: 
+      objectReference: {fileID: 1421802881}
     m_RemovedComponents:
     - {fileID: 11457164, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 91bda7b9880381042a66f16ab314140d, type: 2}
@@ -74971,7 +75084,7 @@ MonoBehaviour:
     type: 2}
   pref_selectedObject: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
   uiRoot: {fileID: 832481681}
-  mainTranformSelectedObjects: {fileID: 986523894}
+  mainTranformSelectedObjects: {fileID: 326013794}
   trnsOptionsMenu: {fileID: 406516406}
   trnsPanelInfoBox: {fileID: 313903784}
   trnsPanelUnitStats: {fileID: 1508354554}
@@ -79279,7 +79392,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
 --- !u!114 &1551873803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81620,7 +81733,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -86602,7 +86715,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -86824,7 +86937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groupButtonsObj: {fileID: 1154646290}
-  selectionBoxParentRef: {fileID: 0}
+  selectionBoxParentRef: {fileID: 1421802881}
 --- !u!1001 &1666962135
 Prefab:
   m_ObjectHideFlags: 0
@@ -90436,6 +90549,98 @@ MonoBehaviour:
   objectiveLog: {fileID: 903037527}
   objSubpanel: {fileID: 504428188}
   objectiveRow: {fileID: 100016, guid: 8ddc659078696134ba3dbf1fcba7838c, type: 2}
+--- !u!1001 &1782815245
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 156210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: m_Name
+      value: SelectedObjects
+      objectReference: {fileID: 0}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _dontDestroyOnLoad
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[4].prefab
+      value: 
+      objectReference: {fileID: 400000, guid: fdc4a153b704e6a4f883ad817611a8fb, type: 2}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[4].preloadAmount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[5].prefab
+      value: 
+      objectReference: {fileID: 400000, guid: f7fda6822cd7b2743a4f44a261c6f07e, type: 2}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[5].preloadAmount
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[5].preloadFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[5].limitAmount
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[5].cullAbove
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[5].cullDelay
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 11456210, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+      propertyPath: _perPrefabPoolOptions.Array.data[5].cullMaxPerPass
+      value: 5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 9033a6e4054620c47afb6ea5d8e1a9d0, type: 2}
+  m_RootGameObject: {fileID: 326013793}
+  m_IsPrefabParent: 0
+  m_IsExploded: 1
 --- !u!1 &1787910040
 GameObject:
   m_ObjectHideFlags: 0
@@ -97434,7 +97639,7 @@ Transform:
   - {fileID: 1617151532}
   - {fileID: 685030325}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
 --- !u!20 &1932447295
 Camera:
   m_ObjectHideFlags: 0
@@ -100772,7 +100977,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3022
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -101193,7 +101398,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
 --- !u!114 &1999008878
 MonoBehaviour:
   m_ObjectHideFlags: 0
