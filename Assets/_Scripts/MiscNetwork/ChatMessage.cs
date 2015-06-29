@@ -24,78 +24,78 @@ public class ChatMessage : Photon.MonoBehaviour
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
     }
 	
-    void OnGUI()
-    {
-//		Debug.Log ("Screen.width/1280: " + (Screen.width/1280) + " - 1280/Screen.width: " + (1280/Screen.width));
-        GUILayout.BeginArea(new Rect(0, (Screen.height / 2) - (chatHeight / 2), chatWidth * ((float)Screen.width/1280f), chatHeight));
-        
-        //Show scroll list of chat messages
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
-        for (int i = messages.Count - 1; i >= 0; i--)
-        {
-			GUI.color = gameplayManager.GetColorTeam(teamIdMessage[i]);
-            GUILayout.Label(messages[i]);
-        }
-        GUILayout.EndScrollView();
-		
-		GUI.color = Color.white;
-		
-		if (enableChat)
-		{
-	        //Chat input
-			GUI.SetNextControlName ("ChatInput");
-	        chatInput = GUILayout.TextField(chatInput);
-			
-			if (!focusTextField)
-			{
-				GUI.FocusControl ("ChatInput");
-				focusTextField = true;
-			}
-			
-	        //Group target buttons
-	        GUILayout.BeginHorizontal();
-//	        GUILayout.Label("Send to:", GUILayout.Width(60));
-			
-//	        if (GUILayout.Button("Send", GUILayout.Height(17)))
-//				if (chatInput != "")
-//		            SendChat(PhotonTargets.All);
-			
-//	        foreach (PhotonPlayer player in PhotonNetwork.playerList)
+//    void OnGUI()
+//    {
+////		Debug.Log ("Screen.width/1280: " + (Screen.width/1280) + " - 1280/Screen.width: " + (1280/Screen.width));
+//        GUILayout.BeginArea(new Rect(0, (Screen.height / 2) - (chatHeight / 2), chatWidth * ((float)Screen.width/1280f), chatHeight));
+//        
+//        //Show scroll list of chat messages
+//        scrollPos = GUILayout.BeginScrollView(scrollPos);
+//        for (int i = messages.Count - 1; i >= 0; i--)
+//        {
+//			GUI.color = gameplayManager.GetColorTeam(teamIdMessage[i]);
+//            GUILayout.Label(messages[i]);
+//        }
+//        GUILayout.EndScrollView();
+//		
+//		GUI.color = Color.white;
+//		
+//		if (enableChat)
+//		{
+//	        //Chat input
+//			GUI.SetNextControlName ("ChatInput");
+//	        chatInput = GUILayout.TextField(chatInput);
+//			
+//			if (!focusTextField)
 //			{
-//	            if (GUILayout.Button("" + player, GUILayout.MaxWidth(100), GUILayout.Height(17)))
-//				{
-//					if (chatInput != "")
-//		                SendChat(player);
-//				}
+//				GUI.FocusControl ("ChatInput");
+//				focusTextField = true;
 //			}
-			
-			if (Event.current.keyCode == KeyCode.Return &&
-				Event.current.type == EventType.keyUp)
-			{
-				if (!activeTextField) 
-				{
-					activeTextField = true;
-				}
-				else
-				{
-					enableChat = focusTextField = false;
-					if (chatInput != "")
-			            SendChat(PhotonTargets.All);
-				}
-	        }
-			
-	        GUILayout.EndHorizontal();
-		}
-		else
-		{
-			if (Event.current.Equals (Event.KeyboardEvent ("return")))
-			{
-				enableChat = true;
-				activeTextField = false;
-	        }
-		}
-        GUILayout.EndArea();
-    }
+//			
+//	        //Group target buttons
+//	        GUILayout.BeginHorizontal();
+////	        GUILayout.Label("Send to:", GUILayout.Width(60));
+//			
+////	        if (GUILayout.Button("Send", GUILayout.Height(17)))
+////				if (chatInput != "")
+////		            SendChat(PhotonTargets.All);
+//			
+////	        foreach (PhotonPlayer player in PhotonNetwork.playerList)
+////			{
+////	            if (GUILayout.Button("" + player, GUILayout.MaxWidth(100), GUILayout.Height(17)))
+////				{
+////					if (chatInput != "")
+////		                SendChat(player);
+////				}
+////			}
+//			
+//			if (Event.current.keyCode == KeyCode.Return &&
+//				Event.current.type == EventType.keyUp)
+//			{
+//				if (!activeTextField) 
+//				{
+//					activeTextField = true;
+//				}
+//				else
+//				{
+//					enableChat = focusTextField = false;
+//					if (chatInput != "")
+//			            SendChat(PhotonTargets.All);
+//				}
+//	        }
+//			
+//	        GUILayout.EndHorizontal();
+//		}
+//		else
+//		{
+//			if (Event.current.Equals (Event.KeyboardEvent ("return")))
+//			{
+//				enableChat = true;
+//				activeTextField = false;
+//	        }
+//		}
+//        GUILayout.EndArea();
+//    }
 
     public static void AddMessage(string text, int teamId)
     {

@@ -62,7 +62,6 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		return null;
 	}
 	private Stack<ButtonStatus> stackButtonToCreate;
-	private List<UIGrid> gridsToReposition = new List<UIGrid>();
 	public GridDefinition[] grids;
 	public GridDefinition GetGrid(string name)
 	{
@@ -109,9 +108,10 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	private Transform oldFeedback;
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
-	private FactoryBase factoryBase;
+	private FactoryBase factoryBase;	
+	public bool isClearing = false;
 	private bool _isDestroying;
-	private bool IsDestroying {
+	public bool IsDestroying {
 		get	{
 			if(_isDestroying)
 			{
@@ -174,11 +174,11 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		IsDestroying = false;
 		infoUpgrade = trnsPanelInfoBox.FindChild ("Info Upgrade");
 		infoFactory = trnsPanelInfoBox.FindChild ("Info Factory");
-		infoUnit = trnsPanelInfoBox.FindChild ("Info Unit");
-		infoQuali = trnsPanelInfoBox.FindChild ("Info Qualities");
-		infoIcon  = trnsPanelInfoBox.FindChild ("Info Icon");
-		infoReq = trnsPanelInfoBox.FindChild ("Info Require");
-		nameLabel = infoQuali.FindChild ("name-label").GetComponent<UILabel> ();
+		infoUnit 	= trnsPanelInfoBox.FindChild ("Info Unit");
+		infoQuali 	= trnsPanelInfoBox.FindChild ("Info Qualities");
+		infoIcon  	= trnsPanelInfoBox.FindChild ("Info Icon");
+		infoReq 	= trnsPanelInfoBox.FindChild ("Info Require");
+		nameLabel 	= infoQuali.FindChild ("name-label").GetComponent<UILabel> ();
 //		spriteFactory = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 //		spriteUnit	  = infoIcon.FindChild ("sprite-unit").GetComponent<UISprite> ();
 	}
@@ -283,7 +283,8 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	                                            DefaultCallbackButton.OnDragDelegate onDrag = null,
 	                                            DefaultCallbackButton.OnDropDelegate onDrop = null)
 	{
-		ht = new Hashtable();
+		if (ht == null)
+			ht = new Hashtable();
 		
 		if(!string.IsNullOrEmpty(textureName))
 			ht["textureName"] = textureName;
@@ -502,7 +503,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void DestroyOptionsBtns ()
 	{
-		IsDestroying = false;
+		IsDestroying = true;
 
 		foreach (Transform child in trnsOptionsMenu)
 		{			
@@ -510,10 +511,28 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		}
 	}
 
+	public bool isDestroyingQueue()
+	{
+		MessageQueue mq = messageInfoManager.GetQueue("Factory");
+		if(mq.uiGrid.transform.childCount != 0 || isClearing)
+		{
+			foreach(Transform t in mq.uiGrid.transform)
+			{
+				DespawnBtn(t);
+			}
+			
+			isClearing = false;
+			return true;
+		}
+
+		else return false;
+		
+
+	}
+
 	public void DestroyInspector (string type)
 	{
-		IsDestroying = false;
-
+		isClearing= true;
 		if (type.ToLower ().Equals ("factory"))
 			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
 		else if (type.ToLower ().Equals ("unit"))
@@ -686,7 +705,6 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	public void DespawnBtn(Transform btnTrns)
 	{
 		btnTrns.parent = PoolManager.Pools["Buttons"].group;
-		btnTrns.name = "alreadyUsed" + (int)Time.time;
 		PoolManager.Pools["Buttons"].Despawn (btnTrns);		
 	}
 	#endregion

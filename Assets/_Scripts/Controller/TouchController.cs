@@ -250,9 +250,18 @@ public class TouchController : MonoBehaviour
 	
 	public Rect GetDragRect ()
 	{
-		return new Rect(FirstPosition.x - CurrentPosition.x, FirstPosition.y - CurrentPosition.y,
+		return new Rect(Mathf.Min(FirstPosition.x, CurrentPosition.x),  Mathf.Min(FirstPosition.y, CurrentPosition.y),
 		                Mathf.Abs(FirstPosition.x - CurrentPosition.x), Mathf.Abs(FirstPosition.y - CurrentPosition.y));
 	}
+
+	public Vector4 GetUIRect()
+	{
+		return new Vector4(Mathf.Min(FirstPosition.x, CurrentPosition.x) + ((Mathf.Max(FirstPosition.x, CurrentPosition.x) - Mathf.Min(FirstPosition.x, CurrentPosition.x))/2),
+		                   Screen.height -(Mathf.Min(FirstPosition.y, CurrentPosition.y) + ((Mathf.Max(FirstPosition.y, CurrentPosition.y) - Mathf.Min(FirstPosition.y, CurrentPosition.y))/2)),
+		                   Mathf.Abs(FirstPosition.x - CurrentPosition.x),
+		                   Mathf.Abs(FirstPosition.y - CurrentPosition.y));
+	}
+
 	
 	public Bounds GetTouchBounds()
 	{
@@ -263,7 +272,7 @@ public class TouchController : MonoBehaviour
 		windowSize.y = Mathf.Abs(first.y - final.y);
 		windowSize.z = Mathf.Abs(first.z - final.z);
 		
-		return new Bounds((GetFirstPoint+GetFinalPoint)/2, windowSize + (Vector3.up * 999999f) );
+		return new Bounds((first+final)/2, windowSize + (Vector3.up * 999999f) );
 	}
 	
 	void VerifyTouchID ()

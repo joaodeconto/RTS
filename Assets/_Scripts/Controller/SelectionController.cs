@@ -90,7 +90,7 @@ public class SelectionController : MonoBehaviour
 				selectBoxSprite = selectionBox.GetComponent<UISprite>();
 				hasSelectionBox = true;
 			}
-			selectBoxSprite.SetRect(touchController.GetDragRect().x,touchController.GetDragRect().y,touchController.GetDragRect().width,touchController.GetDragRect().height);
+			selectBoxSprite.SetRect(touchController.GetUIRect().x, touchController.GetUIRect().y, touchController.GetUIRect().z, touchController.GetUIRect().w);
 
 		}
 		else if (hasSelectionBox)
@@ -754,15 +754,16 @@ public class SelectionController : MonoBehaviour
 		}
 #endif
 	}
-	
-	float tempTime = -1f;
+
 	
 	public void SelectGroup (int numberOfGroup)
 	{
 		bool hasGroup = statsController.SelectGroup (numberOfGroup);
 
 		if (!hasGroup) return;
+
 		
+//		float tempTime = -1f;
 //		if (Time.time - tempTime < 1f)
 //		{
 //			Vector3 getPosition = troopController.selectedSoldiers[0].transform.position - Vector3.forward * touchController.mainCamera.orthographicSize;

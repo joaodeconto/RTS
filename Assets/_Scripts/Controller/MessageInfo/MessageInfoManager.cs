@@ -12,8 +12,6 @@ public class MessageInfoManager : MonoBehaviour
 		public int messageCap;
 	}
 
-
-
 	[System.Serializable]
 	public class MessageQueueAttributes
 	{
@@ -28,16 +26,11 @@ public class MessageInfoManager : MonoBehaviour
 		public int maxItems;
 		public bool IsTemporizedQueue;
 		public TemporizedMessageQueueAttributes temporizedQueueAttributes;
-	
-
 	}
 
 	public GameObject pref_button;
-
 	public MessageQueueAttributes[] messageQueuesAttributes;
-
 	private MessageQueue[] messageQueues;
-
 	private bool wasInitialized;
 
 	public MessageInfoManager Init()

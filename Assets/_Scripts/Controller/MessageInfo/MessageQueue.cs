@@ -60,9 +60,9 @@ public abstract class MessageQueue : MonoBehaviour
 	public float LabelSize { get; protected set; }
 
 	protected GameObject Pref_button;
-	protected UIGrid uiGrid;
+	public UIGrid uiGrid;
 
-	protected float nQueueItems;
+	protected int nQueueItems;
 
 	public virtual void AddMessageInfo( string buttonName,
 										Hashtable ht,
@@ -83,9 +83,7 @@ public abstract class MessageQueue : MonoBehaviour
 		PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();		
 		if ( pcb == null )
 		{
-			pcb = ht.ContainsKey ("observableHealth") ? button.gameObject.AddComponent<HealthObserverButton> ()
-				: button.gameObject.AddComponent<PersonalizedCallbackButton> ();
-
+			pcb = button.gameObject.AddComponent<PersonalizedCallbackButton>();
 			pcb.Init(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 		}
 		
@@ -96,21 +94,14 @@ public abstract class MessageQueue : MonoBehaviour
 			buttonName = RegexClone (buttonName);			
 			if (CheckExistMessageInfo (buttonName)) return;			
 			button.name  = buttonName;
-//			button.layer = gameObject.layer;
-			button.transform.localPosition = Vector3.up * 10000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-//			button.transform.FindChild("Foreground"). = new Vector3(CellSize.x, CellSize.y, 1);
+			button.transform.localPosition = Vector3.up * 10000;
 
 			pcb.ChangeParams(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 		}
 		else
 		{			
 			button.name  = buttonName;
-//			button.layer = gameObject.layer;
-			button.transform.localPosition = Vector3.up * 100000;//Coloca em um lugar em distante para somente aparecer no reposition grid
-//			button.transform.FindChild("Foreground").localScale = new Vector3(CellSize.x, CellSize.y, 1);
-	
-			//button.transform.localPosition = Vector3.zero;
-	
+			button.transform.localPosition = Vector3.up * 100000;
 			pcb.ChangeParams(ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 		}
 		
@@ -120,13 +111,12 @@ public abstract class MessageQueue : MonoBehaviour
 	public void DequeueMessageInfo()
 	{
 		if(uiGrid.transform.childCount == 0)	return;
-
 		--nQueueItems;
 		int childIndex = uiGrid.transform.childCount - 1;
 		Transform goMessageInfo = uiGrid.transform.GetChild(childIndex);
 		HealthObserverButton hbo = goMessageInfo.GetComponent<HealthObserverButton> ();
 		if (hbo != null) hbo.StopToObserve ();
-		DespawnBtn(goMessageInfo);	
+		DespawnBtn(goMessageInfo);		
 		Invoke("RepositionGrid", 0.1f);
 	}
 
@@ -159,11 +149,11 @@ public abstract class MessageQueue : MonoBehaviour
 	}
 	
 	public void Clear()
-	{
+	{		
 		nQueueItems = 0;
 
 		foreach (Transform child in uiGrid.transform)
-		{
+		{			
 			DespawnBtn(child);	
 		}
 	}
@@ -186,13 +176,17 @@ public abstract class MessageQueue : MonoBehaviour
 
 	protected void RepositionGrid()
 	{
-		if(uiGrid.transform.childCount != nQueueItems)
-			Invoke("RepositionGrid", 0.1f);
-		else
-		{
+//		if(uiGrid.transform.childCount != nQueueItems)
+//		{
+//			Invoke("RepositionGrid", 0.1f);
+//			Debug.Log("reposition nQueue != childcount");
+//		}
+//		else
+//		{
 			uiGrid.repositionNow = true;
-			uiGrid.Reposition();
-		}
+			uiGrid.Reposition();			
+//			Debug.Log("reposition else");
+//		}
 	}
 	
 	protected void ChangeToGroupMessageInfo ()

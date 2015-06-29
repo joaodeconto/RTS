@@ -52,7 +52,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public class RendererTeamSubstanceColor
 	{
 		public Transform subMesh;
-		private static Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
 
 		//Caso esse metodo for modificado eh necessario modificar no Rallypoint tbm
 		public void SetColorInMaterial (Transform transform, int teamID)

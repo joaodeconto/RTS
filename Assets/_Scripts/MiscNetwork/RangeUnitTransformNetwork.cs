@@ -28,7 +28,6 @@ public class RangeUnitTransformNetwork : Photon.MonoBehaviour
 		if (PhotonNetwork.offlineMode)
 		{
 			enabled = false;
-			Debug.Log("offline???  " + enabled);
 		}
 		else
 		{

@@ -83,8 +83,8 @@ public class FactoryBase : IStats, IDeathObservable
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;	
 	protected bool isInvokingSlider{get; set;}
-	private int queueTicket			 = 0;
-	private int queueCounter	 	 = 0;
+	public int queueTicket			 = 0;
+	public int queueCounter	 	 = 0;
 	private int checkPopCouter	 	 = 0;
 	private bool factoryInitialized = false;
 	public bool wasVisible = false;
@@ -208,6 +208,7 @@ public class FactoryBase : IStats, IDeathObservable
 							eventController.AddEvent("need more houses", hudController.houseFeedback);
 						}
 						needHouse = true;
+						buildingSlider.gameObject.SetActive(true);
 						return ;
 					}
 					
@@ -236,30 +237,29 @@ public class FactoryBase : IStats, IDeathObservable
 			if(!Selected && isInvokingSlider)
 			{
 				CancelInvokeSlider();
-			}
+			}	
 
 			if (timer > timeToCreate)
 			{
 				CancelInvokeSlider();
+				invokeQueue.Remove(queueCounter);				
+				queueCounter++;
 
 				if (unitToCreate != null) 
 				{
 					InvokeUnit (unitToCreate);
-					hudController.DestroyResourceBar(transform);
 					unitToCreate = null;
 				}
 
-				if (upgradeToCreate != null) 
+				else if (upgradeToCreate != null) 
 				{
 					InvokeUpgrade (upgradeToCreate);
-					hudController.DestroyResourceBar(transform);
 					upgradeToCreate = null;
 				}
 
-				invokeQueue.Remove(queueCounter);
+
 				inUpgrade = false;
 				timer = 0;
-				queueCounter++;
 			}
 			else
 			{
@@ -352,7 +352,7 @@ public class FactoryBase : IStats, IDeathObservable
 		
 		if (Selected)
 		{
-			hudController.DestroyInspector ("factory");
+			hudController.DestroyInspector ("Factory");
 			hudController.DestroyOptionsBtns();
 			Deselect ();
 		}		
@@ -688,12 +688,14 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			CreateUnitOption(uf);
 		}
-	}
-
-	public void RestoreDequeueMenu()
-	{
-		hudController.DestroyInspector("factory");
-		keys.Clear();
+	}	
+	
+	IEnumerator AddQueueButtons()
+	{	
+		while (hudController.isDestroyingQueue())
+		{
+			yield return new WaitForSeconds(0.01f);
+		}
 
 		foreach (int key in invokeQueue.Keys)
 		{
@@ -723,18 +725,27 @@ public class FactoryBase : IStats, IDeathObservable
 																else if (upgrade != null) DequeueUpgrade(hud_ht);
 																RestoreDequeueMenu();
 																
-															});			
-			
+															});		
+					
 		}
+	}	
+	
+	public void RestoreDequeueMenu()
+	{
+		buildingSlider.gameObject.SetActive(true);
+		hudController.DestroyInspector("Factory");
+		keys.Clear();		
+		StartCoroutine("AddQueueButtons");
 	}		
 		#endregion
 				
 		#region FactoryQueue
 		
-		public void EnqueueUpgradeToCreate (Upgrade upgrade)
+	public void EnqueueUpgradeToCreate (Upgrade upgrade)
 	{
 			gameplayManager.resources.UseResources (upgrade.costOfResources);
-			invokeQueue.Add(queueTicket, upgrade);			Hashtable ht = new Hashtable();
+			invokeQueue.Add(queueTicket, upgrade);
+			Hashtable ht = new Hashtable();
 			ht["buttonType"] = upgrade;
 			ht["name"] = "button-" + queueTicket;
 			ht["queueSpot"] = queueTicket;
@@ -886,8 +897,9 @@ public class FactoryBase : IStats, IDeathObservable
 		if (Selected)
 		{
 			hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
-			Invoke("RestoreDequeueMenu",0);
-			Invoke("RestoreOptionsMenu",0);		
+
+			RestoreDequeueMenu();
+			RestoreOptionsMenu();		
 		}
 		if (!PhotonNetwork.offlineMode)
 		{
@@ -917,8 +929,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{	
 		if (Selected)
 		{
-			hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
-			Invoke("RestoreDequeueMenu",0);
+			RestoreDequeueMenu();
 		}
 		eventController.AddEvent("create unit", transform.position, unit.category, unit.guiTextureName);	
 

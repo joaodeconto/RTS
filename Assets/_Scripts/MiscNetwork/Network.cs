@@ -34,50 +34,50 @@ public class Network : Photon.MonoBehaviour
 		CurrentGUI = MainMenu;
 	}
 
-	void OnGUI ()
-	{
-		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
-        {
-			PhotonNetwork.ConnectToMaster ( 	PhotonNetwork.PhotonServerSettings.ServerAddress,
-												PhotonNetwork.PhotonServerSettings.ServerPort,
-												PhotonNetwork.PhotonServerSettings.AppID,
-												ConfigurationData.VERSION);
-		}
-
-		if (automaticTestConnect)
-		{
-			if (PhotonNetwork.connectionStateDetailed == PeerState.JoinedLobby)
-			{
-				playerName = "Tester";
-
-				CreateTestRoom ();
-			}
-			else if (PhotonNetwork.connectionStateDetailed == PeerState.ConnectingToMasterserver)
-			{
-				CurrentGUI = CheckingStatusGUI;
-			}
-		}
-
-		if (PhotonNetwork.room == null && !checkingStatus)
-		{
-			bool error = false;
-
-			// FIXME só uma gambizinha pra rodar hj
-			GUILayout.Label ("Player name:");
-			playerName = GUILayout.TextField (playerName, 12, GUILayout.Width(200f));
-			if (string.IsNullOrEmpty(playerName))
-			{
-				ErrorMessage ("Name is empty");
-
-				error = true;
-			}
-
-			if (error) return;
-
-		}
-
-		CurrentGUI ();
-	}
+//	void OnGUI ()
+//	{
+//		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
+//        {
+//			PhotonNetwork.ConnectToMaster ( 	PhotonNetwork.PhotonServerSettings.ServerAddress,
+//												PhotonNetwork.PhotonServerSettings.ServerPort,
+//												PhotonNetwork.PhotonServerSettings.AppID,
+//												ConfigurationData.VERSION);
+//		}
+//
+//		if (automaticTestConnect)
+//		{
+//			if (PhotonNetwork.connectionStateDetailed == PeerState.JoinedLobby)
+//			{
+//				playerName = "Tester";
+//
+//				CreateTestRoom ();
+//			}
+//			else if (PhotonNetwork.connectionStateDetailed == PeerState.ConnectingToMasterserver)
+//			{
+//				CurrentGUI = CheckingStatusGUI;
+//			}
+//		}
+//
+//		if (PhotonNetwork.room == null && !checkingStatus)
+//		{
+//			bool error = false;
+//
+//			// FIXME só uma gambizinha pra rodar hj
+//			GUILayout.Label ("Player name:");
+//			playerName = GUILayout.TextField (playerName, 12, GUILayout.Width(200f));
+//			if (string.IsNullOrEmpty(playerName))
+//			{
+//				ErrorMessage ("Name is empty");
+//
+//				error = true;
+//			}
+//
+//			if (error) return;
+//
+//		}
+//
+//		CurrentGUI ();
+//	}
 
 	// Métodos de interface para GUI
 	void MainMenu ()

@@ -202,7 +202,6 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void TribeInstiate ()
 	{
-		Debug.Log ("Tribe Instantiate");
 		foreach (Transform trns in teams[0].initialPosition)
 		{
 			if(trns.gameObject.activeSelf == true)

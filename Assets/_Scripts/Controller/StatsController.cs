@@ -419,8 +419,6 @@ public class StatsController : MonoBehaviour
 		}
 		if (hudController.trnsOptionsMenu.childCount > 0 || hudController.trnsPanelUnitStats.childCount > 0)
 		{
-			Debug.LogError("sobrou child option");
-			hudController.DestroyInspector ("all");
 			hudController.DestroyOptionsBtns();
 		}
 
