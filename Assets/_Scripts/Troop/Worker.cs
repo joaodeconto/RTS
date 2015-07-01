@@ -156,9 +156,7 @@ public class Worker : Unit
 				}
 				else if (resource != lastResource || resource == null)
 				{
-					resourceWorker[lastResourceId].extractingObject.SetActive (false);
-					lastResource.RemoveWorker (this);
-					workerState = WorkerState.Idle;
+					WorkerReset();					
 					return;
 				}
 				else

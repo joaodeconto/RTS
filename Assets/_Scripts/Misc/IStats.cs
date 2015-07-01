@@ -275,8 +275,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public void ShowHealth()
 	{
 		firstDamage = true;
-		if(IsVisible)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
-
+		if(IsVisible && !WasRemoved)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
 	}
 
 	public void ReceiveAttack (int Damage)
@@ -342,12 +341,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	}
 	
 	void SetColorTeam ()
-	{
-		//		foreach (RendererTeamColor rtc in rendererTeamColor)
-		//		{
-		//			rtc.SetColorInMaterial (transform, team);
-		//		}
-		
+	{		
 		foreach (RendererTeamSubstanceColor rtsc in rendererTeamSubstanceColor)
 		{
 			rtsc.SetColorInMaterial (transform, team);
@@ -361,7 +355,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public virtual void InstantiatParticleDamage ()
 	{
 		Transform newParticleDamage;
-
 
 		if (transformParticleDamageReference != null)
 		{

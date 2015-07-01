@@ -82,28 +82,10 @@ public class SelectionController : MonoBehaviour
 	
 	bool WebPlayerAndPcSelection()
 	{
-		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
-		{
-			if(!hasSelectionBox)
-			{
-			    selectionBox = PoolManager.Pools["Buttons"].Spawn("SelectionBox", selectionBoxParentRef);				
-				selectBoxSprite = selectionBox.GetComponent<UISprite>();
-				hasSelectionBox = true;
-			}
-			selectBoxSprite.SetRect(touchController.GetUIRect().x, touchController.GetUIRect().y, touchController.GetUIRect().z, touchController.GetUIRect().w);
-
-		}
-		else if (hasSelectionBox)
-		{
-			selectionBox.parent = PoolManager.Pools["Buttons"].group;
-			PoolManager.Pools["Buttons"].Despawn(selectionBox);
-			hasSelectionBox = false;
-			return false;
-		}
-
+		//EDITOR ou PC
 		if ((touchController.touchType != TouchController.TouchType.Ended) ||
 		    (touchController.idTouch != TouchController.IdTouch.Id0))
-			return false;
+			return true;
 		
 		bool leftShift = Input.GetKey (KeyCode.LeftShift);
 		bool leftCtrl = Input.GetKey (KeyCode.LeftControl);
@@ -415,25 +397,6 @@ public class SelectionController : MonoBehaviour
 
 	bool AndroidAndIphoneSelection()
 	{
-		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
-		{
-			if(!hasSelectionBox)
-			{
-				selectionBox = PoolManager.Pools["Buttons"].Spawn("SelectionBox", selectionBoxParentRef);				
-				selectBoxSprite = selectionBox.GetComponent<UISprite>();
-				hasSelectionBox = true;
-			}
-			selectBoxSprite.SetRect(touchController.GetDragRect().x,touchController.GetDragRect().y,touchController.GetDragRect().width,touchController.GetDragRect().height);
-			
-		}
-		else if (hasSelectionBox)
-		{
-			selectionBox.parent = PoolManager.Pools["Buttons"].group;
-			PoolManager.Pools["Buttons"].Despawn(selectionBox);
-			hasSelectionBox = false;
-			return false;
-		}
-
 		if (touchController.touchType != TouchController.TouchType.Ended) //return
 			return true;
 
@@ -775,13 +738,13 @@ public class SelectionController : MonoBehaviour
 //		tempTime = Time.time;
 	}
 
-//	void OnGUI ()
-//	{
-//		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
-//		{
-//			GUI.Box (touchController.GetDragRect(), "");
-//		}
-//	}
+	void OnGUI ()
+	{
+		if (touchController.DragOn && touchController.idTouch == TouchController.IdTouch.Id0)
+		{
+			GUI.Box (touchController.GetDragRect (), "");
+		}
+	}
 
 	Plane[] CalculateRect (Rect r)
 	{

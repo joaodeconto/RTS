@@ -208,7 +208,7 @@ public class FactoryBase : IStats, IDeathObservable
 							eventController.AddEvent("need more houses", hudController.houseFeedback);
 						}
 						needHouse = true;
-						buildingSlider.gameObject.SetActive(true);
+						if(Selected) buildingSlider.gameObject.SetActive(true);
 						return ;
 					}
 					
