@@ -128,7 +128,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 				if (goHit.name == "Resource" || goHit.tag == "Obelisk")
 				{
 					observedResource = goHit.GetComponent<Resource>();
-					hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.transform.localPosition,
+					hudController.CreateFeedback (HUDController.Feedbacks.Move,hit.transform.position,
 					                              1f,
 					                              gameplayManager.GetColorTeam ());
 				}

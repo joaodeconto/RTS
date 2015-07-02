@@ -3682,13 +3682,13 @@ MonoBehaviour:
   transformParticleDamageReference: {fileID: 400008}
   playerUnit: 0
   category: Brachiosaur
-  subCategory: 
+  subCategory: Dino
   description: 
-  requisites: 
+  requisites: Lizard Haras
   group: -1
   costOfResources:
-    m_mana: 0
-    m_rocks: 300
+    m_mana: 50
+    m_rocks: 250
   model: {fileID: 164942}
   bonusDefense: 0
   bonusProjectile: 0
@@ -3700,7 +3700,7 @@ MonoBehaviour:
   attackRange: 3
   attackDuration: 1
   numberOfUnits: 5
-  guiTextureName: worker
+  guiTextureName: brachio
   unitAnimation:
     Idle: {fileID: 7400008, guid: 457b10dd92388be48930c744824fb6b0, type: 3}
     Walk: {fileID: 7400010, guid: 457b10dd92388be48930c744824fb6b0, type: 3}
@@ -3708,12 +3708,12 @@ MonoBehaviour:
     Attack: {fileID: 7400002, guid: 457b10dd92388be48930c744824fb6b0, type: 3}
     DieAnimation: {fileID: 7400004, guid: 457b10dd92388be48930c744824fb6b0, type: 3}
     SpecialAttack: []
-  timeToSpawn: 20
+  timeToSpawn: 40
   ControllerAnimation: {fileID: 11165014}
   followingTarget: 0
   unitSkill: 0
   normalSpeed: 0
-  forceToExtract: 5
+  forceToExtract: 2
   numberMaxGetResources: 200
   distanceToExtract: 3
   resourceWorker:
@@ -3783,7 +3783,7 @@ MonoBehaviour:
     gridItemAttributes:
       gridXIndex: 1
       gridYIndex: 1
-  constructionAndRepairForce: 5
+  constructionAndRepairForce: 50
   workerState: 0
   resourceId: -1
   lastResourceId: 0
