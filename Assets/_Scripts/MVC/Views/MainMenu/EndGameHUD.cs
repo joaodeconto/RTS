@@ -88,7 +88,11 @@ public class EndGameHUD : MonoBehaviour
 	}
 
 	void QuitSave()
-	{											
+	{
+		if(Everyplay.IsRecording())
+		{
+			Everyplay.StopRecording();
+		}
 		checkSaving = true;
 		Application.LoadLevel (1);
 	}

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Visiorama;
 
+
 public class GameController : MonoBehaviour
 {
 	public bool autoload = false;
@@ -42,6 +43,9 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<InteractionController> ().Init ();
 					
-
+		if(Everyplay.IsRecordingSupported())
+		{
+			Everyplay.StartRecording();
+		}
 	}
 }

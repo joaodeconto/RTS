@@ -95,7 +95,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	public Transform trnsPanelUnitStats;
 
 	public GameObject pref_button;
-	public Vector3 offesetFeedback;
+	public Vector3 	  offesetFeedback;
 	public GameObject pref_moveFeedback;
 	public GameObject pref_selfFeedback;
 	public GameObject pref_attackFeedback;
@@ -109,9 +109,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	private TouchController touchController;
 	private MessageInfoManager messageInfoManager;
 	private FactoryBase factoryBase;	
-	public bool isClearing = false;
+	public  bool isClearing = false;
 	private bool _isDestroying;
-	public bool IsDestroying {
+	public  bool IsDestroying {
 		get	{
 			if(_isDestroying)
 			{
@@ -196,7 +196,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.offsetPosition += Vector3.up * 0.1f;	
+		refTransform.offsetPosition.y = 0.1f;	
 		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
 		resourceBar.refTarget = target;
 		resourceBar.Init();	
@@ -215,7 +215,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.offsetPosition += Vector3.up * 0.1f;
+		refTransform.offsetPosition.y = 0.1f;	
 		SubstanceResourceBar resourceBar = selectObj.GetComponent<SubstanceResourceBar> ();
 		resourceBar.refTarget = target;
 		resourceBar.noTimer = noTimer;
@@ -238,7 +238,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.offsetPosition += Vector3.up * 0.1f;		
+		refTransform.offsetPosition.y = 0.1f;		
 		SubstanceHealthBar subHealthBar = selectObj.GetComponent<SubstanceHealthBar> ();		
 		subHealthBar.SetTarget (target, target.team);
 		refTransform.Init();
@@ -266,7 +266,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		refTransform.positionX = true;
 		refTransform.positionY = true;
 		refTransform.positionZ = true;
-		refTransform.offsetPosition += Vector3.up * 0.1f;
+		refTransform.offsetPosition.y = 0.1f;	
 		selectObj.renderer.material.SetColor ("_TintColor", color);
 		refTransform.Init();
 	}
@@ -581,7 +581,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 		foreach (ParticleSystem ps in newFeedback.GetComponentsInChildren<ParticleSystem>())
 		{
-			ps.startSize = size * ps.startSize;
+			ps.startSize = Mathf.Clamp (size * 1.2f, 2, 10);
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
 			duration = ps.duration;

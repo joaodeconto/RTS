@@ -48,6 +48,9 @@ public class ShowScore : MonoBehaviour
 		mapLabel.text = VersusScreen.mapLabelString;
 		modeLabel.text = VersusScreen.modeLabelString;
 
+		DefaultCallbackButton dcba = scoreMenuObject.FindChild ("Button (Everyplay)").gameObject.AddComponent<DefaultCallbackButton> ();
+		dcba.Init (null, (ht_dcb) =>  { Everyplay.PlayLastRecording();});
+		
 
 		if (VersusScreen.modeLabelString == "Single Player")
 		{
