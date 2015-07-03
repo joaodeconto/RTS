@@ -94,7 +94,8 @@ public class FactoryBase : IStats, IDeathObservable
 	protected float realRangeView;	
 	public bool IsDamaged {	get	{ return Health != MaxHealth;}}
 	public bool ReachedMaxEnqueued	{get { return EnqueuedCount  >= MAX_NUMBER_OF_LISTED;}}	
-	private int EnqueuedCount {get {	return invokeQueue.Count;}}
+	private int EnqueuedCount {get { return invokeQueue.Count;}}
+	public ResourcesManager repairCost;
 	public enum BuildingState
 	{
 		Base       = 0,
@@ -122,6 +123,7 @@ public class FactoryBase : IStats, IDeathObservable
 		GetComponent<NavMeshObstacle> ().enabled = true;
 		factoryInitialized = true;	
 		timer = 0;
+		repairCost.Rocks = Mathf.CeilToInt(costOfResources.Rocks/100);
 										
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
@@ -355,7 +357,9 @@ public class FactoryBase : IStats, IDeathObservable
 			hudController.DestroyInspector ("Factory");
 			hudController.DestroyOptionsBtns();
 			Deselect ();
-		}		
+		}	
+
+		hudController.DestroyHealthBar(transform);
 		//IDeathObservable
 		NotifyDeath ();		
 		int c = IDOobservers.Count;

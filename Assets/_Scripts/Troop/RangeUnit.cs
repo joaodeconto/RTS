@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Visiorama.Extension;
 using Visiorama;
+using PathologicalGames;
 
 public class RangeUnit : Unit
 {
@@ -85,12 +86,12 @@ public class RangeUnit : Unit
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * NavAgent.angularSpeed);
 
-
 		if(projectileAttacking)
 		{
 			projectileAnimating++;
 			ControllerAnimation.PlayCrossFade (projectileAttackAnimation, WrapMode.Once);
 			Invoke ("ProjectileSync", projectileAnimationSync);
+			if(!PhotonNetwork.offlineMode) photonView.RPC("ProjTarget", PhotonTargets.Others, TargetAttack.name);
 			IsAttacking = true;			
 			yield return StartCoroutine (ControllerAnimation.WhilePlaying (projectileAttackAnimation));
 			projectileAnimating--;
@@ -115,6 +116,7 @@ public class RangeUnit : Unit
 		if (projectileAnimating == 1)
 		{
 			ControllerAnimation.PlayCrossFade (projectileAttackAnimation, WrapMode.Once);
+			Invoke ("ProjectileSync", projectileAnimationSync);
 		}
 		else
 		{
@@ -131,34 +133,38 @@ public class RangeUnit : Unit
 							   (projectileAttackRange + target.GetComponent<CapsuleCollider>().radius);
 	}
 
+
 	public void ProjectileSync ()
 	{
+		if(TargetAttack == null) return;
 		dummyRangeObject.SetActive(false);
-		GameObject pRange;
-		
-		if (!PhotonNetwork.offlineMode)
+//		GameObject pRange;
+//		
+//		if (!PhotonNetwork.offlineMode)
+//		{
+//			pRange = PhotonNetwork.Instantiate  (prefabProjectile.name, 
+//			                                     trnsInstantiateLocalPrefab.position,
+//			                                     trnsInstantiateLocalPrefab.rotation,
+//			                                     0, null);
+//		}
+//		else
+//		{
+//			pRange = Instantiate (prefabProjectile, 
+//			                      trnsInstantiateLocalPrefab.position,
+//			                      trnsInstantiateLocalPrefab.rotation) as GameObject;
+//		}
+
+		Transform pRange = PoolManager.Pools["Projectiles"].Spawn(prefabProjectile, trnsInstantiateLocalPrefab.position, trnsInstantiateLocalPrefab.rotation);
+
+		pRange.GetComponent<RangeObject>().Init (TargetAttack, 2f,(ht) =>
 		{
-			pRange = PhotonNetwork.Instantiate  (prefabProjectile.name, 
-			                                     trnsInstantiateLocalPrefab.position,
-			                                     trnsInstantiateLocalPrefab.rotation,
-			                                     0, null);
-		}
-		else
-		{
-			pRange = Instantiate (prefabProjectile, 
-			                      trnsInstantiateLocalPrefab.position,
-			                      trnsInstantiateLocalPrefab.rotation) as GameObject;
-		}
-		
-		pRange.GetComponent<RangeObject>().Init (TargetAttack, 2f,
-		                                         (ht) => 
-		                                         {
 			if (TargetAttack != null)
 			{
 				if (!PhotonNetwork.offlineMode)
-				{
-					photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + bonusProjectile);
-				}
+				{				
+					if(photonView.isMine)
+						photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, projectileAttackForce + bonusProjectile);
+				}			
 				else
 				{
 					TargetAttack.GetComponent<IStats>().ReceiveAttack(projectileAttackForce + bonusProjectile);
@@ -183,6 +189,14 @@ public class RangeUnit : Unit
 
 	#region RPC's
 	// RPC
+	[RPC]
+	public void ProjTarget(string projTarget)
+	{
+		IStats stat = statsController.FindMyStat (name);
+		if(stat != null)	TargetAttack = stat.gameObject; 
+
+	}
+
 	[RPC]
 	public override void AttackStat (string name, int force)
 	{

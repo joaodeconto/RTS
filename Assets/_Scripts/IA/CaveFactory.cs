@@ -68,8 +68,6 @@ public class CaveFactory : FactoryBase
 		timer = 0;
 		lUnitsToCreate.RemoveAt (0);
 		lUnitCluster.RemoveAt (0);
-
-		if (!hasRallypoint) return;
 		Vector3 difference = goRallypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);
 		Vector3 forward = rotation * Vector3.forward;		
@@ -92,7 +90,7 @@ public class CaveFactory : FactoryBase
 			newUnit = u.GetComponent<Unit> ();
 			unit.SetTeam(0,0);
 		}
-
+		newUnit.ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
 		newUnit.SetTeam(8,8);
 		newUnit.Init ();
 						

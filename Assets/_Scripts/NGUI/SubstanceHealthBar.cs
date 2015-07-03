@@ -47,16 +47,9 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 	{		
 		if (Target == null)
 		{
-			Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
+		//	Debug.LogError ("Verifique se o metodo SetTarget foi chamado");
 		}
-		if (currentHealth == 0)
-		{
-			Debug.Log ("morreu");
-		}
-		
-		//so mostra o submesh da substance healthbar se tiver vida, se nao nao
-//		subMeshRenderer.enabled = (currentHealth != 0);
-		
+			
 		if (subMeshRenderer.enabled)
 		{
 			float percentHealth = (float)currentHealth * (3.14f/(float)Target.MaxHealth);

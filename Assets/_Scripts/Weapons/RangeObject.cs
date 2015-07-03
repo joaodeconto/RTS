@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using Visiorama.Utils;
+using PathologicalGames;
 
-public class RangeObject : Photon.MonoBehaviour
+public class RangeObject : MonoBehaviour
 {
 	public delegate void RangeHitDelegate (Hashtable ht);
 	protected RangeHitDelegate rangeHitDelegate;
@@ -11,7 +12,7 @@ public class RangeObject : Photon.MonoBehaviour
 	public float smoothFactor = 3f;
 	protected GameObject target;
 	protected Vector3 targetPosition;
-	protected float time;
+	protected float timeDestroy;
 	protected bool reachedTarget = false;
 	private Vector3 correctPlayerPos;
 	private Quaternion correctPlayerRot;
@@ -20,7 +21,7 @@ public class RangeObject : Photon.MonoBehaviour
 	{
 		if (target == null)
 		{
-			DestroyObjectInNetwork();
+			PoolManager.Pools["Projectiles"].Despawn(transform);
 			return;
 		}
 
@@ -29,9 +30,7 @@ public class RangeObject : Photon.MonoBehaviour
 		hashtable = ht;
 		targetPosition = target.transform.position;
 		this.target = target;
-		time = timeToDestroyWhenCollide;
-		correctPlayerPos = transform.position;
-		correctPlayerRot = transform.rotation;
+		timeDestroy = timeToDestroyWhenCollide;
 		Move ();
 	}
 	
@@ -86,24 +85,25 @@ public class RangeObject : Photon.MonoBehaviour
 	void FinalPoint ()
 	{
 		reachedTarget = true;
-
-		if (PhotonNetwork.offlineMode)
-		{
-			Destroy (gameObject, time);
-		}
-		else
-		{
-			Invoke ("DestroyObjectInNetwork", time);
-		}
+		PoolManager.Pools["Projectiles"].Despawn(transform,timeDestroy);
+//		if (PhotonNetwork.offlineMode)
+//		{
+//			Destroy (gameObject, timeDestroy);
+//		}
+//		else
+//		{
+//			Invoke ("DestroyObjectInNetwork", timeDestroy);
+//		}
 	}
 	
-	void DestroyObjectInNetwork ()
-	{
-		PhotonNetwork.Destroy (gameObject);
-	}
+//	void DestroyObjectInNetwork ()
+//	{
+//		PhotonNetwork.Destroy (gameObject);
+//	}
 
 	void CheckProjectileHit()
 	{
+		if(target == null) return;
 		bool isIntersects = false;		
 		
 		if (target.collider != null) isIntersects = target.collider.bounds.Intersects (collider.bounds);
@@ -118,29 +118,28 @@ public class RangeObject : Photon.MonoBehaviour
 			rangeHitDelegate (hashtable);
 			CancelInvoke("CheckProjectileHit");
 		}		
-
 	}
 	
-	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
-    {
-		if (stream.isWriting)
-        {
-            stream.SendNext (transform.position);
-            stream.SendNext (transform.rotation);
-        }
-        else
-        {
-            correctPlayerPos = (Vector3)stream.ReceiveNext ();
-            correctPlayerRot = (Quaternion)stream.ReceiveNext ();
-        }
-    }
-
-    void Update ()
-    {
-		if(!reachedTarget)
-		{
-			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * smoothFactor);
-			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * smoothFactor);
-    	}
-	}
+//	void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
+//    {
+//		if (stream.isWriting)
+//        {
+//            stream.SendNext (transform.position);
+//            stream.SendNext (transform.rotation);
+//        }
+//        else
+//        {
+//            correctPlayerPos = (Vector3)stream.ReceiveNext ();
+//            correctPlayerRot = (Quaternion)stream.ReceiveNext ();
+//        }
+//    }
+//
+//    void Update ()
+//    {
+//		if(!reachedTarget)
+//		{
+//			transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * smoothFactor);
+//			transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * smoothFactor);
+//    	}
+//	}
 }

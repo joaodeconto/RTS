@@ -29,7 +29,7 @@ GameObject:
   - 114: {fileID: 11400000}
   - 208: {fileID: 20800000}
   - 114: {fileID: 11400008}
-  - 54: {fileID: 5400000}
+  - 54: {fileID: 5447834}
   m_Layer: 18
   m_Name: Depot
   m_TagString: Depot
@@ -45,7 +45,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 480004}
-  - 95: {fileID: 9580010}
+  - 114: {fileID: 11486282}
+  - 111: {fileID: 11186282}
   m_Layer: 18
   m_Name: Depot1
   m_TagString: Untagged
@@ -262,7 +263,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180010}
   m_Mesh: {fileID: 4300010, guid: 606aa99a17928514caa8dbe2765f482e, type: 3}
---- !u!54 &5400000
+--- !u!54 &5447834
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -277,21 +278,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!95 &9580010
-Animator:
-  serializedVersion: 3
+--- !u!111 &11186282
+Animation:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180004}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 606aa99a17928514caa8dbe2765f482e, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 46ce5bbace355f24b89c9f5c8a885461, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -386,7 +387,12 @@ MonoBehaviour:
   TechsToActive:
   - Spearman
   - Scout Tower
+  queueTicket: 0
+  queueCounter: 0
   wasVisible: 0
+  repairCost:
+    m_mana: 0
+    m_rocks: 0
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -399,6 +405,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainName: Terrain
+--- !u!114 &11486282
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 180004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c5129b52bee064a8a6fc6637736920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1

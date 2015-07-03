@@ -271,8 +271,7 @@ public class EnemyCluster : MonoBehaviour
 				gotMainBase = true;
 				break;
 			}
-			string barracks = "Barracks";
-			if(stats.category == barracks)
+			if(stats.category == "Barracks")
 			{
 				cluster.attackTarget = stats.transform;
 				break;
@@ -282,6 +281,7 @@ public class EnemyCluster : MonoBehaviour
 				cluster.attackTarget = stats.transform;
 			}
 		}
+		cluster.clusterIsBusy = false;
 		cluster.clusterTarget = cluster.attackTarget;
 	}
 

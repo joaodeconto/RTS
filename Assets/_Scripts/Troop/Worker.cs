@@ -268,8 +268,7 @@ public class Worker : Unit
 				{
 					if (!IsBuilding) StartCoroutine (StartConstruct ());					
 				}
-				else
-				if (!IsRepairing) StartCoroutine (StartRepair ());
+				else if (!IsRepairing && gameplayManager.resources.CanBuy(factoryChoose.repairCost)) StartCoroutine (StartRepair ());
 
 			break;
 			case WorkerState.Idle:				
@@ -490,6 +489,7 @@ public class Worker : Unit
 		yield return StartCoroutine (ControllerAnimation.WhilePlaying (resourceWorker[0].workerAnimation.Extracting));
 		if (HasFactory ())
 		{
+			gameplayManager.resources.UseResources(factoryChoose.repairCost);
 			if (!factoryChoose.Repair (this))	factoryChoose = null;
 		}
 		IsRepairing = false;

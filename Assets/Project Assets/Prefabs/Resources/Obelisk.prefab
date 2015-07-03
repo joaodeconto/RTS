@@ -649,7 +649,12 @@ MonoBehaviour:
     m_rocks: 0
   boostPower: 1.29999995
   TechsToActive: []
+  queueTicket: 0
+  queueCounter: 0
   wasVisible: 0
+  repairCost:
+    m_mana: 0
+    m_rocks: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -789,7 +794,7 @@ ParticleSystem:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100016}
-  lengthInSec: 10
+  lengthInSec: 8
   startDelay: 0
   speed: 1
   randomSeed: 0
@@ -1007,7 +1012,7 @@ ParticleSystem:
       minMaxState: 0
     gravityModifier: 0
     inheritVelocity: 0
-    maxNumParticles: 10
+    maxNumParticles: 4
   ShapeModule:
     serializedVersion: 2
     enabled: 1

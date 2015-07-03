@@ -253,7 +253,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 					
 		foreach (ParticleSystem ps in selectObj.GetComponentsInChildren<ParticleSystem>())
 		{
-			ps.startSize = Mathf.Clamp (size * 1.2f, 2, 10);
+			ps.startSize = Mathf.Clamp (size * 1.6f, 2, 10);
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
 		}
@@ -354,6 +354,20 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		}
 	}
 
+	public void DestroyHealthBar (Transform target)
+	{
+		foreach (Transform child in mainTranformSelectedObjects)
+		{
+			ReferenceTransform refTrans= child.GetComponent<ReferenceTransform>();
+			if(refTrans == null) continue;
+			if (refTrans.referenceObject == target && child.GetComponent<SubstanceHealthBar>() != null)
+			{
+				refTrans.referenceObject = null;
+				PoolManager.Pools["Selection"].Despawn (child);
+			}
+		}
+	}
+	
 	public void DestroyResourceBar (Transform target)
 	{
 		foreach (Transform child in mainTranformSelectedObjects)
@@ -557,21 +571,29 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		Transform newFeedback   = null;
 		GameObject pref_feedback = null;
+		float circlePs	=1f;
+		float linePs	=1f;
 
 		switch (feedback)
 		{
 			case Feedbacks.Move:
 				pref_feedback = pref_moveFeedback;
-				break;
+				circlePs = 8f;
+				linePs 	 = 2f;
+			break;
 			case Feedbacks.Self:
 				pref_feedback = pref_selfFeedback;
-				break;
+				circlePs = 2f;
+				linePs 	 = 2f;
+			break;
 			case Feedbacks.Attack:
 				pref_feedback = pref_attackFeedback;
-				break;
+				circlePs = 5f;
+			break;
 			case Feedbacks.Invalid:
 				pref_feedback = pref_invalidFeedback;
-				break;
+				circlePs = 3f;
+			break;
 		}
 
 		newFeedback = PoolManager.Pools["Selection"].Spawn (pref_feedback, position + offesetFeedback, Quaternion.identity);
@@ -581,7 +603,15 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 		foreach (ParticleSystem ps in newFeedback.GetComponentsInChildren<ParticleSystem>())
 		{
-			ps.startSize = Mathf.Clamp (size * 1.2f, 2, 10);
+			if(ps.gameObject.name == "circle")
+			{
+				ps.startSize = Mathf.Clamp (size * circlePs, 2, 10);
+			}
+			if(ps.gameObject.name == "line")
+			{
+				ps.startSize = Mathf.Clamp (size * linePs, 2, 10);
+			}
+
 			ps.renderer.material.SetColor ("_TintColor", color);
 			ps.startColor = color;
 			duration = ps.duration;
