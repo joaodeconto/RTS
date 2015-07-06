@@ -116,12 +116,8 @@ public class RangeUnit : Unit
 		if (projectileAnimating == 1)
 		{
 			ControllerAnimation.PlayCrossFade (projectileAttackAnimation, WrapMode.Once);
-			Invoke ("ProjectileSync", projectileAnimationSync);
 		}
-		else
-		{
-			base.SyncAnimation ();
-		}
+		else	base.SyncAnimation ();
 	}
 	#endregion
 		
@@ -192,8 +188,12 @@ public class RangeUnit : Unit
 	[RPC]
 	public void ProjTarget(string projTarget)
 	{
-		IStats stat = statsController.FindMyStat (name);
-		if(stat != null)	TargetAttack = stat.gameObject; 
+		IStats stat = statsController.FindMyStat (projTarget);
+		if(stat != null)
+		{
+			TargetAttack = stat.gameObject; 
+			Invoke ("ProjectileSync", projectileAnimationSync);
+		}
 
 	}
 
