@@ -52,6 +52,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public class RendererTeamSubstanceColor
 	{
 		public Transform subMesh;
+		private static Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
 
 		//Caso esse metodo for modificado eh necessario modificar no Rallypoint tbm
 		public void SetColorInMaterial (Transform transform, int teamID)
@@ -59,26 +60,51 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
 			Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
 			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
-
-			for (int i = 0, iMax = subMesh.renderer.materials.Length; i != iMax; ++i)
+			string unitName = transform.name;
+			int startRemoveIndex = unitName.IndexOf ("(");			
+			unitName = Regex.Replace (unitName, "[0-9]", "" );			
+			startRemoveIndex = (startRemoveIndex > 0) ? startRemoveIndex : unitName.Length - 1;
+			unitName.Remove (startRemoveIndex);
+			string keyUnitTeamMaterial = unitName + " - " + teamID;
+			
+			//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
+			if (!unitTeamMaterials.ContainsKey (keyUnitTeamMaterial))
 			{
-				ProceduralMaterial substance 				  = subMesh.renderer.materials[i] as ProceduralMaterial;
-				ProceduralPropertyDescription[] curProperties = substance.GetProceduralPropertyDescriptions();
-				
-				//Setando os valores corretos de cor
-				foreach (ProceduralPropertyDescription curProperty in curProperties)
+				int nMaterials = subMesh.renderer.materials.Length;
+				unitTeamMaterials.Add (keyUnitTeamMaterial, new ProceduralMaterial[nMaterials]);
+
+				for (int i = 0, iMax = subMesh.renderer.materials.Length; i != iMax; ++i)
 				{
-					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
-						substance.SetProceduralColor(curProperty.name, teamColor);
-					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor_1"))
-						substance.SetProceduralColor(curProperty.name, teamColor1);
-					if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor_2"))
-						substance.SetProceduralColor(curProperty.name, teamColor2);
+					ProceduralMaterial substance 				  = subMesh.renderer.materials[i] as ProceduralMaterial;
+					ProceduralPropertyDescription[] curProperties = substance.GetProceduralPropertyDescriptions();
+					
+					//Setando os valores corretos de cor
+					foreach (ProceduralPropertyDescription curProperty in curProperties)
+					{
+						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
+							substance.SetProceduralColor(curProperty.name, teamColor);
+						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor_1"))
+							substance.SetProceduralColor(curProperty.name, teamColor1);
+						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor_2"))
+							substance.SetProceduralColor(curProperty.name, teamColor2);
+					}
+
+					substance.RebuildTextures ();
+
+					unitTeamMaterials[keyUnitTeamMaterial][i] = substance;
 				}
-
-				substance.RebuildTextures ();
-
 			}
+
+			//Associando na unidade os materiais corretos
+			ProceduralMaterial[] pms = unitTeamMaterials[keyUnitTeamMaterial];
+//			List<Material> mms = new List<Material> ();
+//
+//			foreach (ProceduralMaterial pm in pms)
+//			{
+//				mms.Add (pm)
+//			}
+			subMesh.renderer.sharedMaterials = pms as Material[];
+
 		}
 	}
 	[System.Serializable]
