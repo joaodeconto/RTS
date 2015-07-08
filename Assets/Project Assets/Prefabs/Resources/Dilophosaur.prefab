@@ -1438,6 +1438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a742b143fc497dc429fc2b9685de61c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interpolationPos: 3
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1494,7 +1495,7 @@ MonoBehaviour:
   subCategory: Dino
   description: Fast moving ranged-attacker, spits poison from a medium distance. Stronger
     against humans.
-  requisites: Workshop
+  requisites: Armory
   group: -1
   costOfResources:
     m_mana: 0
@@ -1528,9 +1529,11 @@ MonoBehaviour:
   prefabProjectile: {fileID: 100004, guid: 699719ce50e336b4a83967805e46fab8, type: 2}
   trnsInstantiateLocalPrefab: {fileID: 400092}
   dummyRangeObject: {fileID: 100088}
+  dummyRotation: {x: 0, y: 0, z: 0, w: 0}
   projectileAttackAnimation: {fileID: 7400008, guid: faa0835c348881a4fa17938cdba990a8,
     type: 3}
   projectileAnimationSync: .800000012
+  rangeInitialized: 0
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1

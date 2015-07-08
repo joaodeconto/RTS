@@ -65,7 +65,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			unitName = Regex.Replace (unitName, "[0-9]", "" );			
 			startRemoveIndex = (startRemoveIndex > 0) ? startRemoveIndex : unitName.Length - 1;
 			unitName.Remove (startRemoveIndex);
-			string keyUnitTeamMaterial = unitName + " - " + teamID;
+			string keyUnitTeamMaterial = unitName + " - "  + subMesh.name+ " - " + teamID;
 			
 			//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
 			if (!unitTeamMaterials.ContainsKey (keyUnitTeamMaterial))

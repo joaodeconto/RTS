@@ -22,8 +22,13 @@ public class RangedStructure : RangeUnit
 
 		if (TargetAttack != null)
 		{
-			if (InProjectileRange (TargetAttack)) projectileAttacking = true;	
-			else TargetAttack = null;
+			if (InProjectileRange (TargetAttack)) projectileAttacking = true;
+
+			else
+			{
+				TargetAttack = null;
+				projectileAttacking = false;
+			}
 
 			
 			Debug.Log(TargetAttack);
@@ -38,14 +43,13 @@ public class RangedStructure : RangeUnit
 		
 		if (projectileAttacking)
 		{			
-			if (TargetAttack.GetComponent<IStats>().WasRemoved)
+			if (TargetAttack.GetComponent<IStats>().WasRemoved || TargetAttack == null)
 			{
 				dummyRangeObject.SetActive(true);
 				TargetingEnemy (null);
 				IsAttacking = false;
 				projectileAttacking = false;
 				unitState = UnitState.Idle;
-				Debug.Log(TargetAttack);
 				return;
 			}
 			

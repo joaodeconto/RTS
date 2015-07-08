@@ -74,7 +74,6 @@ public class TechTreeController : MonoBehaviour
 			{
 				Worker worker = u as Worker;
 				worker.InitWorkerTechAvailability(); 						// inicializa techs no worker para zerar o prefab;
-				break;
 			}
 		}
 	}
