@@ -683,7 +683,16 @@ public class FactoryBase : IStats, IDeathObservable
 	public void RestoreOptionsMenu()
 	{
 		hudController.DestroyOptionsBtns();
-		
+		StartCoroutine("AddOptionButtons");
+	}	
+
+	IEnumerator AddOptionButtons()
+	{	
+		while(hudController.IsDestroying)
+		{
+			yield return new WaitForSeconds(0.01f);
+		}
+
 		foreach (UpgradeItem ui in upgradesToCreate)
 		{
 			CreateUpgradeOption(ui);
@@ -692,7 +701,7 @@ public class FactoryBase : IStats, IDeathObservable
 		{
 			CreateUnitOption(uf);
 		}
-	}	
+	}
 	
 	IEnumerator AddQueueButtons()
 	{	
@@ -918,7 +927,12 @@ public class FactoryBase : IStats, IDeathObservable
 			}
 			else upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
 		}
-		else upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
+		else
+		{			
+			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+			upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
+			oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.UpgradesCreated, 1);
+		}
 
 		upg.transform.parent = this.transform;
 		if (upgrade.modelUpgrade) 

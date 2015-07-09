@@ -436,7 +436,13 @@ public class GameplayManager : Photon.MonoBehaviour
 	{		
 		winGame = true;
 
-		if (PhotonNetwork.offlineMode) return;
+		if (PhotonNetwork.offlineMode)
+		{
+			EndMatch ();
+			
+			Debug.Log("offline end match");
+			return;
+		}
 
 		if (PhotonNetwork.room.playerCount == 1)
 		{
@@ -580,6 +586,8 @@ public class GameplayManager : Photon.MonoBehaviour
 				else			oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Defeat, 1);
 				
 				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
+				
+				Debug.Log("offline end match");
 			}
 		}
 
@@ -654,7 +662,6 @@ public class GameplayManager : Photon.MonoBehaviour
 
 			if (MyTeam == teamID)
 			{
-
 				loseGame = true;		
 				Model.Battle battle = ConfigurationData.battle;
 				if (scoreCounting)

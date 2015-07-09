@@ -214,15 +214,15 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	void Awake ()
 	{
-		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
-		Invoke ("Init", 0.1f);
+		if(ConfigurationData.InGame) Invoke ("Init", 0.1f);
 	}
 
 	public virtual void Init ()
 	{
 		if (wasInitialized)	return;
 
-		wasInitialized = true;
+		wasInitialized = true;		
+		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
 		techTreeController	=  ComponentGetter.Get<TechTreeController> ();
 		statsController 	= ComponentGetter.Get<StatsController> ();
 		hudController   	= ComponentGetter.Get<HUDController> ();

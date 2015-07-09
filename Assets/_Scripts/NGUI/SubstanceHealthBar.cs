@@ -30,6 +30,11 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 		
 	}
 
+	void OnDespawned ()
+	{
+		UpdateHealth(0);
+	}
+
 	public void SetTarget (IHealthObservable target, int teamID)
 	{
 		if (substance == null) OnSpawned ();

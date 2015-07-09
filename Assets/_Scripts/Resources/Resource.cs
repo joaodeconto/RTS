@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
 using Visiorama;
 
 
@@ -43,6 +42,11 @@ public class ResourcesManager
 			
 			if (!PhotonNetwork.offlineMode)	 
 				Score.AddScorePoints (DataScoreEnum.GoldGathered, numberOfResources, battle.IdBattle);
+			else
+			{
+				OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.GoldGathered, numberOfResources);			
+			}
 		}
 
 		if (resourceType == Resource.Type.Mana)
@@ -51,6 +55,11 @@ public class ResourcesManager
 			
 			if (!PhotonNetwork.offlineMode)
 				Score.AddScorePoints (DataScoreEnum.ManaGathered, numberOfResources, battle.IdBattle);
+			else
+			{
+				OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
+				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.ManaGathered, numberOfResources);			
+			}
 		}
 	}
 	
