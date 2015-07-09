@@ -14,7 +14,6 @@ public class LoginIndex : IView
 	public GameObject OfflineButton;
 	public bool hasInternet;
 	public GameObject mpassMarket;
-	private FacebookLoginHandler fh;
 
 	// Use this for initialization
 	public void Init ()

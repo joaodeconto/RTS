@@ -213,7 +213,8 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	#region Awake, Init
 
 	void Awake ()
-	{
+	{		
+		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
 		if(ConfigurationData.InGame) Invoke ("Init", 0.1f);
 	}
 
@@ -222,7 +223,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		if (wasInitialized)	return;
 
 		wasInitialized = true;		
-		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
 		techTreeController	=  ComponentGetter.Get<TechTreeController> ();
 		statsController 	= ComponentGetter.Get<StatsController> ();
 		hudController   	= ComponentGetter.Get<HUDController> ();
