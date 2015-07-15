@@ -432,6 +432,13 @@ public class Worker : Unit
 		}
 	}
 
+	public override void Deselect ()
+	{
+		hudController.DestroyOptionsBtns ();
+		
+		base.Deselect ();
+	}
+
 	public override IEnumerator OnDie ()
 	{
 		workerState = WorkerState.Idle;

@@ -40,11 +40,11 @@ namespace Soomla.Store {
 		[DllImport ("__Internal")]
 		private static extern void soomlaStore_TransactionsAlreadyRestored(out bool outResult);
 		[DllImport ("__Internal")]
-		private static extern void soomlaStore_SetSSV(bool ssv, string verifyUrl);
+		private static extern void soomlaStore_SetSSV(bool ssv, string verifyUrl, bool forceOnItunesFailure);
 
 
 		protected override void _loadBillingService() {
-			soomlaStore_SetSSV(StoreSettings.IosSSV, "https://verify.soom.la/verify_ios?platform=unity4");
+			soomlaStore_SetSSV(StoreSettings.IosSSV, "https://verify.soom.la/verify_ios?platform=unity4", false);
 			soomlaStore_LoadBillingService();
 		}
 

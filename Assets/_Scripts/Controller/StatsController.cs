@@ -374,31 +374,18 @@ public class StatsController : MonoBehaviour
 			
 			if (selectedStats.Count == 1 &&
 				!otherSelected)
-			{
-				Unit unit = stat as Unit;
-				FactoryBase factory = stat as FactoryBase;
-				
-				if (unit != null)
-				{
-					statsTypeSelected = StatsTypeSelected.Unit;
-				}
-
-				if (factory != null)
-				{
-					statsTypeSelected = StatsTypeSelected.Factory;
-				}
+			{				
+				if (stat is Unit)			statsTypeSelected = StatsTypeSelected.Unit;
+				if (stat is FactoryBase)	statsTypeSelected = StatsTypeSelected.Factory;
 			}
 			
 			stat.Select ();
 		}
 		else
 		{
-			if (!stat.Selected) return;
-			
-			selectedStats.Remove (stat);
-			
-			hudController.RemoveEnqueuedButtonInInspector(this.name, Unit.UnitGroupQueueName);
-			
+			if (!stat.Selected) return;			
+			selectedStats.Remove (stat);			
+			hudController.RemoveEnqueuedButtonInInspector(this.name, Unit.UnitGroupQueueName);			
 			stat.Deselect ();
 			
 			if (selectedStats.Count == 0) statsTypeSelected = StatsTypeSelected.None;
@@ -407,6 +394,7 @@ public class StatsController : MonoBehaviour
 
 	public void DeselectAllStats ()
 	{
+		Debug.Log("deselect all");
 		selectedGroup = -1;
 
 		selectionController.groupFeedback.SetActive(false);
@@ -420,10 +408,12 @@ public class StatsController : MonoBehaviour
 		if (hudController.trnsOptionsMenu.childCount > 0 || hudController.trnsPanelUnitStats.childCount > 0)
 		{
 			hudController.DestroyOptionsBtns();
+			Debug.Log("option child count" + hudController.trnsOptionsMenu.childCount);
 		}
 
 		selectedStats.Clear ();		
 		statsTypeSelected = StatsTypeSelected.None;
+		Debug.Log("selectedStats count" + selectedStats.Count);
 	}
 	#endregion
 

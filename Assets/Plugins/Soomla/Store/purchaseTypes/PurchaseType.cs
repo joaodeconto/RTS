@@ -53,6 +53,8 @@ namespace Soomla.Store
 		/// </summary>
 		/// <returns>True if there are enough funds to afford the virtual item with the given item id </returns>
 		public abstract bool CanAfford();
+
+        public abstract string GetPrice();
 	}
 
 }

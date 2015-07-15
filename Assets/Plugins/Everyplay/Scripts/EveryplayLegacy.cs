@@ -67,15 +67,6 @@ public class EveryplayLegacy : MonoBehaviour
         }
     }
 
-    public event Everyplay.ThumbnailReadyAtFilePathDelegate ThumbnailReadyAtFilePath {
-        add {
-            Everyplay.ThumbnailReadyAtFilePath += value;
-        }
-        remove {
-            Everyplay.ThumbnailReadyAtFilePath -= value;
-        }
-    }
-
     public event Everyplay.ThumbnailReadyAtTextureIdDelegate ThumbnailReadyAtTextureId {
         add {
             Everyplay.ThumbnailReadyAtTextureId += value;
@@ -330,11 +321,6 @@ public class EveryplayLegacy : MonoBehaviour
     public void FaceCamSetPreviewOrigin(Everyplay.FaceCamPreviewOrigin origin)
     {
         Everyplay.FaceCamSetPreviewOrigin(origin);
-    }
-
-    public void SetThumbnailWidth(int thumbnailWidth)
-    {
-        Everyplay.SetThumbnailWidth(thumbnailWidth);
     }
 
     public void FaceCamSetTargetTextureId(int textureId)

@@ -23,30 +23,10 @@ namespace Soomla.Store {
 	/// </summary>
 	public class MarketItem {
 
-		/// <summary
-		/// Each product in the catalog can be MANAGED, UNMANAGED, or SUBSCRIPTION.
-		/// MANAGED means that the product can be purchased only once per user (such as a new level in
-		/// a game). This purchase is remembered by the Market and can be restored if this
-		/// application is uninstalled and then re-installed.
-		/// UNMANAGED is used for products that can be used up and purchased multiple times (such as
-		/// "gold coins"). It is up to the application to keep track of UNMANAGED products for the user.
-		/// SUBSCRIPTION is just like MANAGED except that the user gets charged periodically (monthly
-		/// or yearly).
-		/// </summary>
-		public enum Consumable{
-			NONCONSUMABLE,
-			CONSUMABLE,
-			SUBSCRIPTION
-		}
-
 		/// <summary>
 		/// The product id as defined in itunesconnect or Google Play
 		/// </summary>
 		public string ProductId;
-		/// <summary>
-		/// The type of the item associated with this item on itunesconnect or Google Play.
-		/// </summary>
-		public Consumable consumable;
 		/// <summary>
 		/// A default price for the item in case the fetching of information from the App Store or Google Play fails.
 		/// </summary>
@@ -63,11 +43,9 @@ namespace Soomla.Store {
 		/// Constructor.
 		/// </summary>
 		/// <param name="productId">The id of the current item in the market.</param>
-		/// <param name="consumable">The type of the current item in the market.</param>
 		/// <param name="price">The actual $$ cost of the current item in the market.</param>
-		public MarketItem(string productId, Consumable consumable, double price){
+		public MarketItem(string productId, double price){
 			this.ProductId = productId;
-			this.consumable = consumable;
 			this.Price = price;
 		}
 
@@ -90,14 +68,6 @@ namespace Soomla.Store {
 				ProductId = jsonObject[StoreJSONConsts.MARKETITEM_PRODUCT_ID].str;
 			}
 			Price = jsonObject[StoreJSONConsts.MARKETITEM_PRICE].n;
-			int cOrdinal = System.Convert.ToInt32(((JSONObject)jsonObject[StoreJSONConsts.MARKETITEM_CONSUMABLE]).n);
-			if (cOrdinal == 0) {
-				this.consumable = Consumable.NONCONSUMABLE;
-			} else if (cOrdinal == 1){
-				this.consumable = Consumable.CONSUMABLE;
-			} else {
-				this.consumable = Consumable.SUBSCRIPTION;
-			}
 
 			if (jsonObject[StoreJSONConsts.MARKETITEM_MARKETPRICE]) {
 				this.MarketPriceAndCurrency = jsonObject[StoreJSONConsts.MARKETITEM_MARKETPRICE].str;
@@ -135,7 +105,6 @@ namespace Soomla.Store {
 			JSONObject obj = new JSONObject(JSONObject.Type.OBJECT);
 			obj.AddField (Soomla.JSONConsts.SOOM_CLASSNAME, SoomlaUtils.GetClassName (this));
 			obj.AddField(StoreJSONConsts.MARKETITEM_PRODUCT_ID, this.ProductId);
-			obj.AddField(StoreJSONConsts.MARKETITEM_CONSUMABLE, (int)(consumable));
 			obj.AddField(StoreJSONConsts.MARKETITEM_PRICE, (float)this.Price);
 
 			obj.AddField(StoreJSONConsts.MARKETITEM_MARKETPRICE, this.MarketPriceAndCurrency);

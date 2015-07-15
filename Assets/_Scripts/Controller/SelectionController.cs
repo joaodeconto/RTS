@@ -104,7 +104,6 @@ public class SelectionController : MonoBehaviour
 				if (unit.collider == null)
 				{
 					Debug.Log("unidade sem colisor!");
-
 				}
 
 				if (b.Intersects (unit.collider.bounds))

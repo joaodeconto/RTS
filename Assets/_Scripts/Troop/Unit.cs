@@ -895,6 +895,8 @@ public class Unit : IStats, IMovementObservable,
 
 	public virtual IEnumerator OnDie ()
 	{
+		
+		if (Selected)	Deselect ();
 		if (!PhotonNetwork.offlineMode) photonView.RPC ("SfxDie", PhotonTargets.All,transform.position); 
 		else SfxDie();
 		NavAgent.Stop ();
@@ -923,10 +925,8 @@ public class Unit : IStats, IMovementObservable,
 		{
 			UnRegisterDeathObserver (IDOobservers[c]);
 		}
-		
+
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);		
-		
-		if (Selected)	Deselect ();
 			
 		if (unitAnimation.DieAnimation)
 		{
@@ -949,8 +949,7 @@ public class Unit : IStats, IMovementObservable,
 				if(gameplayManager.IsBotTeam (this)) PhotonNetwork.Destroy(gameObject);
 				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1, battle.IdBattle);
 				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, this.totalResourceCost, battle.IdBattle);
-			}
-			
+			}			
 		}
 
 		else if (gameplayManager.scoreCounting)

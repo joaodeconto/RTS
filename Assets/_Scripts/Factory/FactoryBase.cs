@@ -346,19 +346,17 @@ public class FactoryBase : IStats, IDeathObservable
 			
 	public virtual IEnumerator OnDie ()
 	{
+		if (Selected)
+		{
+			hudController.DestroyInspector ("Factory");
+			Deselect ();
+		}	
+
 		minimapController.RemoveStructure(this.transform, this.team);
 		statsController.RemoveStats (this);
 		inUpgrade = false;
 		if (playerUnit && wasBuilt)TechActiveBool(TechsToActive, false);		
 		model.animation.Play ();
-		
-		if (Selected)
-		{
-			hudController.DestroyInspector ("Factory");
-			hudController.DestroyOptionsBtns();
-			Deselect ();
-		}	
-
 		hudController.DestroyHealthBar(transform);
 		//IDeathObservable
 		NotifyDeath ();		
@@ -473,6 +471,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public override void Select ()
 	{
 		base.Select ();		
+		if(WasRemoved) return;
 
 		hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
@@ -663,6 +662,9 @@ public class FactoryBase : IStats, IDeathObservable
 		
 	public override void Deselect ()
 	{
+
+		hudController.DestroyOptionsBtns ();
+
 		base.Deselect ();
 
 		int c = IDOobservers.Count;

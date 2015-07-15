@@ -538,9 +538,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			isClearing = false;
 			return true;
 		}
-
 		else return false;
-		
 
 	}
 

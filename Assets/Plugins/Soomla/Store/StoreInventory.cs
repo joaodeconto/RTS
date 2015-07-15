@@ -168,6 +168,27 @@ namespace Soomla.Store
 		}
 
 		/// <summary>
+        /// Checks currently equipped good in given <c>category</c>
+        /// </summary>
+        /// <param name="category">Category we want to check</param>
+        /// <returns>EquippableVG otherwise null</returns>
+	    public static EquippableVG GetEquippedVirtualGood(VirtualCategory category){
+            SoomlaUtils.LogDebug(TAG, "Checking equipped goood in " + category.Name + " category");
+
+	        foreach (string goodItemId in category.GoodItemIds)
+	        {
+                EquippableVG good = (EquippableVG) StoreInfo.GetItemByItemId(goodItemId);
+
+	            if (good != null && good.Equipping == EquippableVG.EquippingModel.CATEGORY &&
+                    VirtualGoodsStorage.IsEquipped(good) &&
+	                StoreInfo.GetCategoryForVirtualGood(goodItemId) == category)
+	                return good;
+	        }
+            SoomlaUtils.LogError(TAG, "There is no virtual good equipped in " + category.Name + " category");
+	        return null;
+	    }
+		
+		/// <summary>
 		/// Retrieves the upgrade level of the virtual good with the given <c>goodItemId</c>.
 		/// For Example:
 		/// Let's say there's a strength attribute to one of the characters in your game and you provide

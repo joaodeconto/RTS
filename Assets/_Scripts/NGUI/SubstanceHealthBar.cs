@@ -32,6 +32,8 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 
 	void OnDespawned ()
 	{
+		if (Target != null)
+			Target.UnRegisterHealthObserver (this);
 		UpdateHealth(0);
 	}
 

@@ -1,3 +1,17 @@
+#if !UNITY_EDITOR
+
+#if (UNITY_IPHONE && EVERYPLAY_IPHONE)
+#define EVERYPLAY_IPHONE_ENABLED
+#elif (UNITY_ANDROID && EVERYPLAY_ANDROID)
+#define EVERYPLAY_ANDROID_ENABLED
+#endif
+
+#endif
+
+#if EVERYPLAY_IPHONE_ENABLED || EVERYPLAY_ANDROID_ENABLED
+#define EVERYPLAY_BINDINGS_ENABLED
+#endif
+
 using UnityEngine;
 using System.Runtime.InteropServices;
 using System;
@@ -54,12 +68,6 @@ public class Everyplay : MonoBehaviour
     public delegate void FaceCamSessionStoppedDelegate();
 
     public static event FaceCamSessionStoppedDelegate FaceCamSessionStopped;
-
-    [Obsolete("File based thumbnails are no longer supported and all code related to it will be removed in future releases. Please use Texture2D thumbnails instead.")]
-    public delegate void ThumbnailReadyAtFilePathDelegate(string filePath);
-
-    [Obsolete("File based thumbnails are no longer supported and all code related to it will be removed in future releases. Please use Texture2D thumbnails instead.")]
-    public static event ThumbnailReadyAtFilePathDelegate ThumbnailReadyAtFilePath;
 
     [Obsolete("Use ThumbnailTextureReadyDelegate(Texture2D texture,bool portrait) instead.")]
     public delegate void ThumbnailReadyAtTextureIdDelegate(int textureId,bool portrait);
@@ -138,7 +146,7 @@ public class Everyplay : MonoBehaviour
                                 clientId = settings.clientId;
 
                                 // Initialize the native
-                                #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+                                #if EVERYPLAY_IPHONE_ENABLED || EVERYPLAY_ANDROID_ENABLED
                                 InitEveryplay(settings.clientId, settings.clientSecret, settings.redirectURI);
                                 #endif
 
@@ -171,7 +179,7 @@ public class Everyplay : MonoBehaviour
     public static void Show()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayShow();
             #endif
         }
@@ -180,7 +188,7 @@ public class Everyplay : MonoBehaviour
     public static void ShowWithPath(string path)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayShowWithPath(path);
             #endif
         }
@@ -189,7 +197,7 @@ public class Everyplay : MonoBehaviour
     public static void PlayVideoWithURL(string url)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayPlayVideoWithURL(url);
             #endif
         }
@@ -198,7 +206,7 @@ public class Everyplay : MonoBehaviour
     public static void PlayVideoWithDictionary(Dictionary<string,object> dict)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayPlayVideoWithDictionary(Json.Serialize(dict));
             #endif
         }
@@ -214,7 +222,7 @@ public class Everyplay : MonoBehaviour
     public static string AccessToken()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayAccountAccessToken();
             #endif
         }
@@ -224,7 +232,7 @@ public class Everyplay : MonoBehaviour
     public static void ShowSharingModal()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayShowSharingModal();
             #endif
         }
@@ -233,7 +241,7 @@ public class Everyplay : MonoBehaviour
     public static void StartRecording()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayStartRecording();
             #endif
         }
@@ -242,7 +250,7 @@ public class Everyplay : MonoBehaviour
     public static void StopRecording()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayStopRecording();
             #endif
         }
@@ -251,7 +259,7 @@ public class Everyplay : MonoBehaviour
     public static void PauseRecording()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayPauseRecording();
             #endif
         }
@@ -260,7 +268,7 @@ public class Everyplay : MonoBehaviour
     public static void ResumeRecording()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayResumeRecording();
             #endif
         }
@@ -269,7 +277,7 @@ public class Everyplay : MonoBehaviour
     public static bool IsRecording()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsRecording();
             #endif
         }
@@ -279,7 +287,7 @@ public class Everyplay : MonoBehaviour
     public static bool IsRecordingSupported()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsRecordingSupported();
             #endif
         }
@@ -289,7 +297,7 @@ public class Everyplay : MonoBehaviour
     public static bool IsPaused()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsPaused();
             #endif
         }
@@ -299,7 +307,7 @@ public class Everyplay : MonoBehaviour
     public static bool SnapshotRenderbuffer()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplaySnapshotRenderbuffer();
             #endif
         }
@@ -309,7 +317,7 @@ public class Everyplay : MonoBehaviour
     public static bool IsSupported()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsSupported();
             #endif
         }
@@ -319,7 +327,7 @@ public class Everyplay : MonoBehaviour
     public static bool IsSingleCoreDevice()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsSingleCoreDevice();
             #endif
         }
@@ -329,7 +337,7 @@ public class Everyplay : MonoBehaviour
     public static int GetUserInterfaceIdiom()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayGetUserInterfaceIdiom();
             #endif
         }
@@ -339,7 +347,7 @@ public class Everyplay : MonoBehaviour
     public static void PlayLastRecording()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayPlayLastRecording();
             #endif
         }
@@ -348,7 +356,7 @@ public class Everyplay : MonoBehaviour
     public static void SetMetadata(string key, object val)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             if(key != null && val != null) {
                 Dictionary<string,object> dict = new Dictionary<string, object>();
                 dict.Add(key, val);
@@ -361,7 +369,7 @@ public class Everyplay : MonoBehaviour
     public static void SetMetadata(Dictionary<string,object> dict)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             if(dict != null) {
                 if(dict.Count > 0) {
                     EveryplaySetMetadata(Json.Serialize(dict));
@@ -374,7 +382,7 @@ public class Everyplay : MonoBehaviour
     public static void SetTargetFPS(int fps)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetTargetFPS(fps);
             #endif
         }
@@ -383,7 +391,7 @@ public class Everyplay : MonoBehaviour
     public static void SetMotionFactor(int factor)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetMotionFactor(factor);
             #endif
         }
@@ -392,7 +400,7 @@ public class Everyplay : MonoBehaviour
     public static void SetMaxRecordingMinutesLength(int minutes)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetMaxRecordingMinutesLength(minutes);
             #endif
         }
@@ -401,7 +409,7 @@ public class Everyplay : MonoBehaviour
     public static void SetLowMemoryDevice(bool state)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetLowMemoryDevice(state);
             #endif
         }
@@ -410,7 +418,7 @@ public class Everyplay : MonoBehaviour
     public static void SetDisableSingleCoreDevices(bool state)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetDisableSingleCoreDevices(state);
             #endif
         }
@@ -420,7 +428,7 @@ public class Everyplay : MonoBehaviour
     public static void LoadThumbnailFromFilePath(string filePath, Everyplay.ThumbnailLoadReadyDelegate readyDelegate, Everyplay.ThumbnailLoadFailedDelegate failedDelegate)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayInstance.AsyncLoadThumbnailFromFilePath(filePath, readyDelegate, failedDelegate);
             #endif
         }
@@ -429,7 +437,7 @@ public class Everyplay : MonoBehaviour
     public static bool FaceCamIsVideoRecordingSupported()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsVideoRecordingSupported();
             #endif
         }
@@ -439,7 +447,7 @@ public class Everyplay : MonoBehaviour
     public static bool FaceCamIsAudioRecordingSupported()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsAudioRecordingSupported();
             #endif
         }
@@ -449,7 +457,7 @@ public class Everyplay : MonoBehaviour
     public static bool FaceCamIsHeadphonesPluggedIn()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsHeadphonesPluggedIn();
             #endif
         }
@@ -459,7 +467,7 @@ public class Everyplay : MonoBehaviour
     public static bool FaceCamIsSessionRunning()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsSessionRunning();
             #endif
         }
@@ -469,7 +477,7 @@ public class Everyplay : MonoBehaviour
     public static bool FaceCamIsRecordingPermissionGranted()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsRecordingPermissionGranted();
             #endif
         }
@@ -479,7 +487,7 @@ public class Everyplay : MonoBehaviour
     public static float FaceCamAudioPeakLevel()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamAudioPeakLevel();
             #endif
         }
@@ -489,7 +497,7 @@ public class Everyplay : MonoBehaviour
     public static float FaceCamAudioPowerLevel()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamAudioPowerLevel();
             #endif
         }
@@ -499,7 +507,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetMonitorAudioLevels(bool enabled)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetMonitorAudioLevels(enabled);
             #endif
         }
@@ -508,7 +516,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetAudioOnly(bool audioOnly)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetAudioOnly(audioOnly);
             #endif
         }
@@ -517,7 +525,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetPreviewVisible(bool visible)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewVisible(visible);
             #endif
         }
@@ -526,7 +534,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetPreviewScaleRetina(bool autoScale)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewScaleRetina(autoScale);
             #endif
         }
@@ -535,7 +543,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetPreviewSideWidth(int width)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewSideWidth(width);
             #endif
         }
@@ -544,7 +552,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetPreviewBorderWidth(int width)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewBorderWidth(width);
             #endif
         }
@@ -553,7 +561,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetPreviewPositionX(int x)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewPositionX(x);
             #endif
         }
@@ -562,7 +570,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetPreviewPositionY(int y)
     {
         if(EveryplayInstance != null) {
-         #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+         #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewPositionY(y);
          #endif
         }
@@ -571,7 +579,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetPreviewBorderColor(float r, float g, float b, float a)
     {
         if(EveryplayInstance != null) {
-            #if (UNITY_IPHONE && EVERYPLAY_IPHONE) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewBorderColor(r, g, b, a);
             #endif
         }
@@ -580,18 +588,8 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetPreviewOrigin(Everyplay.FaceCamPreviewOrigin origin)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewOrigin((int)origin);
-            #endif
-        }
-    }
-
-    [Obsolete("File based thumbnails are no longer supported and all code related to it will be removed in future releases. Please use Texture2D thumbnails instead.")]
-    public static void SetThumbnailWidth(int thumbnailWidth)
-    {
-        if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
-            EveryplaySetThumbnailWidth(thumbnailWidth);
             #endif
         }
     }
@@ -600,8 +598,7 @@ public class Everyplay : MonoBehaviour
     {
         if(EveryplayInstance != null) {
 #if !UNITY_3_5
-            #if !UNITY_EDITOR
-            #if UNITY_IPHONE && EVERYPLAY_IPHONE
+            #if EVERYPLAY_IPHONE_ENABLED
             if(texture != null) {
                 EveryplayFaceCamSetTargetTexture(texture.GetNativeTexturePtr());
                 EveryplayFaceCamSetTargetTextureWidth(texture.width);
@@ -610,7 +607,7 @@ public class Everyplay : MonoBehaviour
             else {
                 EveryplayFaceCamSetTargetTexture(System.IntPtr.Zero);
             }
-            #elif UNITY_ANDROID && EVERYPLAY_ANDROID
+            #elif EVERYPLAY_ANDROID_ENABLED
             if(texture != null) {
                 EveryplayFaceCamSetTargetTextureId(texture.GetNativeTextureID());
                 EveryplayFaceCamSetTargetTextureWidth(texture.width);
@@ -620,7 +617,6 @@ public class Everyplay : MonoBehaviour
                 EveryplayFaceCamSetTargetTextureId(0);
             }
             #endif
-            #endif
 #endif
         }
     }
@@ -629,7 +625,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetTargetTextureId(int textureId)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetTargetTextureId(textureId);
             #endif
         }
@@ -639,7 +635,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetTargetTextureWidth(int textureWidth)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetTargetTextureWidth(textureWidth);
             #endif
         }
@@ -649,7 +645,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamSetTargetTextureHeight(int textureHeight)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetTargetTextureHeight(textureHeight);
             #endif
         }
@@ -658,7 +654,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamStartSession()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamStartSession();
             #endif
         }
@@ -667,7 +663,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamRequestRecordingPermission()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamRequestRecordingPermission();
             #endif
         }
@@ -676,7 +672,7 @@ public class Everyplay : MonoBehaviour
     public static void FaceCamStopSession()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamStopSession();
             #endif
         }
@@ -688,8 +684,7 @@ public class Everyplay : MonoBehaviour
         if(EveryplayInstance != null) {
             currentThumbnailTargetTexture = texture;
 #if !UNITY_3_5
-            #if !UNITY_EDITOR
-            #if UNITY_IPHONE && EVERYPLAY_IPHONE
+            #if EVERYPLAY_IPHONE_ENABLED
             if(texture != null) {
                 EveryplaySetThumbnailTargetTexture(currentThumbnailTargetTexture.GetNativeTexturePtr());
                 EveryplaySetThumbnailTargetTextureWidth(currentThumbnailTargetTexture.width);
@@ -698,7 +693,7 @@ public class Everyplay : MonoBehaviour
             else {
                 EveryplaySetThumbnailTargetTexture(System.IntPtr.Zero);
             }
-            #elif UNITY_ANDROID && EVERYPLAY_ANDROID
+            #elif EVERYPLAY_ANDROID_ENABLED
             if(texture != null) {
                 EveryplaySetThumbnailTargetTextureId(currentThumbnailTargetTexture.GetNativeTextureID());
                 EveryplaySetThumbnailTargetTextureWidth(currentThumbnailTargetTexture.width);
@@ -708,7 +703,6 @@ public class Everyplay : MonoBehaviour
                 EveryplaySetThumbnailTargetTextureId(0);
             }
             #endif
-            #endif
 #endif
         }
     }
@@ -717,7 +711,7 @@ public class Everyplay : MonoBehaviour
     public static void SetThumbnailTargetTextureId(int textureId)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetThumbnailTargetTextureId(textureId);
             #endif
         }
@@ -727,7 +721,7 @@ public class Everyplay : MonoBehaviour
     public static void SetThumbnailTargetTextureWidth(int textureWidth)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetThumbnailTargetTextureWidth(textureWidth);
             #endif
         }
@@ -737,7 +731,7 @@ public class Everyplay : MonoBehaviour
     public static void SetThumbnailTargetTextureHeight(int textureHeight)
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetThumbnailTargetTextureHeight(textureHeight);
             #endif
         }
@@ -746,7 +740,7 @@ public class Everyplay : MonoBehaviour
     public static void TakeThumbnail()
     {
         if(EveryplayInstance != null) {
-            #if ((UNITY_IPHONE && EVERYPLAY_IPHONE) || (UNITY_ANDROID && EVERYPLAY_ANDROID)) && !UNITY_EDITOR
+            #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayTakeThumbnail();
             #endif
         }
@@ -764,7 +758,6 @@ public class Everyplay : MonoBehaviour
         FaceCamRecordingPermission = null;
         FaceCamSessionStopped = null;
 #pragma warning disable 612, 618
-        ThumbnailReadyAtFilePath = null;
         ThumbnailReadyAtTextureId = null;
 #pragma warning restore 612, 618
         ThumbnailTextureReady = null;
@@ -956,20 +949,6 @@ public class Everyplay : MonoBehaviour
         }
     }
 
-    private void EveryplayThumbnailReadyAtFilePath(string jsonMsg)
-    {
-#pragma warning disable 612, 618
-        if(ThumbnailReadyAtFilePath != null) {
-            Dictionary<string,object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
-            string thumbnailFilePath;
-
-            if(EveryplayDictionaryExtensions.TryGetValue(dict, "thumbnailFilePath", out thumbnailFilePath)) {
-                ThumbnailReadyAtFilePath(thumbnailFilePath);
-            }
-        }
-#pragma warning restore 612, 618
-    }
-
     private void EveryplayThumbnailReadyAtTextureId(string jsonMsg)
     {
 #pragma warning disable 612, 618
@@ -1051,7 +1030,7 @@ public class Everyplay : MonoBehaviour
 
     // Native calls
 
-    #if (UNITY_IPHONE && EVERYPLAY_IPHONE) && !UNITY_EDITOR
+    #if EVERYPLAY_IPHONE_ENABLED
 
     [DllImport("__Internal")]
     public static extern void InitEveryplay(string clientId, string clientSecret, string redirectURI);
@@ -1192,16 +1171,13 @@ public class Everyplay : MonoBehaviour
     private static extern void EveryplayFaceCamSetTargetTextureHeight(int textureHeight);
 
     [DllImport("__Internal")]
-    private static extern bool EveryplayFaceCamStartSession();
+    private static extern void EveryplayFaceCamStartSession();
 
     [DllImport("__Internal")]
     private static extern void EveryplayFaceCamRequestRecordingPermission();
 
     [DllImport("__Internal")]
-    private static extern bool EveryplayFaceCamStopSession();
-
-    [DllImport("__Internal")]
-    private static extern void EveryplaySetThumbnailWidth(int thumbnailWidth);
+    private static extern void EveryplayFaceCamStopSession();
 
     [DllImport("__Internal")]
     private static extern void EveryplaySetThumbnailTargetTexture(System.IntPtr texturePtr);
@@ -1218,7 +1194,7 @@ public class Everyplay : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void EveryplayTakeThumbnail();
 
-    #elif (UNITY_ANDROID && EVERYPLAY_ANDROID) && !UNITY_EDITOR
+    #elif EVERYPLAY_ANDROID_ENABLED
 
     private static AndroidJavaObject everyplayUnity;
 
@@ -1451,10 +1427,9 @@ public class Everyplay : MonoBehaviour
         Debug.Log(System.Reflection.MethodBase.GetCurrentMethod().Name + " not yet implemented");
     }
 
-    public static bool EveryplayFaceCamStartSession()
+    public static void EveryplayFaceCamStartSession()
     {
         Debug.Log(System.Reflection.MethodBase.GetCurrentMethod().Name + " not yet implemented");
-        return false;
     }
 
     public static void EveryplayFaceCamRequestRecordingPermission()
@@ -1462,15 +1437,9 @@ public class Everyplay : MonoBehaviour
         Debug.Log(System.Reflection.MethodBase.GetCurrentMethod().Name + " not yet implemented");
     }
 
-    public static bool EveryplayFaceCamStopSession()
+    public static void EveryplayFaceCamStopSession()
     {
         Debug.Log(System.Reflection.MethodBase.GetCurrentMethod().Name + " not yet implemented");
-        return false;
-    }
-
-    public static void EveryplaySetThumbnailWidth(int thumbnailWidth)
-    {
-        everyplayUnity.Call("setThumbnailWidth", thumbnailWidth);
     }
 
     public static void EveryplaySetThumbnailTargetTextureId(int textureId)

@@ -166,12 +166,6 @@ static EveryplayUnity * everyplayUnity = [EveryplayUnity sharedInstance];
     UnitySendMessage("Everyplay", "EveryplayFaceCamSessionStopped", "");
 }
 
-- (void)everyplayThumbnailReadyAtFilePath:(NSString *)thumbnailFilePath {
-    ELOG;
-    NSString *jsonMsg = [NSString stringWithFormat: @"{ \"thumbnailFilePath\":\"%@\" }", (thumbnailFilePath == nil) ? @"" : thumbnailFilePath];
-    UnitySendMessage("Everyplay", "EveryplayThumbnailReadyAtFilePath", [jsonMsg UTF8String]);
-}
-
 - (void)everyplayThumbnailReadyAtTextureId:(NSNumber *)textureId portraitMode: (NSNumber *) portrait {
     ELOG;
     NSString *jsonMsg = [NSString stringWithFormat: @"{ \"textureId\":%d,\"portrait\":%d }", [textureId intValue], [portrait intValue]];
@@ -480,10 +474,6 @@ extern "C" {
 
     void EveryplayFaceCamStopSession() {
         [[[Everyplay sharedInstance] faceCam] stopSession];
-    }
-
-    void EveryplaySetThumbnailWidth(int thumbnailWidth) {
-        [[[Everyplay sharedInstance] capture] setThumbnailWidth: thumbnailWidth];
     }
 
     void EveryplaySetThumbnailTargetTexture(void *texturePtr) {
