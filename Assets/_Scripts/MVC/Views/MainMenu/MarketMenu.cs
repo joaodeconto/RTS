@@ -18,10 +18,10 @@ public class MarketMenu : MonoBehaviour
 	{		
 		DefaultCallbackButton defaultCallbackButton;		
 		GameObject option = transform.FindChild ("Menu").transform.FindChild ("Button (Facebook)").gameObject;
-		GameObject goFacebookHandler;	
-		goFacebookHandler = new GameObject ("FacebookLoginHandler");
-		goFacebookHandler.transform.parent = this.transform;		
-		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();		
+//		GameObject goFacebookHandler;	
+//		goFacebookHandler = new GameObject ("FacebookLoginHandler");
+//		goFacebookHandler.transform.parent = this.transform;		
+//		fh = goFacebookHandler.AddComponent <FacebookLoginHandler> ();		
 		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
 		if (!receivedBonus)
 		{
@@ -40,7 +40,7 @@ public class MarketMenu : MonoBehaviour
 														
 														);				
 												}
-												else fh.DoLogin ();
+												else FB.Login ("email, publish_actions");
 												
 											});
 										}

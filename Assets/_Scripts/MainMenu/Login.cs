@@ -24,7 +24,10 @@ public class Login : IController
 		#if UNITY_IOS
 		Advertisement.Initialize("35534", false);
 		#else
+		if (Advertisement.isSupported) {
+
 		Advertisement.Initialize("18990", false);
+		}
 		#endif
 		pw = ComponentGetter.Get<PhotonWrapper>();
 		pw.Init();

@@ -96,7 +96,6 @@ public class InternalMainMenu : MonoBehaviour
 									if(ConfigurationData.addPass || ConfigurationData.multiPass){ QuitGame();}
 									else	Advertisement.Show(null, new ShowOptions
 										                    {
-																pause = true,
 																resultCallback = result => {QuitGame();}
 															});														
 								 });

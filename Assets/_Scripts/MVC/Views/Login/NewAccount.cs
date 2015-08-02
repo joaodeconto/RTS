@@ -23,7 +23,6 @@ public class NewAccount : IView
 	public int NumberOfCoinsNewPlayerStartsWith = 500;
 
 	public bool AccountAlreadyExists;
-	private FacebookLoginHandler fh;
 
 
 	public NewAccount Init ()
@@ -34,9 +33,6 @@ public class NewAccount : IView
 		}
 
 		Login login = ComponentGetter.Get<Login>();
-			
-		fh = ComponentGetter.Get<FacebookLoginHandler> ();
-		fh.OnLoggedIn = Yupy;
 
 		AvatarButton
 			.AddComponent<DefaultCallbackButton> ()
@@ -49,7 +45,7 @@ public class NewAccount : IView
 
 		FacebookButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>
 		                                                          {
-			fh.DoLogin ();
+			FB.Login ("email, publish_actions");
 		});	
 	
 

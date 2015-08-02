@@ -35,10 +35,8 @@ public class StoreManager : MonoBehaviour
 			StoreEvents.OnCurrencyBalanceChanged += onCurrencyBalanceChanged;	
 			StoreEvents.OnGoodBalanceChanged 	 += onGoodBalanceChanged;
 			SoomlaStore.Initialize(new RTSStoreAssets());
-			StoreInventory.TakeItem("pass_multiplayer", 1);
-			
+			StoreInventory.TakeItem("pass_multiplayer", 1);			
 			StoreInventory.TakeItem("no_ads", 1);
-
 			wasInitialized = true;
 		}
 	}	

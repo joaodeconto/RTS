@@ -57,7 +57,6 @@ public class OfflineMenu : MonoBehaviour
 										
 											Advertisement.Show(null, new ShowOptions
 						                    {
-												pause = true,
 												resultCallback = result => {QuitGame();}
 											});
 										}
