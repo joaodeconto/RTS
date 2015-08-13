@@ -31,8 +31,12 @@ namespace Soomla.Profile {
 
 		protected override void _initialize(string customParamsJson) {
 			AndroidJNI.PushLocalFrame(100);
-			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.UnitySoomlaProfile")) {
-				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "initialize", customParamsJson);
+			using (AndroidJavaClass unityActivityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
+				using(AndroidJavaObject unityActivity = unityActivityClass.GetStatic<AndroidJavaObject>("currentActivity")) {
+					using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.UnitySoomlaProfile")) {
+						ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "initialize", unityActivity, customParamsJson);
+					}
+				}
 			}
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}

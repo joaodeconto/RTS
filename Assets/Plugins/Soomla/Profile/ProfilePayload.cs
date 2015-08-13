@@ -31,12 +31,12 @@ namespace Soomla.Profile
 
 		public static string GetUserPayload(JSONObject profilePayloadJson)
 		{
-			return profilePayloadJson [USER_PAYLOAD].str;
+			return profilePayloadJson != null && profilePayloadJson[USER_PAYLOAD] != null ? profilePayloadJson[USER_PAYLOAD].str : "";
 		}
 
 		public static string GetRewardId(JSONObject profilePayloadJson)
 		{
-			return profilePayloadJson [REWARD_ID].str;
+			return profilePayloadJson != null && profilePayloadJson[REWARD_ID] != null ? profilePayloadJson[REWARD_ID].str : "";
 		}
 	
 		private const string USER_PAYLOAD = "userPayload";

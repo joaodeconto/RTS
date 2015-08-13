@@ -394,7 +394,6 @@ public class StatsController : MonoBehaviour
 
 	public void DeselectAllStats ()
 	{
-		Debug.Log("deselect all");
 		selectedGroup = -1;
 
 		selectionController.groupFeedback.SetActive(false);
@@ -408,12 +407,10 @@ public class StatsController : MonoBehaviour
 		if (hudController.trnsOptionsMenu.childCount > 0 || hudController.trnsPanelUnitStats.childCount > 0)
 		{
 			hudController.DestroyOptionsBtns();
-			Debug.Log("option child count" + hudController.trnsOptionsMenu.childCount);
 		}
 
 		selectedStats.Clear ();		
 		statsTypeSelected = StatsTypeSelected.None;
-		Debug.Log("selectedStats count" + selectedStats.Count);
 	}
 	#endregion
 

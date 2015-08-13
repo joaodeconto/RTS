@@ -76,17 +76,13 @@ public class Worker : Unit
 
 	public override void Init ()
 	{
-		if (workerInitialized)	return;
-		
+		if (workerInitialized)	return;		
 		workerInitialized = true;
 		base.Init ();
 		moveAttack = false;
 		resourceId = -1;
-
 		DisableResourceTools();
-
 		hasResource = isSettingWorkerNull = false;
-
 		workerState = WorkerState.Idle;
 	}
 
@@ -264,7 +260,7 @@ public class Worker : Unit
 				}
 
 				NavAgent.Stop ();
-				if (workerState == WorkerState.Building)
+				if (workerState == WorkerState.Building && !factoryChoose.wasBuilt)
 				{
 					if (!IsBuilding) StartCoroutine (StartConstruct ());					
 				}

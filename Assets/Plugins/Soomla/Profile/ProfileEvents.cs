@@ -118,7 +118,8 @@ namespace Soomla.Profile {
 			Provider provider = Provider.fromInt((int)(eventJson["provider"].n));
 
 			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
-			ProfileEvents.OnLoginStarted (provider, ProfilePayload.GetUserPayload(payloadJSON));
+			string payload = ProfilePayload.GetUserPayload(payloadJSON);
+			ProfileEvents.OnLoginStarted(provider, payload);
 		}
 
 		/// <summary>

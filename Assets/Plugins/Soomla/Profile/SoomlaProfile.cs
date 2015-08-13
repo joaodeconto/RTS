@@ -83,13 +83,44 @@ namespace Soomla.Profile
 				}
 			}
 
-#if UNITY_EDITOR
-			TryFireProfileInitialized();
-#endif
-		}
+			ProfileEvents.OnSoomlaProfileInitialized += () => {
+                // auto login non-native providers
+                foreach (KeyValuePair<Provider, SocialProvider> entry in providers) {
+                    if (!entry.Value.IsNativelyImplemented()) {
+                        if (entry.Value.IsAutoLogin()) {
+                            Provider provider = entry.Key;
+                            if (wasLoggedInWithProvider(provider)) {
+                                string payload = "";
+                                Reward reward = null;
+                                if (entry.Value.IsLoggedIn()) {
+                                    entry.Value.GetUserProfile((UserProfile userProfile) => {
+                                        setLoggedInForProvider(provider, false);
+                                        ProfileEvents.OnLoginStarted(provider, payload);
+                                        StoreUserProfile(userProfile);
+                                        setLoggedInForProvider(provider, true);
+                                        ProfileEvents.OnLoginFinished(userProfile, payload);
+                                        if (reward != null) {
+                                            reward.Give();
+                                        }
+                                    }, (string message) => {  
+                                        ProfileEvents.OnLoginFailed(provider, message, payload);
+                                    });
+                                } else {
+                                    Login(provider, payload, reward);
+                                }
+                            }
+                        }
+                    }
+                }
+            };
 
-		/// <summary>
-		/// Logs the user into the given provider.
+            #if UNITY_EDITOR
+            TryFireProfileInitialized();
+            #endif
+        }
+        
+        /// <summary>
+        /// Logs the user into the given provider.
 		/// Supported platforms: Facebook, Twitter, Google+
 		/// </summary>
 		/// <param name="provider">The provider to log in to.</param>
@@ -114,20 +145,27 @@ namespace Soomla.Profile
 
 			else 
 			{
+				setLoggedInForProvider(provider, false);
 				ProfileEvents.OnLoginStarted(provider, userPayload);
 				targetProvider.Login(
-					/* success */	(UserProfile userProfile) => { 
-					StoreUserProfile(userProfile);
-					if (reward != null) {
-						reward.Give();
-					}
-					ProfileEvents.OnLoginFinished(userProfile, userPayload);
+					/* success */	() => {
+					targetProvider.GetUserProfile((UserProfile userProfile) => {
+						StoreUserProfile(userProfile);
+						setLoggedInForProvider(provider, true);
+						ProfileEvents.OnLoginFinished(userProfile, userPayload);
+						if (reward != null) {
+							reward.Give();
+						}
+					}, (string message) => {  
+						ProfileEvents.OnLoginFailed (provider, message, userPayload);
+					});
 				},
 				/* fail */		(string message) => {  ProfileEvents.OnLoginFailed (provider, message, userPayload); },
 				/* cancel */	() => {  ProfileEvents.OnLoginCancelled(provider, userPayload); }
 				);
 			}
 		}
+
 
 		/// <summary>
 		/// Logs the user out of the given provider. 
@@ -779,18 +817,21 @@ namespace Soomla.Profile
 		{
 			Dictionary<string, string> fbParams = new Dictionary<string, string>()
 			{
-				{"permissions", ProfileSettings.FBPermissions}
+				{"permissions", ProfileSettings.FBPermissions},
+				{"autoLogin", ProfileSettings.FBAutoLogin.ToString()}
 			};
 			
 			Dictionary<string, string> gpParams = new Dictionary<string, string>()
 			{
-				{"clientId", ProfileSettings.GPClientId}
+				{"clientId", ProfileSettings.GPClientId},
+				{"autoLogin", ProfileSettings.GPAutoLogin.ToString()}
 			};
 			
 			Dictionary<string, string> twParams = new Dictionary<string, string> ()
 			{
 				{"consumerKey", ProfileSettings.TwitterConsumerKey},
-				{"consumerSecret", ProfileSettings.TwitterConsumerSecret}
+				{"consumerSecret", ProfileSettings.TwitterConsumerSecret},
+				{"autoLogin", ProfileSettings.TwitterAutoLogin.ToString()}
 			};
 			
 			Dictionary<Provider, Dictionary<string, string>> customParams =  new Dictionary<Provider, Dictionary<string, string>> ()
@@ -846,14 +887,31 @@ namespace Soomla.Profile
 			UploadImage(provider, message, "current_screenshot.jpeg", tex, payload, reward);
 		}
 
-		/** keys when running in editor **/
+		private const string DB_KEY_PREFIX = "soomla.profile";
 #if UNITY_EDITOR
-		private const string DB_KEY_PREFIX = "soomla.profile.";
-
+		/** keys when running in editor **/
 		private static string keyUserProfile(Provider provider) {
-			return DB_KEY_PREFIX + "userprofile." + provider.ToString();
+			return DB_KEY_PREFIX + ".userprofile." + provider.ToString();
 		}
 #endif
+
+		private static bool wasLoggedInWithProvider(Provider provider) {
+			return "true".Equals(KeyValueStorage.GetValue(getLoggedInStorageKeyForProvider(provider)));
+		}
+
+		private static string getLoggedInStorageKeyForProvider(Provider provider) {
+			return DB_KEY_PREFIX + "." + provider.ToString() + ".loggedIn";
+		}
+
+		private static void setLoggedInForProvider(Provider provider, bool value) {
+			string key = getLoggedInStorageKeyForProvider(provider);
+			if (value) {
+				KeyValueStorage.SetValue(key, "true");
+			} else {
+				KeyValueStorage.DeleteKeyValue(key);
+			}
+		}
+
 		/** CLASS MEMBERS **/
 
 		protected const string TAG = "SOOMLA SoomlaProfile";

@@ -6,7 +6,7 @@ SubstanceImporter:
   - serializedVersion: 12
     name: SUB_Brachio
     prototypeName: SUB_Brachio
-    shader: {fileID: 10704, guid: 0000000000000000f000000000000000, type: 0}
+    shader: {fileID: 10703, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
@@ -46,13 +46,6 @@ SubstanceImporter:
             texture: {instanceID: 0}
             scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _BumpMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
       floats:
         data:
           first:
@@ -69,7 +62,7 @@ SubstanceImporter:
           second: {r: .5, g: .5, b: .5, a: 1}
     textureParameters:
     - name: SUB_Brachio_diffuse
-      alphaSource: 5
+      alphaSource: 1
       filterMode: 1
       aniso: 1
       wrapMode: 0
@@ -83,10 +76,6 @@ SubstanceImporter:
         name: _MainTex
       material: {instanceID: 0}
       baseUID: 753792939
-    - shaderProp:
-        name: _BumpMap
-      material: {instanceID: 0}
-      baseUID: 753792933
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 
@@ -97,7 +86,7 @@ SubstanceImporter:
   - serializedVersion: 12
     name: SUB_Dilopho
     prototypeName: SUB_Dilopho
-    shader: {fileID: 2, guid: 0000000000000000f000000000000000, type: 0}
+    shader: {fileID: 10703, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
@@ -137,13 +126,6 @@ SubstanceImporter:
             texture: {instanceID: 0}
             scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _BumpMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
       floats:
         data:
           first:
@@ -160,7 +142,7 @@ SubstanceImporter:
           second: {r: .5, g: .5, b: .5, a: 1}
     textureParameters:
     - name: SUB_Dilopho_diffuse
-      alphaSource: 5
+      alphaSource: 1
       filterMode: 1
       aniso: 1
       wrapMode: 0
@@ -174,10 +156,6 @@ SubstanceImporter:
         name: _MainTex
       material: {instanceID: 0}
       baseUID: 2448145927
-    - shaderProp:
-        name: _BumpMap
-      material: {instanceID: 0}
-      baseUID: 2448145925
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 
@@ -188,7 +166,7 @@ SubstanceImporter:
   - serializedVersion: 12
     name: SUB_DilophoSail
     prototypeName: SUB_DilophoSail
-    shader: {fileID: 4800000, guid: 63296adc25d64ac43b39f9c3314bf32d, type: 3}
+    shader: {fileID: 4800000, guid: 4bdc6a1bed3ecee4893938ed869c102a, type: 3}
     inputs:
     - name: outputcolor
       value:
@@ -228,13 +206,6 @@ SubstanceImporter:
             texture: {instanceID: 0}
             scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _BumpMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
       floats:
         data:
           first:
@@ -255,7 +226,7 @@ SubstanceImporter:
           second: {r: 0, g: 0, b: 0, a: 0}
     textureParameters:
     - name: SUB_DilophoSail_diffuse
-      alphaSource: 5
+      alphaSource: 1
       filterMode: 1
       aniso: 1
       wrapMode: 0
@@ -269,10 +240,6 @@ SubstanceImporter:
         name: _MainTex
       material: {instanceID: 0}
       baseUID: 647190107
-    - shaderProp:
-        name: _BumpMap
-      material: {instanceID: 0}
-      baseUID: 647190105
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 
@@ -283,27 +250,282 @@ SubstanceImporter:
   - serializedVersion: 12
     name: SUB_Parassa
     prototypeName: SUB_Parassa
-    shader: {fileID: 4, guid: 0000000000000000f000000000000000, type: 0}
+    shader: {fileID: 10703, guid: 0000000000000000f000000000000000, type: 0}
     inputs:
     - name: outputcolor
       value:
-        scalar[0]: .33088237
-        scalar[1]: .33088237
-        scalar[2]: .33088237
+        scalar[0]: 1
+        scalar[1]: 0
+        scalar[2]: 0
         scalar[3]: 1
         texture: {instanceID: 0}
     - name: outputcolor_1
       value:
-        scalar[0]: .198529422
-        scalar[1]: .198529422
-        scalar[2]: .198529422
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
         scalar[3]: 1
         texture: {instanceID: 0}
     - name: outputcolor_2
       value:
-        scalar[0]: .264705896
-        scalar[1]: .264705896
-        scalar[2]: .264705896
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 0, y: 0}
+      scale: {x: 1, y: 1}
+      generateMipmaps: 0
+      generateAllOutputs: 0
+      animationUpdateRate: 0
+    materialProperties:
+      serializedVersion: 2
+      texEnvs:
+        data:
+          first:
+            name: _MainTex
+          second:
+            texture: {instanceID: 0}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+      floats:
+        data:
+          first:
+            name: _Shininess
+          second: .078125
+      colors:
+        data:
+          first:
+            name: _Color
+          second: {r: 1, g: 1, b: 1, a: 1}
+        data:
+          first:
+            name: _SpecColor
+          second: {r: .5, g: .5, b: .5, a: 1}
+    textureParameters:
+    - name: SUB_Parassa_Output
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: SUB_Parassa_Output_1
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: SUB_Parassa_Diffuse
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: SUB_Parassa_Normal
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: SUB_Parassa_diffuse_1
+      alphaSource: 1
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 2469895673
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 1
+  - serializedVersion: 12
+    name: SUB_Raptor
+    prototypeName: SUB_Raptor
+    shader: {fileID: 10703, guid: 0000000000000000f000000000000000, type: 0}
+    inputs:
+    - name: outputcolor
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: outputcolor_1
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: outputcolor_2
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 0, y: 0}
+      scale: {x: 1, y: 1}
+      generateMipmaps: 0
+      generateAllOutputs: 0
+      animationUpdateRate: 0
+    materialProperties:
+      serializedVersion: 2
+      texEnvs:
+        data:
+          first:
+            name: _MainTex
+          second:
+            texture: {instanceID: 0}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+      floats:
+        data:
+          first:
+            name: _Shininess
+          second: .078125
+      colors:
+        data:
+          first:
+            name: _Color
+          second: {r: 1, g: 1, b: 1, a: 1}
+        data:
+          first:
+            name: _SpecColor
+          second: {r: .5, g: .5, b: .5, a: 1}
+    textureParameters:
+    - name: SUB_Raptor_diffuse
+      alphaSource: 1
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: SUB_Raptor_normal
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 419137970
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 1
+  - serializedVersion: 12
+    name: SUB_Trex
+    prototypeName: SUB_Trex
+    shader: {fileID: 10703, guid: 0000000000000000f000000000000000, type: 0}
+    inputs:
+    - name: outputcolor
+      value:
+        scalar[0]: .0588235259
+        scalar[1]: .0588235259
+        scalar[2]: .0588235259
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: outputcolor_1
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: outputcolor_2
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 0, y: 0}
+      scale: {x: 1, y: 1}
+      generateMipmaps: 0
+      generateAllOutputs: 0
+      animationUpdateRate: 0
+    materialProperties:
+      serializedVersion: 2
+      texEnvs:
+        data:
+          first:
+            name: _MainTex
+          second:
+            texture: {instanceID: 0}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+      floats:
+        data:
+          first:
+            name: _Shininess
+          second: .078125
+      colors:
+        data:
+          first:
+            name: _Color
+          second: {r: 1, g: 1, b: 1, a: 1}
+        data:
+          first:
+            name: _SpecColor
+          second: {r: .5, g: .5, b: .5, a: 1}
+    textureParameters:
+    - name: SUB_Trex_diffuse
+      alphaSource: 1
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: SUB_Trex_normal
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    textureAssignments:
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 3913535933
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 1
+  - serializedVersion: 12
+    name: SUB_Triceratops
+    prototypeName: SUB_Triceratops
+    shader: {fileID: 10704, guid: 0000000000000000f000000000000000, type: 0}
+    inputs:
+    - name: outputcolor
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: outputcolor_1
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: outputcolor_2
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
         scalar[3]: 1
         texture: {instanceID: 0}
     materialInformation:
@@ -345,22 +567,12 @@ SubstanceImporter:
             name: _SpecColor
           second: {r: .5, g: .5, b: .5, a: 1}
     textureParameters:
-    - name: SUB_Parassa_Output
-      alphaSource: 5
+    - name: SUB_Triceratops_diffuse
+      alphaSource: 1
       filterMode: 1
       aniso: 1
       wrapMode: 0
-    - name: SUB_Parassa_Output_1
-      alphaSource: 0
-      filterMode: 1
-      aniso: 1
-      wrapMode: 0
-    - name: SUB_Parassa_Diffuse
-      alphaSource: 5
-      filterMode: 1
-      aniso: 1
-      wrapMode: 0
-    - name: SUB_Parassa_Normal
+    - name: SUB_Triceratops_normal
       alphaSource: 0
       filterMode: 1
       aniso: 1
@@ -369,11 +581,11 @@ SubstanceImporter:
     - shaderProp:
         name: _MainTex
       material: {instanceID: 0}
-      baseUID: 2631855257
+      baseUID: 1294117504
     - shaderProp:
         name: _BumpMap
       material: {instanceID: 0}
-      baseUID: 2631855263
+      baseUID: 1294117510
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 

@@ -31,7 +31,7 @@ public class RangedStructure : RangeUnit
 			}
 
 			
-			Debug.Log(TargetAttack);
+			//Debug.Log(TargetAttack);
 		}
 		else
 		{

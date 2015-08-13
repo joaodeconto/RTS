@@ -1,4 +1,14 @@
-﻿using UnityEngine;
+﻿/*
+ * Copyright (C) 2012-2015 Soomla Inc. - All Rights Reserved
+ *
+ *   Unauthorized copying of this file, via any medium is strictly prohibited
+ *   Proprietary and confidential
+ *
+ *   Written by Refael Dakar <refael@soom.la>
+ */
+
+ 
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Soomla;
@@ -6,6 +16,7 @@ using System;
 using Soomla.Sync;
 using Soomla.Gifting;
 using Soomla.Query;
+using Soomla.Insights;
 using System.Runtime.InteropServices;
 
 namespace Soomla.Highway {
@@ -325,6 +336,34 @@ namespace Soomla.Highway {
 			HighwayEvents.OnDLCPackageSyncFailed(packageId, (DLCSyncErrorCode)errorCode, errorMessage);
 		}
 
+		public void onInsightsInitialized(string message) {
+			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onInsightsInitialized");
+
+			SoomlaInsights.I_SyncWithNative ();
+
+			HighwayEvents.OnInsightsInitialized();
+		}
+
+		public void onInsightsRefreshFailed(string message) {
+			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onInsightsRefreshFailed");
+			
+			HighwayEvents.OnInsightsRefreshFailed();
+		}
+
+		public void onInsightsRefreshStarted(string message) {
+			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onInsightsRefreshStarted");
+			
+			HighwayEvents.OnInsightsRefreshStarted();
+		}
+
+		public void onInsightsRefreshFinished(string message) {
+			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onInsightsRefreshFinished");
+
+			SoomlaInsights.I_SyncWithNative ();
+
+			HighwayEvents.OnInsightsRefreshFinished();
+		}
+
 		/// <summary>
 		/// Fired when Soomla Sync is intialized.
 		/// </summary>
@@ -469,6 +508,11 @@ namespace Soomla.Highway {
 		/// and the error message.
 		/// </summary>
 		public static Action<string, DLCSyncErrorCode, string> OnDLCPackageSyncFailed = delegate {};
+
+		public static Action OnInsightsInitialized = delegate {};
+		public static Action OnInsightsRefreshFailed = delegate {};
+		public static Action OnInsightsRefreshFinished = delegate {};
+		public static Action OnInsightsRefreshStarted = delegate {};
 
 		/* Internal SOOMLA events ... Not meant for public use */
 

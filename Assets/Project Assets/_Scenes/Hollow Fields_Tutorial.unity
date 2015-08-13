@@ -5800,6 +5800,7 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
+    - {fileID: 6500000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
   m_RootGameObject: {fileID: 2112886917}
   m_IsPrefabParent: 0
@@ -9738,7 +9739,6 @@ GameObject:
   - 4: {fileID: 151041087}
   - 33: {fileID: 151041086}
   - 23: {fileID: 151041085}
-  - 136: {fileID: 151041084}
   m_Layer: 13
   m_Name: Wood_01
   m_TagString: Untagged
@@ -9746,20 +9746,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967263
   m_IsActive: 1
---- !u!136 &151041084
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 13600000, guid: eb8a0ebf4fd88244aa12ae08240337e2,
-    type: 2}
-  m_PrefabInternal: {fileID: 1653792637}
-  m_GameObject: {fileID: 151041083}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: .340000004
-  m_Height: 2.5999999
-  m_Direction: 1
-  m_Center: {x: 0, y: .870000005, z: -.0700000003}
 --- !u!23 &151041085
 Renderer:
   m_ObjectHideFlags: 0
@@ -12725,7 +12711,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 188302078}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -111, y: -17, z: 0}
+  m_LocalPosition: {x: -119.900002, y: -20.2000008, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 435725793}
@@ -12761,13 +12747,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: .286764681, g: .286764681, b: .286764681, a: 1}
   mPivot: 3
-  mWidth: 421
+  mWidth: 438
   mHeight: 30
   mDepth: 23
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 14.0333338
+  aspectRatio: 14.6000004
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -17668,6 +17654,7 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
+    - {fileID: 6500000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
   m_RootGameObject: {fileID: 1480383318}
   m_IsPrefabParent: 0
@@ -24487,7 +24474,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 42
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 13600000, guid: ee1df469d7f7b264fb5cf286ee443b71, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: ee1df469d7f7b264fb5cf286ee443b71, type: 2}
   m_RootGameObject: {fileID: 962020296}
   m_IsPrefabParent: 0
@@ -25894,7 +25882,6 @@ GameObject:
   - 4: {fileID: 386294165}
   - 33: {fileID: 386294164}
   - 23: {fileID: 386294163}
-  - 136: {fileID: 386294162}
   m_Layer: 13
   m_Name: Wood_02
   m_TagString: Untagged
@@ -25902,20 +25889,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967263
   m_IsActive: 1
---- !u!136 &386294162
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 13600000, guid: cdeed472538870d498381ff87085dab9,
-    type: 2}
-  m_PrefabInternal: {fileID: 688276374}
-  m_GameObject: {fileID: 386294161}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 1.27999997
-  m_Height: 9.72000027
-  m_Direction: 2
-  m_Center: {x: -.310000002, y: .479999989, z: 4.0999999}
 --- !u!23 &386294163
 Renderer:
   m_ObjectHideFlags: 0
@@ -29141,7 +29114,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 427425850}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -133, y: -17, z: .000234365463}
+  m_LocalPosition: {x: -174, y: -17, z: .000234365463}
   m_LocalScale: {x: .999845624, y: .999749899, z: .999749899}
   m_Children: []
   m_Father: {fileID: 411794320}
@@ -29161,11 +29134,11 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 594897969}
     relative: 0
-    absolute: 0
+    absolute: 5
   rightAnchor:
     target: {fileID: 594897969}
     relative: .5
-    absolute: -26
+    absolute: -24
   bottomAnchor:
     target: {fileID: 594897969}
     relative: 0
@@ -29175,15 +29148,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 0
-  mColor: {r: 1, g: .74999994, b: 0, a: 1}
-  mPivot: 5
-  mWidth: 46
+  mColor: {r: .786764741, g: .786764741, b: .786764741, a: 1}
+  mPivot: 3
+  mWidth: 43
   mHeight: 28
   mDepth: 35
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.64285719
+  aspectRatio: 1.53571427
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -35982,7 +35955,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 640882915}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -179, y: -42, z: .000234365463}
+  m_LocalPosition: {x: -174, y: -42, z: .000234365463}
   m_LocalScale: {x: .999845624, y: .999749899, z: .999749899}
   m_Children: []
   m_Father: {fileID: 2108044822}
@@ -36002,11 +35975,11 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 1781455773}
     relative: 0
-    absolute: 0
+    absolute: 5
   rightAnchor:
     target: {fileID: 1781455773}
     relative: .5
-    absolute: -26
+    absolute: -24
   bottomAnchor:
     target: {fileID: 1781455773}
     relative: 0
@@ -36016,15 +35989,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 0
-  mColor: {r: 1, g: .74999994, b: 0, a: 1}
+  mColor: {r: .786764741, g: .786764741, b: .786764741, a: 1}
   mPivot: 3
-  mWidth: 46
+  mWidth: 43
   mHeight: 28
   mDepth: 35
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.64285719
+  aspectRatio: 1.53571427
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -37200,7 +37173,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 644090623}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -133, y: 7, z: .000234365463}
+  m_LocalPosition: {x: -174, y: 7, z: .000234365463}
   m_LocalScale: {x: .999845624, y: .999749899, z: .999749899}
   m_Children: []
   m_Father: {fileID: 411794320}
@@ -37220,11 +37193,11 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 1231605384}
     relative: 0
-    absolute: 0
+    absolute: 5
   rightAnchor:
     target: {fileID: 1231605384}
     relative: .5
-    absolute: -26
+    absolute: -24
   bottomAnchor:
     target: {fileID: 1231605384}
     relative: 0
@@ -37234,15 +37207,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 0
-  mColor: {r: 1, g: .74999994, b: 0, a: 1}
-  mPivot: 5
-  mWidth: 46
+  mColor: {r: .786764741, g: .786764741, b: .786764741, a: 1}
+  mPivot: 3
+  mWidth: 43
   mHeight: 28
   mDepth: 35
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.64285719
+  aspectRatio: 1.53571427
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -38703,7 +38676,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 41
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 13600000, guid: cdeed472538870d498381ff87085dab9, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: cdeed472538870d498381ff87085dab9, type: 2}
   m_RootGameObject: {fileID: 386294161}
   m_IsPrefabParent: 0
@@ -43082,13 +43056,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: .463235319, g: .463235319, b: .463235319, a: 1}
   mPivot: 4
-  mWidth: 452
+  mWidth: 470
   mHeight: 206
   mDepth: 21
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.19417477
+  aspectRatio: 2.28155351
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -47257,6 +47231,7 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
+    - {fileID: 6500000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
   m_RootGameObject: {fileID: 963213591}
   m_IsPrefabParent: 0
@@ -48043,7 +48018,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 880498160}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 204.800003, y: 87.5999985, z: 0}
+  m_LocalPosition: {x: 215.600006, y: 87.5999985, z: 0}
   m_LocalScale: {x: .899999976, y: .899999976, z: 1}
   m_Children:
   - {fileID: 1553223258}
@@ -49663,7 +49638,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 932952785}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -467, y: 14, z: -1}
+  m_LocalPosition: {x: -467, y: 18.3999996, z: -1}
   m_LocalScale: {x: 1, y: .999899983, z: .999899983}
   m_Children: []
   m_Father: {fileID: 1684751033}
@@ -50366,7 +50341,6 @@ GameObject:
   - 4: {fileID: 962020300}
   - 33: {fileID: 962020299}
   - 23: {fileID: 962020298}
-  - 136: {fileID: 962020297}
   m_Layer: 13
   m_Name: Wood_03
   m_TagString: Untagged
@@ -50374,20 +50348,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967263
   m_IsActive: 1
---- !u!136 &962020297
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 13600000, guid: ee1df469d7f7b264fb5cf286ee443b71,
-    type: 2}
-  m_PrefabInternal: {fileID: 379173943}
-  m_GameObject: {fileID: 962020296}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: .270000011
-  m_Height: 2.23809218
-  m_Direction: 1
-  m_Center: {x: .0175350029, y: .00999999978, z: -.0066378261}
 --- !u!23 &962020298
 Renderer:
   m_ObjectHideFlags: 0
@@ -50497,7 +50457,6 @@ GameObject:
   - 4: {fileID: 963213592}
   - 33: {fileID: 963213595}
   - 23: {fileID: 963213594}
-  - 65: {fileID: 963213593}
   m_Layer: 13
   m_Name: TreeStump_S_01
   m_TagString: Untagged
@@ -50517,19 +50476,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 93868755}
   m_RootOrder: 49
---- !u!65 &963213593
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 6500000, guid: 05333827c17239c4b88487f5c29d3f4d,
-    type: 2}
-  m_PrefabInternal: {fileID: 841953452}
-  m_GameObject: {fileID: 963213591}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.19000006, y: 2.50781322, z: 2.4000001}
-  m_Center: {x: .0500000007, y: .909069657, z: -.0599999987}
 --- !u!23 &963213594
 Renderer:
   m_ObjectHideFlags: 0
@@ -55152,12 +55098,12 @@ MonoBehaviour:
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 0
   mWidth: 271
-  mHeight: 139
+  mHeight: 134
   mDepth: 34
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.94964027
+  aspectRatio: 2.02238798
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -71102,8 +71048,8 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1319368110}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -198.000031, y: 140.333359, z: 0}
-  m_LocalScale: {x: .555555582, y: .555555582, z: .5}
+  m_LocalPosition: {x: -213.800003, y: 132.699997, z: 0}
+  m_LocalScale: {x: .400000006, y: .400000006, z: .400000006}
   m_Children:
   - {fileID: 622868482}
   - {fileID: 1238759431}
@@ -72679,7 +72625,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1377997334}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -179, y: -17, z: 0}
+  m_LocalPosition: {x: -174, y: -17, z: 0}
   m_LocalScale: {x: .999845624, y: .999749899, z: .999749899}
   m_Children: []
   m_Father: {fileID: 2108044822}
@@ -72699,11 +72645,11 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 862850091}
     relative: 0
-    absolute: 0
+    absolute: 5
   rightAnchor:
     target: {fileID: 862850091}
     relative: .5
-    absolute: -26
+    absolute: -24
   bottomAnchor:
     target: {fileID: 862850091}
     relative: 0
@@ -72713,15 +72659,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 0
-  mColor: {r: 1, g: .74999994, b: 0, a: 1}
+  mColor: {r: .786764741, g: .786764741, b: .786764741, a: 1}
   mPivot: 3
-  mWidth: 46
+  mWidth: 43
   mHeight: 28
   mDepth: 35
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.64285719
+  aspectRatio: 1.53571427
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -72773,7 +72719,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1378754711}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -133, y: -42, z: .000234365463}
+  m_LocalPosition: {x: -174, y: -42, z: .000234365463}
   m_LocalScale: {x: .999845624, y: .999749899, z: .999749899}
   m_Children: []
   m_Father: {fileID: 411794320}
@@ -72793,11 +72739,11 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 790069173}
     relative: 0
-    absolute: 0
+    absolute: 5
   rightAnchor:
     target: {fileID: 790069173}
     relative: .5
-    absolute: -26
+    absolute: -24
   bottomAnchor:
     target: {fileID: 790069173}
     relative: 0
@@ -72807,15 +72753,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 0
-  mColor: {r: 1, g: .74999994, b: 0, a: 1}
-  mPivot: 5
-  mWidth: 46
+  mColor: {r: .786764741, g: .786764741, b: .786764741, a: 1}
+  mPivot: 3
+  mWidth: 43
   mHeight: 28
   mDepth: 35
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.64285719
+  aspectRatio: 1.53571427
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -75363,7 +75309,6 @@ GameObject:
   - 4: {fileID: 1432806150}
   - 33: {fileID: 1432806149}
   - 23: {fileID: 1432806148}
-  - 65: {fileID: 1432806147}
   m_Layer: 13
   m_Name: TreeStump_S_01
   m_TagString: Untagged
@@ -75371,19 +75316,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967263
   m_IsActive: 1
---- !u!65 &1432806147
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 6500000, guid: 05333827c17239c4b88487f5c29d3f4d,
-    type: 2}
-  m_PrefabInternal: {fileID: 2010328504}
-  m_GameObject: {fileID: 1432806145}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.19000006, y: 2.50781322, z: 2.4000001}
-  m_Center: {x: .0500000007, y: .909069657, z: -.0599999987}
 --- !u!23 &1432806148
 Renderer:
   m_ObjectHideFlags: 0
@@ -80490,7 +80422,6 @@ GameObject:
   - 4: {fileID: 1480383319}
   - 33: {fileID: 1480383322}
   - 23: {fileID: 1480383321}
-  - 65: {fileID: 1480383320}
   m_Layer: 13
   m_Name: TreeStump_S_01
   m_TagString: Untagged
@@ -80510,19 +80441,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 93868755}
   m_RootOrder: 50
---- !u!65 &1480383320
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 6500000, guid: 05333827c17239c4b88487f5c29d3f4d,
-    type: 2}
-  m_PrefabInternal: {fileID: 287276687}
-  m_GameObject: {fileID: 1480383318}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.19000006, y: 2.50781322, z: 2.4000001}
-  m_Center: {x: .0500000007, y: .909069657, z: -.0599999987}
 --- !u!23 &1480383321
 Renderer:
   m_ObjectHideFlags: 0
@@ -84430,7 +84348,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1547995006
 Transform:
   m_ObjectHideFlags: 0
@@ -85921,7 +85839,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1602927574}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -111, y: -23, z: 0}
+  m_LocalPosition: {x: -111, y: -17.8999996, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 435725793}
@@ -86460,7 +86378,6 @@ GameObject:
   - 4: {fileID: 1620544347}
   - 33: {fileID: 1620544350}
   - 23: {fileID: 1620544349}
-  - 136: {fileID: 1620544348}
   m_Layer: 13
   m_Name: Wood_03
   m_TagString: Untagged
@@ -86480,20 +86397,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 93868755}
   m_RootOrder: 51
---- !u!136 &1620544348
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 13600000, guid: ee1df469d7f7b264fb5cf286ee443b71,
-    type: 2}
-  m_PrefabInternal: {fileID: 2055228560}
-  m_GameObject: {fileID: 1620544346}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: .270000011
-  m_Height: 2.23809218
-  m_Direction: 1
-  m_Center: {x: .0175350029, y: .00999999978, z: -.0066378261}
 --- !u!23 &1620544349
 Renderer:
   m_ObjectHideFlags: 0
@@ -88797,7 +88700,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 40
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 13600000, guid: eb8a0ebf4fd88244aa12ae08240337e2, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: eb8a0ebf4fd88244aa12ae08240337e2, type: 2}
   m_RootGameObject: {fileID: 151041083}
   m_IsPrefabParent: 0
@@ -95970,12 +95874,12 @@ MonoBehaviour:
   mColor: {r: .264705896, g: .264705896, b: .264705896, a: 1}
   mPivot: 4
   mWidth: 246
-  mHeight: 244
+  mHeight: 250
   mDepth: 105
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.00819671
+  aspectRatio: .984000027
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -106418,7 +106322,7 @@ Transform:
   m_PrefabInternal: {fileID: 692353592}
   m_GameObject: {fileID: 1980323315}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -179, y: 7, z: .000234365463}
+  m_LocalPosition: {x: -174, y: 7, z: .000234365463}
   m_LocalScale: {x: .999845624, y: .999749899, z: .999749899}
   m_Children: []
   m_Father: {fileID: 2108044822}
@@ -106438,11 +106342,11 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 1875654186}
     relative: 0
-    absolute: 0
+    absolute: 5
   rightAnchor:
     target: {fileID: 1875654186}
     relative: .5
-    absolute: -26
+    absolute: -24
   bottomAnchor:
     target: {fileID: 1875654186}
     relative: 0
@@ -106452,15 +106356,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 0
-  mColor: {r: 1, g: .74999994, b: 0, a: 1}
+  mColor: {r: .786764741, g: .786764741, b: .786764741, a: 1}
   mPivot: 3
-  mWidth: 46
+  mWidth: 43
   mHeight: 28
   mDepth: 35
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.64285719
+  aspectRatio: 1.53571427
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 6c3f4ff25480f244791a3baa37cf532c, type: 3}
   mFont: {fileID: 0}
@@ -110088,6 +109992,7 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
+    - {fileID: 6500000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 05333827c17239c4b88487f5c29d3f4d, type: 2}
   m_RootGameObject: {fileID: 1432806145}
   m_IsPrefabParent: 0
@@ -110511,7 +110416,6 @@ GameObject:
   - 4: {fileID: 2036613745}
   - 33: {fileID: 2036613748}
   - 23: {fileID: 2036613747}
-  - 136: {fileID: 2036613746}
   m_Layer: 13
   m_Name: Wood_03
   m_TagString: Untagged
@@ -110531,20 +110435,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 93868755}
   m_RootOrder: 48
---- !u!136 &2036613746
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 13600000, guid: ee1df469d7f7b264fb5cf286ee443b71,
-    type: 2}
-  m_PrefabInternal: {fileID: 2041288932}
-  m_GameObject: {fileID: 2036613744}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: .270000011
-  m_Height: 2.23809218
-  m_Direction: 1
-  m_Center: {x: .0175350029, y: .00999999978, z: -.0066378261}
 --- !u!23 &2036613747
 Renderer:
   m_ObjectHideFlags: 0
@@ -110747,7 +110637,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 48
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 13600000, guid: ee1df469d7f7b264fb5cf286ee443b71, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: ee1df469d7f7b264fb5cf286ee443b71, type: 2}
   m_RootGameObject: {fileID: 2036613744}
   m_IsPrefabParent: 0
@@ -111468,7 +111359,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 51
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 13600000, guid: ee1df469d7f7b264fb5cf286ee443b71, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: ee1df469d7f7b264fb5cf286ee443b71, type: 2}
   m_RootGameObject: {fileID: 1620544346}
   m_IsPrefabParent: 0
@@ -114039,7 +113931,6 @@ GameObject:
   - 4: {fileID: 2112886918}
   - 33: {fileID: 2112886921}
   - 23: {fileID: 2112886920}
-  - 65: {fileID: 2112886919}
   m_Layer: 13
   m_Name: TreeStump_S_01
   m_TagString: Untagged
@@ -114059,19 +113950,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 93868755}
   m_RootOrder: 44
---- !u!65 &2112886919
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 6500000, guid: 05333827c17239c4b88487f5c29d3f4d,
-    type: 2}
-  m_PrefabInternal: {fileID: 85878254}
-  m_GameObject: {fileID: 2112886917}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.19000006, y: 2.50781322, z: 2.4000001}
-  m_Center: {x: .0500000007, y: .909069657, z: -.0599999987}
 --- !u!23 &2112886920
 Renderer:
   m_ObjectHideFlags: 0

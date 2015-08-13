@@ -21,6 +21,7 @@ public class Login : IController
 		if (ConfigurationData.Logged) return;
 		
 		LoadPlayerPrefabs ();
+
 		#if UNITY_IOS
 		Advertisement.Initialize("35534", false);
 		#else
@@ -30,13 +31,9 @@ public class Login : IController
 		}
 		#endif
 		pw = ComponentGetter.Get<PhotonWrapper>();
-		pw.Init();
-		
-		CheckAllViews ();
-		
-		Index ();
-				
-		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
+		pw.Init();		
+		CheckAllViews ();		
+		Index ();				
 	}
 	
 	public void Index ()
@@ -209,7 +206,7 @@ public class Login : IController
 			int logins = PlayerPrefs.GetInt("Logins");
 			PlayerPrefs.SetInt("Logins", (logins+1));
 		}
-
+	
 		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));
 		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
 		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));		

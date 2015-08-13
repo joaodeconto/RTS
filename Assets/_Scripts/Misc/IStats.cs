@@ -89,7 +89,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 							substance.SetProceduralColor(curProperty.name, teamColor2);
 					}
 
-					substance.RebuildTextures ();
+					substance.RebuildTexturesImmediately ();
 
 					unitTeamMaterials[keyUnitTeamMaterial][i] = substance;
 				}

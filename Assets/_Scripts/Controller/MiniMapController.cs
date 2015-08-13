@@ -266,8 +266,8 @@ public class MiniMapController : MonoBehaviour
 #if UNITY_EDITOR
  		if(unitList.Length <= teamId)
 		{
-			Debug.Log("O numero de times eh menor do que o id enviado");
-			Debug.Log("teamId: " + teamId);
+//			Debug.Log("O numero de times eh menor do que o id enviado");
+//			Debug.Log("teamId: " + teamId);
 			Debug.Break();
 		}
 #endif

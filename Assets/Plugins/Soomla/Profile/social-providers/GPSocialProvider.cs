@@ -55,6 +55,12 @@ namespace Soomla.Profile
 		/// See docs in <see cref="SoomlaProfile.Login"/>
 		/// </summary>
 		public override void Login(LoginSuccess success, LoginFailed fail, LoginCancelled cancel) {}
+
+		/// <summary>
+		/// See docs in <see cref="SoomlaProfile.GetUserProfile"/>
+		/// </summary>
+		public override void GetUserProfile(GetUserProfileSuccess success, GetUserProfileFailed fail) {
+		}
 		
 		/// <summary>
 		/// See docs in <see cref="SoomlaProfile.IsLoggedIn"/>
@@ -63,6 +69,14 @@ namespace Soomla.Profile
 			return false;
 		}
 
+		/// <summary>
+		/// See docs in <see cref="SocialProvider.IsAutoLogin"/>
+		/// </summary>
+		/// <returns>value of autoLogin
+		public override bool IsAutoLogin() {
+			return false;
+		}
+		
 		/// <summary>
 		/// See docs in <see cref="SoomlaProfile.Invite"/>
 		/// </summary>

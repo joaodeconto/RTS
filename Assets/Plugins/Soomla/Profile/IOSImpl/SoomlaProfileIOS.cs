@@ -103,14 +103,18 @@ namespace Soomla.Profile {
 		protected override UserProfile _getStoredUserProfile(Provider provider) { 
 			IntPtr p = IntPtr.Zero;
 			int err = soomlaProfile_GetStoredUserProfile(provider.ToString(), out p);
-			IOS_ProfileErrorCodes.CheckAndThrowException(err);
-			
-			string json = Marshal.PtrToStringAnsi(p);
-			Marshal.FreeHGlobal(p);
-			SoomlaUtils.LogDebug(TAG, "Got json: " + json);
-			
-			JSONObject obj = new JSONObject(json);
-			return new UserProfile(obj);
+			if (err != IOS_ProfileErrorCodes.EXCEPTION_USER_PROFILE_NOT_FOUND) {
+				IOS_ProfileErrorCodes.CheckAndThrowException(err);
+				
+				string json = Marshal.PtrToStringAnsi(p);
+				Marshal.FreeHGlobal(p);
+				SoomlaUtils.LogDebug(TAG, "Got json: " + json);
+				
+                JSONObject obj = new JSONObject(json);
+                return new UserProfile(obj);
+			} else {
+				return null;
+			}
 		}
 
 		protected override void _storeUserProfile(UserProfile userProfile, bool notify) {

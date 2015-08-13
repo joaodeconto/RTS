@@ -72,7 +72,7 @@ public class RallyPoint : MonoBehaviour, IMovementObserver
 				if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor2"))
 					substance.SetProceduralColor(curProperty.name, teamColor2);
 			}			
-			substance.RebuildTextures ();	
+			substance.RebuildTexturesImmediately ();	
 
 		}
 	}

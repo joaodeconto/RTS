@@ -142,7 +142,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100020
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -207,6 +207,7 @@ Transform:
   - {fileID: 487066}
   - {fileID: 400008}
   - {fileID: 400004}
+  - {fileID: 400020}
   m_Father: {fileID: 400002}
   m_RootOrder: 1
 --- !u!4 &400002
@@ -221,7 +222,6 @@ Transform:
   m_Children:
   - {fileID: 400018}
   - {fileID: 400000}
-  - {fileID: 400020}
   - {fileID: 413144}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -307,8 +307,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 400002}
-  m_RootOrder: 2
+  m_Father: {fileID: 400000}
+  m_RootOrder: 6
 --- !u!4 &413144
 Transform:
   m_ObjectHideFlags: 1
@@ -320,7 +320,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!4 &487066
 Transform:
   m_ObjectHideFlags: 1
@@ -345,7 +345,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 202881224, guid: 1f037fc4c01cfc0448e2ae042f6f4809, type: 3}
+  - {fileID: 202881224, guid: b7265260bddb6b84e8843303e6e5ebaa, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0

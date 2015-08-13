@@ -16,7 +16,7 @@ public class SubstanceResourceBar : MonoBehaviour
 	public IStats refTarget;
 	public FactoryBase refFactory;
 	public bool noTimer = false;
-	public float refreshRate = 0.3f;
+	public float refreshRate = 0.5f;
 	
 	public void Init ()
 	{

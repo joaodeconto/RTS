@@ -25,9 +25,11 @@ namespace Soomla.Profile
 	/// </summary>
 	public abstract class SocialProvider
 	{
-		public delegate void LoginSuccess(UserProfile userProfile);
+		public delegate void LoginSuccess();
 		public delegate void LoginFailed(string message);
 		public delegate void LoginCancelled();
+		public delegate void GetUserProfileSuccess(UserProfile userProfile);
+		public delegate void GetUserProfileFailed(string message);
 		public delegate void LogoutFailed(string message);
 		public delegate void LogoutSuccess();
 		public delegate void ContactsFailed(string message);
@@ -77,9 +79,20 @@ namespace Soomla.Profile
 		public abstract void Login(LoginSuccess success, LoginFailed fail, LoginCancelled cancel);
 
 		/// <summary>
+		/// See docs in <see cref="SoomlaProfile.GetUserProfile"/>
+		/// </summary>
+		public abstract void GetUserProfile(GetUserProfileSuccess success, GetUserProfileFailed fail);
+
+		/// <summary>
 		/// See docs in <see cref="SoomlaProfile.IsLoggedIn"/>
 		/// </summary>
 		public abstract bool IsLoggedIn();
+
+		/// <summary>
+     	/// Return value of autoLogin setting of the provider.
+     	/// </summary>
+		/// <returns>value of autoLogin
+		public abstract bool IsAutoLogin();
 
 		/// <summary>
 		/// See docs in <see cref="SoomlaProfile.Invite"/>

@@ -82,7 +82,7 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 
 		}
 
-		substance.RebuildTextures ();
+		substance.RebuildTexturesImmediately ();
 	}
 
 #endregion

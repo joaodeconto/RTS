@@ -38,6 +38,8 @@ namespace Soomla.Profile
 		private List<string> permissions = null;
 		private string loginPermissionsStr;
 
+		private bool autoLogin;
+
 		/// <summary>
 		/// Constructor. Initializes the Facebook SDK.
 		/// </summary>
@@ -73,29 +75,33 @@ namespace Soomla.Profile
 					cancel();
 				}
 				else {
-					this.fetchPermissions(() => {
-						FB.API("/me?fields=id,name,email,first_name,last_name,picture",
-						       Facebook.HttpMethod.GET, (FBResult meResult) => {
-							if (meResult.Error != null) {
-								SoomlaUtils.LogDebug (TAG, "ProfileCallback[result.Error]: " + meResult.Error);
-								fail(meResult.Error);
-							}
-							else {
-								SoomlaUtils.LogDebug(TAG, "ProfileCallback[result.Text]: "+meResult.Text);
-								SoomlaUtils.LogDebug(TAG, "ProfileCallback[result.Texture]: "+meResult.Texture);
-								string fbUserJson = meResult.Text;
-								UserProfile userProfile = UserProfileFromFBJsonString(fbUserJson);
-								
-                                SoomlaProfile.StoreUserProfile (userProfile, true);
-                                
-                                success(userProfile);
-                            }
-                        });
-                    },
-                    (string errorMessage) => {
-						fail(errorMessage);
-                    });
+					success();
 				}
+			});
+		}
+
+		public override void GetUserProfile(GetUserProfileSuccess success, GetUserProfileFailed fail) {
+			this.fetchPermissions(() => {
+				FB.API("/me?fields=id,name,email,first_name,last_name,picture",
+				       Facebook.HttpMethod.GET, (FBResult meResult) => {
+					if (meResult.Error != null) {
+						SoomlaUtils.LogDebug (TAG, "ProfileCallback[result.Error]: " + meResult.Error);
+						fail(meResult.Error);
+					}
+					else {
+						SoomlaUtils.LogDebug(TAG, "ProfileCallback[result.Text]: "+meResult.Text);
+						SoomlaUtils.LogDebug(TAG, "ProfileCallback[result.Texture]: "+meResult.Texture);
+						string fbUserJson = meResult.Text;
+						UserProfile userProfile = UserProfileFromFBJsonString(fbUserJson);
+						
+						SoomlaProfile.StoreUserProfile (userProfile, true);
+						
+						success(userProfile);
+					}
+				});
+			},
+			(string errorMessage) => {
+				fail(errorMessage);
 			});
 		}
 
@@ -105,6 +111,14 @@ namespace Soomla.Profile
 		/// <returns>If the user is logged into Facebook, returns <c>true</c>; otherwise, <c>false</c>.</returns>
 		public override bool IsLoggedIn() {
 			return FB.IsLoggedIn;
+		}
+
+		/// <summary>
+		/// See docs in <see cref="SocialProvider.IsAutoLogin"/>
+		/// </summary>
+		/// <returns>value of autoLogin
+		public override bool IsAutoLogin() {
+			return this.autoLogin;
 		}
 
 		/// <summary>
@@ -150,7 +164,7 @@ namespace Soomla.Profile
 		public override void UpdateStory(string message, string name, string caption,
 		                                 string link, string pictureUrl, SocialActionSuccess success, SocialActionFailed fail, SocialActionCancel cancel) {
 
-			checkPermission("publish_actions", ()=> {
+//			checkPermission("publish_actions", ()=> {
 				FB.Feed(
 					link: link,
 					linkName: name,
@@ -176,9 +190,9 @@ namespace Soomla.Profile
                     }
                     
                 });
-			}, (string errorMessage)=>{
-				fail(message);
-            });
+//			}, (string errorMessage)=>{
+//				fail(message);
+//            });
         }
 
 		/// <summary>
@@ -358,8 +372,11 @@ namespace Soomla.Profile
 		/// See docs in <see cref="SocialProvider.Configure"/>
 		/// </summary>
 		public override void Configure(Dictionary<string, string> providerParams) {
-			if (providerParams != null && providerParams.ContainsKey("permissions")) {
-				this.loginPermissionsStr = providerParams["permissions"];
+			if (providerParams != null) {
+				if (providerParams.ContainsKey("permissions")) {
+					this.loginPermissionsStr = providerParams["permissions"];
+				}
+				this.autoLogin = providerParams.ContainsKey("autoLogin") ? Boolean.Parse(providerParams["autoLogin"]) : false;
 			} else {
 				this.loginPermissionsStr = DEFAULT_LOGIN_PERMISSIONS;
 			}

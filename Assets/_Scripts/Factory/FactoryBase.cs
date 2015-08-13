@@ -78,7 +78,7 @@ public class FactoryBase : IStats, IDeathObservable
 	public bool inUpgrade {get;set;}
 	public List<string> TechsToActive = new List<string>();	
 	public Animation ControllerAnimation { get; private set; }	
-	public bool wasBuilt { get; set; }	
+	public bool wasBuilt = false;
 	public bool ghostFactory { get; set; }
 	protected HealthBar healthBar;
 	protected UISlider buildingSlider;	
@@ -412,6 +412,8 @@ public class FactoryBase : IStats, IDeathObservable
 
 	public bool Construct (Worker worker)
 	{
+		if(wasBuilt) return false;
+
 		if (levelConstruct < (MaxHealth / 2))
 		{
 			buildingState = BuildingState.Base;

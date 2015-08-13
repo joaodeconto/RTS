@@ -15,19 +15,12 @@ public class TouchController : MonoBehaviour
 	
 	public enum TouchType
 	{
-		First,
-		Press,
-		Drag,
-		Drop,
-		Ended,
-		None,
+		First, Press, Drag,	Drop, Ended, None
 	}
 	
 	public enum IdTouch
 	{
-		Id0,
-		Id1,
-		None
+		Id0, Id1, None
 	}
 	
 	public Camera mainCamera;
@@ -128,8 +121,7 @@ public class TouchController : MonoBehaviour
 			{
 				if (!DragOn)
 				{
-					if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 3f)
-
+					if (Mathf.Abs (CurrentPosition.magnitude - FirstPosition.magnitude) > 26f)
 					{
 						DragOn = true;
 					}

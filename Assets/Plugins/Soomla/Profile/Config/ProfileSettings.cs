@@ -51,7 +51,9 @@ namespace Soomla.Profile
 		Dictionary<string, bool?> socialIntegrationState = new Dictionary<string, bool?>();
 		Dictionary<string, Dictionary<string, string>> socialLibPaths = new Dictionary<string, Dictionary<string, string>>();
 
-//		GUIContent fbAppId = new GUIContent("FB app Id:");
+		GUIContent autoLoginContent = new GUIContent ("Auto Login [?]", "Should Soomla try to log in automatically on start, if user already was logged in in the previous sessions.");
+
+		//		GUIContent fbAppId = new GUIContent("FB app Id:");
 //		GUIContent fbAppNS = new GUIContent("FB app namespace:");
 
 		GUIContent fbPermissionsContent = new GUIContent ("Login Permissions [?]", "Permissions your app will request from users on login");
@@ -95,9 +97,7 @@ namespace Soomla.Profile
 		{
 			List<string> savedStates = new List<string>();
 			foreach (var entry in socialIntegrationState) {
-				if (entry.Value != null) {
-					savedStates.Add(entry.Key + "," + (entry.Value.Value ? 1 : 0));
-				}
+				savedStates.Add(entry.Key + "," + ((entry.Value != null && entry.Value.Value) ? 1 : 0));
 			}
 
 			string result = string.Empty;
@@ -126,7 +126,7 @@ namespace Soomla.Profile
 		}
 
 		public void OnInfoGUI() {
-			SoomlaEditorScript.SelectableLabelField(profileVersion, "2.1.2");
+			SoomlaEditorScript.SelectableLabelField(profileVersion, "2.1.3");
 			SoomlaEditorScript.SelectableLabelField(profileBuildVersion, "1");
 			EditorGUILayout.Space();
 		}
@@ -273,24 +273,39 @@ namespace Soomla.Profile
 			{
 			case "facebook":
 				EditorGUI.BeginDisabledGroup(isDisabled);
+
 				EditorGUILayout.BeginHorizontal();
 				EditorGUILayout.Space();
 				EditorGUILayout.LabelField(fbPermissionsContent,  GUILayout.Width(150), SoomlaEditorScript.FieldHeight);
 				FBPermissions = EditorGUILayout.TextField(FBPermissions, SoomlaEditorScript.FieldHeight);
 				EditorGUILayout.EndHorizontal();
+
+				EditorGUILayout.BeginHorizontal();
+				EditorGUILayout.LabelField(SoomlaEditorScript.EmptyContent, SoomlaEditorScript.SpaceWidth, SoomlaEditorScript.FieldHeight);
+				FBAutoLogin = EditorGUILayout.Toggle(autoLoginContent, FBAutoLogin);
+				EditorGUILayout.EndHorizontal();
+
 				EditorGUI.EndDisabledGroup();
 				break;
 			case "google":
 				EditorGUI.BeginDisabledGroup(isDisabled);
+
 				EditorGUILayout.BeginHorizontal();
 				EditorGUILayout.Space();
 				EditorGUILayout.LabelField(gpClientId,  GUILayout.Width(150), SoomlaEditorScript.FieldHeight);
 				GPClientId = EditorGUILayout.TextField(GPClientId, SoomlaEditorScript.FieldHeight);
 				EditorGUILayout.EndHorizontal();
+
+				EditorGUILayout.BeginHorizontal();
+				EditorGUILayout.LabelField(SoomlaEditorScript.EmptyContent, SoomlaEditorScript.SpaceWidth, SoomlaEditorScript.FieldHeight);
+				GPAutoLogin = EditorGUILayout.Toggle(autoLoginContent, GPAutoLogin);
+				EditorGUILayout.EndHorizontal();
+
 				EditorGUI.EndDisabledGroup();
 				break;
 			case "twitter":
 				EditorGUI.BeginDisabledGroup(isDisabled);
+
 				EditorGUILayout.BeginHorizontal();
 				EditorGUILayout.Space();
 				EditorGUILayout.LabelField(twCustKey, GUILayout.Width(150), SoomlaEditorScript.FieldHeight);
@@ -303,6 +318,12 @@ namespace Soomla.Profile
 				TwitterConsumerSecret = EditorGUILayout.TextField(TwitterConsumerSecret, SoomlaEditorScript.FieldHeight);
 				EditorGUILayout.EndHorizontal();
 				EditorGUILayout.Space();
+
+				EditorGUILayout.BeginHorizontal();
+				EditorGUILayout.LabelField(SoomlaEditorScript.EmptyContent, SoomlaEditorScript.SpaceWidth, SoomlaEditorScript.FieldHeight);
+				TwitterAutoLogin = EditorGUILayout.Toggle(autoLoginContent, TwitterAutoLogin);
+				EditorGUILayout.EndHorizontal();
+
 				EditorGUI.EndDisabledGroup();
 				break;
 			default:
@@ -356,12 +377,14 @@ namespace Soomla.Profile
 				string[] savedIntegrations = value.Split(';');
 				foreach (var savedIntegration in savedIntegrations) {
 					string[] platformValue = savedIntegration.Split(',');
-					string platform = platformValue[0];
-					int state = int.Parse(platformValue[1]);
+					if (platformValue.Length >= 2) {
+						string platform = platformValue[0];
+						int state = int.Parse(platformValue[1]);
 
-					bool? platformState = null;
-					if (toTarget.TryGetValue(platform, out platformState)) {
-						toTarget[platform] = (state > 0);
+						bool? platformState = null;
+						if (toTarget.TryGetValue(platform, out platformState)) {
+							toTarget[platform] = (state > 0);
+						}
 					}
 				}
 			}
@@ -437,6 +460,24 @@ namespace Soomla.Profile
 			}
 		}
 
+		public static bool FBAutoLogin
+		{
+			get {
+				string value;
+				return SoomlaEditorScript.Instance.SoomlaSettings.TryGetValue("FBAutoLogin", out value) ? Convert.ToBoolean(value) : false;
+			}
+			set
+			{
+				string v;
+				SoomlaEditorScript.Instance.SoomlaSettings.TryGetValue("FBAutoLogin", out v);
+				if (Convert.ToBoolean(v) != value)
+				{
+					SoomlaEditorScript.Instance.setSettingsValue("FBAutoLogin", value.ToString());
+					SoomlaEditorScript.DirtyEditor ();
+				}
+			}
+		}
+
 
 		/** GOOGLE+ **/
 
@@ -455,6 +496,24 @@ namespace Soomla.Profile
 				if (v != value)
 				{
 					SoomlaEditorScript.Instance.setSettingsValue("GPClientId",value);
+					SoomlaEditorScript.DirtyEditor ();
+				}
+			}
+		}
+
+		public static bool GPAutoLogin
+		{
+			get {
+				string value;
+				return SoomlaEditorScript.Instance.SoomlaSettings.TryGetValue("GoogleAutoLogin", out value) ? Convert.ToBoolean(value) : false;
+			}
+			set
+			{
+				string v;
+				SoomlaEditorScript.Instance.SoomlaSettings.TryGetValue("GoogleAutoLogin", out v);
+				if (Convert.ToBoolean(v) != value)
+				{
+					SoomlaEditorScript.Instance.setSettingsValue("GoogleAutoLogin", value.ToString());
 					SoomlaEditorScript.DirtyEditor ();
 				}
 			}
@@ -496,6 +555,24 @@ namespace Soomla.Profile
 				if (v != value)
 				{
 					SoomlaEditorScript.Instance.setSettingsValue("TwitterConsumerSecret",value);
+					SoomlaEditorScript.DirtyEditor ();
+				}
+			}
+		}
+
+		public static bool TwitterAutoLogin
+		{
+			get {
+				string value;
+				return SoomlaEditorScript.Instance.SoomlaSettings.TryGetValue("TwitterAutoLogin", out value) ? Convert.ToBoolean(value) : false;
+			}
+			set
+			{
+				string v;
+				SoomlaEditorScript.Instance.SoomlaSettings.TryGetValue("TwitterAutoLogin", out v);
+				if (Convert.ToBoolean(v) != value)
+				{
+					SoomlaEditorScript.Instance.setSettingsValue("TwitterAutoLogin", value.ToString());
 					SoomlaEditorScript.DirtyEditor ();
 				}
 			}

@@ -180,7 +180,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	void TribeInstiateNetwork ()
 	{
 		
-		Debug.Log ("Tribe Network");
+		//Debug.Log ("Tribe Network");
 		foreach (Team t in teams)
 		{
 			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
@@ -440,7 +440,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		{
 			EndMatch ();
 			
-			Debug.Log("offline end match");
+			//Debug.Log("offline end match");
 			return;
 		}
 
@@ -587,7 +587,7 @@ public class GameplayManager : Photon.MonoBehaviour
 				
 				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
 				
-				Debug.Log("offline end match");
+				//Debug.Log("offline end match");
 			}
 		}
 

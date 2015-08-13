@@ -97,7 +97,7 @@ public class TechTreeController : MonoBehaviour
 	
 	public void UpgradeChildBoolOperator(string category, bool isTechChild) 		//adiciona ou subtrai tokens de tech na lista
 	{
-		Debug.Log (category +"  istechchild? " + isTechChild);
+		//Debug.Log (category +"  istechchild? " + isTechChild);
 
 		List<FactoryBase> statsFactories = new List<FactoryBase>();
 		
