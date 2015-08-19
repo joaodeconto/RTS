@@ -14,21 +14,30 @@ public class Team
 	public bool lose { get; set; }
 }
 
+[System.Serializable]
+public class Level
+{
+	public int levelId;
+	public GameObject gameLevel;	
+	public int startingRocks = 0;
+}
+
+
 public class GameplayManager : Photon.MonoBehaviour
 {
 	#region Serializable e Declares
 	[System.Serializable]
 	public class HUD
 	{    
-		public UILabel labelRocks;
-		public UILabel labelMana;
-		public UILabel labelUnits;
-		public UILabel labelTotalTime;
+		public UILabel    labelRocks;
+		public UILabel    labelMana;
+		public UILabel    labelUnits;
+		public UILabel    labelTotalTime;
 		public GameObject uiVictoryObject;
 		public GameObject uiDefeatObject;
-//		public Transform buttonMatchScore;
+//		public Transform  buttonMatchScore;
 		public GameObject uiWaitingPlayers;
-		public UILabel labelTime;
+		public UILabel    labelTime;
 		public GameObject uiLostMainBaseObject;
 	}
 
@@ -52,7 +61,6 @@ public class GameplayManager : Photon.MonoBehaviour
 		Tutorial
 	}
 
-	public int startingRocks = 0;
 	public static Mode mode;
 	public bool pauseGame = false;
 	private int readyCounter;
@@ -61,6 +69,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public const int MAX_POPULATION_ALLOWED = 200;
 	public const int BOT_TEAM = 8;
 	public Team[] teams;
+	public Level[] level;
 	public ResourcesManager resources;	
 	public HUD hud;	
 	public int numberOfUnits {get; protected set;}
@@ -88,6 +97,9 @@ public class GameplayManager : Photon.MonoBehaviour
 	protected Score score;
 	protected string encodedBattle;
 	protected string encodedPlayer;
+	private int scenelevel = ConfigurationData.level;
+	public Level selectedLevel;
+
 
 	#endregion
 
@@ -108,6 +120,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		sc = ComponentGetter.Get<StatsController> ();
 		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
 		{
+			selectedLevel = level[0];
+			selectedLevel.gameLevel.SetActive(true);
 			network = ComponentGetter.Get<NetworkManager>();
 			bm = ComponentGetter.Get <BidManager> ();
 			loadingMessage.text = "synching tribes";
@@ -124,16 +138,26 @@ public class GameplayManager : Photon.MonoBehaviour
 
 		else
 		{
+			foreach (Level lvl in level)
+			{
+				if (lvl.levelId == ConfigurationData.level) 
+				{
+					selectedLevel = lvl;
+					selectedLevel.gameLevel.SetActive(true);
+					Debug.Log (selectedLevel);
+					break;
+				}
+			}
+
 			PhotonNetwork.offlineMode = true;
-			GameObject tutorialC = GameObject.Find ("Components/Tutorial Manager");
-			if (tutorialC)	tutorialC.SetActive (true);
+			selectedLevel.gameLevel.GetComponent<TutorialManager>().Init();
 			loadingMessage.text = "loading";
 			MyTeam = 0;
 			Allies = 0;
 			numberOfTeams = 1;
 			pauseGame = true;
 			Invoke("TribeInstiate",1f);
-			ComponentGetter.Get<EnemyCluster> ().Init ();
+		    selectedLevel.gameLevel.GetComponent<EnemyCluster> ().Init ();
 			ComponentGetter.Get<OfflineScore> ().Init ();
 			Invoke("GameStart",2f);
 		}
@@ -183,6 +207,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		//Debug.Log ("Tribe Network");
 		foreach (Team t in teams)
 		{
+			t.initialPosition = selectedLevel.gameLevel.transform.FindChild(t.name).transform;
+
 			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
 			{
 				foreach (Transform trns in t.initialPosition)
@@ -202,6 +228,8 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void TribeInstiate ()
 	{
+		teams[0].initialPosition = selectedLevel.gameLevel.transform.FindChild("0").transform;
+
 		foreach (Transform trns in teams[0].initialPosition)
 		{
 			if(trns.gameObject.activeSelf == true)
@@ -236,7 +264,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		GamePaused(false);
 		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
 		ld.reverseAlpha();
-		resources.DeliverResources (Resource.Type.Rock, startingRocks);
+		resources.DeliverResources (Resource.Type.Rock, selectedLevel.startingRocks);
 	}
 	#endregion
 
@@ -613,7 +641,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	[RPC]
 	void Defeat (int teamID, int ally)
 	{
-		ComponentGetter.Get<VictoryCondition>().InactiveAllChallenges();
+		selectedLevel.gameLevel.GetComponent<VictoryCondition>().InactiveAllChallenges();
 
 		if (teams[teamID].lose) return;
 				
@@ -647,7 +675,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			if (MyTeam == teamID)
 			{
 				loseGame = true;
-				ComponentGetter.Get<EnemyCluster>().enabled = false;
+				selectedLevel.gameLevel.GetComponent<EnemyCluster>().enabled = false;
 				loserTeams++;
 				SendMessage ("EndMatch");
 				ComponentGetter.Get<OfflineScore> ().oPlayers[8].AddScorePlayer(DataScoreEnum.Victory, 1);

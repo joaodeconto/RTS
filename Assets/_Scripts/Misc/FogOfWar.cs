@@ -294,6 +294,13 @@ public class FogOfWar : MonoBehaviour
 		return this;
 	}
 
+	public FogOfWar AddObserver(Transform entity)
+	{
+		allies.Add(entity);
+
+		return this;
+	}
+
 	public FogOfWar RemoveEntity(Transform trnsEntity, IStats entity)
 	{
 		if(!UseFog || trnsEntity == null)

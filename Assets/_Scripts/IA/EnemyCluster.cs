@@ -56,8 +56,8 @@ public class EnemyCluster : MonoBehaviour
 	{	 	
 		gameplayManager = ComponentGetter.Get<GameplayManager>();
 		statsController = ComponentGetter.Get<StatsController>();
-		teamNine = gameplayManager.teams[8].initialPosition;
-		teamZero = gameplayManager.teams[0].initialPosition;
+		teamNine = gameplayManager.selectedLevel.gameLevel.transform.FindChild("8").transform;
+		teamZero = gameplayManager.selectedLevel.gameLevel.transform.FindChild("0").transform;
 		teamNine.gameObject.SetActive(true);
 		InitExploreTargets();
 		InitInicialEnemies ();
@@ -102,7 +102,7 @@ public class EnemyCluster : MonoBehaviour
 	private void InitExploreTargets()
 	{
 		int i = 0;
-		Transform exploreTarget = GameObject.Find("GamePlay/" + "Resources").transform;
+		Transform exploreTarget = gameplayManager.selectedLevel.gameLevel.transform.FindChild("Resources").transform;
 		foreach (Transform target in exploreTarget)	
 		{
 			exploreTargets.Add(i,target);

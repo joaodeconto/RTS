@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Advertisements;
 using System.Collections;
 using System.Collections.Generic;
-using Soomla.Store.RTSStoreAssets;
+using Soomla.Store;
 
 using Visiorama;
 

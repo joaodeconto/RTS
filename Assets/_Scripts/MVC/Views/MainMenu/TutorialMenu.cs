@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
+using Soomla.Store;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class TutorialMenu : MonoBehaviour
@@ -40,7 +41,8 @@ public class TutorialMenu : MonoBehaviour
 	public TutorialMenuButtons buttons;	
 	public UILabel messageActiveGame;
 	public UILabel errorMessage;
-	bool wasInitialized      = false;
+	bool wasInitialized      = false;	
+	DefaultCallbackButton dcb;
 	
 	protected PhotonWrapper pw;
 	protected VersusScreen vs;
@@ -52,7 +54,6 @@ public class TutorialMenu : MonoBehaviour
 	
 	public void Open ()
 	{
-
 		messageActiveGame.gameObject.SetActive (false);
 		
 		errorMessage.gameObject.SetActive (false);
@@ -60,63 +61,53 @@ public class TutorialMenu : MonoBehaviour
 		pw = ComponentGetter.Get<PhotonWrapper>();
 		vs = ComponentGetter.Get<VersusScreen>();
 		login = ComponentGetter.Get<Login>();
-		
-		DefaultCallbackButton dcb;
-		
+
 		if (buttons.Btn0)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn0, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 1); if (ConfigurationData.Logged) Close ();
-																					else CloseOffline();} );
+//			VirtualCategory vc = StoreInfo.Categories[1];
+//			foreach(string s in vc.GoodItemIds)
+//			{
+//				StoreInventory.TakeItem(s,1);
+//			}
+			StoreInventory.GiveItem("11", 1);
+			StoreInventory.GiveItem("21", 1);
+
+			LevelBtnsStatus(buttons.Btn0, "1");
 		}
 		
 		if (buttons.Btn1)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn1, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 2); if (ConfigurationData.Logged) Close ();
-				else CloseOffline();} );
+			LevelBtnsStatus(buttons.Btn1, "2");
 		}
 		
 		if (buttons.Btn2)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn2, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 3);if (ConfigurationData.Logged) Close ();
-				else CloseOffline();} );
+			LevelBtnsStatus(buttons.Btn2,"3");
 		}
 		
 		if (buttons.Btn3)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn3, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 4); if (ConfigurationData.Logged) Close ();
-				else CloseOffline();} );
+			LevelBtnsStatus(buttons.Btn3, "4");
 		}
 
 		if (buttons.Btn4)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn4, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 5); if (ConfigurationData.Logged) Close ();
-				else CloseOffline();} );
+			LevelBtnsStatus(buttons.Btn4, "5");
 		}
 
 		if (buttons.Btn5)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn5, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 6); if (ConfigurationData.Logged) Close ();
-				else CloseOffline();} );
+			LevelBtnsStatus(buttons.Btn5, "6");
 		}
 
 		if (buttons.Btn6)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn6, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 7); if (ConfigurationData.Logged) Close ();
-				else CloseOffline();} );
+			LevelBtnsStatus(buttons.Btn6, "7");
 		}
 
 		if (buttons.Btn7)
 		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.Btn7, false);
-			dcb.Init ( null, (ht_hud) => { vs.InitOfflineGame (1, 0,"Tutorial", 8); if (ConfigurationData.Logged) Close ();
-				else CloseOffline();} );
+			LevelBtnsStatus(buttons.Btn7, "8");
 		}
 						
 		if (buttons.BtnLeaveRoom)
@@ -153,6 +144,41 @@ public class TutorialMenu : MonoBehaviour
 		}
 	}
 
+	void LevelBtnsStatus(Transform missions, string sceneString)
+	{
+		int scene = Int32.Parse(sceneString); 	
+		missions = missions.FindChild("Missions");
+		foreach (Transform t in missions)
+		{
+			int level = Int32.Parse(t.name);
+			Transform m1 = t.FindChild("sprt_open");
+			Transform m2 = t.FindChild("sprt_done");				
+			Transform m3 = t.FindChild("sprt_closed");			
+	
+			dcb = t.gameObject.GetComponent<DefaultCallbackButton>();
+			if(StoreInventory.GetItemBalance(scene.ToString() + level.ToString())>0)
+			{  
+				m1.gameObject.SetActive(true);
+				m2.gameObject.SetActive(false);						
+				m3.gameObject.SetActive(false);
+				dcb.Init ( null, (ht_hud) =>
+				{ 
+					vs.InitOfflineGame (1, 0,"Tutorial", scene, level);
+					if(level == 3)	StoreInventory.GiveItem((scene+1).ToString() + "1", 1);					
+						else StoreInventory.GiveItem(scene.ToString() + (level+1).ToString(), 1);
+					if (ConfigurationData.Logged) Close ();																				
+						else CloseOffline(); 
+				});
+			}
+			else 
+			{
+				m1.gameObject.SetActive(false);
+				m2.gameObject.SetActive(false);
+				dcb.Init ( null, (ht_hud) => {StoreInventory.BuyItem(scene.ToString() + level.ToString());});
+			}
+		}
+	}
+	
 	public void CloseOffline ()
 	{
 		OfflineMenu om = ComponentGetter.Get<OfflineMenu>();

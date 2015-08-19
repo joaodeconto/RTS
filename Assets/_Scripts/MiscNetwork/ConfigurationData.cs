@@ -10,6 +10,7 @@ public class ConfigurationData
 	public static bool InGame 		= false;
 	public static bool multiPass 	= false;
 	public static bool addPass 		= false;
+	public static int  level        = 1;
 	
 	public static Model.Player player;
 	public static Model.Battle battle;

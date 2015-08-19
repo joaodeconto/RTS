@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
 using Soomla;
 using Soomla.Store;
-using Soomla.Store.RTSStoreAssets;
+
+
 using Visiorama;
 
 
@@ -33,11 +35,10 @@ public class StoreManager : MonoBehaviour
 		{
 			StoreEvents.OnSoomlaStoreInitialized += onSoomlaStoreInitialized;
 			StoreEvents.OnCurrencyBalanceChanged += onCurrencyBalanceChanged;	
-			StoreEvents.OnGoodBalanceChanged 	 += onGoodBalanceChanged;
+			StoreEvents.OnGoodBalanceChanged 	 += onGoodBalanceChanged;	
+			//SoomlaHighway.Initialize();
 			SoomlaStore.Initialize(new RTSStoreAssets());
-			StoreInventory.TakeItem("pass_multiplayer", 1);			
-			StoreInventory.TakeItem("no_ads", 1);
-			wasInitialized = true;
+        	wasInitialized = true;
 		}
 	}	
 
@@ -220,3 +221,5 @@ public class StoreManager : MonoBehaviour
 		}
 	}	
 }			
+
+

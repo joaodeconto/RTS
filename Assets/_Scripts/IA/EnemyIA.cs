@@ -13,11 +13,13 @@ public class EnemyIA : MonoBehaviour
 	public bool ScoutType;
 	private float helperColl;
 	protected EnemyCluster enemyCluster;
+	protected GameplayManager gm;
 
 
 	void Start()
 	{
-		enemyCluster = ComponentGetter.Get<EnemyCluster>();
+		gm = ComponentGetter.Get<GameplayManager>();
+		enemyCluster = gm.selectedLevel.gameLevel.GetComponent<EnemyCluster>();
 		initialized = true; 
 		unit = gameObject.GetComponent<Unit>(); 
 		if(!ScoutType) unit.moveAttack = true;

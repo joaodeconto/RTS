@@ -12,13 +12,15 @@ public class CaveFactory : FactoryBase
 	private List<int> lUnitCluster = new List<int>();
 	private int unitToCreateCluster;
 
+	void Start()
+	{
+		enemyCluster  = gameplayManager.selectedLevel.gameLevel.GetComponent<EnemyCluster>();
+	}
 	public override void Init ()
 	{		
 		wasBuilt = true;
 		base.Init();		
 		enabled = true;
-		enemyCluster      = ComponentGetter.Get<EnemyCluster>();
-
 	}
 	#endregion
 
@@ -32,7 +34,6 @@ public class CaveFactory : FactoryBase
 		{
 			if (stat.GetType() == typeof(CaveFactory))
 			{
-
 			CaveFactory factory = stat as CaveFactory;
 			
 			if (factory == null) continue;
@@ -96,7 +97,7 @@ public class CaveFactory : FactoryBase
 						
 //		RallyPoint rallypoint = goRallypoint.GetComponent<RallyPoint> ();
 		newUnit.Move (goRallypoint.position);
-		newUnit.transform.parent = GameObject.Find("GamePlay/" + newUnit.team).transform;
+		newUnit.transform.parent = enemyCluster.transform.FindChild("8");
 		enemyCluster.clusterModels[unitCluster].clusterUnits.Add(newUnit);
 		newUnit = newUnit.gameObject.AddComponent("EnemyIA") as Unit;
 	}

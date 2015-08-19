@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
@@ -18,6 +19,7 @@ public class VictoryCondition : MonoBehaviour
 			Time_,
 			Collect,
 			Build,
+			Train,
 			EnemyBuildings,
 			EnemyUnits,
 			AllEnemies
@@ -32,6 +34,7 @@ public class VictoryCondition : MonoBehaviour
 		public EnumCondition enumCondition;
 		public string objDescription;
 		public string objSprite;
+		public int timeToComplete;
 	}
 
 	private GameplayManager gm;
@@ -49,6 +52,7 @@ public class VictoryCondition : MonoBehaviour
 	private int nMaxPopulation = 0;
 	private float nTime = 0;
 	private int nBuilds = 0;
+	private int nUnits = 0;
 	private int eneBuilds = 0;
 	private int nCollected = 0;
 
@@ -65,7 +69,7 @@ public class VictoryCondition : MonoBehaviour
 
 		if (Ativar && !FoiAtivado)	ActiveAllChallenges ();	
 
-		InvokeRepeating ("CheckVictory", 10.0f, 2.0f);
+		InvokeRepeating ("CheckVictory", 10.0f, 3.0f);
 	}
 
 	bool CheckValue (Challenge.EnumCondition enumCondition, int value, int valueToCompare)
@@ -133,12 +137,33 @@ public class VictoryCondition : MonoBehaviour
 					foreach (IStats stats in sc.myStats)
 					{
 						FactoryBase fb = stats as FactoryBase;
-
-						if (stats.tag == specificStat && fb.wasBuilt) _nBuilds++;continue;
+						if (fb != null)
+						{
+							if (stats.tag == specificStat && fb.wasBuilt) _nBuilds++;
+							else if (stats.category == specificStat && fb.wasBuilt) _nBuilds++;
+						}
 					}
 					nBuilds = _nBuilds;
 														
 					return CheckValue (enumCondition, nBuilds, valueToCompare);
+
+			case Challenge.EnumComparingType.Train:
+
+					int _nUnits = 0;
+					
+					foreach (IStats stats in sc.myStats)
+					{
+						Unit un = stats as Unit;
+						if (un != null)
+						{
+							if (stats.tag == specificStat) _nUnits++;
+								else if (un.category == specificStat) _nUnits++;
+						}
+					}
+					nUnits = _nUnits;
+			
+					return CheckValue (enumCondition, nUnits, valueToCompare);
+
 
 			case Challenge.EnumComparingType.EnemyBuildings:						
 
@@ -147,7 +172,9 @@ public class VictoryCondition : MonoBehaviour
 
 					foreach (IStats stats in sc.otherStats)
 					{
-						if  (stats.tag == specificStat) _eneBuilds++;continue;
+						if  (stats.tag == specificStat) _eneBuilds++;
+						else if (stats.category == specificStat) _eneBuilds++;
+						continue;				
 					}
 					eneBuilds = _eneBuilds;
 
@@ -156,12 +183,13 @@ public class VictoryCondition : MonoBehaviour
 
 			case Challenge.EnumComparingType.EnemyUnits:
 				
-					int _nEnemies = 0;
-					
+					int _nEnemies = 0;					
 					foreach (IStats stats in sc.otherStats)
 					{
-						if (stats.tag == "Unit" && !gm.IsNotEnemy(stats.team,stats.ally)) _nEnemies++; continue;
-					}
+						if (stats.tag == "Unit" && !gm.IsNotEnemy(stats.team,stats.ally)) _nEnemies++; 				
+						else if (stats.category == specificStat && !gm.IsNotEnemy(stats.team,stats.ally)) _nEnemies++;
+						continue;
+					}	
 					nEnemies = _nEnemies;
 					
 					return CheckValue (enumCondition, nEnemies, valueToCompare);

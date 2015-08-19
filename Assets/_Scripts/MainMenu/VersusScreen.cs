@@ -113,7 +113,7 @@ public class VersusScreen : MonoBehaviour
 		modeLabelString	= battleMode.text;	
 	}
 
-	public void InitOfflineGame (int maxPlayers, int bid, string battleTypeName, int map)
+	public void InitOfflineGame (int maxPlayers, int bid, string battleTypeName, int map, int level)
 	{
 		if(PhotonNetwork.connected) PhotonNetwork.Disconnect();
 		PhotonNetwork.offlineMode = true;
@@ -131,25 +131,26 @@ public class VersusScreen : MonoBehaviour
 		mapLabelString 	= mapName.text;
 		modeLabelString	= battleMode.text;
 		ConfigurationData.InGame = true;
+		ConfigurationData.level = level;
 
 		//TODO carregar img do player e AI
 	}
 
 	public void cenaSelection ()
 	{
-		if (cena == 9)
+		if (cena == 8)
 		{
 			mapName.text = "Crank Lagoon";
 			mapSprite.spriteName = "Crank Lagoon";			
 		}
 
-		if (cena == 8)
+		if (cena == 9)
 		{
 			mapName.text = "Arthanus";
 			mapSprite.spriteName = "Arthanus";			
 		}
 
-		if (cena == 7)
+		if (cena == 3)
 		{
 			mapName.text = "Gargantua";
 			mapSprite.spriteName = "Gargantua";			
@@ -161,19 +162,19 @@ public class VersusScreen : MonoBehaviour
 			mapSprite.spriteName = "Sandstone Salvation";			
 		}
 
-		if (cena == 5)
+		if (cena == 4)
 		{
 			mapName.text = "Hollow Fields";
 			mapSprite.spriteName = "Hollow Fields";			
 		}
 
-		if (cena == 4)
+		if (cena == 7)
 		{
 			mapName.text = "Swamp King";
 			mapSprite.spriteName = "Swamp King";
 		}
 
-		if (cena == 3)
+		if (cena == 5)
 		{
 			mapName.text = "Living Desert";
 			mapSprite.spriteName = "Living Desert";			

@@ -990,7 +990,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 
 		else	newUnit.Move (goRallypoint.position);
-		newUnit.transform.parent = GameObject.Find("GamePlay/" + gameplayManager.MyTeam).transform;
+		newUnit.transform.parent = gameplayManager.selectedLevel.gameLevel.transform.FindChild(gameplayManager.MyTeam.ToString()).transform;
 	}
 
 	private void InvokeSliderUpdate()

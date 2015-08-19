@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Facebook.MiniJSON;
 using Visiorama;
-using Soomla.Store.RTSStoreAssets;
+using Soomla.Store;
 
 
 public class MarketMenu : MonoBehaviour

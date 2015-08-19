@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.Advertisements;
 using System.Collections;
 using System.Collections.Generic;
-using Soomla.Store.RTSStoreAssets;
-
 using Visiorama;
 
 public class OfflineMenu : MonoBehaviour
@@ -26,8 +24,8 @@ public class OfflineMenu : MonoBehaviour
 	public void Init ()
 	{
 		listChildOptions = new List<Transform>();
-		foreach (Transform child in options)
-		{
+
+		foreach (Transform child in options)		{
 			listChildOptions.Add (child);
 
 			Transform button = child.FindChild ("Button");
