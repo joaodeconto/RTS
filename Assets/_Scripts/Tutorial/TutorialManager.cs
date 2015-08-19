@@ -41,10 +41,9 @@ public class TutorialManager : MonoBehaviour {
 	public void Init ()	
 
 	{
-		tutorialIndex.text = tutorialScreenSelected+1 +"/" + tutorial.Length;
+		tutorialIndex.text = tutorialScreenSelected+1+"/" + tutorial.Length;
 		tutorialMainBg.SetActive (true);
 		DefaultCallbackButton dcb;
-		ShowNextTutorialItem();
 
 		dcb = nextBtn.gameObject.GetComponent<DefaultCallbackButton>(); 
 		dcb.Init ( null, (ht_hud) => 
@@ -63,6 +62,9 @@ public class TutorialManager : MonoBehaviour {
 		          { 
 			Close();
 		});
+
+		
+		ShowNextTutorialItem();
 	}
 	
 	
@@ -95,14 +97,14 @@ public class TutorialManager : MonoBehaviour {
 				tutorialBox.text = tu.tutorialBoxText;
 				tutorialBox.parent.GetComponent<UIScrollView>().ResetPosition();				
 				}
-				tutorialIndex.text = tutorialScreenSelected + " / " + tutorial.Length;
+				tutorialIndex.text = tutorialScreenSelected + "/" + tutorial.Length;
 			}
 		}
 	}
 
 	public void ShowPrevTutorialItem ()		
 	{
-		if (tutorialScreenSelected > 0)
+		if (tutorialScreenSelected > 1)
 		{
 			i--;
 			tutorialScreenSelected = i;
@@ -122,7 +124,7 @@ public class TutorialManager : MonoBehaviour {
 				if (tu.tutorialTitleText != null)	tutorialTitle.text = tu.tutorialTitleText;		
 				if (tu.tutorialBoxText != null)	tutorialBox.text = tu.tutorialBoxText;
 				nextBtn = tu.nextTutorialBtn;
-				tutorialIndex.text = tutorialScreenSelected + 1 + " / " + (tutorial.Length);
+				tutorialIndex.text = tutorialScreenSelected + "/" + (tutorial.Length);
 				
 			}			
 		}	
