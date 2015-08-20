@@ -3067,7 +3067,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3023
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -5922,6 +5922,7 @@ MonoBehaviour:
     objDescription: Defeat All Enemies
     objSprite: Achiv_Battle1
     timeToComplete: 0
+    bonusMission: 0
   Ativar: 0
   objectiveLog: {fileID: 931020109}
   objSubpanel: {fileID: 2105025541}
@@ -8954,7 +8955,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3020
   mClipTexture: {fileID: 2800000, guid: e24044e73b677214faafd0571d776ed6, type: 3}
   mAlpha: 1
   mClipping: 4
@@ -21884,7 +21885,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3023
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -26911,7 +26912,7 @@ MonoBehaviour:
   anchorOffset: 1
   softBorderPadding: 0
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3020
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -35708,7 +35709,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3023
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -36179,6 +36180,7 @@ MonoBehaviour:
     objDescription: Attack and destroy all enemy spawning caves
     objSprite: Achiv_Battle1
     timeToComplete: 0
+    bonusMission: 0
   - IsActive: 0
     objectiveCompleted: 0
     Name: Infidels
@@ -36189,6 +36191,7 @@ MonoBehaviour:
     objDescription: Destroy the enemy obelisk!
     objSprite: Achiv_Battle1
     timeToComplete: 0
+    bonusMission: 0
   - IsActive: 0
     objectiveCompleted: 0
     Name: Army Structures
@@ -36199,6 +36202,7 @@ MonoBehaviour:
     objDescription: Build a "Barrack" structucture to train human warriors;
     objSprite: main-building
     timeToComplete: 0
+    bonusMission: 0
   Ativar: 1
   objectiveLog: {fileID: 931020109}
   objSubpanel: {fileID: 2105025541}
@@ -41548,7 +41552,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3020
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 4
@@ -66107,7 +66111,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1379057868}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21, y: .100000001, z: 92.0999985}
+  m_LocalPosition: {x: 32.2200012, y: .100000001, z: 95.9199982}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1646297087}
@@ -68685,7 +68689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1385026892
 Transform:
   m_ObjectHideFlags: 0
@@ -68751,16 +68755,18 @@ MonoBehaviour:
     objDescription: Destroy every enemy unit and structure.
     objSprite: Achiv_Battle1
     timeToComplete: 0
+    bonusMission: 0
   - IsActive: 0
     objectiveCompleted: 0
     Name: Generate 200 Mana
     enumComparingType: 4
     specificStat: Mana
-    valueToCompare: 200
-    enumCondition: 1
+    valueToCompare: 199
+    enumCondition: 2
     objDescription: Guide your worker to the obelisk to obtain mana.
     objSprite: Achiv_Battle1
     timeToComplete: 0
+    bonusMission: 0
   - IsActive: 0
     objectiveCompleted: 0
     Name: Army Structures
@@ -68771,6 +68777,7 @@ MonoBehaviour:
     objDescription: Build a "Lizard Haras" structucture so we can train mounted units!
     objSprite: LizardAras
     timeToComplete: 0
+    bonusMission: 0
   Ativar: 1
   objectiveLog: {fileID: 931020109}
   objSubpanel: {fileID: 2105025541}
@@ -68792,7 +68799,7 @@ MonoBehaviour:
     triggerDemmand: 650
     repeatDemmand: 30
     bravery: 5
-    defendTarget: {fileID: 0}
+    defendTarget: {fileID: 1086001588}
     exploreTarget: {fileID: 0}
     attackTarget: {fileID: 0}
     clusterTarget: {fileID: 0}
@@ -68815,7 +68822,7 @@ MonoBehaviour:
     triggerDemmand: 5
     repeatDemmand: 420
     bravery: 3
-    defendTarget: {fileID: 0}
+    defendTarget: {fileID: 1379057869}
     exploreTarget: {fileID: 0}
     attackTarget: {fileID: 0}
     clusterTarget: {fileID: 0}
@@ -75097,6 +75104,18 @@ Prefab:
       propertyPath: mClipRange.w
       value: 234
       objectReference: {fileID: 0}
+    - target: {fileID: 400046, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 414
+      objectReference: {fileID: 0}
+    - target: {fileID: 400042, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 520
+      objectReference: {fileID: 0}
+    - target: {fileID: 460840, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -642
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b28762052f7d8e1478b78ea7e749de1b, type: 2}
   m_RootGameObject: {fileID: 1415154854}
@@ -79019,7 +79038,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3027
+  startingRenderQueue: 3030
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -80805,7 +80824,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3021
+  startingRenderQueue: 3023
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -87882,11 +87901,11 @@ MonoBehaviour:
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
-  mClipRange: {x: 187.5, y: -870.162415, z: 387, w: 232}
+  mClipRange: {x: 187.5, y: -869.162415, z: 387, w: 234}
   mClipSoftness: {x: 3, y: 3}
   mDepth: 9
   mSortingOrder: 0
-  mClipOffset: {x: 0, y: 882.162415}
+  mClipOffset: {x: 0, y: 880.162415}
 --- !u!1 &1748819573
 GameObject:
   m_ObjectHideFlags: 0
@@ -88296,6 +88315,7 @@ MonoBehaviour:
       faster.
     objSprite: depot
     timeToComplete: 0
+    bonusMission: 0
   - IsActive: 0
     objectiveCompleted: 0
     Name: Train 14 Workers
@@ -88307,6 +88327,7 @@ MonoBehaviour:
       Center structure.
     objSprite: Achiv_Battle1
     timeToComplete: 0
+    bonusMission: 0
   - IsActive: 0
     objectiveCompleted: 0
     Name: Settling
@@ -88318,6 +88339,7 @@ MonoBehaviour:
       Buil 2 Huts and raise the population limit to 30 '
     objSprite: cottage
     timeToComplete: 0
+    bonusMission: 0
   Ativar: 1
   objectiveLog: {fileID: 931020109}
   objSubpanel: {fileID: 2105025541}
@@ -94312,7 +94334,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1965806291}
   m_LocalRotation: {x: 0, y: .327158689, z: 0, w: -.944969475}
-  m_LocalPosition: {x: 72.75, y: 0, z: 39.3199997}
+  m_LocalPosition: {x: 94.5, y: 0, z: 15.3999996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1646297087}
@@ -95527,7 +95549,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2005945189}
   m_LocalRotation: {x: 0, y: .940128446, z: 0, w: .340820521}
-  m_LocalPosition: {x: 37.8199997, y: 0, z: 76.3399963}
+  m_LocalPosition: {x: 21.7600002, y: 0, z: 95.5800018}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1646297087}

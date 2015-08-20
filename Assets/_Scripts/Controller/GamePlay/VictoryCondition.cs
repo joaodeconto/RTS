@@ -34,7 +34,8 @@ public class VictoryCondition : MonoBehaviour
 		public EnumCondition enumCondition;
 		public string objDescription;
 		public string objSprite;
-		public int timeToComplete;
+		public int timeToComplete = 0;
+		public bool bonusMission = false;
 	}
 
 	private GameplayManager gm;
@@ -236,6 +237,12 @@ public class VictoryCondition : MonoBehaviour
 		bool success = false;
 		int nSuccess = 0;
 
+		if(sc.myStats.Count < 1)
+		{
+			gm.Defeat(0,0);
+			this.enabled = false;
+		}
+			
 		foreach (Challenge ch in ChallengesToWin)
 		{
 			if (!ch.IsActive)
@@ -246,6 +253,14 @@ public class VictoryCondition : MonoBehaviour
 				++nSuccess;
 				continue;
 			}
+
+			if (ch.timeToComplete!=0 && ch.timeToComplete < gm.gameTime && !ch.bonusMission)  // Defeat by time
+			{
+				gm.Defeat(0,0);
+				this.enabled = false;
+				break;
+			}
+
 
 			success = CheckCondition (ch.enumComparingType, ch.enumCondition, ch.valueToCompare, ch.Name, ch.specificStat);
 

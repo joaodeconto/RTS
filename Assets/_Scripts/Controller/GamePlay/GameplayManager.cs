@@ -20,6 +20,7 @@ public class Level
 	public int levelId;
 	public GameObject gameLevel;	
 	public int startingRocks = 0;
+	public int startingMana  = 0;
 }
 
 
@@ -264,7 +265,8 @@ public class GameplayManager : Photon.MonoBehaviour
 		GamePaused(false);
 		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
 		ld.reverseAlpha();
-		resources.DeliverResources (Resource.Type.Rock, selectedLevel.startingRocks);
+		resources.DeliverResources (Resource.Type.Rock, selectedLevel.startingRocks);		
+		resources.DeliverResources (Resource.Type.Mana, selectedLevel.startingMana);
 	}
 	#endregion
 
@@ -639,7 +641,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	}
 	
 	[RPC]
-	void Defeat (int teamID, int ally)
+	public void Defeat (int teamID, int ally)
 	{
 		selectedLevel.gameLevel.GetComponent<VictoryCondition>().InactiveAllChallenges();
 
