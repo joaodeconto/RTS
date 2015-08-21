@@ -47,9 +47,13 @@ public class TutorialMenu : MonoBehaviour
 	protected PhotonWrapper pw;
 	protected VersusScreen vs;
 	protected Login login;
-	public void OnEnable ()
+
+	public void Start ()
 	{
 		Open ();
+		pw = ComponentGetter.Get<PhotonWrapper>();
+		vs = ComponentGetter.Get<VersusScreen>();
+		login = ComponentGetter.Get<Login>();
 	}
 	
 	public void Open ()
@@ -58,17 +62,13 @@ public class TutorialMenu : MonoBehaviour
 		
 		errorMessage.gameObject.SetActive (false);
 
-		pw = ComponentGetter.Get<PhotonWrapper>();
-		vs = ComponentGetter.Get<VersusScreen>();
-		login = ComponentGetter.Get<Login>();
-
 		if (buttons.Btn0)
 		{
-			VirtualCategory vc = StoreInfo.Categories[1];
-			foreach(string s in vc.GoodItemIds)
-			{
-				StoreInventory.TakeItem(s,1);
-			}
+//			VirtualCategory vc = StoreInfo.Categories[1];
+//			foreach(string s in vc.GoodItemIds)
+//			{
+//				StoreInventory.TakeItem(s,1);
+//			}
 			StoreInventory.GiveItem("11", 1);
 			StoreInventory.GiveItem("21", 1);
 
@@ -174,7 +174,7 @@ public class TutorialMenu : MonoBehaviour
 			{
 				m1.gameObject.SetActive(false);
 				m2.gameObject.SetActive(false);
-				dcb.Init ( null, (ht_hud) => {StoreInventory.BuyItem(scene.ToString() + level.ToString());});
+				dcb.Init ( null, (ht_hud) => {StoreInventory.BuyItem(scene.ToString() + level.ToString()); Open ();});
 			}
 		}
 	}
