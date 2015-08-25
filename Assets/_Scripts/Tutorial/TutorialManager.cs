@@ -145,6 +145,15 @@ public class TutorialManager : MonoBehaviour {
 
 	public void Close ()
 	{
+		foreach (Tutorial tu in tutorial)
+		{
+			
+			if (tu.tutorialItem != null)
+			{				
+				tu.tutorialItem.SetActive (false);				
+			}
+		}
+
 		if (tutorialMainBg != null)
 		{
 			Time.timeScale = 1f;

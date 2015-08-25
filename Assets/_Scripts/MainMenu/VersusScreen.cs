@@ -150,7 +150,7 @@ public class VersusScreen : MonoBehaviour
 			mapSprite.spriteName = "Arthanus";			
 		}
 
-		if (cena == 3)
+		if (cena == 4)
 		{
 			mapName.text = "Gargantua";
 			mapSprite.spriteName = "Gargantua";			
@@ -162,7 +162,7 @@ public class VersusScreen : MonoBehaviour
 			mapSprite.spriteName = "Sandstone Salvation";			
 		}
 
-		if (cena == 4)
+		if (cena == 3)
 		{
 			mapName.text = "Hollow Fields";
 			mapSprite.spriteName = "Hollow Fields";			

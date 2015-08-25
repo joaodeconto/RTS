@@ -324,9 +324,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			if (gameplayManager.IsBeingAttacked (this))
 			{
 				eventController.AddEvent("being attacked", transform.position);						
-				minimapController.InstantiatePositionBeingAttacked (transform);
-				AudioClip sfxbeingattacked = SoundManager.Load("being_attacked");				
-				SoundManager.PlaySFX(sfxbeingattacked);
+				minimapController.InstantiatePositionBeingAttacked (transform);			
 			}
 		}
 

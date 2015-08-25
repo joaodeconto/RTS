@@ -70,7 +70,6 @@ public class TutorialMenu : MonoBehaviour
 //				StoreInventory.TakeItem(s,1);
 //			}
 			StoreInventory.GiveItem("11", 1);
-			StoreInventory.GiveItem("21", 1);
 
 			LevelBtnsStatus(buttons.Btn0, "1");
 		}

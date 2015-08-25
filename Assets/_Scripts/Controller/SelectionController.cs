@@ -384,7 +384,7 @@ public class SelectionController : MonoBehaviour
 						statsController.SelectStat (factorySelected, true);
 						statsController.PlaySelectSound ();						
 						lastStatClick = factorySelected;
-//						ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (statsController.selectedStats[0] as FactoryBase);
+						ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (statsController.selectedStats[0] as FactoryBase, true);
 					}
 					return true;
 				}
@@ -480,7 +480,7 @@ public class SelectionController : MonoBehaviour
 									    touchController.IsInCamera (stat.transform.position))
 									{
 										statsController.SelectStat (stat, true);
-										ComponentGetter.Get<HUDController>().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit, true);
+										if(stat is Unit)ComponentGetter.Get<HUDController>().OpenInfoBoxUnit (statsController.selectedStats[0] as Unit, true);
 									
 									}
 								}

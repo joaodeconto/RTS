@@ -14,6 +14,7 @@ public class EventController : MonoBehaviour
 		public string spriteName;
 		public Vector3 eventPosition;
 		public GameObject hudFeedback;
+		public string sfxFeedback;
 	}
 
 	public float timer = 0f;
@@ -37,7 +38,15 @@ public class EventController : MonoBehaviour
 		
 		if(string.IsNullOrEmpty(spriteName))
 			spriteName = e.spriteName;
-		
+
+		if(e.hudFeedback)e.hudFeedback.SetActive(true);
+
+		if(e.sfxFeedback != null)
+		{
+			AudioClip sfxFbk = SoundManager.Load(e.sfxFeedback);				
+			SoundManager.PlaySFX(sfxFbk);
+		}
+
 		hudController.CreateEnqueuedButtonInInspector ( "event-" + Time.time, "Events", ht,spriteName);
 	}
 
