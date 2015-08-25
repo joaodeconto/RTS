@@ -146,7 +146,10 @@ public class TutorialMenu : MonoBehaviour
 	void LevelBtnsStatus(Transform missions, string sceneString)
 	{
 		int scene = Int32.Parse(sceneString); 	
+		Transform bigLock =  missions.FindChild("lock");
 		missions = missions.FindChild("Missions");
+
+		if (bigLock != null) bigLock.gameObject.SetActive(StoreInventory.GetItemBalance(scene.ToString()+"1")<1);
 		foreach (Transform t in missions)
 		{
 			int level = Int32.Parse(t.name);

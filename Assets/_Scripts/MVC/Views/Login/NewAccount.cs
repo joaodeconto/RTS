@@ -55,14 +55,14 @@ public class NewAccount : IView
 			.Init (null,
 			(ht_dcb) =>
 			{
-					if (AccountAlreadyExists)
-					{
-						wUser.SetActive (true);
-							Invoke ("CloseErrorMessage", 5.0f);
-						Debug.Log("AccountAlreadyExists");
-
-						return;
-					}
+//					if (AccountAlreadyExists)
+//					{
+//						wUser.SetActive (true);
+//							Invoke ("CloseErrorMessage", 5.0f);
+//						Debug.Log("AccountAlreadyExists");
+//
+//						return;
+//					}
 
 					if (string.IsNullOrEmpty (password.value))
 					{
@@ -71,12 +71,12 @@ public class NewAccount : IView
 						Invoke ("CloseErrorMessage", 5.0f);
 					}
 				
-					if (string.IsNullOrEmpty (password_confirmation.value) || password.value != password_confirmation.value)
-					{
-						Debug.Log("you need confirm password ");
-						wPass.SetActive (true);
-						Invoke ("CloseErrorMessage", 5.0f);
-					}
+//					if (string.IsNullOrEmpty (password_confirmation.value) || password.value != password_confirmation.value)
+//					{
+//						Debug.Log("you need confirm password ");
+//						wPass.SetActive (true);
+//						Invoke ("CloseErrorMessage", 5.0f);
+//					}
 
 					if (string.IsNullOrEmpty (username.value))
 					{
@@ -85,13 +85,13 @@ public class NewAccount : IView
 						Debug.Log("invalid username");
 					}
 
-					if (string.IsNullOrEmpty(email.value))
-					{
-						wEmail.SetActive (true);
-						Invoke ("CloseErrorMessage", 5.0f);
-						Debug.Log("invalid email");
-						return;
-					}
+//					if (string.IsNullOrEmpty(email.value))
+//					{
+//						wEmail.SetActive (true);
+//						Invoke ("CloseErrorMessage", 5.0f);
+//						Debug.Log("invalid email");
+//						return;
+//					}
 
 					if (AcceptedTerms.value != true)
 					{
@@ -143,6 +143,7 @@ public class NewAccount : IView
 									if (player == null)
 									{
 										AccountAlreadyExists = true;
+										Init();
 									}
 									else
 									{
