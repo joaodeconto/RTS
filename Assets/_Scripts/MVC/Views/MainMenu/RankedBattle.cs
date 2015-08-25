@@ -270,17 +270,17 @@ public class RankedBattle : MonoBehaviour
 			mapScene = 1;
 		}
 		
-		if (popSelect == "Living Desert")
+		if (popSelect == "Hollow Fields")
 		{
 			mapScene = 2;
 		}
 
-		if (popSelect == "Swamp King")
+		if (popSelect == "Gargantua")
 		{
 			mapScene = 3;
 		}
 
-		if (popSelect == "Hollow Fields")
+		if (popSelect == "Living Desert")
 		{
 			mapScene = 4;
 
@@ -290,7 +290,7 @@ public class RankedBattle : MonoBehaviour
 			mapScene = 5;
 		}
 
-		if (popSelect == "Gargantua")
+		if (popSelect == "Swamp King")
 		{
 			mapScene = 6;
 		}
@@ -298,6 +298,11 @@ public class RankedBattle : MonoBehaviour
 		if (popSelect == "Crank Lagoon")
 		{
 			mapScene = 7;
+		}
+
+		if (popSelect == "Arthanus")
+		{
+			mapScene = 8;
 		}
 	}
 }

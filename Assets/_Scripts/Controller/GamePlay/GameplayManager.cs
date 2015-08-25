@@ -205,10 +205,10 @@ public class GameplayManager : Photon.MonoBehaviour
 	void TribeInstiateNetwork ()
 	{
 		
-		//Debug.Log ("Tribe Network");
-		foreach (Team t in teams)
+		for (int i = 0; i < teams.Length; i++)
 		{
-			t.initialPosition = selectedLevel.gameLevel.transform.FindChild(t.name).transform;
+			Team t = teams[i];
+			t.initialPosition = selectedLevel.gameLevel.transform.FindChild(i.ToString()).transform;
 
 			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true && t.name != "selvagens")
 			{
