@@ -719,6 +719,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &163374
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 463374}
+  - 137: {fileID: 13763374}
+  m_Layer: 10
+  m_Name: diloMesh
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -1258,12 +1274,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100082}
-  m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -.178231388, y: .334078342, z: -.435655564, w: .81659627}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400086}
-  m_RootOrder: 1
+  m_RootOrder: 3
 --- !u!4 &400084
 Transform:
   m_ObjectHideFlags: 1
@@ -1287,8 +1303,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400084}
-  - {fileID: 400082}
+  - {fileID: 463374}
   - {fileID: 400080}
+  - {fileID: 400082}
   m_Father: {fileID: 400004}
   m_RootOrder: 2
 --- !u!4 &400088
@@ -1329,6 +1346,18 @@ Transform:
   - {fileID: 400088}
   m_Father: {fileID: 400066}
   m_RootOrder: 0
+--- !u!4 &463374
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 163374}
+  m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400086}
+  m_RootOrder: 1
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -1458,7 +1487,7 @@ MonoBehaviour:
   sizeOfSelected: 3.5
   rendererTeamSubstanceColor:
   - subMesh: {fileID: 400084}
-  - subMesh: {fileID: 400082}
+  - subMesh: {fileID: 463374}
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -1631,7 +1660,7 @@ SkinnedMeshRenderer:
   - {fileID: 400008}
   - {fileID: 400006}
   m_BlendShapeWeights: []
-  m_RootBone: {fileID: 400080}
+  m_RootBone: {fileID: 0}
   m_AABB:
     m_Center: {x: -.88396132, y: .059538722, z: .00566390157}
     m_Extent: {x: .414238602, y: .696985781, z: .544523954}
@@ -1704,6 +1733,75 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: .538725853, y: .478597939, z: .259335101}
     m_Extent: {x: 2.23293924, y: 1.89401579, z: 2.0748992}
+  m_DirtyAABB: 0
+--- !u!137 &13763374
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 163374}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 1028604888, guid: 16578b67dc6d2ef4e9d325719b625d2d, type: 3}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_Mesh: {fileID: 4300000, guid: faa0835c348881a4fa17938cdba990a8, type: 3}
+  m_Bones:
+  - {fileID: 400080}
+  - {fileID: 400078}
+  - {fileID: 400076}
+  - {fileID: 400074}
+  - {fileID: 400072}
+  - {fileID: 400070}
+  - {fileID: 400068}
+  - {fileID: 400066}
+  - {fileID: 400064}
+  - {fileID: 400062}
+  - {fileID: 400060}
+  - {fileID: 400058}
+  - {fileID: 400056}
+  - {fileID: 400054}
+  - {fileID: 400052}
+  - {fileID: 400050}
+  - {fileID: 400048}
+  - {fileID: 400046}
+  - {fileID: 400044}
+  - {fileID: 400042}
+  - {fileID: 400040}
+  - {fileID: 400038}
+  - {fileID: 400036}
+  - {fileID: 400034}
+  - {fileID: 400032}
+  - {fileID: 400030}
+  - {fileID: 400028}
+  - {fileID: 400026}
+  - {fileID: 400024}
+  - {fileID: 400022}
+  - {fileID: 400020}
+  - {fileID: 400018}
+  - {fileID: 400016}
+  - {fileID: 400014}
+  - {fileID: 400012}
+  - {fileID: 400010}
+  - {fileID: 400008}
+  - {fileID: 400006}
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 400080}
+  m_AABB:
+    m_Center: {x: -.88396132, y: .059538722, z: .00566390157}
+    m_Extent: {x: .414238602, y: .696985781, z: .544523954}
   m_DirtyAABB: 0
 --- !u!195 &19500000
 NavMeshAgent:

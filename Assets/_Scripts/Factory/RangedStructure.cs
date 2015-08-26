@@ -11,6 +11,7 @@ public class RangedStructure : RangeUnit
 		GameObject factoryParent = transform.parent.gameObject;
 		FactoryBase fb = factoryParent.GetComponent<FactoryBase>();	
 		fb.upgradesToCreate[1].techAvailable = false;
+		fb.upgradesToCreate[0].techAvailable = false;
 		fb.upgradesToCreate[3].techAvailable = true;
 		fb.RestoreOptionsMenu();
 		moveAttack = false;
@@ -19,6 +20,9 @@ public class RangedStructure : RangeUnit
 		
 	public override void IAStep ()
 	{
+
+		if (!playerUnit) return;
+
 
 		if (TargetAttack != null)
 		{
