@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
+using Soomla.Store;
 
 public class VictoryCondition : MonoBehaviour
 {	
@@ -22,44 +23,54 @@ public class VictoryCondition : MonoBehaviour
 			Train,
 			EnemyBuildings,
 			EnemyUnits,
-			AllEnemies
+			AllEnemies, 
+			Protect,
+			Scout
 		}
-	
+
+		public enum EnumConsequense {win, lose, bonus}	
 		public bool IsActive;
 		public bool objectiveCompleted;
+		public bool objectiveFailed = false;
 		public string Name;
-		public EnumComparingType enumComparingType;
+		public EnumComparingType enumComparingType;		
+		public EnumConsequense enumConsequense = EnumConsequense.win;
 		public string specificStat;
 		public int valueToCompare;
 		public EnumCondition enumCondition;
 		public string objDescription;
 		public string objSprite;
 		public int timeToComplete = 0;
-		public bool bonusMission = false;
+		public string itemIdBonus; 
+		public int itemQuantBonus;
+		public string bonusSprite = "Achiv_Battle1"; //TODO adicionar bonus sprites
 	}
 
-	private GameplayManager gm;
-	private StatsController sc;
-	private EventController em;
+	GameplayManager gm;
+	StatsController sc;
+	EventController em;
 	public Challenge[] ChallengesToWin;		 
 	public bool Ativar;
-	private bool FoiAtivado;
+	bool FoiAtivado;
 	public GameObject objectiveLog;
 	public UITable objSubpanel;
 	public GameObject objectiveRow;
-	private int nEnemies = 0;
-	private int nPopulation = 0;
-	private int nTeams = 0;
-	private int nMaxPopulation = 0;
-	private float nTime = 0;
-	private int nBuilds = 0;
-	private int nUnits = 0;
-	private int eneBuilds = 0;
-	private int nCollected = 0;
+	int nEnemies 		= 0;
+	int nPopulation 	= 0;
+	int nTeams 			= 0;
+	int nMaxPopulation  = 0;
+	float nTime 		= 0;
+	int nBuilds 		= 0;
+	int nUnits 			= 0;
+	int eneBuilds 		= 0;
+	int nCollected 		= 0;
+	int chForVictory 	= 0;
+	IStats choseenOne 	= null;	
+	bool choseenOneFound = false;
 
 	void Start()
 	{
-		if(PhotonNetwork.offlineMode) Init();
+		if(PhotonNetwork.offlineMode) Invoke("Init",2f);
 	}
 
 	public void Init ()
@@ -70,7 +81,7 @@ public class VictoryCondition : MonoBehaviour
 
 		if (Ativar && !FoiAtivado)	ActiveAllChallenges ();	
 
-		InvokeRepeating ("CheckVictory", 10.0f, 3.0f);
+		InvokeRepeating ("CheckVictory", 15.0f, 3.0f);
 	}
 
 	bool CheckValue (Challenge.EnumCondition enumCondition, int value, int valueToCompare)
@@ -140,8 +151,7 @@ public class VictoryCondition : MonoBehaviour
 						FactoryBase fb = stats as FactoryBase;
 						if (fb != null)
 						{
-							if (stats.tag == specificStat && fb.wasBuilt) _nBuilds++;
-							else if (stats.category == specificStat && fb.wasBuilt) _nBuilds++;
+							if (stats.category == specificStat && fb.wasBuilt) _nBuilds++; //TODO removi tags, pode dar bug
 						}
 					}
 					nBuilds = _nBuilds;
@@ -157,8 +167,7 @@ public class VictoryCondition : MonoBehaviour
 						Unit un = stats as Unit;
 						if (un != null)
 						{
-							if (stats.tag == specificStat) _nUnits++;
-								else if (un.category == specificStat) _nUnits++;
+							if (un.category == specificStat) _nUnits++; //TODO removi tags, pode dar bug
 						}
 					}
 					nUnits = _nUnits;
@@ -173,12 +182,10 @@ public class VictoryCondition : MonoBehaviour
 
 					foreach (IStats stats in sc.otherStats)
 					{
-						if  (stats.tag == specificStat) _eneBuilds++;
-						else if (stats.category == specificStat) _eneBuilds++;
-						continue;				
+						 if (stats.category == specificStat) _eneBuilds++; //TODO removi tags, pode dar bug							
 					}
-					eneBuilds = _eneBuilds;
 
+					eneBuilds = _eneBuilds;
 									
 					return CheckValue (enumCondition, eneBuilds, valueToCompare);			
 
@@ -206,20 +213,54 @@ public class VictoryCondition : MonoBehaviour
 					nEnemies = _nEnemyTribe;
 					
 					return CheckValue (enumCondition, nEnemies, valueToCompare);
-								
-			default: return true;
+
+			case Challenge.EnumComparingType.Protect:
+					
+					if(choseenOne == null && choseenOneFound){ return true;}
+
+					else if (!choseenOneFound)
+					{						
+						foreach (IStats stat in sc.myStats)
+						{
+							if (stat.category == specificStat)
+							{
+								choseenOne = stat;
+								choseenOneFound = true;
+							}
+						}
+					}
+
+					return false;
+
+
+			case Challenge.EnumComparingType.Scout:
+				
+
+			int _eneScout = 0;			
+			
+			foreach (IStats stats in sc.otherStats)
+			{
+				if (stats.category == specificStat && stats.wasVisible)	_eneScout++;
+			}			
+			
+			return CheckValue (enumCondition, _eneScout, valueToCompare);	
+
+		default: return true;
 		}
 	}
 
 	public void ActiveAllChallenges ()
 	{
-		if (!FoiAtivado) 
+		if (!FoiAtivado){
 			foreach (Challenge ch in ChallengesToWin)
-		{
-			ch.IsActive = true;
-			AddToObjectiveLog(ch.Name, ch.objSprite, ch.valueToCompare, ch.objDescription, ch.objectiveCompleted);
+			{
+				ch.IsActive = true;
+				if(ch.enumConsequense == Challenge.EnumConsequense.win) chForVictory++;
+				else if (ch.enumConsequense == Challenge.EnumConsequense.lose && ch.timeToComplete != 0) chForVictory++;
+				AddToObjectiveLog(ch);
+			}
+			FoiAtivado = true;
 		}
-		FoiAtivado = true;
 	}
 
 	public void InactiveAllChallenges ()
@@ -245,20 +286,69 @@ public class VictoryCondition : MonoBehaviour
 			
 		foreach (Challenge ch in ChallengesToWin)
 		{
-			if (!ch.IsActive)
+			if (!ch.IsActive || ch.objectiveFailed)
 				continue;
 
-			if (ch.objectiveCompleted)
-			{
-				++nSuccess;
+			if (ch.objectiveCompleted )
+			{			
+				if(ch.enumConsequense == Challenge.EnumConsequense.win)	++nSuccess;
+
 				continue;
 			}
 
-			if (ch.timeToComplete!=0 && ch.timeToComplete < gm.gameTime && !ch.bonusMission)  // Defeat by time
+			if (ch.timeToComplete!=0 && (ch.timeToComplete +1) < gm.gameTime)  // Defeat by time
 			{
-				gm.Defeat(0,0);
-				this.enabled = false;
-				break;
+				if(ch.enumConsequense == Challenge.EnumConsequense.bonus)
+				{
+					GameObject failSprite = objSubpanel.transform.FindChild (ch.Name).transform.FindChild ("fail_sprite").gameObject;
+					failSprite.SetActive(true);
+					ch.objectiveFailed = true; 
+
+					continue;
+				}
+
+				if(ch.enumConsequense == Challenge.EnumConsequense.lose)
+				{
+					Transform completeTrns = objSubpanel.transform.FindChild (ch.Name).FindChild("ObjectiveCompleted");
+					completeTrns.GetComponent<UIToggle>().value = true;	
+					ch.objectiveCompleted = true;
+					em.AddEvent("objective completed", ch.Name, ch.objSprite);
+					++nSuccess;
+					Debug.Log("tempo victory");
+					
+					if(ch.itemIdBonus != "")
+					{
+						StoreInventory.GiveItem(ch.itemIdBonus, ch.itemQuantBonus);
+						//							completeTrns = objectiveLog.transform.FindChild (ch.Name).FindChild("BonusCompleted"); //TODO  criar objeto de bonus no subpanelv
+						string bonusName = StoreInfo.GetItemByItemId(ch.itemIdBonus).Description;
+						completeTrns.gameObject.SetActive(true);
+						em.AddEvent("bonus completed", ch.itemQuantBonus.ToString() + " " + bonusName, ch.bonusSprite);
+						
+						
+					}
+				}
+
+				else if(ch.enumConsequense == Challenge.EnumConsequense.win || ch.enumComparingType != Challenge.EnumComparingType.Protect)
+				{
+						Transform completeTrns = objSubpanel.transform.FindChild (ch.Name).FindChild("ObjectiveCompleted");
+						completeTrns.GetComponent<UIToggle>().value = true;	
+						ch.objectiveCompleted = true;
+						em.AddEvent("objective completed", ch.Name, ch.objSprite);
+						++nSuccess;
+					Debug.Log("tempo victory");
+
+						if(ch.itemIdBonus != "")
+						{
+							StoreInventory.GiveItem(ch.itemIdBonus, ch.itemQuantBonus);
+//							completeTrns = objectiveLog.transform.FindChild (ch.Name).FindChild("BonusCompleted"); //TODO  criar objeto de bonus no subpanelv
+							string bonusName = StoreInfo.GetItemByItemId(ch.itemIdBonus).Description;
+							completeTrns.gameObject.SetActive(true);
+							em.AddEvent("bonus completed", ch.itemQuantBonus.ToString() + " " + bonusName, ch.bonusSprite);
+							
+
+						}
+					continue;
+				}
 			}
 
 
@@ -266,19 +356,51 @@ public class VictoryCondition : MonoBehaviour
 
 			if (success)
 			{
-				ch.objectiveCompleted = true;
-				em.AddEvent("objective completed", ch.Name, ch.objSprite);
-				Transform completeTrns = objSubpanel.transform.FindChild (ch.Name).FindChild("ObjectiveCompleted");
-				completeTrns.GetComponent<UIToggle>().value = true;								
-				++nSuccess;
+				if(ch.enumConsequense == Challenge.EnumConsequense.lose)
+				{
+					GameObject failSprite = objSubpanel.transform.FindChild (ch.Name).transform.FindChild ("fail_sprite").gameObject;
+					failSprite.SetActive(true);
+					gm.Defeat(0,0);
+					em.AddEvent("objective Failed", ch.Name, ch.objSprite); //TODO  Adicionar evento no event manager
+					CancelInvoke("CheckVictory");
+					break;
+				}
+
+				else
+				{
+					Transform completeTrns = objSubpanel.transform.FindChild (ch.Name).FindChild("ObjectiveCompleted");
+					completeTrns.GetComponent<UIToggle>().value = true;	
+
+					if(ch.enumConsequense == Challenge.EnumConsequense.bonus){
+						ch.objectiveCompleted = true;
+						StoreInventory.GiveItem(ch.itemIdBonus, ch.itemQuantBonus);
+//						completeTrns = objectiveLog.transform.FindChild (ch.Name).FindChild("BonusCompleted"); //TODO  criar objeto de bonus no subpanelv
+						string bonusName = StoreInfo.GetItemByItemId(ch.itemIdBonus).Description;
+						completeTrns.gameObject.SetActive(true);
+						em.AddEvent("bonus completed", ch.itemQuantBonus.ToString() + " " + bonusName, ch.bonusSprite);
+					}
+
+					else{
+						ch.objectiveCompleted = true;
+						em.AddEvent("objective completed", ch.Name, ch.objSprite);
+						++nSuccess;
+						if(ch.itemIdBonus != ""){
+							StoreInventory.GiveItem(ch.itemIdBonus, ch.itemQuantBonus);
+//							completeTrns = objectiveLog.transform.FindChild (ch.Name).FindChild("BonusCompleted"); //TODO  criar objeto de bonus no subpanelv
+							string bonusName = StoreInfo.GetItemByItemId(ch.itemIdBonus).Description;
+							completeTrns.gameObject.SetActive(true);
+							em.AddEvent("bonus completed", ch.itemQuantBonus.ToString() + " " + bonusName, ch.bonusSprite);
+
+						}
+					}
+				}
 			}
 		}
 
-		if (nSuccess == ChallengesToWin.Length) 	//Tudo feito
+		if (nSuccess == chForVictory) 	//Tudo feito
 		{
 			gm.DefeatingEnemyTeamsByObjectives ();
 			CancelInvoke("CheckVictory");
-
 		}
 
 
@@ -301,25 +423,35 @@ public class VictoryCondition : MonoBehaviour
 	///	);
 	}
 
-	public void AddToObjectiveLog (string challengeName, string spriteName = "", int paramValue = 0, string description = "", bool complete = false)
+	public void AddToObjectiveLog (Challenge ch)
 	{
 
+		Transform bg = objectiveRow.transform.FindChild ("objective_bg");
+
+		switch (ch.enumConsequense)		{
+		case Challenge.EnumConsequense.bonus: 	bg.GetComponent<UISprite>().color = Color.blue; break;	
+		case Challenge.EnumConsequense.lose: 	bg.GetComponent<UISprite>().color = Color.grey; break;
+		case Challenge.EnumConsequense.win: 	bg.GetComponent<UISprite>().color = Color.yellow; break;
+		}
 		Transform name = objectiveRow.transform.FindChild ("label (objName)");
-		name.GetComponent<UILabel>().text = challengeName;
+		name.GetComponent<UILabel>().text = ch.Name;
 
 		Transform desc = objectiveRow.transform.FindChild ("Tween").FindChild ("Label - Description");
-		desc.GetComponent<UILabel>().text = description;
+		desc.GetComponent<UILabel>().text = ch.objDescription;
 
 		Transform sprite = objectiveRow.transform.FindChild ("Sprite (objSprite)");
-		sprite.GetComponent<UISprite>().spriteName = spriteName;
+		sprite.GetComponent<UISprite>().spriteName = ch.objSprite;
 
 		Transform completed = objectiveRow.transform.FindChild ("ObjectiveCompleted");
-		completed.GetComponent<UIToggle>().value = complete;
+		completed.GetComponent<UIToggle>().value = ch.objectiveCompleted;
+
+		GameObject failSprite = objectiveRow.transform.FindChild ("fail_sprite").gameObject;
+		failSprite.SetActive(false);
 
 		GameObject objline = NGUITools.AddChild (objSubpanel.gameObject, objectiveRow);
 
 		Transform completeTrns = objSubpanel.transform.FindChild ("Objective Row(Clone)");
-		completeTrns.name = challengeName;
+		completeTrns.name = ch.Name;
 
 		objSubpanel.repositionNow = true;						
 	

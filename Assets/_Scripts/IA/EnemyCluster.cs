@@ -60,7 +60,7 @@ public class EnemyCluster : MonoBehaviour
 		teamZero = gameplayManager.selectedLevel.gameLevel.transform.FindChild("0").transform;
 		teamNine.gameObject.SetActive(true);
 		InitExploreTargets();
-		InitInicialEnemies ();
+		StartCoroutine ("InitInicialEnemies");
 		Invoke("InitClusters",3f);
 		InvokeRepeating ("IABehaviour",4f,1f);
 	}
@@ -82,23 +82,27 @@ public class EnemyCluster : MonoBehaviour
 		InvokeRepeating ("CheckClusterTrigger", 1, 1);
 	}
 
-	private void InitInicialEnemies ()            
+	IEnumerator InitInicialEnemies ()            
 	{
+		List<Transform> toInitList = new List<Transform>();
 		foreach (Transform trns in teamNine)
-		{			
-			if(trns.gameObject.activeSelf == true)
-			{
-				InitInstantiateEnemy toInit = trns.GetComponent<InitInstantiateEnemy>();
-				if (!toInit)continue;
-				if (toInit.GetType() == typeof(InitInstantiateEnemy))
-				{					
-					toInit.Init();									
-				}
+		{	
+			if(trns.gameObject.activeSelf == true)	{
+				toInitList.Add(trns);
 			}
-
-			enemyFactoryExists = true;
 		}
+		for (int i = toInitList.Count -1; i >= 0; i--)
+		{
+			InitInstantiateEnemy toInit = toInitList[i].GetComponent<InitInstantiateEnemy>();
+			if (toInit != null){
+				toInit.Init();											
+				yield return new WaitForSeconds(0.2f);
+			}
+		}		
+
+		enemyFactoryExists = true;
 	}
+
 	private void InitExploreTargets()
 	{
 		int i = 0;
@@ -225,8 +229,11 @@ public class EnemyCluster : MonoBehaviour
 				if(cluster.defendTarget == null)
 				{
 					Transform defendRef = cluster.factory.goRallypoint;
-					defendRef.position += Vector3.forward * 4;
-					cluster.defendTarget = defendRef;
+					if( defendRef != null)
+					{
+						defendRef.position += Vector3.forward * 4;
+						cluster.defendTarget = defendRef;
+					}
 				}
 
 				else if (!cluster.clusterIsBusy)

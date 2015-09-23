@@ -4,13 +4,12 @@
 SceneSettings:
   m_ObjectHideFlags: 0
   m_PVSData: 
-  m_QueryMode: 1
   m_PVSObjectsArray: []
   m_PVSPortalsArray: []
   m_OcclusionBakeSettings:
-    viewCellSize: 1
-    bakeMode: 2
-    memoryUsage: 10485760
+    smallestOccluder: 5
+    smallestHole: .25
+    backfaceThreshold: 100
 --- !u!196 &2
 NavMeshSettings:
   m_ObjectHideFlags: 0
@@ -25,6 +24,7 @@ NavMeshSettings:
     minRegionArea: 2
     widthInaccuracy: 16.666666
     heightInaccuracy: 10
+    tileSizeHint: 0
   m_NavMesh: {fileID: 0}
 --- !u!104 &13
 RenderSettings:
@@ -38,6 +38,7 @@ RenderSettings:
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: .5
   m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 0}
   m_ObjectHideFlags: 0
@@ -101,6 +102,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b25d02d5454ac4210abfe815eb4dbe40, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   targetTransform: {fileID: 21}
   faceForward: 0
 --- !u!4 &21
@@ -115,6 +117,7 @@ Transform:
   m_Children:
   - {fileID: 51}
   m_Father: {fileID: 22}
+  m_RootOrder: 1
 --- !u!4 &22
 Transform:
   m_ObjectHideFlags: 0
@@ -128,6 +131,7 @@ Transform:
   - {fileID: 55}
   - {fileID: 21}
   m_Father: {fileID: 23}
+  m_RootOrder: 0
 --- !u!4 &23
 Transform:
   m_ObjectHideFlags: 0
@@ -140,6 +144,7 @@ Transform:
   m_Children:
   - {fileID: 22}
   m_Father: {fileID: 0}
+  m_RootOrder: 1
 --- !u!1001 &25
 Prefab:
   m_ObjectHideFlags: 0
@@ -197,12 +202,14 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!33 &28
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -230,6 +237,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4eb73708914564698b03178372f5b8ba, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   cameraObject: {fileID: 58}
   cameraPivot: {fileID: 55}
   jumpButton: {fileID: 36}
@@ -290,6 +298,7 @@ Transform:
   m_Children:
   - {fileID: 48}
   m_Father: {fileID: 55}
+  m_RootOrder: 0
 --- !u!114 &40
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,6 +310,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01049279b64ae427f91486bbcea77beb, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   origin: {fileID: 21}
   zoom: 0
   zoomMin: -5
@@ -351,7 +361,11 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!4 &48
 Transform:
   m_ObjectHideFlags: 0
@@ -363,6 +377,7 @@ Transform:
   m_LocalScale: {x: .999999821, y: .999999523, z: .999999821}
   m_Children: []
   m_Father: {fileID: 38}
+  m_RootOrder: 0
 --- !u!4 &51
 Transform:
   m_ObjectHideFlags: 0
@@ -374,6 +389,7 @@ Transform:
   m_LocalScale: {x: .999999881, y: 1, z: .999999762}
   m_Children: []
   m_Father: {fileID: 21}
+  m_RootOrder: 0
 --- !u!4 &55
 Transform:
   m_ObjectHideFlags: 0
@@ -386,6 +402,7 @@ Transform:
   m_Children:
   - {fileID: 38}
   m_Father: {fileID: 22}
+  m_RootOrder: 0
 --- !u!1 &58
 GameObject:
   m_ObjectHideFlags: 0
@@ -507,6 +524,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!64 &70
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -538,6 +557,7 @@ Transform:
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!1 &73
 GameObject:
   m_ObjectHideFlags: 0

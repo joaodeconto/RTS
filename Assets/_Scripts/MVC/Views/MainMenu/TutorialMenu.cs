@@ -54,6 +54,12 @@ public class TutorialMenu : MonoBehaviour
 		pw = ComponentGetter.Get<PhotonWrapper>();
 		vs = ComponentGetter.Get<VersusScreen>();
 		login = ComponentGetter.Get<Login>();
+//		VirtualCategory vc = StoreInfo.Categories[1];
+//		foreach(string s in vc.GoodItemIds)
+//		{
+//			StoreInventory.TakeItem(s,1);
+//		}
+		StoreInventory.GiveItem("11", 1);
 	}
 	
 	public void Open ()
@@ -64,13 +70,6 @@ public class TutorialMenu : MonoBehaviour
 
 		if (buttons.Btn0)
 		{
-//			VirtualCategory vc = StoreInfo.Categories[1];
-//			foreach(string s in vc.GoodItemIds)
-//			{
-//				StoreInventory.TakeItem(s,1);
-//			}
-			StoreInventory.GiveItem("11", 1);
-
 			LevelBtnsStatus(buttons.Btn0, "1");
 		}
 		

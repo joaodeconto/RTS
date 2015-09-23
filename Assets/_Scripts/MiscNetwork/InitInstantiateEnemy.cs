@@ -11,6 +11,7 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 
 	public GameObject prefabInstantiate;
 	private bool wasInitialized = false;
+	public bool instantiated = false;
 
 	public void Init ()
 	{
@@ -50,7 +51,9 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 			fb.GetComponent<NavMeshObstacle> ().enabled = true;		
 		}				
 		CancelInvoke ("NetworkInstantiatePrefab");
+		instantiated = true;
 		Destroy (this.gameObject);
+
 	}
 
 	void NetworkInstantiatePrefab ()
@@ -69,7 +72,9 @@ public class InitInstantiateEnemy : Photon.MonoBehaviour
 		}	
 
 		CancelInvoke ("NetworkInstantiatePrefab");
+		instantiated = true;
 		Destroy (this.gameObject);
+
 	}
 
 		void OnDrawGizmos ()

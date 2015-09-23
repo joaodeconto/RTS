@@ -17,13 +17,15 @@ public class EveryplayAnimatedThumbnail : MonoBehaviour
 
     void Start()
     {
-        thumbnailPool = (EveryplayThumbnailPool)FindObjectOfType(typeof(EveryplayThumbnailPool));
+        thumbnailPool = (EveryplayThumbnailPool) FindObjectOfType(typeof(EveryplayThumbnailPool));
 
-        if(thumbnailPool) {
+        if (thumbnailPool)
+        {
             defaultTexture = mainRenderer.material.mainTexture;
             ResetThumbnail();
         }
-        else {
+        else
+        {
             Debug.Log("Everyplay thumbnail pool not found or no material was defined!");
         }
     }
@@ -46,7 +48,8 @@ public class EveryplayAnimatedThumbnail : MonoBehaviour
 
         blend = 0.0f;
         mainRenderer.material.SetFloat("_Blend", blend);
-        if(mainRenderer.material.mainTexture != defaultTexture) {
+        if (mainRenderer.material.mainTexture != defaultTexture)
+        {
             mainRenderer.material.mainTextureScale = Vector2.one;
             mainRenderer.material.mainTexture = defaultTexture;
         }
@@ -54,10 +57,11 @@ public class EveryplayAnimatedThumbnail : MonoBehaviour
 
     private IEnumerator CrossfadeTransition()
     {
-        while(blend < 1.0f && transitionInProgress) {
+        while (blend < 1.0f && transitionInProgress)
+        {
             blend += 0.1f;
             mainRenderer.material.SetFloat("_Blend", blend);
-            yield return new WaitForSeconds(1/40.0f);
+            yield return new WaitForSeconds(1 / 40.0f);
         }
 
         mainRenderer.material.mainTexture = mainRenderer.material.GetTexture("_MainTex2");
@@ -77,20 +81,26 @@ public class EveryplayAnimatedThumbnail : MonoBehaviour
 
     void Update()
     {
-        if(thumbnailPool && !transitionInProgress) {
-            if(thumbnailPool.availableThumbnailCount > 0) {
+        if (thumbnailPool && !transitionInProgress)
+        {
+            if (thumbnailPool.availableThumbnailCount > 0)
+            {
                 // Don't animate the first frame
-                if(currentIndex < 0) {
+                if (currentIndex < 0)
+                {
                     currentIndex = 0;
                     mainRenderer.material.mainTextureScale = thumbnailPool.thumbnailScale;
                     mainRenderer.material.mainTexture = thumbnailPool.thumbnailTextures[currentIndex];
                 }
-             // Animate
-                else if(thumbnailPool.availableThumbnailCount > 1) {
-                    if((Time.frameCount % 50) == 0) {
+                // Animate
+                else if (thumbnailPool.availableThumbnailCount > 1)
+                {
+                    if ((Time.frameCount % 50) == 0)
+                    {
                         currentIndex++;
 
-                        if(currentIndex >= thumbnailPool.availableThumbnailCount) {
+                        if (currentIndex >= thumbnailPool.availableThumbnailCount)
+                        {
                             currentIndex = 0;
                         }
 
@@ -103,7 +113,8 @@ public class EveryplayAnimatedThumbnail : MonoBehaviour
                     }
                 }
             }
-            else if(currentIndex >= 0) {
+            else if (currentIndex >= 0)
+            {
                 ResetThumbnail();
             }
         }

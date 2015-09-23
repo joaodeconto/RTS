@@ -181,12 +181,14 @@ public class InteractionController : MonoBehaviour
 				}
 			}
 
+			bool hasWorkerInSelection = false;
+			List<IStats> workSelect = new List<IStats>();
+
 			foreach (IStats stat in statsController.selectedStats)
 			{
-				Worker worker = stat as Worker;
-				
+				Worker worker = stat as Worker;				
 				if (worker == null) continue;
-
+				hasWorkerInSelection = true;
 				worker.WorkerReset();	
 				if (worker.resource != null)
 				{
@@ -198,6 +200,18 @@ public class InteractionController : MonoBehaviour
 							
 				worker.SetMoveResource (hit.GetComponent<Resource> ());
 				feedback = true;
+				workSelect.Add(worker);			
+			}
+			
+		
+			if(hasWorkerInSelection) 
+			{
+				foreach (IStats stat in workSelect)
+				{
+					statsController.selectedStats.Remove(stat);
+					Worker w = stat as Worker;
+					w.Deselect();
+				}
 			}
 
 			if (feedback)

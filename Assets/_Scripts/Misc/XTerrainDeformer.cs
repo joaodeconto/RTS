@@ -39,7 +39,7 @@ public class XTerrainDeformer : MonoBehaviour
     protected int numOfAlphaLayers;
     protected const float DEPTH_METER_CONVERT=0.05f;
     protected const float TEXTURE_SIZE_MULTIPLIER = 1.25f;
-    private float[,] heightMapBackup;
+//    private float[,] heightMapBackup;
     private float[, ,] alphaMapBackup;
 
     void Start()
@@ -50,7 +50,7 @@ public class XTerrainDeformer : MonoBehaviour
         alphaMapWidth = terr.terrainData.alphamapWidth;
         alphaMapHeight = terr.terrainData.alphamapHeight;
         numOfAlphaLayers = terr.terrainData.alphamapLayers;
-        heightMapBackup = terr.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
+ //       heightMapBackup = terr.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
         alphaMapBackup = terr.terrainData.GetAlphamaps(0, 0, alphaMapWidth, alphaMapHeight);   
          
     }
@@ -58,13 +58,13 @@ public class XTerrainDeformer : MonoBehaviour
     //this has to be done because terrains for some reason or another terrains don't reset after you run the app
     void OnApplicationQuit()
     {
-    terr.terrainData.SetHeights(0, 0, heightMapBackup);
+    //terr.terrainData.SetHeights(0, 0, heightMapBackup);
     terr.terrainData.SetAlphamaps(0, 0, alphaMapBackup);       
     }
 
 	public void ResetTerrain()
 	{     
-		terr.terrainData.SetHeights(0, 0, heightMapBackup);
+		//terr.terrainData.SetHeights(0, 0, heightMapBackup);
 		terr.terrainData.SetAlphamaps(0, 0, alphaMapBackup);        
 	}
 

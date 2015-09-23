@@ -13,9 +13,11 @@ public class EveryplayHudCamera : MonoBehaviour
     protected const int EPSR = 0x45505352;
 
 #if EVERYPLAY_NATIVE_PLUGIN && UNITY_ANDROID
-    void Awake() {
+    void Awake()
+    {
         EveryplayUnityPluginInterfaceInitialize();
     }
+
 #endif
 
     void OnPreRender()
@@ -28,7 +30,7 @@ public class EveryplayHudCamera : MonoBehaviour
     }
 
 #if EVERYPLAY_NATIVE_PLUGIN && UNITY_ANDROID
-    [DllImport ("everyplay")]
+    [DllImport("everyplay")]
     private static extern void EveryplayUnityPluginInterfaceInitialize();
 #endif
 }

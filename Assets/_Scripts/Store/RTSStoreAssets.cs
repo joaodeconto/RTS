@@ -84,7 +84,7 @@ namespace Soomla.Store {
 
 		public static VirtualCurrency ORICHAL_CURRENCY = new VirtualCurrency(
 	            "Orichals",											// name
-	            "",													// description
+				"Orichals",											// description
 				ORICHAL_CURRENCY_ID							// item id
 	    );
 
@@ -93,7 +93,7 @@ namespace Soomla.Store {
 
 		public static VirtualCurrencyPack HUNDREDORICHAL_PACK = new VirtualCurrencyPack(
 				"100 Orichals",                                   // name
-	            "",                       // description
+				"100 Orichal Pack",                       // description
 	            "orichal",                                   // item id
 				100,												// number of currencies in the pack
 				ORICHAL_CURRENCY_ID,                        // the currency associated with this pack
@@ -144,30 +144,30 @@ namespace Soomla.Store {
 			"Units", new List<string>(new string[] { REX_ZERO_GOOD_ITEM_ID })
 	    );
 
-		public static VirtualGood LEVEL11_KEY = new LifetimeVG("11","KEY TO LEVEL 11", "11", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,100));
-		public static VirtualGood LEVEL12_KEY = new LifetimeVG("12","KEY TO LEVEL 12", "12", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,130));
-		public static VirtualGood LEVEL13_KEY = new LifetimeVG("13","KEY TO LEVEL 13", "13", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,160));
-		public static VirtualGood LEVEL21_KEY = new LifetimeVG("21","KEY TO LEVEL 21", "21", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,200));
-		public static VirtualGood LEVEL22_KEY = new LifetimeVG("22","KEY TO LEVEL 22", "22", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,230));
-		public static VirtualGood LEVEL23_KEY = new LifetimeVG("23","KEY TO LEVEL 23", "23", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,260));
-		public static VirtualGood LEVEL31_KEY = new LifetimeVG("31","KEY TO LEVEL 31", "31", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,300));
-		public static VirtualGood LEVEL32_KEY = new LifetimeVG("32","KEY TO LEVEL 32", "32", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,330));
-		public static VirtualGood LEVEL33_KEY = new LifetimeVG("33","KEY TO LEVEL 33", "33", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,360));
-		public static VirtualGood LEVEL41_KEY = new LifetimeVG("41","KEY TO LEVEL 41", "41", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,400));
-		public static VirtualGood LEVEL42_KEY = new LifetimeVG("42","KEY TO LEVEL 42", "42", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,430));
-		public static VirtualGood LEVEL43_KEY = new LifetimeVG("43","KEY TO LEVEL 43", "43", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,460));
-		public static VirtualGood LEVEL51_KEY = new LifetimeVG("51","KEY TO LEVEL 51", "51", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,500));
-		public static VirtualGood LEVEL52_KEY = new LifetimeVG("52","KEY TO LEVEL 52", "52", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,530));
-		public static VirtualGood LEVEL53_KEY = new LifetimeVG("53","KEY TO LEVEL 53", "53", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,560));
-		public static VirtualGood LEVEL61_KEY = new LifetimeVG("61","KEY TO LEVEL 61", "61", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,600));
-		public static VirtualGood LEVEL62_KEY = new LifetimeVG("62","KEY TO LEVEL 62", "62", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,630));
-		public static VirtualGood LEVEL63_KEY = new LifetimeVG("63","KEY TO LEVEL 63", "63", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,660));
-		public static VirtualGood LEVEL71_KEY = new LifetimeVG("71","KEY TO LEVEL 71", "71", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,700));
-		public static VirtualGood LEVEL72_KEY = new LifetimeVG("72","KEY TO LEVEL 72", "72", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,730));
-		public static VirtualGood LEVEL73_KEY = new LifetimeVG("73","KEY TO LEVEL 73", "73", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,760));
-		public static VirtualGood LEVEL81_KEY = new LifetimeVG("81","KEY TO LEVEL 81", "81", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,800));
-		public static VirtualGood LEVEL82_KEY = new LifetimeVG("82","KEY TO LEVEL 82", "82", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,830));
-		public static VirtualGood LEVEL83_KEY = new LifetimeVG("83","KEY TO LEVEL 83", "83", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,860));
+		public static VirtualGood LEVEL11_KEY = new LifetimeVG("11","KEY TO LEVEL 1-1", "11", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,100));
+		public static VirtualGood LEVEL12_KEY = new LifetimeVG("12","KEY TO LEVEL 1-2", "12", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,130));
+		public static VirtualGood LEVEL13_KEY = new LifetimeVG("13","KEY TO LEVEL 1-3", "13", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,160));
+		public static VirtualGood LEVEL21_KEY = new LifetimeVG("21","KEY TO LEVEL 2-1", "21", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,200));
+		public static VirtualGood LEVEL22_KEY = new LifetimeVG("22","KEY TO LEVEL 2-2", "22", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,230));
+		public static VirtualGood LEVEL23_KEY = new LifetimeVG("23","KEY TO LEVEL 2-3", "23", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,260));
+		public static VirtualGood LEVEL31_KEY = new LifetimeVG("31","KEY TO LEVEL 3-1", "31", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,300));
+		public static VirtualGood LEVEL32_KEY = new LifetimeVG("32","KEY TO LEVEL 3-2", "32", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,330));
+		public static VirtualGood LEVEL33_KEY = new LifetimeVG("33","KEY TO LEVEL 3-3", "33", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,360));
+		public static VirtualGood LEVEL41_KEY = new LifetimeVG("41","KEY TO LEVEL 4-1", "41", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,400));
+		public static VirtualGood LEVEL42_KEY = new LifetimeVG("42","KEY TO LEVEL 4-2", "42", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,430));
+		public static VirtualGood LEVEL43_KEY = new LifetimeVG("43","KEY TO LEVEL 4-3", "43", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,460));
+		public static VirtualGood LEVEL51_KEY = new LifetimeVG("51","KEY TO LEVEL 5-1", "51", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,500));
+		public static VirtualGood LEVEL52_KEY = new LifetimeVG("52","KEY TO LEVEL 5-2", "52", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,530));
+		public static VirtualGood LEVEL53_KEY = new LifetimeVG("53","KEY TO LEVEL 5-3", "53", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,560));
+		public static VirtualGood LEVEL61_KEY = new LifetimeVG("61","KEY TO LEVEL 6-1", "61", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,600));
+		public static VirtualGood LEVEL62_KEY = new LifetimeVG("62","KEY TO LEVEL 6-2", "62", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,630));
+		public static VirtualGood LEVEL63_KEY = new LifetimeVG("63","KEY TO LEVEL 6-3", "63", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,660));
+		public static VirtualGood LEVEL71_KEY = new LifetimeVG("71","KEY TO LEVEL 7-1", "71", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,700));
+		public static VirtualGood LEVEL72_KEY = new LifetimeVG("72","KEY TO LEVEL 7-2", "72", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,730));
+		public static VirtualGood LEVEL73_KEY = new LifetimeVG("73","KEY TO LEVEL 7-3", "73", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,760));
+		public static VirtualGood LEVEL81_KEY = new LifetimeVG("81","KEY TO LEVEL 8-1", "81", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,800));
+		public static VirtualGood LEVEL82_KEY = new LifetimeVG("82","KEY TO LEVEL 8-2", "82", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,830));
+		public static VirtualGood LEVEL83_KEY = new LifetimeVG("83","KEY TO LEVEL 8-3", "83", new PurchaseWithVirtualItem(ORICHAL_CURRENCY_ID,860));
 
 		public static VirtualCategory LevelKeys = new VirtualCategory(
 			"LevelKeys", new List<string>(new string[] { "12","13","21","22","23","31","32","33","41","42","43","51","52","53","61","62","63","71","72","73","81","82","83"})

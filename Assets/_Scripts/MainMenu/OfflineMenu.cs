@@ -25,16 +25,13 @@ public class OfflineMenu : MonoBehaviour
 	{
 		listChildOptions = new List<Transform>();
 
-		foreach (Transform child in options)		{
+		foreach (Transform child in options)
+		{
 			listChildOptions.Add (child);
-
 			Transform button = child.FindChild ("Button");
 			DefaultCallbackButton dcb;
-
 			if ( ConfigurationData.addPass == true) noAddBtn.SetActive(false);
-
-			if (button)
-			{
+			if (button)	{
 				Hashtable ht = new Hashtable ();
 				ht["optionName"] = child.name;
 
@@ -45,25 +42,16 @@ public class OfflineMenu : MonoBehaviour
 				});
 			}
 
-			if (child.name == "Quit")
-			{
+			if (child.name == "Quit"){
 				dcb = ComponentGetter.Get <DefaultCallbackButton> (button, false);
-				dcb.ChangeParams (null, (ht_dcb) =>
-				                  { 
-										if (!ConfigurationData.addPass)
-										{
-										
-											Advertisement.Show(null, new ShowOptions
-						                    {
-												resultCallback = result => {QuitGame();}
-											});
-										}
-										else QuitGame();
-													
-									});
+				dcb.ChangeParams (null, (ht_dcb) => {QuitGame();});
 			}
 		}
-		
+
+		if(noAddBtn.activeSelf){
+			StoreManager sm = ComponentGetter.Get<StoreManager>();
+			noAddBtn.GetComponent<DefaultCallbackButton>().Init( null,(ht_hud) => {sm.NoAdsPurchase();});
+		}
 		InitScore ();
 		goMainMenu.SetActive (true);
 	}
@@ -87,23 +75,13 @@ public class OfflineMenu : MonoBehaviour
 		{
 			menu = child.FindChild ("Menu");
 
-			if (menu != null)
-			{
-				menu.gameObject.SetActive (false);
-			}
-
+			if (menu != null)	menu.gameObject.SetActive (false);
 			child.SendMessage ("Close", SendMessageOptions.DontRequireReceiver);
 		}
 
 		Transform option = menus.FindChild (optionName);
-
 		menu = option.FindChild ("Menu");
-
-		if (menu != null)
-		{
-			menu.gameObject.SetActive (true);
-		}
-
+		if (menu != null)	menu.gameObject.SetActive (true);
 		option.SendMessage ("Open", SendMessageOptions.DontRequireReceiver);
 	}
 }

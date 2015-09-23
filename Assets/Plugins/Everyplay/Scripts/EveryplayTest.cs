@@ -11,7 +11,8 @@ public class EveryplayTest : MonoBehaviour
 
     void Awake()
     {
-        if(enabled && showUploadStatus) {
+        if (enabled && showUploadStatus)
+        {
             CreateUploadStatusLabel();
         }
 
@@ -20,7 +21,8 @@ public class EveryplayTest : MonoBehaviour
 
     void Start()
     {
-        if(uploadStatusLabel != null) {
+        if (uploadStatusLabel != null)
+        {
             Everyplay.UploadDidStart += UploadDidStart;
             Everyplay.UploadDidProgress += UploadDidProgress;
             Everyplay.UploadDidComplete += UploadDidComplete;
@@ -32,7 +34,8 @@ public class EveryplayTest : MonoBehaviour
 
     void Destroy()
     {
-        if(uploadStatusLabel != null) {
+        if (uploadStatusLabel != null)
+        {
             Everyplay.UploadDidStart -= UploadDidStart;
             Everyplay.UploadDidProgress -= UploadDidProgress;
             Everyplay.UploadDidComplete -= UploadDidComplete;
@@ -59,11 +62,13 @@ public class EveryplayTest : MonoBehaviour
     {
         GameObject uploadStatusLabelObj = new GameObject("UploadStatus", typeof(GUIText));
 
-        if(uploadStatusLabelObj) {
+        if (uploadStatusLabelObj)
+        {
             uploadStatusLabelObj.transform.parent = transform;
             uploadStatusLabel = uploadStatusLabelObj.GetComponent<GUIText>();
 
-            if(uploadStatusLabel != null) {
+            if (uploadStatusLabel != null)
+            {
                 uploadStatusLabel.anchor = TextAnchor.LowerLeft;
                 uploadStatusLabel.alignment = TextAlignment.Left;
                 uploadStatusLabel.text = "Not uploading";
@@ -78,7 +83,7 @@ public class EveryplayTest : MonoBehaviour
 
     private void UploadDidProgress(int videoId, float progress)
     {
-        uploadStatusLabel.text = "Upload " + videoId + " is " + Mathf.RoundToInt((float)progress * 100) + "% completed.";
+        uploadStatusLabel.text = "Upload " + videoId + " is " + Mathf.RoundToInt((float) progress * 100) + "% completed.";
     }
 
     private void UploadDidComplete(int videoId)
@@ -96,35 +101,41 @@ public class EveryplayTest : MonoBehaviour
 
     void OnGUI()
     {
-        if(GUI.Button(new Rect(10, 10, 138, 48), "Everyplay")) {
+        if (GUI.Button(new Rect(10, 10, 138, 48), "Everyplay"))
+        {
             Everyplay.Show();
             #if UNITY_EDITOR
             Debug.Log("Everyplay view is not available in the Unity editor. Please compile and run on a device.");
             #endif
         }
 
-        if(isRecording && GUI.Button(new Rect(10, 64, 138, 48), "Stop Recording")) {
+        if (isRecording && GUI.Button(new Rect(10, 64, 138, 48), "Stop Recording"))
+        {
             Everyplay.StopRecording();
             #if UNITY_EDITOR
             Debug.Log("The video recording is not available in the Unity editor. Please compile and run on a device.");
             #endif
         }
-        else if(!isRecording && GUI.Button(new Rect(10, 64, 138, 48), "Start Recording")) {
+        else if (!isRecording && GUI.Button(new Rect(10, 64, 138, 48), "Start Recording"))
+        {
             Everyplay.StartRecording();
             #if UNITY_EDITOR
             Debug.Log("The video recording is not available in the Unity editor. Please compile and run on a device.");
             #endif
         }
 
-        if(isRecording) {
-            if(!isPaused && GUI.Button(new Rect(10 + 150, 64, 138, 48), "Pause Recording")) {
+        if (isRecording)
+        {
+            if (!isPaused && GUI.Button(new Rect(10 + 150, 64, 138, 48), "Pause Recording"))
+            {
                 Everyplay.PauseRecording();
                 isPaused = true;
                 #if UNITY_EDITOR
                 Debug.Log("The video recording is not available in the Unity editor. Please compile and run on a device.");
                 #endif
             }
-            else if(isPaused && GUI.Button(new Rect(10 + 150, 64, 138, 48), "Resume Recording")) {
+            else if (isPaused && GUI.Button(new Rect(10 + 150, 64, 138, 48), "Resume Recording"))
+            {
                 Everyplay.ResumeRecording();
                 isPaused = false;
                 #if UNITY_EDITOR
@@ -133,21 +144,24 @@ public class EveryplayTest : MonoBehaviour
             }
         }
 
-        if(isRecordingFinished && GUI.Button(new Rect(10, 118, 138, 48), "Play Last Recording")) {
+        if (isRecordingFinished && GUI.Button(new Rect(10, 118, 138, 48), "Play Last Recording"))
+        {
             Everyplay.PlayLastRecording();
             #if UNITY_EDITOR
             Debug.Log("The video playback is not available in the Unity editor. Please compile and run on a device.");
             #endif
         }
 
-        if(isRecording && GUI.Button(new Rect(10, 118, 138, 48), "Take Thumbnail")) {
+        if (isRecording && GUI.Button(new Rect(10, 118, 138, 48), "Take Thumbnail"))
+        {
             Everyplay.TakeThumbnail();
             #if UNITY_EDITOR
             Debug.Log("Everyplay take thumbnail is not available in the Unity editor. Please compile and run on a device.");
             #endif
         }
 
-        if(isRecordingFinished && GUI.Button(new Rect(10, 172, 138, 48), "Show sharing modal")) {
+        if (isRecordingFinished && GUI.Button(new Rect(10, 172, 138, 48), "Show sharing modal"))
+        {
             Everyplay.ShowSharingModal();
             #if UNITY_EDITOR
             Debug.Log("The sharing modal is not available in the Unity editor. Please compile and run on a device.");

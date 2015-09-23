@@ -70,12 +70,12 @@ public class Everyplay : MonoBehaviour
     public static event FaceCamSessionStoppedDelegate FaceCamSessionStopped;
 
     [Obsolete("Use ThumbnailTextureReadyDelegate(Texture2D texture,bool portrait) instead.")]
-    public delegate void ThumbnailReadyAtTextureIdDelegate(int textureId,bool portrait);
+    public delegate void ThumbnailReadyAtTextureIdDelegate(int textureId, bool portrait);
 
     [Obsolete("Use ThumbnailTextureReady instead.")]
     public static event ThumbnailReadyAtTextureIdDelegate ThumbnailReadyAtTextureId;
 
-    public delegate void ThumbnailTextureReadyDelegate(Texture2D texture,bool portrait);
+    public delegate void ThumbnailTextureReadyDelegate(Texture2D texture, bool portrait);
 
     public static event ThumbnailTextureReadyDelegate ThumbnailTextureReady;
 
@@ -83,19 +83,13 @@ public class Everyplay : MonoBehaviour
 
     public static event UploadDidStartDelegate UploadDidStart;
 
-    public delegate void UploadDidProgressDelegate(int videoId,float progress);
+    public delegate void UploadDidProgressDelegate(int videoId, float progress);
 
     public static event UploadDidProgressDelegate UploadDidProgress;
 
     public delegate void UploadDidCompleteDelegate(int videoId);
 
     public static event UploadDidCompleteDelegate UploadDidComplete;
-
-    [Obsolete("File based thumbnails are no longer supported and all code related to it will be removed in future releases. Please use Texture2D thumbnails instead.")]
-    public delegate void ThumbnailLoadReadyDelegate(Texture2D texture);
-
-    [Obsolete("File based thumbnails are no longer supported and all code related to it will be removed in future releases. Please use Texture2D thumbnails instead.")]
-    public delegate void ThumbnailLoadFailedDelegate(string error);
 
     public delegate void RequestReadyDelegate(string response);
 
@@ -113,10 +107,13 @@ public class Everyplay : MonoBehaviour
     [Obsolete("Calling Everyplay with SharedInstance is deprecated, you may remove SharedInstance.")]
     public static EveryplayLegacy SharedInstance
     {
-        get {
+        get
+        {
             // Reference to EveryplayInstance to make sure the real instance exists, also create a legacy wrapper
-            if(EveryplayInstance != null) {
-                if(everyplayLegacy == null) {
+            if (EveryplayInstance != null)
+            {
+                if (everyplayLegacy == null)
+                {
                     // Add legacy wrapper only when SharedInstance is referenced
                     everyplayLegacy = everyplayInstance.gameObject.AddComponent<EveryplayLegacy>();
                 }
@@ -130,19 +127,26 @@ public class Everyplay : MonoBehaviour
     // The real singleton, SharedInstance is for legacy support only
     private static Everyplay everyplayInstance = null;
 
-    private static Everyplay EveryplayInstance {
-        get {
-            if(everyplayInstance == null && !appIsClosing) {
-                EveryplaySettings settings = (EveryplaySettings)Resources.Load("EveryplaySettings");
+    private static Everyplay EveryplayInstance
+    {
+        get
+        {
+            if (everyplayInstance == null && !appIsClosing)
+            {
+                EveryplaySettings settings = (EveryplaySettings) Resources.Load("EveryplaySettings");
 
-                if(settings != null) {
-                    if(settings.IsEnabled) {
+                if (settings != null)
+                {
+                    if (settings.IsEnabled)
+                    {
                         GameObject everyplayGameObject = new GameObject("Everyplay");
 
-                        if(everyplayGameObject != null) {
+                        if (everyplayGameObject != null)
+                        {
                             everyplayInstance = everyplayGameObject.AddComponent<Everyplay>();
 
-                            if(everyplayInstance != null) {
+                            if (everyplayInstance != null)
+                            {
                                 clientId = settings.clientId;
 
                                 // Initialize the native
@@ -151,8 +155,9 @@ public class Everyplay : MonoBehaviour
                                 #endif
 
                                 // Add test buttons if requested
-                                if(settings.testButtonsEnabled) {
-                                   AddTestButtons(everyplayGameObject);
+                                if (settings.testButtonsEnabled)
+                                {
+                                    AddTestButtons(everyplayGameObject);
                                 }
 
                                 DontDestroyOnLoad(everyplayGameObject);
@@ -171,14 +176,16 @@ public class Everyplay : MonoBehaviour
     public static void Initialize()
     {
         // If everyplayInstance is not yet initialized, calling EveryplayInstance property getter will trigger the initialization
-        if(EveryplayInstance == null) {
+        if (EveryplayInstance == null)
+        {
             Debug.Log("Unable to initialize Everyplay. Everyplay might be disabled for this platform or the app is closing.");
         }
     }
 
     public static void Show()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayShow();
             #endif
@@ -187,7 +194,8 @@ public class Everyplay : MonoBehaviour
 
     public static void ShowWithPath(string path)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayShowWithPath(path);
             #endif
@@ -196,16 +204,18 @@ public class Everyplay : MonoBehaviour
 
     public static void PlayVideoWithURL(string url)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayPlayVideoWithURL(url);
             #endif
         }
     }
 
-    public static void PlayVideoWithDictionary(Dictionary<string,object> dict)
+    public static void PlayVideoWithDictionary(Dictionary<string, object> dict)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayPlayVideoWithDictionary(Json.Serialize(dict));
             #endif
@@ -214,14 +224,16 @@ public class Everyplay : MonoBehaviour
 
     public static void MakeRequest(string method, string url, Dictionary<string, object> data, Everyplay.RequestReadyDelegate readyDelegate, Everyplay.RequestFailedDelegate failedDelegate)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             EveryplayInstance.AsyncMakeRequest(method, url, data, readyDelegate, failedDelegate);
         }
     }
 
     public static string AccessToken()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayAccountAccessToken();
             #endif
@@ -231,7 +243,8 @@ public class Everyplay : MonoBehaviour
 
     public static void ShowSharingModal()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayShowSharingModal();
             #endif
@@ -240,7 +253,8 @@ public class Everyplay : MonoBehaviour
 
     public static void StartRecording()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayStartRecording();
             #endif
@@ -249,7 +263,8 @@ public class Everyplay : MonoBehaviour
 
     public static void StopRecording()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayStopRecording();
             #endif
@@ -258,7 +273,8 @@ public class Everyplay : MonoBehaviour
 
     public static void PauseRecording()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayPauseRecording();
             #endif
@@ -267,7 +283,8 @@ public class Everyplay : MonoBehaviour
 
     public static void ResumeRecording()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayResumeRecording();
             #endif
@@ -276,7 +293,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool IsRecording()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsRecording();
             #endif
@@ -286,7 +304,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool IsRecordingSupported()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsRecordingSupported();
             #endif
@@ -296,7 +315,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool IsPaused()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsPaused();
             #endif
@@ -306,7 +326,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool SnapshotRenderbuffer()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplaySnapshotRenderbuffer();
             #endif
@@ -316,7 +337,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool IsSupported()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsSupported();
             #endif
@@ -326,7 +348,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool IsSingleCoreDevice()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayIsSingleCoreDevice();
             #endif
@@ -336,7 +359,8 @@ public class Everyplay : MonoBehaviour
 
     public static int GetUserInterfaceIdiom()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayGetUserInterfaceIdiom();
             #endif
@@ -346,7 +370,8 @@ public class Everyplay : MonoBehaviour
 
     public static void PlayLastRecording()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayPlayLastRecording();
             #endif
@@ -355,10 +380,12 @@ public class Everyplay : MonoBehaviour
 
     public static void SetMetadata(string key, object val)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
-            if(key != null && val != null) {
-                Dictionary<string,object> dict = new Dictionary<string, object>();
+            if (key != null && val != null)
+            {
+                Dictionary<string, object> dict = new Dictionary<string, object>();
                 dict.Add(key, val);
                 EveryplaySetMetadata(Json.Serialize(dict));
             }
@@ -366,12 +393,15 @@ public class Everyplay : MonoBehaviour
         }
     }
 
-    public static void SetMetadata(Dictionary<string,object> dict)
+    public static void SetMetadata(Dictionary<string, object> dict)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
-            if(dict != null) {
-                if(dict.Count > 0) {
+            if (dict != null)
+            {
+                if (dict.Count > 0)
+                {
                     EveryplaySetMetadata(Json.Serialize(dict));
                 }
             }
@@ -381,7 +411,8 @@ public class Everyplay : MonoBehaviour
 
     public static void SetTargetFPS(int fps)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetTargetFPS(fps);
             #endif
@@ -390,7 +421,8 @@ public class Everyplay : MonoBehaviour
 
     public static void SetMotionFactor(int factor)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetMotionFactor(factor);
             #endif
@@ -399,7 +431,8 @@ public class Everyplay : MonoBehaviour
 
     public static void SetMaxRecordingMinutesLength(int minutes)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetMaxRecordingMinutesLength(minutes);
             #endif
@@ -408,7 +441,8 @@ public class Everyplay : MonoBehaviour
 
     public static void SetLowMemoryDevice(bool state)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetLowMemoryDevice(state);
             #endif
@@ -417,26 +451,18 @@ public class Everyplay : MonoBehaviour
 
     public static void SetDisableSingleCoreDevices(bool state)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetDisableSingleCoreDevices(state);
             #endif
         }
     }
 
-    [Obsolete("File based thumbnails are no longer supported and all code related to it will be removed in future releases. Please use Texture2D thumbnails instead.")]
-    public static void LoadThumbnailFromFilePath(string filePath, Everyplay.ThumbnailLoadReadyDelegate readyDelegate, Everyplay.ThumbnailLoadFailedDelegate failedDelegate)
-    {
-        if(EveryplayInstance != null) {
-            #if EVERYPLAY_BINDINGS_ENABLED
-            EveryplayInstance.AsyncLoadThumbnailFromFilePath(filePath, readyDelegate, failedDelegate);
-            #endif
-        }
-    }
-
     public static bool FaceCamIsVideoRecordingSupported()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsVideoRecordingSupported();
             #endif
@@ -446,7 +472,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool FaceCamIsAudioRecordingSupported()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsAudioRecordingSupported();
             #endif
@@ -456,7 +483,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool FaceCamIsHeadphonesPluggedIn()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsHeadphonesPluggedIn();
             #endif
@@ -466,7 +494,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool FaceCamIsSessionRunning()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsSessionRunning();
             #endif
@@ -476,7 +505,8 @@ public class Everyplay : MonoBehaviour
 
     public static bool FaceCamIsRecordingPermissionGranted()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamIsRecordingPermissionGranted();
             #endif
@@ -486,7 +516,8 @@ public class Everyplay : MonoBehaviour
 
     public static float FaceCamAudioPeakLevel()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamAudioPeakLevel();
             #endif
@@ -496,7 +527,8 @@ public class Everyplay : MonoBehaviour
 
     public static float FaceCamAudioPowerLevel()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             return EveryplayFaceCamAudioPowerLevel();
             #endif
@@ -506,7 +538,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetMonitorAudioLevels(bool enabled)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetMonitorAudioLevels(enabled);
             #endif
@@ -515,7 +548,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetAudioOnly(bool audioOnly)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetAudioOnly(audioOnly);
             #endif
@@ -524,7 +558,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetPreviewVisible(bool visible)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewVisible(visible);
             #endif
@@ -533,7 +568,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetPreviewScaleRetina(bool autoScale)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewScaleRetina(autoScale);
             #endif
@@ -542,7 +578,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetPreviewSideWidth(int width)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewSideWidth(width);
             #endif
@@ -551,7 +588,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetPreviewBorderWidth(int width)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewBorderWidth(width);
             #endif
@@ -560,7 +598,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetPreviewPositionX(int x)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewPositionX(x);
             #endif
@@ -569,7 +608,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetPreviewPositionY(int y)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
          #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewPositionY(y);
          #endif
@@ -578,7 +618,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetPreviewBorderColor(float r, float g, float b, float a)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetPreviewBorderColor(r, g, b, a);
             #endif
@@ -587,33 +628,39 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamSetPreviewOrigin(Everyplay.FaceCamPreviewOrigin origin)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
-            EveryplayFaceCamSetPreviewOrigin((int)origin);
+            EveryplayFaceCamSetPreviewOrigin((int) origin);
             #endif
         }
     }
 
     public static void FaceCamSetTargetTexture(Texture2D texture)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
 #if !UNITY_3_5
             #if EVERYPLAY_IPHONE_ENABLED
-            if(texture != null) {
+            if (texture != null)
+            {
                 EveryplayFaceCamSetTargetTexture(texture.GetNativeTexturePtr());
                 EveryplayFaceCamSetTargetTextureWidth(texture.width);
                 EveryplayFaceCamSetTargetTextureHeight(texture.height);
             }
-            else {
+            else
+            {
                 EveryplayFaceCamSetTargetTexture(System.IntPtr.Zero);
             }
             #elif EVERYPLAY_ANDROID_ENABLED
-            if(texture != null) {
+            if (texture != null)
+            {
                 EveryplayFaceCamSetTargetTextureId(texture.GetNativeTextureID());
                 EveryplayFaceCamSetTargetTextureWidth(texture.width);
                 EveryplayFaceCamSetTargetTextureHeight(texture.height);
             }
-            else {
+            else
+            {
                 EveryplayFaceCamSetTargetTextureId(0);
             }
             #endif
@@ -624,7 +671,8 @@ public class Everyplay : MonoBehaviour
     [Obsolete("Use FaceCamSetTargetTexture(Texture2D texture) instead.")]
     public static void FaceCamSetTargetTextureId(int textureId)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetTargetTextureId(textureId);
             #endif
@@ -634,7 +682,8 @@ public class Everyplay : MonoBehaviour
     [Obsolete("Defining texture width is no longer required when FaceCamSetTargetTexture(Texture2D texture) is used.")]
     public static void FaceCamSetTargetTextureWidth(int textureWidth)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetTargetTextureWidth(textureWidth);
             #endif
@@ -644,7 +693,8 @@ public class Everyplay : MonoBehaviour
     [Obsolete("Defining texture height is no longer required when FaceCamSetTargetTexture(Texture2D texture) is used.")]
     public static void FaceCamSetTargetTextureHeight(int textureHeight)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamSetTargetTextureHeight(textureHeight);
             #endif
@@ -653,7 +703,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamStartSession()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamStartSession();
             #endif
@@ -662,7 +713,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamRequestRecordingPermission()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamRequestRecordingPermission();
             #endif
@@ -671,7 +723,8 @@ public class Everyplay : MonoBehaviour
 
     public static void FaceCamStopSession()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayFaceCamStopSession();
             #endif
@@ -681,25 +734,30 @@ public class Everyplay : MonoBehaviour
     private static Texture2D currentThumbnailTargetTexture = null;
     public static void SetThumbnailTargetTexture(Texture2D texture)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             currentThumbnailTargetTexture = texture;
 #if !UNITY_3_5
             #if EVERYPLAY_IPHONE_ENABLED
-            if(texture != null) {
+            if (texture != null)
+            {
                 EveryplaySetThumbnailTargetTexture(currentThumbnailTargetTexture.GetNativeTexturePtr());
                 EveryplaySetThumbnailTargetTextureWidth(currentThumbnailTargetTexture.width);
                 EveryplaySetThumbnailTargetTextureHeight(currentThumbnailTargetTexture.height);
             }
-            else {
+            else
+            {
                 EveryplaySetThumbnailTargetTexture(System.IntPtr.Zero);
             }
             #elif EVERYPLAY_ANDROID_ENABLED
-            if(texture != null) {
+            if (texture != null)
+            {
                 EveryplaySetThumbnailTargetTextureId(currentThumbnailTargetTexture.GetNativeTextureID());
                 EveryplaySetThumbnailTargetTextureWidth(currentThumbnailTargetTexture.width);
                 EveryplaySetThumbnailTargetTextureHeight(currentThumbnailTargetTexture.height);
             }
-            else {
+            else
+            {
                 EveryplaySetThumbnailTargetTextureId(0);
             }
             #endif
@@ -710,7 +768,8 @@ public class Everyplay : MonoBehaviour
     [Obsolete("Use SetThumbnailTargetTexture(Texture2D texture) instead.")]
     public static void SetThumbnailTargetTextureId(int textureId)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetThumbnailTargetTextureId(textureId);
             #endif
@@ -720,7 +779,8 @@ public class Everyplay : MonoBehaviour
     [Obsolete("Defining texture width is no longer required when SetThumbnailTargetTexture(Texture2D texture) is used.")]
     public static void SetThumbnailTargetTextureWidth(int textureWidth)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetThumbnailTargetTextureWidth(textureWidth);
             #endif
@@ -730,7 +790,8 @@ public class Everyplay : MonoBehaviour
     [Obsolete("Defining texture height is no longer required when SetThumbnailTargetTexture(Texture2D texture) is used.")]
     public static void SetThumbnailTargetTextureHeight(int textureHeight)
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplaySetThumbnailTargetTextureHeight(textureHeight);
             #endif
@@ -739,7 +800,8 @@ public class Everyplay : MonoBehaviour
 
     public static void TakeThumbnail()
     {
-        if(EveryplayInstance != null) {
+        if (EveryplayInstance != null)
+        {
             #if EVERYPLAY_BINDINGS_ENABLED
             EveryplayTakeThumbnail();
             #endif
@@ -768,47 +830,18 @@ public class Everyplay : MonoBehaviour
 
     private static void AddTestButtons(GameObject gameObject)
     {
-        Texture2D textureAtlas = (Texture2D)Resources.Load("everyplay-test-buttons", typeof(Texture2D));
-        if(textureAtlas != null) {
+        Texture2D textureAtlas = (Texture2D) Resources.Load("everyplay-test-buttons", typeof(Texture2D));
+        if (textureAtlas != null)
+        {
             EveryplayRecButtons recButtons = gameObject.AddComponent<EveryplayRecButtons>();
-            if(recButtons != null) {
+            if (recButtons != null)
+            {
                 recButtons.atlasTexture = textureAtlas;
             }
         }
     }
 
     // Private instance methods
-
-#pragma warning disable 612, 618
-    private void AsyncLoadThumbnailFromFilePath(string filePath, Everyplay.ThumbnailLoadReadyDelegate readyDelegateMethod, Everyplay.ThumbnailLoadFailedDelegate failedDelegateMethod)
-    {
-        if(filePath != null) {
-            StartCoroutine(LoadThumbnailEnumerator(filePath, readyDelegateMethod, failedDelegateMethod));
-        }
-        else {
-            failedDelegateMethod("Everyplay error: Thumbnail is not ready.");
-        }
-    }
-
-    private IEnumerator LoadThumbnailEnumerator(string fileName, Everyplay.ThumbnailLoadReadyDelegate readyDelegateMethod, Everyplay.ThumbnailLoadFailedDelegate failedDelegateMethod)
-    {
-        WWW www = new WWW("file://" + fileName);
-
-        yield return www;
-
-        if(!string.IsNullOrEmpty(www.error)) {
-            failedDelegateMethod("Everyplay error: " + www.error);
-        }
-        else {
-            if(www.texture) {
-                readyDelegateMethod(www.texture);
-            }
-            else {
-                failedDelegateMethod("Everyplay error: Loading thumbnail failed.");
-            }
-        }
-    }
-#pragma warning restore 612, 618
 
     private void AsyncMakeRequest(string method, string url, Dictionary<string, object> data, Everyplay.RequestReadyDelegate readyDelegate, Everyplay.RequestFailedDelegate failedDelegate)
     {
@@ -817,12 +850,15 @@ public class Everyplay : MonoBehaviour
 
     private IEnumerator MakeRequestEnumerator(string method, string url, Dictionary<string, object> data, Everyplay.RequestReadyDelegate readyDelegate, Everyplay.RequestFailedDelegate failedDelegate)
     {
-        if(data == null) {
+        if (data == null)
+        {
             data = new Dictionary<string, object>();
         }
 
-        if(url.IndexOf("http") != 0) {
-            if(url.IndexOf("/") != 0) {
+        if (url.IndexOf("http") != 0)
+        {
+            if (url.IndexOf("/") != 0)
+            {
                 url = "/" + url;
             }
 
@@ -838,15 +874,20 @@ public class Everyplay : MonoBehaviour
 #endif
 
         string accessToken = AccessToken();
-        if(accessToken != null) {
+        if (accessToken != null)
+        {
             headers["Authorization"] = "Bearer " + accessToken;
         }
-        else {
-            if(url.IndexOf("client_id") == -1) {
-                if(url.IndexOf("?") == -1) {
+        else
+        {
+            if (url.IndexOf("client_id") == -1)
+            {
+                if (url.IndexOf("?") == -1)
+                {
                     url += "?";
                 }
-                else {
+                else
+                {
                     url += "&";
                 }
                 url += "client_id=" + clientId;
@@ -867,10 +908,12 @@ public class Everyplay : MonoBehaviour
 
         yield return www;
 
-        if(!string.IsNullOrEmpty(www.error) && failedDelegate != null) {
+        if (!string.IsNullOrEmpty(www.error) && failedDelegate != null)
+        {
             failedDelegate("Everyplay error: " + www.error);
         }
-        else if(string.IsNullOrEmpty(www.error) && readyDelegate != null) {
+        else if (string.IsNullOrEmpty(www.error) && readyDelegate != null)
+        {
             readyDelegate(www.text);
         }
     }
@@ -879,7 +922,8 @@ public class Everyplay : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        if(currentThumbnailTargetTexture != null) {
+        if (currentThumbnailTargetTexture != null)
+        {
             SetThumbnailTargetTexture(null);
             currentThumbnailTargetTexture = null;
         }
@@ -892,18 +936,21 @@ public class Everyplay : MonoBehaviour
 
     private void EveryplayHidden(string msg)
     {
-        if(WasClosed != null) {
+        if (WasClosed != null)
+        {
             WasClosed();
         }
     }
 
     private void EveryplayReadyForRecording(string jsonMsg)
     {
-        if(ReadyForRecording != null) {
-            Dictionary<string,object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
+        if (ReadyForRecording != null)
+        {
+            Dictionary<string, object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
             bool enabled;
 
-            if(EveryplayDictionaryExtensions.TryGetValue(dict, "enabled", out enabled)) {
+            if (EveryplayDictionaryExtensions.TryGetValue(dict, "enabled", out enabled))
+            {
                 ReadyForRecording(enabled);
             }
         }
@@ -911,32 +958,37 @@ public class Everyplay : MonoBehaviour
 
     private void EveryplayRecordingStarted(string msg)
     {
-        if(RecordingStarted != null) {
+        if (RecordingStarted != null)
+        {
             RecordingStarted();
         }
     }
 
     private void EveryplayRecordingStopped(string msg)
     {
-        if(RecordingStopped != null) {
+        if (RecordingStopped != null)
+        {
             RecordingStopped();
         }
     }
 
     private void EveryplayFaceCamSessionStarted(string msg)
     {
-        if(FaceCamSessionStarted != null) {
+        if (FaceCamSessionStarted != null)
+        {
             FaceCamSessionStarted();
         }
     }
 
     private void EveryplayFaceCamRecordingPermission(string jsonMsg)
     {
-        if(FaceCamRecordingPermission != null) {
-            Dictionary<string,object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
+        if (FaceCamRecordingPermission != null)
+        {
+            Dictionary<string, object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
             bool granted;
 
-            if(EveryplayDictionaryExtensions.TryGetValue(dict, "granted", out granted)) {
+            if (EveryplayDictionaryExtensions.TryGetValue(dict, "granted", out granted))
+            {
                 FaceCamRecordingPermission(granted);
             }
         }
@@ -944,7 +996,8 @@ public class Everyplay : MonoBehaviour
 
     private void EveryplayFaceCamSessionStopped(string msg)
     {
-        if(FaceCamSessionStopped != null) {
+        if (FaceCamSessionStopped != null)
+        {
             FaceCamSessionStopped();
         }
     }
@@ -952,18 +1005,23 @@ public class Everyplay : MonoBehaviour
     private void EveryplayThumbnailReadyAtTextureId(string jsonMsg)
     {
 #pragma warning disable 612, 618
-        if(ThumbnailReadyAtTextureId != null || ThumbnailTextureReady != null) {
-            Dictionary<string,object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
+        if (ThumbnailReadyAtTextureId != null || ThumbnailTextureReady != null)
+        {
+            Dictionary<string, object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
             int textureId;
             bool portrait;
 
-            if(EveryplayDictionaryExtensions.TryGetValue(dict, "textureId", out textureId) && EveryplayDictionaryExtensions.TryGetValue(dict, "portrait", out portrait)) {
-                if(ThumbnailReadyAtTextureId != null) {
+            if (EveryplayDictionaryExtensions.TryGetValue(dict, "textureId", out textureId) && EveryplayDictionaryExtensions.TryGetValue(dict, "portrait", out portrait))
+            {
+                if (ThumbnailReadyAtTextureId != null)
+                {
                     ThumbnailReadyAtTextureId(textureId, portrait);
                 }
 #if !UNITY_3_5
-                if(ThumbnailTextureReady != null && currentThumbnailTargetTexture != null) {
-                    if(currentThumbnailTargetTexture.GetNativeTextureID() == textureId) {
+                if (ThumbnailTextureReady != null && currentThumbnailTargetTexture != null)
+                {
+                    if (currentThumbnailTargetTexture.GetNativeTextureID() == textureId)
+                    {
                         ThumbnailTextureReady(currentThumbnailTargetTexture, portrait);
                     }
                 }
@@ -976,14 +1034,17 @@ public class Everyplay : MonoBehaviour
     private void EveryplayThumbnailTextureReady(string jsonMsg)
     {
 #if !UNITY_3_5
-        if(ThumbnailTextureReady != null) {
-            Dictionary<string,object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
+        if (ThumbnailTextureReady != null)
+        {
+            Dictionary<string, object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
             long texturePtr;
             bool portrait;
 
-            if(currentThumbnailTargetTexture != null && EveryplayDictionaryExtensions.TryGetValue(dict, "texturePtr", out texturePtr) && EveryplayDictionaryExtensions.TryGetValue(dict, "portrait", out portrait)) {
-                long currentPtr = (long)currentThumbnailTargetTexture.GetNativeTexturePtr();
-                if(currentPtr == texturePtr) {
+            if (currentThumbnailTargetTexture != null && EveryplayDictionaryExtensions.TryGetValue(dict, "texturePtr", out texturePtr) && EveryplayDictionaryExtensions.TryGetValue(dict, "portrait", out portrait))
+            {
+                long currentPtr = (long) currentThumbnailTargetTexture.GetNativeTexturePtr();
+                if (currentPtr == texturePtr)
+                {
                     ThumbnailTextureReady(currentThumbnailTargetTexture, portrait);
                 }
             }
@@ -993,11 +1054,13 @@ public class Everyplay : MonoBehaviour
 
     private void EveryplayUploadDidStart(string jsonMsg)
     {
-        if(UploadDidStart != null) {
-            Dictionary<string,object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
+        if (UploadDidStart != null)
+        {
+            Dictionary<string, object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
             int videoId;
 
-            if(EveryplayDictionaryExtensions.TryGetValue(dict, "videoId", out videoId)) {
+            if (EveryplayDictionaryExtensions.TryGetValue(dict, "videoId", out videoId))
+            {
                 UploadDidStart(videoId);
             }
         }
@@ -1005,24 +1068,28 @@ public class Everyplay : MonoBehaviour
 
     private void EveryplayUploadDidProgress(string jsonMsg)
     {
-        if(UploadDidProgress != null) {
-            Dictionary<string,object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
+        if (UploadDidProgress != null)
+        {
+            Dictionary<string, object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
             int videoId;
             double progress;
 
-            if(EveryplayDictionaryExtensions.TryGetValue(dict, "videoId", out videoId) && EveryplayDictionaryExtensions.TryGetValue(dict, "progress", out progress)) {
-                UploadDidProgress(videoId, (float)progress);
+            if (EveryplayDictionaryExtensions.TryGetValue(dict, "videoId", out videoId) && EveryplayDictionaryExtensions.TryGetValue(dict, "progress", out progress))
+            {
+                UploadDidProgress(videoId, (float) progress);
             }
         }
     }
 
     private void EveryplayUploadDidComplete(string jsonMsg)
     {
-        if(UploadDidComplete != null) {
-            Dictionary<string,object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
+        if (UploadDidComplete != null)
+        {
+            Dictionary<string, object> dict = EveryplayDictionaryExtensions.JsonToDictionary(jsonMsg);
             int videoId;
 
-            if(EveryplayDictionaryExtensions.TryGetValue(dict, "videoId", out videoId)) {
+            if (EveryplayDictionaryExtensions.TryGetValue(dict, "videoId", out videoId))
+            {
                 UploadDidComplete(videoId);
             }
         }

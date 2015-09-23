@@ -8,59 +8,20 @@ using PathologicalGames;
 public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 {
 	#region Serializable
-
-	[System.Serializable]
-	public class RendererTeamColor
-	{
-		public Material materialToApplyColor;
-
-		public void SetColorInMaterial (Transform transform, int teamID)
-		{
-			Color teamColor = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID);
-
-			MeshRenderer[] renderers = transform.GetComponentsInChildren<MeshRenderer>();
-			for (int i = 0; i != renderers.Length; i++)
-			{
-				Material[] materials = renderers[i].materials;
-				for (int k = 0; k != materials.Length; k++)
-				{
-					Material m = materials[k];
-					if (m.name.Equals (materialToApplyColor.name + " (Instance)"))
-					{
-						m.color = teamColor;
-					}
-				}
-			}
-
-			SkinnedMeshRenderer[] skinnedMeshRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>();
-			for (int i = 0; i != skinnedMeshRenderers.Length; i++)
-			{
-				Material[] materials = skinnedMeshRenderers[i].materials;
-				for (int k = 0; k != materials.Length; k++)
-				{
-					Material m = materials[k];
-					if (m.name.Equals (materialToApplyColor.name + " (Instance)"))
-					{
-						m.color = teamColor;
-					}
-				}
-			}
-		}
-	}
-	
+		
 	[System.Serializable]
 	public class RendererTeamSubstanceColor
 	{
 		public Transform subMesh;
-		private static Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
+		private Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
 
 		//Caso esse metodo for modificado eh necessario modificar no Rallypoint tbm
-		public void SetColorInMaterial (Transform transform, int teamID)
+		public void SetColorInMaterial (Transform transform, int teamID, bool playerUnit)
 		{
 			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
 			Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
 			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
-			string unitName = transform.name;
+			string unitName = subMesh.name;
 			int startRemoveIndex = unitName.IndexOf ("(");			
 			unitName = Regex.Replace (unitName, "[0-9]", "" );			
 			startRemoveIndex = (startRemoveIndex > 0) ? startRemoveIndex : unitName.Length - 1;
@@ -68,8 +29,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 			string keyUnitTeamMaterial = unitName + " - "  + subMesh.name+ " - " + teamID;
 			
 			//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
-			if (!unitTeamMaterials.ContainsKey (keyUnitTeamMaterial))
-			{
+			if (!unitTeamMaterials.ContainsKey (keyUnitTeamMaterial)){
 				int nMaterials = subMesh.renderer.materials.Length;
 				unitTeamMaterials.Add (keyUnitTeamMaterial, new ProceduralMaterial[nMaterials]);
 
@@ -77,8 +37,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 				{
 					ProceduralMaterial substance 				  = subMesh.renderer.materials[i] as ProceduralMaterial;
 					ProceduralPropertyDescription[] curProperties = substance.GetProceduralPropertyDescriptions();
-					
-					//Setando os valores corretos de cor
 					foreach (ProceduralPropertyDescription curProperty in curProperties)
 					{
 						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor"))
@@ -89,8 +47,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 							substance.SetProceduralColor(curProperty.name, teamColor2);
 					}
 
-					substance.RebuildTexturesImmediately ();
-
+					if(!playerUnit) substance.RebuildTextures();
+					else     		substance.RebuildTexturesImmediately ();
+					
 					unitTeamMaterials[keyUnitTeamMaterial][i] = substance;
 				}
 			}
@@ -114,12 +73,8 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		public int gridYIndex;
 		public Vector3 Position
 		{
-			get
-			{
-				return ComponentGetter
-							.Get<HUDController>()
-								.GetGrid("actions")
-									.GetGridPosition(gridXIndex, gridYIndex);
+			get{
+				return ComponentGetter.Get<HUDController>().GetGrid("actions").GetGridPosition(gridXIndex, gridYIndex);
 			}
 		}
 	}
@@ -181,6 +136,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public bool Selected { get; protected set; }
 	public bool IsNetworkInstantiate { get; set; }
 	public bool WasRemoved { get; protected set; }	
+	public bool wasVisible { get; set; }
 	public int group = -1;	
 	public ResourcesManager costOfResources;
 	public int totalResourceCost {get {return costOfResources.Rocks + costOfResources.Mana;}}
@@ -214,7 +170,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	void Awake ()
 	{		
-		gameplayManager 	= ComponentGetter.Get<GameplayManager> ();
+		gameplayManager = ComponentGetter.Get<GameplayManager> ();
 		if(ConfigurationData.InGame) Invoke ("Init", 0.1f);
 	}
 
@@ -232,38 +188,30 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		Health = MaxHealth;
 		GhostFactory gf = GetComponent<GhostFactory>();
 
-		if (!gameplayManager.IsBotTeam (this))
-		{
-			if (IsNetworkInstantiate)
-			{
+		if (!gameplayManager.IsBotTeam (this)){
+			if (IsNetworkInstantiate){
 				SetTeamInNetwork ();
 			}
-			else if (gf == null)
-			{
-				if (!PhotonNetwork.offlineMode)
-				{
+			else if (gf == null){
+				if (!PhotonNetwork.offlineMode){
 					SetTeamInNetwork ();
 				}
-				else
-				{
+				else{
 					playerUnit = true;
 					team = 0;
 				}
 			}
-			else
-			{
+			else{
 				playerUnit = true;
 				team = 0;
 			}
 		}
-		else
-		{
-			playerUnit = false;
-		}
+		else playerUnit = false;
 		firstDamage = false;
-		SetColorTeam ();		
+		SetColorTeam ();
+		int idName = GetInstanceID();
+		if(gf == null) name = name + idName.ToString();
 		WasRemoved = false;
-
 		RangedStructure rs = GetComponent<RangedStructure>();
 		if(gf != null || rs != null) return;
 		else statsController.AddStats (this);
@@ -280,18 +228,16 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public virtual void Select ()
 	{
-		if (WasRemoved) return;
-		
+		if (WasRemoved) return;		
 		if (!Selected) Selected = true;
-		else return;
+			else return;
 	}
 	
 	public virtual void Deselect ()
 	{
-		if (Selected)
-		{
+		if (Selected){
 			Selected = false;						
-			hudController.DestroyOptionsBtns ();
+//			hudController.DestroyOptionsBtns ();                //no deselectd factory e worker direto
 			hudController.DestroySelected (transform);
 			if(firstDamage) Invoke("ShowHealth",0.2f);
 		}
@@ -306,30 +252,20 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 
 	public void ReceiveAttack (int Damage)
 	{
-		if (Health > 0)
-		{
+		if (Health > 0){
 			if(!firstDamage) ShowHealth();
-
 			int newDamage = Mathf.Max (0, Damage - (defense+bonusDefense));
-
 			Health = Mathf.Max (0, Health - newDamage);
-
-			if (pref_ParticleDamage != null)
-			{
+			if (pref_ParticleDamage != null){
 				if(!PhotonNetwork.offlineMode)	photonView.RPC ("InstantiatParticleDamage", PhotonTargets.All);
-
 				else InstantiatParticleDamage();
-			}
-			
-			if (gameplayManager.IsBeingAttacked (this))
-			{
+			}			
+			if (gameplayManager.IsBeingAttacked (this)){
 				eventController.AddEvent("being attacked", transform.position);						
 				minimapController.InstantiatePositionBeingAttacked (transform);			
 			}
 		}
-
-		if (Health == 0 && !WasRemoved)
-		{
+		if (Health == 0 && !WasRemoved){
 			SendRemove ();
 			if(!PhotonNetwork.offlineMode)	photonView.RPC ("SendRemove", PhotonTargets.Others);
 		}
@@ -348,16 +284,13 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	void SetTeamInNetwork ()
 	{
 		playerUnit = photonView.isMine;
-		if (playerUnit)
-		{
+		if (playerUnit){
 			team = (int)PhotonNetwork.player.customProperties["team"];
 			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 				ally = (int)PhotonNetwork.player.customProperties["allies"];
 		}
-		else
-		{
-			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);
-			
+		else{
+			PhotonPlayer other = PhotonPlayer.Find (photonView.ownerId);			
 			team = (int)other.customProperties["team"];
 			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
 				ally = (int)other.customProperties["allies"];
@@ -368,7 +301,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	{		
 		foreach (RendererTeamSubstanceColor rtsc in rendererTeamSubstanceColor)
 		{
-			rtsc.SetColorInMaterial (transform, team);
+			rtsc.SetColorInMaterial (transform, team, playerUnit);
 		}
 	}
 	#endregion
@@ -380,12 +313,10 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	{
 		Transform newParticleDamage;
 
-		if (transformParticleDamageReference != null)
-		{
+		if (transformParticleDamageReference != null){
 			newParticleDamage = PoolManager.Pools["Particles"].Spawn(pref_ParticleDamage, transformParticleDamageReference.position, transformParticleDamageReference.rotation);
 		}
-		else
-		{
+		else{
 			newParticleDamage = PoolManager.Pools["Particles"].Spawn(pref_ParticleDamage,transform.position, Quaternion.Euler (transform.forward));
 		}
 	}

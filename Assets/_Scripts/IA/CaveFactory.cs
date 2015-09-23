@@ -32,8 +32,7 @@ public class CaveFactory : FactoryBase
 		
 		foreach (IStats stat in statsController.otherStats)
 		{
-			if (stat.GetType() == typeof(CaveFactory))
-			{
+			if (stat.GetType() == typeof(CaveFactory)){
 			CaveFactory factory = stat as CaveFactory;
 			
 			if (factory == null) continue;
@@ -46,13 +45,11 @@ public class CaveFactory : FactoryBase
 		
 		foreach (CaveFactory factory in factories)
 		{
-			if (numberToCreate == -1)
-			{
+			if (numberToCreate == -1){
 				numberToCreate = factory.lUnitsToCreate.Count;
 				factoryChoose = i;
 			}
-			else if (numberToCreate > factory.lUnitsToCreate.Count)
-			{
+			else if (numberToCreate > factory.lUnitsToCreate.Count){
 				numberToCreate = factory.lUnitsToCreate.Count;
 				factoryChoose = i;
 			}
@@ -75,23 +72,21 @@ public class CaveFactory : FactoryBase
 		Vector3 unitSpawnPosition = transform.position + (forward * helperCollider.radius);
 		Unit newUnit = null;
 
-		if (PhotonNetwork.offlineMode)
-		{
+		if (PhotonNetwork.offlineMode){
 			int teamInt = this.team;
 			unit.SetTeam(teamInt,teamInt);
 			Unit u = Instantiate (unit, transformParticleDamageReference.position, Quaternion.identity) as Unit;
 			newUnit = u;
 			unit.SetTeam(0,0);
 		}
-		else
-		{
+		else{
 			int teamInt = this.team;
 			unit.SetTeam(teamInt,teamInt);
 			GameObject u = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
 			newUnit = u.GetComponent<Unit> ();
 			unit.SetTeam(0,0);
 		}
-		newUnit.ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
+		//newUnit.ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
 		newUnit.SetTeam(8,8);
 		newUnit.Init ();
 						
@@ -110,10 +105,8 @@ public class CaveFactory : FactoryBase
 		if (lUnitsToCreate.Count == 0 && lUpgradesToCreate.Count == 0)
 		return;
 				
-		if (lUnitsToCreate.Count >= 1)
-		{
-			if (unitToCreate == null)
-			{
+		if (lUnitsToCreate.Count >= 1){
+			if (unitToCreate == null){
 				unitToCreate = lUnitsToCreate[0];
 				unitToCreateCluster = lUnitCluster[0];
 				timeToCreate = lUnitsToCreate[0].timeToSpawn;
@@ -122,25 +115,16 @@ public class CaveFactory : FactoryBase
 			}			
 		}
 
-		if (inUpgrade)
-		{
-			if (timer > timeToCreate)
-			{
-				if (unitToCreate != null) 
-				{
+		if (inUpgrade){
+			if (timer > timeToCreate){
+				if (unitToCreate != null){
 					InvokeUnit (unitToCreate, unitToCreateCluster);
 					unitToCreate = null;
-				}
-								
+				}								
 				inUpgrade = false;
 				timer = 0;
 			}
-
-			else
-			{		
-				timer += Time.deltaTime;		
-				
-			}
+			else timer += Time.deltaTime;		
 		}
 	}
 	#endregion

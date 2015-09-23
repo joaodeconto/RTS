@@ -365,6 +365,10 @@ public class Worker : Unit
 
 		Hashtable ht = null;
 
+		if (statsController.HasWorkerSelection(this)) return;
+
+		statsController.selectedWorker = this;
+
 		foreach (FactoryConstruction fc in factoryConstruction)
 		{
 			if(!fc.techAvailable)
@@ -373,7 +377,7 @@ public class Worker : Unit
 				ht["factory"] = fc;
 				ht["disable"] = 0;
 				
-				hudController.CreateButtonInInspector (fc.factory.buttonName,
+				hudController.CreateOrChangeButtonInInspector (fc.factory.buttonName,
 				                                       fc.gridItemAttributes.Position,
 				                                       ht,
 				                                       fc.factory.guiTextureName,
@@ -403,7 +407,7 @@ public class Worker : Unit
 					ht["mana"] = fc.costOfResources.Mana;
 				}
 
-				hudController.CreateButtonInInspector ( fc.factory.name,
+				hudController.CreateOrChangeButtonInInspector ( fc.factory.name,
 														fc.gridItemAttributes.Position,
 														ht,
 														fc.factory.guiTextureName,
@@ -429,14 +433,29 @@ public class Worker : Unit
 	}
 
 	public override void Deselect ()
-	{
-		hudController.DestroyOptionsBtns ();
-		
-		base.Deselect ();
+	{		
+		if(statsController.selectedWorker == this){
+			statsController.selectedWorker = null;			
+			hudController.DestroyOptionsBtns ();
+		}
+			base.Deselect ();
 	}
 
 	public override IEnumerator OnDie ()
 	{
+		if (statsController.selectedStats.Count >= 1 && statsController.selectedWorker == this){						
+			hudController.DestroyOptionsBtns ();
+			statsController.selectedWorker = null;
+
+			foreach(IStats stat in statsController.selectedStats)
+			{
+				if(stat is Worker && stat != this){
+					stat.Select();
+					break;
+				}
+			}
+		}
+
 		workerState = WorkerState.Idle;
 		return base.OnDie ();
 	}

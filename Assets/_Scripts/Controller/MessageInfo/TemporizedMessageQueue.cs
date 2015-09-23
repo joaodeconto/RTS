@@ -56,8 +56,7 @@ public class TemporizedMessageQueue : MessageQueue
 
 		if (capCounter>messageCap)
 		{
-			Debug.LogWarning("atingiu messageCap");
-			this.timeToFadeout = 1;				
+			CleanFirstMessage();		
 			return;
 		}
 
@@ -66,7 +65,6 @@ public class TemporizedMessageQueue : MessageQueue
 			Invoke ("CleanFirstMessage", timeToFadeout);
 		}
 
-		this.timeToFadeout = 3;
 		base.AddMessageInfo (buttonName, ht, onClick, onPress, onSliderChange, onActivate, onRepeatClick, onDrag, onDrop);
 
 		capCounter++;
@@ -80,7 +78,6 @@ public class TemporizedMessageQueue : MessageQueue
 		if(!IsEmpty())
 		{
 			Invoke ("CleanFirstMessage", timeToFadeout);
-
 
 		}
 	}

@@ -19,7 +19,8 @@ public class Upgrade : MonoBehaviour {
 	public bool ChildTech = true;
 	public bool uniquelyUpgraded = false;
 	public bool localUpgrade = false;
-	public List<string> TechsToActive = new List<string>();	
+	public List<string> TechsToActive = new List<string>();
+	public List<Upgrade> TechsToDisable = new List<Upgrade>();	
 	public ResourcesManager costOfResources;
 	protected TechTreeController techTreeController;
 
@@ -29,20 +30,26 @@ public class Upgrade : MonoBehaviour {
 	}
 
 	public virtual void Init()
-	{		
-		if(!localUpgrade)
-		{
+	{	
+		if(!localUpgrade){
 			techTreeController = Visiorama.ComponentGetter.Get<TechTreeController>();
 			TechActiveBool(TechsToActive, true);
 			uniquelyUpgraded = false;
-		}
+		}	
+		Invoke("RestoreBtns", 0.2f);
 	}
 
 	public void TechActiveBool(List<string> techs, bool isAvailable)	//Por Enquanto so ativa a disponibilidade do upgrade
 	{
-		foreach (string tech in techs)
-		{
+		foreach (string tech in techs){
 			techTreeController.TechBoolOperator(tech,isAvailable);
 		}
 	}	
+
+	void RestoreBtns()
+	{
+		GameObject factoryParent = transform.parent.gameObject;
+		FactoryBase fb = factoryParent.GetComponent<FactoryBase>();
+		if(fb.Selected)	fb.RestoreOptionsMenu();
+	}
 }

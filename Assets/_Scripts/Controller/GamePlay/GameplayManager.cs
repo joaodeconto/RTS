@@ -108,8 +108,7 @@ public class GameplayManager : Photon.MonoBehaviour
 	public void Init ()
 	{
 	
-		if (!PhotonNetwork.offlineMode)
-		{
+		if (!PhotonNetwork.offlineMode){
 		    score = ComponentGetter.Get <Score> ("$$$_Score");
 			encodedBattle = ConfigurationData.battle.ToString();
 			encodedPlayer = ConfigurationData.player.ToString();
@@ -119,8 +118,7 @@ public class GameplayManager : Photon.MonoBehaviour
 		touchController = ComponentGetter.Get<TouchController>();
 		selectionController = ComponentGetter.Get<SelectionController>();
 		sc = ComponentGetter.Get<StatsController> ();
-		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode)
-		{
+		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode){
 			selectedLevel = level[0];
 			selectedLevel.gameLevel.SetActive(true);
 			network = ComponentGetter.Get<NetworkManager>();
@@ -137,19 +135,15 @@ public class GameplayManager : Photon.MonoBehaviour
 			pauseGame = false;
 		}
 
-		else
-		{
+		else{
 			foreach (Level lvl in level)
 			{
-				if (lvl.levelId == ConfigurationData.level) 
-				{
+				if (lvl.levelId == ConfigurationData.level) {
 					selectedLevel = lvl;
 					selectedLevel.gameLevel.SetActive(true);
-					Debug.Log (selectedLevel);
 					break;
 				}
 			}
-
 			PhotonNetwork.offlineMode = true;
 			selectedLevel.gameLevel.GetComponent<TutorialManager>().Init();
 			loadingMessage.text = "loading";
@@ -157,14 +151,14 @@ public class GameplayManager : Photon.MonoBehaviour
 			Allies = 0;
 			numberOfTeams = 1;
 			pauseGame = true;
-			Invoke("TribeInstiate",1f);
-		    selectedLevel.gameLevel.GetComponent<EnemyCluster> ().Init ();
 			ComponentGetter.Get<OfflineScore> ().Init ();
-			Invoke("GameStart",2f);
+			StartCoroutine ("TribeInstantiate");
+		    selectedLevel.gameLevel.GetComponent<EnemyCluster> ().Init ();
+
+
 		}
 
-		if (mode == Mode.Cooperative)
-		{
+		if (mode == Mode.Cooperative){
 			alliesNumberOfStats.Add (new AllyClass (0));
 			alliesNumberOfStats.Add (new AllyClass (1));
 
@@ -172,15 +166,13 @@ public class GameplayManager : Photon.MonoBehaviour
 			{
 				foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 				{
-					if (alliesNumberOfStats[i].ally == (int)pp.customProperties["allies"])
-					{
+					if (alliesNumberOfStats[i].ally == (int)pp.customProperties["allies"]){
 						alliesNumberOfStats[i].teams.Add ((int)pp.customProperties["team"]);
 					}
 				}
 			}
 		}
-		else
-		{
+		else{
 			loserTeams = 0;
 		}
 
@@ -204,21 +196,16 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void TribeInstiateNetwork ()
 	{
-		
 		for (int i = 0; i < 4; i++)
 		{
 			Team t = teams[i];
 			t.initialPosition = selectedLevel.gameLevel.transform.FindChild(i.ToString()).transform;
-
-			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true)
-			{
+			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true){
 				foreach (Transform trns in t.initialPosition)
 				{
-					if(trns.gameObject.activeSelf == true)
-					{
+					if(trns.gameObject.activeSelf == true){
 						InitInstantiateNetwork toInit = trns.GetComponent<InitInstantiateNetwork>();
-						if (toInit.GetType() == typeof(InitInstantiateNetwork))
-						{
+						if (toInit.GetType() == typeof(InitInstantiateNetwork)){
 							toInit.Init();											
 						}
 					}
@@ -227,23 +214,21 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 	}
 
-	void TribeInstiate ()
+	IEnumerator TribeInstantiate ()
 	{
 		teams[0].initialPosition = selectedLevel.gameLevel.transform.FindChild("0").transform;
+		List<Transform> toInitList = new List<Transform>();
+		foreach (Transform trns in teams[0].initialPosition)	if(trns.gameObject.activeSelf == true)	toInitList.Add(trns);
 
-		foreach (Transform trns in teams[0].initialPosition)
-		{
-			if(trns.gameObject.activeSelf == true)
-			{
-				InitInstantiateNetwork toInit = trns.GetComponent<InitInstantiateNetwork>();
-				if (toInit.GetType() == typeof(InitInstantiateNetwork))
-				{
-					toInit.Init();											
-				}
+		for (int i = toInitList.Count -1; i >= 0; i--)
+		{	
+			InitInstantiateNetwork toInit = toInitList[i].GetComponent<InitInstantiateNetwork>();
+			if (toInit != null){
+				toInit.Init();											
+				yield return new WaitForSeconds(0.1f);
 			}
 		}
-			
-
+		Invoke("GameStart",0.5f);
 	}
 
 	void CallMySceneReady()

@@ -25,14 +25,17 @@ public class EveryplayFaceCamTest : MonoBehaviour
     {
         recordingPermissionGranted = granted;
 
-        if(!granted && !debugMessage) {
+        if (!granted && !debugMessage)
+        {
             debugMessage = new GameObject("FaceCamDebugMessage", typeof(GUIText));
             debugMessage.transform.position = new Vector3(0.5f, 0.5f, 0.0f);
 
-            if(debugMessage != null) {
+            if (debugMessage != null)
+            {
                 GUIText debugMessageGuiText = debugMessage.GetComponent<GUIText>();
 
-                if(debugMessageGuiText) {
+                if (debugMessageGuiText)
+                {
                     debugMessageGuiText.text = "Microphone access denied. FaceCam requires access to the microphone.\nPlease enable Microphone access from Settings / Privacy / Microphone.";
                     debugMessageGuiText.alignment = TextAlignment.Center;
                     debugMessageGuiText.anchor = TextAnchor.MiddleCenter;
@@ -43,12 +46,16 @@ public class EveryplayFaceCamTest : MonoBehaviour
 
     void OnGUI()
     {
-        if(recordingPermissionGranted) {
-            if(GUI.Button(new Rect(Screen.width - 10 - 158, 10, 158, 48), Everyplay.FaceCamIsSessionRunning() ? "Stop FaceCam session" : "Start FaceCam session")) {
-                if(Everyplay.FaceCamIsSessionRunning()) {
+        if (recordingPermissionGranted)
+        {
+            if (GUI.Button(new Rect(Screen.width - 10 - 158, 10, 158, 48), Everyplay.FaceCamIsSessionRunning() ? "Stop FaceCam session" : "Start FaceCam session"))
+            {
+                if (Everyplay.FaceCamIsSessionRunning())
+                {
                     Everyplay.FaceCamStopSession();
                 }
-                else {
+                else
+                {
                     Everyplay.FaceCamStartSession();
                 }
                 #if UNITY_EDITOR
@@ -56,8 +63,10 @@ public class EveryplayFaceCamTest : MonoBehaviour
                 #endif
             }
         }
-        else {
-            if(GUI.Button(new Rect(Screen.width - 10 - 158, 10, 158, 48), "Request REC permission")) {
+        else
+        {
+            if (GUI.Button(new Rect(Screen.width - 10 - 158, 10, 158, 48), "Request REC permission"))
+            {
                 Everyplay.FaceCamRequestRecordingPermission();
                 #if UNITY_EDITOR
                 Debug.Log("Everyplay FaceCam is not available in the Unity editor. Please compile and run on a device.");

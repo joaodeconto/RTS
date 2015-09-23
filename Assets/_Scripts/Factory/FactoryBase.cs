@@ -66,15 +66,7 @@ public class FactoryBase : IStats, IDeathObservable
 	protected Unit unitToCreate;
 	protected Upgrade upgradeToCreate;
 	public float timeToCreate;
-	public float timer;	
-	public float boostDuration = 30;
-	public ResourcesManager boostCost;
-	[HideInInspector]
-	public float boostPower = 1.3f;
-	private float boostTime = 0;
-	private UILabel boostTimeLabel;
-	private bool onBoost;
-	private bool canBoost;	
+	public float timer = 0;	
 	public bool inUpgrade {get;set;}
 	public List<string> TechsToActive = new List<string>();	
 	public Animation ControllerAnimation { get; private set; }	
@@ -87,7 +79,6 @@ public class FactoryBase : IStats, IDeathObservable
 	public int queueCounter	 	 = 0;
 	private int checkPopCouter	 	 = 0;
 	private bool factoryInitialized = false;
-	public bool wasVisible = false;
 	private bool alreadyCheckedMaxPopulation	{get { return checkPopCouter > 1;}}
 	private float lastTimeMaxPopPressed;
 	private bool needHouse = false;
@@ -122,15 +113,13 @@ public class FactoryBase : IStats, IDeathObservable
 		SendMessage ("ConstructFinished", SendMessageOptions.DontRequireReceiver);			
 		GetComponent<NavMeshObstacle> ().enabled = true;
 		factoryInitialized = true;	
-		timer = 0;
 		repairCost.Rocks = Mathf.CeilToInt(costOfResources.Rocks/100);
 										
 		if (ControllerAnimation == null) ControllerAnimation = gameObject.animation;
 		if (ControllerAnimation == null) ControllerAnimation = GetComponentInChildren<Animation> ();
 		
 		enabled = playerUnit;				
-		if (unitsToCreate.Length != 0)
-		{
+		if (unitsToCreate.Length != 0){
 			hasRallypoint = true;			
 			GameObject instantiateRallypoint = Resources.Load ("Rallypoint", typeof(GameObject)) as GameObject;			
 			instantiateRallypoint = NGUITools.AddChild (gameObject, instantiateRallypoint);			
@@ -144,22 +133,19 @@ public class FactoryBase : IStats, IDeathObservable
 		}	
 
 		inUpgrade = false;	
-		if (playerUnit)
-		{
+		if (playerUnit){
 			hudController     = ComponentGetter.Get<HUDController> ();
 			buildingSlider    = hudController.GetSlider("Building Unit");
 			buildingSlider.gameObject.SetActive(false);
 
 			if (techTreeController.attribsHash.ContainsKey(category))LoadStandardAttribs();
 		    if(wasBuilt)TechActiveBool(TechsToActive, true);
-			if (!PhotonNetwork.offlineMode)
-			{
+			if (!PhotonNetwork.offlineMode){
 				Model.Battle battle = ConfigurationData.battle;	
 				Score.AddScorePoints (DataScoreEnum.BuildingsCreated, 1, battle.IdBattle);
 				Score.AddScorePoints (this.category + DataScoreEnum.XBuilt, this.totalResourceCost, battle.IdBattle);		
 			}
-			else if (gameplayManager.scoreCounting)
-			{
+			else if (gameplayManager.scoreCounting){
 				OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
 				oScore.oPlayers[team].AddScorePlayer(DataScoreEnum.BuildingsCreated,  1);			
 				oScore.oPlayers[team].AddScorePlayer(this.category + DataScoreEnum.XBuilt, totalResourceCost);
@@ -172,50 +158,37 @@ public class FactoryBase : IStats, IDeathObservable
 
 	#region Update
 	void Update ()
-	{
-		//SyncAnimation ();
-				
+	{				
 		if (!wasBuilt)	return;
-
 		if (EnqueuedCount == 0) return;
-
-		if (!inUpgrade)
-		{
-			if ((upgradeToCreate == null && unitToCreate == null) || needHouse)
-			{
+		if (!inUpgrade){
+			if ((upgradeToCreate == null && unitToCreate == null) || needHouse){
 				upgradeToCreate = invokeQueue[queueCounter] as Upgrade;
 				unitToCreate = invokeQueue[queueCounter] as Unit;
 
-				if (upgradeToCreate is Upgrade)
-				{
+				if (upgradeToCreate is Upgrade){
 					timeToCreate = upgradeToCreate.timeToSpawn;
 					unitToCreate = null;
 				}
 
-				else if (unitToCreate is Unit)
-				{
-					if (gameplayManager.NeedMoreHouses (unitToCreate.numberOfUnits))
-					{
+				else if (unitToCreate is Unit){
+					if (gameplayManager.NeedMoreHouses (unitToCreate.numberOfUnits)){
 						lastTimeMaxPopPressed = gameplayManager.gameTime;
 
-						if (!alreadyCheckedMaxPopulation)
-						{
+						if (!alreadyCheckedMaxPopulation){
 							checkPopCouter++;
 							eventController.AddEvent("need more houses", hudController.houseFeedback);
 							lastTimeMaxPopPressed = gameplayManager.gameTime;
 						}
-						else if (gameplayManager.gameTime - 3 > lastTimeMaxPopPressed)
-						{
+						else if (gameplayManager.gameTime - 3 > lastTimeMaxPopPressed){
 							checkPopCouter = 1;
 							eventController.AddEvent("need more houses", hudController.houseFeedback);
 						}
 						needHouse = true;
 						if(Selected) buildingSlider.gameObject.SetActive(true);
 						return ;
-					}
-					
-					else
-					{
+					}					
+					else{
 						needHouse = false;
 						checkPopCouter = 0;				
 						timeToCreate = unitToCreate.timeToSpawn;
@@ -223,8 +196,7 @@ public class FactoryBase : IStats, IDeathObservable
 					}
 				}
 
-				else
-				{
+				else{
 					queueCounter++;   // passa um na fila, supostamente dequeued				
 					return;
 				}
@@ -232,43 +204,31 @@ public class FactoryBase : IStats, IDeathObservable
 				inUpgrade = true;
 				hudController.CreateSubstanceResourceBar (this, sizeOfResourceBar, timeToCreate);
 			}
-		}		                           
-			
-		else		
-		{
-			if(!Selected && isInvokingSlider)
-			{
-				CancelInvokeSlider();
-			}	
+		} 
 
-			if (timer > timeToCreate)
-			{
+		else{
+			if(!Selected && isInvokingSlider)	CancelInvokeSlider();
+			if (timer > timeToCreate){
 				CancelInvokeSlider();
 				invokeQueue.Remove(queueCounter);				
 				queueCounter++;
 
-				if (unitToCreate != null) 
-				{
+				if (unitToCreate != null) {
 					InvokeUnit (unitToCreate);
 					unitToCreate = null;
 				}
-
-				else if (upgradeToCreate != null) 
-				{
+				else if (upgradeToCreate != null) {
 					InvokeUpgrade (upgradeToCreate);
 					upgradeToCreate = null;
 				}
 
-
 				inUpgrade = false;
 				timer = 0;
 			}
-			else
-			{
+			else{
 				timer += Time.deltaTime;
 
-				if(Selected && !isInvokingSlider) 
-				{
+				if(Selected && !isInvokingSlider){
 					buildingSlider.gameObject.SetActive(true);
 					InvokeRepeating ("InvokeSliderUpdate",0.1f,0.4f);
 				}
@@ -284,39 +244,33 @@ public class FactoryBase : IStats, IDeathObservable
 	{		
 		statsController.ChangeVisibility (this, isVisible);
 		
-		if(isVisible)
-		{
+		if(isVisible){
 			SyncAnimation ();
 			model.transform.parent = this.transform;
 			model.SetActive(true);
-			if (firstDamage)
-			{
+			if (firstDamage){
 				hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
-
 			}
 			
-			if(!wasVisible)
-			{
+			if(!wasVisible){
 				wasVisible = true;
 				model.SetActive(true);
-				if(!playerUnit)
-				{
+				if(!playerUnit){
 					PaintAgent pa = GetComponent<PaintAgent>();
 					pa.Paint(this.transform.position, sizeOfHealthBar * 0.8f);
 				}
 			}
 		}
-		else
-		{
+		else{
 			model.transform.parent = null;			
+			hudController.DestroySelected(transform);
 			if(!wasVisible)	model.SetActive(false);
 		}
 	}
 	
 	public override bool IsVisible
 	{
-		get
-		{
+		get{
 			return model.transform.parent != null;
 		}
 	}
@@ -327,31 +281,26 @@ public class FactoryBase : IStats, IDeathObservable
 			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
 	}
 	
-	void OnDestroy ()
-	{
-		if (!WasRemoved && !playerUnit) statsController.RemoveStats (this);
-	}	
+//	void OnDestroy ()
+//	{
+//		if (!WasRemoved && !playerUnit) statsController.RemoveStats (this);
+//	}	
 		
 	public virtual void SyncAnimation ()
 	{
-		if (!IsVisible) return;
-		
+		if (!IsVisible) return;		
 		buildingObjects.baseObject.SetActive (buildingState == BuildingState.Base);
 		buildingObjects.unfinishedObject.SetActive (buildingState == BuildingState.Unfinished);
 		buildingObjects.finishedObject.SetActive (buildingState == BuildingState.Finished);
-
-		if (buildingObjects.upgradedObject != null)
-		buildingObjects.upgradedObject.SetActive (buildingState == BuildingState.Upgraded);
+		if (buildingObjects.upgradedObject != null)	buildingObjects.upgradedObject.SetActive (buildingState == BuildingState.Upgraded);
 	}
 			
 	public virtual IEnumerator OnDie ()
 	{
-		if (Selected)
-		{
+		if (Selected){
 			hudController.DestroyInspector ("Factory");
 			Deselect ();
-		}	
-
+		}
 		minimapController.RemoveStructure(this.transform, this.team);
 		statsController.RemoveStats (this);
 		inUpgrade = false;
@@ -361,35 +310,26 @@ public class FactoryBase : IStats, IDeathObservable
 		//IDeathObservable
 		NotifyDeath ();		
 		int c = IDOobservers.Count;
-		while (--c != -1)
-		{
-			UnRegisterDeathObserver (IDOobservers[c]);
-		}		
-			
+		while (--c != -1)	UnRegisterDeathObserver (IDOobservers[c]);					
 		yield return new WaitForSeconds (2f);
-		if (!PhotonNetwork.offlineMode)
-		{
+		if (!PhotonNetwork.offlineMode){
 			Model.Battle battle = ConfigurationData.battle;
 			
-			if (playerUnit)
-			{
+			if (playerUnit){
 				PhotonNetwork.Destroy(gameObject);
 				Score.AddScorePoints (DataScoreEnum.BuildingsLost, 1, battle.IdBattle);
 				Score.AddScorePoints (this.category + DataScoreEnum.XBuildLost, this.totalResourceCost, battle.IdBattle);
 			}
 
-			else
-			{
+			else{
 				if(gameplayManager.IsBotTeam (this)) PhotonNetwork.Destroy(gameObject);
 				Score.AddScorePoints (DataScoreEnum.BuildingsDestroyed, 1, battle.IdBattle);
 				Score.AddScorePoints (this.category + DataScoreEnum.XDestroyed, this.totalResourceCost, battle.IdBattle);
 			}
 		}
-		else if(gameplayManager.scoreCounting)
-		{
+		else if(gameplayManager.scoreCounting){
 			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
-			if (playerUnit)
-			{
+			if (playerUnit){
 				Destroy(gameObject);
 				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.BuildingsLost, 1);
 				oScore.oPlayers[0].AddScorePlayer (this.category + DataScoreEnum.XBuildLost, this.totalResourceCost);
@@ -397,8 +337,7 @@ public class FactoryBase : IStats, IDeathObservable
 				oScore.oPlayers[8].AddScorePlayer (this.category + DataScoreEnum.XDestroyed, this.totalResourceCost);
 			}
 			
-			else
-			{
+			else{
 				if(gameplayManager.IsBotTeam (this)) Destroy(gameObject);
 				oScore.oPlayers[8].AddScorePlayer (DataScoreEnum.BuildingsLost, 1);
 				oScore.oPlayers[8].AddScorePlayer (this.category + DataScoreEnum.XBuildLost, this.totalResourceCost);
@@ -414,36 +353,22 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		if(wasBuilt) return false;
 
-		if (levelConstruct < (MaxHealth / 2))
-		{
-			buildingState = BuildingState.Base;
-		}
-		else if (levelConstruct < MaxHealth)
-		{
-			buildingState = BuildingState.Unfinished;
-		}
-		else
-		{
-			buildingState = BuildingState.Finished;
-		}
-
+		if (levelConstruct < (MaxHealth / 2))	buildingState = BuildingState.Base;
+		else if (levelConstruct < MaxHealth)	buildingState = BuildingState.Unfinished;
+		else	buildingState = BuildingState.Finished;
 		SyncAnimation ();
 		
-		if (levelConstruct == MaxHealth)
-		{
-			if (!wasBuilt)
-			{
+		if (levelConstruct == MaxHealth){
+			if (!wasBuilt){
 				wasBuilt = true;												
 				this.fieldOfView = realRangeView;	
 				if(Selected) RestoreOptionsMenu();							
 				Init();
-				eventController.AddEvent("building finish",transformParticleDamageReference.position, this.category, this.guiTextureName);				
-
+				eventController.AddEvent("building finish",transformParticleDamageReference.position, this.category, this.guiTextureName);
 			}
 			return false;
 		}
-		else
-		{
+		else{
 			levelConstruct += worker.constructionAndRepairForce;
 			levelConstruct = Mathf.Clamp (levelConstruct, 0, MaxHealth);
 			Health += worker.constructionAndRepairForce;
@@ -454,16 +379,12 @@ public class FactoryBase : IStats, IDeathObservable
 	
 	public bool Repair (Worker worker)
 	{
-		if (IsDamaged)
-		{
+		if (IsDamaged){
 			Health += worker.constructionAndRepairForce;
 			Health = Mathf.Clamp (Health, 0, MaxHealth);
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		else	return false;
 	}
 
 	#endregion
@@ -474,25 +395,20 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		base.Select ();		
 		if(WasRemoved) return;
-
-		hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
+		if(firstDamage)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		
 		if (!playerUnit) return;
 		
-		if (wasBuilt)
-		{
+		if (wasBuilt){
 			if (unitsToCreate.Length < 0 || upgradesToCreate.Length < 0) return;
-
 			RestoreOptionsMenu(); //chama os options de upgrade e unit
 			RestoreDequeueMenu();
-
 			if (!hasRallypoint) return;			
 			if (!goRallypoint.gameObject.activeSelf) goRallypoint.gameObject.SetActive (true);	
 		}
 
-		else
-		{
+		else{
 			IStats.GridItemAttributes gia = new GridItemAttributes();
 			gia.gridXIndex = 3;
 			gia.gridYIndex = 2;
@@ -500,44 +416,31 @@ public class FactoryBase : IStats, IDeathObservable
 			Hashtable ht = new Hashtable();
 			ht["actionType"] = "cancel";
 			
-			hudController.CreateButtonInInspector ( "cancel",
-			                                       gia.Position,
-			                                       ht,
+			hudController.CreateOrChangeButtonInInspector ( "cancel", gia.Position, ht,
 			                                       "cross-option",
-			                                       (ht_hud) =>
-			                                       {
+			                                       (ht_hud) =>{
 														gameplayManager.resources.ReturnResources (costOfResources, 0.75f);
 														if (!PhotonNetwork.offlineMode) photonView.RPC ("SendRemove", PhotonTargets.All);
 														else SendRemove();
-
 													});
 		}
 	}
 
 	public void CreateUnitOption(UnitFactory uf)
 	{		
-		if(!uf.techAvailable)
-		{
+		if(!uf.techAvailable){
 			Hashtable ht = new Hashtable();
 			ht["buttonType"] = uf;
 			ht["disable"] = 0;
 			
-			hudController.CreateButtonInInspector (uf.buttonName,
-			                                       uf.gridItemAttributes.Position,
-			                                       ht,
-			                                       uf.unit.guiTextureName,
-			                                       null,
-			                                       (ht_dcb, onClick) => 
-			                                       {
-														UnitFactory unitFactory = (UnitFactory)ht_dcb["buttonType"];
-														
+			hudController.CreateOrChangeButtonInInspector (uf.buttonName, uf.gridItemAttributes.Position,  ht, uf.unit.guiTextureName, null,
+			                                       (ht_dcb, onClick) =>{
+														UnitFactory unitFactory = (UnitFactory)ht_dcb["buttonType"];														
 														hudController.OpenInfoBoxUnit(unitFactory.unit,false);
 													});							
 			
-		}
-		
-		else
-		{
+		}		
+		else{
 			Hashtable ht = new Hashtable();
 			ht["buttonType"] = uf;
 			ht["time"] = 0f;					
@@ -545,31 +448,15 @@ public class FactoryBase : IStats, IDeathObservable
 			if (uf.unit.costOfResources.Rocks != 0)	ht["gold"] = uf.unit.costOfResources.Rocks;					
 			if (uf.unit.costOfResources.Mana != 0)	ht["mana"] = uf.unit.costOfResources.Mana;					
 			
-			hudController.CreateButtonInInspector (uf.buttonName,
-			                                       uf.gridItemAttributes.Position,
-			                                       ht,
-			                                       uf.unit.guiTextureName,
-			                                       null,
-			                                       (ht_dcb, isDown) => 
-			                                       {
-														UnitFactory unitFactory = (UnitFactory)ht_dcb["buttonType"];
-														
-														if (isDown)
-														{
-															ht["time"] = Time.time;
-														}
-														else
-														{
-															if (Time.time - (float)ht["time"] > 0.5f)
-															{	
-																hudController.OpenInfoBoxUnit(unitFactory.unit, true);																		
-															}
-															else
-															{						
-																bool canBuy = gameplayManager.resources.CanBuy (unitFactory.unit.costOfResources);
-																
-																if (canBuy)
-																{
+			hudController.CreateOrChangeButtonInInspector (uf.buttonName, uf.gridItemAttributes.Position, ht, uf.unit.guiTextureName, null,
+			                                       (ht_dcb, isDown) => {
+														UnitFactory unitFactory = (UnitFactory)ht_dcb["buttonType"];														
+														if (isDown)	ht["time"] = Time.time;														
+														else{
+															if (Time.time - (float)ht["time"] > 0.5f)	hudController.OpenInfoBoxUnit(unitFactory.unit, true);																		
+															else{						
+																bool canBuy = gameplayManager.resources.CanBuy (unitFactory.unit.costOfResources);																
+																if (canBuy){
 																	FactoryBase	factoryChoose = CheckAvailableFactory();
 																	if(factoryChoose == null) return;
 																	hudController.CloseInfoBox();
@@ -589,26 +476,23 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		if(ui.isChildtech)return;
 		
-		if(!ui.techAvailable)
-		{
+		if(!ui.techAvailable){
 			Hashtable ht = new Hashtable();
 			ht["buttonType"] = ui;
 			ht["disable"] = 0;
 			
-			hudController.CreateButtonInInspector (ui.buttonName,
+			hudController.CreateOrChangeButtonInInspector (ui.buttonName,
 			                                       ui.gridItemAttributes.Position,
 			                                       ht,
 			                                       ui.upgrade.guiTextureName,
 			                                       null,
-			                                       (ht_dcb, onClick) => 
-			                                       {
+			                                       (ht_dcb, onClick) =>{
 														UpgradeItem upgrade = (UpgradeItem)ht_dcb["buttonType"];																
 														hudController.OpenInfoBoxUpgrade(upgrade.upgrade, false);
 													});
 		}
 		
-		else
-		{
+		else{
 			Hashtable ht = new Hashtable();
 			ht["buttonType"] = ui;
 			ht["time"] = 0f;
@@ -616,45 +500,29 @@ public class FactoryBase : IStats, IDeathObservable
 			if (ui.upgrade.costOfResources.Rocks != 0)	ht["gold"] = ui.upgrade.costOfResources.Rocks;			
 			if (ui.upgrade.costOfResources.Mana != 0)	ht["mana"] = ui.upgrade.costOfResources.Mana;
 			
-			if (!ui.alreadyUpgraded && !ui.upgrade.uniquelyUpgraded)
-			{										
-				hudController.CreateButtonInInspector (ui.buttonName,
-				                                       ui.gridItemAttributes.Position,
-				                                       ht,
-				                                       ui.upgrade.guiTextureName,
-				                                       null,
-				                                       (ht_dcb, isDown) =>				                                       
-				                                       {
+			if (!ui.alreadyUpgraded && !ui.upgrade.uniquelyUpgraded){										
+				hudController.CreateOrChangeButtonInInspector (ui.buttonName, ui.gridItemAttributes.Position, ht, ui.upgrade.guiTextureName, null,
+				                                       (ht_dcb, isDown) => {
 															UpgradeItem upgrade = (UpgradeItem)ht_dcb["buttonType"];
-
 															if (isDown) ht["time"] = Time.time;
-
-															else
-															{
+															else{
 																if (Time.time - (float)ht["time"] >  0.5f)	hudController.OpenInfoBoxUpgrade(upgrade.upgrade, true);																	
 																
-																else
-																{
+																else{
 																	bool canBuy = gameplayManager.resources.CanBuy (upgrade.upgrade.costOfResources);
 																	
-																	if (canBuy)
-																	{
+																	if (canBuy){
 																		FactoryBase	factoryChoose = CheckAvailableFactory();
 																		if(factoryChoose == null) return;	
-																		hudController.CloseInfoBox();		
-																		factoryChoose.EnqueueUpgradeToCreate (upgrade.upgrade);	
-																		hudController.RemoveButtonInInspector (upgrade.buttonName);
-																		upgrade.alreadyUpgraded = true;	
+																		hudController.CloseInfoBox();
+																		upgrade.alreadyUpgraded = true;
+																		factoryChoose.EnqueueUpgradeToCreate (upgrade.upgrade);																				
 																		
-																		if(upgrade.childTech != null)
-																		{ 
+																		if(upgrade.childTech != null){ 
 																			techTreeController.UpgradeChildBoolOperator(upgrade.childTech.upgradeName, false);									                                         
-																		}																						
-																									
-																	}
-																	
-																	else
-																			eventController.AddEvent("out of funds", hudController.rocksFeedback, upgrade.upgrade.name);
+																		}	
+																	}																	
+																	else   eventController.AddEvent("out of funds", hudController.rocksFeedback, upgrade.upgrade.name);
 																}	
 															}
 														});
@@ -664,23 +532,17 @@ public class FactoryBase : IStats, IDeathObservable
 		
 	public override void Deselect ()
 	{
-
 		hudController.DestroyOptionsBtns ();
-
 		base.Deselect ();
-
 		int c = IDOobservers.Count;
 		while (--c != -1)
 		{
 			UnRegisterDeathObserver (IDOobservers[c]);
-		}
-		
-		if (playerUnit && wasBuilt)
-		{
+		}		
+		if (playerUnit && wasBuilt){
 			buildingSlider.gameObject.SetActive(false);		
 			if (!hasRallypoint) return;			
-			goRallypoint.gameObject.SetActive (false);	
-		
+			goRallypoint.gameObject.SetActive (false);			
 		}
 	}
 	
@@ -690,12 +552,12 @@ public class FactoryBase : IStats, IDeathObservable
 		StartCoroutine("AddOptionButtons");
 	}	
 
-	IEnumerator AddOptionButtons()
+	void AddOptionButtons()
 	{	
-		while(hudController.IsDestroying)
-		{
-			yield return new WaitForSeconds(0.01f);
-		}
+//		while(hudController.IsDestroying)
+//		{
+//			yield return new WaitForSeconds(0.01f);
+//		}
 
 		foreach (UpgradeItem ui in upgradesToCreate)
 		{
@@ -736,8 +598,7 @@ public class FactoryBase : IStats, IDeathObservable
 			                                               FactoryBase.FactoryQueueName,
 			                                               ht,
 			                                               (string)ht["guiTexture"],
-			                                               (hud_ht) =>
-			                                               {
+			                                               (hud_ht) =>{
 																if (unit != null) DequeueUnit(hud_ht);
 																else if (upgrade != null) DequeueUpgrade(hud_ht);
 																RestoreDequeueMenu();
@@ -763,6 +624,14 @@ public class FactoryBase : IStats, IDeathObservable
 			gameplayManager.resources.UseResources (upgrade.costOfResources);
 			invokeQueue.Add(queueTicket, upgrade);
 			Hashtable ht = new Hashtable();
+			foreach (Upgrade upgDsb in upgrade.TechsToDisable)
+			{
+				foreach (UpgradeItem upgItem in upgradesToCreate)
+				{
+					if ( upgDsb == upgItem.upgrade) upgItem.techAvailable = false;
+				}
+			}
+
 			ht["buttonType"] = upgrade;
 			ht["name"] = "button-" + queueTicket;
 			ht["queueSpot"] = queueTicket;
@@ -772,14 +641,13 @@ public class FactoryBase : IStats, IDeathObservable
 			                                               FactoryBase.FactoryQueueName,
 			                                               ht,
 			                                               upgrade.guiTextureName,
-			                                               (hud_ht) =>
-		                                               		{			
+			                                               (hud_ht) =>{			
 																		DequeueUpgrade(hud_ht);
 															});
-			if (upgrade.unique)
-			{
+			if (upgrade.unique){
 				upgrade.uniquelyUpgraded = true;
-			}		
+			}
+			RestoreOptionsMenu();
 	}
 	
 	public virtual void EnqueueUnitToCreate (Unit unit)
@@ -797,10 +665,10 @@ public class FactoryBase : IStats, IDeathObservable
 			                                               FactoryBase.FactoryQueueName,
 			                                               ht,
 			                                               unit.guiTextureName,
-			                                               (hud_ht) =>
-			                                               {
+			                                               (hud_ht) =>{
 																DequeueUnit(hud_ht);
 															});
+
 	}
 
 	private void DequeueUnit(Hashtable ht)
@@ -810,8 +678,7 @@ public class FactoryBase : IStats, IDeathObservable
 		int queueBtnSpot	 = (int)ht["queueSpot"];
 		gameplayManager.resources.ReturnResources (unit.costOfResources);
 		
-		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
-		{
+		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName)){
 			inUpgrade = false;
 			timer = 0;
 			CancelInvokeSlider();
@@ -829,23 +696,27 @@ public class FactoryBase : IStats, IDeathObservable
 		int queueBtnSpot	 = (int)ht["queueSpot"];
 		gameplayManager.resources.ReturnResources (upgrade.costOfResources);
 
-		if (upgrade.unique)
+		if (upgrade.unique)	upgrade.uniquelyUpgraded = false;	
+
+		foreach (Upgrade upgDsb in upgrade.TechsToDisable)
 		{
-			upgrade.uniquelyUpgraded = false;
-		}		
+			foreach (UpgradeItem upgItem in upgradesToCreate)
+			{
+				if ( upgDsb == upgItem.upgrade) upgItem.techAvailable = true;
+			}
+		}
 
 		foreach (UpgradeItem ui in upgradesToCreate)					// Procura o UpgradeItem referente ao dequeued Upgrade para reativar o botao
 		{
-			if(ui.upgrade == upgrade)
-			{
+			if(ui.upgrade == upgrade){
 				ui.alreadyUpgraded = false;
-				techTreeController.UpgradeChildBoolOperator(ui.childTech.upgradeName, true);	
+				if(ui.upgrade.TechsToActive.Count != 0)	techTreeController.UpgradeChildBoolOperator(ui.childTech.upgradeName, true);	
+				RestoreOptionsMenu();
 				break;
 			}
 		}
 			
-		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName))
-		{
+		if(hudController.CheckQueuedButtonIsFirst(btnName, FactoryBase.FactoryQueueName)){
 			timer = 0;
 			CancelInvokeSlider();
 			upgradeToCreate = null;
@@ -860,10 +731,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		foreach (UnitFactory uf in unitsToCreate)
 		{
-			if (unit == uf.unit)
-			{
-				return uf.unit;
-			}
+			if (unit == uf.unit)return uf.unit;
 		}		
 		return null;
 	}
@@ -883,13 +751,11 @@ public class FactoryBase : IStats, IDeathObservable
 
 		foreach (FactoryBase factory in factories)
 		{
-			if (numberToCreate == -1)
-			{
+			if (numberToCreate == -1){
 				numberToCreate = factory.EnqueuedCount;
 				factoryChoose = i;
 			}
-			else if (numberToCreate > factory.EnqueuedCount)
-			{
+			else if (numberToCreate > factory.EnqueuedCount){
 				numberToCreate = factory.EnqueuedCount;
 				factoryChoose = i;
 			}
@@ -909,82 +775,75 @@ public class FactoryBase : IStats, IDeathObservable
 
 	void InvokeUpgrade (Upgrade upgrade)
 	{
-		eventController.AddEvent("standard message",transform.position , upgrade.name + " technology complete", upgrade.guiTextureName);	
+		eventController.AddEvent("standard message",transform.position , upgrade.name + " upgrade complete", upgrade.guiTextureName);	
 		Upgrade upg = null;
-		if (Selected)
-		{
-			hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);
 
-			RestoreDequeueMenu();
-			RestoreOptionsMenu();		
-		}
-		if (!PhotonNetwork.offlineMode)
-		{
+		if (!PhotonNetwork.offlineMode){
 			Model.Battle battle = ConfigurationData.battle;
 			Score.AddScorePoints (DataScoreEnum.UpgradesCreated, 1, battle.IdBattle);
 			Score.AddScorePoints (upgrade.name + DataScoreEnum.XUpgraded, upgrade.costOfResources.Rocks + upgrade.costOfResources.Mana, battle.IdBattle);
 
-			if (upgrade.name == "Guard Tower" || upgrade.name == "Defense Tower")
-			{
+			if (upgrade.name == "Guard Tower" || upgrade.name == "Defense Tower"){
 				GameObject u = PhotonNetwork.Instantiate(upgrade.gameObject.name, transform.position, transform.rotation, 0);
 				upg = u.GetComponent<Upgrade>();
 			}
-			else upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
+			else upg = Instantiate (upgrade, transform.position, Quaternion.identity) as Upgrade;
 		}
-		else
-		{			
+		else{			
 			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
-			upg = Instantiate (upgrade, this.transform.position, Quaternion.identity) as Upgrade;
+			upg = Instantiate (upgrade, transform.position, Quaternion.identity) as Upgrade;
 			oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.UpgradesCreated, 1);
 		}
 
-		upg.transform.parent = this.transform;
-		if (upgrade.modelUpgrade) 
-		{
+		upg.transform.parent = transform;
+		if (upgrade.modelUpgrade){
 			buildingState = BuildingState.Upgraded;
 			SyncAnimation();
 		}
+		if (upgrade.localUpgrade){
+			foreach (string upgAct in upgrade.TechsToActive)
+			{
+				foreach (UpgradeItem upgItem in upgradesToCreate)
+				{
+					if(upgAct == upgItem.upgrade.upgradeName)	upgItem.techAvailable = true;
+				}
+			}
+		}
 
+		if (Selected){
+			hudController.DequeueButtonInInspector(FactoryBase.FactoryQueueName);			
+			RestoreDequeueMenu();
+			RestoreOptionsMenu();		
+		}
 	}
 	
 	public virtual void InvokeUnit (Unit unit)
 	{	
-		if (Selected)
-		{
-			RestoreDequeueMenu();
-		}
+		if (Selected)	RestoreDequeueMenu();	
 		eventController.AddEvent("create unit", transform.position, unit.category, unit.guiTextureName);	
-
 		if (!hasRallypoint) return;
-		
 		// Look At
 		Vector3 difference = goRallypoint.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (difference);
 		Vector3 forward = rotation * Vector3.forward;		
 		Vector3 unitSpawnPosition = transform.position + (forward * helperCollider.radius);
-
 		Unit newUnit = null;
-		if (PhotonNetwork.offlineMode)
-		{
+		if (PhotonNetwork.offlineMode){
 			Unit u = Instantiate (unit, unitSpawnPosition, Quaternion.identity) as Unit;
 			newUnit = u;
 		}
-		else
-		{
+		else{
 			GameObject u = PhotonNetwork.Instantiate(unit.gameObject.name, unitSpawnPosition, Quaternion.identity, 0);
 			newUnit = u.GetComponent<Unit> ();
 		}						
-		newUnit.Init ();
-				
+		newUnit.Init ();				
 		RallyPoint rallypoint = goRallypoint.GetComponent<RallyPoint> ();
 		
-		if (rallypoint.observedUnit != null)
-		{
+		if (rallypoint.observedUnit != null){
 			newUnit.Follow (rallypoint.observedUnit);
 		}
 
-		else if(newUnit.category == "Worker" && rallypoint.observedResource != null)
-		{
+		else if(newUnit.category == "Worker" && rallypoint.observedResource != null){
 			Worker workerUnit = (Worker)newUnit;
 			workerUnit.SetMoveResource (rallypoint.observedResource);					
 		}
@@ -1043,8 +902,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		foreach (UnitFactory uf in unitsToCreate)
 		{
-			if (uf.unit.category == category)
-			{
+			if (uf.unit.category == category){
 				uf.techAvailable = isAvailable;
 				break;
 				
@@ -1052,8 +910,7 @@ public class FactoryBase : IStats, IDeathObservable
 		}
 		foreach (UpgradeItem up in upgradesToCreate)
 		{	
-			if(up.upgrade.upgradeName == category)
-			{
+			if(up.upgrade.upgradeName == category){
 				up.techAvailable = isAvailable;
 				break;
 			}
@@ -1064,8 +921,7 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		foreach (UpgradeItem up in upgradesToCreate)
 		{	
-			if(up.upgrade.upgradeName == category)
-			{
+			if(up.upgrade.upgradeName == category){
 				up.isChildtech = isTechChild;
 				break;
 			}
@@ -1126,35 +982,21 @@ public class FactoryBase : IStats, IDeathObservable
 	{
 		Init();	
 
-		if (!PhotonNetwork.offlineMode)
-		{
+		if (!PhotonNetwork.offlineMode){
 			IsNetworkInstantiate = true;
 			SetTeam (teamID, allyID);
 		}
 
-		levelConstruct = Health = 1;
-		
+		levelConstruct = Health = 1;		
 		GetComponent<NavMeshObstacle> ().enabled = true;	
-		if (gameplayManager.IsSameTeam (this.team))
-		{
+		if (gameplayManager.IsSameTeam (this.team)){
 			if (PhotonNetwork.offlineMode) statsController.AddStats(this);
 			hudController.CreateSubstanceConstructBar (this, sizeOfHealthBar, MaxHealth, true);
 			realRangeView  = this.fieldOfView;		
 			this.fieldOfView = 5f;
 			SendMessage ("OnInstanceFactory", SendMessageOptions.DontRequireReceiver);
-
-			foreach (Unit unit in statsController.selectedStats)
-			{
-				if (unit.GetType() == typeof(Worker))
-				{
-					Worker builder = unit as Worker;
-					builder.TargetingEnemy(null);
-					builder.WorkerReset();
-					builder.SetMoveToFactory (this);
-				}
-			}
+			statsController.WorkerCheckFactory(this);
 		}	
-
 
 		foreach (GameObject obj in buildingObjects.desactiveObjectsWhenInstance)
 		{

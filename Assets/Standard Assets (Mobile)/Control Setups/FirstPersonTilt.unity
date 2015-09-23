@@ -4,13 +4,12 @@
 SceneSettings:
   m_ObjectHideFlags: 0
   m_PVSData: 
-  m_QueryMode: 1
   m_PVSObjectsArray: []
   m_PVSPortalsArray: []
   m_OcclusionBakeSettings:
-    viewCellSize: 1
-    bakeMode: 2
-    memoryUsage: 10485760
+    smallestOccluder: 5
+    smallestHole: .25
+    backfaceThreshold: 100
 --- !u!196 &2
 NavMeshSettings:
   m_ObjectHideFlags: 0
@@ -25,6 +24,7 @@ NavMeshSettings:
     minRegionArea: 2
     widthInaccuracy: 16.666666
     heightInaccuracy: 10
+    tileSizeHint: 0
   m_NavMesh: {fileID: 0}
 --- !u!104 &13
 RenderSettings:
@@ -38,6 +38,7 @@ RenderSettings:
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: .5
   m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 0}
   m_ObjectHideFlags: 0
@@ -104,12 +105,14 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!1001 &22
 Prefab:
   m_ObjectHideFlags: 0
@@ -165,6 +168,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1fdce4427d10e48a0a07774903b01f73, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   moveTouchPad: {fileID: 39}
   rotateTouchPad: {fileID: 0}
   cameraPivot: {fileID: 37}
@@ -203,6 +207,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1259bb9bcb6e481ba03f5d0337633d5, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   axis: 0
   min: -20
   max: 20
@@ -258,7 +263,11 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!4 &37
 Transform:
   m_ObjectHideFlags: 0
@@ -270,6 +279,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 45}
+  m_RootOrder: 0
 --- !u!114 &39
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,6 +291,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb10c595af974ea6ba0313a749d5c55, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   touchPad: 1
   touchZone:
     serializedVersion: 2
@@ -324,6 +335,7 @@ Transform:
   m_Children:
   - {fileID: 47}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!4 &45
 Transform:
   m_ObjectHideFlags: 0
@@ -337,6 +349,7 @@ Transform:
   - {fileID: 37}
   - {fileID: 51}
   m_Father: {fileID: 47}
+  m_RootOrder: 0
 --- !u!4 &47
 Transform:
   m_ObjectHideFlags: 0
@@ -349,6 +362,7 @@ Transform:
   m_Children:
   - {fileID: 45}
   m_Father: {fileID: 43}
+  m_RootOrder: 0
 --- !u!33 &49
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -368,6 +382,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 45}
+  m_RootOrder: 1
 --- !u!1 &54
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,6 +488,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!64 &64
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -504,3 +521,4 @@ Transform:
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 1

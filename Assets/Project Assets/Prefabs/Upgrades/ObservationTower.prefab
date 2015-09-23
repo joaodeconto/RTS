@@ -42,7 +42,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upgradeName: ObservationTower
   description: Increases Tower Field of View
-  stats1Value: +20
+  stats1Value: +30
   stats1Text: FOW
   stats2Value: 
   stats2Text: 
@@ -53,8 +53,11 @@ MonoBehaviour:
   unique: 0
   ChildTech: 0
   uniquelyUpgraded: 0
+  localUpgrade: 1
   TechsToActive:
   - ClearBlackFog
+  TechsToDisable:
+  - {fileID: 11478150, guid: f61fab55a733a5b4b84358a068e0a334, type: 2}
   costOfResources:
     m_mana: 30
     m_rocks: 100
@@ -69,7 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a92e3699811ab488863109eea74714, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newFieldOfView: 40
+  newFieldOfView: 50
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -9,6 +9,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 	public GameObject prefabInstantiate;
 	private bool wasInitialized = false;
 	private GameObject prefab;
+	public bool instantiated = false;
 
 	public virtual void Init ()
 	{
@@ -40,15 +41,13 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 
 	void InstantiatePrefab ()
 	{
-		prefab = Instantiate (prefabInstantiate, transform.position, prefabInstantiate.transform.rotation) as GameObject;
-		
+		prefab = Instantiate (prefabInstantiate, transform.position, prefabInstantiate.transform.rotation) as GameObject;		
 		IStats stats = prefab.GetComponent<IStats>();
 		stats.SetTeam (0, 0);
 		stats.transform.parent = transform.parent;
 		FactoryBase fb = prefab.GetComponent<FactoryBase>();
 
-		if (fb != null)
-		{
+		if (fb != null)	{
 			fb.SendMessageInstance();
 			if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 			fb.wasVisible = false;
@@ -58,19 +57,17 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 		else
 			stats.Init();
 
+		instantiated = true;
 		Destroy (this.gameObject);
 	}
 
 	void NetworkInstantiatePrefab ()
 	{
-		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.playerList.Length)
-		{
-			if ((int)PhotonNetwork.player.customProperties["team"] == (int.Parse (transform.parent.name)))
-			{
+		if ((int)PhotonNetwork.room.customProperties["playerLoads"] >= PhotonNetwork.playerList.Length)	{
+			if ((int)PhotonNetwork.player.customProperties["team"] == (int.Parse (transform.parent.name)))	{
 				GameObject prefab = PhotonNetwork.Instantiate (prefabInstantiate.name, transform.position, prefabInstantiate.transform.rotation, 0);
 				prefab.transform.parent = transform.parent;
-				if (prefab.GetComponent<FactoryBase>() != null)
-				{
+				if (prefab.GetComponent<FactoryBase>() != null)	{
 					FactoryBase fb = prefab.GetComponent<FactoryBase>();
 					fb.wasBuilt = true;		
 					fb.collider.isTrigger = false;
@@ -79,8 +76,7 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 					fb.SendMessageInstance();
 					if (fb.playerUnit)fb.TechActiveBool(fb.TechsToActive, true);
 				}			
-				else 
-				{
+				else {
 					IStats stats = prefab.GetComponent<IStats>();					
 					stats.IsNetworkInstantiate = true;
 					stats.Init();
@@ -88,9 +84,11 @@ public class InitInstantiateNetwork : Photon.MonoBehaviour
 			}
 		
 			CancelInvoke ("NetworkInstantiatePrefab");
+			instantiated = true;
 			Destroy (this.gameObject);
 		}
 	}
+
 	void OnDrawGizmos()
 	{	
 		int teamTransfor = int.Parse(this.transform.parent.name);

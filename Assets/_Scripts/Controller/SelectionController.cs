@@ -108,6 +108,7 @@ public class SelectionController : MonoBehaviour
 
 				if (b.Intersects (unit.collider.bounds))
 				{
+					if(stat is Worker) statsController.HasWorkerSelection(stat as Worker);
 					statsController.SelectStat (unit, true);
 				}
 			}
@@ -433,6 +434,7 @@ public class SelectionController : MonoBehaviour
 
 					if (b.Intersects (unit.collider.bounds))
 					{
+						if(stat is Worker) statsController.HasWorkerSelection(stat as Worker);
 						statsController.SelectStat (unit, true);
 					}
 				}
@@ -492,6 +494,7 @@ public class SelectionController : MonoBehaviour
 								statsController.SelectStat (selectedUnit, true);
 								statsController.PlaySelectSound ();
 								lastStatClick = selectedUnit;
+								ComponentGetter.Get<HUDController>().OpenInfoBoxUnit (selectedUnit, true);
 
 								return true;
 							}
@@ -514,6 +517,7 @@ public class SelectionController : MonoBehaviour
 								statsController.DeselectAllStats ();
 								statsController.SelectStat (factory, true);
 								statsController.PlaySelectSound ();
+								ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (factory, true);
 
 							}
 							else
@@ -537,6 +541,7 @@ public class SelectionController : MonoBehaviour
 								{
 									Worker worker = stat as Worker;									
 									if (worker == null) continue;
+									if (worker.category == "Brachiosaur") continue;
 									hasWorkerInSelection = true;
 									interactionController.Interaction (touchController.GetFinalRaycastHit.transform);
 								}
@@ -548,6 +553,7 @@ public class SelectionController : MonoBehaviour
 							{
 								statsController.SelectStat (factory, true);
 								statsController.PlaySelectSound ();
+								ComponentGetter.Get<HUDController> ().OpenInfoBoxFactory (factory, true);
 								return true;
 							}									
 						}

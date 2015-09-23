@@ -6,10 +6,13 @@ using Visiorama.Utils;
 
 public class CameraMovement : MonoBehaviour
 {
-	public float speedMobile;
 	public float speed;
 	public Vector2 minimum = Vector2.one * 0.01f;
 	public Vector2 maximum = Vector2.one * 0.99f;
+	public float smoothFactor;
+	public Vector3 velocity = Vector3.zero;
+	public float timeToDamp = 0.3f;
+	private float startAccelY, startAccelX, startAccelZ;
 	
 	public float zoomSpeed;
 	public MinMaxFloat zoom;
@@ -25,13 +28,12 @@ public class CameraMovement : MonoBehaviour
 	{
 		touchController = ComponentGetter.Get<TouchController>();
 		bounds = GetComponent<CameraBounds> ();
-
-		speedMobile = PlayerPrefs.GetFloat("TouchSense");
-		speed = PlayerPrefs.GetFloat("TouchSense");
-		
-		scenario = bounds.scenario;
-		
+		speed = PlayerPrefs.GetFloat("TouchSense");		
+		scenario = bounds.scenario;		
 		thisCamera = gameObject.camera;
+		startAccelY = Input.acceleration.y;
+		startAccelX = Input.acceleration.x;
+		startAccelZ = Input.acceleration.z;
 		
 		foreach (Camera camera in touchController.zoomSettings.cameras)
 		{
@@ -39,59 +41,40 @@ public class CameraMovement : MonoBehaviour
 		}
 	}
 
-	void Update ()
+	void FixedUpdate ()
 	{
+
 #if UNITY_IPHONE || UNITY_ANDROID && !UNITY_EDITOR
 
+		smoothFactor = 8;
 		if (touchController.touchType == TouchController.TouchType.Press)
 		{
-			transform.position -= (touchController.RelativeTwoFingersPosition * speedMobile);
+			Vector3 newPos = transform.position - touchController.RelativeTwoFingersPosition * (speed*2);
+			//transform.position = Vector3.SmoothDamp(transform.position, newPos, ref velocity, smoothFactor, Mathf.Infinity, timeToDamp);
+			transform.position = Vector3.Lerp(transform.position, newPos, smoothFactor * Time.deltaTime);
+		}
+		
+
+#else	
+
+		smoothFactor = speed/8;
+		Vector3 dir = Vector3.zero;
+		dir.z = Input.acceleration.z - startAccelZ;
+		dir.x = Input.acceleration.x - startAccelX;
+		if (dir.sqrMagnitude > 1
+		    ){
+
+			dir.Normalize();
+			transform.position += dir;
 		}
 
-#else
+
 		float v = Input.GetAxis ("Vertical");
 		float h = Input.GetAxis ("Horizontal");
 		PanCamera (v * speed, h * speed);
 		
 		if (touchController.touchType == TouchController.TouchType.Press ||
 			h != 0 || v != 0) return;
-		
-//		if (Input.GetAxis ("Mouse ScrollWheel") != 0)
-//		{
-//			float size = thisCamera.orthographicSize;
-//			
-//			size -= Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
-//			
-//			thisCamera.fieldOfView = Mathf.Clamp (size, zoom.min, zoom.max);
-//						
-//		
-////			float movementForceDirection = Input.GetAxis ("Mouse ScrollWheel") * zoomSpeed;
-////			Vector3 cameraPosition = thisCamera.transform.position;
-////			Vector3 impulse = thisCamera.transform.forward.normalized * movementForceDirection;
-////			
-////
-////			
-////			if ((movementForceDirection > 0 && ((impulse + cameraPosition).y > scenario.y.min)) ||
-////			    (movementForceDirection < 0 && ((impulse + cameraPosition).y < scenario.y.max)))
-////			{
-////				cameraPosition += impulse;
-////				
-////				float screenRatio = (float)Screen.width / (float)Screen.height;
-////				float angleRatio = thisCamera.transform.eulerAngles.x / 180f; 
-////				float fieldOfViewRatio = (thisCamera.orthographicSize / 150f);
-////				
-////				scenario.x.min -= movementForceDirection * fieldOfViewRatio * screenRatio;
-////				scenario.x.max += movementForceDirection * fieldOfViewRatio * screenRatio;
-////				scenario.z.min += 2f * movementForceDirection * (1f / angleRatio) * fieldOfViewRatio * (1f / screenRatio);
-////				scenario.z.max += 2f * movementForceDirection * (1f / angleRatio) * fieldOfViewRatio * (1f / screenRatio);
-////			
-////				thisCamera.transform.position = cameraPosition;
-////				foreach (Camera camera in touchController.zoomSettings.cameras)
-////				{
-////					camera.transform.position = cameraPosition;
-////				}
-////			}
-//		}
 
 		if (touchController.RelativePosition.x <= minimum.x && touchController.RelativePosition.x >= 0f)
 			PanCamera (0f, -speed * (1f - touchController.RelativePosition.x));
@@ -105,20 +88,17 @@ public class CameraMovement : MonoBehaviour
 	}
 
 	public void SetSpeed () 
-
 	{
-		speed = PlayerPrefs.GetFloat("TouchSense");
-		speedMobile = PlayerPrefs.GetFloat("TouchSense");
-	
+		speed = PlayerPrefs.GetFloat("TouchSense");	
 	}
 
-	// Adicionar metodo na biblioteca
+	// Adicionar metodo na biblioteca  
 	public void PanCamera (float dForward, float dRight)
     {
       Transform transform = Camera.main.transform;
       Vector3 normalized = Vector3.Cross(Vector3.up, transform.forward).normalized;
       Vector3 vector3_1 = Vector3.Cross(normalized, Vector3.up);
       Vector3 vector3_2 = transform.position + normalized * dRight + vector3_1 * dForward;
-      transform.position = vector3_2;
+	  transform.position = Vector3.SmoothDamp(transform.position, vector3_2, ref velocity, smoothFactor, Mathf.Infinity, timeToDamp);
     }
 }

@@ -4,13 +4,12 @@
 SceneSettings:
   m_ObjectHideFlags: 0
   m_PVSData: 
-  m_QueryMode: 1
   m_PVSObjectsArray: []
   m_PVSPortalsArray: []
   m_OcclusionBakeSettings:
-    viewCellSize: 1
-    bakeMode: 2
-    memoryUsage: 10485760
+    smallestOccluder: 5
+    smallestHole: .25
+    backfaceThreshold: 100
 --- !u!196 &2
 NavMeshSettings:
   m_ObjectHideFlags: 0
@@ -25,6 +24,7 @@ NavMeshSettings:
     minRegionArea: 2
     widthInaccuracy: 16.666666
     heightInaccuracy: 10
+    tileSizeHint: 0
   m_NavMesh: {fileID: 0}
 --- !u!104 &13
 RenderSettings:
@@ -38,6 +38,7 @@ RenderSettings:
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: .5
   m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 0}
   m_ObjectHideFlags: 0
@@ -105,6 +106,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8947ae06ca3df4fcc9786140c1d86f15, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   target: {fileID: 21}
   smoothTime: .300000012
 --- !u!4 &21
@@ -119,6 +121,7 @@ Transform:
   m_Children:
   - {fileID: 47}
   m_Father: {fileID: 22}
+  m_RootOrder: 0
 --- !u!4 &22
 Transform:
   m_ObjectHideFlags: 0
@@ -132,6 +135,7 @@ Transform:
   - {fileID: 21}
   - {fileID: 59}
   m_Father: {fileID: 23}
+  m_RootOrder: 0
 --- !u!4 &23
 Transform:
   m_ObjectHideFlags: 0
@@ -146,6 +150,7 @@ Transform:
   - {fileID: 43}
   - {fileID: 24}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!4 &24
 Transform:
   m_ObjectHideFlags: 0
@@ -157,6 +162,7 @@ Transform:
   m_LocalScale: {x: 0, y: 0, z: 1}
   m_Children: []
   m_Father: {fileID: 23}
+  m_RootOrder: 2
 --- !u!1001 &26
 Prefab:
   m_ObjectHideFlags: 0
@@ -214,12 +220,14 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!33 &29
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -259,6 +267,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb10c595af974ea6ba0313a749d5c55, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   touchPad: 1
   touchZone:
     serializedVersion: 2
@@ -301,6 +310,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb10c595af974ea6ba0313a749d5c55, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   touchPad: 1
   touchZone:
     serializedVersion: 2
@@ -323,6 +333,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fed124f80617b40f0917847d5c87ca73, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   moveTouchPad: {fileID: 37}
   jumpTouchPad: {fileID: 33}
   forwardSpeed: 4
@@ -355,6 +366,7 @@ Transform:
   m_LocalScale: {x: 0, y: 0, z: 1}
   m_Children: []
   m_Father: {fileID: 23}
+  m_RootOrder: 1
 --- !u!4 &47
 Transform:
   m_ObjectHideFlags: 0
@@ -366,6 +378,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 21}
+  m_RootOrder: 0
 --- !u!81 &51
 AudioListener:
   m_ObjectHideFlags: 0
@@ -418,7 +431,11 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!4 &59
 Transform:
   m_ObjectHideFlags: 0
@@ -430,6 +447,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 22}
+  m_RootOrder: 1
 --- !u!1 &62
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,6 +484,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!64 &64
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -497,6 +517,7 @@ Transform:
   m_LocalScale: {x: 10, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 2
 --- !u!1 &68
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,12 +579,14 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!33 &74
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -582,6 +605,7 @@ Transform:
   m_LocalScale: {x: 10, y: 10, z: .0199999996}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 3
 --- !u!1 &76
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,6 +702,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 1
 --- !u!1 &84
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,8 @@ public class EveryplayInGameFaceCam : MonoBehaviour
         targetTexture = new Texture2D(textureSideWidth, textureSideWidth, textureFormat, false);
         targetTexture.wrapMode = textureWrapMode;
 
-        if(targetMaterial && targetTexture) {
+        if (targetMaterial && targetTexture)
+        {
             defaultTexture = targetMaterial.mainTexture;
 
             Everyplay.FaceCamSetTargetTexture(targetTexture);
@@ -27,7 +28,8 @@ public class EveryplayInGameFaceCam : MonoBehaviour
 
     void OnSessionStart()
     {
-        if(targetMaterial && targetTexture) {
+        if (targetMaterial && targetTexture)
+        {
             targetMaterial.mainTexture = targetTexture;
         }
     }

@@ -16,9 +16,6 @@ public class EventController : MonoBehaviour
 		public GameObject hudFeedback;
 		public string sfxFeedback;
 	}
-
-	public float timer = 0f;
-	public bool setTimerCount = false;
 	public List<EventController.Event> events;
 
 	HUDController hudController;

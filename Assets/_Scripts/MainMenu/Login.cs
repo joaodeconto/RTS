@@ -19,15 +19,14 @@ public class Login : IController
 	public void Init ()
 	{
 		if (ConfigurationData.Logged) return;
-		
-		LoadPlayerPrefabs ();
 
 		#if UNITY_IOS
-		Advertisement.Initialize("35534", false);
+		if (Advertisement.isSupported) {
+			Advertisement.Initialize("35534", false);
+		}
 		#else
 		if (Advertisement.isSupported) {
-
-		Advertisement.Initialize("18990", false);
+			Advertisement.Initialize("18990", false);
 		}
 		#endif
 		pw = ComponentGetter.Get<PhotonWrapper>();
@@ -51,8 +50,7 @@ public class Login : IController
 	
 	public void NewAccount ()
 	{
-		HideAllViews ();
-		
+		HideAllViews ();		
 		NewAccount newAccount = GetView <NewAccount> ("NewAccount");
 		newAccount.SetActive (true);
 		newAccount.Init ();
@@ -73,20 +71,17 @@ public class Login : IController
 		string password = (string)ht["password"];
 		string idFacebook = "";		 
 		
-		if (!UseRealLogin)
-		{
-				ConfigurationData.player = new Model.Player () { IdPlayer = 5,
-				SzName			  = username,
-				SzPassword		  = password,
-				IdFacebookAccount = idFacebook };
-			
+		if (!UseRealLogin)	{
+			ConfigurationData.player = new Model.Player () { IdPlayer = 5,
+			SzName			  = username,
+			SzPassword		  = password,
+			IdFacebookAccount = idFacebook };			
 			pw.SetPlayer (username, true);
 			pw.SetPropertyOnPlayer ("player", ConfigurationData.player.ToString ());
 			pw.SetPropertyOnPlayer ("avatar", PlayerPrefs.GetString("Avatar"));
 			EnterInternalMainMenu (username);
 		}
-		else
-		{
+		else  {
 			PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
 			
 			playerDao.GetPlayer (username, password, idFacebook,
@@ -97,21 +92,18 @@ public class Login : IController
 									Debug.Log ("player: " + player);
 									Debug.Log ("name: " + username);
 									
-									if (player == null)
-									{
+									if (player == null)	{
 										LoginIndex index = GetView <LoginIndex> ("Index");
 										index.ShowErrorMessage ("Incorrect User or Password");
 									}
 									else
 									{
-										if ( rememberUser.value == true)
-										{
+										if ( rememberUser.value == true){
 											PlayerPrefs.SetString("ReUser", username);
 											PlayerPrefs.SetString("RePassword", password);
 										}
 
-										else
-										{
+										else{
 											PlayerPrefs.SetString("ReUser", username);
 											PlayerPrefs.SetString("RePassword", null);
 										}
@@ -168,56 +160,12 @@ public class Login : IController
 	//			}
 	//		});
 	//	}
-	
-	public void LoadPlayerPrefabs ()
-	{
-		
-		if (!PlayerPrefs.HasKey("TouchSense"))
-		{
-			PlayerPrefs.SetFloat("TouchSense", .5f);
-		}
-		if (!PlayerPrefs.HasKey("DoubleClickSpeed"))
-		{
-			PlayerPrefs.SetFloat("DoubleClickSpeed", .5f);
-		}		
-		if (!PlayerPrefs.HasKey("AllVolume"))
-		{
-			PlayerPrefs.SetFloat("AllVolume", 1f);
-		}
-		if (!PlayerPrefs.HasKey("MusicVolume"))
-		{
-			PlayerPrefs.SetFloat("MusicVolume", 1f);
-		}
-		if (!PlayerPrefs.HasKey("SFXVolume"))
-		{
-			PlayerPrefs.SetFloat("SFXVolume", 1f);
-		}		
-		if (!PlayerPrefs.HasKey("GraphicQuality"))
-		{
-			QualitySettings.SetQualityLevel(4);
-		}
 
-		if (!PlayerPrefs.HasKey("Logins"))
-		{
-			PlayerPrefs.SetInt("Logins", 0);
-		}
-		else
-		{
-			int logins = PlayerPrefs.GetInt("Logins");
-			PlayerPrefs.SetInt("Logins", (logins+1));
-		}
-	
-		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));
-		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
-		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));		
-		QualitySettings.SetQualityLevel (PlayerPrefs.GetInt("GraphicQuality"));
-	}
-
-	void Update ()
-	{
-		if (Input.GetKeyDown (KeyCode.Escape))
-		{
-			Application.Quit();
-		}
-	}
+//	void Update ()
+//	{
+//		if (Input.GetKeyDown (KeyCode.Escape))
+//		{
+//			Application.Quit();
+//		}
+//	}
 }

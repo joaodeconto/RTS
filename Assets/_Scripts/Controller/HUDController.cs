@@ -22,9 +22,12 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 		public Vector3 GetGridPosition(int xIndex, int yIndex)
 		{
-			Vector2 vec = Math.GetGridPosition(xIndex,   yIndex,
-											   xPadding, yPadding,
-											   cellSizeX,cellSizeY);
+			Vector2 vec = Math.GetGridPosition(xIndex,
+			                                   yIndex,
+											   xPadding,
+			                                   yPadding,
+											   cellSizeX,
+			                                   cellSizeY);
 			return rootPosition + new Vector3(vec.x, vec.y, 0);
 		}
 	}
@@ -54,10 +57,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		foreach(UISlider slider in sliders)
 		{
-			if(slider.name.ToLower().Equals(name.ToLower()))
-			{
-				return slider;
-			}
+			if(slider.name.ToLower().Equals(name.ToLower()))	return slider;	
 		}
 		return null;
 	}
@@ -83,7 +83,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		Invalid
 	}
 
-	public GameObject pref_healthBar;
+//	public GameObject pref_healthBar;
 	public GameObject pref_SubstanceHealthBar;
 	public GameObject pref_SubstanceResourceBar;
 	public GameObject pref_selectedObject;
@@ -95,6 +95,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	public Transform trnsPanelUnitStats;
 
 	public GameObject pref_button;
+	public GameObject select_button;
 	public Vector3 	  offesetFeedback;
 	public GameObject pref_moveFeedback;
 	public GameObject pref_selfFeedback;
@@ -113,13 +114,11 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	private bool _isDestroying;
 	public  bool IsDestroying {
 		get	{
-			if(_isDestroying)
-			{
+			if(_isDestroying){
 				bool hasChild = false;
 				foreach(Transform c in trnsOptionsMenu)
 				{
-					if (!c.gameObject.name.Contains(PERSIST_STRING))
-					{
+					if (!c.gameObject.name.Contains(PERSIST_STRING)){
 						hasChild = true;
 						break;
 					}
@@ -250,6 +249,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		Transform selectObj = PoolManager.Pools["Selection"].Spawn(pref_selectedObject, target.position, Quaternion.identity);
 		selectObj.transform.localScale = new Vector3(size * 1f, size* 1f, size * 1f);
 		selectObj.transform.localEulerAngles = new Vector3(90,0,0);
+		selectObj.name = target.name;
 					
 		foreach (ParticleSystem ps in selectObj.GetComponentsInChildren<ParticleSystem>())
 		{
@@ -304,8 +304,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		
 		foreach (Transform child in mainTranformSelectedObjects)
 		{
-			if (child.GetComponent<ReferenceTransform>().referenceObject == target)
-			{
+			if (child.GetComponent<ReferenceTransform>().referenceObject == target){
 				hasSelected = true;
 				break;
 			}
@@ -333,25 +332,30 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	{
 		foreach (Transform child in mainTranformSelectedObjects)
 		{
-			ReferenceTransform refTrans= child.GetComponent<ReferenceTransform>();
-			if(refTrans == null) continue;
-			else if (refTrans.referenceObject == target && child.GetComponent<SubstanceResourceBar>() == null)
-			{
+			if (child.name == target.name){
+				if (child.GetComponent<SubstanceResourceBar>() != null) break;
+				
+				ReferenceTransform refTrans= child.GetComponent<ReferenceTransform>();
 				refTrans.referenceObject = null;
+				child.name = "alreadyUsed";
 				PoolManager.Pools["Selection"].Despawn (child);
+			
+				if(target.GetComponent<IStats>() is Unit){
+					RemoveEnqueuedButtonInInspector (target.name, Unit.UnitGroupQueueName);
+				}
 			}
 		}
 
-		foreach (Transform child in trnsPanelUnitStats)
-		{
-			if (child.GetComponent<HealthBar>())
-			{
-				if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
-				{					
-					DespawnBtn(child);					
-				}
-			}			
-		}
+//		foreach (Transform child in trnsPanelUnitStats)
+//		{
+//			if (child.GetComponent<HealthBar>())
+//			{
+//				if (child.GetComponent<HealthBar>().Target == (target.GetComponent<IStats> () as IHealthObservable))
+//				{					
+//								
+//				}
+//			}			
+//		}
 	}
 
 	public void DestroyHealthBar (Transform target)
@@ -360,8 +364,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		{
 			ReferenceTransform refTrans= child.GetComponent<ReferenceTransform>();
 			if(refTrans == null) continue;
-			if (refTrans.referenceObject == target && child.GetComponent<SubstanceHealthBar>() != null)
-			{
+			if (refTrans.referenceObject == target && child.GetComponent<SubstanceHealthBar>() != null){
 				refTrans.referenceObject = null;
 				PoolManager.Pools["Selection"].Despawn (child);
 			}
@@ -374,8 +377,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		{
 			ReferenceTransform refTrans= child.GetComponent<ReferenceTransform>();
 			if(refTrans == null) continue;
-			if (refTrans.referenceObject == target && child.GetComponent<SubstanceResourceBar>() != null)
-			{
+			if (refTrans.referenceObject == target && child.GetComponent<SubstanceResourceBar>() != null){
 				refTrans.referenceObject = null;
 				PoolManager.Pools["Selection"].Despawn (child);
 			}
@@ -430,16 +432,16 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		bs.persistent  = persistent;
 
 		stackButtonToCreate.Push(bs);
-
-		StartCoroutine("CreateButton");
+		CreateButton();
+		//StartCoroutine("CreateButton");
 	}
 
-	IEnumerator CreateButton()
+	void CreateButton()
 	{
-		while (IsDestroying)
-		{
-			yield return new WaitForSeconds(0.001f);
-		}
+//		while (IsDestroying)
+//		{
+//			yield return new WaitForSeconds(0.001f);
+//		}
 
 		ButtonStatus bs = stackButtonToCreate.Pop();
 		string buttonName = bs.persistent ?
@@ -450,14 +452,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			bs.ht["textureName"] = bs.textureName;
 
 		Transform buttonParent = null;
-		if (bs.ht.ContainsKey ("parent"))
-		{
-			buttonParent = (Transform)bs.ht["parent"];
-		}
-		else
-		{
-			buttonParent = trnsOptionsMenu;
-		}
+
+		if (bs.ht.ContainsKey ("parent"))	buttonParent = (Transform)bs.ht["parent"];	
+		else	buttonParent = trnsOptionsMenu;
 
 		Transform button = GetButtonInHUD (buttonName, buttonParent);
 
@@ -467,8 +464,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 		PersonalizedCallbackButton pcb = button.GetComponent<PersonalizedCallbackButton>();
 
-		if ( pcb == null )
-		{
+		if ( pcb == null ){
 			pcb = button.gameObject.AddComponent<PersonalizedCallbackButton>();
 			pcb.Init(bs.ht, bs.onClick, bs.onPress, bs.onSliderChange, bs.onActivate, bs.onRepeatClick, bs.onDrag, bs.onDrop);
 		}
@@ -488,15 +484,13 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void RemoveEnqueuedButtonInInspector(string buttonName, string queueName)
 	{
-		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-		
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);		
 		mq.RemoveMessageInfo(buttonName);
 	}
 	
 	public void DequeueButtonInInspector(string queueName)
 	{
-		MessageQueue mq = messageInfoManager.GetQueue(queueName);
-		
+		MessageQueue mq = messageInfoManager.GetQueue(queueName);		
 		mq.DequeueMessageInfo();
 	}
 
@@ -506,10 +500,9 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	
 		foreach (Transform child in trns)
 		{
-			if (child.gameObject.name.Equals(buttonName) ||
-				child.gameObject.name.Equals(PERSIST_STRING + buttonName))
-			{
-				DespawnBtn(child);		
+			if (child.gameObject.name.Equals(buttonName) ||	child.gameObject.name.Equals(PERSIST_STRING + buttonName)){
+				//DespawnBtn(child);		
+				PoolManager.Pools["Buttons"].Despawn (child, PoolManager.Pools["Buttons"].group);	
 				break;
 			}
 		}
@@ -517,24 +510,26 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void DestroyOptionsBtns ()
 	{
-		IsDestroying = true;
-
+		List<Transform> btnCopy = new List<Transform>();
 		foreach (Transform child in trnsOptionsMenu)
-		{			
-			DespawnBtn(child);
+		{
+			btnCopy.Add (child);
+		}
+		foreach(Transform btn in btnCopy)
+		{
+			PoolManager.Pools["Buttons"].Despawn (btn, PoolManager.Pools["Buttons"].group);
 		}
 	}
 
 	public bool isDestroyingQueue()
 	{
 		MessageQueue mq = messageInfoManager.GetQueue("Factory");
-		if(mq.uiGrid.transform.childCount != 0 || isClearing)
-		{
+		if(mq.uiGrid.transform.childCount != 0 || isClearing){
 			foreach(Transform t in mq.uiGrid.transform)
 			{
-				DespawnBtn(t);
-			}
-			
+				PoolManager.Pools["Buttons"].Despawn (t, PoolManager.Pools["Buttons"].group);	
+				//DespawnBtn(t);
+			}			
 			isClearing = false;
 			return true;
 		}
@@ -549,8 +544,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
 		else if (type.ToLower ().Equals ("unit"))
 			messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
-		else
-		{
+		else{
 			messageInfoManager.ClearQueue(FactoryBase.FactoryQueueName);
 			messageInfoManager.ClearQueue(Unit.UnitGroupQueueName);
 		}
@@ -596,21 +590,15 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 		newFeedback = PoolManager.Pools["Selection"].Spawn (pref_feedback, position + offesetFeedback, Quaternion.identity);
 		newFeedback.transform.eulerAngles = new Vector3 (90,0,0);
-		newFeedback.renderer.material.SetColor ("_TintColor", color);
+		newFeedback.renderer.sharedMaterial.SetColor ("_TintColor", color);
 		float duration = 2;
 
 		foreach (ParticleSystem ps in newFeedback.GetComponentsInChildren<ParticleSystem>())
 		{
-			if(ps.gameObject.name == "circle")
-			{
-				ps.startSize = Mathf.Clamp (size * circlePs, 2, 10);
-			}
-			if(ps.gameObject.name == "line")
-			{
-				ps.startSize = Mathf.Clamp (size * linePs, 2, 10);
-			}
+			if(ps.gameObject.name == "circle")	ps.startSize = Mathf.Clamp (size * circlePs, 2, 10);		
+			if(ps.gameObject.name == "line")	ps.startSize = Mathf.Clamp (size * linePs, 2, 10);
 
-			ps.renderer.material.SetColor ("_TintColor", color);
+			ps.renderer.sharedMaterial.SetColor ("_TintColor", color);
 			ps.startColor = color;
 			duration = ps.duration;
 		}
@@ -624,14 +612,12 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	
 	public void OpenInfoBoxUnit (Unit unit, bool techAvailable)
 	{
-		if (!techAvailable)
-		{
+		if (!techAvailable){
 			infoReq.gameObject.SetActive(true);
 			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
 			reqLabel.text =  unit.requisites;
 		}
 		else
-
 			infoReq.gameObject.SetActive(false);
 
 		attackLabel = infoUnit.FindChild ("attack-label").GetComponent<UILabel> ();
@@ -666,8 +652,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void OpenInfoBoxFactory (FactoryBase factory, bool techAvailable) // inserida boleana para ativar requires;
 	{
-		if (!techAvailable)
-		{
+		if (!techAvailable){
 			infoReq.gameObject.SetActive(true);
 			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
 			reqLabel.text = factory.requisites;
@@ -692,8 +677,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	public void OpenInfoBoxUpgrade (Upgrade upgrade, bool techAvailable)
 	{
-		if (!techAvailable)
-		{
+		if (!techAvailable){
 			infoReq.gameObject.SetActive(true);
 			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
 			reqLabel.text = upgrade.requisites;
@@ -739,33 +723,30 @@ public class HUDController : MonoBehaviour, IDeathObserver
 
 	#region HealthBar
 	
-	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
-	{
-		GameObject child = NGUITools.AddChild(trnsPanelUnitStats.gameObject, pref_healthBar);
-		
-		child.GetComponent<UISlider> ().foregroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
-		child.GetComponent<UISlider> ().foregroundWidget.height = 8;
-		
-		child.AddComponent<UIFollowTarget>().target      = target.transform.FindChild (referenceChild).transform;
-		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
-		child.GetComponent<UIFollowTarget>().mUICamera   = uiRoot.transform.FindChild ("CameraHUD").camera;
-		
-		HealthBar healthBar = child.GetComponent<HealthBar> ();
-		
-		healthBar.SetTarget (target);
-		
-		return healthBar;
-	}
+//	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
+//	{
+//		GameObject child = NGUITools.AddChild(trnsPanelUnitStats.gameObject, pref_healthBar);
+//		
+//		child.GetComponent<UISlider> ().foregroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
+//		child.GetComponent<UISlider> ().foregroundWidget.height = 8;
+//		
+//		child.AddComponent<UIFollowTarget>().target      = target.transform.FindChild (referenceChild).transform;
+//		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
+//		child.GetComponent<UIFollowTarget>().mUICamera   = uiRoot.transform.FindChild ("CameraHUD").camera;
+//		
+//		HealthBar healthBar = child.GetComponent<HealthBar> ();
+//		
+//		healthBar.SetTarget (target);
+//		
+//		return healthBar;
+//	}
 	#endregion
 
 	#region IDeathObserver implementation
 
 	public void OnObservableDie (GameObject dyingGO)
 	{
-		if (dyingGO.name.Equals (cGODisplayedOnInfoBox))
-		{
-			CloseInfoBox ();
-		}
+		if (dyingGO.name.Equals (cGODisplayedOnInfoBox))	CloseInfoBox ();
 	}
 
 	#endregion

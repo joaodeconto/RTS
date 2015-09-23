@@ -133,6 +133,15 @@ public abstract class MessageQueue : MonoBehaviour
 
 	public void RemoveMessageInfo(string buttonName)
 	{
+//		foreach(Transform bt in uiGrid.transform)
+//		{
+//			if (bt.name == buttonName){
+//				--nQueueItems;
+//				DespawnBtn(bt);	
+//				Invoke("RepositionGrid", 0.1f);
+//				break;
+//			}
+//		}
 		Transform trnsButton = uiGrid.transform.FindChild(buttonName);
 
 		if(trnsButton != null)

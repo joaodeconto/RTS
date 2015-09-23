@@ -19,13 +19,15 @@ public class EveryplayFaceCamSettings : MonoBehaviour
 
     void Start()
     {
-        if(Everyplay.GetUserInterfaceIdiom() == (int)Everyplay.UserInterfaceIdiom.iPad) {
+        if (Everyplay.GetUserInterfaceIdiom() == (int) Everyplay.UserInterfaceIdiom.iPad)
+        {
             Everyplay.FaceCamSetPreviewSideWidth(iPadPreviewSideWidth);
             Everyplay.FaceCamSetPreviewBorderWidth(iPadPreviewBorderWidth);
             Everyplay.FaceCamSetPreviewPositionX(iPadPreviewPositionX);
             Everyplay.FaceCamSetPreviewPositionY(iPadPreviewPositionY);
         }
-        else {
+        else
+        {
             Everyplay.FaceCamSetPreviewSideWidth(iPhonePreviewSideWidth);
             Everyplay.FaceCamSetPreviewBorderWidth(iPhonePreviewBorderWidth);
             Everyplay.FaceCamSetPreviewPositionX(iPhonePreviewPositionX);

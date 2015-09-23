@@ -188,6 +188,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400010}
+  m_RootOrder: 0
 --- !u!1002 &400003
 EditorExtensionImpl:
   serializedVersion: 6
@@ -202,6 +203,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: .999999702}
   m_Children: []
   m_Father: {fileID: 400006}
+  m_RootOrder: 0
 --- !u!1002 &400005
 EditorExtensionImpl:
   serializedVersion: 6
@@ -217,6 +219,7 @@ Transform:
   m_Children:
   - {fileID: 400004}
   m_Father: {fileID: 400008}
+  m_RootOrder: 0
 --- !u!1002 &400007
 EditorExtensionImpl:
   serializedVersion: 6
@@ -232,6 +235,7 @@ Transform:
   m_Children:
   - {fileID: 400006}
   m_Father: {fileID: 400018}
+  m_RootOrder: 0
 --- !u!1002 &400009
 EditorExtensionImpl:
   serializedVersion: 6
@@ -247,6 +251,7 @@ Transform:
   m_Children:
   - {fileID: 400002}
   m_Father: {fileID: 400018}
+  m_RootOrder: 1
 --- !u!1002 &400011
 EditorExtensionImpl:
   serializedVersion: 6
@@ -261,6 +266,7 @@ Transform:
   m_LocalScale: {x: 0, y: 0, z: 1}
   m_Children: []
   m_Father: {fileID: 400016}
+  m_RootOrder: 2
 --- !u!1002 &400013
 EditorExtensionImpl:
   serializedVersion: 6
@@ -275,6 +281,7 @@ Transform:
   m_LocalScale: {x: 0, y: 0, z: 1}
   m_Children: []
   m_Father: {fileID: 400016}
+  m_RootOrder: 1
 --- !u!1002 &400015
 EditorExtensionImpl:
   serializedVersion: 6
@@ -292,6 +299,7 @@ Transform:
   - {fileID: 400014}
   - {fileID: 400012}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!1002 &400017
 EditorExtensionImpl:
   serializedVersion: 6
@@ -308,6 +316,7 @@ Transform:
   - {fileID: 400008}
   - {fileID: 400010}
   m_Father: {fileID: 400016}
+  m_RootOrder: 0
 --- !u!1002 &400019
 EditorExtensionImpl:
   serializedVersion: 6
@@ -338,7 +347,11 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!1002 &2000001
 EditorExtensionImpl:
   serializedVersion: 6
@@ -354,12 +367,14 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!1002 &2300001
 EditorExtensionImpl:
   serializedVersion: 6
@@ -403,6 +418,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01049279b64ae427f91486bbcea77beb, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   origin: {fileID: 400010}
   zoom: 0
   zoomMin: -5
@@ -422,6 +438,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1259bb9bcb6e481ba03f5d0337633d5, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   axis: 0
   min: -15
   max: 15
@@ -438,6 +455,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b25d02d5454ac4210abfe815eb4dbe40, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   targetTransform: {fileID: 400010}
   faceForward: 0
 --- !u!1002 &11400005
@@ -453,6 +471,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc909e8e75e9e47b495b8655f87a7922, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   moveJoystick: {fileID: 11400010}
   rotateJoystick: {fileID: 11400008}
   cameraPivot: {fileID: 400008}
@@ -474,6 +493,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb10c595af974ea6ba0313a749d5c55, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   touchPad: 0
   touchZone:
     serializedVersion: 2
@@ -498,6 +518,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb10c595af974ea6ba0313a749d5c55, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   touchPad: 0
   touchZone:
     serializedVersion: 2

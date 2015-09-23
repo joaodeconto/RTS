@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Advertisements;
+using Visiorama;
 
 public class EndGameHUD : MonoBehaviour
 {
@@ -25,9 +26,28 @@ public class EndGameHUD : MonoBehaviour
 										endGameUI.SetActive(true);
 										Loading ld = endGameUI.GetComponent<Loading>();
 										ld.forwardAlpha();
-			QuitSave();
+										QuitSave();
 //										if(ConfigurationData.addPass || ConfigurationData.multiPass) {QuitSave();}
 //										else Advertisement.Show(null, new ShowOptions{pause = false,resultCallback = result => {QuitSave();} });
+										
+									});
+
+		option = transform.FindChild ("Defeat").transform.FindChild ("Rematch").gameObject;		
+		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
+		defaultCallbackButton.Init (null,
+									(ht_dcb) =>
+									{	
+										ComponentGetter.Get<OfflineScore>().DestroyMe();
+										xdeformer.ResetTerrain();
+										endGameUI.SetActive(true);
+										Loading ld = endGameUI.GetComponent<Loading>();
+										ld.forwardAlpha();										
+										if(ConfigurationData.addPass || ConfigurationData.multiPass) {Application.LoadLevel (Application.loadedLevelName);}
+										else
+										{
+										Advertisement.Show(null, new ShowOptions{pause = false,resultCallback = result =>{Application.LoadLevel (Application.loadedLevelName);}});
+				
+										}
 										
 									});
 
@@ -37,12 +57,8 @@ public class EndGameHUD : MonoBehaviour
 		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
 		defaultCallbackButton.Init (null,
 									(ht_dcb) =>
-									{	
-										xdeformer.ResetTerrain();
-										endGameUI.SetActive(true);
-										Loading ld = endGameUI.GetComponent<Loading>();
-										ld.forwardAlpha();	
-			QuitSave();
+									{									
+										QuitSave();
 //										if(ConfigurationData.addPass || ConfigurationData.multiPass) {QuitSave();}
 //										else Advertisement.Show(null, new ShowOptions{pause = false,resultCallback = result => {QuitSave();} });
 									});
@@ -52,8 +68,7 @@ public class EndGameHUD : MonoBehaviour
 		defaultCallbackButton.Init (null,
 		                            (ht_dcb) =>
 		                            {
-										if (FB.IsLoggedIn)
-										{
+										if (FB.IsLoggedIn){
 
 										FB.Feed(
 												link: "https://play.google.com/store/apps/details?id=com.Visiorama.RTS",
@@ -65,47 +80,27 @@ public class EndGameHUD : MonoBehaviour
 												);
 										}
 										
-									});		
-//		option = transform.FindChild ("Victory").
-//			transform.FindChild ("Back to game").gameObject;
-//		
-//		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
-//		defaultCallbackButton.Init (null,
-//		                            (ht_dcb) =>
-//		                            {
-//			gameObject.SetActive (false);
-//		});
-//
-//		option = transform.FindChild ("Defeat").
-//			transform.FindChild ("Back to game").gameObject;
-//		
-//		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
-//		defaultCallbackButton.Init (null,
-//		                            (ht_dcb) =>
-//		                            {
-//			gameObject.SetActive (false);
-//		});
+									});	
 	}
 
 	void QuitSave()
 	{
-		if(Everyplay.IsRecording())
-		{
-			Everyplay.StopRecording();
-		}
-		checkSaving = true;
-		Application.LoadLevel (1);
+		GameplayManager gm = ComponentGetter.Get<GameplayManager>();
+		gm.selectedLevel.gameLevel.SetActive(false);
+		StartCoroutine (LoadingScene());
 	}
-
-	void Update()
+	
+	IEnumerator LoadingScene()		
 	{
-		if(checkSaving)
-		{
-			if(!score.isSaving)
-			{
-				Application.LoadLevel (1);
-				checkSaving = false;
-			}
+		if(Everyplay.IsRecording())	Everyplay.StopRecording();
+		endGameUI.SetActive(true);
+		Loading ld = endGameUI.GetComponent<Loading>();
+		ld.forwardAlpha();	
+		xdeformer.ResetTerrain();
+		yield return new WaitForSeconds(2);
+		AsyncOperation async = Application.LoadLevelAsync("main_menu");
+		while (!async.isDone){
+				yield return 0;
 		}
 	}
 }

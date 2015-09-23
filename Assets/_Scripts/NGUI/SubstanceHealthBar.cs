@@ -3,7 +3,6 @@ using System.Collections;
 using Visiorama;
 using PathologicalGames;
 
-[RequireComponent(typeof (MeshRenderer))]
 public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 {
 	public IHealthObservable Target { private set; get; }
@@ -11,22 +10,26 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 	private ProceduralMaterial substance;
 	private ProceduralPropertyDescription[] curProperties;
 	private MeshRenderer subMeshRenderer;
+	private bool initializedSub;
 
 	void OnSpawned ()
 	{
-		subMeshRenderer = GetComponent <MeshRenderer> ();
-		subMeshRenderer.enabled = false;
-		
-		//		Material mMaterial = new Material (subMeshRenderer.sharedMaterial);
-		//		substance 	  = subMeshRenderer.sharedMaterial as ProceduralMaterial;
-//		ProceduralMaterial mmMaterial = new ProceduralMaterial ();
-//		mmMaterial.CopyPropertiesFromMaterial (subMeshRenderer.sharedMaterial as ProceduralMaterial);
+		if(!initializedSub){
 
-		ProceduralMaterial mMaterial = subMeshRenderer.material as ProceduralMaterial;
+			subMeshRenderer = GetComponent <MeshRenderer> ();
+			subMeshRenderer.enabled = false;
+			
+			//		Material mMaterial = new Material (subMeshRenderer.sharedMaterial);
+			//		substance 	  = subMeshRenderer.sharedMaterial as ProceduralMaterial;
+	//		ProceduralMaterial mmMaterial = new ProceduralMaterial ();
+	//		mmMaterial.CopyPropertiesFromMaterial (subMeshRenderer.sharedMaterial as ProceduralMaterial);
 
-		subMeshRenderer.sharedMaterial = mMaterial;
-		substance 	  = mMaterial;
-		curProperties = substance.GetProceduralPropertyDescriptions();
+			ProceduralMaterial mMaterial = subMeshRenderer.material as ProceduralMaterial;
+
+			subMeshRenderer.sharedMaterial = mMaterial;
+			substance 	  = mMaterial;
+			curProperties = substance.GetProceduralPropertyDescriptions();
+		}
 		
 	}
 
@@ -34,7 +37,7 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 	{
 		if (Target != null)
 			Target.UnRegisterHealthObserver (this);
-		UpdateHealth(0);
+//		UpdateHealth(0);
 	}
 
 	public void SetTarget (IHealthObservable target, int teamID)
@@ -82,7 +85,7 @@ public class SubstanceHealthBar : MonoBehaviour, IHealthObserver
 
 		}
 
-		substance.RebuildTexturesImmediately ();
+		substance.RebuildTextures ();
 	}
 
 #endregion

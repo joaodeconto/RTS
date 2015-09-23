@@ -6,10 +6,12 @@ public class EveryplayEarlyInitializer : MonoBehaviour
     #if (UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1  || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6)
     void Start()
     {
-        EveryplaySettings settings = (EveryplaySettings)Resources.Load("EveryplaySettings");
+        EveryplaySettings settings = (EveryplaySettings) Resources.Load("EveryplaySettings");
 
-        if(settings != null) {
-            if(settings.IsEnabled && settings.IsValid) {
+        if (settings != null)
+        {
+            if (settings.IsEnabled && settings.IsValid)
+            {
                 StartCoroutine(InitializeEveryplay());
             }
         }
@@ -21,17 +23,21 @@ public class EveryplayEarlyInitializer : MonoBehaviour
         Everyplay.Initialize();
         Destroy(gameObject);
     }
+
     #else
     [RuntimeInitializeOnLoadMethod]
     static void InitializeEveryplayOnStartup()
     {
-        EveryplaySettings settings = (EveryplaySettings)Resources.Load("EveryplaySettings");
+        EveryplaySettings settings = (EveryplaySettings) Resources.Load("EveryplaySettings");
 
-        if(settings != null) {
-            if(settings.IsEnabled && settings.IsValid) {
+        if (settings != null)
+        {
+            if (settings.IsEnabled && settings.IsValid)
+            {
                 Everyplay.Initialize();
             }
         }
     }
+
     #endif
 }

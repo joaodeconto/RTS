@@ -27,11 +27,14 @@ public class EveryplayThumbnailPool : MonoBehaviour
 
     void Awake()
     {
-        if(allowOneInstanceOnly && FindObjectsOfType(GetType()).Length > 1) {
+        if (allowOneInstanceOnly && FindObjectsOfType(GetType()).Length > 1)
+        {
             Destroy(gameObject);
         }
-        else {
-            if(dontDestroyOnLoad) {
+        else
+        {
+            if (dontDestroyOnLoad)
+            {
                 DontDestroyOnLoad(gameObject);
             }
 
@@ -41,29 +44,32 @@ public class EveryplayThumbnailPool : MonoBehaviour
 
     void Start()
     {
-        if(enabled) {
+        if (enabled)
+        {
             Initialize();
         }
     }
 
     private void OnReadyForRecording(bool ready)
     {
-        if(ready) {
+        if (ready)
+        {
             Initialize();
         }
     }
 
     private void Initialize()
     {
-        if(!initialized && Everyplay.IsRecordingSupported()) {
+        if (!initialized && Everyplay.IsRecordingSupported())
+        {
             // Limit width between 32 and 2048
             thumbnailWidth = Mathf.Clamp(thumbnailWidth, 32, 2048);
 
             // Thumbnails are always stored landscape in memory
-            aspectRatio = (float)Mathf.Min(Screen.width, Screen.height) / (float)Mathf.Max(Screen.width, Screen.height);
+            aspectRatio = (float) Mathf.Min(Screen.width, Screen.height) / (float) Mathf.Max(Screen.width, Screen.height);
 
             // Calculate height based on aspect ratio
-            thumbnailHeight = (int)(thumbnailWidth * aspectRatio);
+            thumbnailHeight = (int) (thumbnailWidth * aspectRatio);
 
             // Check for npot support, always use pot textures for older Unitys versions and if npot support is not available
             npotSupported = false;
@@ -77,7 +83,8 @@ public class EveryplayThumbnailPool : MonoBehaviour
             // Create empty textures for requested amount of thumbnails
             thumbnailTextures = new Texture2D[thumbnailCount];
 
-            for(int i=0; i<thumbnailCount; i++) {
+            for (int i = 0; i < thumbnailCount; i++)
+            {
                 thumbnailTextures[i] = new Texture2D(npotSupported ? thumbnailWidth : thumbnailPotWidth, npotSupported ? thumbnailHeight : thumbnailPotHeight, textureFormat, false);
                 // Always use clamp to assure texture completeness when npot support is restricted
                 thumbnailTextures[i].wrapMode = TextureWrapMode.Clamp;
@@ -105,7 +112,8 @@ public class EveryplayThumbnailPool : MonoBehaviour
         Everyplay.SetThumbnailTargetTexture(thumbnailTextures[currentThumbnailTextureIndex]);
         SetThumbnailTargetSize();
 
-        if(takeRandomShots) {
+        if (takeRandomShots)
+        {
             Everyplay.TakeThumbnail();
             nextRandomShotTime = Time.time + Random.Range(3.0f, 15.0f);
         }
@@ -113,8 +121,10 @@ public class EveryplayThumbnailPool : MonoBehaviour
 
     void Update()
     {
-        if(takeRandomShots && Everyplay.IsRecording() && !Everyplay.IsPaused()) {
-            if(Time.time > nextRandomShotTime) {
+        if (takeRandomShots && Everyplay.IsRecording() && !Everyplay.IsPaused())
+        {
+            if (Time.time > nextRandomShotTime)
+            {
                 Everyplay.TakeThumbnail();
                 nextRandomShotTime = Time.time + Random.Range(3.0f, 15.0f);
             }
@@ -123,14 +133,17 @@ public class EveryplayThumbnailPool : MonoBehaviour
 
     private void OnThumbnailReady(Texture2D texture, bool portrait)
     {
-        if(thumbnailTextures[currentThumbnailTextureIndex] == texture) {
+        if (thumbnailTextures[currentThumbnailTextureIndex] == texture)
+        {
             currentThumbnailTextureIndex++;
 
-            if(currentThumbnailTextureIndex >= thumbnailTextures.Length) {
+            if (currentThumbnailTextureIndex >= thumbnailTextures.Length)
+            {
                 currentThumbnailTextureIndex = 0;
             }
 
-            if(availableThumbnailCount < thumbnailTextures.Length) {
+            if (availableThumbnailCount < thumbnailTextures.Length)
+            {
                 availableThumbnailCount++;
             }
 
@@ -139,12 +152,14 @@ public class EveryplayThumbnailPool : MonoBehaviour
         }
     }
 
-    private void SetThumbnailTargetSize() {
+    private void SetThumbnailTargetSize()
+    {
         // Workaround issue that Unity might say that texture is size of x even it really is x to next power of two
         int thumbnailPotWidth = Mathf.NextPowerOfTwo(thumbnailWidth);
         int thumbnailPotHeight = Mathf.NextPowerOfTwo(thumbnailHeight);
 
-        if(npotSupported) {
+        if (npotSupported)
+        {
 #pragma warning disable 612, 618
             Everyplay.SetThumbnailTargetTextureWidth(thumbnailWidth);
             Everyplay.SetThumbnailTargetTextureHeight(thumbnailHeight);
@@ -152,16 +167,19 @@ public class EveryplayThumbnailPool : MonoBehaviour
 
             thumbnailScale = new Vector2(1, 1);
         }
-        else {
-            if(pixelPerfect) {
+        else
+        {
+            if (pixelPerfect)
+            {
 #pragma warning disable 612, 618
                 Everyplay.SetThumbnailTargetTextureWidth(thumbnailWidth);
                 Everyplay.SetThumbnailTargetTextureHeight(thumbnailHeight);
 #pragma warning restore 612, 618
 
-                thumbnailScale = new Vector2((float)thumbnailWidth / (float)thumbnailPotWidth, (float)thumbnailHeight / (float)thumbnailPotHeight);
+                thumbnailScale = new Vector2((float) thumbnailWidth / (float) thumbnailPotWidth, (float) thumbnailHeight / (float) thumbnailPotHeight);
             }
-            else {
+            else
+            {
 #pragma warning disable 612, 618
                 Everyplay.SetThumbnailTargetTextureWidth(thumbnailPotWidth);
                 Everyplay.SetThumbnailTargetTextureHeight(thumbnailPotHeight);
@@ -176,15 +194,18 @@ public class EveryplayThumbnailPool : MonoBehaviour
     {
         Everyplay.ReadyForRecording -= OnReadyForRecording;
 
-        if(initialized) {
+        if (initialized)
+        {
             // Set Everyplay not to render to a texture anymore and remove event handlers
             Everyplay.SetThumbnailTargetTexture(null);
             Everyplay.RecordingStarted -= OnRecordingStarted;
             Everyplay.ThumbnailTextureReady -= OnThumbnailReady;
 
             // Destroy thumbnail textures
-            foreach(Texture2D texture in thumbnailTextures) {
-                if(texture != null) {
+            foreach (Texture2D texture in thumbnailTextures)
+            {
+                if (texture != null)
+                {
                     Destroy(texture);
                 }
             }

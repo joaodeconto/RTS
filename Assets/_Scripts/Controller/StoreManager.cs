@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System;
 using Soomla;
 using Soomla.Store;
-
-
 using Visiorama;
 
 
@@ -15,14 +13,11 @@ public class StoreManager : MonoBehaviour
 	private static StoreManager instance = null;
 	private bool checkAffordable = false;	
 	private Dictionary<string, bool> itemsAffordability;
-	private bool wasInitialized = false;
-	public GameObject noAdsButton;
-
+	private static bool wasInitialized = false;
 
 	void Awake()
 	{
-		if(instance == null)
-		{ 	
+		if(instance == null){ 	
 			instance = this;
 			GameObject.DontDestroyOnLoad(this.gameObject);
 		} 
@@ -38,13 +33,14 @@ public class StoreManager : MonoBehaviour
 			StoreEvents.OnGoodBalanceChanged 	 += onGoodBalanceChanged;	
 			//SoomlaHighway.Initialize();
 			SoomlaStore.Initialize(new RTSStoreAssets());
-        	wasInitialized = true;
+//			StoreInventory.TakeItem("pass_multiplayer", 1);			
+//			StoreInventory.TakeItem("no_ads", 1);
+			wasInitialized = true;
 		}
 	}	
 
 	public void ToggleAdsPass(bool passAdded)
 	{
-
 		if(passAdded)
 		{
 			ConfigurationData.multiPass = true ;
@@ -55,8 +51,6 @@ public class StoreManager : MonoBehaviour
 			ConfigurationData.multiPass = false ;
 			ConfigurationData.addPass = false ;
 		}
-
-
 	}
 
 	public void onSoomlaStoreInitialized()
@@ -74,7 +68,7 @@ public class StoreManager : MonoBehaviour
 		if(mPass >=1) ConfigurationData.multiPass = true;
 		
 		int nAdd = StoreInventory.GetItemBalance("no_ads");
-		if(nAdd >=1) {ConfigurationData.addPass = true; noAdsButton.SetActive(false);}
+		if(nAdd >=1) ConfigurationData.addPass = true;
 	}
 
 	public void setupItemsAffordability()
@@ -113,8 +107,8 @@ public class StoreManager : MonoBehaviour
 		else if(good.ItemId == "no_ads")
 		{
 			int nAdd = StoreInventory.GetItemBalance("no_ads");
-			if(nAdd >=1) ConfigurationData.addPass = true;
-			noAdsButton.SetActive(false);
+			if(nAdd >=1)	ConfigurationData.addPass = true;
+			if(ConfigurationData.Offline)	ComponentGetter.Get<OfflineMenu>().noAddBtn.SetActive(false);
 		}
 	}
 

@@ -5,10 +5,13 @@ namespace UnityEngine.Advertisements {
   using System.Collections;
   using System.Collections.Generic;
 
-	internal class UnityAdsEditor : UnityAdsPlatform {
+  internal class UnityAdsEditor : UnityAdsPlatform {
   	private static bool initialized = false;
   	private static bool ready = false;
-		private UnityAdsEditorPlaceholder placeHolder = null;
+    private UnityAdsEditorPlaceholder placeHolder = null;
+	private static bool hasDefaultZone = false;
+    private static ICollection<string> zoneIds = null;
+
     public override void init (string gameId, bool testModeEnabled, string gameObjectName, string unityVersion) {
 	    if(initialized) return;
     	initialized = true;
@@ -45,6 +48,9 @@ namespace UnityEngine.Advertisements {
         if(parsedJson.ContainsKey("status")) {
           string value = (string)parsedJson["status"];
           if(value.Equals("ok")) {
+            if(parsedJson.ContainsKey ("data") && parsedJson["data"] is IDictionary<string,object>) {
+              zoneIds = parseZoneIds((IDictionary<string, object>)parsedJson["data"]);
+            }
             validResponse = true;
           } else {
             if(parsedJson.ContainsKey("errorMessage")) {
@@ -73,8 +79,36 @@ namespace UnityEngine.Advertisements {
     }
   }
 
+    private ICollection<string> parseZoneIds(IDictionary<string, object> data) {
+      HashSet<string> zoneIds = new HashSet<string>();
+			
+      if(data.ContainsKey("zones") && data["zones"] is IList<object>) {
+        IList<object> zones = (IList<object>)data["zones"];
+				
+        foreach(object rawZone in zones) {
+          IDictionary<string, object> zone = (IDictionary<string, object>)rawZone;
+					
+          if(zone.ContainsKey("id") && zone["id"] is string) {
+            zoneIds.Add((string)zone["id"]);
+          }
+					
+          if(zone.ContainsKey("default") && zone["default"] is bool) {
+            if((bool)zone["default"]) {
+              hasDefaultZone = true;
+            }
+          }
+        }
+      }
+			
+      return zoneIds;
+    }
+
+
     public override bool show (string zoneId, string rewardItemKey, string options) {
       Utils.LogDebug ("UnityEditor: show()");
+
+      if(!isZoneOk (zoneId)) return false;
+		
 			GameObject placeHolderObject = GameObject.Find(@"UnityAdsEditorPlaceHolderObject");
 			if (placeHolderObject == null) {
 				placeHolderObject = new GameObject(@"UnityAdsEditorPlaceHolderObject");
@@ -100,9 +134,21 @@ namespace UnityEngine.Advertisements {
     }
     
     public override bool canShowZone (string zone) {
-      return ready;
+      if(!ready) return false;
+
+      return isZoneOk(zone);
     }
-    
+
+    private bool isZoneOk(string zone) {
+      if(zone != null && zone.Length > 0) {
+        if(zoneIds != null && zoneIds.Contains (zone)) return true;
+      } else {
+        if(hasDefaultZone) return true;
+      }
+			
+      return false;
+    }
+
     public override bool hasMultipleRewardItems () {
       Utils.LogDebug ("UnityEditor: hasMultipleRewardItems()");
       return false;

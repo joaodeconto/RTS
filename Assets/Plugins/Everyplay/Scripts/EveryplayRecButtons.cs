@@ -37,10 +37,10 @@ public class EveryplayRecButtons : MonoBehaviour
             atlasRect.y = y + atlasPadding;
             atlasRect.width = width * scale;
             atlasRect.height = height * scale;
-            normalizedAtlasRect.width = width / (float)atlasWidth;
-            normalizedAtlasRect.height = height / (float)atlasHeight;
-            normalizedAtlasRect.x = atlasRect.x / (float)atlasWidth;
-            normalizedAtlasRect.y = 1.0f - (atlasRect.y + height) / (float)atlasHeight;
+            normalizedAtlasRect.width = width / (float) atlasWidth;
+            normalizedAtlasRect.height = height / (float) atlasHeight;
+            normalizedAtlasRect.x = atlasRect.x / (float) atlasWidth;
+            normalizedAtlasRect.y = 1.0f - (atlasRect.y + height) / (float) atlasHeight;
         }
     }
 
@@ -142,7 +142,8 @@ public class EveryplayRecButtons : MonoBehaviour
         SetButtonVisible(faceCamToggleButton, true);
 
         // Set initially
-        if(!Everyplay.IsRecordingSupported()) {
+        if (!Everyplay.IsRecordingSupported())
+        {
             startRecordingButton.enabled = false;
             stopRecordingButton.enabled = false;
         }
@@ -163,13 +164,17 @@ public class EveryplayRecButtons : MonoBehaviour
 
     private void SetButtonVisible(Button button, bool visible)
     {
-        if(visibleButtons.Contains(button)) {
-            if(!visible) {
+        if (visibleButtons.Contains(button))
+        {
+            if (!visible)
+            {
                 visibleButtons.Remove(button);
             }
         }
-        else {
-            if(visible) {
+        else
+        {
+            if (visible)
+            {
                 visibleButtons.Add(button);
             }
         }
@@ -178,7 +183,8 @@ public class EveryplayRecButtons : MonoBehaviour
     private void ReplaceVisibleButton(Button button, Button replacementButton)
     {
         int index = visibleButtons.IndexOf(button);
-        if(index >= 0) {
+        if (index >= 0)
+        {
             visibleButtons[index] = replacementButton;
         }
     }
@@ -221,10 +227,12 @@ public class EveryplayRecButtons : MonoBehaviour
     {
         faceCamPermissionGranted = granted;
 
-        if(startFaceCamWhenPermissionGranted) {
+        if (startFaceCamWhenPermissionGranted)
+        {
             faceCamToggleButton.toggled = granted;
             Everyplay.FaceCamStartSession();
-            if(Everyplay.FaceCamIsSessionRunning()) {
+            if (Everyplay.FaceCamIsSessionRunning())
+            {
                 startFaceCamWhenPermissionGranted = false;
             }
         }
@@ -232,21 +240,27 @@ public class EveryplayRecButtons : MonoBehaviour
 
     private void FaceCamToggle()
     {
-        if(faceCamPermissionGranted) {
+        if (faceCamPermissionGranted)
+        {
             faceCamToggleButton.toggled = !faceCamToggleButton.toggled;
 
-            if(faceCamToggleButton.toggled) {
-                if(!Everyplay.FaceCamIsSessionRunning()) {
+            if (faceCamToggleButton.toggled)
+            {
+                if (!Everyplay.FaceCamIsSessionRunning())
+                {
                     Everyplay.FaceCamStartSession();
                 }
             }
-            else {
-                if(Everyplay.FaceCamIsSessionRunning()) {
+            else
+            {
+                if (Everyplay.FaceCamIsSessionRunning())
+                {
                     Everyplay.FaceCamStopSession();
                 }
             }
         }
-        else {
+        else
+        {
             Everyplay.FaceCamRequestRecordingPermission();
             startFaceCamWhenPermissionGranted = true;
         }
@@ -270,17 +284,24 @@ public class EveryplayRecButtons : MonoBehaviour
     void Update()
     {
         #if UNITY_EDITOR
-        if(Input.GetMouseButtonDown(0)) {
-            foreach(Button button in visibleButtons) {
-                if(button.enabled && button.screenRect.Contains(new Vector2(Input.mousePosition.x - containerOffset.x, Screen.height - Input.mousePosition.y - containerOffset.y))) {
+        if (Input.GetMouseButtonDown(0))
+        {
+            foreach (Button button in visibleButtons)
+            {
+                if (button.enabled && button.screenRect.Contains(new Vector2(Input.mousePosition.x - containerOffset.x, Screen.height - Input.mousePosition.y - containerOffset.y)))
+                {
                     tappedButton = button;
                 }
             }
         }
-        else if(Input.GetMouseButtonUp(0)) {
-            foreach(Button button in visibleButtons) {
-             if(button.enabled && button.screenRect.Contains(new Vector2(Input.mousePosition.x - containerOffset.x, Screen.height - Input.mousePosition.y - containerOffset.y))) {
-                    if(button.onTap != null) {
+        else if (Input.GetMouseButtonUp(0))
+        {
+            foreach (Button button in visibleButtons)
+            {
+                if (button.enabled && button.screenRect.Contains(new Vector2(Input.mousePosition.x - containerOffset.x, Screen.height - Input.mousePosition.y - containerOffset.y)))
+                {
+                    if (button.onTap != null)
+                    {
                         button.onTap();
                     }
                 }
@@ -289,25 +310,34 @@ public class EveryplayRecButtons : MonoBehaviour
             tappedButton = null;
         }
         #else
-        foreach(Touch touch in Input.touches) {
-            if(touch.phase == TouchPhase.Began) {
-                foreach(Button button in visibleButtons) {
-                    if(button.screenRect.Contains(new Vector2(touch.position.x - containerOffset.x, Screen.height - touch.position.y - containerOffset.y))) {
+        foreach (Touch touch in Input.touches)
+        {
+            if (touch.phase == TouchPhase.Began)
+            {
+                foreach (Button button in visibleButtons)
+                {
+                    if (button.screenRect.Contains(new Vector2(touch.position.x - containerOffset.x, Screen.height - touch.position.y - containerOffset.y)))
+                    {
                         tappedButton = button;
                     }
                 }
             }
-            else if(touch.phase == TouchPhase.Ended) {
-                foreach(Button button in visibleButtons) {
-                    if(button.screenRect.Contains(new Vector2(touch.position.x - containerOffset.x, Screen.height - touch.position.y - containerOffset.y))) {
-                        if(button.onTap != null) {
+            else if (touch.phase == TouchPhase.Ended)
+            {
+                foreach (Button button in visibleButtons)
+                {
+                    if (button.screenRect.Contains(new Vector2(touch.position.x - containerOffset.x, Screen.height - touch.position.y - containerOffset.y)))
+                    {
+                        if (button.onTap != null)
+                        {
                             button.onTap();
                         }
                     }
                 }
                 tappedButton = null;
             }
-            else if(touch.phase == TouchPhase.Canceled) {
+            else if (touch.phase == TouchPhase.Canceled)
+            {
                 tappedButton = null;
             }
         }
@@ -316,7 +346,8 @@ public class EveryplayRecButtons : MonoBehaviour
 
     void OnGUI()
     {
-        if(Event.current.type.Equals(EventType.Repaint)) {
+        if (Event.current.type.Equals(EventType.Repaint))
+        {
             int containerHeight = CalculateContainerHeight();
             UpdateContainerOffset(containerHeight);
             DrawBackround(containerHeight);
@@ -333,11 +364,14 @@ public class EveryplayRecButtons : MonoBehaviour
 
     private void DrawButtons()
     {
-        foreach(Button button in visibleButtons) {
-            if(button.enabled) {
+        foreach (Button button in visibleButtons)
+        {
+            if (button.enabled)
+            {
                 DrawButton(button, (tappedButton == button) ? Color.gray : Color.white);
             }
-            else {
+            else
+            {
                 DrawButton(button, new Color(0.5f, 0.5f, 0.5f, 0.3f));
             }
         }
@@ -353,12 +387,19 @@ public class EveryplayRecButtons : MonoBehaviour
     private void DrawButton(Button button, Color tintColor)
     {
         Color oldColor = GUI.color;
-        bool isToggleButton = typeof(ToggleButton).IsAssignableFrom(button.GetType());
+        bool isToggleButton = false;
+#if NETFX_CORE
+        isToggleButton = typeof(ToggleButton).GetTypeInfo().IsAssignableFrom(button.GetTypeInfo());
+#else
+        isToggleButton = typeof(ToggleButton).IsAssignableFrom(button.GetType());
+#endif
 
-        if(isToggleButton) {
-            ToggleButton toggleButton = (ToggleButton)button;
+        if (isToggleButton)
+        {
+            ToggleButton toggleButton = (ToggleButton) button;
 
-            if(button != null) {
+            if (button != null)
+            {
                 float x = (button.screenRect.x + button.screenRect.width) - toggleButton.toggleOn.atlasRect.width;
                 float y = button.screenRect.y + button.screenRect.height / 2 - toggleButton.toggleOn.atlasRect.height / 2;
 
@@ -369,8 +410,8 @@ public class EveryplayRecButtons : MonoBehaviour
                 GUI.color = oldColor;
             }
         }
-        else {
-
+        else
+        {
             GUI.color = tintColor;
             DrawTexture(button.screenRect.x, button.screenRect.y, button.bg.atlasRect.width, button.bg.atlasRect.height, atlasTexture, button.bg.normalizedAtlasRect);
             GUI.color = oldColor;
@@ -378,13 +419,15 @@ public class EveryplayRecButtons : MonoBehaviour
 
         float rightMargin = isToggleButton ? 0 : buttonTitleHorizontalMargin;
 
-        if(!button.enabled) {
+        if (!button.enabled)
+        {
             GUI.color = tintColor;
         }
 
         DrawTexture(button.screenRect.x + rightMargin, button.screenRect.y + buttonTitleVerticalMargin, button.title.atlasRect.width, button.title.atlasRect.height, atlasTexture, button.title.normalizedAtlasRect);
 
-        if(!button.enabled) {
+        if (!button.enabled)
+        {
             GUI.color = oldColor;
         }
     }
@@ -394,7 +437,8 @@ public class EveryplayRecButtons : MonoBehaviour
         float buttonsHeight = 0;
         float yOffset = bgHeaderAtlasSrc.atlasRect.height + (buttonMargin * 2 - bgHeaderAtlasSrc.atlasRect.height);
 
-        foreach(Button button in visibleButtons) {
+        foreach (Button button in visibleButtons)
+        {
             button.screenRect.x = (bgAtlasSrc.atlasRect.width - button.screenRect.width) / 2;
             button.screenRect.y = yOffset;
             yOffset += buttonMargin + button.screenRect.height;
@@ -408,19 +452,23 @@ public class EveryplayRecButtons : MonoBehaviour
 
     private void UpdateContainerOffset(int containerHeight)
     {
-        if(origin == ButtonsOrigin.TopRight) {
+        if (origin == ButtonsOrigin.TopRight)
+        {
             containerOffset.x = Screen.width - containerMargin.x * containerScaling - bgAtlasSrc.atlasRect.width;
             containerOffset.y = containerMargin.y * containerScaling;
         }
-        else if(origin == ButtonsOrigin.BottomLeft) {
+        else if (origin == ButtonsOrigin.BottomLeft)
+        {
             containerOffset.x = containerMargin.x * containerScaling;
             containerOffset.y = Screen.height - containerMargin.y * containerScaling - containerHeight;
         }
-        else if(origin == ButtonsOrigin.BottomRight) {
+        else if (origin == ButtonsOrigin.BottomRight)
+        {
             containerOffset.x = Screen.width - containerMargin.x * containerScaling - bgAtlasSrc.atlasRect.width;
             containerOffset.y = Screen.height - containerMargin.y * containerScaling - containerHeight;
         }
-        else {
+        else
+        {
             containerOffset.x = containerMargin.x * containerScaling;
             containerOffset.y = containerMargin.y * containerScaling;
         }
@@ -431,7 +479,8 @@ public class EveryplayRecButtons : MonoBehaviour
         int high = Mathf.Max(Screen.height, Screen.width);
         int low = Mathf.Min(Screen.height, Screen.width);
 
-        if(high < 640 || (high == 1024 && low == 768)) {
+        if (high < 640 || (high == 1024 && low == 768))
+        {
             return 0.5f;
         }
 

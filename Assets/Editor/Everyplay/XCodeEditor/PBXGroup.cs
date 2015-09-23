@@ -4,107 +4,127 @@ using System.Collections.Generic;
 
 namespace Everyplay.XCodeEditor
 {
-	public class PBXGroup : PBXObject
-	{
-		protected const string NAME_KEY = "name";
-		protected const string CHILDREN_KEY = "children";
-		protected const string PATH_KEY = "path";
-		protected const string SOURCETREE_KEY = "sourceTree";
+public class PBXGroup : PBXObject
+{
+    protected const string NAME_KEY = "name";
+    protected const string CHILDREN_KEY = "children";
+    protected const string PATH_KEY = "path";
+    protected const string SOURCETREE_KEY = "sourceTree";
 
-		#region Constructor
+    #region Constructor
 
-		public PBXGroup(string name, string path = null, string tree = "SOURCE_ROOT") : base()
-		{
-			this.Add(NAME_KEY, name);
-			this.Add(CHILDREN_KEY, new PBXList());
+    public PBXGroup(string name, string path = null, string tree = "SOURCE_ROOT") : base()
+    {
+        this.Add(NAME_KEY, name);
+        this.Add(CHILDREN_KEY, new PBXList());
 
-			if(path != null) {
-				this.Add(PATH_KEY, path);
-				this.Add(SOURCETREE_KEY, tree);
-			} else {
-				this.Add(SOURCETREE_KEY, "\"<group>\"");
-			}
+        if (path != null)
+        {
+            this.Add(PATH_KEY, path);
+            this.Add(SOURCETREE_KEY, tree);
+        }
+        else
+        {
+            this.Add(SOURCETREE_KEY, "\"<group>\"");
+        }
 
-			internalNewlines = true;
-		}
+        internalNewlines = true;
+    }
 
-		public PBXGroup(string guid, PBXDictionary dictionary) : base( guid, dictionary )
-		{
-			internalNewlines = true;
-		}
+    public PBXGroup(string guid, PBXDictionary dictionary) : base(guid, dictionary)
+    {
+        internalNewlines = true;
+    }
 
-		#endregion
-		#region Properties
+    #endregion
+    #region Properties
 
-		public string name {
-			get {
-				if(!ContainsKey(NAME_KEY)) {
-					return null;
-				}
-				return (string)_data[NAME_KEY];
-			}
-		}
+    public string name
+    {
+        get
+        {
+            if (!ContainsKey(NAME_KEY))
+            {
+                return null;
+            }
+            return (string) _data[NAME_KEY];
+        }
+    }
 
-		public PBXList children {
-			get {
-				if(!ContainsKey(CHILDREN_KEY)) {
-					this.Add(CHILDREN_KEY, new PBXList());
-				}
-				return (PBXList)_data[CHILDREN_KEY];
-			}
-		}
+    public PBXList children
+    {
+        get
+        {
+            if (!ContainsKey(CHILDREN_KEY))
+            {
+                this.Add(CHILDREN_KEY, new PBXList());
+            }
+            return (PBXList) _data[CHILDREN_KEY];
+        }
+    }
 
-		public string path {
-			get {
-				if(!ContainsKey(PATH_KEY)) {
-					return null;
-				}
-				return (string)_data[PATH_KEY];
-			}
-		}
+    public string path
+    {
+        get
+        {
+            if (!ContainsKey(PATH_KEY))
+            {
+                return null;
+            }
+            return (string) _data[PATH_KEY];
+        }
+    }
 
-		public string sourceTree {
-			get {
-				return (string)_data[SOURCETREE_KEY];
-			}
-		}
+    public string sourceTree
+    {
+        get
+        {
+            return (string) _data[SOURCETREE_KEY];
+        }
+    }
 
-		#endregion
+    #endregion
 
-		public string AddChild(PBXObject child)
-		{
-			if(child is PBXFileReference || child is PBXGroup) {
-				children.Add(child.guid);
-				return child.guid;
-			}
+    public string AddChild(PBXObject child)
+    {
+        if (child is PBXFileReference || child is PBXGroup)
+        {
+            children.Add(child.guid);
+            return child.guid;
+        }
 
-			return null;
-		}
+        return null;
+    }
 
-		public void RemoveChild(string id)
-		{
-			if(!IsGuid(id))
-				return;
+    public void RemoveChild(string id)
+    {
+        if (!IsGuid(id))
+        {
+            return;
+        }
 
-			children.Remove(id);
-		}
+        children.Remove(id);
+    }
 
-		public bool HasChild(string id)
-		{
-			if(!ContainsKey(CHILDREN_KEY)) {
-				this.Add(CHILDREN_KEY, new PBXList());
-				return false;
-			}
+    public bool HasChild(string id)
+    {
+        if (!ContainsKey(CHILDREN_KEY))
+        {
+            this.Add(CHILDREN_KEY, new PBXList());
+            return false;
+        }
 
-			if(!IsGuid(id))
-				return false;
+        if (!IsGuid(id))
+        {
+            return false;
+        }
 
-			return ((PBXList)_data[CHILDREN_KEY]).Contains(id);
-		}
+        return ((PBXList) _data[CHILDREN_KEY]).Contains(id);
+    }
 
-		public string GetName()
-		{
-			return (string)_data[NAME_KEY];
-		}
-	}
+    public string GetName()
+    {
+        return (string) _data[NAME_KEY];
+    }
+}
 }

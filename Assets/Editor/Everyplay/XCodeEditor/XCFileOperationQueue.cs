@@ -3,11 +3,10 @@ using System.Collections;
 
 namespace Everyplay.XCodeEditor
 {
-	public class XCFileOperationQueue : System.IDisposable
-	{
-		public void Dispose()
-		{
-
-		}
-	}
+public class XCFileOperationQueue : System.IDisposable
+{
+    public void Dispose()
+    {
+    }
+}
 }

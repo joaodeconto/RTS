@@ -38,17 +38,14 @@ public class GhostFactory : MonoBehaviour
 		isCapsuleCollider = true;
 		GameObject helperColliderGameObject;
 		
-		if (gameObject.GetComponent<CapsuleCollider> () == null)
-		{
+		if (gameObject.GetComponent<CapsuleCollider> () == null){
 			isCapsuleCollider = false;						
 			thisFactory.helperCollider.isTrigger = true;
 			realRadius = thisFactory.helperCollider.radius;			
 			helperColliderGameObject = thisFactory.helperCollider.gameObject;			
 			numberOfCollisions--;
 		}
-
-		else
-		{
+		else{
 			GetComponent<CapsuleCollider> ().isTrigger = true;
 			realRadius = GetComponent<CapsuleCollider> ().radius;
 			if(gameObject.tag == "Depot" || gameObject.tag == "TribeCenter")GetComponent<CapsuleCollider> ().radius += 2f;			
@@ -76,38 +73,23 @@ public class GhostFactory : MonoBehaviour
 		Ray ray = touchController.mainCamera.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit;
 		NavMeshHit navHit;
+		if (Physics.Raycast (ray, out hit, Mathf.Infinity, terrainLayer))	transform.position = hit.point;
 
-		if (Physics.Raycast (ray, out hit, Mathf.Infinity, terrainLayer))
-		{
-			transform.position = hit.point;
-		}
-		collideOnNavMeshLayer = NavMesh.SamplePosition (hit.point, out navHit, 0.1f, 1);
-		//		Debug.DrawRay (ray.origin,ray.direction * 10000f);
-		//		Debug.Log (collideOnNavMeshLayer);
+		collideOnNavMeshLayer = NavMesh.SamplePosition (hit.point, out navHit, 0.1f, 1);	
 		
-		
-		if (touchController.touchType == TouchController.TouchType.Ended)
-		{
-			if (touchController.idTouch == TouchController.IdTouch.Id0)
-			{
-				if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)Apply ();
+		if (touchController.touchType == TouchController.TouchType.Ended){
+			if (touchController.idTouch == TouchController.IdTouch.Id0){
+				if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)	Apply();
 			}
-			else
-			{
+			else{
 				ComponentGetter.Get<SelectionController> ().enabled = true;
 				ComponentGetter.Get<InteractionController> ().enabled = true;
 				Destroy (gameObject);
 			}
 		}
-		if (numberOfCollisions != 0 || collideOnNavMeshLayer == false)
-		{
-			SetColorOverdraw (new Color (0.75f, 0.25f, 0.25f));
-		}
-		
-		if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)
-		{
-			SetColorOverdraw (new Color (0.25f, 0.75f, 0.25f));
-		}
+		if (numberOfCollisions != 0 || collideOnNavMeshLayer == false)	SetColorOverdraw (new Color (0.75f, 0.25f, 0.25f));		
+		if (numberOfCollisions == 0 && collideOnNavMeshLayer == true)	SetColorOverdraw (new Color (0.25f, 0.75f, 0.25f));
+
 	}
 	
 	void OnCollider (Collider other)
@@ -125,18 +107,14 @@ public class GhostFactory : MonoBehaviour
 		ComponentGetter.Get<SelectionController> ().enabled = true;
 		ComponentGetter.Get<InteractionController> ().enabled = true;		
 		bool canBuy = gameplayManager.resources.CanBuy (factoryConstruction.costOfResources);		
-		if (canBuy)
-		{
+		if (canBuy){
 			gameplayManager.resources.UseResources (factoryConstruction.costOfResources);
-			GameObject helperColliderGameObject;
-			
-			if (isCapsuleCollider)
-			{
+			GameObject helperColliderGameObject;			
+			if (isCapsuleCollider){
 				GetComponent<CapsuleCollider> ().radius = realRadius;				
 				helperColliderGameObject = gameObject;
 			}
-			else
-			{
+			else{
 				thisFactory.helperCollider.radius = realRadius;				
 				helperColliderGameObject = thisFactory.helperCollider.gameObject;
 			}
@@ -152,8 +130,7 @@ public class GhostFactory : MonoBehaviour
 			
 			this.gameObject.layer = LayerMask.NameToLayer ("Unit");
 			
-			if (!PhotonNetwork.offlineMode)
-			{
+			if (!PhotonNetwork.offlineMode){
 				GameObject realFactoryObj = PhotonNetwork.Instantiate (factoryConstruction.factory.name, thisFactory.transform.position, thisFactory.transform.rotation, 0);
 				thisFactory = realFactoryObj.GetComponent<FactoryBase>();
 				thisFactory.photonView.RPC ("Instance", PhotonTargets.All, worker.team, worker.ally);
@@ -162,21 +139,14 @@ public class GhostFactory : MonoBehaviour
 
 			gameObject.SendMessage ("OnInstance", SendMessageOptions.DontRequireReceiver);
 
-			if (!PhotonNetwork.offlineMode)
-			{
-				Destroy(gameObject);	
-			}
-			else
-			{
+			if (!PhotonNetwork.offlineMode)	Destroy(gameObject);
+			else{
 				DestroyOverdrawModel ();			
 				Destroy(this);		
 			}
 		}
+		else	Destroy (gameObject);
 
-		else
-		{
-			Destroy (gameObject);
-		}
 	}
 	
 	void SetOverdraw ()

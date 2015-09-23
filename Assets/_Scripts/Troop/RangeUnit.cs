@@ -34,6 +34,17 @@ public class RangeUnit : Unit
 	#region IaStep, Attack e SyncAnimation
 	public override void IAStep ()
 	{
+		if (gameplayManager.IsBotTeam (this))
+		{
+			if (!PhotonNetwork.isMasterClient)
+				return;
+		}
+		else
+		{
+			if (!playerUnit)
+				return;
+		}
+
 		if (TargetAttack != null)
 		{
 			if (InMeleeRange (TargetAttack)) projectileAttacking = false;
@@ -134,21 +145,6 @@ public class RangeUnit : Unit
 	{
 		if(TargetAttack == null) return;
 		dummyRangeObject.SetActive(false);
-//		GameObject pRange;
-//		
-//		if (!PhotonNetwork.offlineMode)
-//		{
-//			pRange = PhotonNetwork.Instantiate  (prefabProjectile.name, 
-//			                                     trnsInstantiateLocalPrefab.position,
-//			                                     trnsInstantiateLocalPrefab.rotation,
-//			                                     0, null);
-//		}
-//		else
-//		{
-//			pRange = Instantiate (prefabProjectile, 
-//			                      trnsInstantiateLocalPrefab.position,
-//			                      trnsInstantiateLocalPrefab.rotation) as GameObject;
-//		}
 
 		Transform pRange = PoolManager.Pools["Projectiles"].Spawn(prefabProjectile, trnsInstantiateLocalPrefab.position, trnsInstantiateLocalPrefab.rotation);
 

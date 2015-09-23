@@ -9,18 +9,21 @@ public class EveryplayWelcome : EditorWindow
 
     public static void ShowWelcome()
     {
-        if(!EditorPrefs.HasKey("EveryplayWelcomeShown")) {
-            Texture2D texture = (Texture2D)EditorGUIUtility.Load("Everyplay/Images/everyplay-welcome.png");
+        if (!EditorPrefs.HasKey("EveryplayWelcomeShown"))
+        {
+            Texture2D texture = (Texture2D) EditorGUIUtility.Load("Everyplay/Images/everyplay-welcome.png");
 
-            if(texture != null) {
+            if (texture != null)
+            {
                 GUIStyle style = new GUIStyle();
                 style.margin = new RectOffset(0, 0, 0, 0);
                 style.padding = new RectOffset(0, 0, 0, 0);
                 style.alignment = TextAnchor.MiddleCenter;
 
-                if(style != null) {
+                if (style != null)
+                {
                     EditorPrefs.SetBool("EveryplayWelcomeShown", true);
-                    EveryplayWelcome window = (EveryplayWelcome)GetWindow(typeof(EveryplayWelcome), true, "Welcome to Everyplay!");
+                    EveryplayWelcome window = (EveryplayWelcome) GetWindow(typeof(EveryplayWelcome), true, "Welcome to Everyplay!");
                     window.position = new Rect(196, 196, texture.width, texture.height);
                     window.minSize = new Vector2(texture.width, texture.height);
                     window.maxSize = new Vector2(texture.width, texture.height);
@@ -36,11 +39,13 @@ public class EveryplayWelcome : EditorWindow
 
     void OnGUI()
     {
-        if(welcomeStyle == null || welcomeTexture2d == null) {
+        if (welcomeStyle == null || welcomeTexture2d == null)
+        {
             return;
         }
 
-        if(GUI.Button(new Rect(0, 0, welcomeTexture2d.width, welcomeTexture2d.height), welcomeTexture2d, welcomeStyle)) {
+        if (GUI.Button(new Rect(0, 0, welcomeTexture2d.width, welcomeTexture2d.height), welcomeTexture2d, welcomeStyle))
+        {
             Close();
             EveryplaySettingsEditor.ShowSettings();
             Application.OpenURL("https://developers.everyplay.com/");

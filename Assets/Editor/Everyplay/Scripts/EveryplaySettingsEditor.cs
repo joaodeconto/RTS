@@ -10,8 +10,8 @@ public class EveryplaySettingsEditor : Editor
     public const string settingsFile = "EveryplaySettings";
     public const string settingsFileExtension = ".asset";
     public const string testButtonsResourceFile = "everyplay-test-buttons.png";
-    private const BuildTarget kBuildTargetIOS = (BuildTarget)9; // Avoid automatic API updater dialog (iPhone -> iOS)
-    private const BuildTargetGroup kBuildTargetGroupIOS = (BuildTargetGroup)4; // Avoid automatic API updater dialog (iPhone -> iOS)
+    private const BuildTarget kBuildTargetIOS = (BuildTarget) 9; // Avoid automatic API updater dialog (iPhone -> iOS)
+    private const BuildTargetGroup kBuildTargetGroupIOS = (BuildTargetGroup) 4; // Avoid automatic API updater dialog (iPhone -> iOS)
 
     private static GUIContent labelClientId = new GUIContent("Client id");
     private static GUIContent labelClientSecret = new GUIContent("Client secret");
@@ -29,11 +29,13 @@ public class EveryplaySettingsEditor : Editor
     {
         EveryplaySettings settingsInstance = LoadEveryplaySettings();
 
-        if(settingsInstance == null) {
+        if (settingsInstance == null)
+        {
             settingsInstance = CreateEveryplaySettings();
         }
 
-        if(settingsInstance != null) {
+        if (settingsInstance != null)
+        {
             EveryplayPostprocessor.ValidateAndUpdateFacebook();
             EveryplayLegacyCleanup.Clean(false);
             Selection.activeObject = settingsInstance;
@@ -42,22 +44,26 @@ public class EveryplaySettingsEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        try {
+        try
+        {
             // Might be null when this gui is open and this file is being reimported
-            if(target == null) {
+            if (target == null)
+            {
                 Selection.activeObject = null;
                 return;
             }
 
-            currentSettings = (EveryplaySettings)target;
+            currentSettings = (EveryplaySettings) target;
             bool showAndroidSettings = CheckForAndroidSDK();
 
-            if(currentSettings != null) {
+            if (currentSettings != null)
+            {
                 bool settingsValid = currentSettings.IsValid;
 
                 EditorGUILayout.HelpBox("1) Enter your game credentials", MessageType.None);
 
-                if(!currentSettings.IsValid) {
+                if (!currentSettings.IsValid)
+                {
                     EditorGUILayout.HelpBox("Invalid or missing game credentials, Everyplay disabled. Check your game credentials at https://developers.everyplay.com/", MessageType.Error);
                 }
 
@@ -85,23 +91,27 @@ public class EveryplaySettingsEditor : Editor
 
                 iosSupportEnabled = EditorGUILayout.Toggle(labelIOsSupport, currentSettings.iosSupportEnabled);
 
-                if(iosSupportEnabled != currentSettings.iosSupportEnabled) {
-                    selectedPlatformsChanged  = true;
+                if (iosSupportEnabled != currentSettings.iosSupportEnabled)
+                {
+                    selectedPlatformsChanged = true;
                     currentSettings.iosSupportEnabled = iosSupportEnabled;
                     EditorUtility.SetDirty(currentSettings);
                 }
 
-                if(showAndroidSettings) {
+                if (showAndroidSettings)
+                {
                     androidSupportEnabled = EditorGUILayout.Toggle(labelAndroidSupport, currentSettings.androidSupportEnabled);
 
-                    if(androidSupportEnabled != currentSettings.androidSupportEnabled) {
-                        selectedPlatformsChanged  = true;
+                    if (androidSupportEnabled != currentSettings.androidSupportEnabled)
+                    {
+                        selectedPlatformsChanged = true;
                         currentSettings.androidSupportEnabled = androidSupportEnabled;
                         EditorUtility.SetDirty(currentSettings);
                     }
                 }
 
-                if(validityChanged || selectedPlatformsChanged) {
+                if (validityChanged || selectedPlatformsChanged)
+                {
                     EveryplayPostprocessor.ValidateEveryplayState(currentSettings);
                 }
 
@@ -111,7 +121,8 @@ public class EveryplaySettingsEditor : Editor
 
                 EditorGUILayout.BeginVertical();
                 testButtonsEnabled = EditorGUILayout.Toggle(labelTestButtons, currentSettings.testButtonsEnabled);
-                if(testButtonsEnabled != currentSettings.testButtonsEnabled) {
+                if (testButtonsEnabled != currentSettings.testButtonsEnabled)
+                {
                     currentSettings.testButtonsEnabled = testButtonsEnabled;
                     EditorUtility.SetDirty(currentSettings);
                     EnableTestButtons(testButtonsEnabled);
@@ -119,15 +130,18 @@ public class EveryplaySettingsEditor : Editor
                 EditorGUILayout.EndVertical();
             }
         }
-        catch(Exception e) {
-            if(e != null) {
+        catch (Exception e)
+        {
+            if (e != null)
+            {
             }
         }
     }
 
     private static string TrimmedText(string txt)
     {
-        if(txt != null) {
+        if (txt != null)
+        {
             return txt.Trim();
         }
         return "";
@@ -135,10 +149,12 @@ public class EveryplaySettingsEditor : Editor
 
     private static EveryplaySettings CreateEveryplaySettings()
     {
-        EveryplaySettings everyplaySettings = (EveryplaySettings)ScriptableObject.CreateInstance(typeof(EveryplaySettings));
+        EveryplaySettings everyplaySettings = (EveryplaySettings) ScriptableObject.CreateInstance(typeof(EveryplaySettings));
 
-        if(everyplaySettings != null) {
-            if(!Directory.Exists(System.IO.Path.Combine(Application.dataPath, "Plugins/Everyplay/Resources"))) {
+        if (everyplaySettings != null)
+        {
+            if (!Directory.Exists(System.IO.Path.Combine(Application.dataPath, "Plugins/Everyplay/Resources")))
+            {
                 AssetDatabase.CreateFolder("Assets/Plugins/Everyplay", "Resources");
             }
 
@@ -154,23 +170,27 @@ public class EveryplaySettingsEditor : Editor
 
     public static EveryplaySettings LoadEveryplaySettings()
     {
-        return (EveryplaySettings)Resources.Load(settingsFile);
+        return (EveryplaySettings) Resources.Load(settingsFile);
     }
 
     public void EnableTestButtons(bool enable)
     {
         string dstFile = "Plugins/Everyplay/Resources/" + testButtonsResourceFile;
 
-        if(enable) {
+        if (enable)
+        {
             string sourceFile = "Plugins/Everyplay/Images/" + testButtonsResourceFile;
-            if(!File.Exists(System.IO.Path.Combine(Application.dataPath, dstFile)) && File.Exists(System.IO.Path.Combine(Application.dataPath, sourceFile))) {
+            if (!File.Exists(System.IO.Path.Combine(Application.dataPath, dstFile)) && File.Exists(System.IO.Path.Combine(Application.dataPath, sourceFile)))
+            {
                 AssetDatabase.CopyAsset("Assets/" + sourceFile, "Assets/" + dstFile);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
         }
-        else {
-            if(File.Exists(System.IO.Path.Combine(Application.dataPath, dstFile))) {
+        else
+        {
+            if (File.Exists(System.IO.Path.Combine(Application.dataPath, dstFile)))
+            {
                 AssetDatabase.DeleteAsset("Assets/" + dstFile);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
@@ -180,7 +200,8 @@ public class EveryplaySettingsEditor : Editor
 
     public static bool CheckForAndroidSDK()
     {
-        if(System.IO.File.Exists(System.IO.Path.Combine(Application.dataPath, "Plugins/Android/everyplay/AndroidManifest.xml")) || System.IO.File.Exists(System.IO.Path.Combine(Application.dataPath, "Plugins/Android/Everyplay/AndroidManifest.xml"))) {
+        if (System.IO.File.Exists(System.IO.Path.Combine(Application.dataPath, "Plugins/Android/everyplay/AndroidManifest.xml")) || System.IO.File.Exists(System.IO.Path.Combine(Application.dataPath, "Plugins/Android/Everyplay/AndroidManifest.xml")))
+        {
             return true;
         }
         return false;
@@ -188,7 +209,8 @@ public class EveryplaySettingsEditor : Editor
 
     void OnDisable()
     {
-        if(currentSettings != null) {
+        if (currentSettings != null)
+        {
             EditorUtility.SetDirty(currentSettings);
             currentSettings = null;
         }

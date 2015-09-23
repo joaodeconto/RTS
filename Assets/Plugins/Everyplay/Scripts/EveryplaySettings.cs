@@ -14,7 +14,8 @@ public class EveryplaySettings : ScriptableObject
 
     public bool IsEnabled
     {
-        get {
+        get
+        {
             #if UNITY_IPHONE
             return iosSupportEnabled;
             #elif UNITY_ANDROID
@@ -27,9 +28,12 @@ public class EveryplaySettings : ScriptableObject
 
     public bool IsValid
     {
-        get {
-            if(clientId != null && clientSecret != null && redirectURI != null) {
-                if(clientId.Trim().Length > 0 && clientSecret.Trim().Length > 0 && redirectURI.Trim().Length > 0) {
+        get
+        {
+            if (clientId != null && clientSecret != null && redirectURI != null)
+            {
+                if (clientId.Trim().Length > 0 && clientSecret.Trim().Length > 0 && redirectURI.Trim().Length > 0)
+                {
                     return true;
                 }
             }

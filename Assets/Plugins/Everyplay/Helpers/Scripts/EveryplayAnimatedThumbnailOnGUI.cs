@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 [ExecuteInEditMode]
@@ -22,12 +22,14 @@ public class EveryplayAnimatedThumbnailOnGUI : MonoBehaviour
 
     void Start()
     {
-        thumbnailPool = (EveryplayThumbnailPool)FindObjectOfType(typeof(EveryplayThumbnailPool));
+        thumbnailPool = (EveryplayThumbnailPool) FindObjectOfType(typeof(EveryplayThumbnailPool));
 
-        if(thumbnailPool) {
+        if (thumbnailPool)
+        {
             ResetThumbnail();
         }
-        else {
+        else
+        {
             Debug.Log("Everyplay thumbnail pool not found or no material was defined!");
         }
     }
@@ -55,9 +57,10 @@ public class EveryplayAnimatedThumbnailOnGUI : MonoBehaviour
 
     private IEnumerator CrossfadeTransition()
     {
-        while(blend < 1.0f && transitionInProgress) {
+        while (blend < 1.0f && transitionInProgress)
+        {
             blend += 0.1f;
-            yield return new WaitForSeconds(1/40.0f);
+            yield return new WaitForSeconds(1 / 40.0f);
         }
 
         bottomTexture = topTexture;
@@ -76,20 +79,26 @@ public class EveryplayAnimatedThumbnailOnGUI : MonoBehaviour
 
     void Update()
     {
-        if(thumbnailPool && !transitionInProgress) {
-            if(thumbnailPool.availableThumbnailCount > 0) {
+        if (thumbnailPool && !transitionInProgress)
+        {
+            if (thumbnailPool.availableThumbnailCount > 0)
+            {
                 // Don't animate the first frame
-                if(currentIndex < 0) {
+                if (currentIndex < 0)
+                {
                     currentIndex = 0;
                     bottomTextureScale = thumbnailPool.thumbnailScale;
                     bottomTexture = thumbnailPool.thumbnailTextures[currentIndex];
                 }
-             // Animate
-                else if(thumbnailPool.availableThumbnailCount > 1) {
-                    if((Time.frameCount % 50) == 0) {
+                // Animate
+                else if (thumbnailPool.availableThumbnailCount > 1)
+                {
+                    if ((Time.frameCount % 50) == 0)
+                    {
                         currentIndex++;
 
-                        if(currentIndex >= thumbnailPool.availableThumbnailCount) {
+                        if (currentIndex >= thumbnailPool.availableThumbnailCount)
+                        {
                             currentIndex = 0;
                         }
 
@@ -102,7 +111,8 @@ public class EveryplayAnimatedThumbnailOnGUI : MonoBehaviour
                     }
                 }
             }
-            else if(currentIndex >= 0) {
+            else if (currentIndex >= 0)
+            {
                 ResetThumbnail();
             }
         }
@@ -110,17 +120,19 @@ public class EveryplayAnimatedThumbnailOnGUI : MonoBehaviour
 
     void OnGUI()
     {
-        if(Event.current.type.Equals(EventType.Repaint)) {
-            if(bottomTexture) {
+        if (Event.current.type.Equals(EventType.Repaint))
+        {
+            if (bottomTexture)
+            {
                 GUI.DrawTextureWithTexCoords(new Rect(pixelInset.x, pixelInset.y, pixelInset.width, pixelInset.height), bottomTexture, new Rect(0, 0, bottomTextureScale.x, bottomTextureScale.y));
             }
-            if(topTexture && blend > 0.0f) {
+            if (topTexture && blend > 0.0f)
+            {
                 Color oldGuiColor = GUI.color;
                 GUI.color = new Color(oldGuiColor.r, oldGuiColor.g, oldGuiColor.b, blend);
                 GUI.DrawTextureWithTexCoords(new Rect(pixelInset.x, pixelInset.y, pixelInset.width, pixelInset.height), topTexture, new Rect(0, 0, topTextureScale.x, topTextureScale.y));
                 GUI.color = oldGuiColor;
             }
         }
-
     }
 }

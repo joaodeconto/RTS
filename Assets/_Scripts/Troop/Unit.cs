@@ -753,32 +753,33 @@ public class Unit : IStats, IMovementObservable,
 		Hashtable ht = new Hashtable();		
 		ht["observableHealth"] = this;
 		ht["time"] = 0f;		
-		hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
+		if(firstDamage)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
 		hudController.CreateSelected (transform, sizeOfSelected, gameplayManager.GetColorTeam (team));
 		
 		if (!gameplayManager.IsSameTeam (this.team))
 			return;
-		//SHOW SELECTED STATS DISABLE		
-//		hudController.CreateEnqueuedButtonInInspector ( this.name,
-//		                                               Unit.UnitGroupQueueName,
-//		                                               ht,
-//		                                               this.guiTextureName,
-//		                                               (hud_ht) =>
-//		                                               {
-//															statsController.DeselectAllStats();
-//															statsController.SelectStat(this, true);
-//														},
-//														(ht_dcb, isDown) => 
-//														{
-//															if (isDown)	ht["time"] = Time.time;
-//															else
-//															{
-//																if (Time.time - (float)ht["time"] > 0.3f)
-//																{	
-//																	selectionController.SelectSameCategory(this.category);						
-//																}																
-//															}
-//														});		
+		//SHOW SELECTED STATS DISABLE	
+
+		hudController.CreateEnqueuedButtonInInspector ( this.name,
+		                                               Unit.UnitGroupQueueName,
+		                                               ht,
+		                                               this.guiTextureName,
+		                                               (hud_ht) =>
+		                                               {
+															statsController.DeselectAllStats();
+															statsController.SelectStat(this, true);
+														},
+														(ht_dcb, isDown) => 
+														{
+															if (isDown)	ht["time"] = Time.time;
+															else
+															{
+																if (Time.time - (float)ht["time"] > 0.3f)
+																{	
+																	selectionController.SelectSameCategory(this.category);						
+																}																
+															}
+														});		
 //MOVE ACTION DISABLE
 
 //		foreach (MovementAction ma in movementActions)
@@ -786,7 +787,7 @@ public class Unit : IStats, IMovementObservable,
 //			ht = new Hashtable();
 //			ht["actionType"] = ma.actionType;
 //			
-//			hudController.CreateButtonInInspector ( ma.buttonAttributes.name,
+		//			hudController.CreateOrChangeButtonInInspector ( ma.buttonAttributes.name,
 //			                                       ma.buttonAttributes.gridItemAttributes.Position,
 //			                                       ht,
 //			                                       ma.buttonAttributes.spriteName,
@@ -855,10 +856,10 @@ public class Unit : IStats, IMovementObservable,
 	
 	public override void Deselect ()
 	{
-		if (statsController.selectedStats.Count == 1) 
-		{
-			hudController.DestroyOptionsBtns ();
-		}
+//		if (statsController.selectedStats.Count == 1) 
+//		{
+//			hudController.DestroyOptionsBtns ();
+//		}
 		
 		base.Deselect ();
 
@@ -878,7 +879,10 @@ public class Unit : IStats, IMovementObservable,
 		if (firstDamage)
 		{
 			if(isVisible)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
-			else hudController.DestroySelected(transform);
+			else {
+					hudController.DestroySelected(transform);
+					hudController.DestroyHealthBar(transform);
+			}
 		}
 	}
 
@@ -973,7 +977,7 @@ public class Unit : IStats, IMovementObservable,
 			}
 
 		}
-		Destroy (gameObject);
+//		Destroy (gameObject);
 	}
 
 	#endregion

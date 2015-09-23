@@ -436,7 +436,7 @@ MonoBehaviour:
   messageQueuesAttributes:
   - queueName: Unit Group
     panel: {fileID: 0}
-    rootPosition: {x: 113, y: 143}
+    rootPosition: {x: 50, y: -30}
     cellSize: {x: 92, y: 92}
     padding: {x: 0, y: 0}
     labelSize: 0
@@ -473,9 +473,9 @@ MonoBehaviour:
     maxItems: 10
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 3
+      timeToFadeout: 4
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
-      messageCap: 3
+      messageCap: 5
   - queueName: Chat
     panel: {fileID: 0}
     rootPosition: {x: 0, y: 0}
@@ -587,37 +587,37 @@ MonoBehaviour:
     spriteName: 
     eventPosition: {x: 0, y: 0, z: 0}
     hudFeedback: {fileID: 0}
-    sfxFeedback: 
+    sfxFeedback: tum
   - Name: out of funds
-    Message: Insufficient resources
+    Message: Insufficient Resources
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
     hudFeedback: {fileID: 0}
-    sfxFeedback: 
+    sfxFeedback: tum
   - Name: reach enqueued units
     Message: Training queue is full
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
     hudFeedback: {fileID: 0}
-    sfxFeedback: 
+    sfxFeedback: tum
   - Name: need more houses
-    Message: 'need more houses '
+    Message: 'build more houses '
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
     hudFeedback: {fileID: 0}
-    sfxFeedback: 
+    sfxFeedback: tum
   - Name: reached max population
     Message: max population reached
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
     hudFeedback: {fileID: 0}
-    sfxFeedback: 
+    sfxFeedback: tum
   - Name: create unit
     Message: '{0} train complete'
     spriteName: 
     eventPosition: {x: 0, y: 0, z: 0}
     hudFeedback: {fileID: 0}
-    sfxFeedback: 
+    sfxFeedback: tum
   - Name: being attacked
     Message: we are under attack
     spriteName: Atk
@@ -632,6 +632,12 @@ MonoBehaviour:
     sfxFeedback: troop_select
   - Name: standard message
     Message: '{0}'
+    spriteName: cross-option
+    eventPosition: {x: 0, y: 0, z: 0}
+    hudFeedback: {fileID: 0}
+    sfxFeedback: tum
+  - Name: bonus completed
+    Message: '{0} Reward!'
     spriteName: cross-option
     eventPosition: {x: 0, y: 0, z: 0}
     hudFeedback: {fileID: 0}
@@ -748,7 +754,7 @@ MonoBehaviour:
   - levelId: 1
     gameLevel: {fileID: 0}
     startingRocks: 300
-    startingMana: 0
+    startingMana: 1000
   - levelId: 2
     gameLevel: {fileID: 0}
     startingRocks: 140

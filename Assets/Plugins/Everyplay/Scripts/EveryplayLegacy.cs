@@ -4,101 +4,134 @@ using System.Collections.Generic;
 public class EveryplayLegacy : MonoBehaviour
 {
 #pragma warning disable 612, 618
-    public event Everyplay.WasClosedDelegate WasClosed {
-        add {
+    public event Everyplay.WasClosedDelegate WasClosed
+    {
+        add
+        {
             Everyplay.WasClosed += value;
         }
-        remove {
+        remove
+        {
             Everyplay.WasClosed -= value;
         }
     }
 
-    public event Everyplay.ReadyForRecordingDelegate ReadyForRecording {
-        add {
+    public event Everyplay.ReadyForRecordingDelegate ReadyForRecording
+    {
+        add
+        {
             Everyplay.ReadyForRecording += value;
         }
-        remove {
+        remove
+        {
             Everyplay.ReadyForRecording -= value;
         }
     }
 
-    public event Everyplay.RecordingStartedDelegate RecordingStarted {
-        add {
+    public event Everyplay.RecordingStartedDelegate RecordingStarted
+    {
+        add
+        {
             Everyplay.RecordingStarted += value;
         }
-        remove {
+        remove
+        {
             Everyplay.RecordingStarted -= value;
         }
     }
 
-    public event Everyplay.RecordingStoppedDelegate RecordingStopped {
-        add {
+    public event Everyplay.RecordingStoppedDelegate RecordingStopped
+    {
+        add
+        {
             Everyplay.RecordingStopped += value;
         }
-        remove {
+        remove
+        {
             Everyplay.RecordingStopped -= value;
         }
     }
 
-    public event Everyplay.FaceCamSessionStartedDelegate FaceCamSessionStarted {
-        add {
+    public event Everyplay.FaceCamSessionStartedDelegate FaceCamSessionStarted
+    {
+        add
+        {
             Everyplay.FaceCamSessionStarted += value;
         }
-        remove {
+        remove
+        {
             Everyplay.FaceCamSessionStarted -= value;
         }
     }
 
-    public event Everyplay.FaceCamRecordingPermissionDelegate FaceCamRecordingPermission {
-        add {
+    public event Everyplay.FaceCamRecordingPermissionDelegate FaceCamRecordingPermission
+    {
+        add
+        {
             Everyplay.FaceCamRecordingPermission += value;
         }
-        remove {
+        remove
+        {
             Everyplay.FaceCamRecordingPermission -= value;
         }
     }
 
-    public event Everyplay.FaceCamSessionStoppedDelegate FaceCamSessionStopped {
-        add {
+    public event Everyplay.FaceCamSessionStoppedDelegate FaceCamSessionStopped
+    {
+        add
+        {
             Everyplay.FaceCamSessionStopped += value;
         }
-        remove {
+        remove
+        {
             Everyplay.FaceCamSessionStopped -= value;
         }
     }
 
-    public event Everyplay.ThumbnailReadyAtTextureIdDelegate ThumbnailReadyAtTextureId {
-        add {
+    public event Everyplay.ThumbnailReadyAtTextureIdDelegate ThumbnailReadyAtTextureId
+    {
+        add
+        {
             Everyplay.ThumbnailReadyAtTextureId += value;
         }
-        remove {
+        remove
+        {
             Everyplay.ThumbnailReadyAtTextureId -= value;
         }
     }
 
-    public event Everyplay.UploadDidStartDelegate UploadDidStart {
-        add {
+    public event Everyplay.UploadDidStartDelegate UploadDidStart
+    {
+        add
+        {
             Everyplay.UploadDidStart += value;
         }
-        remove {
+        remove
+        {
             Everyplay.UploadDidStart -= value;
         }
     }
 
-    public event Everyplay.UploadDidProgressDelegate UploadDidProgress {
-        add {
+    public event Everyplay.UploadDidProgressDelegate UploadDidProgress
+    {
+        add
+        {
             Everyplay.UploadDidProgress += value;
         }
-        remove {
+        remove
+        {
             Everyplay.UploadDidProgress -= value;
         }
     }
 
-    public event Everyplay.UploadDidCompleteDelegate UploadDidComplete {
-        add {
+    public event Everyplay.UploadDidCompleteDelegate UploadDidComplete
+    {
+        add
+        {
             Everyplay.UploadDidComplete += value;
         }
-        remove {
+        remove
+        {
             Everyplay.UploadDidComplete -= value;
         }
     }
@@ -118,7 +151,7 @@ public class EveryplayLegacy : MonoBehaviour
         Everyplay.PlayVideoWithURL(url);
     }
 
-    public void PlayVideoWithDictionary(Dictionary<string,object> dict)
+    public void PlayVideoWithDictionary(Dictionary<string, object> dict)
     {
         Everyplay.PlayVideoWithDictionary(dict);
     }
@@ -203,7 +236,7 @@ public class EveryplayLegacy : MonoBehaviour
         Everyplay.SetMetadata(key, val);
     }
 
-    public void SetMetadata(Dictionary<string,object> dict)
+    public void SetMetadata(Dictionary<string, object> dict)
     {
         Everyplay.SetMetadata(dict);
     }
@@ -231,11 +264,6 @@ public class EveryplayLegacy : MonoBehaviour
     public void SetDisableSingleCoreDevices(bool state)
     {
         Everyplay.SetDisableSingleCoreDevices(state);
-    }
-
-    public void LoadThumbnailFromFilePath(string filePath, Everyplay.ThumbnailLoadReadyDelegate readyDelegate, Everyplay.ThumbnailLoadFailedDelegate failedDelegate)
-    {
-        Everyplay.LoadThumbnailFromFilePath(filePath, readyDelegate, failedDelegate);
     }
 
     public bool FaceCamIsVideoRecordingSupported()
@@ -372,5 +400,6 @@ public class EveryplayLegacy : MonoBehaviour
     {
         Everyplay.TakeThumbnail();
     }
+
 #pragma warning restore 612, 618
 }
