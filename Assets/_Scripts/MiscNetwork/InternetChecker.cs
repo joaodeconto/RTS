@@ -10,6 +10,7 @@ public class InternetChecker : MonoBehaviour
 	private Ping ping;
 	private float pingStartTime;
 	private bool checkingConection = true;
+	private int checks = 0;
 	
 	public void OnEnable()
 	{		
@@ -66,9 +67,11 @@ public class InternetChecker : MonoBehaviour
 	
 	private void InternetIsNotAvailable()
 	{
+		checks++;
 		UILabel labelWarning = li.errorMessage;
-		li.ShowErrorMessage("no internet conection");
+		li.ShowErrorMessage("offline");
 		li.hasInternet = false;
+		if(checks > 4) enabled = false;
 	}
 
 	private void CheckingConection()
