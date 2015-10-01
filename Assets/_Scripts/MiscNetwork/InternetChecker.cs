@@ -6,15 +6,14 @@ public class InternetChecker : MonoBehaviour
 	private const string pingAddress = "8.8.8.8"; // Google Public DNS server
 	private const float waitingTime = 2.0f;
 	
-	protected LoginIndex li;
+//	protected LoginIndex li;
 	private Ping ping;
 	private float pingStartTime;
-	private bool checkingConection = true;
 	private int checks = 0;
 	
 	public void OnEnable()
 	{		
-		li = GetComponent<LoginIndex>();
+//		li = GetComponent<LoginIndex>();
 
 		bool internetPossiblyAvailable;
 		switch (Application.internetReachability)
@@ -51,7 +50,7 @@ public class InternetChecker : MonoBehaviour
 
 			else if (Time.time - pingStartTime < waitingTime) 
 			{
-				if (!li.hasInternet)	CheckingConection();
+//				if (!li.hasInternet)	CheckingConection();
 			}
 
 			else
@@ -68,22 +67,23 @@ public class InternetChecker : MonoBehaviour
 	private void InternetIsNotAvailable()
 	{
 		checks++;
-		UILabel labelWarning = li.errorMessage;
-		li.ShowErrorMessage("offline");
-		li.hasInternet = false;
+//		UILabel labelWarning = li.errorMessage;
+//		li.ShowErrorMessage("offline");
+//		li.hasInternet = false;
+		ConfigurationData.connected = false;
 		if(checks > 4) enabled = false;
 	}
 
-	private void CheckingConection()
-	{
-		UILabel labelWarning = li.errorMessage;
-		li.ShowErrorMessage("checking conection");
-		li.hasInternet = false;
-	}
+//	private void CheckingConection()
+//	{
+//		UILabel labelWarning = li.errorMessage;
+//		li.ShowErrorMessage("checking conection");
+//		li.hasInternet = false;
+//	}
 	
 	private void InternetAvailable()
 	{
-		li.hasInternet = true;
+		ConfigurationData.connected = true;
 		enabled = false;
 	}
 }

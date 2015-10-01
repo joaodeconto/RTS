@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
 using Visiorama;
 
 public class NewGameMenu : MonoBehaviour {
 	
 	private bool wasInitialized = false;
-	public Transform pathOption;
-	
+	public Transform pathOption;	
 	public GameObject tutorialPanel;
 	public GameObject rankedPanel;
 	public GameObject singlePanel;
@@ -54,12 +52,9 @@ public class NewGameMenu : MonoBehaviour {
 		{
 			dcb = ranked.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
+			         (ht_dcb) =>{
 				
-				rankedPanel.SetActive (true);
-				
-				
+				rankedPanel.SetActive (true);		
 			});
 		}
 		
@@ -69,12 +64,8 @@ public class NewGameMenu : MonoBehaviour {
 		{
 			dcb = single.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-				
+			         (ht_dcb) =>{				
 				singlePanel.SetActive (true);
-				
-				
 			});
 		}
 		
@@ -84,12 +75,8 @@ public class NewGameMenu : MonoBehaviour {
 		{
 			dcb = survival.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-				
+			         (ht_dcb) =>{
 				survivalPanel.SetActive (true);
-				
-				
 			});
 		}
 		

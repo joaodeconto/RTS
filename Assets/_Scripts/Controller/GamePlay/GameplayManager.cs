@@ -23,7 +23,6 @@ public class Level
 	public int startingMana  = 0;
 }
 
-
 public class GameplayManager : Photon.MonoBehaviour
 {
 	#region Serializable e Declares
@@ -40,13 +39,13 @@ public class GameplayManager : Photon.MonoBehaviour
 		public GameObject uiWaitingPlayers;
 		public UILabel    labelTime;
 		public GameObject uiLostMainBaseObject;
+		public GameObject pauseScreen;
 	}
 
 	public class AllyClass
 	{
 		public int ally;
 		public List<int> teams;
-
 		public AllyClass (int ally)
 		{
 			this.ally = ally;
@@ -62,52 +61,54 @@ public class GameplayManager : Photon.MonoBehaviour
 		Tutorial
 	}
 
-	public static Mode mode;
-	public bool pauseGame = false;
-	private int readyCounter;
-	private bool gamestarted = false;
-	public float gameTime = 0f;
 	public const int MAX_POPULATION_ALLOWED = 200;
-	public const int BOT_TEAM = 8;
-	public Team[] teams;
-	public Level[] level;
-	public ResourcesManager resources;	
-	public HUD hud;	
+	public int TotalPopulation {get; protected set;}
 	public int numberOfUnits {get; protected set;}
-	public int TotalPopulation { get; protected set; }
-	protected int numberOfActiveMainBases;
-	private List<IHouse> houses = new List<IHouse> ();
-	private Model.PlayerBattle playerBattle;	
-	protected List<AllyClass> alliesNumberOfStats = new List<AllyClass>();	
-	protected int loserTeams;
-	protected int numberOfTeams;
-	protected bool loseGame = false;
-	protected bool winGame = false;
-	protected float timeLeftToLoseTheGame;
-	protected bool beingAttacked = false;
 	public int MyTeam {get; protected set;}
 	public int Allies {get; protected set;}
+	public ResourcesManager resources;	
 	public bool scoreCounting = true;
 	public int clockPontuationLimit;
-	protected NetworkManager network;
-	protected BidManager bm;
-	protected TouchController touchController;
-	protected SelectionController selectionController;
-	protected StatsController sc;
+	public bool pauseGame = false;
+	public const int BOT_TEAM = 8;
 	public UILabel loadingMessage;
-	protected Score score;
+	public float gameTime = 0f;
+	public Level selectedLevel;
+	public static Mode mode;
+	public Team[] teams;
+	public Level[] level;
+	public HUD hud;	
+
+	protected List<AllyClass> alliesNumberOfStats = new List<AllyClass>();
+	protected SelectionController selectionController;
+	protected TouchController touchController;
+	protected int numberOfActiveMainBases;
+	protected float timeLeftToLoseTheGame;
+	protected bool beingAttacked = false;
+	protected NetworkManager network;
+	protected bool loseGame = false;
+	protected bool winGame = false;
 	protected string encodedBattle;
 	protected string encodedPlayer;
+	protected StatsController sc;
+	protected int numberOfTeams;
+	protected int loserTeams;
+	protected BidManager bm;
+	protected Score score;
+
+	private List<IHouse> houses = new List<IHouse> ();
 	private int scenelevel = ConfigurationData.level;
-	public Level selectedLevel;
-
-
+	private Model.PlayerBattle playerBattle;
+	private bool gamestarted = false;	
+	private bool isPaused =false;
+	private float pausedTime = 0;
+	private int teamWhoPaused;
+	private int readyCounter;
 	#endregion
 
 	#region Init e GameStart
 	public void Init ()
-	{
-	
+	{	
 		if (!PhotonNetwork.offlineMode){
 		    score = ComponentGetter.Get <Score> ("$$$_Score");
 			encodedBattle = ConfigurationData.battle.ToString();
@@ -125,20 +126,19 @@ public class GameplayManager : Photon.MonoBehaviour
 			bm = ComponentGetter.Get <BidManager> ();
 			loadingMessage.text = "synching tribes";
 			gamestarted = false;
-
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
-			if (mode == Mode.Cooperative)
-			{
+			if (mode == Mode.Cooperative){
 				Allies = (int)PhotonNetwork.player.customProperties["allies"];
 			}
 			numberOfTeams = PhotonNetwork.room.maxPlayers;
 			pauseGame = false;
+			StartCoroutine("TribeNetworkInstantiate");
 		}
 
 		else{
 			foreach (Level lvl in level)
 			{
-				if (lvl.levelId == ConfigurationData.level) {
+				if (lvl.levelId == ConfigurationData.level){
 					selectedLevel = lvl;
 					selectedLevel.gameLevel.SetActive(true);
 					break;
@@ -154,8 +154,6 @@ public class GameplayManager : Photon.MonoBehaviour
 			ComponentGetter.Get<OfflineScore> ().Init ();
 			StartCoroutine ("TribeInstantiate");
 		    selectedLevel.gameLevel.GetComponent<EnemyCluster> ().Init ();
-
-
 		}
 
 		if (mode == Mode.Cooperative){
@@ -172,53 +170,68 @@ public class GameplayManager : Photon.MonoBehaviour
 				}
 			}
 		}
-		else{
-			loserTeams = 0;
-		}
+		else loserTeams = 0;
 
 		hud.uiDefeatObject.SetActive (false);
 		hud.uiVictoryObject.SetActive (false);
 		hud.uiLostMainBaseObject.SetActive (false);
-		loadingMessage.text = "loading";
-		if (mode != Mode.Tutorial && !PhotonNetwork.offlineMode) Invoke("CallMySceneReady",1f);
 	}
 
 	void CheckGameStart()
 	{
-		int numberOfPlayers = PhotonNetwork.playerList.Length;
-		if (readyCounter >= numberOfPlayers)
-		{		
-			TribeInstiateNetwork();
+		if (readyCounter >= PhotonNetwork.playerList.Length){
 			gamestarted = true;
 			GameStart();
 		}
 	}
 
-	void TribeInstiateNetwork ()
+//	void TribeInstiateNetwork ()
+//	{
+//		for (int i = 0; i < 4; i++)
+//		{
+//			Team t = teams[i];
+//			t.initialPosition = selectedLevel.gameLevel.transform.FindChild(i.ToString()).transform;
+//			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true){
+//				foreach (Transform trns in t.initialPosition)
+//				{
+//					if(trns.gameObject.activeSelf == true){
+//						InitInstantiateNetwork toInit = trns.GetComponent<InitInstantiateNetwork>();
+//						if (toInit.GetType() == typeof(InitInstantiateNetwork)){
+//							toInit.Init();											
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+	IEnumerator TribeNetworkInstantiate ()
 	{
-		for (int i = 0; i < 4; i++)
+		teams[MyTeam].initialPosition = selectedLevel.gameLevel.transform.FindChild(MyTeam.ToString()).transform;
+		List<Transform> toInitList = new List<Transform>();
+		foreach (Transform trns in teams[MyTeam].initialPosition)	
 		{
-			Team t = teams[i];
-			t.initialPosition = selectedLevel.gameLevel.transform.FindChild(i.ToString()).transform;
-			if(t.initialPosition != null && t.initialPosition.gameObject.activeSelf == true){
-				foreach (Transform trns in t.initialPosition)
-				{
-					if(trns.gameObject.activeSelf == true){
-						InitInstantiateNetwork toInit = trns.GetComponent<InitInstantiateNetwork>();
-						if (toInit.GetType() == typeof(InitInstantiateNetwork)){
-							toInit.Init();											
-						}
-					}
-				}
+			if(trns.gameObject.activeSelf == true)	toInitList.Add(trns);
+		}
+		
+		for (int i = toInitList.Count -1; i >= 0; i--)
+		{	
+			InitInstantiateNetwork toInit = toInitList[i].GetComponent<InitInstantiateNetwork>();
+			if (toInit != null){
+				toInit.Init();											
+				yield return new WaitForSeconds(0.1f);
 			}
 		}
+		Invoke("CallMySceneReady",1f);
 	}
 
 	IEnumerator TribeInstantiate ()
 	{
 		teams[0].initialPosition = selectedLevel.gameLevel.transform.FindChild("0").transform;
 		List<Transform> toInitList = new List<Transform>();
-		foreach (Transform trns in teams[0].initialPosition)	if(trns.gameObject.activeSelf == true)	toInitList.Add(trns);
+		foreach (Transform trns in teams[0].initialPosition)	
+		{
+			if(trns.gameObject.activeSelf == true)	toInitList.Add(trns);
+		}
 
 		for (int i = toInitList.Count -1; i >= 0; i--)
 		{	
@@ -242,12 +255,10 @@ public class GameplayManager : Photon.MonoBehaviour
 
 		for (int i = 0; i != teams.Length; i++)
 		{
-			if (MyTeam == i)
-			{
+			if (MyTeam == i){
 				Math.CenterCameraInObject (Camera.main, teams[i].initialPosition.position);
 			}
 		}
-		GamePaused(false);
 		Loading ld = hud.uiWaitingPlayers.GetComponent<Loading>();
 		ld.reverseAlpha();
 		resources.DeliverResources (Resource.Type.Rock, selectedLevel.startingRocks);		
@@ -258,10 +269,8 @@ public class GameplayManager : Photon.MonoBehaviour
 	#region Update
 	void Update ()
 	{
-		if(gamestarted)
-		{	
-			if(scoreCounting)
-			{				
+		if(gamestarted){	
+			if(scoreCounting){				
 				hud.labelMana.text = resources.Mana.ToString ();
 				hud.labelRocks.text = resources.Rocks.ToString ();
 				hud.labelUnits.text = numberOfUnits.ToString () + "/" + TotalPopulation.ToString ();
@@ -270,53 +279,38 @@ public class GameplayManager : Photon.MonoBehaviour
 		}
 		else CheckGameStart();
 		
-		if ((loseGame || winGame))
-		{
+		if ((loseGame || winGame)){
 			hud.uiVictoryObject.SetActive (winGame);
 			hud.uiDefeatObject.SetActive (loseGame);		
 		}
+
+//		if(!PhotonNetwork.offlineMode && isPaused)
+//		{
+//			if((pausedTime + 30f)< Time.unscaledTime)
+//			{
+//				photonView.RPC("DefeatOther", PhotonTargets.OthersBuffered,teamWhoPaused);
+//				GamePaused(false);
+//			}
+//		}
 	}
 	#endregion
 		
 	#region Get Colors
-	/// <summary>
-	/// Gets the color of my team.
-	/// </summary>
-	/// <returns>
-	/// The of my color team.
-	/// </returns>
-	/// 
-	public Color GetColorTeam ()
-	{
-		return GetColorTeam (MyTeam, 0);
-	}
 
-	/// <summary>
-	/// Gets the color team.
-	/// </summary>
-	/// <returns>
-	/// The color team.
-	/// </returns>
-	/// <param name='teamID'>
-	/// Team ID.
-	/// </param>
+	public Color GetColorTeam (){return GetColorTeam (MyTeam, 0);}
 	public Color GetColorTeam (int teamID) { return GetColorTeam (teamID, 0); }
 	public Color GetColorTeam (int teamID, int indexColor)
 	{
-		if (teamID >= 0 && teamID < teams.Length)
-		{
-			if (indexColor >= 0 && indexColor < teams[teamID].colors.Length)
-			{
+		if (teamID >= 0 && teamID < teams.Length){
+			if (indexColor >= 0 && indexColor < teams[teamID].colors.Length){
 				return teams[teamID].colors[indexColor];
 			}
-			else
-			{
+			else{
 				Debug.LogError ("The Team does not have the indexColor " + indexColor);
 				return Color.black;
 			}
 		}
-		else
-		{
+		else{
 			Debug.LogError ("Team ID does not exist. ID: " + teamID + ". Number of teams: " + teams.Length);
 			return Color.black;
 		}
@@ -324,77 +318,41 @@ public class GameplayManager : Photon.MonoBehaviour
 	#endregion
 
 	#region Check Teams e Stats
-	public bool IsSameTeam (int teamID)
-	{
-		return teamID == MyTeam;
-	}
-
-	public bool IsSameTeam (IStats stats)
-	{
-		return stats.team == MyTeam;
-	}
-
-	public bool IsBotTeam (IStats stats)
-	{
-		return stats.team == BOT_TEAM;
-	}
-
-	public bool IsAlly (int allyNumber)
-	{
-		return allyNumber == Allies;
-	}
-
-	public bool IsAlly (IStats stats)
-	{
-		return stats.ally == Allies;
-	}
-
+	public bool IsSameTeam (int teamID){return teamID == MyTeam;}
+	public bool IsSameTeam (IStats stats){return stats.team == MyTeam;}
+	public bool IsBotTeam (IStats stats){return stats.team == BOT_TEAM;}
+	public bool IsAlly (int allyNumber){return allyNumber == Allies;}
+	public bool IsAlly (IStats stats){return stats.ally == Allies;}
 	public bool IsNotEnemy (int teamID, int ally)
 	{
-		if (GameplayManager.mode == Mode.Cooperative)
-		{
+		if (GameplayManager.mode == Mode.Cooperative){
 			return IsAlly (ally);
 		}
-		else
-		{
+		else{
 			return IsSameTeam (teamID);
 		}
 	}
 	#endregion
 
 	#region Being Attacked
-
 	public bool IsBeingAttacked (IStats target)
 	{
-		if (!beingAttacked)
-		{
-			if (IsSameTeam (target))
-			{
+		if (!beingAttacked){
+			if (IsSameTeam (target)){
 				bool isInCamera = ComponentGetter.Get<TouchController> ().IsInCamera (target.transform.position);
-
-				if (!isInCamera)
-				{
+				if (!isInCamera){
 					beingAttacked = true;
-					Invoke ("BeingAttackedToFalse", 5f);
-					
+					Invoke ("BeingAttackedToFalse", 5f);					
 					SoundSource ss = GetComponent<SoundSource> ();
-					if (ss)
-					{
-						ss.Play ("BeingAttacked");
-					}
-
+					if (ss)	ss.Play ("BeingAttacked");
 					return true;
 				}
 			}
 		}
-
 		return false;
 	}
 
-	void BeingAttackedToFalse ()
-	{
-		beingAttacked = false;
-	}
+	void BeingAttackedToFalse (){beingAttacked = false;}
 	#endregion
 
 	#region Population Methods
@@ -441,49 +399,17 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public bool ReachedMaxPopulation
 	{
-		get
-		{
+		get{
 			return (TotalPopulation >= MAX_POPULATION_ALLOWED);
 		}
 	}
-
-	public void DefeatingEnemyTeamsByObjectives ()
-	{		
-		winGame = true;
-
-		if (PhotonNetwork.offlineMode)
-		{
-			EndMatch ();
-			
-			//Debug.Log("offline end match");
-			return;
-		}
-
-		if (PhotonNetwork.room.playerCount == 1)
-		{
-			EndMatch ();
-		}
-
-		else
-		{
-			for (int indexTeam = 0, maxTeams = teams.Length - 1; indexTeam != maxTeams; ++indexTeam)
-			{
-				if (indexTeam == MyTeam)
-					continue;
-
-				photonView.RPC ("DefeatOther", PhotonTargets.All, indexTeam);
-			}
-		}
-	}
-
 	#endregion
 
 	#region MainBase Methods
 
 	public void IncrementMainBase (int teamID)
 	{
-		if (IsSameTeam (teamID))
-		{
+		if (IsSameTeam (teamID)){
 			numberOfActiveMainBases++;
 			hud.uiLostMainBaseObject.SetActive (false);
 			CancelInvoke ("NoMainBase");
@@ -493,11 +419,9 @@ public class GameplayManager : Photon.MonoBehaviour
 	
 	public void DecrementMainBase (int teamID)
 	{
-		if (IsSameTeam (teamID))
-		{
+		if (IsSameTeam (teamID)){
 			numberOfActiveMainBases--;
-			if (numberOfActiveMainBases == 0 && (!loseGame && !winGame))
-			{
+			if (numberOfActiveMainBases == 0 && (!loseGame && !winGame)){
 				hud.uiLostMainBaseObject.SetActive (true);
 				timeLeftToLoseTheGame = 40f;
 				hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
@@ -517,13 +441,11 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	void DecrementTime ()
 	{
-		if (sc.myStats.Count == 0)
-		{
+		if (sc.myStats.Count == 0){
 			CancelInvoke("NoMainbase");
 			NoMainBase();
 		}
-		else
-		{
+		else{
 			timeLeftToLoseTheGame -= 1f;
 			hud.labelTime.text = timeLeftToLoseTheGame.ToString () + "s";
 		}
@@ -542,39 +464,35 @@ public class GameplayManager : Photon.MonoBehaviour
 
 	public void GamePaused(bool state)
 	{
-		if(state)
-		{
+		if(state){
 			touchController.mainCamera.GetComponent<CameraMovement>().enabled = false;
 			selectionController.enabled = false;
+			if(!PhotonNetwork.offlineMode) hud.pauseScreen.SetActive(true);
 			Time.timeScale = 0.0f;
+			isPaused = true;
 		}
-		else
-		{
+		else{
 			touchController.mainCamera.GetComponent<CameraMovement>().enabled = true;
 			selectionController.enabled = true;
+			if(!PhotonNetwork.offlineMode)hud.pauseScreen.SetActive(false);
 			Time.timeScale = 1.0f;
+			isPaused = false;
 		}
 	}
+
 	#endregion
 	
 	#region EndMatch
 	public void EndMatch ()
 	{
-		if (!PhotonNetwork.offlineMode)
-		{
-			if (winGame)
-			{
-				bm.WonTheGame ();
-			}
-
+		if (!PhotonNetwork.offlineMode){
+			if (winGame)	bm.WonTheGame ();
 			Model.Battle battle = new Model.Battle (encodedBattle);
 			Model.Player player = new Model.Player(encodedPlayer);
 
-			if(scoreCounting)
-			{				
+			if(scoreCounting){				
 				if (winGame)	Score.AddScorePoints (DataScoreEnum.Victory, 1, battle.IdBattle);
 				else			Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);
-
 				Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);
 				score.SaveScore();
 				scoreCounting = false;			
@@ -582,30 +500,23 @@ public class GameplayManager : Photon.MonoBehaviour
 
 			PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
 			pbDAO.CreatePlayerBattle (player, battle,
-			(playerBattle, message) =>
-			{
+			(playerBattle, message) =>{
 				playerBattle.BlWin = winGame;
 				pbDAO.UpdatePlayerBattle (playerBattle,
-				(playerBattle_update, message_update) =>
-				{
+				(playerBattle_update, message_update) =>{
 
 				});
 			});
 		}
 		else
 		{
-			if (PhotonNetwork.offlineMode && scoreCounting)
-			{
+			if (PhotonNetwork.offlineMode && scoreCounting){
 				OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
 				if (winGame)	oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Victory, 1);
-				else			oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Defeat, 1);
-				
+				else			oScore.oPlayers[0].AddScorePlayer(DataScoreEnum.Defeat, 1);				
 				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.TotalTimeElapsed, (int)gameTime);
-				
-				//Debug.Log("offline end match");
 			}
 		}
-
 		if (!PhotonNetwork.offlineMode) PhotonNetwork.LeaveRoom ();
 	}
 
@@ -613,54 +524,63 @@ public class GameplayManager : Photon.MonoBehaviour
 	{	
 		if(!winGame && !loseGame)	Defeat(MyTeam, Allies);
 	}
+
+	public void DefeatingEnemyTeamsByObjectives ()
+	{		
+		winGame = true;
+		
+		if (PhotonNetwork.offlineMode){
+			EndMatch ();
+			return;
+		}
+		
+		if (PhotonNetwork.room.playerCount == 1){
+			EndMatch ();
+		}
+		
+		else{
+			for (int indexTeam = 0, maxTeams = teams.Length - 1; indexTeam != maxTeams; ++indexTeam)
+			{
+				if (indexTeam == MyTeam)	continue;
+				photonView.RPC ("DefeatOther", PhotonTargets.All, indexTeam);
+			}
+		}
+	}
 	#endregion
 
 	#region RPC's
 	[RPC]
 	void DefeatOther (int teamID)
 	{
-		if (teamID == MyTeam)
-		{
-			photonView.RPC ("Defeat", PhotonTargets.All, MyTeam, Allies);
-		}
+		if (teamID == MyTeam)	photonView.RPC ("Defeat", PhotonTargets.All, MyTeam, Allies);
 	}
 	
 	[RPC]
 	public void Defeat (int teamID, int ally)
 	{
 		selectedLevel.gameLevel.GetComponent<VictoryCondition>().InactiveAllChallenges();
-
-		if (teams[teamID].lose) return;
-				
-		teams[teamID].lose = true;	
-		
-		switch (GameplayManager.mode)
-		{
+		if (teams[teamID].lose) return;				
+		teams[teamID].lose = true;			
+		switch (GameplayManager.mode){
 		case Mode.Cooperative:
-			if (alliesNumberOfStats[ally].teams.Contains(teamID))
-			{
+			if (alliesNumberOfStats[ally].teams.Contains(teamID)){
 				alliesNumberOfStats[ally].teams.Remove (teamID);
 			}
 			
-			if (alliesNumberOfStats[ally].teams.Count == 0)
-			{
-				if (ally == Allies)
-				{
+			if (alliesNumberOfStats[ally].teams.Count == 0){
+				if (ally == Allies){
 					winGame = false;
 					loseGame = true;
 				}
-				else
-				{
+				else{
 					winGame = true;
 					loseGame = false;
 				}				
 				SendMessage ("EndMatch");
 			}
 			break;
-		case Mode.Tutorial:
-			
-			if (MyTeam == teamID)
-			{
+		case Mode.Tutorial:			
+			if (MyTeam == teamID){
 				loseGame = true;
 				selectedLevel.gameLevel.GetComponent<EnemyCluster>().enabled = false;
 				loserTeams++;
@@ -670,38 +590,24 @@ public class GameplayManager : Photon.MonoBehaviour
 				scoreCounting = false;
 				Invoke("DestroyAllStats", 1f);
 			}
-
 			break;
 
 		case Mode.Deathmatch:
-
-			if (MyTeam == teamID)
-			{
+			if (MyTeam == teamID){
 				loseGame = true;		
 				Model.Battle battle = ConfigurationData.battle;
-				if (scoreCounting)
-				{
+				if (scoreCounting){
 					Score.AddScorePoints (DataScoreEnum.Defeat, 1, battle.IdBattle);					
 					Score.AddScorePoints (DataScoreEnum.TotalTimeElapsed, (int)gameTime, battle.IdBattle);					
 					score.SaveScore();
 				}
-
 				scoreCounting = false;
-
 			}
 
 			sc.DestroyAllStatsTeam (teamID);			
 			loserTeams++;			
-
-			if (loserTeams == numberOfTeams - 1 && !loseGame)
-			{
-				winGame = true;
-			}
-			
-			if (loserTeams == numberOfTeams-1)
-			{
-				SendMessage ("EndMatch");
-			}
+			if (loserTeams == numberOfTeams - 1 && !loseGame)	winGame = true;						
+			if (loserTeams == numberOfTeams-1)	SendMessage ("EndMatch");
 			break;
 						
 		default:
@@ -713,11 +619,36 @@ public class GameplayManager : Photon.MonoBehaviour
 		sc.DestroyAllStatsTeam (MyTeam);
 		sc.DestroyAllStatsTeam (BOT_TEAM);
 	}
+
+//	IEnumerator OnApplicationFocus(bool running)
+//	{
+//		if(!PhotonNetwork.offlineMode){		 
+//			if(!running){
+//				photonView.RPC("ApplicationPaused",PhotonTargets.Others, true, MyTeam);
+//				GamePaused (true);
+//			}
+//			else{
+//				photonView.RPC("ApplicationPaused",PhotonTargets.Others, false, MyTeam);
+//				GamePaused (false);
+//			}
+//			yield return new WaitForSeconds(1f);
+//		}
+//	}
 	
 	[RPC]
 	void MySceneReady()
 	{
 		readyCounter++;
 	}
+
+//	[RPC]
+//	void ApplicationPaused(bool state, int teamPaused)
+//	{
+//		GamePaused(state);
+//		if(isPaused && teamWhoPaused != MyTeam){
+//			pausedTime = Time.unscaledTime;
+//			teamWhoPaused = teamPaused;
+//		}		
+//	}
 	#endregion
 }

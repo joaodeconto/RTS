@@ -56,7 +56,7 @@ public class TemporizedMessageQueue : MessageQueue
 
 		if (capCounter>messageCap)
 		{
-			CleanFirstMessage();		
+			DeleteFirst();		
 			return;
 		}
 
@@ -69,6 +69,12 @@ public class TemporizedMessageQueue : MessageQueue
 
 		capCounter++;
 
+	}
+
+	private void DeleteFirst()
+	{
+		capCounter--;
+		DequeueMessageInfo();
 	}
 
 	private void CleanFirstMessage()

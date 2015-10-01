@@ -11,8 +11,6 @@ GameObject:
   - 114: {fileID: 11400000}
   - 82: {fileID: 8200004}
   - 82: {fileID: 8200002}
-  - 82: {fileID: 8212480}
-  - 82: {fileID: 8212482}
   m_Layer: 0
   m_Name: SoundManager
   m_TagString: GameController
@@ -148,122 +146,6 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
---- !u!82 &8212480
-AudioSource:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 0
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
---- !u!82 &8212482
-AudioSource:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 0
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -301,16 +183,6 @@ MonoBehaviour:
     minDelay: 0
     maxDelay: 0
     delay: 0
-  - level: 1x1_Medium_TheLivingDesert
-    isCustomLevel: 0
-    soundsToPlay:
-    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
-    baseVolumes:
-    - 1
-    playMethod: 3
-    minDelay: 0
-    maxDelay: 0
-    delay: 0
   - level: 2x2_Swamp_King_Tutorial
     isCustomLevel: 0
     soundsToPlay:
@@ -323,56 +195,70 @@ MonoBehaviour:
     delay: 0
   - level: DementiaForest_Tutorial
     isCustomLevel: 0
-    soundsToPlay: []
-    baseVolumes: []
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 3
     minDelay: 0
     maxDelay: 0
     delay: 0
   - level: Hollow Fields_Tutorial
     isCustomLevel: 0
-    soundsToPlay: []
-    baseVolumes: []
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 3
     minDelay: 0
     maxDelay: 0
     delay: 0
   - level: Gargantua
     isCustomLevel: 0
-    soundsToPlay: []
-    baseVolumes: []
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 3
     minDelay: 0
     maxDelay: 0
     delay: 0
   - level: LivingDesert_Tutorial
     isCustomLevel: 0
-    soundsToPlay: []
-    baseVolumes: []
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 3
     minDelay: 0
     maxDelay: 0
     delay: 0
   - level: Sandstone Salvation
     isCustomLevel: 0
-    soundsToPlay: []
-    baseVolumes: []
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 3
     minDelay: 0
     maxDelay: 0
     delay: 0
   - level: Crank Lagoon
     isCustomLevel: 0
-    soundsToPlay: []
-    baseVolumes: []
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 3
     minDelay: 0
     maxDelay: 0
     delay: 0
   - level: Arthanus
     isCustomLevel: 0
-    soundsToPlay: []
-    baseVolumes: []
+    soundsToPlay:
+    - {fileID: 8300000, guid: 51e54f46c47f9274aa2108830ac16e68, type: 3}
+    baseVolumes:
+    - 1
     playMethod: 3
     minDelay: 0
     maxDelay: 0

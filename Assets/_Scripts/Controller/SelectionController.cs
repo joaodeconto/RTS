@@ -63,7 +63,7 @@ public class SelectionController : MonoBehaviour
 								}
 								else
 								{
-									if (Time.time - (float)ht["time"] > 0.5f)
+									if (Time.time - (float)ht["time"] > 0.3f)
 									{	
 										groupFeedback.SetActive(false);
 										groupFeedback = dcb.transform.Find("ActiveFeedback").gameObject;

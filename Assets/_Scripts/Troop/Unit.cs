@@ -685,9 +685,9 @@ public class Unit : IStats, IMovementObservable,
 			invokeCheckEnemy = false;
 		}
 	}
-	public void CallInvokeCheckEnemy()
+	public void CallInvokeCheckEnemy(float wait)
 	{
-		Invoke ("StartCheckEnemy",5f);
+		Invoke ("StartCheckEnemy",wait);
 	}
 	
 	public bool InMeleeRange (GameObject target)
@@ -764,21 +764,9 @@ public class Unit : IStats, IMovementObservable,
 		                                               Unit.UnitGroupQueueName,
 		                                               ht,
 		                                               this.guiTextureName,
-		                                               (hud_ht) =>
-		                                               {
+		                                               (hud_ht) =>{
 															statsController.DeselectAllStats();
 															statsController.SelectStat(this, true);
-														},
-														(ht_dcb, isDown) => 
-														{
-															if (isDown)	ht["time"] = Time.time;
-															else
-															{
-																if (Time.time - (float)ht["time"] > 0.3f)
-																{	
-																	selectionController.SelectSameCategory(this.category);						
-																}																
-															}
 														});		
 //MOVE ACTION DISABLE
 

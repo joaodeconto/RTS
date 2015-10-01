@@ -6,7 +6,6 @@ using Visiorama;
 public class EndGameHUD : MonoBehaviour
 {
 	private GameObject endGameWait;
-	private bool checkSaving = false;
 	protected Score score;
 	protected XTerrainDeformer xdeformer;
 	public GameObject endGameUI;
@@ -26,15 +25,15 @@ public class EndGameHUD : MonoBehaviour
 		defaultCallbackButton = option.AddComponent<DefaultCallbackButton> ();
 		defaultCallbackButton.Init (null,
 									(ht_dcb) =>{	
-										if(Everyplay.IsRecording())	Everyplay.StopRecording();
+//										if(Everyplay.IsRecording())	Everyplay.StopRecording();
 										ComponentGetter.Get<OfflineScore>().DestroyMe();
 										xdeformer.ResetTerrain();
 										endGameUI.SetActive(true);
 										Loading ld = endGameUI.GetComponent<Loading>();
 										ld.forwardAlpha();										
-										if(ConfigurationData.addPass || ConfigurationData.multiPass) {Application.LoadLevel (Application.loadedLevelName);}
+										if(ConfigurationData.addPass) {Application.LoadLevel (Application.loadedLevelName);}
 										else{
-										Advertisement.Show(null, new ShowOptions{pause = false,resultCallback = result =>{Application.LoadLevel (Application.loadedLevelName);}});
+										Advertisement.Show(null, new ShowOptions{resultCallback = result =>{Application.LoadLevel (Application.loadedLevelName);}});
 				
 										}										
 									});
@@ -65,7 +64,7 @@ public class EndGameHUD : MonoBehaviour
 
 	void QuitSave()
 	{
-		if(Everyplay.IsRecording())	Everyplay.StopRecording();
+//		if(Everyplay.IsRecording())	Everyplay.StopRecording();
 		GameplayManager gm = ComponentGetter.Get<GameplayManager>();
 		gm.selectedLevel.gameLevel.SetActive(false);
 		StartCoroutine (LoadingScene());

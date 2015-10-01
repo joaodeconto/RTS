@@ -13,20 +13,20 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public class RendererTeamSubstanceColor
 	{
 		public Transform subMesh;
-		private Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
+		private static Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
 
 		//Caso esse metodo for modificado eh necessario modificar no Rallypoint tbm
-		public void SetColorInMaterial (Transform transform, int teamID, bool playerUnit)
+		public void SetColorInMaterial (Transform transformMesh, int teamID, bool playerUnit)
 		{
 			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
 			Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
 			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
-			string unitName = subMesh.name;
-			int startRemoveIndex = unitName.IndexOf ("(");			
-			unitName = Regex.Replace (unitName, "[0-9]", "" );			
-			startRemoveIndex = (startRemoveIndex > 0) ? startRemoveIndex : unitName.Length - 1;
-			unitName.Remove (startRemoveIndex);
-			string keyUnitTeamMaterial = unitName + " - "  + subMesh.name+ " - " + teamID;
+			string unitName = transformMesh.name;
+//			int startRemoveIndex = unitName.IndexOf ("(");			
+//			unitName = Regex.Replace (unitName, "[0-9]", "" );			
+//			startRemoveIndex = (startRemoveIndex > 0) ? startRemoveIndex : unitName.Length - 1;
+//			unitName.Remove (startRemoveIndex);
+			string keyUnitTeamMaterial = unitName + teamID;
 			
 			//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
 			if (!unitTeamMaterials.ContainsKey (keyUnitTeamMaterial)){
@@ -209,8 +209,10 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		else playerUnit = false;
 		firstDamage = false;
 		SetColorTeam ();
-		int idName = GetInstanceID();
-		if(gf == null) name = name + idName.ToString();
+		if (PhotonNetwork.offlineMode && gf == null){
+			int idName = GetInstanceID();
+			name = name + idName.ToString();
+		}
 		WasRemoved = false;
 		RangedStructure rs = GetComponent<RangedStructure>();
 		if(gf != null || rs != null) return;
@@ -301,7 +303,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	{		
 		foreach (RendererTeamSubstanceColor rtsc in rendererTeamSubstanceColor)
 		{
-			rtsc.SetColorInMaterial (transform, team, playerUnit);
+			rtsc.SetColorInMaterial (rtsc.subMesh, team, playerUnit);
 		}
 	}
 	#endregion

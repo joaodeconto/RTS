@@ -49,8 +49,7 @@ public class OfflineMenu : MonoBehaviour
 		}
 
 		if(noAddBtn.activeSelf){
-			StoreManager sm = ComponentGetter.Get<StoreManager>();
-			noAddBtn.GetComponent<DefaultCallbackButton>().Init( null,(ht_hud) => {sm.NoAdsPurchase();});
+			noAddBtn.GetComponent<DefaultCallbackButton>().Init( null,(ht_hud) => {StoreManager.NoAdsPurchase();});
 		}
 		InitScore ();
 		goMainMenu.SetActive (true);

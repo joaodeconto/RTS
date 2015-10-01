@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Linq;
-
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PhotonWrapper : Photon.MonoBehaviour
@@ -11,12 +10,8 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	public delegate void PlayerReadyCallback (int nPlayersReady, int nPlayers);
 
 	public float RefreshingInterval = 0.2f;
-
 	public GameObject[] menusDissapearWhenLogged;
-	
-
 	protected bool checkingStatus = false;
-
 	private string playerName = "";
 	private string roomNameTemp = "";
 	private bool isTryingToEnterGame;
@@ -24,21 +19,18 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	private ConnectionCallback cb;
 	private PlayerReadyCallback prc;
 	private StartGameCallback sgc;
-
 	private bool wasInitialized = false;
+
 	public void Init ()
 	{
 		if (wasInitialized)
 			return;
 
 		wasInitialized = true;
-
-		//if (!PhotonNetwork.connected)
-		{
-			Application.runInBackground = true;
-			PhotonNetwork.networkingPeer.DisconnectTimeout = 30000;
-			PhotonNetwork.ConnectUsingSettings (ConfigurationData.VERSION);
-		}
+		Application.runInBackground = false;
+		PhotonNetwork.networkingPeer.DisconnectTimeout = 30000;
+		PhotonNetwork.ConnectUsingSettings (ConfigurationData.VERSION);
+	
 	}
 	
 	void Update ()
@@ -184,46 +176,15 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		PeerState peerState = PhotonNetwork.connectionStateDetailed;
 
-		// Verificando conexão
-		if (peerState == PeerState.ConnectingToMasterserver)
-		{
-			return "Checking connection";
-		}
-		// Conectado
-		else if (peerState == PeerState.ConnectedToMaster)
-		{
-			return "Connected";
-		}
-		// Desconectado ou sem conexão
-		else if (peerState == PeerState.Disconnected)
-		{
-			return "Disconnected";
-		}
-		else if (peerState == PeerState.Authenticated)
-		{
-			return "Authenticated Network Settings";
-		}
-		else if (peerState == PeerState.JoinedLobby)
-		{
-			return "Joined Game Network";
-		}
-		else if (peerState == PeerState.DisconnectingFromMasterserver)
-		{
-			return "Checking Server";
-		}
-		else if(peerState == PeerState.ConnectingToGameserver)
-		{
-			return "Connecting to Game Server";
-		}
-		else if(peerState == PeerState.ConnectedToGameserver)
-		{
-			return "Connected to Game Server";
-		}
-		// Conexão criada
-		else if (peerState == PeerState.PeerCreated)
-		{
-			return "Connection Created";
-		}
+		if (peerState == PeerState.ConnectingToMasterserver)			return "Checking connection";
+		else if (peerState == PeerState.ConnectedToMaster)				return "Connected";
+		else if (peerState == PeerState.Disconnected)					return "Disconnected";
+		else if (peerState == PeerState.Authenticated)					return "Authenticated Network Settings";
+		else if (peerState == PeerState.JoinedLobby)					return "Joined Game Network";
+		else if (peerState == PeerState.DisconnectingFromMasterserver)	return "Checking Server";	
+		else if (peerState == PeerState.ConnectingToGameserver)			return "Connecting to Game Server";
+		else if (peerState == PeerState.ConnectedToGameserver)			return "Connected to Game Server";
+		else if (peerState == PeerState.PeerCreated)					return "Connection Created";
 
 		return peerState.ToString ();
 	}
@@ -290,24 +251,18 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Room room = PhotonNetwork.room;
 		
-		if (PhotonNetwork.room == null)
-		{
-			if (PhotonNetwork.isNonMasterClientInRoom)
-			{
-				if (!isInvokeRetryEnterLobby)
-				{
+		if (PhotonNetwork.room == null){
+			if (PhotonNetwork.isNonMasterClientInRoom){
+				if (!isInvokeRetryEnterLobby){
 					Invoke ("RetryEnterLobby", 5f);
 					isInvokeRetryEnterLobby = true;
 				}
 			}
 			return;
 		}
-		else
-		{
-			if (PhotonNetwork.isNonMasterClientInRoom)
-			{
-				if (isInvokeRetryEnterLobby)
-				{
+		else{
+			if (PhotonNetwork.isNonMasterClientInRoom){
+				if (isInvokeRetryEnterLobby){
 					CancelInvoke ("RetryEnterLobby");
 					isInvokeRetryEnterLobby = false;
 				}
@@ -317,20 +272,13 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		int numberOfReady = 0;
 		foreach (PhotonPlayer p in PhotonNetwork.playerList)
 		{
-			if (      p.customProperties.ContainsKey("ready") &&
-			    (bool)p.customProperties["ready"] == true)
-			{
-				numberOfReady++;
-			}
+			if (p.customProperties.ContainsKey("ready") &&
+			    (bool)p.customProperties["ready"] == true)	numberOfReady++;
 		}
 
-		if (prc != null)
-		{
-			prc (numberOfReady, room.maxPlayers);
-		}
+		if (prc != null)	prc (numberOfReady, room.maxPlayers);
 
-		if (numberOfReady == room.maxPlayers)
-		{
+		if (numberOfReady == room.maxPlayers){
 			StopTryingEnterGame ();
 			StartCoroutine (CallStartGameCallback ());
 		}

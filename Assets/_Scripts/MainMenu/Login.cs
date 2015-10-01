@@ -69,7 +69,7 @@ public class Login : IController
 	{
 		string username = (string)ht["username"];
 		string password = (string)ht["password"];
-		string idFacebook = "";		 
+		string idFacebook = (string)ht["providerId"];
 		
 		if (!UseRealLogin)	{
 			ConfigurationData.player = new Model.Player () { IdPlayer = 5,
@@ -89,25 +89,17 @@ public class Login : IController
 			                     {
 									ConfigurationData.player = player;
 									
-									Debug.Log ("player: " + player);
-									Debug.Log ("name: " + username);
+									//Debug.Log ("player: " + player);
+									//Debug.Log ("name: " + username);
 									
 									if (player == null)	{
 										LoginIndex index = GetView <LoginIndex> ("Index");
 										index.ShowErrorMessage ("Incorrect User or Password");
 									}
 									else
-									{
-										if ( rememberUser.value == true){
-											PlayerPrefs.SetString("ReUser", username);
-											PlayerPrefs.SetString("RePassword", password);
-										}
-
-										else{
-											PlayerPrefs.SetString("ReUser", username);
-											PlayerPrefs.SetString("RePassword", null);
-										}
-
+									{										
+										PlayerPrefs.SetString("ReUser", username);
+										PlayerPrefs.SetString("RePassword", password);	
 										pw.SetPlayer (username, true);
 										pw.SetPropertyOnPlayer ("player", player.ToString ());	
 										ConfigurationData.Offline = false;

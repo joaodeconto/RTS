@@ -400,7 +400,6 @@ MonoBehaviour:
     yPadding: 1
     cellSizeX: 92
     cellSizeY: 92
-  pref_healthBar: {fileID: 100004, guid: 7124a57782363ec4cb6632edc61ab84a, type: 2}
   pref_SubstanceHealthBar: {fileID: 100000, guid: f7fda6822cd7b2743a4f44a261c6f07e,
     type: 2}
   pref_SubstanceResourceBar: {fileID: 100000, guid: 9694c3cc13da4744ca0fb5a89a8e759c,
@@ -412,6 +411,7 @@ MonoBehaviour:
   trnsPanelInfoBox: {fileID: 0}
   trnsPanelUnitStats: {fileID: 0}
   pref_button: {fileID: 100002, guid: dc5d796563fc1b340ab662b75147348c, type: 2}
+  select_button: {fileID: 0}
   offesetFeedback: {x: 0, y: .200000003, z: 0}
   pref_moveFeedback: {fileID: 100004, guid: edd8a48d9e4d0414389f53cbd2495f6a, type: 2}
   pref_selfFeedback: {fileID: 100002, guid: 034a29830f368f448acbc6836e87e74e, type: 2}
@@ -473,7 +473,7 @@ MonoBehaviour:
     maxItems: 10
     IsTemporizedQueue: 1
     temporizedQueueAttributes:
-      timeToFadeout: 4
+      timeToFadeout: 3
       fadeColor: {r: 0, g: 0, b: 0, a: 0}
       messageCap: 5
   - queueName: Chat
@@ -540,6 +540,7 @@ MonoBehaviour:
   idleUnitButtonPosition: {x: 94, y: 0, z: 0}
   idleWorkerButtonPosition: {x: 0, y: 0, z: 0}
   idleButtonParent: {fileID: 0}
+  selectedWorker: {fileID: 0}
   myStats: []
   otherStats: []
 --- !u!114 &11400014
@@ -579,8 +580,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeacf3f39fe51bf418444dc35a79112b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timer: 0
-  setTimerCount: 0
   events:
   - Name: building finish
     Message: '{0} construction complete'
@@ -701,8 +700,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6a830f3446549408e3bc23cf6bc4be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resources:
+    m_mana: 0
+    m_rocks: 0
+  scoreCounting: 1
+  clockPontuationLimit: 0
   pauseGame: 0
+  loadingMessage: {fileID: 0}
   gameTime: 0
+  selectedLevel:
+    levelId: 0
+    gameLevel: {fileID: 0}
+    startingRocks: 0
+    startingMana: 0
   teams:
   - name: Time 1
     colors:
@@ -713,7 +723,7 @@ MonoBehaviour:
   - name: Time 2
     colors:
     - {r: 1, g: 0, b: 0, a: 1}
-    - {r: 1, g: .682758629, b: 0, a: 1}
+    - {r: .316176474, g: .275323659, b: .202259958, a: 1}
     - {r: .742647052, g: .742647052, b: .742647052, a: 1}
     initialPosition: {fileID: 0}
   - name: Time 3
@@ -724,9 +734,9 @@ MonoBehaviour:
     initialPosition: {fileID: 0}
   - name: super time
     colors:
-    - {r: .0344827175, g: 1, b: 0, a: 1}
+    - {r: 1, g: 0, b: .972414017, a: 1}
     - {r: .213235319, g: .213235319, b: .213235319, a: 1}
-    - {r: .29411763, g: .185300067, b: .0475778431, a: 1}
+    - {r: .654411793, g: .482379824, b: .264651835, a: 1}
     initialPosition: {fileID: 0}
   - name: super time
     colors: []
@@ -749,12 +759,12 @@ MonoBehaviour:
   level:
   - levelId: 0
     gameLevel: {fileID: 0}
-    startingRocks: 300
+    startingRocks: 0
     startingMana: 0
   - levelId: 1
     gameLevel: {fileID: 0}
     startingRocks: 300
-    startingMana: 1000
+    startingMana: 0
   - levelId: 2
     gameLevel: {fileID: 0}
     startingRocks: 140
@@ -763,9 +773,6 @@ MonoBehaviour:
     gameLevel: {fileID: 0}
     startingRocks: 300
     startingMana: 0
-  resources:
-    m_mana: 0
-    m_rocks: 0
   hud:
     labelRocks: {fileID: 0}
     labelMana: {fileID: 0}
@@ -776,14 +783,7 @@ MonoBehaviour:
     uiWaitingPlayers: {fileID: 0}
     labelTime: {fileID: 0}
     uiLostMainBaseObject: {fileID: 0}
-  scoreCounting: 1
-  clockPontuationLimit: 0
-  loadingMessage: {fileID: 0}
-  selectedLevel:
-    levelId: 0
-    gameLevel: {fileID: 0}
-    startingRocks: 0
-    startingMana: 0
+    pauseScreen: {fileID: 0}
 --- !u!114 &11400032
 MonoBehaviour:
   m_ObjectHideFlags: 1

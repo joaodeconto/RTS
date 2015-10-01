@@ -10,50 +10,38 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
 	
 	void Awake()
     {
-		if (PhotonNetwork.offlineMode)
-		{
+		if (PhotonNetwork.offlineMode){
 			enabled = false;
 		}
 
-		else
-		{
-			factory = GetComponent <FactoryBase> ();
-			
+		else{
+			factory = GetComponent <FactoryBase> ();			
 			correctPlayerPos = factory.transform.position; //We lerp towards this
 			correctPlayerRot = factory.transform.rotation; //We lerp towards this
-			
 			gameObject.name = gameObject.name + photonView.viewID;
 						
-			if (factory.IsNetworkInstantiate)
-			{
-				enabled = !photonView.isMine;
-				Debug.Log("pelo photonview  " + enabled);
+			if (factory.IsNetworkInstantiate){
+				if(GetComponent<GhostFactory>() != null) enabled = false;
+				else enabled = !photonView.isMine;
 			}
 			
-			else 
-			{
-				enabled = !photonView.isMine;
-				Debug.Log("pelo gameplay  " + enabled);
-				
+			else {
+				if(GetComponent<GhostFactory>() != null) enabled = false;
+				else enabled = !photonView.isMine;				
 			}
 		}
-		
-
-
     }
 	
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
-        {
+        if (stream.isWriting){
             //We own this player: send the others our data
             stream.SendNext (factory.Health);
 			stream.SendNext (factory.buildingState);
             stream.SendNext (transform.position);
             stream.SendNext (transform.rotation);
         }
-        else
-        {
+        else{
             //Network player, receive data
 			factory.SetHealth ((int)stream.ReceiveNext());
 			factory.buildingState = (FactoryBase.BuildingState)(int)stream.ReceiveNext();
@@ -61,13 +49,10 @@ public class FactoryNetworkTransform : Photon.MonoBehaviour
             correctPlayerRot = (Quaternion)stream.ReceiveNext();
         }
     }
-	
-
 
     void Update()
     {
-		if (!photonView.isMine)
-		{
+		if (!photonView.isMine){
         	transform.position = correctPlayerPos;
         	transform.rotation = correctPlayerRot;
 			factory.SyncAnimation ();

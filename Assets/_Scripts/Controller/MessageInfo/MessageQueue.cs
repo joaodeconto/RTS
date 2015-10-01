@@ -113,10 +113,11 @@ public abstract class MessageQueue : MonoBehaviour
 		if(uiGrid.transform.childCount == 0)	return;
 		--nQueueItems;
 		int childIndex = uiGrid.transform.childCount - 1;
-		Transform goMessageInfo = uiGrid.transform.GetChild(childIndex);
+		Transform goMessageInfo = uiGrid.transform.GetChild(0);
 		HealthObserverButton hbo = goMessageInfo.GetComponent<HealthObserverButton> ();
 		if (hbo != null) hbo.StopToObserve ();
-		DespawnBtn(goMessageInfo);		
+		PoolManager.Pools["Buttons"].Despawn (goMessageInfo, PoolManager.Pools["Buttons"].group);
+		//DespawnBtn(goMessageInfo);		
 		Invoke("RepositionGrid", 0.1f);
 	}
 
@@ -147,7 +148,8 @@ public abstract class MessageQueue : MonoBehaviour
 		if(trnsButton != null)
 		{
 			--nQueueItems;
-			DespawnBtn(trnsButton);	
+			PoolManager.Pools["Buttons"].Despawn (trnsButton, PoolManager.Pools["Buttons"].group);
+			//DespawnBtn(trnsButton);	
 			Invoke("RepositionGrid", 0.1f);
 		}
 	}
@@ -162,8 +164,9 @@ public abstract class MessageQueue : MonoBehaviour
 		nQueueItems = 0;
 
 		foreach (Transform child in uiGrid.transform)
-		{			
-			DespawnBtn(child);	
+		{	
+			PoolManager.Pools["Buttons"].Despawn (child, PoolManager.Pools["Buttons"].group);
+			//DespawnBtn(child);	
 		}
 	}
 
@@ -209,8 +212,9 @@ public abstract class MessageQueue : MonoBehaviour
 				{
 					--nQueueItems;
 //					Destroy (uiGrid.transform.GetChild (i));
-					Transform child = uiGrid.transform.GetChild(i);				
-					DespawnBtn(child);					
+					Transform child = uiGrid.transform.GetChild(i);	
+					PoolManager.Pools["Buttons"].Despawn (child, PoolManager.Pools["Buttons"].group);
+					//DespawnBtn(child);					
 					--i;
 					break;
 				}

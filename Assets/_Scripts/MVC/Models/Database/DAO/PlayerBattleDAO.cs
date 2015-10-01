@@ -81,7 +81,7 @@ public class PlayerBattleDAO : MonoBehaviour
 		GetBattleType (battleTypeName,
 		(battleType) =>
 		{
-			Debug.Log ("Criou battle type");
+			//Debug.Log ("Criou battle type");
 			DB.Battle dbBattle = (new Model.Battle () { IdBattleType = battleType.IdBattleType,
 														battleType   = battleType,
 														Bid 		 = bid,
@@ -135,12 +135,12 @@ public class PlayerBattleDAO : MonoBehaviour
 
 	public void CreatePlayerBattle (Model.Player player, Model.Battle battle, PlayerBattleDAODelegate callback)
 	{
-		Debug.Log ("player: " + player.ToString ());
+		//Debug.Log ("player: " + player.ToString ());
 
 		DB.PlayerBattle dbPlayerBattle = (new Model.PlayerBattle (){IdPlayer = player.IdPlayer,
 																	IdBattle = battle.IdBattle,
 																	battle   = battle}).ToDatabaseModel ();
-		Debug.Log ("dbPlayerBattle: " + dbPlayerBattle);
+		//Debug.Log ("dbPlayerBattle: " + dbPlayerBattle);
 		db.Create (dbPlayerBattle,
 		(response) =>
 		{

@@ -7,20 +7,13 @@ using Visiorama.Utils;
 public class AvatarMenu : MonoBehaviour
 {
 	private bool wasInitialized = false;
-
 	public UISprite avatarImg;
 	public Transform buttons;
-
 	private List<Transform> avatarList;
 	
 	public void OnEnable ()
 	{
 		Open ();
-	}
-	
-	public void OnDisable ()
-	{
-		Close ();
 	}
 					
 	public void Open ()
@@ -28,8 +21,7 @@ public class AvatarMenu : MonoBehaviour
 		if (wasInitialized)
 			return;
 		
-		wasInitialized = true;
-				
+		wasInitialized = true;				
 		DefaultCallbackButton dcb;
 
 		avatarList = new List<Transform>();
@@ -39,17 +31,11 @@ public class AvatarMenu : MonoBehaviour
 			Transform trnsAvatar = button.FindChild("Sprite (AVATAR)");
 			Hashtable ht = new Hashtable ();
 			ht["avatarImg"] = trnsAvatar.GetComponent<UISprite>().spriteName;
-
-
-				dcb = button.gameObject.AddComponent<DefaultCallbackButton>();
-				dcb.Init(ht, (ht_dcb)=>
-				         {
-					
+			dcb = button.gameObject.AddComponent<DefaultCallbackButton>();
+			dcb.Init(ht, (ht_dcb)=>{					
 				avatarImg.spriteName = (string)ht_dcb["avatarImg"];
 				PlayerPrefs.SetString("Avatar", avatarImg.spriteName);
-				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper>();
-				pw.SetPlayer (ConfigurationData.player.SzName, true);
-				});
+			});
 
 		}
 		
@@ -58,16 +44,14 @@ public class AvatarMenu : MonoBehaviour
 		if (close != null)
 		{
 			dcb = close.gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
+			dcb.Init(null,(ht_dcb) =>{
 				gameObject.SetActive (false);
 			});
 		}
 	}
-	
-	public void Close ()
+
+	void Close()
 	{
-		this.gameObject.SetActive(false);
+		gameObject.SetActive (false);
 	}
 }

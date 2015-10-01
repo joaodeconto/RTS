@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
-
 using Visiorama;
+using Soomla.Profile;
 
 public class LoginIndex : IView
 {				
@@ -10,50 +10,42 @@ public class LoginIndex : IView
 	public UILabel errorMessage;
 	public GameObject FacebookButton;
 	public GameObject SubmitButton;
-	public GameObject NewAccountButton;
-	public GameObject OfflineButton;
-	public bool hasInternet;
+	public bool hasInternet{get{return ConfigurationData.connected;}} 
 	public GameObject mpassMarket;
 
 	public void Init ()
 	{
-		InternetChecker internetChecker = GetComponent<InternetChecker>();
-		internetChecker.enabled = true;
+//		InternetChecker internetChecker = GetComponent<InternetChecker>();
+//		internetChecker.enabled = true;
 		LoadRePrefs();
 		errorMessage.enabled = false;
 		Login login = ComponentGetter.Get<Login>();
-		OfflineButton.GetComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>{login.EnterOfflineMode();});
-						
-		SubmitButton.GetComponent<DefaultCallbackButton>().Init (null, (ht_hud) =>{
-																	if (!ConfigurationData.multiPass) MultiPassBtn();
-																	else{
-																			//TODO lógica de login do jogo
-																			if (string.IsNullOrEmpty(username.value) ||
-																				string.IsNullOrEmpty(password.value))
-																				return;
-																			if (hasInternet)
-																			{
-																				Hashtable ht = new Hashtable ();
-																				ht["username"] = username.value;
-																				ht["password"] = password.value;																							
-																				internetChecker.enabled = false;
-																				controller.SendMessage ("DoLogin", ht, SendMessageOptions.DontRequireReceiver );
-																			}
-																			else ShowErrorMessage("check internet");
-																		}
-																	});
 
-		NewAccountButton.GetComponent<DefaultCallbackButton>().Init( null,(ht_hud) =>{
-																				if (!ConfigurationData.multiPass) MultiPassBtn();
-																				else{
-																						if (hasInternet){
-																							controller.SendMessage ("NewAccount", SendMessageOptions.DontRequireReceiver );
-																							internetChecker.enabled = false;
-																						}
-																						else ShowErrorMessage("no internet conection");
-																					}
-		
-		});
+		if(!hasInternet){
+			ShowErrorMessage("No Internet connection - Offline Mode");
+			SubmitButton.GetComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>{
+				login.EnterOfflineMode();
+			});
+		}
+		else if(username.value == ""){
+			SubmitButton.GetComponent<DefaultCallbackButton>().Init( null,(ht_hud) =>{
+				if (!ConfigurationData.multiPass) MultiPassBtn();
+				else{
+					controller.SendMessage ("NewAccount", SendMessageOptions.DontRequireReceiver );
+				}
+			});
+		}
+		else{						
+			SubmitButton.GetComponent<DefaultCallbackButton>().Init (null, (ht_hud) =>{
+				if (!ConfigurationData.multiPass) MultiPassBtn();
+				else{
+					Hashtable ht = new Hashtable ();
+					ht["username"] = PlayerPrefs.GetString("ReUser");
+					ht["password"] = PlayerPrefs.GetString("RePassword");	
+					controller.SendMessage ("DoLogin", ht, SendMessageOptions.DontRequireReceiver );
+				}
+			});	
+		}
 	}
 	public void ClosemPassMarket()
 	{
@@ -64,7 +56,7 @@ public class LoginIndex : IView
 	{
 		errorMessage.enabled = true;
 		errorMessage.text = errorText;
-		Invoke ("CloseErrorMessage", 2.0f);
+		//Invoke ("CloseErrorMessage", 4.0f);
 	}
 
 	private void CloseErrorMessage ()

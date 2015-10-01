@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Soomla;
+using Soomla.Profile;
 using Soomla.Store;
 using Visiorama;
 
@@ -32,8 +33,12 @@ public class StoreManager : MonoBehaviour
 			StoreEvents.OnCurrencyBalanceChanged += onCurrencyBalanceChanged;	
 			StoreEvents.OnGoodBalanceChanged 	 += onGoodBalanceChanged;	
 			//SoomlaHighway.Initialize();
-			SoomlaStore.Initialize(new RTSStoreAssets());
-//			StoreInventory.TakeItem("pass_multiplayer", 1);			
+			SoomlaStore.Initialize(new RTSStoreAssets());		
+			SoomlaProfile.Initialize();
+			StoreInventory.GiveItem("pass_multiplayer", 1);		//dando multiplayerpass	
+			
+			StoreInventory.GiveItem("11", 1);
+
 //			StoreInventory.TakeItem("no_ads", 1);
 			wasInitialized = true;
 		}
@@ -125,7 +130,7 @@ public class StoreManager : MonoBehaviour
 		}
 	}
 
-	public void NoAdsPurchase()
+	static public void NoAdsPurchase()
 	{
 		try
 		{
@@ -138,7 +143,7 @@ public class StoreManager : MonoBehaviour
 		}
 	}
 
-	public void GiveOrichalBonus(int bonusQuant)
+	static public void GiveOrichalBonus(int bonusQuant)
 	{
 		try
 		{
@@ -155,7 +160,7 @@ public class StoreManager : MonoBehaviour
 	public int GetBalance {get{return StoreInventory.GetItemBalance(StoreInfo.Currencies[0].ItemId);}}
 
 	
-	public void OrichalPurchase (string orichalQuant) 
+	static public void OrichalPurchase (string orichalQuant) 
 	{			
 		if (orichalQuant == "100")
 		{				

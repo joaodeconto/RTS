@@ -49,7 +49,7 @@ public class TutorialMenu : MonoBehaviour
 	protected Login login;
 
 	public void Start ()
-	{
+	{		
 		Open ();
 		pw = ComponentGetter.Get<PhotonWrapper>();
 		vs = ComponentGetter.Get<VersusScreen>();
@@ -59,7 +59,6 @@ public class TutorialMenu : MonoBehaviour
 //		{
 //			StoreInventory.TakeItem(s,1);
 //		}
-		StoreInventory.GiveItem("11", 1);
 	}
 	
 	public void Open ()

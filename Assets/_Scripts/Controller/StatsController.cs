@@ -67,7 +67,7 @@ public class StatsController : MonoBehaviour
 				unit.CancelCheckEnemy();
 				unit.hasMoveAttackDestination = false;
 				unit.followingTarget = false;
-				unit.CallInvokeCheckEnemy();
+				unit.CallInvokeCheckEnemy(7f);
 			}
 			else if (unit.moveAttack){			
 				unit.moveAttackDestination		 = destination;
@@ -149,7 +149,9 @@ public class StatsController : MonoBehaviour
 			Unit unit = stat as Unit;			
 			if (unit == null) continue;			
 			unit.TargetingEnemy (enemy);
-			unit.hasMoveAttackDestination = false;			
+			unit.hasMoveAttackDestination = false;
+			unit.CancelCheckEnemy();
+			unit.CallInvokeCheckEnemy(3f);
 			feedback = true;
 			Vector3 u = unit.transform.position;
 			AudioClip sfxCharge = SoundManager.LoadFromGroup("Charge");			
@@ -394,11 +396,7 @@ public class StatsController : MonoBehaviour
 			selectedGroup = numberGroup;					
 			
 			return true;						
-		}			
-
-
-		return false;
-		
+		}		
 	}
 	#endregion	
 

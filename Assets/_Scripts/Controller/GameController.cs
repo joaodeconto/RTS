@@ -43,9 +43,9 @@ public class GameController : MonoBehaviour
 		ComponentGetter.Get<MiniMapController> ().Init ();
 		ComponentGetter.Get<InteractionController> ().Init ();
 					
-		if(Everyplay.IsRecordingSupported())
-		{
-			Everyplay.StartRecording();
-		}
+//		if(Everyplay.IsRecordingSupported())
+//		{
+//			Everyplay.StartRecording();
+//		}
 	}
 }

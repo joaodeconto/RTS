@@ -7,8 +7,7 @@ using Visiorama;
 public class SettingsMenu : MonoBehaviour {
 
 	private bool wasInitialized = false;
-	public Transform pathOption;
-	
+	public Transform pathOption;	
 	public GameObject controlsOptionPanel;
 	public GameObject audioOptionPanel;
 	public GameObject graphicPanel;
@@ -26,87 +25,49 @@ public class SettingsMenu : MonoBehaviour {
 	
 	public void Open ()
 	{
-		if (wasInitialized)
-			return;
-		
-		wasInitialized = true;
-		
+		if (wasInitialized)	return;		
+		wasInitialized = true;		
 		DefaultCallbackButton dcb;
 		
 		Transform controls = pathOption.transform.FindChild ("Controls");
 		
-		if (controls != null)
-		{
+		if (controls != null){
 			dcb = controls.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-				
-				controlsOptionPanel.SetActive (true);
-				
-
-			});
+			         (ht_dcb) =>{
+						controlsOptionPanel.SetActive (true);
+					 });
 		}
 
 		Transform graphics = pathOption.transform.FindChild ("Graphics");
 		
-		if (graphics != null)
-		{
+		if (graphics != null){
 			dcb = graphics.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-				
-				graphicPanel.SetActive (true);
-				
-	
-			});
+			         (ht_dcb) =>{
+						graphicPanel.SetActive (true);
+					 });
 		}
 		
 		Transform audio = pathOption.transform.FindChild ("Audio");
 		
-		if (audio != null)
-		{
+		if (audio != null){
 			dcb = audio.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-				
-				audioOptionPanel.SetActive (true);
-				
-	
-			});
+			         (ht_dcb) =>{
+						audioOptionPanel.SetActive (true);
+				     });
 		}
 		
-		Transform avatar = pathOption.transform.FindChild ("Avatar");
+		Transform avatar = pathOption.transform.FindChild ("Account");
 
-
-		if (avatar != null)
-		{
+		if (avatar != null){
 			dcb = avatar.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-				
-				avatarPanel.SetActive (true);
-				
-			
-			});
-		}
-		
-		
-		
-		Transform close = pathOption.transform.FindChild ("Resume");
-		
-		if (close != null)
-		{
-			dcb = close.gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-
-			});
-		}
+			         (ht_dcb) =>{				
+						avatarPanel.SetActive (true);			
+					 });
+		}		
 	}
 	
 	public void Close ()

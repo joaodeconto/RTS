@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Advertisements;
+using Soomla.Profile;
 using Visiorama;
 
 public class ShowScore : MonoBehaviour
@@ -34,12 +35,14 @@ public class ShowScore : MonoBehaviour
 	private int battleTotalStructuresBuild = 0;
 	private int battleTotalStructuresDestroyed = 0;
 	private int battleTotalUpgradePoints = 0;
+	private int myScore;
+	private string myResult;
 
 	// Use this for initialization
 	public void Init ()
 	{
-		if(ConfigurationData.addPass || ConfigurationData.multiPass) {}
-		else Advertisement.Show(null, new ShowOptions{pause = false,resultCallback = result => {}});
+		if(ConfigurationData.addPass) {}
+		else Advertisement.Show(null, new ShowOptions{resultCallback = result => {}});
 	
 		LoginIndex index = login.GetComponentInChildren<LoginIndex> ();
 		index.SetActive (false);		
@@ -48,8 +51,8 @@ public class ShowScore : MonoBehaviour
 		mapLabel.text = VersusScreen.mapLabelString;
 		modeLabel.text = VersusScreen.modeLabelString;
 
-		DefaultCallbackButton dcba = scoreMenuObject.FindChild ("Button (Everyplay)").gameObject.AddComponent<DefaultCallbackButton> ();
-		dcba.Init (null, (ht_dcb) =>  { Everyplay.PlayLastRecording();});
+//		DefaultCallbackButton dcba = scoreMenuObject.FindChild ("Button (Everyplay)").gameObject.AddComponent<DefaultCallbackButton> ();
+//		dcba.Init (null, (ht_dcb) =>  { Everyplay.PlayLastRecording();});
 		
 
 		if (VersusScreen.modeLabelString == "Single Player")
@@ -72,7 +75,13 @@ public class ShowScore : MonoBehaviour
 				ScoreRow sr = scorePlayerObject.GetComponent<ScoreRow>();					
 				
 				playerTime = (float)sp.Value.TotalTimeElapsed;
-				if(sp.Key == 0) timeLabel.text = showGameTime;
+				if(sp.Key == 0){
+					timeLabel.text = showGameTime;
+					myScore = sp.Value.TotalScore;
+					if (sp.Value.VictoryPoints > 0)  myResult = "Victory";
+					else myResult = "Defeat";
+				}
+
 				sr.playerScoreModifier.text = "+" + sp.Value.TotalScore.ToString();								
 				if (sp.Value.VictoryPoints > 0)  sr.gameResult.text = "Victory";
 				else sr.gameResult.text = "Defeat";
@@ -123,8 +132,7 @@ public class ShowScore : MonoBehaviour
 				          (ht_dcb) =>
 				          {
 								ActiveScoreMenu (false);
-								imm.Init ();
-								
+								imm.Init ();								
 							});
 			}
 		}
@@ -209,6 +217,12 @@ public class ShowScore : MonoBehaviour
 						});
 		}
 
+//		Everyplay.SetMetadata("level", ConfigurationData.level);
+//		Everyplay.SetMetadata("map", mapLabel.text);
+//		Everyplay.SetMetadata("score", myScore);
+//		Everyplay.SetMetadata("time", timeLabel.text);
+//		Everyplay.SetMetadata("win", myResult);
+//		Everyplay.SetMetadata("mode", modeLabel.text);
 
 	}
 
