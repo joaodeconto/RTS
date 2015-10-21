@@ -84,6 +84,14 @@ namespace Soomla.Profile {
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}
 
+		protected override void _updateStatusDialog(Provider provider, string link, string payload) {
+			AndroidJNI.PushLocalFrame(100);
+			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.UnitySoomlaProfile")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "updateStatusDialog", provider.ToString(), link, payload);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+
 		protected override void _updateStory(Provider provider, string message, string name,
 		                                     string caption, string description, string link,
 		                                     string pictureUrl, string payload, 
@@ -92,6 +100,16 @@ namespace Soomla.Profile {
 			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.UnitySoomlaProfile")) {
 				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "updateStory", provider.ToString(), message, name,
 				                                 caption, description, link, pictureUrl, payload, showConfirmation, customMessage);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+
+		protected override void _updateStoryDialog(Provider provider, string name, string caption, string description, 
+		                                           string link, string picture, string payload) {
+			AndroidJNI.PushLocalFrame(100);
+			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.UnitySoomlaProfile")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "updateStoryDialog", provider.ToString(), name,
+				                                 caption, description, link, picture, payload);
 			}
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}
@@ -110,6 +128,22 @@ namespace Soomla.Profile {
 			AndroidJNI.PushLocalFrame(100);
 			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.UnitySoomlaProfile")) {
 				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "getContacts", provider.ToString(), fromStart, payload);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+
+		protected override void _getFeed(Provider provider, bool fromStart, string payload) {
+			AndroidJNI.PushLocalFrame(100);
+			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.UnitySoomlaProfile")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "getFeed", provider.ToString(), fromStart, payload);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+
+		protected override void _invite(Provider provider, string inviteMessage, string dialogTitle, string payload) {
+			AndroidJNI.PushLocalFrame(100);
+			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.UnitySoomlaProfile")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "invite", provider.ToString(), inviteMessage, dialogTitle, payload);
 			}
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}

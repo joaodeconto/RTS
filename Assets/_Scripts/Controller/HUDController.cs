@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using PathologicalGames;
 using Visiorama;
 using Visiorama.Utils;
-
+using I2.Loc;
 public class HUDController : MonoBehaviour, IDeathObserver
 {
 	private string PERSIST_STRING = "###_";
@@ -602,20 +602,18 @@ public class HUDController : MonoBehaviour, IDeathObserver
 			ps.startColor = color;
 			duration = ps.duration;
 		}
-
 		oldFeedback = newFeedback;
-		PoolManager.Pools["Selection"].Despawn(newFeedback, duration);
+		PoolManager.Pools["Selection"].Despawn(newFeedback, duration, PoolManager.Pools["Selection"].group);
 	}
 	#endregion
 
-	#region InfoBox
-	
+	#region InfoBox	
 	public void OpenInfoBoxUnit (Unit unit, bool techAvailable)
 	{
 		if (!techAvailable){
 			infoReq.gameObject.SetActive(true);
-			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
-			reqLabel.text =  unit.requisites;
+			UILabel reqText = infoReq.FindChild("req-text").GetComponent<UILabel>();
+			reqLabel.text = ScriptLocalization.Get("Categories/" + unit.requisites);
 		}
 		else
 			infoReq.gameObject.SetActive(false);
@@ -635,15 +633,14 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		bonusDefLabel.text = "+" + unit.bonusDefense.ToString();
 		bonusSpdLabel.text = "+" + unit.bonusSpeed.ToString();
 		skillLabel.text = unit.unitSkill.ToString();
-		nameLabel.text = unit.category;				
+		nameLabel.text = ScriptLocalization.Get("Categories/" + unit.category);				
 		attackLabel.text = unit.force.ToString ();
 		defLabel.text = unit.defense.ToString ();				
 		hpLabel.text = unit.maxHealth.ToString ();
 		speedLabel.text = unit.normalSpeed.ToString();
 		unitsLabel.text = unit.numberOfUnits.ToString ();
 		timeLabel.text = unit.timeToSpawn.ToString ()+"s";
-		descriptLabel.text = unit.description;			
-//		unit.RegisterDeathObserver (this);		
+		descriptLabel.text = ScriptLocalization.Get("Descriptions/" + unit.description);	
 		trnsPanelInfoBox.gameObject.SetActive (true);
 		infoUnit.gameObject.SetActive (true);
 		infoUpgrade.gameObject.SetActive (false);
@@ -655,12 +652,12 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		if (!techAvailable){
 			infoReq.gameObject.SetActive(true);
 			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
-			reqLabel.text = factory.requisites;
+			reqLabel.text = ScriptLocalization.Get("Categories/" + factory.requisites);
 		}
 		else
 			infoReq.gameObject.SetActive(false);
 
-		nameLabel.text = factory.category;
+		nameLabel.text = ScriptLocalization.Get("Categories/" + factory.category);
 		hpLabel = infoFactory.FindChild ("hp-label").GetComponent<UILabel> ();
 		hpLabel.text = factory.MaxHealth.ToString();
 		defLabel = infoFactory.FindChild ("def-label").GetComponent<UILabel> ();
@@ -668,7 +665,8 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		bonusDefLabel = infoFactory.FindChild ("def-bonus").GetComponent<UILabel> ();
 		bonusDefLabel.text = "+" + factory.bonusDefense.ToString();
 		descriptLabel = infoFactory.FindChild ("descript-label").GetComponent<UILabel> ();
-		descriptLabel.text = factory.description;
+		//descriptLabel.text = factory.description;
+		descriptLabel.text = ScriptLocalization.Get("Descriptions/" + factory.description);
 		infoUnit.gameObject.SetActive (false);
 		infoUpgrade.gameObject.SetActive (false);
 		infoFactory.gameObject.SetActive (true);
@@ -680,14 +678,14 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		if (!techAvailable){
 			infoReq.gameObject.SetActive(true);
 			reqLabel = infoReq.FindChild("req-label").GetComponent<UILabel>();
-			reqLabel.text = upgrade.requisites;
+			reqLabel.text = ScriptLocalization.Get("Categories/" +upgrade.requisites);
 		}
 		else
 			infoReq.gameObject.SetActive(false);
 
 		infoUnit.gameObject.SetActive (false);
 		infoFactory.gameObject.SetActive (false);		
-		nameLabel.text = upgrade.upgradeName;
+		nameLabel.text = ScriptLocalization.Get("Categories/" + upgrade.upgradeName);
 		stats1 = infoUpgrade.FindChild ("stats1-label").GetComponent<UILabel> ();
 		stats1.text = upgrade.stats1Value;
 		stats1Text = infoUpgrade.FindChild ("stats1-text").GetComponent<UILabel> ();
@@ -699,7 +697,7 @@ public class HUDController : MonoBehaviour, IDeathObserver
 		timeLabel = infoUpgrade.FindChild ("time-label").GetComponent<UILabel> ();
 		timeLabel.text = upgrade.timeToSpawn.ToString()+"s";		
 		descriptLabel = infoUpgrade.FindChild ("descript-label").GetComponent<UILabel> ();
-		descriptLabel.text = upgrade.description;		
+		descriptLabel.text = ScriptLocalization.Get("Descriptions/" + upgrade.description);		
 		infoUnit.gameObject.SetActive (false);
 		infoUpgrade.gameObject.SetActive (true);
 		infoFactory.gameObject.SetActive (false);
@@ -721,26 +719,6 @@ public class HUDController : MonoBehaviour, IDeathObserver
 	}
 	#endregion
 
-	#region HealthBar
-	
-//	public HealthBar CreateHealthBar (IStats target, int maxHealth, string referenceChild)
-//	{
-//		GameObject child = NGUITools.AddChild(trnsPanelUnitStats.gameObject, pref_healthBar);
-//		
-//		child.GetComponent<UISlider> ().foregroundWidget.width = Mathf.CeilToInt (maxHealth * 0.6f);
-//		child.GetComponent<UISlider> ().foregroundWidget.height = 8;
-//		
-//		child.AddComponent<UIFollowTarget>().target      = target.transform.FindChild (referenceChild).transform;
-//		child.GetComponent<UIFollowTarget>().mGameCamera = touchController.mainCamera;
-//		child.GetComponent<UIFollowTarget>().mUICamera   = uiRoot.transform.FindChild ("CameraHUD").camera;
-//		
-//		HealthBar healthBar = child.GetComponent<HealthBar> ();
-//		
-//		healthBar.SetTarget (target);
-//		
-//		return healthBar;
-//	}
-	#endregion
 
 	#region IDeathObserver implementation
 

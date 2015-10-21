@@ -25,35 +25,35 @@ namespace Soomla.Profile {
 #if UNITY_ANDROID && !UNITY_EDITOR
 
 		// event pushing back to native (when using FB Unity SDK)
-		protected override void _pushEventLoginStarted(Provider provider, string payload) {
+		protected override void _pushEventLoginStarted(Provider provider, bool autoLogin, string payload) {
 			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
 			AndroidJNI.PushLocalFrame(100);
 			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
-				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventLoginStarted", provider.ToString(), payload);
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventLoginStarted", provider.ToString(), autoLogin, payload);
 			}
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}
-		protected override void _pushEventLoginFinished(UserProfile userProfile, string payload) { 
+		protected override void _pushEventLoginFinished(UserProfile userProfile, bool autoLogin, string payload) { 
 			if (SoomlaProfile.IsProviderNativelyImplemented(userProfile.Provider)) return;
 			AndroidJNI.PushLocalFrame(100);
 			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
-				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventLoginFinished", userProfile.toJSONObject().print(), payload);
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventLoginFinished", userProfile.toJSONObject().print(), autoLogin, payload);
 			}
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}
-		protected override void _pushEventLoginFailed(Provider provider, string message, string payload) {
+		protected override void _pushEventLoginFailed(Provider provider, string message, bool autoLogin, string payload) {
 			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
 			AndroidJNI.PushLocalFrame(100);
 			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
-				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventLoginFailed", provider.ToString(), message, payload);
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventLoginFailed", provider.ToString(), message, autoLogin, payload);
 			}
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}
-		protected override void _pushEventLoginCancelled(Provider provider, string payload) { 
+		protected override void _pushEventLoginCancelled(Provider provider, bool autoLogin, string payload) { 
 			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
 			AndroidJNI.PushLocalFrame(100);
 			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
-				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventLoginCancelled", provider.ToString(), payload);
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventLoginCancelled", provider.ToString(), autoLogin, payload);
 			}
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}
@@ -155,6 +155,72 @@ namespace Soomla.Profile {
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}
 
+		protected override void _pushEventGetFeedFinished (Provider provider, SocialPageData<String> feedPage, string payload) {
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			List<JSONObject> feeds = new List<JSONObject>();
+			foreach (var feed in feedPage.PageData) {
+				feeds.Add(JSONObject.StringObject(feed));
+			}
+			JSONObject feedJson = new JSONObject(feeds.ToArray());
+
+			AndroidJNI.PushLocalFrame(100);
+			using (AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventGetFeedFinished", 
+				                                 provider.ToString(), feedJson.ToString(), payload, feedPage.HasMore);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+		protected override void _pushEventGetFeedFailed(Provider provider, string message, bool fromStart, string payload) {
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			AndroidJNI.PushLocalFrame(100);
+			using (AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventGetFeedFailed", 
+				                                 provider.ToString(), message, fromStart, payload);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+
+		protected override void _pushEventInviteStarted(Provider provider, string payload) { 
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			AndroidJNI.PushLocalFrame(100);
+			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventInviteStarted",
+				                                 provider.ToString(), SocialActionType.INVITE.ToString(), payload);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+		protected override void _pushEventInviteFinished(Provider provider, string requestId, List<string> invitedIds, string payload) {
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			AndroidJNI.PushLocalFrame(100);
+			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
+				List<JSONObject> invited = new List<JSONObject>();
+				foreach (var id in invitedIds) {
+					invited.Add(JSONObject.StringObject(id));
+				}
+				JSONObject jsonInvited = new JSONObject(invited.ToArray());
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventInviteFinished",
+				                                 provider.ToString(), SocialActionType.INVITE.ToString(), requestId, jsonInvited.ToString(), payload);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+		protected override void _pushEventInviteCancelled(Provider provider, string payload) {
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			AndroidJNI.PushLocalFrame(100);
+			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventInviteCancelled",
+				                                 provider.ToString(), SocialActionType.INVITE.ToString(), payload);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
+		protected override void _pushEventInviteFailed(Provider provider, string message, string payload) { 
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			AndroidJNI.PushLocalFrame(100);
+			using(AndroidJavaClass jniSoomlaProfile = new AndroidJavaClass("com.soomla.profile.unity.ProfileEventHandler")) {
+				ProfileJNIHandler.CallStaticVoid(jniSoomlaProfile, "pushEventInviteFailed", 
+				                                 provider.ToString(), SocialActionType.INVITE.ToString(), message, payload);
+			}
+			AndroidJNI.PopLocalFrame(IntPtr.Zero);
+		}
 #endif
 	}
 }

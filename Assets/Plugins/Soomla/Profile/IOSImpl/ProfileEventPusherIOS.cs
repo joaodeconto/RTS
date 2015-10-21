@@ -25,13 +25,13 @@ namespace Soomla.Profile {
 
 		// event pushing back to native (when using FB Unity SDK)
 		[DllImport ("__Internal")]
-		private static extern void soomlaProfile_PushEventLoginStarted(string provider, string payload);
+		private static extern void soomlaProfile_PushEventLoginStarted(string provider, bool autoLogin, string payload);
 		[DllImport ("__Internal")]
-		private static extern void soomlaProfile_PushEventLoginFinished(string userProfileJson, string payload);
+		private static extern void soomlaProfile_PushEventLoginFinished(string userProfileJson, bool autoLogin, string payload);
 		[DllImport ("__Internal")]
-		private static extern void soomlaProfile_PushEventLoginFailed(string provider, string message, string payload);
+		private static extern void soomlaProfile_PushEventLoginFailed(string provider, string message, bool autoLogin, string payload);
 		[DllImport ("__Internal")]
-		private static extern void soomlaProfile_PushEventLoginCancelled(string provider, string payload);
+		private static extern void soomlaProfile_PushEventLoginCancelled(string provider, bool autoLogin, string payload);
 		[DllImport ("__Internal")]
 		private static extern void soomlaProfile_PushEventLogoutStarted(string provider);
 		[DllImport ("__Internal")]
@@ -52,25 +52,37 @@ namespace Soomla.Profile {
 		private static extern void soomlaProfile_PushEventGetContactsFinished(string provider, string userProfilesJson, string payload, bool hasNext);
 		[DllImport ("__Internal")]
 		private static extern void soomlaProfile_PushEventGetContactsFailed(string provider, string message, bool fromStart, string payload);
+		[DllImport ("__Internal")]
+		private static extern void soomlaProfile_PushEventGetFeedFinished(string provider, string feedJson, string payload, bool hasNext);
+		[DllImport ("__Internal")]
+		private static extern void soomlaProfile_PushEventGetFeedFailed(string provider, string message, bool fromStart, string payload);
+		[DllImport ("__Internal")]
+		private static extern void soomlaProfile_PushEventInviteStarted(string provider, string actionType, string payload);
+		[DllImport ("__Internal")]
+		private static extern void soomlaProfile_PushEventInviteFinished(string provider, string actionType, string requestId, string invitedIdsJson, string payload);
+		[DllImport ("__Internal")]
+		private static extern void soomlaProfile_PushEventInviteCancelled(string provider, string actionType, string payload);
+		[DllImport ("__Internal")]
+		private static extern void soomlaProfile_PushEventInviteFailed(string provider, string actionType, string message, string payload);
 
 
 		// event pushing back to native (when using FB Unity SDK)
-		protected override void _pushEventLoginStarted(Provider provider, string payload) {
+		protected override void _pushEventLoginStarted(Provider provider, bool autoLogin, string payload) {
 			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
-			soomlaProfile_PushEventLoginStarted(provider.ToString(), payload);
+			soomlaProfile_PushEventLoginStarted(provider.ToString(), autoLogin, payload);
 		}
 
-		protected override void _pushEventLoginFinished(UserProfile userProfile, string payload) { 
+		protected override void _pushEventLoginFinished(UserProfile userProfile, bool autoLogin, string payload) { 
 			if (SoomlaProfile.IsProviderNativelyImplemented(userProfile.Provider)) return;
-			soomlaProfile_PushEventLoginFinished(userProfile.toJSONObject().print(), payload);
+			soomlaProfile_PushEventLoginFinished(userProfile.toJSONObject().print(), autoLogin, payload);
 		}
-		protected override void _pushEventLoginFailed(Provider provider, string message, string payload) {
+		protected override void _pushEventLoginFailed(Provider provider, string message, bool autoLogin, string payload) {
 			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
-			soomlaProfile_PushEventLoginFailed(provider.ToString(), message, payload);
+			soomlaProfile_PushEventLoginFailed(provider.ToString(), message, autoLogin, payload);
 		}
-		protected override void _pushEventLoginCancelled(Provider provider, string payload) { 
+		protected override void _pushEventLoginCancelled(Provider provider, bool autoLogin, string payload) { 
 			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
-			soomlaProfile_PushEventLoginCancelled(provider.ToString(), payload);
+			soomlaProfile_PushEventLoginCancelled(provider.ToString(), autoLogin, payload);
 		}
 		protected override void _pushEventLogoutStarted(Provider provider) { 
 			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
@@ -117,6 +129,41 @@ namespace Soomla.Profile {
 		protected override void _pushEventGetContactsFailed (Provider provider, string message, bool fromStart, string payload) {
 			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
 			soomlaProfile_PushEventGetContactsFailed(provider.ToString(), message, fromStart, payload);
+		}
+		protected override void _pushEventGetFeedFinished(Provider provider ,SocialPageData<String> feedPage, string payload) {
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			List<JSONObject> feeds = new List<JSONObject>();
+			foreach (var feed in feedPage.PageData) {
+				feeds.Add(JSONObject.StringObject(feed));
+			}
+			JSONObject jsonFeeds = new JSONObject(feeds.ToArray());
+			soomlaProfile_PushEventGetFeedFinished(provider.ToString(), jsonFeeds.ToString(), payload, feedPage.HasMore);
+		}
+		protected override void _pushEventGetFeedFailed(Provider provider, string message, bool fromStart, string payload) {
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			soomlaProfile_PushEventGetFeedFailed(provider.ToString(), message, fromStart, payload);
+		}
+
+		protected override void _pushEventInviteStarted(Provider provider, string payload) { 
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			soomlaProfile_PushEventInviteStarted(provider.ToString(), SocialActionType.INVITE.ToString(), payload);
+		}
+		protected override void _pushEventInviteFinished(Provider provider, string requestId, List<string> invitedIds, string payload) {
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			List<JSONObject> invited = new List<JSONObject>();
+			foreach (var id in invitedIds) {
+				invited.Add(JSONObject.StringObject(id));
+			}
+			JSONObject jsonInvited = new JSONObject(invited.ToArray());
+			soomlaProfile_PushEventInviteFinished(provider.ToString(), SocialActionType.INVITE.ToString(), requestId, jsonInvited.ToString(), payload);
+		}
+		protected override void _pushEventInviteCancelled(Provider provider, string payload) {
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			soomlaProfile_PushEventInviteCancelled(provider.ToString(), SocialActionType.INVITE.ToString(), payload);
+		}
+		protected override void _pushEventInviteFailed(Provider provider, string message, string payload) { 
+			if (SoomlaProfile.IsProviderNativelyImplemented(provider)) return;
+			soomlaProfile_PushEventInviteFailed(provider.ToString(), SocialActionType.INVITE.ToString(), message, payload);
 		}
 #endif
 	}

@@ -3,104 +3,45 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Visiorama;
+using I2.Loc;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class RankedBattle : MonoBehaviour
 {
 	public UILabel messageActiveGame;
-	public UILabel errorMessage;
-	public UILabel cristal;
-	public UIInput bidInput;
-	public GameObject marketGlow;
-	public UIPopupList mapSelection;
 	public string playerMode = "1x1";
+	public UIPopupList mapSelection;
+	public Transform btnCreateRoom;
 	public Transform BtnLeaveRoom;
-	public Transform createRoom;
+	public GameObject marketGlow;
+	public UILabel errorMessage;
 	public int minimumBet = 1;
-	private int players = 2;
-	private int mapScene;
-	private Transform toggleButtons;
-	private int orichals {
-		get {
-			return (cristal) ? int.Parse (cristal.text) :1;}		
-		}
+	public UIInput bidInput;
+	public UILabel cristal;
 
+	private Transform toggleButtons;
 	private string battleMode;
 	private string battleName;
+	private int players = 2;
+	private int mapScene;
+	private int orichals {
+		get {
+			return (cristal) ? int.Parse (cristal.text) :1;}	
+	}
 	private int CurrentBid {	
 		get {
 			return (bidInput) ? int.Parse (bidInput.value) : 1; }
-		}
-	PhotonWrapper pw;
+	}
+	protected PhotonWrapper pw;
 
 	public void OnEnable ()
 	{
 		Open ();
 	}
-
-	public void BattleModeToogle (string pMode)
-	{
-		playerMode = pMode;
-
-		if (playerMode == "1x1"){
-			players = 2;
-			battleMode = "DeathMatch";
-			battleName = "DeathMatch";
-		}
-		
-		if (playerMode == "2x2"){
-			players = 4;
-			battleMode = "Cooperative";
-			battleName = "2x2";
-		}
-
-		if (playerMode == "4vs"){
-			players = 4;
-			battleMode = "DeathMatch";
-			battleName = "DeathMatch";
-		}
-
-		pw = ComponentGetter.Get<PhotonWrapper> ();		
-		DefaultCallbackButton dcb;		
-		
-		if (createRoom)
-		{
-			dcb = ComponentGetter.Get <DefaultCallbackButton> (createRoom, false);
-			dcb.Init ( null, (ht_hud) =>{
-
-								if (CurrentBid <= orichals && CurrentBid >= minimumBet){
-									CreateRoom (players, CurrentBid, battleName, battleMode, mapScene+1);
-									createRoom.gameObject.SetActive (false);
-									mapSelection.gameObject.SetActive (false);
-									toggleButtons.gameObject.SetActive(false);
-									bidInput.gameObject.SetActive(false);
-								}
-
-								else if (CurrentBid < minimumBet) {
-									//Debug.Log("message: ");
-									createRoom.gameObject.SetActive (false);					
-									marketGlow.SetActive (true);						
-									errorMessage.text = "ranked matches require the minimum bet of "+minimumBet+" orichals";						
-									errorMessage.gameObject.SetActive (true);									
-									Invoke ("CloseErrorMessage", 5.0f);
-								}
-												
-								else{
-									//Debug.Log("message: ");
-									createRoom.gameObject.SetActive (false);									
-									marketGlow.SetActive (true);									
-									errorMessage.text = "insuficient orichals, acquire more from the market";									
-									errorMessage.gameObject.SetActive (true);									
-									Invoke ("CloseErrorMessage", 5.0f);
-								}
-			} );
-		}		
-	}	
-	
 	public void Open ()
 	{
 		toggleButtons = this.transform.FindChild("Menu").FindChild("Buttons").transform;
-		createRoom.gameObject.SetActive (true);
+		btnCreateRoom.gameObject.SetActive (true);
 		messageActiveGame.gameObject.SetActive (false);
 		errorMessage.gameObject.SetActive (false);
 		pw = ComponentGetter.Get<PhotonWrapper> ();		
@@ -131,7 +72,7 @@ public class RankedBattle : MonoBehaviour
 		mapSelection.gameObject.SetActive (true);
 		toggleButtons.gameObject.SetActive(true);
 		bidInput.gameObject.SetActive(true);
-		createRoom.gameObject.SetActive (true);
+		btnCreateRoom.gameObject.SetActive (true);
 		messageActiveGame.gameObject.SetActive (false);
 		marketGlow.SetActive (false);
 		gameObject.SetActive (false);
@@ -139,7 +80,7 @@ public class RankedBattle : MonoBehaviour
 	}
 
 
-	private void CreateRoom (int maxPlayers, int bid, string battleTypeName, string bMode, int map)
+	IEnumerator CreateRoom (int maxPlayers, int bid, string battleTypeName, string bMode, int map)
 	{	
 		PlayerBattleDAO playerBattleDao = ComponentGetter.Get <PlayerBattleDAO> ();
 
@@ -153,10 +94,16 @@ public class RankedBattle : MonoBehaviour
 			GameplayManager.mode = mode;
 		}
 
-		//TODO refazer as battles
+		messageActiveGame.gameObject.SetActive (true);
+		messageActiveGame.text = "Connecting to Server";			
+		if (BtnLeaveRoom)	BtnLeaveRoom.gameObject.SetActive (true);
+		
+		while (PhotonNetwork.connectionState != ConnectionState.Connected){
+			yield return new WaitForSeconds(0.2f);
+		}
+
 		playerBattleDao.CreateBattle (battleTypeName, bid, DateTime.Now, maxPlayers,
 		(battle) =>{
-
 			string roomName = "Room" + (PhotonNetwork.GetRoomList().Length + 1) + " : " + bMode;
 			bool isVisible = true, isOpen = true;			
 			ConfigurationData.battle = battle;			
@@ -165,18 +112,13 @@ public class RankedBattle : MonoBehaviour
 			pw.CreateRoom (roomName, bid, isVisible, isOpen, maxPlayers, map, properties);			
 			pw.SetPropertyOnPlayer ("team", 0);
 			pw.SetPropertyOnPlayer ("ready", true);
-			messageActiveGame.gameObject.SetActive (true);
-			messageActiveGame.text = "Connecting to Server";			
-			if (BtnLeaveRoom)	BtnLeaveRoom.gameObject.SetActive (true);
-
-			pw.TryToEnterGame (10000.0f,
-			                   (other_message) =>{			
-									messageActiveGame.gameObject.SetActive (true);
-									Invoke ("CloseErrorMessage", 5.0f);
-								},
-								(playersReady, nMaxPlayers) =>{
-									messageActiveGame.text = "Waiting Players " + playersReady + "/" + nMaxPlayers;
-								});
+			pw.TryToEnterGame (10000.0f,(other_message) =>{			
+					messageActiveGame.gameObject.SetActive (true);
+					Invoke ("CloseErrorMessage", 5.0f);
+				},
+				(playersReady, nMaxPlayers) =>{
+				messageActiveGame.text = ScriptLocalization.Get("Menus/Waiting Player") + playersReady + "/" + nMaxPlayers;
+				});
 		});
 	}
 
@@ -184,22 +126,73 @@ public class RankedBattle : MonoBehaviour
 	{
 		errorMessage.gameObject.SetActive (false);
 		marketGlow.SetActive (false);
-		createRoom.gameObject.SetActive (true);
+		btnCreateRoom.gameObject.SetActive (true);
 		mapSelection.gameObject.SetActive (true);
 		toggleButtons.gameObject.SetActive(true);
 		bidInput.gameObject.SetActive(true);	
 	}
 
+	public void BattleModeToogle (string pMode)
+	{
+		playerMode = pMode;		
+		pw = ComponentGetter.Get<PhotonWrapper> ();		
+		DefaultCallbackButton dcb;	
+		
+		if (playerMode == "1x1"){
+			players = 2;
+			battleMode = "DeathMatch";
+			battleName = "DeathMatch";
+		}		
+		if (playerMode == "2x2"){
+			players = 4;
+			battleMode = "Cooperative";
+			battleName = "2x2";
+		}		
+		if (playerMode == "4vs"){
+			players = 4;
+			battleMode = "DeathMatch";
+			battleName = "DeathMatch";
+		}		
+		if (btnCreateRoom){
+			dcb = ComponentGetter.Get <DefaultCallbackButton> (btnCreateRoom, false);
+			dcb.Init ( null, (ht_hud) =>{				
+				if (CurrentBid <= orichals && CurrentBid >= minimumBet){
+					btnCreateRoom.gameObject.SetActive (false);
+					mapSelection.gameObject.SetActive (false);
+					toggleButtons.gameObject.SetActive(false);
+					bidInput.gameObject.SetActive(false);
+					StartCoroutine(CreateRoom (players, CurrentBid, battleName, battleMode, mapScene+1));
+				}
+				
+				else if (CurrentBid < minimumBet) {
+					btnCreateRoom.gameObject.SetActive (false);					
+					marketGlow.SetActive (true);						
+					errorMessage.text = "ranked matches require the minimum bet of "+minimumBet+" orichals";						
+					errorMessage.gameObject.SetActive (true);									
+					Invoke ("CloseErrorMessage", 5.0f);
+				}
+				
+				else{
+					btnCreateRoom.gameObject.SetActive (false);									
+					marketGlow.SetActive (true);									
+					errorMessage.text = "insuficient orichals, acquire more from the market";									
+					errorMessage.gameObject.SetActive (true);									
+					Invoke ("CloseErrorMessage", 5.0f);
+				}
+			});
+		}		
+	}	
+	
 	public void SceneSelection (string popSelect)
 	{
-		if (popSelect == "Dementia Forest")	mapScene = 1;
-		if (popSelect == "Hollow Fields")	mapScene = 2;
-		if (popSelect == "Gargantua")	mapScene = 3;
-		if (popSelect == "Living Desert")	mapScene = 4;
+		if (popSelect == "Dementia Forest")		mapScene = 1;
+		if (popSelect == "Hollow Fields")		mapScene = 2;
+		if (popSelect == "Gargantua")			mapScene = 3;
+		if (popSelect == "Living Desert")		mapScene = 4;
 		if (popSelect == "Sandstone Salvation")	mapScene = 5;
-		if (popSelect == "Swamp King")	mapScene = 6;
-		if (popSelect == "Crank Lagoon")	mapScene = 7;
-		if (popSelect == "Arthanus")	mapScene = 8;
+		if (popSelect == "Swamp King")			mapScene = 6;
+		if (popSelect == "Lang Lagoon")			mapScene = 7;
+		if (popSelect == "Arthanus")			mapScene = 8;
 
 	}
 }

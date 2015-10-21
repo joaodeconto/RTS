@@ -7,7 +7,6 @@ using System.Collections.Generic;
 public class Ranking : MonoBehaviour {
 
 	public GameObject rankRowPrefab;
-	public GameObject rankLoading;
 	public Transform rankRowreference;
 	public UIGrid rankGrid;
 	public bool wasInitialized = false;

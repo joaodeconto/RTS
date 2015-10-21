@@ -7,11 +7,13 @@ public class SyncLoadingScene : MonoBehaviour
 
 	void Start()
 	{
+		//PlayerPrefs.DeleteAll();
+		//PlayerPrefs.SetString("ReUser","");
+		//PlayerPrefs.SetString("RePassword","");
 		StartCoroutine (LoadingScene ());
 	}
 
-	IEnumerator LoadingScene()
-	
+	IEnumerator LoadingScene()	
 	{
 		yield return new WaitForSeconds(1f);
 		AsyncOperation async = Application.LoadLevelAsync("main_menu");
@@ -20,7 +22,6 @@ public class SyncLoadingScene : MonoBehaviour
 			progBar.value = async.progress + 0.1f;
 			yield return 0;
 		}
-
 	}
 
 	public void LoadPlayerPrefabs ()
@@ -32,10 +33,10 @@ public class SyncLoadingScene : MonoBehaviour
 		if (!PlayerPrefs.HasKey("SFXVolume"))			PlayerPrefs.SetFloat("SFXVolume", 1f);			
 		if (!PlayerPrefs.HasKey("GraphicQuality"))		QualitySettings.SetQualityLevel(1);				
 		if (!PlayerPrefs.HasKey("Logins"))				PlayerPrefs.SetInt("Logins", 0);
-		else{
-			int logins = PlayerPrefs.GetInt("Logins");
-			PlayerPrefs.SetInt("Logins", (logins+1));
-		}		
+
+		int logins = PlayerPrefs.GetInt("Logins");
+		PlayerPrefs.SetInt("Logins", (logins+1));
+			
 		SoundManager.SetVolume (PlayerPrefs.GetFloat("AllVolume"));
 		SoundManager.SetVolumeMusic (PlayerPrefs.GetFloat("MusicVolume"));
 		SoundManager.SetVolumeSFX (PlayerPrefs.GetFloat("SFXVolume"));		

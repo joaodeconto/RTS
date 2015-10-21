@@ -4,72 +4,73 @@ using Visiorama;
 using Soomla.Profile;
 using Soomla.Store;
 using System.Linq;
+using System.Text.RegularExpressions;
+using I2.Loc;
 
 public class NewAccount : IView
 {
 	public UIInput username;
 	public UIToggle AcceptedTerms;
-	public GameObject wUser;
-	public GameObject wTerm;
 	public GameObject CreateAccountButton;
-	public GameObject AvatarButton;
-	public GameObject AvatarMenu;
+	public GameObject loginWithProvider;
 	public GameObject FacebookButton;	
 	public GameObject TwitterButton;
 	public GameObject GoogleButton;
-	public bool AccountAlreadyExists;
+	public GameObject AvatarButton;
+	public GameObject AvatarMenu;
+	public GameObject wUser;
+	public GameObject wTerm;
 	private bool providerLogged = false;
-	public GameObject loginWithProvider;
+	private bool AccountAlreadyExists;
 	private UserProfile userProfile;
-
+	private string emailConfirmed;
+	
 	public NewAccount Init ()
 	{
-		if (!PlayerPrefs.HasKey("Avatar")){
-			PlayerPrefs.SetString("Avatar", "AVA_Gnarl");
-		}
-
-		AvatarButton.AddComponent<DefaultCallbackButton>().Init (null,(ht_dcb) =>{
+		if (!PlayerPrefs.HasKey("Avatar"))	PlayerPrefs.SetString("Avatar", "AVA_Gnarl");
+		
+		AvatarButton.AddComponent<DefaultCallbackButton>().Init (null,(ht_dcb)=>{
 			AvatarMenu.SetActive (true);
 		});
-
-		FacebookButton.AddComponent<DefaultCallbackButton>().Init(null, (ht_hud) =>{
+		
+		FacebookButton.AddComponent<DefaultCallbackButton>().Init(null, (ht_hud)=>{
 			SoomlaProfile.Login(Provider.FACEBOOK);
 		});	
-		GoogleButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>{
+		GoogleButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud)=>{
 			SoomlaProfile.Login(Provider.GOOGLE);
 		});	
-		TwitterButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud) =>{
+		TwitterButton.AddComponent<DefaultCallbackButton>().Init(null,(ht_hud)=>{
 			SoomlaProfile.Login(Provider.TWITTER);
 		});	
-	
-		CreateAccountButton.AddComponent<DefaultCallbackButton> ().Init (null,(ht_dcb) =>{
-			if (AccountAlreadyExists){
-				wUser.GetComponent<UILabel>().text = "Username Already in Use";
-				wUser.SetActive (true);
-				Invoke ("CloseErrorMessage", 3.0f);
-				//Debug.Log("AccountAlreadyExists");
-				return;
-			}						
+		
+		CreateAccountButton.AddComponent<DefaultCallbackButton> ().Init (null,(ht_dcb)=>{
 
-			else if (username.value.Length > 11 || username.value.Length < 4 || !username.value.All(char.IsLetterOrDigit)){
-				wUser.GetComponent<UILabel>().text = "Invalid Username";
+			if (username.value.Length > 14 || username.value.Length < 3 || username.value.All(char.IsWhiteSpace)){
+				wUser.GetComponent<UILabel>().text = ScriptLocalization.Get("Menus/Invalid Username");
 				wUser.SetActive (true);
 				Invoke ("CloseErrorMessage", 3.0f);
 				//Debug.Log("invalid username");
 			}
-
+			else if (AccountAlreadyExists){
+				wUser.GetComponent<UILabel>().text = ScriptLocalization.Get("Menus/Username Already in Use");
+				wUser.SetActive (true);
+				Invoke ("CloseErrorMessage", 3.0f);
+				//Debug.Log("AccountAlreadyExists");
+				return;
+			}
 			else if (AcceptedTerms.value != true){
 				wTerm.SetActive (true);
 				Invoke ("CloseErrorMessage", 3.0f);
-				//Debug.Log("Must Accept Terms");
 				return;
-			}
-
-			else{DoNewAccount();}		
+			}			
+			else
+				DoNewAccount();
+			
 		});
-
-		ProfileEvents.OnLoginFinished += (UserProfile userP, string payload) => 
+		
+		ProfileEvents.OnLoginFinished += (UserProfile userP,bool autologin, string payload) => 
 		{
+			ValidateEmail(userP.Email);			
 			if (SoomlaProfile.IsLoggedIn(Provider.FACEBOOK)){
 				userProfile = userP;
 				Debug.Log ("logou no facebook");	
@@ -88,28 +89,26 @@ public class NewAccount : IView
 			}
 			
 			CreateAccountButton.SetActive(true);
-			loginWithProvider.SetActive(false);
-
+			loginWithProvider.SetActive(false);			
 			Debug.Log("Logged into "+userProfile.Provider);	
 		};
-
+		
 		return this;
-	}
-
-
+	}	
+	
 	public void DoNewAccount ()
 	{
 		Hashtable ht = new Hashtable ();
 		ht["username"]      = username.value;
 		ht["password"]      = userProfile.ProfileId;
 		ht["providerId"]    = userProfile.ProfileId;
-		ht["email"]         = userProfile.Email;
-
+		ht["email"]         = emailConfirmed;
+		
 		string user 		= (string)ht["username"];
 		string pass		 	= (string)ht["password"];
 		string idFacebook 	= (string)ht["providerId"];
 		string mail    		= (string)ht["email"];
-
+		
 		AccountAlreadyExists = false;		
 		PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();				
 		playerDao.CreatePlayer (user, pass, idFacebook, mail, (player, message) =>{
@@ -122,18 +121,20 @@ public class NewAccount : IView
 				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
 				pw.SetPlayer (user, true);
 				pw.SetPropertyOnPlayer ("player", player.ToString ());
-			    Login login = ComponentGetter.Get<Login>();
+				PlayerPrefs.SetString("ReUser", user);
+				PlayerPrefs.SetString("RePassword", pass);
+				Login login = ComponentGetter.Get<Login>();
 				login.DoLogin(ht);
 			}
 		});
+	}	
+	private void ValidateEmail(string email)
+	{
+		Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+		Match match = regex.Match(email);
+		if (match.Success)	emailConfirmed = email;  
+		else	emailConfirmed = "invalid email";
 	}
-
-//	public void ShowErrorMessage ()
-//	{
-//		errorMessage.enabled = true;
-//		errorMessage.text = "Incorrect User or Password";
-//		Invoke ("CloseErrorMessage", 5.0f);
-//	}
 	
 	private void CloseErrorMessage ()
 	{
@@ -142,14 +143,8 @@ public class NewAccount : IView
 		AccountAlreadyExists = false;
 	}
 
-	public void onLoginFinished(UserProfile userProfileJson, bool autoLogin, string payload) {
-
-			
-	}
-
-	public bool Yupy ()
+	public void PostViaFB ()
 	{
 		FB.AppRequest( message:"3D Real-Time Strategy for mobile!", title:"Join me in RTS - Rex Tribal Society!");
-		return true;
 	}
 }

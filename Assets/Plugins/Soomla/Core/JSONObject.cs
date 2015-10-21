@@ -208,7 +208,7 @@ public class JSONObject : NullCheckable {
 		obj.str = val;
 		return obj;
 	}
-
+	
 	public static string EncodeJsString(string s)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -252,6 +252,16 @@ public class JSONObject : NullCheckable {
 		}
 		
 		return sb.ToString();
+	}
+
+	/// <summary>
+	/// Decodes the js string (represented as \uXXXX Unicode chars) to human-readable string
+	/// </summary>
+	/// <returns>Encoded human-readable string.</returns>
+	/// <param name="s">A string represented as sequence of \uXXXX Unicode chars.</param>
+	public static string DecodeJsString(string s) {
+		return (new Regex(@"\\[uU]([0-9A-F]{4})"))
+			.Replace(s, match => ((char) System.Int32.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
 	}
 
 	public static JSONObject CreateBakedObject(string val) {

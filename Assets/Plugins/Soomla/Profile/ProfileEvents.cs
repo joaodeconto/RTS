@@ -116,10 +116,11 @@ namespace Soomla.Profile {
 
 			JSONObject eventJson = new JSONObject(message);
 			Provider provider = Provider.fromInt((int)(eventJson["provider"].n));
+			bool autoLogin = eventJson["autoLogin"].b;
 
 			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
 			string payload = ProfilePayload.GetUserPayload(payloadJSON);
-			ProfileEvents.OnLoginStarted(provider, payload);
+			ProfileEvents.OnLoginStarted(provider, autoLogin, payload);
 		}
 
 		/// <summary>
@@ -134,6 +135,8 @@ namespace Soomla.Profile {
 
 			UserProfile userProfile = new UserProfile (eventJson ["userProfile"]);
 
+			bool autoLogin = eventJson["autoLogin"].b;
+
 			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
 
 			//give a reward
@@ -141,7 +144,7 @@ namespace Soomla.Profile {
 			if (reward !=null)
 				reward.Give();
 
-			ProfileEvents.OnLoginFinished (userProfile, ProfilePayload.GetUserPayload(payloadJSON));
+			ProfileEvents.OnLoginFinished(userProfile, autoLogin, ProfilePayload.GetUserPayload(payloadJSON));
 		}
 
 		/// <summary>
@@ -158,9 +161,11 @@ namespace Soomla.Profile {
 
 			Provider provider = Provider.fromInt((int)(eventJson["provider"].n));
 
+			bool autoLogin = eventJson["autoLogin"].b;
+
 			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
 
-			ProfileEvents.OnLoginCancelled (provider, ProfilePayload.GetUserPayload(payloadJSON));
+			ProfileEvents.OnLoginCancelled (provider, autoLogin, ProfilePayload.GetUserPayload(payloadJSON));
 		}
 
 		/// <summary>
@@ -178,9 +183,11 @@ namespace Soomla.Profile {
 			Provider provider = Provider.fromInt((int)(eventJson["provider"].n));
 			String errorMessage = eventJson["message"].str;
 
+			bool autoLogin = eventJson["autoLogin"].b;
+
 			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
 
-			ProfileEvents.OnLoginFailed(provider, errorMessage, ProfilePayload.GetUserPayload(payloadJSON));
+			ProfileEvents.OnLoginFailed(provider, errorMessage, autoLogin, ProfilePayload.GetUserPayload(payloadJSON));
 		}
 
 		/// <summary>
@@ -374,7 +381,7 @@ namespace Soomla.Profile {
 		}
 
 		/// <summary>
-		/// Handles an <c>onGetContactsFinished</c> event
+		/// Handles an <c>onGetContactsFailed</c> event
 		/// </summary>
 		/// <param name="message">
 		/// Will contain a numeric representation of <c>Provider</c>,
@@ -421,19 +428,24 @@ namespace Soomla.Profile {
 		public void onGetFeedFinished(String message)
 		{
 			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onGetFeedFinished");
-			
-			JSONObject eventJson = new JSONObject(message);
-			
-			Provider provider = Provider.fromInt ((int)eventJson["provider"].n);
 
+			JSONObject eventJson = new JSONObject(message);
+			Provider provider = Provider.fromInt ((int)eventJson["provider"].n);
 			JSONObject feedsJson = eventJson ["feeds"];
 			List<String> feeds = new List<String>();
-			foreach (String key in feedsJson.keys) {
+			foreach (JSONObject feedVal in feedsJson.list) {
 				//iterate "feed" keys
-				feeds.Add(feedsJson[key].str);
+				feeds.Add(feedVal.str);
 			}
 
-			ProfileEvents.OnGetFeedFinished (provider, feeds);
+			bool hasMore = eventJson["hasMore"].b;
+			
+			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
+			SocialPageData<String> result = new SocialPageData<String>();
+			result.PageData = feeds;
+			result.PageNumber = 0;
+			result.HasMore = hasMore;
+			ProfileEvents.OnGetFeedFinished (provider, result);
 		}
 
 		/// <summary>
@@ -454,22 +466,115 @@ namespace Soomla.Profile {
 			ProfileEvents.OnGetFeedFailed (provider, errorMessage);
 		}
 
+		/// <summary>
+		/// Handles an <c>onInviteStarted</c> event
+		/// </summary>
+		/// <param name="message">
+		/// Will contain a numeric representation of <c>Provider</c> 
+		/// numeric representation of <c>SocialActionType</c> and payload</param>
+		public void onInviteStarted(String message)
+		{
+			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onInviteStarted");
+			
+			JSONObject eventJson = new JSONObject(message);
+			
+			Provider provider = Provider.fromInt ((int)(eventJson["provider"].n));
+			
+			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
+			
+			ProfileEvents.OnInviteStarted (provider, ProfilePayload.GetUserPayload(payloadJSON));
+		}
+		
+		/// <summary>
+		/// Handles an <c>onInviteFinished</c> event
+		/// </summary>
+		/// <param name="message">
+		/// Will contain a numeric representation of <c>Provider</c> 
+		/// numeric representation of <c>SocialActionType</c>
+		/// id of given request, list of invite recipients
+		/// and payload</param>
+		public void onInviteFinished(String message)
+		{
+			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onInviteFinished");
+			
+			JSONObject eventJson = new JSONObject(message);
+			
+			Provider provider = Provider.fromInt ((int)eventJson["provider"].n);
+
+			String requestId = eventJson["requestId"].str;
+			JSONObject recipientsJson = eventJson ["invitedIds"];
+			List<String> recipients = new List<String>();
+			foreach (JSONObject recipientVal in recipientsJson.list) {
+				//iterate "feed" keys
+				recipients.Add(recipientVal.str);
+			}
+
+			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
+			
+			//give a reward
+			Reward reward = Reward.GetReward(ProfilePayload.GetRewardId(payloadJSON));
+			if (reward != null)
+				reward.Give();
+			
+			ProfileEvents.OnInviteFinished (provider, requestId, recipients, ProfilePayload.GetUserPayload(payloadJSON));
+		}
+		
+		/// <summary>
+		/// Handles an <c>onInviteCancelled</c> event
+		/// </summary>
+		/// <param name="message">
+		/// Will contain a numeric representation of <c>Provider</c> 
+		/// numeric representation of <c>SocialActionType</c> and payload</param>
+		public void onInviteCancelled(String message)
+		{
+			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onInviteCancelled");
+			
+			JSONObject eventJson = new JSONObject(message);
+			
+			Provider provider = Provider.fromInt ((int)eventJson["provider"].n);
+			
+			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
+			
+			ProfileEvents.OnInviteCancelled (provider, ProfilePayload.GetUserPayload(payloadJSON));
+		}
+		
+		/// <summary>
+		/// Handles an <c>onInviteFailed</c> event
+		/// </summary>
+		/// <param name="message">
+		/// Will contain a numeric representation of <c>Provider</c> 
+		/// numeric representation of <c>SocialActionType</c>, 
+		/// error message and payload</param>
+		public void onInviteFailed(String message)
+		{
+			SoomlaUtils.LogDebug(TAG, "SOOMLA/UNITY onInviteFailed");
+			
+			JSONObject eventJson = new JSONObject(message);
+			
+			Provider provider = Provider.fromInt ((int)eventJson["provider"].n);
+			String errorMessage = eventJson["message"].str;
+			
+			JSONObject payloadJSON = new JSONObject(eventJson ["payload"].str);
+			
+			ProfileEvents.OnInviteFailed (provider, errorMessage, ProfilePayload.GetUserPayload(payloadJSON));
+		}
+
 		public delegate void Action();
 
 		public static Action OnSoomlaProfileInitialized = delegate {};
 
 		public static Action OnUserRatingEvent =delegate {};
 
-		public static Action<Provider, string> OnLoginCancelled = delegate {};
-
 		public static Action<UserProfile> OnUserProfileUpdated = delegate {};
 
-		public static Action<Provider, string, string> OnLoginFailed = delegate {};
+		public static Action<Provider, string, bool, string> OnLoginFailed = delegate {};
 
-		public static Action<UserProfile, string> OnLoginFinished = delegate {};
+		public static Action<UserProfile, bool, string> OnLoginFinished = delegate {};
 
-		public static Action<Provider, string> OnLoginStarted = delegate {};
+		public static Action<Provider, bool, string> OnLoginStarted = delegate {};
 
+		public static Action<Provider, bool, string> OnLoginCancelled = delegate {};
+		
 		public static Action<Provider, string> OnLogoutFailed = delegate {};
 		
 		public static Action<Provider> OnLogoutFinished = delegate {}; 
@@ -492,7 +597,7 @@ namespace Soomla.Profile {
 
 		public static Action<Provider, string> OnGetFeedFailed = delegate {};
 		
-		public static Action<Provider, List<string>> OnGetFeedFinished = delegate {};
+		public static Action<Provider, SocialPageData<String>> OnGetFeedFinished = delegate {};
 		
 		public static Action<Provider> OnGetFeedStarted = delegate {};
 
@@ -537,10 +642,10 @@ namespace Soomla.Profile {
 			}
 
 			// Event pushing back to native (when using FB Unity SDK)
-			protected virtual void _pushEventLoginStarted(Provider provider, string payload) {}
-			protected virtual void _pushEventLoginFinished(UserProfile userProfileJson, string payload){}
-			protected virtual void _pushEventLoginFailed(Provider provider, string message, string payload){}
-			protected virtual void _pushEventLoginCancelled(Provider provider, string payload){}
+			protected virtual void _pushEventLoginStarted(Provider provider, bool autoLogin, string payload) {}
+			protected virtual void _pushEventLoginFinished(UserProfile userProfileJson, bool autoLogin, string payload){}
+			protected virtual void _pushEventLoginFailed(Provider provider, string message, bool autoLogin, string payload){}
+			protected virtual void _pushEventLoginCancelled(Provider provider, bool autoLogin, string payload){}
 			protected virtual void _pushEventLogoutStarted(Provider provider){}
 			protected virtual void _pushEventLogoutFinished(Provider provider){}
 			protected virtual void _pushEventLogoutFailed(Provider provider, string message){}
@@ -551,6 +656,9 @@ namespace Soomla.Profile {
 			protected virtual void _pushEventGetContactsStarted(Provider provider, bool fromStart, string payload){}
 			protected virtual void _pushEventGetContactsFinished(Provider provider, SocialPageData<UserProfile> contactsPage, string payload){}
 			protected virtual void _pushEventGetContactsFailed(Provider provider, string message, bool fromStart, string payload){}
+			protected virtual void _pushEventGetFeedFinished(Provider provider, SocialPageData<String> feedPage, string payload) {}
+			protected virtual void _pushEventGetFeedFailed(Provider provider, string message, bool fromStart, string payload) {}
+
 			protected virtual void _pushEventInviteStarted(Provider provider, string payload){}
 			protected virtual void _pushEventInviteFinished(Provider provider, string requestId, List<string> invitedIds, string payload){}
 			protected virtual void _pushEventInviteFailed(Provider provider, string message, string payload){}

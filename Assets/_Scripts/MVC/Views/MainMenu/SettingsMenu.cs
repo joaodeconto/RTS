@@ -11,7 +11,7 @@ public class SettingsMenu : MonoBehaviour {
 	public GameObject controlsOptionPanel;
 	public GameObject audioOptionPanel;
 	public GameObject graphicPanel;
-	public GameObject avatarPanel;
+	public GameObject optionsPanel;
 	
 	public void OnEnable ()
 	{
@@ -59,13 +59,13 @@ public class SettingsMenu : MonoBehaviour {
 				     });
 		}
 		
-		Transform avatar = pathOption.transform.FindChild ("Account");
+		Transform account = pathOption.transform.FindChild ("Account");
 
-		if (avatar != null){
-			dcb = avatar.gameObject.AddComponent<DefaultCallbackButton> ();
+		if (account != null){
+			dcb = account.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
 			         (ht_dcb) =>{				
-						avatarPanel.SetActive (true);			
+						optionsPanel.SetActive (true);			
 					 });
 		}		
 	}

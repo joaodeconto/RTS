@@ -25,26 +25,10 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		if (wasInitialized)
 			return;
-
 		wasInitialized = true;
-		Application.runInBackground = false;
 		PhotonNetwork.networkingPeer.DisconnectTimeout = 30000;
 		PhotonNetwork.ConnectUsingSettings (ConfigurationData.VERSION);
 	
-	}
-	
-	void Update ()
-	{
-//		if (PhotonNetwork.connectionState == ConnectionState.Disconnected)
-//        {
-//			PhotonNetwork.ConnectToMaster ( PhotonNetwork.PhotonServerSettings.ServerAddress,
-//											PhotonNetwork.PhotonServerSettings.ServerPort,
-//											PhotonNetwork.PhotonServerSettings.AppID,
-//											ConfigurationData.VERSION);
-//		}
-//		
-//		Debug.Log ("PhotonNetwork.connectionState:" + PhotonNetwork.connectionState);
-//		Debug.Log ("PhotonNetwork.connectionStateDetailed:" + PhotonNetwork.connectionStateDetailed);
 	}
 
 	public void SetPlayer (string playerName, bool isReady)
@@ -63,7 +47,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Hashtable expectedCustomRoomProperties = new Hashtable() { { "closeRoom", false } };
 		PhotonNetwork.JoinRandomRoom (expectedCustomRoomProperties, 0);
-
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (false);
@@ -73,9 +56,7 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	public void JoinRoom (string roomName)
 	{
 		PhotonNetwork.JoinRoom (roomName);
-
-		roomNameTemp = roomName;
-		
+		roomNameTemp = roomName;		
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (false);
@@ -87,20 +68,16 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (true);
-		}
-		
+		}		
 		if (PhotonNetwork.room == null)
 			return false;
-
 		PhotonNetwork.LeaveRoom ();
-
 		return true;
 	}
 
 	public void CreateTestRoom ()
 	{
 		CreateRoom ("test_room_" + (PhotonNetwork.GetRoomList().Length + 1) + (Random.value * 10000), 1, true, true, 1, 1);
-
 		foreach (GameObject menu in menusDissapearWhenLogged)
 		{
 			menu.SetActive (false);
@@ -111,11 +88,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		if (customProperties == null)
 			customProperties = new Hashtable ();
-
 		customProperties.Add ("closeRoom", false);
 		customProperties.Add ("bid", bid);
-		customProperties.Add ("map", map);
-		
+		customProperties.Add ("map", map);		
 		string[] roomPropsInLobby = { "closeRoom", "bool", "bid", "int" };
 		PhotonNetwork.CreateRoom (roomName, isVisible, isOpen, maxPlayers, customProperties, roomPropsInLobby);		
 		roomNameTemp = roomName;
@@ -144,7 +119,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
-
 		PhotonNetwork.player.SetCustomProperties (someCustomPropertiesToSet);
 	}
 	
@@ -156,11 +130,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	public object GetPropertyOnRoom (string key)
 	{
 		if (PhotonNetwork.room == null)
-			return null;
-		
+			return null;		
 		if (PhotonNetwork.room.customProperties == null)
-			return null;
-		
+			return null;		
 		return PhotonNetwork.room.customProperties[key];
 	}
 
@@ -168,7 +140,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		Hashtable someCustomPropertiesToSet = new Hashtable();
 		someCustomPropertiesToSet.Add (key, value);
-
 		PhotonNetwork.room.SetCustomProperties (someCustomPropertiesToSet);
 	}
 
@@ -185,18 +156,14 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		else if (peerState == PeerState.ConnectingToGameserver)			return "Connecting to Game Server";
 		else if (peerState == PeerState.ConnectedToGameserver)			return "Connected to Game Server";
 		else if (peerState == PeerState.PeerCreated)					return "Connection Created";
-
 		return peerState.ToString ();
 	}
 
-	// Photon Methods
 	private void OnJoinedRoom()
 	{
 		checkingStatus = false;
-
 		SetPlayer ( playerName, true );
 		SetPropertyOnPlayer ("team", PhotonNetwork.playerList.Length - 1);
-
 		if (PhotonNetwork.room.customProperties.ContainsKey ("battle"))
 			ConfigurationData.battle = new Model.Battle ((string)PhotonNetwork.room.customProperties["battle"]);
 		else
@@ -206,7 +173,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	private void OnCreatedRoom()
 	{
 		checkingStatus = false;
-
 		SetPlayer ( playerName, true );
 	}
 
@@ -218,7 +184,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 
 	private void OnDisconnectedFromPhoton()
 	{
-
 	}
 
 	private void OnFailedToConnectToPhoton(object parameters)
@@ -235,7 +200,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	{
 		this.cb  = cb;
 		this.prc = prc;
-
 		InvokeRepeating ("_TryToEnterGame", 1.0f, RefreshingInterval);
 		Invoke ("StopTryingEnterGame", maxTimeToWait);
 	}
@@ -243,7 +207,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	private void StopTryingEnterGame ()
 	{
 		CancelInvoke ("_TryToEnterGame");
-
 		cb ("Timeout");
 	}
 
@@ -277,7 +240,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 		}
 
 		if (prc != null)	prc (numberOfReady, room.maxPlayers);
-
 		if (numberOfReady == room.maxPlayers){
 			StopTryingEnterGame ();
 			StartCoroutine (CallStartGameCallback ());
@@ -292,48 +254,36 @@ public class PhotonWrapper : Photon.MonoBehaviour
 	
 	IEnumerator CallStartGameCallback ()
 	{
-		yield return new WaitForSeconds (2f);
-		
-		if (PhotonNetwork.isMasterClient)
-		{
-			Room room = PhotonNetwork.room;
-			
+		yield return new WaitForSeconds (2f);		
+		if (PhotonNetwork.isMasterClient){
+			Room room = PhotonNetwork.room;			
 			Hashtable roomProperty = new Hashtable() {{"closeRoom", true}};
-					room.SetCustomProperties (roomProperty);
-					
-			if (GameplayManager.mode == GameplayManager.Mode.Cooperative)
-			{
-				int maxNumberOfAllies = room.maxPlayers / 2;
-				
+			room.SetCustomProperties (roomProperty);					
+			if (GameplayManager.mode == GameplayManager.Mode.Cooperative){
+				int maxNumberOfAllies = room.maxPlayers / 2;				
 				int numberAllies0 = 0;
 				int numberAllies1 = numberAllies0;
 				
 				foreach (PhotonPlayer pp in PhotonNetwork.playerList)
 				{
 					int numberRaffled = 0;
-//					int numberRaffled = Random.Range(0, 2);
-					
-//					if (numberRaffled == 2) numberRaffled = 1;
-					
+//					int numberRaffled = Random.Range(0, 2);					
+//					if (numberRaffled == 2) numberRaffled = 1;					
 					if (numberAllies0 == maxNumberOfAllies)
 						numberRaffled = 1;
 					else if (numberAllies1 == maxNumberOfAllies)
-						numberRaffled = 0;
-					
+						numberRaffled = 0;					
 					if (numberRaffled == 0)
 						numberAllies0++;
 					else
-						numberAllies1++;
-					
+						numberAllies1++;					
 					photonView.RPC ("SetAllyOnPlayerRPC", pp, "allies", numberRaffled);
-				}
-				
+				}				
 				photonView.RPC ("SetGameplayMode", PhotonTargets.Others, 1);
 			}
 			else
-			{
 				photonView.RPC ("SetGameplayMode", PhotonTargets.Others, 0);
-			}
+
 		}
 		
 		ConfigurationData.InGame = true;
@@ -353,15 +303,9 @@ public class PhotonWrapper : Photon.MonoBehaviour
         while (PhotonNetwork.room == null)
 		{
 			yield return 0;
-		}
-		
+		}		
 		PhotonNetwork.isMessageQueueRunning = false;
-
-    }
-
-	
-	// RPCS
-
+    }	
 	[RPC]
 	public void SetAllyOnPlayerRPC (string key, int value)
 	{
@@ -389,7 +333,6 @@ public class PhotonWrapper : Photon.MonoBehaviour
 			GameplayManager.mode = GameplayManager.Mode.Survival;
 			break;
 		default:
-			// do nothing
 			break;
 		}
 	}

@@ -23,7 +23,11 @@ namespace Soomla.Profile
 
 		public string GetToolMetaData (BuildTarget target)
 		{
+#if UNITY_4_5 || UNITY_4_6
 			if (target == BuildTarget.iPhone) {
+#else
+			if (target == BuildTarget.iOS) {
+#endif
 				return GetProfileMetaIOS();
 			}
 
@@ -36,6 +40,8 @@ namespace Soomla.Profile
 		{
 			string result = "";
 			Dictionary<string, bool?> state = ProfileSettings.IntegrationState;
+
+			result += ProfileSettings.iTunesAppId + "~";
 
 			foreach (var entry in state) {
 				Provider targetProvider = Provider.fromString(entry.Key);

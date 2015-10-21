@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Cloud.Analytics;
 using Visiorama;
+using I2.Loc;
 using Visiorama.Utils;
 
 [System.Serializable]
@@ -124,7 +125,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			selectedLevel.gameLevel.SetActive(true);
 			network = ComponentGetter.Get<NetworkManager>();
 			bm = ComponentGetter.Get <BidManager> ();
-			loadingMessage.text = "synching tribes";
+			loadingMessage.text = ScriptLocalization.Get("Menus/synching tribes");
 			gamestarted = false;
 			MyTeam = (int)PhotonNetwork.player.customProperties["team"];
 			if (mode == Mode.Cooperative){
@@ -146,7 +147,7 @@ public class GameplayManager : Photon.MonoBehaviour
 			}
 			PhotonNetwork.offlineMode = true;
 			selectedLevel.gameLevel.GetComponent<TutorialManager>().Init();
-			loadingMessage.text = "loading";
+			loadingMessage.text = ScriptLocalization.Get("Menus/Loading");
 			MyTeam = 0;
 			Allies = 0;
 			numberOfTeams = 1;

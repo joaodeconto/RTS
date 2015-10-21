@@ -6,6 +6,8 @@ using System;
 using Soomla;
 using Soomla.Profile;
 using Soomla.Store;
+//using Soomla.Levelup;
+//using Soomla.Highway;
 using Visiorama;
 
 
@@ -32,7 +34,8 @@ public class StoreManager : MonoBehaviour
 			StoreEvents.OnSoomlaStoreInitialized += onSoomlaStoreInitialized;
 			StoreEvents.OnCurrencyBalanceChanged += onCurrencyBalanceChanged;	
 			StoreEvents.OnGoodBalanceChanged 	 += onGoodBalanceChanged;	
-			//SoomlaHighway.Initialize();
+//			SoomlaHighway.Initialize();
+//			SoomlaLevelUp.Initialize();
 			SoomlaStore.Initialize(new RTSStoreAssets());		
 			SoomlaProfile.Initialize();
 			StoreInventory.GiveItem("pass_multiplayer", 1);		//dando multiplayerpass	
@@ -92,13 +95,13 @@ public class StoreManager : MonoBehaviour
 			foreach(string key in keys)
 				itemsAffordability[key] = StoreInventory.CanAfford(key);
 		}
-		if(ConfigurationData.Logged) 
-		{
-			Score.AddScorePoints (DataScoreEnum.CurrentCrystals, amountAdded);
-			ComponentGetter.Get<Score>("$$$_Score").SaveScore();				
-			if(!ConfigurationData.InGame)ComponentGetter.Get<InternalMainMenu>().InitScore ();
-		}
-		if(!ConfigurationData.InGame && ConfigurationData.Offline) ComponentGetter.Get<OfflineMenu>().InitScore ();
+//		if(ConfigurationData.Logged) 
+//		{
+//			Score.AddScorePoints (DataScoreEnum.CurrentCrystals, amountAdded);
+//			ComponentGetter.Get<Score>("$$$_Score").SaveScore();				
+//			if(!ConfigurationData.InGame)ComponentGetter.Get<InternalMainMenu>().InitScore ();
+//		}
+//		if(!ConfigurationData.InGame && ConfigurationData.Offline) ComponentGetter.Get<OfflineMenu>().InitScore ();
 	}
 			
 	public void onGoodBalanceChanged(VirtualGood good, int balance, int amountAdded)

@@ -7,28 +7,20 @@ using PathologicalGames;
 
 public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 {
-	#region Serializable
-		
+	#region Serializable		
 	[System.Serializable]
 	public class RendererTeamSubstanceColor
 	{
 		public Transform subMesh;
 		private static Dictionary<string, ProceduralMaterial[]> unitTeamMaterials = new Dictionary<string, ProceduralMaterial[]> ();
-
-		//Caso esse metodo for modificado eh necessario modificar no Rallypoint tbm
 		public void SetColorInMaterial (Transform transformMesh, int teamID, bool playerUnit)
 		{
 			Color teamColor  = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 0);
 			Color teamColor1 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 1);
 			Color teamColor2 = Visiorama.ComponentGetter.Get<GameplayManager>().GetColorTeam (teamID, 2);
 			string unitName = transformMesh.name;
-//			int startRemoveIndex = unitName.IndexOf ("(");			
-//			unitName = Regex.Replace (unitName, "[0-9]", "" );			
-//			startRemoveIndex = (startRemoveIndex > 0) ? startRemoveIndex : unitName.Length - 1;
-//			unitName.Remove (startRemoveIndex);
 			string keyUnitTeamMaterial = unitName + teamID;
-			
-			//Inicializando unitTeamMaterials com materiais compartilhado entre as unidades iguais de cada time
+
 			if (!unitTeamMaterials.ContainsKey (keyUnitTeamMaterial)){
 				int nMaterials = subMesh.renderer.materials.Length;
 				unitTeamMaterials.Add (keyUnitTeamMaterial, new ProceduralMaterial[nMaterials]);
@@ -46,24 +38,14 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 						if (curProperty.type == ProceduralPropertyType.Color4 && curProperty.name.Equals ("outputcolor_2"))
 							substance.SetProceduralColor(curProperty.name, teamColor2);
 					}
-
 					if(!playerUnit) substance.RebuildTextures();
 					else     		substance.RebuildTexturesImmediately ();
 					
 					unitTeamMaterials[keyUnitTeamMaterial][i] = substance;
 				}
 			}
-
-			//Associando na unidade os materiais corretos
 			ProceduralMaterial[] pms = unitTeamMaterials[keyUnitTeamMaterial];
-//			List<Material> mms = new List<Material> ();
-//
-//			foreach (ProceduralMaterial pm in pms)
-//			{
-//				mms.Add (pm)
-//			}
 			subMesh.renderer.sharedMaterials = pms as Material[];
-
 		}
 	}
 	[System.Serializable]
@@ -118,40 +100,45 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		private set { m_Team = value; }
 	}
 	public int m_Ally;
-	public int ally { get { return m_Team; } private set { m_Team = value; } }	
 	public int defense;
+	public int group = -1;	
+	public int bonusForce;
+	public int bonusSpeed;
+	public int bonusSight;
+	public int bonusDefense;
+	public int bonusProjectile;
+	public int ally { get { return m_Team; } private set { m_Team = value; } }	
+	public int totalResourceCost {get {return costOfResources.Rocks + costOfResources.Mana;}}
+
 	public float fieldOfView;
 	public float sizeOfSelected = 1f;
 	public float sizeOfHealthBar {get {return (sizeOfSelected);}}
 	public float sizeOfResourceBar {get {return (sizeOfSelected*1.2f);}}
-	public RendererTeamSubstanceColor[] rendererTeamSubstanceColor;
-	public MovementAction[] movementActions;
-	public GameObject pref_ParticleDamage;
-	public Transform transformParticleDamageReference;
+
 	public bool playerUnit;
-	public string category;
-	public string subCategory;
-	public string description;
-	public string requisites;	
+	public bool firstDamage {get; set; }
+	public bool wasVisible { get; set; }
 	public bool Selected { get; protected set; }
 	public bool IsNetworkInstantiate { get; set; }
-	public bool WasRemoved { get; protected set; }	
-	public bool wasVisible { get; set; }
-	public int group = -1;	
+	public bool WasRemoved { get; protected set; }
+
+	public string category;
+	public string requisites;	
+	public string subCategory;
+	public string description;
+
+	public GameObject model;
+	public GameObject pref_ParticleDamage;
 	public ResourcesManager costOfResources;
-	public int totalResourceCost {get {return costOfResources.Rocks + costOfResources.Mana;}}
+	public MovementAction[] movementActions;
+	public Transform transformParticleDamageReference;
+	public RendererTeamSubstanceColor[] rendererTeamSubstanceColor;
+
 	private List<IHealthObserver> healthObservers = new List<IHealthObserver> ();
 	private bool wasInitialized = false;
-	public GameObject model;
+
 	public abstract void SetVisible(bool visible);
 	public abstract bool IsVisible { get; }
-	public bool firstDamage {get;set;}
-
-	public int bonusDefense;
-	public int bonusProjectile;
-	public int bonusForce;
-	public int bonusSpeed;
-	public int bonusSight;
 	
 	protected StatsController statsController;
 	protected MiniMapController minimapController;
@@ -163,11 +150,9 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	
 	public const int InvalidAlliance = 10000;
 	public static int UniversalEntityCounter = 0;
-
 	#endregion
 
 	#region Awake, Init
-
 	void Awake ()
 	{		
 		gameplayManager = ComponentGetter.Get<GameplayManager> ();
@@ -177,7 +162,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	public virtual void Init ()
 	{
 		if (wasInitialized)	return;
-
 		wasInitialized = true;		
 		techTreeController	=  ComponentGetter.Get<TechTreeController> ();
 		statsController 	= ComponentGetter.Get<StatsController> ();
@@ -220,8 +204,7 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	}
 	#endregion
 
-	#region General Methods
-	
+	#region General Methods	
 	public void SetTeam (int team, int ally)
 	{
 		this.team = team;
@@ -334,7 +317,6 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 	#endregion
 
 	#region Gizmos
-	// GIZMOS
 	void OnDrawGizmosSelected ()
 	{
 		DrawGizmosSelected ();
@@ -353,18 +335,15 @@ public abstract class IStats : Photon.MonoBehaviour, IHealthObservable
 		get {
 			return maxHealth;
 		}
-	}
-	
+	}	
 	public void RegisterHealthObserver (IHealthObserver observer)
 	{
 		healthObservers.Add (observer);
-	}
-	
+	}	
 	public void UnRegisterHealthObserver (IHealthObserver observer)
 	{
 		healthObservers.Remove (observer);
-	}
-	
+	}	
 	public void NotifyHealthChange ()
 	{	
 		foreach (IHealthObserver o in healthObservers)

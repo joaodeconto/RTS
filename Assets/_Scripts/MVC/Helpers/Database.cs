@@ -37,7 +37,7 @@ public class Database : MonoBehaviour
 
 #endif
 
-	private float timeToWait = 0.5f;
+	private float timeToWait = 1f;
 
 	private Stack<DatabaseCall> DatabaseCallStack;
 

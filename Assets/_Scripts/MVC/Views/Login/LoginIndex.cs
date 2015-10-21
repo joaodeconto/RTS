@@ -27,7 +27,7 @@ public class LoginIndex : IView
 				login.EnterOfflineMode();
 			});
 		}
-		else if(username.value == ""){
+		else if(PlayerPrefs.GetString("ReUser") == ""){
 			SubmitButton.GetComponent<DefaultCallbackButton>().Init( null,(ht_hud) =>{
 				if (!ConfigurationData.multiPass) MultiPassBtn();
 				else{

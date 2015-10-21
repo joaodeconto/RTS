@@ -44,7 +44,7 @@ namespace Soomla.Store {
 
 
 		protected override void _loadBillingService() {
-			soomlaStore_SetSSV(StoreSettings.IosSSV, "https://verify.soom.la/verify_ios?platform=unity4", false);
+			soomlaStore_SetSSV(StoreSettings.IosSSV, "https://verify.soom.la/verify_ios?platform=unity4", StoreSettings.IosVerifyOnServerFailure);
 			soomlaStore_LoadBillingService();
 		}
 

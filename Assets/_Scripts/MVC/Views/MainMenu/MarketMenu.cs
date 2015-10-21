@@ -47,8 +47,8 @@ public class MarketMenu : MonoBehaviour
 					FB.Feed(
 						link: "https://play.google.com/store/apps/details?id=com.Visiorama.RTS",
 						linkName: "Join Rex Tribal Society!",
-						linkCaption: " 'Gruuuarhhh!!!, can you SAY the word of our salvation? '",
-						linkDescription: " Join RTS, Alpha testing with free gameplay and coins!", 
+						linkCaption: " 'Gruuuarhhh!!!'",
+						linkDescription: " Join RTS, free multiplayer for mobile!", 
 						picture: "https://www.visiorama.com.br/uploads/RTS/mkimages/Achiv10.png",
 						callback: AddBonusFacebook);				
 				}

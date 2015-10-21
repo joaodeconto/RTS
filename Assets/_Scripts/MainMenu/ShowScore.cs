@@ -114,42 +114,24 @@ public class ShowScore : MonoBehaviour
 			}
 			oScore.DestroyMe();
 
-			if(ConfigurationData.Offline)
-			{
+			if(ConfigurationData.Offline){
 
 				DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
-				dcb.Init (null,
-				          (ht_dcb) =>
-				          {
-							ActiveScoreMenu (false);
-							login.Index();					
-						  });
+				dcb.Init (null,(ht_dcb) =>{ActiveScoreMenu (false);login.Index();});
 			}
-			else
-			{
+			else{
 				DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
-				dcb.Init (null,
-				          (ht_dcb) =>
-				          {
-								ActiveScoreMenu (false);
-								imm.Init ();								
-							});
+				dcb.Init (null,(ht_dcb) =>{ActiveScoreMenu (false);imm.Init ();});
 			}
 		}
 
-		else
-		{				
+		else{				
 			int myPlayerId = ConfigurationData.player.IdPlayer;
-			Score.LoadBattleScore
-			(
-				(dicScore) =>
-				{
+			Score.LoadBattleScore((dicScore) =>{
 					for (int i = 0; i != dicScore.Count; i++)
 					{
-						if (!players.ContainsKey (dicScore[i].IdPlayer)) players.Add (dicScore[i].IdPlayer, new ScorePlayer ());
-						
+						if (!players.ContainsKey (dicScore[i].IdPlayer)) players.Add (dicScore[i].IdPlayer, new ScorePlayer ());						
 						players[dicScore[i].IdPlayer].AddScorePlayer (dicScore[i].SzScoreName, dicScore[i].NrPoints);
-
 					}											
 											
 					float positionYInitial = startLabelPoisition;
@@ -166,16 +148,12 @@ public class ShowScore : MonoBehaviour
 
 						GameObject scorePlayerObject = NGUITools.AddChild (scoreMenuObject.gameObject, scorePlayerPrefab);
 						scorePlayerObject.transform.localPosition = Vector3.up * positionYInitial;
-						ScoreRow sr = scorePlayerObject.GetComponent<ScoreRow>();					
-
+						ScoreRow sr = scorePlayerObject.GetComponent<ScoreRow>();
 						playerTime = (float)sp.Value.TotalTimeElapsed;
 						timeLabel.text = showGameTime;
 						sr.playerScoreModifier.text = "+" + sp.Value.TotalScore.ToString();
 
-						if (sp.Key == myPlayerId)
-						{
-							SaveMyTotal(sp.Value);
-						}
+						if (sp.Key == myPlayerId)	SaveMyTotal(sp.Value);						
 											
 						if (sp.Value.VictoryPoints > 0)  sr.gameResult.text = "Victory";
 						else sr.gameResult.text = "Defeat";
@@ -190,7 +168,6 @@ public class ShowScore : MonoBehaviour
 						sr.StructuresLost.GetComponentInChildren<UILabel>().text 		= sp.Value.StructureLostPoints.ToString ();
 						sr.StructuresDestroyed.GetComponentInChildren<UILabel>().text   = sp.Value.StructureDestroyedPoints.ToString ();
 						sr.techsResearched.GetComponentInChildren<UILabel>().text       = sp.Value.UpgradePoints.ToString();
-
 	//					sr.ressourceGold.value 	      = ((float)sp.Value.GoldCollectedPoints / (float)battleTotalGold);
 	//					sr.ressourceMana.value		  = ((float)sp.Value.ManaCollectedPoints / (float)battleTotalMana);
 	//					sr.ressourceSpent.value 	  = ((float)sp.Value.ResourcesSpentPoints / (float)battleTotalSpent);
@@ -201,20 +178,13 @@ public class ShowScore : MonoBehaviour
 	//					sr.unitsLost.value  		  = ((float)sp.Value.UnitsLostPoints / (float)battleTotalUnitsDestroyed);
 	//					sr.unitsDestroyed.value  	  = ((float)sp.Value.UnitsKillsPoints / (float)battleTotalUnitsDestroyed);	
 	//					sr.techsResearched.value  	  = ((float)sp.Value.UpgradePoints / (float)battleTotalUpgradePoints);	
-
 						positionYInitial -= diferrenceBetweenLabels;
 						SetPlayerRank(sp.Key, sr);
 					}
 				});
 
 			DefaultCallbackButton dcb = scoreMenuObject.FindChild ("Button Main Menu").gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init (null,
-			          (ht_dcb) =>
-			          {
-							ActiveScoreMenu (false);
-							imm.Init ();
-							
-						});
+			dcb.Init (null,(ht_dcb) =>{ActiveScoreMenu (false);imm.Init ();});
 		}
 
 //		Everyplay.SetMetadata("level", ConfigurationData.level);
@@ -230,20 +200,11 @@ public class ShowScore : MonoBehaviour
 	{
 
 		Dictionary<int, ScorePlayer> players = new Dictionary<int, ScorePlayer>();
-
-		Score.LoadBattleScore
-		(
-		(dicScore) =>
-		{
+		Score.LoadBattleScore((dicScore) =>{
 			for (int i = 0; i != dicScore.Count; i++)
 			{
-				if (!players.ContainsKey (dicScore[i].IdPlayer))
-				{
-					players.Add (dicScore[i].IdPlayer, new ScorePlayer ());				
-				}
-				
+				if (!players.ContainsKey (dicScore[i].IdPlayer))players.Add (dicScore[i].IdPlayer, new ScorePlayer ());	
 				players[dicScore[i].IdPlayer].AddScorePlayer (dicScore[i].SzScoreName, dicScore[i].NrPoints);
-
 			}
 
 			foreach (KeyValuePair<int, ScorePlayer> sp in players)
@@ -257,9 +218,7 @@ public class ShowScore : MonoBehaviour
 				totalStructuresDestroyed 	+= sp.Value.StructureDestroyedPoints;
 				totalUpgradePoints 			+= sp.Value.UpgradePoints;
 			}							
-		}
-		);
-
+		});
 	}
 	
 	protected void ActiveScoreMenu (bool boolean)
@@ -270,32 +229,19 @@ public class ShowScore : MonoBehaviour
 	public void SetPlayerRank(int playerId, ScoreRow scoreRow)
 	{
 		int i = 0;
-		Score.LoadRanking((List<Model.DataScoreRanking> ranking) => 	
-		{
+		Score.LoadRanking((List<Model.DataScoreRanking> ranking) =>{
 			foreach (Model.DataScoreRanking r in ranking)
 			{
 				i++;
-				if (r.IdPlayer == playerId)
-				{
+				if (r.IdPlayer == playerId){
 					int rankDif = (PlayerPrefs.GetInt("Rank")- i);
 					scoreRow.playerName.text  = r.SzName;
 					scoreRow.playerNewRank.text  = i.ToString();
 					scoreRow.rankLadder.text  = rankDif.ToString();
-
-//						if (rankDif < 0)
-//							scoreRow.rankLadderSignal.spriteName  = "Minus";
-//						if (rankDif > 0)
-//							scoreRow.rankLadderSignal.spriteName  = "Plus";
-//						else
-//							scoreRow.rankLadderSignal.enabled = false;
-
 					PlayerPrefs.SetInt("Rank", i);
-
 					foreach (KeyValuePair <string,string> name in VersusScreen.opponentSprite)
 					{
-
-						if (r.SzName == name.Key)
-						{
+						if (r.SzName == name.Key){
 							scoreRow.playerAvatar.spriteName = name.Value;
 							break;
 						}
@@ -308,18 +254,11 @@ public class ShowScore : MonoBehaviour
 
 	private void SaveMyTotal(ScorePlayer sp)
 	{
-		PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();
-		
+		PlayerBattleDAO pbDAO = ComponentGetter.Get <PlayerBattleDAO> ();		
 		pbDAO.CreatePlayerBattle (ConfigurationData.player, ConfigurationData.battle,
-		                          (playerBattle, message) =>
-		                          {
-										playerBattle.PScore = sp.TotalScore;
-			
-										pbDAO.UpdatePlayerBattle (playerBattle,
-										                          (playerBattle_update, message_update) =>
-										                          {
-										
-										});
-									});
+		                          (playerBattle, message) =>{
+										playerBattle.PScore = sp.TotalScore;			
+										pbDAO.UpdatePlayerBattle (playerBattle,(playerBattle_update, message_update) =>{});
+								  });
 	}
 }

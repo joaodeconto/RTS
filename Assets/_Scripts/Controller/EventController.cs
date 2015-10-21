@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Visiorama.Utils;
 using Visiorama;
+using I2.Loc;
 
 public class EventController : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class EventController : MonoBehaviour
 		EventController.Event e = GetEvent(eventName);
 		
 		Hashtable ht = new Hashtable();
-		ht["message"] = string.Format(e.Message, param);
+		ht["message"] = string.Format(ScriptLocalization.Get("Events/" + e.Message), param);
 		
 		if(string.IsNullOrEmpty(spriteName))
 			spriteName = e.spriteName;
@@ -52,7 +53,7 @@ public class EventController : MonoBehaviour
 		EventController.Event e = GetEvent(eventName);
 
 		Hashtable ht = new Hashtable();
-		ht["message"] = string.Format(e.Message, param);
+		ht["message"] = string.Format(ScriptLocalization.Get("Events/" + e.Message), param);
 
 		if(string.IsNullOrEmpty(spriteName))
 			spriteName = e.spriteName;
@@ -81,7 +82,7 @@ public class EventController : MonoBehaviour
 		EventController.Event e = GetEvent(eventName);
 		
 		Hashtable ht = new Hashtable();
-		ht["message"] = string.Format(e.Message, param);
+		ht["message"] = string.Format(ScriptLocalization.Get("Events/" + e.Message), param);
 		
 		if(string.IsNullOrEmpty(spriteName))
 			spriteName = e.spriteName;

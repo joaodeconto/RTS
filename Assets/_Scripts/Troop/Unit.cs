@@ -40,7 +40,16 @@ public class Unit : IStats, IMovementObservable,
 		Attack = 2,
 		Die    = 3
 	}
-
+	protected GameObject TargetAttack {
+		get { return m_targetAttack; }
+		set {
+			if (m_targetAttack != value)
+			{
+				m_targetAttack = value;
+				NotifyBeginAttack ();
+			}
+		}
+	}
 	public int force;
 	public float distanceView       = 15f;
 	public float attackRange        = 5f;
@@ -53,30 +62,17 @@ public class Unit : IStats, IMovementObservable,
 	public bool IsAttacking { get; protected set; }
 	public bool IsDead { get; set; }
 	public Animation ControllerAnimation;
-	private bool canHit;
+	public const string UnitGroupQueueName = "Unit Group";
 	public bool CanHit {  get {	if (!canHit) canHit = (IsDead);	return canHit;}}   
-	protected PhotonPlayer playerTargetAttack;
-	protected GameObject m_targetAttack;
-	protected GameObject TargetAttack {
-		get { return m_targetAttack; }
-		set {
-				if (m_targetAttack != value)
-				{
-					m_targetAttack = value;
-					NotifyBeginAttack ();
-				}
-			}
-		}
 	public bool followingTarget;
-	protected float attackBuff;
 	public bool moveAttack					{get; set;}
 	public Vector3 moveAttackDestination	{get; set;}
 	public bool hasMoveAttackDestination	{get; set;}
 	public UnitState unitState 				{get; set;}
 	public UnitSkill unitSkill;
 	public int skillBonus 					{get; set;}
-	protected bool invokeCheckEnemy;
-	protected NavMeshAgent NavAgent;
+	public float normalSpeed;	
+	public NavMeshPath newPath;
 	public float GetAgentRadius {
 		get	{if(NavAgent != null)
 			return NavAgent.radius;
@@ -90,26 +86,28 @@ public class Unit : IStats, IMovementObservable,
 			m_pathFindTarget = value;
 		}
 	}
-	private Vector3 m_pathFindTarget;
-	private Vector3 m_lastSavedPosition;
+	protected PhotonPlayer playerTargetAttack;
+	protected GameObject m_targetAttack;
+	protected bool invokeCheckEnemy;
+	protected NavMeshAgent NavAgent;
+	protected float attackBuff;
 	protected float normalAcceleration;
-	public float normalSpeed;
 	protected float normalAngularSpeed;
 	protected ObstacleAvoidanceType normalObstacleAvoidance;
 	protected int normalAvoidancePriority;
 	protected Hashtable loadAttribs = new Hashtable();
 	protected InteractionController interactionController;
+
+	private bool canHit;
+	private Vector3 m_pathFindTarget;
+	private Vector3 m_lastSavedPosition;
 	private bool unitInitialized = false;
 	private bool isFollowed = false;
-	public NavMeshPath newPath;
+	private Unit followedUnit = null;
 
 	List<IMovementObserver> IMOobservers = new List<IMovementObserver> ();
 	List<IAttackObserver> IAOobservers   = new List<IAttackObserver> ();
 	List<IDeathObserver> IDOobservers	 = new List<IDeathObserver> ();
-
-	public const string UnitGroupQueueName = "Unit Group";
-
-	Unit followedUnit = null;
 	#endregion
 
 	#region Init
@@ -151,9 +149,7 @@ public class Unit : IStats, IMovementObservable,
 		if (playerUnit)
 		{
 			interactionController = ComponentGetter.Get<InteractionController>();
-
-			if (techTreeController.attribsHash.ContainsKey(category)) LoadStandardAttribs();
-			
+			if (techTreeController.attribsHash.ContainsKey(category)) LoadStandardAttribs();			
 			if (!PhotonNetwork.offlineMode)
 			{
 				Model.Battle battle = ConfigurationData.battle;
@@ -183,13 +179,11 @@ public class Unit : IStats, IMovementObservable,
 
 	public virtual void IAStep ()
 	{
-		if (gameplayManager.IsBotTeam (this))
-		{
+		if (gameplayManager.IsBotTeam (this)){
 			if (!PhotonNetwork.isMasterClient)
 				return;
 		}
-		else
-		{
+		else{
 			if (!playerUnit)
 				return;
 		}
@@ -207,34 +201,20 @@ public class Unit : IStats, IMovementObservable,
 				break;
 
 			case UnitState.Walk:
-
-				if (unitAnimation.Walk)
-				{
+				if (unitAnimation.Walk){
 					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed * Mathf.Clamp(NavAgent.velocity.sqrMagnitude, 0f, 1f);
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
-
 				if(isFollowed) NotifyMovement();
-
 				if(!moveAttack)	CancelCheckEnemy();	
-
-				if (TargetAttack != null)
-				{
+				if (TargetAttack != null){
 					PathfindTarget = transform.position;
-
 					if (InMeleeRange(TargetAttack))
-					{
-						unitState = UnitState.Attack;
-					}
-//					else if (InDistanceView (TargetAttack.transform.position))
+						unitState = UnitState.Attack;					
 					else if (TargetAttack.GetComponent<IStats> ().IsVisible)
-					{
-						Move (TargetAttack.transform.position);
-					}
-					else
-					{
-						if (followingTarget)
-						{
+						Move (TargetAttack.transform.position);					
+					else{
+						if (followingTarget){
 							StopMove(true);
 							TargetAttack    = null;
 							unitState       = UnitState.Idle;
@@ -243,70 +223,49 @@ public class Unit : IStats, IMovementObservable,
 					}
 				}
 
-				else if (MoveComplete(PathfindTarget))
-				{
-					if (hasMoveAttackDestination && MoveComplete(moveAttackDestination))
-					{					
+				else if (MoveComplete(PathfindTarget)){
+					if (hasMoveAttackDestination && MoveComplete(moveAttackDestination))		
 						hasMoveAttackDestination = false;
-					}
-
+					
 					StopMove (true);					
 				}
 				
-				if(NavAgent.isPathStale)
-				{
-			//		Debug.Log("path stale  " + NavAgent.pathStatus + " |  da unidade: " + gameObject.name + " |  old pathfindtarget =  " + PathfindTarget);	
-
-					if (NavAgent.pathStatus != NavMeshPathStatus.PathComplete)
-					{						
-						if (NavAgent.pathStatus != NavMeshPathStatus.PathInvalid)
-						{
+				if(NavAgent.isPathStale){
+			
+					if (NavAgent.pathStatus != NavMeshPathStatus.PathComplete){						
+						if (NavAgent.pathStatus != NavMeshPathStatus.PathInvalid){
 							Vector3 randomVector = Random.onUnitSphere;
 							Vector3 position = PathfindTarget - randomVector;
 							position.y = PathfindTarget.y;
 							NavMeshHit hit;
 							if(NavMesh.SamplePosition(position,out hit,1,1))
-							{
 								Move (position);
-							}		
 						}
 						else 
-						{
 							Move (PathfindTarget);
-						}
 					}					
 				}
 				break;
 			case UnitState.Attack:
-
 				followingTarget = true;
-
-				if (TargetAttack != null)
-				{
-					if (TargetAttack.GetComponent<IStats>().WasRemoved)
-					{
+				if (TargetAttack != null){
+					if (TargetAttack.GetComponent<IStats>().WasRemoved){
 						TargetingEnemy (null);
 						IsAttacking = false;
 					}
 				}
 
 				if (IsAttacking) return;
-
 				StopMove (false);
 
-				if (TargetAttack != null)
-				{
-					if (InMeleeRange (TargetAttack))
-					{
+				if (TargetAttack != null){
+					if (InMeleeRange (TargetAttack))	
 						StartCoroutine(Attack ());
-					}
+					
 					else
-					{
-						unitState = UnitState.Walk;
-					}
+						unitState = UnitState.Walk;					
 				}
-				else
-				{
+				else{
 					if(hasMoveAttackDestination)  // depois que batalha no moveAttack checa o destination pendente.
 					{
 						Move(moveAttackDestination);
@@ -322,21 +281,16 @@ public class Unit : IStats, IMovementObservable,
 
 	public virtual void SyncAnimation ()
 	{
-	//	if (!gameplayManager.IsSameTeam (team))ControllerAnimation.cullingType = AnimationCullingType.BasedOnRenderers;
-
-		if (IsVisible)
-		{
+		if (IsVisible){
 			switch (unitState)
 			{
 			case UnitState.Idle:
 				if (unitAnimation.Idle)
-
 					ControllerAnimation.PlayCrossFade (unitAnimation.Idle, WrapMode.Loop);
 
 				break;
 			case UnitState.Walk:
-				if (unitAnimation.Walk)
-				{
+				if (unitAnimation.Walk){
 					ControllerAnimation[unitAnimation.Walk.name].normalizedSpeed = unitAnimation.walkSpeed;
 					ControllerAnimation.PlayCrossFade (unitAnimation.Walk, WrapMode.Loop);
 				}
@@ -362,28 +316,16 @@ public class Unit : IStats, IMovementObservable,
 	public void Move (Vector3 destination)
 	{
 		newPath = new NavMeshPath();
-
-		NavAgent.avoidancePriority = normalAvoidancePriority;
-	
+		NavAgent.avoidancePriority = normalAvoidancePriority;	
 		if (!NavAgent.updatePosition) NavAgent.updatePosition = true;
-
-		if (NavAgent.SetDestination (destination))
-		{
-			PathfindTarget = destination;
-		}
-
+		if (NavAgent.SetDestination (destination))	PathfindTarget = destination;
 		if (PhotonNetwork.offlineMode || playerUnit) unitState = UnitState.Walk;
 	}
 
 	public void StopMove (bool changeState = false)
 	{
 		NavAgent.avoidancePriority = 4;
-
-		if (changeState)
-		{
-			unitState = UnitState.Idle;
-		}
-
+		if (changeState)	unitState = UnitState.Idle;
 		NavAgent.Stop ();
 	}
 
@@ -422,8 +364,7 @@ public class Unit : IStats, IMovementObservable,
 		AudioClip sfxAtk = SoundManager.LoadFromGroup("Attack");
 		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, sourcePosition);
 
-		if (smas != null)
-		{
+		if (smas != null){
 			smas.dopplerLevel = 0f;
 			smas.minDistance = 6.0f;
 			smas.maxDistance = 60.0f;
@@ -438,8 +379,7 @@ public class Unit : IStats, IMovementObservable,
 		Vector3 u = this.transform.position;		
 		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
 		
-		if (smas != null)
-		{
+		if (smas != null){
 			smas.dopplerLevel = 0.0f;
 			smas.spread = 0.3f;
 			smas.minDistance = 3.0f;
@@ -454,8 +394,7 @@ public class Unit : IStats, IMovementObservable,
 		Vector3 u = this.transform.position;		
 		AudioSource smas = SoundManager.PlayCappedSFX (sfxDeath, "Death", 1f, 1f, u);
 		
-		if (smas != null)
-		{
+		if (smas != null){
 			smas.dopplerLevel = 0.0f;
 			smas.spread = 0.3f;
 			smas.minDistance = 3.0f;
@@ -470,8 +409,7 @@ public class Unit : IStats, IMovementObservable,
 		Vector3 u = this.transform.position;		
 		AudioSource smas = SoundManager.PlayCappedSFX (sfxAtk, "Attack", 1f, 1f, u);
 		
-		if (smas != null)
-		{
+		if (smas != null){
 			smas.dopplerLevel = 0f;
 			smas.minDistance = 6.0f;
 			smas.maxDistance = 60.0f;
@@ -485,32 +423,23 @@ public class Unit : IStats, IMovementObservable,
 	{
 		Quaternion rotation = Quaternion.LookRotation(TargetAttack.transform.position - transform.position);
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * NavAgent.angularSpeed);
-
 		SfxAtk();
-
 		IStats targetStats = TargetAttack.GetComponent<IStats>();
 
 		if (unitAnimation.Attack)
 		{
 			if (!gameplayManager.IsSameTeam (team))ControllerAnimation.cullingType = AnimationCullingType.AlwaysAnimate;
 			ControllerAnimation.PlayCrossFade (unitAnimation.Attack, WrapMode.Once);
-
 			IsAttacking = true;
 
-			if (unitSkill != UnitSkill.none)
-			{	
+			if (unitSkill != UnitSkill.none){	
 				if	(CheckNemesis(targetStats))
-				{
-					skillBonus  = Mathf.FloorToInt((force + bonusForce)*0.25f);                                   
-				}
+					skillBonus  = Mathf.FloorToInt((force + bonusForce)*0.25f);
 			}
 			
-			if (PhotonNetwork.offlineMode)
-			{
-				targetStats.ReceiveAttack(force + bonusForce + skillBonus);
-			}
-			else
-			{
+			if (PhotonNetwork.offlineMode)	targetStats.ReceiveAttack(force + bonusForce + skillBonus);
+
+			else{
 				photonView.RPC ("AttackStat", playerTargetAttack, TargetAttack.name, force + bonusForce + skillBonus);
 				photonView.RPC ("SfxAtk", PhotonTargets.All,transform.position); 
 				if(!targetStats.firstDamage) targetStats.ShowHealth();
@@ -522,24 +451,19 @@ public class Unit : IStats, IMovementObservable,
 			skillBonus = 0; 
 			IsAttacking = false;
 		}
-
 	}
 
 	public void TargetingEnemy (GameObject enemy)
 	{
-		if (enemy != null && !PhotonNetwork.offlineMode)
-		{
-			if (!gameplayManager.IsBotTeam (enemy.GetComponent<IStats>()))
-			{
+		if (enemy != null && !PhotonNetwork.offlineMode){
+			if (!gameplayManager.IsBotTeam (enemy.GetComponent<IStats>())){
 				PhotonPlayer[] pp = (from pps in PhotonNetwork.playerList
 							         where (int)pps.customProperties["team"] == enemy.GetComponent<IStats>().team
 							         select pps).ToArray ();
 				playerTargetAttack = pp[0];
 			}
 			else
-			{
 				playerTargetAttack = PhotonNetwork.masterClient;
-			}
 
 			followingTarget = true;
 		}
@@ -554,45 +478,32 @@ public class Unit : IStats, IMovementObservable,
 		if (first > last)
 			return null;
 
-		int mid = (first + last) / 2;  // compute mid point.
-
-		//selecionar unidade
+		int mid = (first + last) / 2;
 		Unit testedUnit = units[mid];
 
-		//verificar se é do mesmo time
-		if (testedUnit.team == unit.team)
-		{
+		if (testedUnit.team == unit.team){
 			if(Random.value % 2 == 0)
 				return BinarySearch(units, unit, first, mid - 1);
 			else
 				return BinarySearch(units, unit, mid + 1, last);
 		}
 
-		//obtendo posição x
 		float testedUnitX = testedUnit.transform.position.x;
 		float unitX 	  = unit.transform.position.x;
 
-		if(unit.distanceView > Mathf.Abs(testedUnitX - unitX))
-		{
+		if(unit.distanceView > Mathf.Abs(testedUnitX - unitX)){
 			float testedUnitZ = testedUnit.transform.position.z;
 			float unitZ 	  = unit.transform.position.z;
 
-			if(unit.distanceView > Mathf.Abs(testedUnitZ - unitZ))
-			{
-				//unidade verificada está dentro da visão da unidade atual
+			if(unit.distanceView > Mathf.Abs(testedUnitZ - unitZ)){
 				return testedUnit;
-			}
-			//não está dentro da visão, continua verificando
+			}		
 		}
 
-		if(testedUnitX > unitX + unit.distanceView)
-		{
-			// Call ourself for the lower part of the array
+		if(testedUnitX > unitX + unit.distanceView){
 			return BinarySearch(units, unit, first, mid - 1);
 		}
-		else
-		{
-			// Call ourself for the upper part of the array
+		else{		
 			return BinarySearch(units, unit, mid + 1, last);
 		}
 	}
@@ -602,85 +513,62 @@ public class Unit : IStats, IMovementObservable,
 	
 	public void CheckEnemyIsClose ()
 	{		
-		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1 << LayerMask.NameToLayer ("Unit"));
-		
-		if (nearbyUnits.Length == 0) return;
-		
+		Collider[] nearbyUnits = Physics.OverlapSphere (transform.position, distanceView, 1 << LayerMask.NameToLayer ("Unit"));		
+		if (nearbyUnits.Length == 0) return;		
 		GameObject enemyFound = null;
-		IStats cStats = null;
-		
+		IStats cStats = null;		
 		for (int i = 0; i != nearbyUnits.Length; i++)
 		{
 			cStats = nearbyUnits[i].GetComponent<IStats> ();
-			if (cStats)
-			{
-				if (gameplayManager.IsBotTeam (this))
-				{
+			if (cStats){
+				if (gameplayManager.IsBotTeam (this)){
 					if (gameplayManager.IsBotTeam (cStats))
 						continue;
 					
-					if (enemyFound == null)
-					{
+					if (enemyFound == null){
 						if (!cStats.WasRemoved)
-						{
 							enemyFound = cStats.gameObject;
-						}
 					}
-					else
-					{
-						if (!cStats.WasRemoved)
-						{
+					else{
+						if (!cStats.WasRemoved){
 							if (Vector3.Distance (transform.position, cStats.transform.position) <
 							    Vector3.Distance (transform.position, enemyFound.transform.position))
-							{
 								enemyFound = cStats.gameObject;
-							}
 						}
 					}
 				}
-				else
-				{
+				else{
 					if (gameplayManager.IsNotEnemy (cStats.team, cStats.ally))
 						continue;
 					
-					if (enemyFound == null)
-					{
+					if (enemyFound == null){
 						if (!cStats.WasRemoved)
 							enemyFound = nearbyUnits[i].gameObject;
 					}
-					else
-					{
-						if (!cStats.WasRemoved)
-						{
+					else{
+						if (!cStats.WasRemoved){
 							if (Vector3.Distance (transform.position, cStats.transform.position) <
 							    Vector3.Distance (transform.position, enemyFound.transform.position))
-							{
-								enemyFound = cStats.gameObject;
-							}
+								enemyFound = cStats.gameObject;						
 						}
 					}
 				}
 			}
 		}
 		
-		if (enemyFound != null)
-		{
-			TargetingEnemy (enemyFound);
-		}
+		if (enemyFound != null)	TargetingEnemy (enemyFound);
 	}
 	
 	public void StartCheckEnemy ()
 	{
-		if (!invokeCheckEnemy)
-		{
+		if (!invokeCheckEnemy){
 			InvokeRepeating ("CheckEnemyIsClose", 0.3f, 0.2f);
 			invokeCheckEnemy = true;
 		}
 	}
 	public void CancelCheckEnemy ()
 	{
-		if (invokeCheckEnemy)
-		{
+		if (invokeCheckEnemy){
 			CancelInvoke ("CheckEnemyIsClose");
 			invokeCheckEnemy = false;
 		}
@@ -692,12 +580,10 @@ public class Unit : IStats, IMovementObservable,
 	
 	public bool InMeleeRange (GameObject target)
 	{
-		if (target.GetComponent<FactoryBase> () != null)
-		{
+		if (target.GetComponent<FactoryBase> () != null){
 			return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<FactoryBase> ().helperCollider.radius);
 		}
-		else
-		{
+		else{
 			return Vector3.Distance(transform.position, target.transform.position) <= (attackRange + target.GetComponent<CapsuleCollider> ().radius);
 		}
 	}
@@ -710,13 +596,9 @@ public class Unit : IStats, IMovementObservable,
 	public bool MoveComplete (Vector3 destination)
 	{
 		float distanceToDestination = Vector3.Distance(transform.position, destination);
-
 		if (distanceToDestination <= NavAgent.stoppingDistance) return true;
-
 		if ((distanceToDestination <= NavAgent.stoppingDistance * 2) && NavAgent.velocity.sqrMagnitude < 0.2f)  return true;
-
 		return false;
-
 	}
 	
 	public bool MoveComplete ()
@@ -758,7 +640,6 @@ public class Unit : IStats, IMovementObservable,
 		
 		if (!gameplayManager.IsSameTeam (this.team))
 			return;
-		//SHOW SELECTED STATS DISABLE	
 
 		hudController.CreateEnqueuedButtonInInspector ( this.name,
 		                                               Unit.UnitGroupQueueName,
@@ -767,90 +648,13 @@ public class Unit : IStats, IMovementObservable,
 		                                               (hud_ht) =>{
 															statsController.DeselectAllStats();
 															statsController.SelectStat(this, true);
-														});		
-//MOVE ACTION DISABLE
+														});	
 
-//		foreach (MovementAction ma in movementActions)
-//		{
-//			ht = new Hashtable();
-//			ht["actionType"] = ma.actionType;
-//			
-		//			hudController.CreateOrChangeButtonInInspector ( ma.buttonAttributes.name,
-//			                                       ma.buttonAttributes.gridItemAttributes.Position,
-//			                                       ht,
-//			                                       ma.buttonAttributes.spriteName,
-//			                                       (_ht) =>
-//			                                       {
-//				MovementAction.ActionType action = (MovementAction.ActionType)_ht["actionType"];
-//				switch(action)
-//				{
-//				case MovementAction.ActionType.Move:
-//					interactionController.AddCallback(TouchController.IdTouch.Id0,
-//					                                  (position, hit) =>
-//					                                  {
-//						statsController.MoveTroop(position);
-//					});
-//					break;
-//				case MovementAction.ActionType.Patrol:
-//					//					
-//					//															interactionController.AddCallback(TouchController.IdTouch.Id0,
-//					//															                                 	(position, hit) =>
-//					//															                                  	{
-//					//																									IStats istats = hit.GetComponent <IStats> ();
-//					//																									
-//					//																									//Nao pode ser nulo e nao pode atacar aliados
-//					//																									//so do mesmo time ou inimigo
-//					//																									if (istats != null && 
-//					//																									    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
-//					//																									{
-//					//																										statsController.AttackTroop (istats.gameObject);
-//					//																									}
-//					//																								});
-//					break;
-//				case MovementAction.ActionType.CancelMovement:
-//					StopMove (true);
-//					break;
-//				case MovementAction.ActionType.Follow:
-//					interactionController.AddCallback(TouchController.IdTouch.Id0,
-//					                                  (position, hit) =>
-//					                                  {
-//						Unit unit = hit.GetComponent <Unit> ();																									
-//						
-//						if (unit != null && gameplayManager.IsSameTeam (unit))
-//						{
-//							statsController.FollowTroop (unit);
-//						}
-//					});
-//					break;
-//				case MovementAction.ActionType.Attack:
-//					interactionController.AddCallback(TouchController.IdTouch.Id0,
-//					                                  (position, hit) =>
-//					                                  {
-//						IStats istats = hit.GetComponent <IStats> ();
-//						
-//						//Nao pode ser nulo e nao pode atacar aliados
-//						//so do mesmo time ou inimigo
-//						if (istats != null && 
-//						    (gameplayManager.IsAlly (istats) && gameplayManager.IsSameTeam (istats)))
-//						{
-//							statsController.AttackTroop (istats.gameObject);
-//						}
-//					});
-//					break;
-//				}
-//			});
-//		}
 	}
 	
 	public override void Deselect ()
-	{
-//		if (statsController.selectedStats.Count == 1) 
-//		{
-//			hudController.DestroyOptionsBtns ();
-//		}
-		
+	{		
 		base.Deselect ();
-
 		int c = IDOobservers.Count;
 		while (--c != -1)
 		{
@@ -864,8 +668,7 @@ public class Unit : IStats, IMovementObservable,
 	{
 		statsController.ChangeVisibility (this, isVisible);
 		model.SetActive(isVisible);
-		if (firstDamage)
-		{
+		if (firstDamage){
 			if(isVisible)hudController.CreateSubstanceHealthBar (this, sizeOfHealthBar, MaxHealth, "Health Reference");
 			else {
 					hudController.DestroySelected(transform);
@@ -886,77 +689,59 @@ public class Unit : IStats, IMovementObservable,
 	#region Ondie
 
 	public virtual IEnumerator OnDie ()
-	{
-		
+	{		
 		if (Selected)	Deselect ();
 		if (!PhotonNetwork.offlineMode) photonView.RPC ("SfxDie", PhotonTargets.All,transform.position); 
 		else SfxDie();
 		NavAgent.Stop ();
 		NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;	
+		Collider col = GetComponent<Collider>();
+		col.enabled = false;
 		IsDead = true;		
 		unitState = UnitState.Die;
-		if (followedUnit != null) UnFollow();		
-
-		//IMovementObservable
+		if (followedUnit != null) UnFollow();
 		int c = IMOobservers.Count;
 		while (--c != -1){	UnRegisterMovementObserver (IMOobservers[c]);}
-		
-		//IAttackObservable
 		c = IAOobservers.Count;
 		while (--c != -1){	UnRegisterAttackObserver (IAOobservers[c]);	}
-		
 		statsController.RemoveStats(this);		
 		minimapController.RemoveUnit (this.transform, this.team);
 		gameplayManager.DecrementUnit (this.team, this.numberOfUnits);
-		
-		//IDeathObservable
-		NotifyDeath ();
-		
+		NotifyDeath ();		
 		c = IDOobservers.Count;
-		while (--c != -1)
-		{
-			UnRegisterDeathObserver (IDOobservers[c]);
-		}
-
+		while (--c != -1){	UnRegisterDeathObserver (IDOobservers[c]);}
 		hudController.RemoveEnqueuedButtonInInspector (this.name, Unit.UnitGroupQueueName);		
 			
-		if (unitAnimation.DieAnimation)
-		{
+		if (unitAnimation.DieAnimation){
 			ControllerAnimation.PlayCrossFade (unitAnimation.DieAnimation, WrapMode.ClampForever, PlayMode.StopAll);
 			yield return StartCoroutine (ControllerAnimation.WaitForAnimation (unitAnimation.DieAnimation, 2f));
 		}
 
-		if (!PhotonNetwork.offlineMode)
-		{
+		if (!PhotonNetwork.offlineMode){
 			Model.Battle battle = ConfigurationData.battle;
 			
-			if (playerUnit)
-			{
+			if (playerUnit){
 				PhotonNetwork.Destroy(gameObject);
 				Score.AddScorePoints (DataScoreEnum.UnitsLost, 1, battle.IdBattle);				
 				Score.AddScorePoints (this.category + DataScoreEnum.XUnitLost, this.totalResourceCost, battle.IdBattle);
 			}
-			else
-			{
+			else{
 				if(gameplayManager.IsBotTeam (this)) PhotonNetwork.Destroy(gameObject);
 				Score.AddScorePoints (DataScoreEnum.UnitsKilled, 1, battle.IdBattle);
 				Score.AddScorePoints (this.category + DataScoreEnum.XKilled, this.totalResourceCost, battle.IdBattle);
 			}			
 		}
 
-		else if (gameplayManager.scoreCounting)
-		{
+		else if (gameplayManager.scoreCounting){
 			OfflineScore oScore = ComponentGetter.Get<OfflineScore>();
-			if (playerUnit)
-			{
+			if (playerUnit){
 				PhotonNetwork.Destroy(gameObject);
 				oScore.oPlayers[0].AddScorePlayer (DataScoreEnum.UnitsLost, 1);				
 				oScore.oPlayers[0].AddScorePlayer (this.category + DataScoreEnum.XUnitLost, this.totalResourceCost);
 				oScore.oPlayers[8].AddScorePlayer (DataScoreEnum.UnitsKilled, 1);
 				oScore.oPlayers[8].AddScorePlayer (this.category + DataScoreEnum.XKilled, this.totalResourceCost);
 			}
-			else
-			{
+			else{
 				if(gameplayManager.IsBotTeam (this)) Destroy(gameObject);
 				oScore.oPlayers[8].AddScorePlayer (DataScoreEnum.UnitsLost, 1);				
 				oScore.oPlayers[8].AddScorePlayer (this.category + DataScoreEnum.XUnitLost, this.totalResourceCost);
@@ -965,20 +750,11 @@ public class Unit : IStats, IMovementObservable,
 			}
 
 		}
-//		Destroy (gameObject);
 	}
 
 	#endregion
 
 	#region IMovementObservable implementation
-
-	/// <summary>
-	/// Registers the movement observer.
-	/// </summary>
-	/// <param name="observer">Observer.</param>
-	/// <description>
-	/// Avoid using this method use the Follow method instead
-	/// </description>
 
 	public void RegisterMovementObserver (IMovementObserver observer)
 	{
@@ -986,32 +762,23 @@ public class Unit : IStats, IMovementObservable,
 		isFollowed = true;
 	}
 
-	/// <summary>
-	/// Unregister the movement observer.
-	/// </summary>
-	/// <param name="observer">Observer.</param>
-	/// Avoid using this method use the UnFollow method instead
 	public void UnRegisterMovementObserver (IMovementObserver observer)
 	{
 		bool success = IMOobservers.Remove (observer);
 
 		if (success)
-		{
 			observer.OnUnRegisterMovementObserver ();
-		}
 	}
 
 	public void NotifyMovement ()
 	{
-		if (transform.position != LastPosition)
-		{
+		if (transform.position != LastPosition){
 			foreach (IMovementObserver o in IMOobservers)
 			{
 				o.UpdatePosition (transform.position);
 			}
 		}
 	}
-
 	#endregion
 
 	#region IMovementObserver implementation
@@ -1021,14 +788,10 @@ public class Unit : IStats, IMovementObservable,
 		if (TargetAttack != null || followedUnit == null)
 			return;
 
-		if(followedUnit.NavAgent != null) 
-		{
-			float minDistanceBetweenFollowedUnit = (followedUnit.GetAgentRadius + this.GetAgentRadius)*3f;
-			
+		if(followedUnit.NavAgent != null){
+			float minDistanceBetweenFollowedUnit = (followedUnit.GetAgentRadius + this.GetAgentRadius)*3f;			
 			Vector3 forwardVec = (this.transform.position.normalized - (followedUnit.transform.position.normalized))* minDistanceBetweenFollowedUnit;
-
 			newPosition = newPosition + forwardVec;
-
 			if (Vector3.Distance (this.transform.position, newPosition) < minDistanceBetweenFollowedUnit)
 				return;
 		}
@@ -1059,12 +822,9 @@ public class Unit : IStats, IMovementObservable,
 
 	public void UnRegisterAttackObserver (IAttackObserver observer)
 	{
-		bool success = IAOobservers.Remove (observer);
-		
+		bool success = IAOobservers.Remove (observer);		
 		if (success)
-		{
 			observer.OnUnRegisterAttackObserver ();
-		}
 	}
 
 	public void NotifyBeginAttack ()
@@ -1074,7 +834,6 @@ public class Unit : IStats, IMovementObservable,
 			o.BeginAttack (TargetAttack);
 		}
 	}
-
 	#endregion
 
 	#region IAttackObserver implementation
@@ -1124,39 +883,20 @@ public class Unit : IStats, IMovementObservable,
 	public virtual void AttackStat (string name, int force)
 	{
 		IStats stat = statsController.FindMyStat (name);
-		if (stat != null && unitState != UnitState.Die)
-		{
+		if (stat != null && unitState != UnitState.Die){
 			stat.ReceiveAttack (force);
 		}
 	}
-
 	[RPC]
 	public override void InstantiatParticleDamage ()
 	{
 		base.InstantiatParticleDamage ();
 
 	}
-
 	[RPC]
 	public override void SendRemove ()
 	{
 		base.SendRemove ();
 	}
-	#endregion
-
-	#region Gizmos
-	//	public override void DrawGizmosSelected ()
-	//	{
-	//		base.DrawGizmosSelected ();
-	//
-	//		Gizmos.color = Color.cyan;
-	//		Gizmos.DrawWireSphere (this.transform.position, distanceView);
-	//
-	//		Gizmos.color = Color.red;
-	//		Gizmos.DrawWireSphere (this.transform.position, attackRange);
-	//
-	//		Gizmos.color = Color.yellow;
-	//		Gizmos.DrawRay (new Ray (transform.position, PathfindTarget));
-	//	}
 	#endregion
 }

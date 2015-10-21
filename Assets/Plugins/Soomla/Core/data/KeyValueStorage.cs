@@ -12,8 +12,10 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Soomla
 {
@@ -22,6 +24,9 @@ namespace Soomla
 
 		protected const string TAG = "SOOMLA KeyValueStorage"; // used for Log error messages
 
+#if UNITY_EDITOR
+		static string ALL_KEYS_KEY = "allSoomlaKeys";
+#endif
 		static KeyValueStorage _instance = null;
 		static KeyValueStorage instance {
 			get {
@@ -52,6 +57,15 @@ namespace Soomla
 			instance._deleteKeyValue(key);
 		}
 
+        public static List<string> GetEncryptedKeys() {
+            return instance._getEncryptedKeys();
+        }
+
+		public static void Purge() {
+			instance._purge();
+		}
+
+
 		virtual protected string _getValue(string key) {
 #if UNITY_EDITOR
 			return PlayerPrefs.GetString (key);
@@ -62,16 +76,39 @@ namespace Soomla
 
 		virtual protected void _setValue(string key, string val) {
 #if UNITY_EDITOR
-			PlayerPrefs.SetString (key, val);
+			List<string> allKeys = new List<string>(PlayerPrefs.GetString(ALL_KEYS_KEY, "").Split(','));
+			if (!allKeys.Contains(key)) {
+                allKeys.Add(key);
+            }
+            PlayerPrefs.SetString(key, val);
+            PlayerPrefs.SetString(ALL_KEYS_KEY, String.Join(",", allKeys.ToArray()));
 #endif
 		}
 
 		virtual protected void _deleteKeyValue(string key) {
 #if UNITY_EDITOR
-			PlayerPrefs.DeleteKey(key);
+			List<string> allKeys = new List<string>(PlayerPrefs.GetString(ALL_KEYS_KEY, "").Split(','));
+            if (allKeys.Contains(key)) {
+                allKeys.Remove(key);
+            }
+            PlayerPrefs.DeleteKey(key);
+            PlayerPrefs.SetString(ALL_KEYS_KEY, String.Join(",", allKeys.ToArray()));
 #endif
 		}
 
+		virtual protected List<string> _getEncryptedKeys() {
+#if UNITY_EDITOR
+            return new List<string>(PlayerPrefs.GetString(ALL_KEYS_KEY, "").Split(','));
+#else
+			return null;
+#endif
+		}
+
+		virtual protected void _purge() {
+#if UNITY_EDITOR
+			PlayerPrefs.DeleteAll();
+#endif
+		}
 	}
 }
 

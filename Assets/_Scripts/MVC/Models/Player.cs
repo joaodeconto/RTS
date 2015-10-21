@@ -25,7 +25,7 @@ namespace Model {
 		public Player () {}
 		public Player (string JSONString)
 		{
-			//Debug.Log ("JSONString: " + JSONString);
+			Debug.Log ("JSONString: " + JSONString);
 			DB.Player p = (DB.Player)JsonConvert.DeserializeObject (JSONString, typeof(DB.Player));
 
 			Model.Player pp = p.ToModel ();

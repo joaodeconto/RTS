@@ -67,48 +67,15 @@ public class TutorialMenu : MonoBehaviour
 		
 		errorMessage.gameObject.SetActive (false);
 
-		if (buttons.Btn0)
-		{
-			LevelBtnsStatus(buttons.Btn0, "1");
-		}
-		
-		if (buttons.Btn1)
-		{
-			LevelBtnsStatus(buttons.Btn1, "2");
-		}
-		
-		if (buttons.Btn2)
-		{
-			LevelBtnsStatus(buttons.Btn2,"3");
-		}
-		
-		if (buttons.Btn3)
-		{
-			LevelBtnsStatus(buttons.Btn3, "4");
-		}
-
-		if (buttons.Btn4)
-		{
-			LevelBtnsStatus(buttons.Btn4, "5");
-		}
-
-		if (buttons.Btn5)
-		{
-			LevelBtnsStatus(buttons.Btn5, "6");
-		}
-
-		if (buttons.Btn6)
-		{
-			LevelBtnsStatus(buttons.Btn6, "7");
-		}
-
-		if (buttons.Btn7)
-		{
-			LevelBtnsStatus(buttons.Btn7, "8");
-		}
-						
-		if (buttons.BtnLeaveRoom)
-		{
+		if (buttons.Btn0)	LevelBtnsStatus(buttons.Btn0, "1");		
+		if (buttons.Btn1)	LevelBtnsStatus(buttons.Btn1, "2");		
+		if (buttons.Btn2)	LevelBtnsStatus(buttons.Btn2, "3");		
+		if (buttons.Btn3)	LevelBtnsStatus(buttons.Btn3, "4");
+		if (buttons.Btn4)	LevelBtnsStatus(buttons.Btn4, "5");
+		if (buttons.Btn5)	LevelBtnsStatus(buttons.Btn5, "6");
+		if (buttons.Btn6)	LevelBtnsStatus(buttons.Btn6, "7");
+		if (buttons.Btn7)	LevelBtnsStatus(buttons.Btn7, "8");						
+		if (buttons.BtnLeaveRoom){
 			dcb = ComponentGetter.Get <DefaultCallbackButton> (buttons.BtnLeaveRoom, false);
 			dcb.Init ( null, (ht_hud) => { 
 				if(!ConfigurationData.Offline) Close();
@@ -118,25 +85,19 @@ public class TutorialMenu : MonoBehaviour
 
 	public void Close ()
 	{
-		if (!ConfigurationData.Offline)
-		{
+		if (!ConfigurationData.Offline){
 			foreach (GameObject menu in pw.menusDissapearWhenLogged)
 			{
 				menu.SetActive (true);
 			}
-
 			if (buttons == null) return;
 					
-					foreach (Transform button in buttons.Iterate)
-					{
-						if (button)
-						{
-							button.gameObject.SetActive (true);
-						}
-					}
+			foreach (Transform button in buttons.Iterate)
+			{
+				if (button)		button.gameObject.SetActive (true);
+			}
 			
-			messageActiveGame.gameObject.SetActive (false);
-						
+			messageActiveGame.gameObject.SetActive (false);						
 			gameObject.SetActive (false);
 		}
 	}
@@ -161,8 +122,7 @@ public class TutorialMenu : MonoBehaviour
 				m1.gameObject.SetActive(true);
 				m2.gameObject.SetActive(false);						
 				m3.gameObject.SetActive(false);
-				dcb.Init ( null, (ht_hud) =>
-				{ 
+				dcb.Init ( null, (ht_hud) =>{ 
 					vs.InitOfflineGame (1, 0,"Tutorial", scene, level);
 					if(level == 3)	StoreInventory.GiveItem((scene+1).ToString() + "1", 1);					
 						else StoreInventory.GiveItem(scene.ToString() + (level+1).ToString(), 1);

@@ -15,6 +15,7 @@
 using UnityEngine;
 using System.Runtime.InteropServices;
 using System;
+using System.Collections.Generic;
 
 namespace Soomla.Profile {
 
@@ -41,18 +42,32 @@ namespace Soomla.Profile {
 		public string Gender;
 		public string Language;
 		public string Birthday;
-		
+		public readonly Dictionary<String, JSONObject> Extra;
+
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="provider">The provider this <c>UserProfile</c> belongs to.</param>
 		/// <param name="profileId">A unique ID that identifies the current user with the provider.</param>
 		/// <param name="username">The username of the current user in the provider.</param>
-		protected UserProfile(Provider provider, string profileId, string username)
+		/// <param name="extra">Additional info provided by SN.</param>
+		protected UserProfile(Provider provider, string profileId, string username, Dictionary<String, JSONObject> extra)
 		{
 			this.Provider = provider;
 			this.ProfileId = profileId;
 			this.Username = username;
+			this.Extra = extra;
+		}
+
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="provider">The provider this <c>UserProfile</c> belongs to.</param>
+		/// <param name="profileId">A unique ID that identifies the current user with the provider.</param>
+		/// <param name="username">The username of the current user in the provider.</param>
+		protected UserProfile(Provider provider, string profileId, string username) 
+			: this(provider, profileId, username, new Dictionary<String, JSONObject>())
+		{
 		}
 
 		/// <summary>
@@ -62,48 +77,54 @@ namespace Soomla.Profile {
 		/// <param name="jsonUP">A JSONObject representation of the wanted <c>UserProfile</c>.</param>
 		public UserProfile(JSONObject jsonUP) {
 			this.Provider = Provider.fromString(jsonUP[PJSONConsts.UP_PROVIDER].str);
-			this.Username = jsonUP[PJSONConsts.UP_USERNAME].str;
-			this.ProfileId = jsonUP[PJSONConsts.UP_PROFILEID].str;
+			this.Username = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_USERNAME].str);
+			this.ProfileId = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_PROFILEID].str);
 
 			if (jsonUP[PJSONConsts.UP_FIRSTNAME]) {
-				this.FirstName = jsonUP[PJSONConsts.UP_FIRSTNAME].str;
+				this.FirstName = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_FIRSTNAME].str);
 			} else {
 				this.FirstName = "";
 			}
 			if (jsonUP[PJSONConsts.UP_LASTNAME]) {
-				this.LastName = jsonUP[PJSONConsts.UP_LASTNAME].str;
+				this.LastName = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_LASTNAME].str);
 			} else {
 				this.LastName = "";
 			}
 			if (jsonUP[PJSONConsts.UP_EMAIL]) {
-				this.Email = jsonUP[PJSONConsts.UP_EMAIL].str;
+				this.Email = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_EMAIL].str);
 			} else {
 				this.Email = "";
 			}
 			if (jsonUP[PJSONConsts.UP_AVATAR]) {
-				this.AvatarLink = jsonUP[PJSONConsts.UP_AVATAR].str;
+				this.AvatarLink = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_AVATAR].str);
 			} else {
 				this.AvatarLink = "";
 			}
 			if (jsonUP[PJSONConsts.UP_LOCATION]) {
-				this.Location = jsonUP[PJSONConsts.UP_LOCATION].str;
+				this.Location = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_LOCATION].str);
 			} else {
 				this.Location = "";
 			}
 			if (jsonUP[PJSONConsts.UP_GENDER]) {
-				this.Gender = jsonUP[PJSONConsts.UP_GENDER].str;
+				this.Gender = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_GENDER].str);
 			} else {
 				this.Gender = "";
 			}
 			if (jsonUP[PJSONConsts.UP_LANGUAGE]) {
-				this.Language = jsonUP[PJSONConsts.UP_LANGUAGE].str;
+				this.Language = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_LANGUAGE].str);
 			} else {
 				this.Language = "";
 			}
 			if (jsonUP[PJSONConsts.UP_BIRTHDAY]) {
-				this.Birthday = jsonUP[PJSONConsts.UP_BIRTHDAY].str;
+				this.Birthday = JSONObject.DecodeJsString(jsonUP[PJSONConsts.UP_BIRTHDAY].str);
 			} else {
 				this.Birthday = "";
+			}
+			this.Extra = new Dictionary<String, JSONObject>();
+			if (jsonUP[PJSONConsts.UP_EXTRA]) {
+				foreach (String key in jsonUP[PJSONConsts.UP_EXTRA].keys) {
+					this.Extra.Add(key, jsonUP[PJSONConsts.UP_EXTRA][key]);
+				}
 			}
 		}
 		
@@ -125,6 +146,7 @@ namespace Soomla.Profile {
 			obj.AddField(PJSONConsts.UP_GENDER, this.Gender);
 			obj.AddField(PJSONConsts.UP_LANGUAGE, this.Language);
 			obj.AddField(PJSONConsts.UP_BIRTHDAY, this.Birthday);
+			obj.AddField(PJSONConsts.UP_EXTRA, new JSONObject(this.Extra));
 			
 			return obj;
 		}

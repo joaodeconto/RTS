@@ -12,8 +12,9 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-using UnityEngine;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Soomla {
 	
@@ -34,6 +35,12 @@ namespace Soomla {
 		override protected void _deleteKeyValue(string key) {
 			SoomlaWpCore.data.KeyValueStorage.DeleteKeyValue(key);
 		}
+
+        public List<string> _getEncryptedKeys() {
+            // TODO: Implement me
+			return new List<string>();
+		}
+
 #endif
 	}
 }

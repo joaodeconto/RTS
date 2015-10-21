@@ -27,6 +27,7 @@ namespace Soomla.Profile
 		public static readonly SocialActionType UPLOAD_IMAGE = new SocialActionType ("UPLOAD_IMAGE");
 		public static readonly SocialActionType GET_CONTACTS = new SocialActionType ("GET_CONTACTS");
 		public static readonly SocialActionType GET_FEED = new SocialActionType ("GET_FEED");
+		public static readonly SocialActionType INVITE = new SocialActionType ("INVITE");
 
 		/// <summary>
 		/// Constructor.
@@ -61,6 +62,8 @@ namespace Soomla.Profile
 				return GET_CONTACTS;
 			case("GET_FEED"):
 				return GET_FEED;
+			case("INVITE"):
+				return INVITE;
 			default:
 				return null;
 			}
@@ -83,6 +86,8 @@ namespace Soomla.Profile
 				return GET_CONTACTS;
 			case 4:
 				return GET_FEED;
+			case 5:
+				return INVITE;
 			default:
 				return null;
 			}

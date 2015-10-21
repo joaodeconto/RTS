@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Soomla.Profile;
 using Visiorama;
 
 public class NewGameMenu : MonoBehaviour {
@@ -11,92 +12,65 @@ public class NewGameMenu : MonoBehaviour {
 	public GameObject rankedPanel;
 	public GameObject singlePanel;
 	public GameObject survivalPanel;
+	public GameObject ratePanel;
 	
 	public void OnEnable ()
 	{
 		Open ();
 	}
-	
-//	public void OnDisable ()
-//	{
-//		Close ();
-//	}
-	
+		
 	public void Open ()
-	{
-		if (wasInitialized)
-			return;
-		
-		wasInitialized = true;
-		
-		DefaultCallbackButton dcb;
-		
-		Transform tutorial = pathOption.transform.FindChild ("Tutorial");
-		
-		if (tutorial != null)
-		{
+	{		
+		DefaultCallbackButton dcb;	
+
+		if(PlayerPrefs.GetInt("Logins") >=2 && PlayerPrefs.GetInt("Rated") < 1){
+			ratePanel.SetActive(true);
+			Transform btnA = ratePanel.transform.FindChild("Rate");
+			dcb = btnA.GetComponent<DefaultCallbackButton>();
+			dcb.Init(null,(ht_dcb) =>{
+				SoomlaProfile.OpenAppRatingPage();
+				ratePanel.SetActive(false);
+				PlayerPrefs.SetInt("Rated",1);												
+			});
+			Transform btnB = ratePanel.transform.FindChild("Later");
+			dcb = btnB.GetComponent<DefaultCallbackButton>();
+			dcb.Init(null,(ht_dcb) =>{
+				ratePanel.SetActive(false);	
+				PlayerPrefs.SetInt("Rated",1);
+			});
+		}
+			
+		Transform tutorial = pathOption.transform.FindChild ("Tutorial");		
+		if (tutorial != null){
 			dcb = tutorial.gameObject.AddComponent<DefaultCallbackButton> ();
 			dcb.Init(null,
-			         (ht_dcb) => 
-			         {
-				
-				tutorialPanel.SetActive (true);
-				
-				
-			});
-		}
-		
-		Transform ranked = pathOption.transform.FindChild ("RankedBattle");
-		
-		if (ranked != null)
-		{
-			dcb = ranked.gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init(null,
-			         (ht_dcb) =>{
-				
-				rankedPanel.SetActive (true);		
-			});
-		}
-		
-		Transform single = pathOption.transform.FindChild ("SinglePlayer");
-		
-		if (single != null)
-		{
-			dcb = single.gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init(null,
 			         (ht_dcb) =>{				
-				singlePanel.SetActive (true);
+						tutorialPanel.SetActive (true);	
 			});
 		}
 		
-		Transform survival = pathOption.transform.FindChild ("Survival");
+		Transform ranked = pathOption.transform.FindChild ("RankedBattle");		
+		if (ranked != null){
+			dcb = ranked.gameObject.AddComponent<DefaultCallbackButton> ();
+			dcb.Init(null,(ht_dcb) =>{
+							rankedPanel.SetActive (true);		
+			});
+		}
 		
-		if (survival != null)
-		{
+		Transform single = pathOption.transform.FindChild ("SinglePlayer");		
+		if (single != null){
+			dcb = single.gameObject.AddComponent<DefaultCallbackButton> ();
+			dcb.Init(null,(ht_dcb) =>{				
+							singlePanel.SetActive (true);
+			});
+		}
+		
+		Transform survival = pathOption.transform.FindChild ("Survival");		
+		if (survival != null){
 			dcb = survival.gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init(null,
-			         (ht_dcb) =>{
-				survivalPanel.SetActive (true);
+			dcb.Init(null,(ht_dcb) =>{
+							survivalPanel.SetActive (true);
 			});
-		}
-		
-		
-		
-//		Transform close = pathOption.transform.FindChild ("Resume");
-//		
-//		if (close != null)
-//		{
-//			dcb = close.gameObject.AddComponent<DefaultCallbackButton> ();
-//			dcb.Init(null,
-//			         (ht_dcb) => 
-//			         {
-//				
-//			});
-//		}
+		}	
 	}
-//	
-//	public void Close ()
-//	{
-//		
-//	}
 }

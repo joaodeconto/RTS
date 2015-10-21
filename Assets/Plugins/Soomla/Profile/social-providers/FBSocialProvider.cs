@@ -31,7 +31,8 @@ namespace Soomla.Profile
 	{
 		private static string TAG = "SOOMLA FBSocialProvider";
 		private static int DEFAULT_CONTACTS_PAGE_SIZE = 25;
-		private static string DEFAULT_LOGIN_PERMISSIONS = "email,user_birthday,user_photos,user_friends,read_stream";
+		private static int DEFAULT_FEED_PAGE_SIZE = 25;
+		private static string DEFAULT_LOGIN_PERMISSIONS = "email,user_birthday,user_photos,user_friends,user_posts";
 
 		private int lastPageNumber = 0;
 
@@ -82,7 +83,7 @@ namespace Soomla.Profile
 
 		public override void GetUserProfile(GetUserProfileSuccess success, GetUserProfileFailed fail) {
 			this.fetchPermissions(() => {
-				FB.API("/me?fields=id,name,email,first_name,last_name,picture",
+				FB.API("/me?fields=id,name,email,first_name,last_name,picture,languages,gender,location",
 				       Facebook.HttpMethod.GET, (FBResult meResult) => {
 					if (meResult.Error != null) {
 						SoomlaUtils.LogDebug (TAG, "ProfileCallback[result.Error]: " + meResult.Error);
@@ -92,10 +93,9 @@ namespace Soomla.Profile
 						SoomlaUtils.LogDebug(TAG, "ProfileCallback[result.Text]: "+meResult.Text);
 						SoomlaUtils.LogDebug(TAG, "ProfileCallback[result.Texture]: "+meResult.Texture);
 						string fbUserJson = meResult.Text;
-						UserProfile userProfile = UserProfileFromFBJsonString(fbUserJson);
-						
+						UserProfile userProfile = UserProfileFromFBJsonString(fbUserJson, this);
+
 						SoomlaProfile.StoreUserProfile (userProfile, true);
-						
 						success(userProfile);
 					}
 				});
@@ -150,7 +150,32 @@ namespace Soomla.Profile
             });
         }
         
-        /// <summary>
+
+		/// <summary>
+		/// See docs in <see cref="SoomlaProfile.UpdateStatus"/>
+		/// </summary>
+		/// <param name="link">Link to post.</param>
+		/// <param name="success">Callback function that is called if the status update was successful.</param>
+		/// <param name="fail">Callback function that is called if the status update failed.</param>
+		public override void UpdateStatusDialog(string link, SocialActionSuccess success, SocialActionFailed fail) {
+			FB.Feed(
+				link: link,
+				callback: (FBResult result) => {
+				
+				if (result.Error != null) {
+					fail(result.Error);
+				}
+				else {
+					SoomlaUtils.LogDebug(TAG, "FeedCallback[result.Text]:"+result.Text);
+					SoomlaUtils.LogDebug(TAG, "FeedCallback[result.Texture]:"+result.Texture);
+					var responseObject = Json.Deserialize(result.Text) as Dictionary<string, object>;
+					object obj = 0;
+					success();						
+				}				
+			});
+		}
+		
+		/// <summary>
 		/// See docs in <see cref="SoomlaProfile.UpdateStory"/>
 		/// </summary>
 		/// <param name="message">A message that will be shown along with the story.</param>
@@ -161,18 +186,55 @@ namespace Soomla.Profile
 		/// <param name="success">Callback function that is called if the story update was successful.</param>
 		/// <param name="fail">Callback function that is called if the story update failed.</param>
 		/// <param name="cancel">Callback function that is called if the story update was cancelled.</param>
-		public override void UpdateStory(string message, string name, string caption,
+		public override void UpdateStory(string message, string name, string caption, string description,
 		                                 string link, string pictureUrl, SocialActionSuccess success, SocialActionFailed fail, SocialActionCancel cancel) {
-
-//			checkPermission("publish_actions", ()=> {
-				FB.Feed(
-					link: link,
-					linkName: name,
-					linkCaption: caption,
-					linkDescription: message,
-					picture: pictureUrl,
-					callback: (FBResult result) => {
+			checkPermission("publish_actions", ()=> {
+				var formData = new Dictionary<string, string>
+				{
+					{ "message", message },
+					{ "name", name },
+					{ "caption", caption },
+					{ "description", description },
+					{ "link", link },
+					{ "picture", pictureUrl }
+				};
+				FB.API ("/me/feed", Facebook.HttpMethod.POST, 
+				        (FBResult postFeedResult) => {
 					
+					if (postFeedResult.Error != null) {
+						SoomlaUtils.LogDebug(TAG, "UpdateStatusCallback[result.Error]:"+postFeedResult.Error);
+						fail(postFeedResult.Error);
+					} else {
+						SoomlaUtils.LogDebug(TAG, "UpdateStatusCallback[result.Text]:"+postFeedResult.Text);
+						SoomlaUtils.LogDebug(TAG, "UpdateStatusCallback[result.Texture]:"+postFeedResult.Texture);
+						success();
+					}
+				}, formData);
+			}, (string errorMessage)=>{
+				fail(errorMessage);
+			});
+		}
+		
+		/// <summary>
+		/// See docs in <see cref="SoomlaProfile.UpdateStoryDialog"/>
+		/// </summary>
+		/// <param name="name">The name (title) of the story.</param>
+		/// <param name="caption">A caption.</param>
+		/// <param name="link">A link to a web page.</param>
+		/// <param name="pictureUrl">A link to an image on the web.</param>
+		/// <param name="success">Callback function that is called if the story update was successful.</param>
+		/// <param name="fail">Callback function that is called if the story update failed.</param>
+		/// <param name="cancel">Callback function that is called if the story update was cancelled.</param>
+		public override void UpdateStoryDialog(string name, string caption, string description, string link, string picture, 
+		                                       SocialActionSuccess success, SocialActionFailed fail, SocialActionCancel cancel) {
+			FB.Feed(
+				link: link,
+				linkName: name,
+				linkCaption: caption,
+				linkDescription: description,
+				picture: picture,
+				callback: (FBResult result) => {
+				
 					if (result.Error != null) {
 						fail(result.Error);
 					}
@@ -180,26 +242,22 @@ namespace Soomla.Profile
 						SoomlaUtils.LogDebug(TAG, "FeedCallback[result.Text]:"+result.Text);
 						SoomlaUtils.LogDebug(TAG, "FeedCallback[result.Texture]:"+result.Texture);
 						var responseObject = Json.Deserialize(result.Text) as Dictionary<string, object>;
-                        object obj = 0;
-                        if (responseObject.TryGetValue("cancelled", out obj)) {
-                            cancel();
-                        }
-                        else /*if (responseObject.TryGetValue ("id", out obj))*/ {
-                            success();
-                        }
-                    }
-                    
-                });
-//			}, (string errorMessage)=>{
-//				fail(message);
-//            });
-        }
-
-		/// <summary>
-		/// See docs in <see cref="SoomlaProfile.UploadImage"/>
-		/// </summary>
-		/// <param name="tex2D">Texture2D for image.</param>
-		/// <param name="fileName">Name of image file.</param>
+						object obj = 0;
+						if (responseObject.TryGetValue("cancelled", out obj)) {
+							cancel();
+						}
+						else {
+							success();
+						}
+					}
+				});
+			}
+			
+			/// <summary>
+			/// See docs in <see cref="SoomlaProfile.UploadImage"/>
+			/// </summary>
+			/// <param name="tex2D">Texture2D for image.</param>
+			/// <param name="fileName">Name of image file.</param>
 		/// <param name="message">Message to post with the image.</param>
 		/// <param name="success">Callback function that is called if the image upload was successful.</param>
 		/// <param name="fail">Callback function that is called if the image upload failed.</param>
@@ -253,7 +311,8 @@ namespace Soomla.Profile
 				}
 				
 				this.lastPageNumber = 0;
-				
+
+
 				FB.API ("/me/friends?fields=id,name,picture,email,first_name,last_name&limit=" + DEFAULT_CONTACTS_PAGE_SIZE + "&offset=" + DEFAULT_CONTACTS_PAGE_SIZE * (pageNumber - 1),
 				        Facebook.HttpMethod.GET,
 				        (FBResult result) => {
@@ -284,6 +343,49 @@ namespace Soomla.Profile
 				fail(errorMessage);
             });
         }
+
+		public override void GetFeed(bool fromStart, FeedSuccess success, FeedFailed fail) {
+			checkPermission("user_posts", () => {
+				int pageNumber;
+				if (fromStart || this.lastPageNumber == 0) {
+					pageNumber = 1;
+				} else {
+					pageNumber = this.lastPageNumber + 1;
+				}
+				
+				this.lastPageNumber = 0;
+
+				FB.API("/me/feed?limit=" + DEFAULT_FEED_PAGE_SIZE + "&offset=" + DEFAULT_FEED_PAGE_SIZE * (pageNumber - 1),
+				        Facebook.HttpMethod.GET,
+				        (FBResult result) => {
+					if (result.Error != null) {
+						SoomlaUtils.LogDebug(TAG, "GetFeedCallback[result.Error]: " + result.Error);
+						fail(result.Error);
+					}
+					else {
+						SoomlaUtils.LogDebug(TAG, "GetFeedCallback[result.Text]: " + result.Text);
+						SoomlaUtils.LogDebug(TAG, "GetFeedCallback[result.Texture]: "+result.Texture);
+						JSONObject jsonFeed = new JSONObject(result.Text);
+						
+						SocialPageData<String> resultData = new SocialPageData<String>(); 
+						resultData.PageData = StoriesFromFBJsonObjs(jsonFeed["data"].list);
+						resultData.PageNumber = pageNumber;
+						
+						this.lastPageNumber = pageNumber;
+						
+						JSONObject paging = jsonFeed["paging"];
+						if (paging != null) {
+							resultData.HasMore = (paging["next"] != null);
+						}
+						
+						success(resultData);
+					}
+				});
+			},
+			(string errorMessage) => {
+				fail(errorMessage);
+			});
+		}
         
         public override void Invite(string inviteMessage, string dialogTitle, InviteSuccess success, InviteFailed fail, InviteCancelled cancel)
 		{
@@ -403,11 +505,15 @@ namespace Soomla.Profile
 		private void ProfileCallback(FBResult result) {
 		}
 
-		private static UserProfile UserProfileFromFBJsonString(string fbUserJsonStr) {
-			return UserProfileFromFBJson(new JSONObject (fbUserJsonStr));
+		private static UserProfile UserProfileFromFBJsonString(string fbUserJsonStr, FBSocialProvider provider) {
+			return UserProfileFromFBJson(new JSONObject (fbUserJsonStr), provider);
 		}
-		
+
 		private static UserProfile UserProfileFromFBJson(JSONObject fbJsonObject) {
+			return UserProfileFromFBJson(fbJsonObject, null);
+		}
+
+		private static UserProfile UserProfileFromFBJson(JSONObject fbJsonObject, FBSocialProvider provider) {
 			JSONObject soomlaJsonObject = new JSONObject ();
 			soomlaJsonObject.AddField(PJSONConsts.UP_PROVIDER, Provider.FACEBOOK.ToString ());
 			soomlaJsonObject.AddField(PJSONConsts.UP_PROFILEID, fbJsonObject["id"].str);
@@ -421,7 +527,30 @@ namespace Soomla.Profile
 			soomlaJsonObject.AddField(PJSONConsts.UP_FIRSTNAME, fbJsonObject["first_name"].str);
 			soomlaJsonObject.AddField(PJSONConsts.UP_LASTNAME, fbJsonObject["last_name"].str);
 			soomlaJsonObject.AddField(PJSONConsts.UP_AVATAR, fbJsonObject["picture"]["data"]["url"].str);
-			UserProfile userProfile = new UserProfile (soomlaJsonObject);
+			if (fbJsonObject["gender"] != null) {
+				soomlaJsonObject.AddField(PJSONConsts.UP_GENDER, fbJsonObject["gender"].str);
+			}
+			if (fbJsonObject["languages"] != null && fbJsonObject["languages"].Count > 0 
+			    && fbJsonObject["languages"][0] != null && fbJsonObject["languages"][0]["name"] != null) {
+				soomlaJsonObject.AddField(PJSONConsts.UP_LANGUAGE, fbJsonObject["languages"][0]["name"].str);
+			}
+			if (fbJsonObject["location"] != null && fbJsonObject["location"]["name"] != null) {
+				soomlaJsonObject.AddField(PJSONConsts.UP_LOCATION, fbJsonObject["location"]["name"].str);
+			}
+
+			if (provider != null) { //let us to know if method called during own profile receiving
+				Dictionary<String, JSONObject> extraDict = new Dictionary<String, JSONObject>();
+				extraDict.Add("access_token", JSONObject.StringObject(FB.AccessToken));
+				JSONObject permissionsObject = JSONObject.Create(JSONObject.Type.ARRAY);
+				foreach (String permission in provider.permissions) {
+					permissionsObject.Add(permission);
+				}
+				extraDict.Add("permissions", permissionsObject);
+				extraDict.Add("expiration_date", new JSONObject((FB.AccessTokenExpiresAt - new DateTime(1970, 1, 1)).TotalSeconds));
+				soomlaJsonObject.AddField(PJSONConsts.UP_EXTRA, new JSONObject(extraDict));
+			}
+
+			UserProfile userProfile = new UserProfile(soomlaJsonObject);
 			
 			return userProfile;
 		}
@@ -432,6 +561,16 @@ namespace Soomla.Profile
 				profiles.Add(UserProfileFromFBJson(userObj));
 			}
 			return profiles;
+		}
+
+		private static List<String> StoriesFromFBJsonObjs(List<JSONObject> fbFeedObjects) {
+			List<String> stories = new List<String>();
+			foreach (JSONObject storyObj in fbFeedObjects) {
+				if (storyObj["message"] != null) {
+					stories.Add(storyObj["message"].str);
+				}	
+			}
+			return stories;
 		}
 
 		private List<string> parsePermissionsFromJson(JSONObject permissionsJson) {

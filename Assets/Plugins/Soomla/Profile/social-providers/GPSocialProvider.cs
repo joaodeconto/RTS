@@ -29,13 +29,23 @@ namespace Soomla.Profile
 		/// See docs in <see cref="SoomlaProfile.UpdateStatus"/>
 		/// </summary>
 		public override void UpdateStatus(string status, SocialActionSuccess success, SocialActionFailed fail) {}
-		
+
+		/// <summary>
+		/// See docs in <see cref="SoomlaProfile.UpdateStatusDialog"/>
+		/// </summary>
+		public override void UpdateStatusDialog(string link, SocialActionSuccess success, SocialActionFailed fail) {}
+
 		/// <summary>
 		/// See docs in <see cref="SoomlaProfile.UpdateStory"/>
 		/// </summary>
-		public override void UpdateStory(string message, string name, string caption, 
+		public override void UpdateStory(string message, string name, string caption, string description,
 		                        string link, string pictureUrl, SocialActionSuccess success, SocialActionFailed fail, SocialActionCancel cancel) {}
-		
+
+		/// <summary>
+		/// See docs in <see cref="SoomlaProfile.UpdateStoryDialog"/>
+		/// </summary>
+		public override void UpdateStoryDialog(string name, string caption, string description, string link, string picture, 
+		                                       SocialActionSuccess success, SocialActionFailed fail, SocialActionCancel cancel) {}
 		/// <summary>
 		/// See docs in <see cref="SoomlaProfile.UploadImage"/>
 		/// </summary>
@@ -45,6 +55,11 @@ namespace Soomla.Profile
 		/// See docs in <see cref="SoomlaProfile.GetContacts"/>
 		/// </summary>
 		public override void GetContacts(bool fromStart, ContactsSuccess success, ContactsFailed fail) {}
+
+		/// <summary>
+		/// See docs in <see cref="SoomlaProfile.GetFeed"/>
+		/// </summary>
+		public override void GetFeed(bool fromStart, FeedSuccess success, FeedFailed fail) {}
 		
 		/// <summary>
 		/// See docs in <see cref="SoomlaProfile.Logout"/>

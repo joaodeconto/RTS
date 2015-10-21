@@ -6,28 +6,21 @@ using Visiorama;
 public class GameController : MonoBehaviour
 {
 	public bool autoload = false;
-
 	public int targetFPS = 60;
-
 	static bool wasInitialized = false;
 
 	void Awake ()
 	{
-		//Application.targetFrameRate = 60;
-
-		if (autoload && !wasInitialized)
-		{
+		if (autoload && !wasInitialized){
 			wasInitialized = true;
 			Application.LoadLevel(1);
 			return;
 		}
-		if(!PhotonNetwork.offlineMode)
-		{
+		if(!PhotonNetwork.offlineMode){
 			ComponentGetter.Get<NetworkManager> ().Init ();
 			Score.LoadScores (() => {ComponentGetter.Get <BidManager>().PayTheBid(); });
 		}
-		else
-		{
+		else{
 			GameObject oScore = new GameObject("OfflineScore"); 
 			oScore.AddComponent("OfflineScore");
 		}

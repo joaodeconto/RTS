@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using Visiorama;
+using I2.Loc;
 
 public class ActiveGames : MonoBehaviour
 {
-	public float RefreshingInterval = 1.0f;
+	private float RefreshingInterval = 1.0f;
 	public UILabel messageActiveGame;
 	public UILabel errorMessage;
 	public GameObject pref_Row;
@@ -21,10 +22,12 @@ public class ActiveGames : MonoBehaviour
 		btn.SetActive (false);
 		btn = transform.FindChild("Menu").FindChild("Button (Facebook)").gameObject;
 		dcb = btn.AddComponent<DefaultCallbackButton> ();
-		dcb.Init (null, (ht) =>
-		          {
-			FB.AppRequest( message:"Join me in a free Multiplayer RTS - Rex Tribal Society!", title:"3D Real-Time Strategy for mobile!");
-
+		dcb.Init (null, (ht) =>{
+					if (FB.IsLoggedIn){					
+						FB.AppRequest( message:"Join me in a free Multiplayer RTS - Rex Tribal Society!",
+				              title:"3D Real-Time Strategy for mobile!");
+					}
+					else FB.Login ("email, publish_actions");
 		});
 		InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
 	}
@@ -77,7 +80,7 @@ public class ActiveGames : MonoBehaviour
 
 				trns.parent = rowsContainer;
 				trns.localScale       = Vector3.one;
-				trns.localPosition    = Vector3.up * (-32 * counter);
+				trns.localPosition    = Vector3.up * (-52 * counter);
 				trns.localEulerAngles = Vector3.zero;
 
 				trns.FindChild ("Name").GetComponent<UILabel>().text    = room.name;
@@ -114,16 +117,14 @@ public class ActiveGames : MonoBehaviour
 								InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
 							});
 							CancelInvoke ("Refresh");
-							pw.TryToEnterGame ( 100000.0f,
-							                   (message) =>{
-													//Debug.Log("message: " + message);
+							pw.TryToEnterGame ( 100000.0f,(message) =>{													
 													messageActiveGame.enabled = true;
 													errorMessage.enabled = false;
 													Invoke ("CloseErrorMessage", 5.0f);
 													InvokeRepeating ("Refresh", 0.0f, RefreshingInterval);
 												},
 												(playersReady, maxPlayers) =>{
-													messageActiveGame.text = "Waiting Players - "+playersReady+"/"+maxPlayers;
+												messageActiveGame.text = ScriptLocalization.Get("Menus/Waiting Player") + " - "+playersReady+"/"+maxPlayers;
 
 												});
 						});

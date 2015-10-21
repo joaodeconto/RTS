@@ -52,6 +52,30 @@ namespace Soomla.Store
 			}
 		}
 
+		private static bool assetsArrayHasMarketIdDuplicates(PurchasableVirtualItem[] assetsArray) {
+			HashSet<String> marketIds = new HashSet<String>();
+			foreach (PurchasableVirtualItem pvi in assetsArray) {
+				if (pvi.PurchaseType.GetType() == typeof(PurchaseWithMarket)) {
+					String currentMarketId = ((PurchaseWithMarket)pvi.PurchaseType).MarketItem.ProductId;
+					if (marketIds.Contains(currentMarketId)) {
+						return false;
+					} else {
+						marketIds.Add(currentMarketId);
+					}
+				}
+			}
+			return true;
+		}
+
+		private static void validateStoreAssets(IStoreAssets storeAssets) {
+			if (storeAssets == null) {
+				throw new ArgumentException("The given store assets can't be null!");
+			}
+			if (!assetsArrayHasMarketIdDuplicates(storeAssets.GetGoods()) 
+			    || !assetsArrayHasMarketIdDuplicates(storeAssets.GetCurrencyPacks())) {
+				throw new ArgumentException("The given store assets has duplicates at marketItem productId!");
+			}
+		}
 
 		/// <summary>
 		/// NOTE: This function is manually called when you initialize SoomlaStore. You won't need to call
@@ -69,18 +93,19 @@ namespace Soomla.Store
 		/// </summary>
 		public static void SetStoreAssets(IStoreAssets storeAssets){
 			SoomlaUtils.LogDebug(TAG, "Setting store assets in SoomlaInfo");
+			try {
+				validateStoreAssets(storeAssets);
 
-			if (storeAssets == null){
-				SoomlaUtils.LogError(TAG, "The given store assets can't be null!");
-				return;
+				instance._setStoreAssets(storeAssets);
+				
+				// At this point we have StoreInfo JSON saved at the local key-value storage. We can just
+				// continue by initializing from DB.
+				
+				initializeFromDB();
 			}
-
-			instance._setStoreAssets(storeAssets);
-
-			// At this point we have StoreInfo JSON saved at the local key-value storage. We can just
-			// continue by initializing from DB.
-
-			initializeFromDB();
+			catch (System.ArgumentException exception) {
+				SoomlaUtils.LogError(TAG, exception.Message);
+			}
 		}
 
 		/// <summary>

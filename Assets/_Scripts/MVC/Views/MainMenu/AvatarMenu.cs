@@ -18,12 +18,9 @@ public class AvatarMenu : MonoBehaviour
 					
 	public void Open ()
 	{
-		if (wasInitialized)
-			return;
-		
+		if (wasInitialized)	return;		
 		wasInitialized = true;				
 		DefaultCallbackButton dcb;
-
 		avatarList = new List<Transform>();
 		foreach (Transform button in buttons)
 		{
@@ -36,22 +33,16 @@ public class AvatarMenu : MonoBehaviour
 				avatarImg.spriteName = (string)ht_dcb["avatarImg"];
 				PlayerPrefs.SetString("Avatar", avatarImg.spriteName);
 			});
-
-		}
-		
-		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");
-		
-		if (close != null)
-		{
+		}		
+		Transform close = this.transform.FindChild ("Menu").FindChild ("Resume");		
+		if (close != null){
 			dcb = close.gameObject.AddComponent<DefaultCallbackButton> ();
-			dcb.Init(null,(ht_dcb) =>{
-				gameObject.SetActive (false);
-			});
+			dcb.Init(null,(ht_dcb) =>{	gameObject.SetActive (false);});
 		}
 	}
 
-	void Close()
-	{
-		gameObject.SetActive (false);
-	}
+//	void CloseWithBtn()
+//	{
+//		gameObject.SetActive (false);
+//	}
 }

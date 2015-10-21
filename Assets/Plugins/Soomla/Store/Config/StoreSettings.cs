@@ -51,7 +51,7 @@ namespace Soomla.Store
 
 		GUIContent noneBPLabel = new GUIContent("You have your own Billing Service");
 		GUIContent playLabel = new GUIContent("Google Play");
-		GUIContent playSsvLabel = new GUIContent("Receipt Validation [?]:", "Check if you want your purchases validated with SOOMLA Server Side Protection Service.");
+		GUIContent playSsvLabel = new GUIContent("Fraud Protection [?]:", "Check if you want to turn on purchases verification with SOOMLA Fraud Protection Service.");
 		GUIContent playClientIdLabel = new GUIContent("Client ID");
 		GUIContent playClientSecretLabel = new GUIContent("Client Secret");
 		GUIContent playRefreshTokenLabel = new GUIContent("Refresh Token");
@@ -65,7 +65,8 @@ namespace Soomla.Store
         	GUIContent wp8SimulatorModeLabel = new GUIContent("Run in Simulator (x86 build)");
         	GUIContent wp8TestModeLabel = new GUIContent("Simulate Store. (Don't forget to adapt IAPMock.xml to fit your IAPs)");
 
-		GUIContent iosSsvLabel = new GUIContent("Receipt Validation [?]:", "Check if you want your purchases validated with SOOMLA Server Side Protection Service.");
+		GUIContent iosSsvLabel = new GUIContent("Fraud Protection [?]:", "Check if you want to turn on purchases verification with SOOMLA Fraud Protection Service.");
+    	GUIContent iosVerifyOnServerFailureLabel = new GUIContent("Verify On Server Failure [?]:", "Check if you want your purchases get validated if server failure happens.");
 
 		GUIContent frameworkVersion = new GUIContent("Store Version [?]", "The SOOMLA Framework Store Module version. ");
 		GUIContent buildVersion = new GUIContent("Store Build [?]", "The SOOMLA Framework Store Module build.");
@@ -84,7 +85,7 @@ namespace Soomla.Store
 		}
 
 		public void OnInfoGUI() {
-			SoomlaEditorScript.SelectableLabelField(frameworkVersion, "1.8.1");
+			SoomlaEditorScript.SelectableLabelField(frameworkVersion, "1.8.6");
 			SoomlaEditorScript.SelectableLabelField(buildVersion, "1");
 			EditorGUILayout.Space();
 		}
@@ -99,6 +100,14 @@ namespace Soomla.Store
 			if (showIOSSettings)
 			{
 				IosSSV = EditorGUILayout.Toggle(iosSsvLabel, IosSSV);
+
+                if (IosSSV) {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField(SoomlaEditorScript.EmptyContent, SoomlaEditorScript.SpaceWidth, SoomlaEditorScript.FieldHeight);
+                    IosVerifyOnServerFailure = EditorGUILayout.Toggle(iosVerifyOnServerFailureLabel, IosVerifyOnServerFailure);
+                    EditorGUILayout.EndHorizontal();
+                }
 			}
 			EditorGUILayout.Space();
 		}
@@ -433,7 +442,25 @@ namespace Soomla.Store
 			}
 		}
 
-		public static bool NoneBP
+		public static bool IosVerifyOnServerFailure
+		{
+			get {
+				string value;
+				return SoomlaEditorScript.Instance.SoomlaSettings.TryGetValue("IosVerifyOnServerFailure", out value) ? Convert.ToBoolean(value) : false;
+			}
+			set
+			{
+				string v;
+				SoomlaEditorScript.Instance.SoomlaSettings.TryGetValue("IosVerifyOnServerFailure", out v);
+				if (Convert.ToBoolean(v) != value)
+				{
+					SoomlaEditorScript.Instance.setSettingsValue("IosVerifyOnServerFailure", value.ToString());
+					SoomlaEditorScript.DirtyEditor ();
+				}
+			}
+		}
+
+    	public static bool NoneBP
 		{
 			get {
 				string value;

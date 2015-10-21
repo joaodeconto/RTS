@@ -7,10 +7,8 @@ using Visiorama;
 public class Login : IController
 {
 	public bool UseRealLogin = true;
-	public UIToggle rememberUser;
 	protected PhotonWrapper pw;
 
-	
 	public void Start ()
 	{
 		Init ();
@@ -72,92 +70,40 @@ public class Login : IController
 		string idFacebook = (string)ht["providerId"];
 		
 		if (!UseRealLogin)	{
-			ConfigurationData.player = new Model.Player () { IdPlayer = 5,
+			ConfigurationData.player = new Model.Player () { 
+			IdPlayer = 5,
 			SzName			  = username,
 			SzPassword		  = password,
-			IdFacebookAccount = idFacebook };			
+			IdFacebookAccount = idFacebook
+			};			
 			pw.SetPlayer (username, true);
 			pw.SetPropertyOnPlayer ("player", ConfigurationData.player.ToString ());
 			pw.SetPropertyOnPlayer ("avatar", PlayerPrefs.GetString("Avatar"));
 			EnterInternalMainMenu (username);
 		}
 		else  {
-			PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
-			
-			playerDao.GetPlayer (username, password, idFacebook,
-			                     (player, message) =>
-			                     {
-									ConfigurationData.player = player;
-									
-									//Debug.Log ("player: " + player);
-									//Debug.Log ("name: " + username);
-									
-									if (player == null)	{
-										LoginIndex index = GetView <LoginIndex> ("Index");
-										index.ShowErrorMessage ("Incorrect User or Password");
-									}
-									else
-									{										
-										PlayerPrefs.SetString("ReUser", username);
-										PlayerPrefs.SetString("RePassword", password);	
-										pw.SetPlayer (username, true);
-										pw.SetPropertyOnPlayer ("player", player.ToString ());	
-										ConfigurationData.Offline = false;
-										EnterInternalMainMenu (username);
-									}
-								});
+			PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();			
+			playerDao.GetPlayer (username, password, idFacebook,(player, message) =>{
+				ConfigurationData.player = player;	
+				if (player == null)	{
+					LoginIndex index = GetView <LoginIndex> ("Index");
+					Debug.Log("Incorrect User or Password");
+				}
+				else{
+					pw.SetPlayer (username, true);
+					pw.SetPropertyOnPlayer ("player", player.ToString ());
+					EnterInternalMainMenu (username);
+				}
+			});
 		}
 	}
 	
 	public void EnterInternalMainMenu (string username)
 	{
+		ConfigurationData.Offline = false;
 		ConfigurationData.Logged = true;		
-		HideAllViews ();
-		
+		HideAllViews ();		
 		InternalMainMenu imm = ComponentGetter.Get <InternalMainMenu> ();
 		imm.Init ();
 	}
-	
-	//	public void DoNewAccount (Hashtable ht)
-	//	{
-	//		string username = (string)ht["username"];
-	//		string password = (string)ht["password"];
-	//		string idFacebook = "";
-	//		string email    = (string)ht["email"];
-	//		
-	//		PlayerDAO playerDao = ComponentGetter.Get<PlayerDAO>();
-	//		
-	//        playerDao.CreatePlayer (username, password, idFacebook, email,
-	//		(player, message) =>
-	//		{
-	//			if (player == null)
-	//			{
-	//
-	//			}
-	//			else
-	//			{
-	//				Debug.Log ("Novo DB.Player");
-	//
-	//				PhotonWrapper pw = ComponentGetter.Get<PhotonWrapper> ();
-	//				
-	//				pw.SetPlayer (username, true);
-	//                pw.SetPropertyOnPlayer ("player", player.ToString ());
-	//
-	//
-	//
-	//				Score.SetScorePoints (DataScoreEnum.TotalCrystals,   NumberOfCoinsNewPlayerStartsWith, -1);
-	//				Score.AddScorePoints (DataScoreEnum.CurrentCrystals, NumberOfCoinsNewPlayerStartsWith, -1);
-	//				
-	//				Index ();
-	//			}
-	//		});
-	//	}
-
-//	void Update ()
-//	{
-//		if (Input.GetKeyDown (KeyCode.Escape))
-//		{
-//			Application.Quit();
-//		}
-//	}
 }

@@ -3,7 +3,7 @@ namespace UnityEngine.Advertisements {
 
   public static class Advertisement {
 
-  	public static readonly string version = "1.2.1";
+  	public static readonly string version = "1.3.3";
 
     public enum DebugLevel {
       None = 0,
