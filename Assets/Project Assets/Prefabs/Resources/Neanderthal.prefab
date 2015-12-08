@@ -479,7 +479,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400064}
-  - 137: {fileID: 13700002}
+  - 33: {fileID: 3302768}
+  - 23: {fileID: 2302768}
   m_Layer: 10
   m_Name: Cylinder
   m_TagString: Untagged
@@ -958,8 +959,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100064}
-  m_LocalRotation: {x: .707106769, y: -1.60437437e-16, z: -6.05652575e-24, w: .707106829}
-  m_LocalPosition: {x: -.817615449, y: .0888956636, z: .559162974}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.818000019, y: 1.47000003, z: -.0879999995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400068}
@@ -1016,6 +1017,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 400068}
   m_RootOrder: 2
+--- !u!23 &2302768
+Renderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100064}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 485726153, guid: 73d7e73327e270c4d8fd54d5b34688d5, type: 3}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+--- !u!33 &3302768
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100064}
+  m_Mesh: {fileID: 4300002, guid: c7d02d7adbbf9bd488b8959df1038af7, type: 3}
 --- !u!82 &8200000
 AudioSource:
   m_ObjectHideFlags: 1
@@ -1140,11 +1168,24 @@ MonoBehaviour:
   m_Team: 0
   m_Ally: 0
   defense: 0
+  group: -1
+  bonusForce: 0
+  bonusSpeed: 0
+  bonusSight: 0
+  bonusDefense: 0
+  bonusProjectile: 0
   fieldOfView: 16
   sizeOfSelected: 2
-  rendererTeamSubstanceColor:
-  - subMesh: {fileID: 400072}
-  - subMesh: {fileID: 400064}
+  playerUnit: 0
+  category: Neanderthal
+  requisites: 
+  subCategory: Man
+  description: neander_desc
+  model: {fileID: 100068}
+  pref_ParticleDamage: {fileID: 100004, guid: 20747cbb589a10f418c2fd1d67647962, type: 2}
+  costOfResources:
+    m_mana: 0
+    m_rocks: 100
   movementActions:
   - actionType: 0
     buttonAttributes:
@@ -1174,23 +1215,10 @@ MonoBehaviour:
       gridItemAttributes:
         gridXIndex: 3
         gridYIndex: 2
-  pref_ParticleDamage: {fileID: 100004, guid: 20747cbb589a10f418c2fd1d67647962, type: 2}
   transformParticleDamageReference: {fileID: 400002}
-  playerUnit: 0
-  category: Neanderthal
-  subCategory: Man
-  description: neander_desc
-  requisites: 
-  group: -1
-  costOfResources:
-    m_mana: 0
-    m_rocks: 100
-  model: {fileID: 100068}
-  bonusDefense: 0
-  bonusProjectile: 0
-  bonusForce: 0
-  bonusSpeed: 0
-  bonusSight: 0
+  rendererTeamSubstanceColor:
+  - subMesh: {fileID: 400072}
+  - subMesh: {fileID: 400064}
   force: 5
   distanceView: 12
   attackRange: 3
@@ -1222,65 +1250,6 @@ CapsuleCollider:
   m_Height: 2.26999998
   m_Direction: 1
   m_Center: {x: 0, y: .959999979, z: 0}
---- !u!137 &13700002
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100064}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 485726153, guid: 73d7e73327e270c4d8fd54d5b34688d5, type: 3}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_Mesh: {fileID: 4300002, guid: c7d02d7adbbf9bd488b8959df1038af7, type: 3}
-  m_Bones:
-  - {fileID: 400058}
-  - {fileID: 400054}
-  - {fileID: 400050}
-  - {fileID: 400048}
-  - {fileID: 400052}
-  - {fileID: 400046}
-  - {fileID: 400044}
-  - {fileID: 400056}
-  - {fileID: 400042}
-  - {fileID: 400040}
-  - {fileID: 400038}
-  - {fileID: 400032}
-  - {fileID: 400030}
-  - {fileID: 400028}
-  - {fileID: 400026}
-  - {fileID: 400022}
-  - {fileID: 400024}
-  - {fileID: 400020}
-  - {fileID: 400036}
-  - {fileID: 400018}
-  - {fileID: 400016}
-  - {fileID: 400014}
-  - {fileID: 400012}
-  - {fileID: 400008}
-  - {fileID: 400010}
-  - {fileID: 400006}
-  - {fileID: 400034}
-  - {fileID: 400004}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 400056}
-  m_AABB:
-    m_Center: {x: -.574870169, y: .234240741, z: -.593003273}
-    m_Extent: {x: .600169957, y: .841377735, z: .892379045}
-  m_DirtyAABB: 0
 --- !u!137 &13700004
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

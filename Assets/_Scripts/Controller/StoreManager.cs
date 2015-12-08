@@ -38,8 +38,7 @@ public class StoreManager : MonoBehaviour
 //			SoomlaLevelUp.Initialize();
 			SoomlaStore.Initialize(new RTSStoreAssets());		
 			SoomlaProfile.Initialize();
-			StoreInventory.GiveItem("pass_multiplayer", 1);		//dando multiplayerpass	
-			
+			StoreInventory.GiveItem("pass_multiplayer", 1);		//dando multiplayerpass				
 			StoreInventory.GiveItem("11", 1);
 
 //			StoreInventory.TakeItem("no_ads", 1);
